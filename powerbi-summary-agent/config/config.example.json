@@ -1,0 +1,39 @@
+{
+  "tenant_id":    "PASTE_YOUR_TENANT_ID",
+  "workspace_id": "PASTE_YOUR_WORKSPACE_ID",
+  "dataset_id":   "PASTE_YOUR_DATASET_ID",
+  "output_folder": "outputs",
+  "summary_word_limit": 800,
+  "max_rows_per_query": 15,
+
+  "ai_provider": "azure_openai",
+  "model": "claude-sonnet-5",
+  "azure_openai_api_key_env": "AZURE_OPENAI_API_KEY",
+  "openai_api_key_env": "OPENAI_API_KEY",
+  "anthropic_api_key_env": "ANTHROPIC_API_KEY",
+  "max_tokens": 8192,
+
+  "execution_mode": "python",
+  "fabric_definitions": true,
+
+  "insight_max_signals": 15,
+  "insight_max_investigation_rounds": 9,
+  "insight_max_scan_queries": 20,
+  "insight_probe_max_rows": 20,
+  "insight_materiality_pct": 1.0,
+  "insight_max_dq_signals": 2,
+
+  "metadata_scope_max_entities": 500,
+  "insight_metadata_max_dimensions": 5,
+  "insight_total_gap_scan_budget": 30,
+  "insight_max_gap_dimensions_per_signal": 3,
+
+  "insight_comparable_population": [],
+  "insight_excluded_entities": [],
+
+  "insight_stat_z_cutoff": 3.0,
+  "insight_stat_concentration_pct": 50.0,
+  "insight_stat_recon_tolerance_pct": 2.0,
+  "insight_stat_trend_window": 3,
+  "insight_stat_max_candidates": 20
+}

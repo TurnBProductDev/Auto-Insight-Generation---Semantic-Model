@@ -1,0 +1,8 @@
+{
+  "max_queries_in_plan": 12,
+  "min_queries_in_plan": 7,
+  "default_topn_limit": 10,
+  "time_summary_default_periods": 12,
+  "skip_hidden_objects": true,
+  "notes": "Tunable knobs for the planner/generator. The MVP reads config.json for the operational values; this file documents the agent-level defaults."
+}

@@ -1,0 +1,21 @@
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+.pbi_token_cache.json
+
+# Real config (copy the *.example.* files instead)
+config/config.json
+config/business_rules.md
+
+# Generated run artifacts (real business data)
+outputs/
+outputs_replay/
+outputs_bizlang_preview/
+
+# Python
+__pycache__/
+*.pyc
+.ruff_cache/
+.pytest_cache/
+.mypy_cache/
