@@ -36,6 +36,31 @@ from ..utils.logger import RunLogger
 
 _EPS = 1e-9
 
+_MONTHS = ["January", "February", "March", "April", "May", "June",
+           "July", "August", "September", "October", "November", "December"]
+
+
+def _looks_monthly(values) -> bool:
+    ints = []
+    for v in values:
+        if isinstance(v, bool) or not isinstance(v, (int, float)) or not float(v).is_integer():
+            return False
+        ints.append(int(v))
+    return bool(ints) and min(ints) >= 1 and max(ints) <= 12
+
+
+def _period_label(value, is_month: bool) -> str:
+    """'October' for a calendar month; the raw value otherwise. The raw value is
+    kept as the fingerprint anchor - only the display label is humanized."""
+    if is_month:
+        try:
+            n = int(float(value))
+            if 1 <= n <= 12:
+                return _MONTHS[n - 1]
+        except (TypeError, ValueError):
+            pass
+    return str(value)
+
 
 # --- value / column helpers ----------------------------------------------------
 
@@ -300,6 +325,24 @@ class _Detector:
         self.ratio = set()       # metrics whose grand total behaves like an average
         self.canon = {}          # synonym metric name -> canonical name
         self.contracts = state.get("insight_evidence_contracts", {})
+        # Phase 2 temporal level
+        self.period_top = max(1, int(state.get("insight_period_top_movers", 4)))
+        self.period_recent = max(1, int(state.get("insight_period_recent_window", 12)))
+        self.gated_tables = set(state.get("insight_temporal_gated_tables", []) or [])
+        self.drill = state.get("insight_temporal_drill", {}) or {}
+        self.level_caps = {
+            "high": int(state.get("insight_candidates_high", self.max_candidates)),
+            "period": int(state.get("insight_candidates_period", 10)),
+            "daily": int(state.get("insight_candidates_daily", 10)),
+        }
+
+    def _level(self, cand: dict) -> str:
+        ck = str((self.contracts.get(cand.get("table")) or {}).get("coverage_kind", "")).lower()
+        if ck == "period_series" or ck.startswith("weekly") or ck.startswith("monthly"):
+            return "period"
+        if ck.startswith("daily"):
+            return "daily"
+        return "high"
 
     # -- candidate plumbing --
 
@@ -612,6 +655,10 @@ class _Detector:
     def trend(self, t: dict):
         """Slope + single change-point per numeric column over a date/period axis."""
         rows, roles = t["rows"], t["roles"]
+        # The grain gate rejects load/posting-date axes (e.g. a month-end batch
+        # date); mining a slope/change-point on such a table invents movement.
+        if t["name"] in self.gated_tables:
+            return
         axis = roles["date"] or roles["period"]
         if axis is None:
             return
@@ -681,6 +728,181 @@ class _Detector:
                         "detail": (f"{col} level shifts by {_fmt(shift)} around {at} "
                                    f"(shift z = {shift_z:.1f})"),
                     })
+
+    def period(self, t: dict):
+        """Which periods drove the comparable movement (Phase 2 temporal level).
+
+        Runs only on a gate-validated ``period_series`` table. Attributes the
+        movement to specific periods (top movers with a reconciled % of the total
+        change), humanizes month labels, attaches the metadata-primary-dimension
+        drill to the worst-declining period ("October's decline concentrated in
+        Technology"), and flags temporal patterns (sustained runs, reversals,
+        value/volume divergence). Distinct from ``trend`` (whole-series slope /
+        one change-point). Null period members are excluded. Each finding keeps the
+        RAW period value as its fingerprint anchor; only the display is humanized.
+        """
+        if (t.get("contract") or {}).get("coverage_kind") != "period_series":
+            return
+        rows, roles = t["rows"], t["roles"]
+        axis = roles["period"] or roles["date"]
+        if axis is None or not t["triples"]:
+            return
+        values = [tr for tr in t["triples"] if tr.get("semantic_role") == "value"]
+        tr = values[0] if values else max(
+            t["triples"],
+            key=lambda x: sum(abs(r.get(x["change"])) for r in rows if _finite(r.get(x["change"]))))
+        chg, cur, prev = tr["change"], tr["current"], tr["prior"]
+        if chg in self.ratio:
+            return
+
+        def _axis_key(k):
+            return _parse_date(k) if roles["date"] else k
+
+        series = [(r.get(axis), r) for r in rows
+                  if r.get(axis) is not None and _finite(r.get(chg))]
+        series.sort(key=lambda kv: (_axis_key(kv[0]) is not None, _axis_key(kv[0])))
+        if len(series) < 2:
+            return
+        is_month = _looks_monthly([k for k, _ in series])
+
+        # Denominator: the period series is a complete breakdown of the change over
+        # time, so its own total reconciles to the grand total. Use the grand total
+        # when it agrees (proves reconciliation), else the series total.
+        total_chg = sum(r[chg] for _, r in series)
+        grand = self.grand_totals.get(chg)
+        tol = self.recon_tol_pct / 100.0
+        reconciled = (not _finite(grand)
+                      or abs(total_chg - grand) <= tol * max(abs(grand), 1.0))
+        denom = grand if (_finite(grand) and reconciled) else total_chg
+        basis = "grand_total:period_reconciled" if (_finite(grand) and reconciled) else "period_series_total"
+
+        recent = series[-self.period_recent:] if self.period_recent > 0 else series
+        for raw, r in sorted(recent, key=lambda kv: abs(kv[1][chg]), reverse=True)[: self.period_top]:
+            raw_s = (raw.date().isoformat() if isinstance(raw, datetime) else str(raw))
+            label = _period_label(raw, is_month)
+            share = (r[chg] / denom * 100.0) if denom and abs(denom) > _EPS else None
+            detail = (f"{label}: {chg} of {_fmt(r[chg])} "
+                      f"(from {_fmt(r.get(prev))} to {_fmt(r.get(cur))})"
+                      + (f", {share:.1f}% of the total change" if share is not None else ""))
+            cand = {
+                "type": "period_change_contribution",
+                "table": t["name"], "metric": chg, "segment": f"{axis}={raw_s}",
+                "anchor": raw_s, "period_label": label,
+                "impact_value": _safe(r[chg]), "impact_share": _safe(share),
+                "share_basis": basis if share is not None else None,
+                "significance": 1.0,
+                "score": (abs(share) if share is not None
+                          else abs(r[chg]) / (abs(total_chg) + _EPS) * 100.0),
+                "detail": detail,
+            }
+            # Attach the WHERE drill to the period it was computed for.
+            if self.drill and str(self.drill.get("period_raw")) == raw_s:
+                segs = self.drill.get("top_segments", [])[:2]
+                if segs:
+                    cand["drill"] = self.drill
+                    cand["detail"] += ("; concentrated in "
+                                       + ", ".join(f"{s['segment']} ({_fmt(s['change'])})" for s in segs))
+            self._add("business", cand)
+
+        self._period_patterns(t, axis, chg, cur, prev, tr, series, is_month, denom, basis)
+
+    def _period_patterns(self, t, axis, chg, cur, prev, tr, series, is_month, denom, basis):
+        """Sustained runs, reversals, and value/volume divergence over the series."""
+        def _lab(raw):
+            return _period_label(raw, is_month)
+
+        def _sign(v):
+            return (v > _EPS) - (v < -_EPS)
+
+        signs = [_sign(r[chg]) for _, r in series]
+
+        # 1) Sustained run at the recent end (>= 3 same-signed periods).
+        run_sign = signs[-1]
+        run = 0
+        for s in reversed(signs):
+            if s == run_sign and s != 0:
+                run += 1
+            else:
+                break
+        if run >= 3 and run_sign != 0:
+            seg = series[-run:]
+            start, end = _lab(seg[0][0]), _lab(seg[-1][0])
+            amount = sum(r[chg] for _, r in seg)
+            share = (amount / denom * 100.0) if denom and abs(denom) > _EPS else None
+            kind = "decline" if run_sign < 0 else "growth"
+            # Fold the steepest months (with %) and the worst-period drill INTO the
+            # run story, so the "where/which months" survives even if the LLM picks
+            # this candidate as the headline over the individual month movers.
+            steep = sorted(seg, key=lambda kv: abs(kv[1][chg]), reverse=True)[:2]
+            steep_parts = []
+            for raw, r in steep:
+                pct = (f", {r[chg] / denom * 100.0:.0f}%" if denom and abs(denom) > _EPS else "")
+                steep_parts.append(f"{_lab(raw)} ({_fmt(r[chg])}{pct})")
+            detail = (f"{chg} {kind}d for {run} consecutive periods "
+                      f"({start} to {end}), totalling {_fmt(amount)}"
+                      + (f" ({share:.1f}% of the total change)" if share is not None else "")
+                      + ("; steepest: " + ", ".join(steep_parts) if steep_parts else ""))
+            run_raws = {str(raw) for raw, _ in seg}
+            cand = {
+                "type": f"period_sustained_{kind}", "table": t["name"], "metric": chg,
+                "segment": f"{axis}:{start}..{end}", "anchor": f"{start}..{end}",
+                "period_label": f"{start}-{end}",
+                "impact_value": _safe(amount), "impact_share": _safe(share),
+                "share_basis": basis if share is not None else None,
+                "significance": 1.0, "score": (abs(share) if share is not None else 8.0) + run,
+                "detail": detail,
+            }
+            if self.drill and str(self.drill.get("period_raw")) in run_raws:
+                segs = self.drill.get("top_segments", [])[:2]
+                if segs:
+                    cand["drill"] = self.drill
+                    cand["detail"] += (f"; {self.drill.get('period_label')}'s fall concentrated in "
+                                       + ", ".join(f"{s['segment']} ({_fmt(s['change'])})" for s in segs))
+            self._add("business", cand)
+
+        # 2) Most recent reversal (sign flip) in the recent window.
+        flip = None
+        for i in range(len(signs) - 1, 0, -1):
+            if signs[i] != 0 and signs[i - 1] != 0 and signs[i] != signs[i - 1]:
+                flip = i
+                break
+        if flip is not None and (len(series) - flip) <= max(3, self.period_recent):
+            raw, r = series[flip]
+            direction = "decline" if signs[flip] < 0 else "growth"
+            self._add("business", {
+                "type": "period_reversal", "table": t["name"], "metric": chg,
+                "segment": f"{axis}=reversal@{_lab(raw)}", "anchor": str(raw),
+                "period_label": _lab(raw),
+                "impact_value": _safe(r[chg]), "impact_share": None, "share_basis": None,
+                "significance": 0.9, "score": 7.0,
+                "detail": (f"{chg} reversed to {direction} around {_lab(raw)} "
+                           f"({_fmt(series[flip - 1][1][chg])} -> {_fmt(r[chg])})"),
+            })
+
+        # 3) Value/volume divergence: a period where value falls but a volume driver
+        #    rises (or vice versa) - a mix/price story worth surfacing.
+        vol = next((v for v in t["triples"]
+                    if v is not tr and v.get("semantic_role") in (None, "volume")
+                    and v["change"] not in self.ratio), None)
+        if vol:
+            vchg = vol["change"]
+            worst = None
+            for raw, r in series:
+                a, b = r.get(chg), r.get(vchg)
+                if _finite(a) and _finite(b) and _sign(a) != 0 and _sign(a) != _sign(b) != 0:
+                    if worst is None or abs(a) > abs(worst[1][chg]):
+                        worst = (raw, r)
+            if worst:
+                raw, r = worst
+                self._add("business", {
+                    "type": "period_value_volume_divergence", "table": t["name"], "metric": chg,
+                    "segment": f"{axis}=divergence@{_lab(raw)}", "anchor": str(raw),
+                    "period_label": _lab(raw),
+                    "impact_value": _safe(r[chg]), "impact_share": None, "share_basis": None,
+                    "significance": 0.9, "score": 6.5,
+                    "detail": (f"in {_lab(raw)} {chg} moved {_fmt(r[chg])} while {vchg} "
+                               f"moved {_fmt(r[vchg])} - value and volume diverged"),
+                })
 
     def reconciliation(self, t: dict):
         """Data-quality checks: triple violations, zero-prior bases, coverage
@@ -856,12 +1078,22 @@ class _Detector:
             self.concentration(t)
             self.outliers(t)
             self.trend(t)
+            self.period(t)
             self.reconciliation(t)
         overall_pv = self.overall_split(tables)
 
         business = sorted(self.business.values(), key=lambda c: c["score"], reverse=True)
         dq = sorted(self.data_quality.values(), key=lambda c: c["score"], reverse=True)
-        business = business[:self.max_candidates]
+        # Level-aware cap: keep top-N per level so temporal/daily candidates are
+        # never starved by the far more numerous high-level ones.
+        kept, counts = [], {}
+        for c in business:
+            lv = self._level(c)
+            if counts.get(lv, 0) >= self.level_caps.get(lv, self.max_candidates):
+                continue
+            counts[lv] = counts.get(lv, 0) + 1
+            kept.append(c)
+        business = kept
         dq = dq[:max(6, self.max_candidates // 2)]
         for i, c in enumerate(business + dq):
             c["id"] = f"cand_{i + 1:02d}_{c['type']}"

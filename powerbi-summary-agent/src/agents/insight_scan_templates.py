@@ -282,6 +282,41 @@ def build_templated_scans(md: dict, understanding: dict, state: dict) -> list[di
     return build_metadata_scans(profile, state)
 
 
+def build_temporal_scan(profile: dict, state: dict, grain_dim: dict) -> dict | None:
+    """One comparable primary+volume series grouped by a temporal grain column
+    (Phase 2). The grain column is chosen by the grain gate (a validated business
+    time axis, e.g. a month number) - never a load/posting-date axis. Carries the
+    full current/prior/change metric bundle so the stat detector can rank which
+    periods drove the comparable movement."""
+    shape = shape_from_profile(profile, state)
+    if not shape or not grain_dim or not grain_dim.get("reference"):
+        return None
+    population = [str(v) for v in state.get("insight_comparable_population", []) or []]
+    specs = _metric_specs(shape)
+    if not specs:
+        return None
+    args = [grain_dim["reference"]]
+    pop = _population_filter(shape, population)
+    if pop:
+        args.append(pop)
+    args.append(_selects(specs))
+    base = "SUMMARIZECOLUMNS(\n        " + ",\n        ".join(args) + "\n    )"
+    # TOPN wrap bounds the query (and satisfies the row-limit validator) while the
+    # large cap keeps the whole ordered series - a temporal axis is naturally small.
+    cap = max(500, 2 * int(state.get("insight_period_recent_window", 12)))
+    dax = ("EVALUATE\n"
+           f"TOPN({cap},\n    {base},\n    {grain_dim['reference']}, ASC)\n"
+           f"ORDER BY {grain_dim['reference']} ASC")
+    return {
+        "name": f"meta_period_by_{_slug(grain_dim['table'])}_{_slug(grain_dim['column'])}",
+        "purpose": f"Comparable primary/volume series by {grain_dim['reference']} (temporal level).",
+        "intent": "metadata_template:period_series",
+        "dax": dax,
+        "contract_hint": _contract(shape, [grain_dim], specs, population, "period_series",
+                                   None, None, "ASC", "period_series"),
+    }
+
+
 def build_gap_probe(shape: dict, seg_dim: dict, seg_value, drill_dim: dict,
                     population: list[str], max_rows: int,
                     scope_type: str = "comparable") -> dict:

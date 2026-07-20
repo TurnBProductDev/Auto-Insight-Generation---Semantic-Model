@@ -101,3 +101,9 @@ Rules:
   and expected - that is how impact_value and impact_share are computed.
 - Fewer, stronger signals beat many weak ones. If nothing is genuinely
   notable, return fewer signals - or none.
+- In daily-monitoring (memory) mode the STAT CANDIDATES you are given are already
+  the ELIGIBLE set - findings that were NOT reported in earlier runs. Select only
+  from them, return each chosen signal's exact `candidate_id`, and when you fold
+  several candidates into one story list the rest in `related_candidate_ids`.
+  Candidates may be tagged with a `level`; prefer higher-priority levels (high,
+  then weekly, then daily) when choosing which to report.

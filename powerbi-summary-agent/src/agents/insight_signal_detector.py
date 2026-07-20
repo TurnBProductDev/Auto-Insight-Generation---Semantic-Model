@@ -25,6 +25,14 @@ class Signal(BaseModel):
         default=None,
         description="id of the deterministic stat candidate selected for this signal, when applicable.",
     )
+    related_candidate_ids: Optional[List[str]] = Field(
+        default=None,
+        description=(
+            "ids of OTHER eligible stat candidates this signal merges/covers (the "
+            "same underlying story seen through another metric or analysis). Used so "
+            "every covered finding is marked seen and none reappears next run."
+        ),
+    )
     decomposition: Optional[List[dict]] = Field(
         default=None,
         description="Exact price-volume decomposition carried by the deterministic candidate.",
@@ -132,51 +140,161 @@ def _bind_candidates(signals: List[dict], candidates: dict) -> List[dict]:
     return signals
 
 
+_LEVEL_RANK = {"high": 0, "period": 1, "weekly": 1, "daily": 2}
+
+
+def _bind_eligible(signals: List[dict], eligible: dict) -> tuple[List[dict], int]:
+    """Memory-mode binding: bind ONLY by an exact candidate_id present in the
+    eligible allowlist and drop anything else. No segment heuristic - in memory
+    mode it could attach a suppressed story to an unrelated eligible candidate.
+    Copies computed facts and the candidate's story identity onto the signal, and
+    resolves related_candidate_ids into covered_story_keys."""
+    all_c = (eligible.get("business_candidates", []) or []) + \
+            (eligible.get("data_quality_candidates", []) or [])
+    by_id = {c.get("id"): c for c in all_c if c.get("id")}
+    bound, dropped = [], 0
+    for sig in signals:
+        cand = by_id.get(sig.get("candidate_id"))
+        if cand is None:
+            dropped += 1
+            continue
+        sig["candidate_id"] = cand.get("id")
+        sig["impact_value"] = cand.get("impact_value")
+        sig["impact_share"] = cand.get("impact_share")
+        sig["evidence_query"] = cand.get("table") or sig.get("evidence_query")
+        sig["kind"] = cand.get("kind", sig.get("kind"))
+        sig["decomposition"] = cand.get("rate_volume") or sig.get("decomposition")
+        sig["segment_members"] = cand.get("segment_members") or sig.get("segment_members")
+        # Story identity carried from the deterministic candidate (for commit).
+        sig["level"] = cand.get("level", "high")
+        sig["story_key"] = cand.get("story_key")
+        fields = cand.get("story_fields", {}) or {}
+        for f in ("segment", "metric", "dimension", "analysis_type",
+                  "period_anchor", "direction"):
+            if fields.get(f) is not None:
+                sig[f] = fields.get(f)
+        covered = [sig["story_key"]] if sig.get("story_key") else []
+        for rid in (sig.get("related_candidate_ids") or []):
+            rc = by_id.get(rid)
+            if rc and rc.get("story_key"):
+                covered.append(rc["story_key"])
+        sig["covered_story_keys"] = list(dict.fromkeys(covered))
+        bound.append(sig)
+    return bound, dropped
+
+
+def _slot_fill(signals: List[dict], cap: int, max_dq: int) -> List[dict]:
+    """Cascade slot-filling: order by (level priority high->weekly->daily, then the
+    LLM's materiality rank), take up to `cap`, enforce the data-quality sub-cap.
+    Applied AFTER the LLM so a merge that collapses several high candidates frees
+    the slots for weekly/daily the LLM already saw."""
+    indexed = sorted(enumerate(signals),
+                     key=lambda p: (_LEVEL_RANK.get(p[1].get("level", "high"), 0), p[0]))
+    kept, dq = [], 0
+    for _, s in indexed:
+        if len(kept) >= cap:
+            break
+        if s.get("kind") == "data_quality":
+            if dq >= max_dq:
+                continue
+            dq += 1
+        kept.append(s)
+    return kept
+
+
+def _finish(state: dict, log: RunLogger, signals: List[dict],
+            novelty: dict, reason: str) -> dict:
+    file_io.write_json(state, "insight_signals.json", signals)
+    novelty = dict(novelty)
+    novelty["selected"] = len(signals)
+    novelty["reason"] = reason
+    file_io.write_json(state, "insight_novelty.json", novelty)
+    if signals:
+        log.info(f"Detected {len(signals)} signals: " + ", ".join(
+            f"{s.get('id')}[{s.get('kind', '?')}]" for s in signals))
+    else:
+        log.info(f"No signals reported ({reason}).")
+    return {"insight_signals": signals, "insight_novelty": novelty, **log.updates()}
+
+
 def run(state: dict) -> dict:
     log = RunLogger(state)
     log.info("Insight branch: detecting notable signals in scan results...")
 
-    max_signals = state.get("insight_max_signals", 5)
+    memory_enabled = bool(state.get("insight_memory_enabled", True))
     max_dq = state.get("insight_max_dq_signals", 2)
     materiality_pct = state.get("insight_materiality_pct", 1.0)
     clean = state.get("insight_clean_data", {"queries": []})
     understanding = state.get("report_understanding", {})
+    novelty = dict(state.get("insight_novelty", {}) or {})
+
+    cap = int(state.get("insight_max_new_per_run", 3)) if memory_enabled \
+        else int(state.get("insight_max_signals", 5))
+
+    # In memory mode the novelty filter already suppressed seen findings; work from
+    # its eligible (unseen) shortlist. Otherwise fall back to the full stat list.
+    eligible = state.get("insight_eligible_candidates") if memory_enabled else None
+    if not eligible:
+        eligible = state.get("insight_stat_candidates",
+                             {"business_candidates": [], "data_quality_candidates": []})
+    has_candidates = bool(eligible.get("business_candidates") or
+                          eligible.get("data_quality_candidates"))
 
     if not clean.get("successful"):
         log.error("Insight scan returned no usable data - no signals to detect.")
-        file_io.write_json(state, "insight_signals.json", [])
-        return {"insight_signals": [], **log.updates()}
+        return _finish(state, log, [], novelty, reason="no_scan_data")
+
+    # Memory mode with nothing unseen: don't fabricate; report it clearly.
+    if memory_enabled and not has_candidates:
+        reason = novelty.get("reason") or "all_previously_reported"
+        log.info(f"Insight branch: no eligible (unseen) candidates - {reason}.")
+        return _finish(state, log, [], novelty, reason=reason)
 
     rules = file_io.read_prompt("_global_rules.md")
     task = file_io.read_prompt("insight_signal_detector_prompt.md")
 
     context = {
         "report_understanding": understanding,
-        "stat_candidates": state.get("insight_stat_candidates", {}),
+        "stat_candidates": eligible,
         "scan_results": clean,
     }
+
+    extra = (f"\n\nReturn at most {cap} signals."
+             f"\nMateriality floor: ignore movements smaller than "
+             f"{materiality_pct}% of the relevant grand total unless they "
+             f"indicate a data-quality problem.")
+    if memory_enabled:
+        extra += ("\n\nThe STAT CANDIDATES above are the ELIGIBLE set: findings NOT "
+                  "reported in previous runs. Select ONLY from them and return each "
+                  "chosen signal's exact `candidate_id`. When you merge several "
+                  "candidates into one story, list the others in "
+                  "`related_candidate_ids`. Candidates are level-tagged; prefer "
+                  "higher-priority levels (high, then weekly, then daily) first.")
 
     llm = get_llm(state, structured_schema=SignalList)
     messages = [
         {"role": "system", "content": rules + file_io.business_rules_block(state)
-         + "\n\n" + task
-         + f"\n\nFlag at most {max_signals} signals."
-         + f"\nMateriality floor: ignore movements smaller than "
-           f"{materiality_pct}% of the relevant grand total unless they "
-           f"indicate a data-quality problem."},
+         + "\n\n" + task + extra},
         {"role": "user", "content": "REPORT UNDERSTANDING + STAT CANDIDATES + SCAN RESULTS:\n" + dumps(context)},
     ]
 
     result: SignalList = llm.invoke(messages)
-    raw = _bind_candidates([s.model_dump() for s in result.signals],
-                           state.get("insight_stat_candidates", {}))
-    signals = _apply_caps(raw, max_signals, max_dq)
-    dropped = len(raw) - len(signals)
-    if dropped:
-        log.info(f"Caps dropped {dropped} signal(s) "
-                 f"(max {max_signals} total, max {max_dq} data-quality).")
+    raw = [s.model_dump() for s in result.signals]
 
-    file_io.write_json(state, "insight_signals.json", signals)
-    log.info(f"Detected {len(signals)} signals: " + ", ".join(
-        f"{s['id']}[{s.get('kind', '?')}]" for s in signals))
-    return {"insight_signals": signals, **log.updates()}
+    if memory_enabled:
+        bound, dropped = _bind_eligible(raw, eligible)
+        if dropped:
+            log.info(f"Dropped {dropped} signal(s) not bound to an eligible candidate "
+                     f"(exact-id-only in memory mode).")
+        signals = _slot_fill(bound, cap, max_dq)
+    else:
+        bound = _bind_candidates(raw, eligible)
+        signals = _apply_caps(bound, cap, max_dq)
+
+    dropped_caps = len(bound) - len(signals)
+    if dropped_caps > 0:
+        log.info(f"Caps/slot-fill dropped {dropped_caps} signal(s) "
+                 f"(max {cap} total, max {max_dq} data-quality).")
+
+    reason = "ok" if signals else (novelty.get("reason") or "no_new_selected")
+    return _finish(state, log, signals, novelty, reason=reason)

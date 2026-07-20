@@ -48,6 +48,32 @@ class SummaryAgentState(TypedDict, total=False):
     insight_comparable_population: List[str]
     insight_excluded_entities: List[str]
 
+    # --- cross-run insight memory (Phase 1) ---
+    insight_memory_enabled: bool
+    insight_memory_policy: str               # "never_repeat" | "cooldown"
+    insight_memory_cooldown_days: int
+    insight_max_new_per_run: int
+    insight_reporting_grain: str             # period-anchor grain: "month" | "year" | "day"
+    insight_candidates_high: int
+    insight_candidates_weekly: int
+    insight_candidates_daily: int
+
+    # --- temporal (Phase 2): validated sub-annual level ---
+    insight_temporal_enabled: bool
+    insight_temporal_batch_share: float
+    insight_temporal_min_periods: int
+    insight_candidates_period: int
+    insight_period_top_movers: int
+    insight_period_recent_window: int
+    insight_temporal_recon_tolerance_pct: float
+    insight_temporal_max_probes: int
+    insight_temporal_grain_column: str
+    insight_period_drill: bool
+    insight_period_drill_top: int
+    insight_temporal_verdict: Dict[str, Any]      # grain gate verdict (report caveat)
+    insight_temporal_gated_tables: List[str]      # date tables the gate rejected (skip trend)
+    insight_temporal_drill: Dict[str, Any]        # worst-period x primary-dimension attribution
+
     # --- shared pre-fork artifacts ---
     model_metadata: Dict[str, Any]          # Node 2
     pbi_token: str                          # Node 2 (shared by both branches)
@@ -79,6 +105,8 @@ class SummaryAgentState(TypedDict, total=False):
     insight_coverage_matrix: Dict[str, Any]       # evidence_assembler: per-dimension coverage quality
     insight_gap_evidence: Dict[str, Any]          # insight_gap_scan: templated fills for brief gaps
     insight_query_cache: Dict[str, Any]           # shared sequential cache: gap scan -> investigator
+    insight_eligible_candidates: Dict[str, Any]   # novelty_filter: unseen candidates only
+    insight_novelty: Dict[str, Any]               # novelty_filter/signal_detector: run summary
     insight_signals: List[Dict[str, Any]]
     insight_investigations: List[Dict[str, Any]]
     insight_report: str

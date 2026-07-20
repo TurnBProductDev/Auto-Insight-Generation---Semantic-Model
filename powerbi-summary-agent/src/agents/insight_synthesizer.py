@@ -22,6 +22,33 @@ def run(state: dict) -> dict:
     understanding = state.get("report_understanding", {})
     signals = state.get("insight_signals", [])
     investigations = state.get("insight_investigations", [])
+    novelty = state.get("insight_novelty", {}) or {}
+
+    # Reason-aware empty state: distinguish "no data" / "nothing notable" / "all
+    # already reported before" / "memory unreadable" so the report is truthful
+    # about WHY there is nothing new, rather than implying nothing exists.
+    empty_notes = {
+        "no_scan_data": ("The diagnostic scan returned no usable data. Write the "
+                         "report explaining that nothing could be evaluated this run."),
+        "no_notable_findings": ("Nothing crossed the materiality floor this run. "
+                                "Write the report emphasizing what was scanned and "
+                                "why nothing stood out."),
+        "all_previously_reported": ("Findings were detected but ALL of them were "
+                                    "already reported in previous runs. Say clearly "
+                                    "that there are no NEW insights today and briefly "
+                                    "note that prior findings still stand."),
+        "no_new_selected": ("No new findings were selected this run. State that there "
+                            "is nothing new to report today."),
+        "memory_corrupt": ("The insight memory store was unreadable this run, so the "
+                           "no-repeat guarantee is unavailable and findings below may "
+                           "have been reported before. Flag this caveat prominently."),
+    }
+    reason = novelty.get("reason")
+    note = ""
+    if not signals:
+        note = empty_notes.get(reason, empty_notes["no_notable_findings"])
+    elif reason == "memory_corrupt":
+        note = empty_notes["memory_corrupt"]
 
     context = {
         "report_understanding": understanding,
@@ -30,11 +57,13 @@ def run(state: dict) -> dict:
         "coverage_matrix": state.get("insight_coverage_matrix", {}),
         "resolved_entity_scope": state.get("resolved_entity_scope", {}),
         "metadata_profile_warnings": state.get("semantic_model_profile", {}).get("warnings", []),
-        "note": (
-            "No signals were detected (or the scan returned no usable data). "
-            "Write the report emphasizing what was scanned and why nothing stood out."
-            if not signals else ""
-        ),
+        "novelty": {k: novelty.get(k) for k in
+                    ("reason", "detected", "suppressed", "eligible", "selected",
+                     "policy", "memory_status", "level_breakdown")},
+        "temporal": {**{k: (state.get("insight_temporal_verdict", {}) or {}).get(k)
+                        for k in ("enabled", "grain", "column", "reason")},
+                     "worst_period_drill": state.get("insight_temporal_drill")},
+        "note": note,
     }
 
     llm = get_llm(state)  # free-form text output

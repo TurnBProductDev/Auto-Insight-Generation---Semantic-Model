@@ -29,6 +29,7 @@ from langgraph.graph import END, START, StateGraph
 from .state import SummaryAgentState
 from .tools import file_io
 from .tools import html_report
+from .tools import insight_memory
 from .tools import powerbi_executor as pbi
 from .utils.logger import RunLogger
 
@@ -44,7 +45,9 @@ from .agents import (
     result_normalizer,
     summary_generator,
     insight_result_normalizer,
+    insight_temporal,
     insight_stat_detector,
+    insight_novelty_filter,
     insight_signal_detector,
     evidence_contract,
     evidence_assembler,
@@ -211,6 +214,25 @@ def save_outputs(state: dict) -> dict:
                            html_report.render(stub, title="Insight Report", eyebrow="Power BI Insight Report"))
         log.error("Wrote stub insight_report.md/.html due to early stop.")
 
+    # Commit reported insights to persistent memory so future runs don't repeat
+    # them. Only when: memory enabled, the report was truly generated (not a stub),
+    # signals exist, and the store was not corrupt this run. On corruption we keep
+    # the damaged store untouched (novelty guarantee already flagged in the report).
+    novelty = state.get("insight_novelty", {}) or {}
+    signals = state.get("insight_signals", [])
+    if (state.get("insight_memory_enabled", True) and not state.get("fatal")
+            and state.get("insight_report") and signals
+            and novelty.get("memory_status") != "corrupt"):
+        try:
+            res = insight_memory.commit(state, signals)
+            if res.get("status") == "ok":
+                log.info(f"Insight memory: committed {res.get('committed')} new "
+                         f"finding(s); watermark={res.get('watermark')}.")
+            else:
+                log.error(f"Insight memory: commit skipped (status={res.get('status')}).")
+        except Exception as exc:  # noqa: BLE001 - memory must never fail the run
+            log.error(f"Insight memory: commit failed ({type(exc).__name__}: {exc}).")
+
     run_log = "\n".join(state.get("logs", []) + [f"[save] wrote outputs to /{state.get('output_folder','outputs')}"])
     if state.get("errors"):
         run_log += "\n\nERRORS:\n" + "\n".join("- " + e for e in state["errors"])
@@ -251,8 +273,10 @@ def build_graph():
 
     # Insight branch
     g.add_node("insight_normalize", insight_result_normalizer.run)
+    g.add_node("insight_temporal", insight_temporal.run)
     g.add_node("insight_evidence_catalog", evidence_contract.run)
     g.add_node("insight_stat_detector", insight_stat_detector.run)
+    g.add_node("insight_novelty_filter", insight_novelty_filter.run)
     g.add_node("insight_signal_detector", insight_signal_detector.run)
     g.add_node("insight_evidence_assembler", evidence_assembler.run)
     g.add_node("insight_gap_scan", insight_gap_scan.run)
@@ -285,9 +309,11 @@ def build_graph():
     g.add_edge("generate_summary", "summary_branch_done")
 
     # Insight branch
-    g.add_edge("insight_normalize", "insight_evidence_catalog")
+    g.add_edge("insight_normalize", "insight_temporal")
+    g.add_edge("insight_temporal", "insight_evidence_catalog")
     g.add_edge("insight_evidence_catalog", "insight_stat_detector")
-    g.add_edge("insight_stat_detector", "insight_signal_detector")
+    g.add_edge("insight_stat_detector", "insight_novelty_filter")
+    g.add_edge("insight_novelty_filter", "insight_signal_detector")
     g.add_edge("insight_signal_detector", "insight_evidence_assembler")
     g.add_edge("insight_evidence_assembler", "insight_gap_scan")
     g.add_edge("insight_gap_scan", "insight_investigator")

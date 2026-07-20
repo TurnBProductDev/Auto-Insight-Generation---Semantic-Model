@@ -59,6 +59,29 @@ def build_initial_state(cfg: dict, config_path: str = "") -> dict:
         "insight_probe_max_rows": cfg.get("insight_probe_max_rows", 20),
         "insight_materiality_pct": cfg.get("insight_materiality_pct", 1.0),
         "insight_max_dq_signals": cfg.get("insight_max_dq_signals", 2),
+        # Cross-run insight memory (Phase 1): remember reported findings and only
+        # surface unseen ones on later runs.
+        "insight_memory_enabled": cfg.get("insight_memory_enabled", True),
+        "insight_memory_policy": cfg.get("insight_memory_policy", "never_repeat"),
+        "insight_memory_cooldown_days": cfg.get("insight_memory_cooldown_days", 14),
+        "insight_max_new_per_run": cfg.get("insight_max_new_per_run", 3),
+        "insight_reporting_grain": cfg.get("insight_reporting_grain", "month"),
+        "insight_candidates_high": cfg.get("insight_candidates_high", 20),
+        "insight_candidates_weekly": cfg.get("insight_candidates_weekly", 10),
+        "insight_candidates_daily": cfg.get("insight_candidates_daily", 10),
+        # Phase 2: validated sub-annual temporal level (weekly if a clean business-day
+        # column exists, else monthly). Grain gate rejects load/posting-date axes.
+        "insight_temporal_enabled": cfg.get("insight_temporal_enabled", True),
+        "insight_temporal_batch_share": cfg.get("insight_temporal_batch_share", 0.5),
+        "insight_temporal_min_periods": cfg.get("insight_temporal_min_periods", 6),
+        "insight_temporal_recon_tolerance_pct": cfg.get("insight_temporal_recon_tolerance_pct", 2.0),
+        "insight_temporal_max_probes": cfg.get("insight_temporal_max_probes", 3),
+        "insight_temporal_grain_column": cfg.get("insight_temporal_grain_column", ""),
+        "insight_candidates_period": cfg.get("insight_candidates_period", 10),
+        "insight_period_top_movers": cfg.get("insight_period_top_movers", 4),
+        "insight_period_recent_window": cfg.get("insight_period_recent_window", 12),
+        "insight_period_drill": cfg.get("insight_period_drill", True),
+        "insight_period_drill_top": cfg.get("insight_period_drill_top", 3),
         # Business-rule scope (mirrors config/business_rules.md - keep in sync).
         # Drives evidence_contract population classification and the reuse gate.
         "insight_comparable_population": cfg.get("insight_comparable_population", []),
@@ -76,6 +99,52 @@ def build_initial_state(cfg: dict, config_path: str = "") -> dict:
         "logs": [],
         "errors": [],
     }
+
+
+def write_api_payloads(final: dict) -> None:
+    """Post-run: build the MVC/FastAPI content payloads (LLM-authored) from the
+    finished run so a single `python -m src.main` produces everything.
+
+    Reads the two outputs a completed run leaves on disk and writes
+    outputs/api/{report_summary,kpi_insights}.json in the exact shapes the ASP.NET
+    controllers deserialize. Numbers/enums are code-owned and the payloads are
+    strictly validated inside the generators. Best-effort: any failure here (LLM
+    error, missing outputs, validation) is reported but never fails the main run.
+    Disable with `"api_payloads": false` in config.json.
+    """
+    cfg = final.get("config", {})
+    if not cfg.get("api_payloads", True):
+        return
+    out = PROJECT_ROOT / final.get("output_folder", "outputs")
+    summary_md = out / "report_summary.md"
+    signals_json = out / "insight_signals.json"
+    if not summary_md.exists() or not signals_json.exists():
+        print("API payloads skipped: report_summary.md / insight_signals.json not present.")
+        return
+    try:
+        from .tools.api_payloads import (
+            generate_kpi_insights_payload,
+            generate_report_summary_payload,
+        )
+
+        title = cfg.get("api_summary_title", "AI Summary")
+        report_payload, dropped = generate_report_summary_payload(
+            summary_md.read_text(encoding="utf-8"), final, title=title
+        )
+        kpi_payload = generate_kpi_insights_payload(
+            json.loads(signals_json.read_text(encoding="utf-8")), final
+        )
+        api_dir = out / "api"
+        api_dir.mkdir(parents=True, exist_ok=True)
+        (api_dir / "report_summary.json").write_text(
+            json.dumps(report_payload, indent=2, ensure_ascii=False), encoding="utf-8")
+        (api_dir / "kpi_insights.json").write_text(
+            json.dumps(kpi_payload, indent=2, ensure_ascii=False), encoding="utf-8")
+        note = f", {dropped} bullet(s) dropped by fidelity guard" if dropped else ""
+        print(f"API payloads: {api_dir} "
+              f"({len(kpi_payload)} KPI cards, {len(report_payload['sections'])} summary sections{note})")
+    except Exception as e:  # noqa: BLE001 - best-effort, must never fail the main run
+        print(f"API payloads skipped ({type(e).__name__}: {e})")
 
 
 def main(argv=None) -> int:
@@ -96,6 +165,12 @@ def main(argv=None) -> int:
     print(f"Outputs: {out}")
     if final.get("errors"):
         print(f"Errors ({len(final['errors'])}): see run_log.txt")
+
+    write_api_payloads(final)
+
+    # Best-effort: push the freshly written API JSONs to Azure Blob (never fatal).
+    from .tools.azure_blob import upload_api_payloads
+    upload_api_payloads(final)
 
     summary_path = out / "report_summary.md"
     if summary_path.exists():

@@ -82,6 +82,48 @@ def synthetic_suite() -> dict:
     return updates["insight_stat_candidates"]
 
 
+def synthetic_period_suite() -> dict:
+    """A gate-validated monthly period_series exercising the enhanced period():
+    reconciled % (via a grand-total table), month-name labels, the worst-period
+    drill (via state), sustained-run / reversal / value-volume-divergence patterns,
+    and null-member exclusion."""
+    rev_chg = [1.2, -0.8, 0.3, -0.5, 0.4, -0.8, 0.2, -1.3, -0.5, -1.7, -0.7, -0.16]  # ends in a decline run
+    rows = []
+    for i in range(12):
+        rows.append({
+            "DOC_MONTH": float(i + 1),
+            "rev_cur": (10.0 + rev_chg[i]) * 1e6, "rev_prev": 10.0 * 1e6,
+            "rev_chg": rev_chg[i] * 1e6,
+            # volume rises every month -> months with falling revenue diverge
+            "qty_cur": 5.5e6, "qty_prev": 5.0e6, "qty_chg": 0.5e6,
+        })
+    rows.append({"DOC_MONTH": None, "rev_cur": 1e5, "rev_prev": 0.0, "rev_chg": 1e5,
+                 "qty_cur": 1.0, "qty_prev": 0.0, "qty_chg": 1.0})  # null member -> excluded
+    totals = {"rev_chg": sum(rev_chg) * 1e6, "qty_chg": 0.5e6 * 12}   # grand totals for reconciliation
+    roles = {
+        "rev_cur": {"bundle_id": "F::revenue", "phase": "current", "semantic_role": "value"},
+        "rev_prev": {"bundle_id": "F::revenue", "phase": "prior", "semantic_role": "value"},
+        "rev_chg": {"bundle_id": "F::revenue", "phase": "change", "semantic_role": "value"},
+        "qty_cur": {"bundle_id": "F::quantity", "phase": "current", "semantic_role": "volume"},
+        "qty_prev": {"bundle_id": "F::quantity", "phase": "prior", "semantic_role": "volume"},
+        "qty_chg": {"bundle_id": "F::quantity", "phase": "change", "semantic_role": "volume"}}
+    contract = {"coverage_kind": "period_series", "grouping_references": ["'F'[DOC_MONTH]"],
+                "metric_roles": roles}
+    totals_contract = {"coverage_kind": "grand_total", "grouping_references": [], "metric_roles": roles}
+    state = _base_state()
+    state.update({"insight_period_top_movers": 4, "insight_period_recent_window": 12,
+                  "insight_candidates_high": 20, "insight_candidates_period": 20,
+                  "insight_candidates_daily": 10,
+                  "insight_evidence_contracts": {"meta_period": contract, "meta_totals": totals_contract},
+                  "insight_temporal_drill": {"period_raw": "10.0", "period_label": "October",
+                      "top_segments": [{"segment": "Technology", "change": -1.2e6},
+                                       {"segment": "Consumer Goods", "change": -0.5e6}]}})
+    state["insight_clean_data"] = {"queries": [
+        {"query_name": "meta_totals", "status": "success", "rows": [totals]},
+        {"query_name": "meta_period", "status": "success", "rows": rows}]}
+    return insight_stat_detector.run(state)["insight_stat_candidates"]
+
+
 def show(result: dict, label: str) -> None:
     print(f"\n=== {label} ===")
     print(f"grand totals seen: {list(result.get('grand_totals_seen', {}))}")
@@ -106,6 +148,27 @@ def main() -> int:
     src = Path(args[0]) if args else PROJECT_ROOT / "outputs" / "insight_clean_data.json"
     show(replay(src), f"replay of {src}")
     show(synthetic_suite(), "synthetic edge cases")
+    period = synthetic_period_suite()
+    show(period, "synthetic period series (Phase 2)")
+    cands = period["business_candidates"]
+    by_type = {}
+    for c in cands:
+        by_type.setdefault(c["type"], []).append(c)
+    movers = by_type.get("period_change_contribution", [])
+    oct_c = next((c for c in movers if c.get("period_label") == "October"), None)
+    assert movers, "expected period_change_contribution candidates"
+    assert len(movers) <= 4 and all("None" not in c["segment"] for c in movers), \
+        "null period member must be excluded and top-movers capped"
+    assert oct_c is not None, "October (month 10) should be labelled and present"
+    assert oct_c.get("impact_share") is not None and 35 <= abs(oct_c["impact_share"]) <= 45, \
+        f"October should reconcile to ~39% of the change, got {oct_c.get('impact_share')}"
+    assert "Technology" in oct_c["detail"], "worst-period drill should attach the primary segment"
+    assert by_type.get("period_sustained_decline"), "expected a sustained-decline run"
+    assert by_type.get("period_reversal"), "expected a reversal"
+    assert by_type.get("period_value_volume_divergence"), "expected a value/volume divergence"
+    print(f"\nPeriod check passed: {len(movers)} movers (Oct {oct_c['impact_share']:.1f}%, "
+          f"drill attached), patterns: "
+          f"{[t for t in by_type if t.startswith('period_') and t != 'period_change_contribution']}.")
     return 0
 
 
