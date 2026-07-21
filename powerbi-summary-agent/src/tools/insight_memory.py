@@ -168,6 +168,54 @@ def story_components(candidate: dict, dataset_id: str, scope_h: str,
             "segment": segment,
             "anchor": anchor,
         }
+    elif level == "recent_week":
+        # A recent-week finding is anchored to its completed week (week_start). A new
+        # completed week is a new story; a re-run of the same week is suppressed. The
+        # selected date axis is in the key (a model with two date columns keeps them
+        # distinct). NO period_anchor - the week itself is the period. Mutable
+        # direction/impact/expected/facets stay OUT of the key (Phase 4 re-alert).
+        anchor = _norm_text(candidate.get("anchor") or candidate.get("week_start"))
+        canon = {
+            "level": level,
+            "dataset": str(dataset_id),
+            "scope": scope_h,
+            "axis": _norm_text(candidate.get("axis")),
+            "analysis_type": analysis_type,
+            "metric": metric,
+            "segment": segment,
+            "anchor": anchor,
+        }
+    elif level == "daily":
+        # A daily incident is anchored to its episode_start (the day it began). A
+        # new incident is a new story; a re-run of the same incident is suppressed.
+        # NO period_anchor. episode_end/peak_z are mutable record fields only
+        # (scaffolding for the deferred Phase-4 extension trigger), never in the key.
+        anchor = _norm_text(candidate.get("anchor") or candidate.get("episode_start"))
+        canon = {
+            "level": level,
+            "dataset": str(dataset_id),
+            "scope": scope_h,
+            "axis": _norm_text(candidate.get("axis")),
+            "analysis_type": analysis_type,
+            "metric": metric,
+            "segment": segment,
+            "anchor": anchor,
+        }
+    elif level == "recent_week_rolling":
+        # A rolling-week reading has no natural anchor - its window shifts by one
+        # day every run, so an anchor-based key would defeat suppression entirely.
+        # One key exists per axis+metric+segment forever, representing "the current
+        # rolling reading"; insight_novelty_filter's bespoke eligibility check (not
+        # the normal never_repeat/cooldown suppression) decides when it resurfaces.
+        canon = {
+            "level": level,
+            "dataset": str(dataset_id),
+            "scope": scope_h,
+            "axis": _norm_text(candidate.get("axis")),
+            "analysis_type": analysis_type,
+            "metric": metric,
+            "segment": segment,
+        }
     else:
         canon = {
             "level": level,
@@ -187,6 +235,16 @@ def story_components(candidate: dict, dataset_id: str, scope_h: str,
         "impact_value": candidate.get("impact_value"),
         "segment_label": candidate.get("segment"),
     }
+    if level == "recent_week":
+        # Mutable observation fields the record keeps (for Phase 4 re-alert on an
+        # extended/revised week); never part of the key.
+        fields["week_start"] = candidate.get("week_start")
+        fields["week_end"] = candidate.get("week_end")
+    elif level == "daily":
+        fields["episode_end"] = candidate.get("episode_end")
+        fields["peak_z"] = candidate.get("peak_z")
+    elif level == "recent_week_rolling":
+        fields["change_pct"] = candidate.get("change_pct")
     return key, fields
 
 
@@ -239,13 +297,16 @@ def period_anchor(state: dict, watermark: str | None) -> str:
 # --- store I/O (atomic, fail-loud) --------------------------------------------
 
 def _empty_store() -> dict:
-    return {"schema_version": SCHEMA_VERSION, "watermark": None, "records": {}, "journal": {}}
+    return {"schema_version": SCHEMA_VERSION, "watermark": None, "records": {}, "journal": {},
+            "daily_cursor": {}, "rolling_state": {}}
 
 
 def load_store(state: dict) -> tuple[dict, str]:
     """Return ``(memory, status)``. status is 'ok', 'empty' (no file yet), or
     'corrupt'. A corrupt store is NEVER silently treated as empty - the caller
-    must refuse to overwrite it and flag the run."""
+    must refuse to overwrite it and flag the run. ``daily_cursor``/``rolling_state``
+    are purely additive (no schema-version bump) - a store written before they
+    existed just defaults both to ``{}``."""
     path = store_path(state)
     if not path.exists():
         return _empty_store(), "empty"
@@ -257,6 +318,8 @@ def load_store(state: dict) -> tuple[dict, str]:
         data.setdefault("watermark", None)
         data.setdefault("records", {})
         data.setdefault("journal", {})
+        data.setdefault("daily_cursor", {})
+        data.setdefault("rolling_state", {})
         return data, "ok"
     except (json.JSONDecodeError, OSError, ValueError):
         return _empty_store(), "corrupt"
@@ -345,14 +408,50 @@ def render_markdown(memory: dict) -> str:
     return "\n".join(lines).rstrip() + "\n"
 
 
-def commit(state: dict, reported_signals: Iterable[dict]) -> dict:
-    """Record the findings actually reported this run and refresh the derived
-    markdown. Merge-aware: every ``covered_story_keys`` entry of a reported signal
-    is marked seen so a merged-away candidate does not reappear tomorrow.
+def resurface_check(stored: dict, new_fields: dict, growth_pct: float,
+                    extra_delta_pct: float | None = None) -> bool:
+    """True if a suppressed story's underlying reading has moved materially
+    enough since it was last observed/reported to justify surfacing again: a
+    direction reversal, a growth of at least ``growth_pct`` percent in
+    ``impact_value``, or (when ``extra_delta_pct`` is given - the rolling-week
+    drift floor) a ``change_pct`` shift of at least that many percentage points.
+    No extension clause here - a daily incident's episode_end growing is
+    deferred Phase-4 scaffolding, not wired to resurface anything yet."""
+    stored_dir = stored.get("direction")
+    new_dir = new_fields.get("direction")
+    if stored_dir and new_dir and stored_dir != new_dir:
+        return True
+    stored_impact = stored.get("impact_value")
+    new_impact = new_fields.get("impact_value")
+    if (isinstance(stored_impact, (int, float)) and isinstance(new_impact, (int, float))
+            and abs(new_impact) >= (1.0 + growth_pct / 100.0) * abs(stored_impact)):
+        return True
+    if extra_delta_pct is not None:
+        stored_cp = stored.get("change_pct")
+        new_cp = new_fields.get("change_pct")
+        if (isinstance(stored_cp, (int, float)) and isinstance(new_cp, (int, float))
+                and abs(new_cp - stored_cp) >= extra_delta_pct):
+            return True
+    return False
 
-    Caller guards this (memory enabled, report generated, signals exist, store not
-    corrupt); we additionally reload fresh and refuse to write onto a store that
-    reads corrupt right now.
+
+def commit_run(state: dict, reported_signals: Iterable[dict]) -> dict:
+    """Single atomic transaction after a healthy insight branch run.
+
+    "Observed" and "reported" are deliberately different things: the daily
+    per-axis cursor and the rolling observation/activity snapshot advance
+    unconditionally whenever the underlying gate validated an axis this run -
+    independent of whether anything was reported - while story records +
+    journal are written only when ``reported_signals`` is non-empty. This
+    means a synthesizer failure (only a stub report written, so the caller
+    passes an empty list) still lets observations advance, but never marks a
+    story as "seen" that the user never actually received. Merge-aware for
+    reported signals: every ``covered_story_keys`` entry is marked seen so a
+    merged-away candidate does not reappear tomorrow.
+
+    Caller guards this (memory enabled, branch not fatal, store not corrupt);
+    we additionally reload fresh and refuse to write onto a store that reads
+    corrupt right now.
     """
     reported = [s for s in reported_signals if s]
     path = store_path(state)
@@ -363,6 +462,36 @@ def commit(state: dict, reported_signals: Iterable[dict]) -> dict:
             return {"status": "corrupt", "committed": 0}
 
         today = date.today().isoformat()
+
+        # --- daily cursor: forward-only, gated on a complete analysis ---------
+        daily_verdict = state.get("insight_daily_verdict", {}) or {}
+        source = state.get("insight_business_day_source") or {}
+        if daily_verdict.get("analysis_complete") and source.get("axis_key"):
+            axis = str(daily_verdict.get("axis") or source.get("axis_reference") or "")
+            eff = source.get("effective_data_as_of")
+            if axis and eff:
+                cursor = memory.setdefault("daily_cursor", {})
+                if not cursor.get(axis) or eff > cursor[axis]:
+                    cursor[axis] = eff
+
+        # --- rolling observation/activity snapshot: forward-only --------------
+        obs = state.get("insight_rolling_observation")
+        if obs and obs.get("story_key"):
+            rolling = memory.setdefault("rolling_state", {})
+            key = obs["story_key"]
+            existing = rolling.get(key)
+            new_at = obs.get("data_as_of")
+            if not existing or not existing.get("observed_through") or (
+                    new_at and new_at > existing["observed_through"]):
+                rolling[key] = {
+                    "active": bool(obs.get("active")),
+                    "impact_value": obs.get("impact_value"),
+                    "change_pct": obs.get("change_pct"),
+                    "direction": obs.get("direction"),
+                    "observed_through": new_at,
+                }
+
+        # --- reported signals: only when non-empty -----------------------------
         records = memory["records"]
         journal = memory.setdefault("journal", {})
         day_entries = journal.setdefault(today, [])
@@ -392,7 +521,8 @@ def commit(state: dict, reported_signals: Iterable[dict]) -> dict:
                 if is_primary:
                     for f in ("kind", "segment", "segment_label", "metric", "dimension",
                               "analysis_type", "period_anchor", "direction", "impact_value",
-                              "description"):
+                              "description", "axis", "anchor", "week_start", "week_end",
+                              "change_pct", "episode_end", "peak_z"):
                         if sig.get(f) is not None:
                             rec[f] = sig.get(f)
                     rec["covered_story_keys"] = covered
@@ -412,9 +542,10 @@ def commit(state: dict, reported_signals: Iterable[dict]) -> dict:
 
         journal[today] = list(by_key.values())
 
-        wm = derive_watermark(state)
-        if wm and (not memory.get("watermark") or wm > memory["watermark"]):
-            memory["watermark"] = wm
+        if reported:
+            wm = derive_watermark(state)
+            if wm and (not memory.get("watermark") or wm > memory["watermark"]):
+                memory["watermark"] = wm
 
         _atomic_write(path, memory)
         try:

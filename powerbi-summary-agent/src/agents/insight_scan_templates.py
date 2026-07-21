@@ -317,6 +317,140 @@ def build_temporal_scan(profile: dict, state: dict, grain_dim: dict) -> dict | N
     }
 
 
+def current_additive_specs(shape: dict) -> list[dict]:
+    """Current-phase specs for the primary value bundle plus each INDEPENDENTLY
+    additive volume driver. These are the only aliases the recent-week node folds
+    into weeks - ratios, averages, balances and prior/change aliases are never
+    summed across days (summing them is arithmetically wrong)."""
+    specs: list[dict] = []
+    primary = shape.get("primary")
+    if primary:
+        cur = bundle_phase(primary, "current")
+        if cur:
+            specs.append({**cur, "family": primary.get("family"), "bundle_id": primary.get("id"),
+                          "semantic_role": "value",
+                          "additive_candidate": bool(primary.get("additive_candidate"))})
+    for bundle in shape.get("drivers", []):
+        if not bundle.get("additive_candidate"):
+            continue
+        cur = bundle_phase(bundle, "current")
+        if cur:
+            specs.append({**cur, "family": bundle.get("family"), "bundle_id": bundle.get("id"),
+                          "semantic_role": "volume", "additive_candidate": True})
+    return specs
+
+
+def build_daily_series_scan(profile: dict, state: dict, day_dim: dict, n_days: int) -> dict | None:
+    """One comparable daily series over a validated business-DAY axis (Phase 3),
+    folding CURRENT additive metrics only. Bounded by TOPN to the most recent
+    n_days (which also satisfies the row-limit validator). The recent-week node
+    folds these rows into Mon-Sun weeks in Python - never a locale-dependent DAX
+    WEEKNUM."""
+    shape = shape_from_profile(profile, state)
+    if not shape or not day_dim or not day_dim.get("reference"):
+        return None
+    specs = current_additive_specs(shape)
+    if not specs:
+        return None
+    population = [str(v) for v in state.get("insight_comparable_population", []) or []]
+    args = [day_dim["reference"]]
+    pop = _population_filter(shape, population)
+    if pop:
+        args.append(pop)
+    args.append(_selects(specs))
+    base = "SUMMARIZECOLUMNS(\n        " + ",\n        ".join(args) + "\n    )"
+    cap = max(14, int(n_days))
+    dax = ("EVALUATE\n"
+           f"TOPN({cap},\n    {base},\n    {day_dim['reference']}, DESC)\n"
+           f"ORDER BY {day_dim['reference']} ASC")
+    return {
+        "name": f"meta_daily_by_{_slug(day_dim['table'])}_{_slug(day_dim['column'])}",
+        "purpose": f"Comparable daily series by {day_dim['reference']} (recent-week source).",
+        "intent": "metadata_template:recent_week_daily",
+        "dax": dax,
+        "contract_hint": _contract(shape, [day_dim], specs, population, "recent_week_daily",
+                                   None, None, "ASC", "recent_week_daily"),
+    }
+
+
+def build_windowed_total(profile: dict, state: dict, day_dim: dict, lo, hi) -> dict | None:
+    """Primary current value over [lo, hi] on the day axis, comparable-population
+    filtered - the additivity reconciliation reference for the daily series (the
+    daily sum must match this single windowed total to prove the metric is
+    additive at date grain)."""
+    shape = shape_from_profile(profile, state)
+    if not shape or not day_dim or not day_dim.get("reference"):
+        return None
+    specs = current_additive_specs(shape)
+    if not specs:
+        return None
+    value = specs[0]
+    population = [str(v) for v in state.get("insight_comparable_population", []) or []]
+    ref = day_dim["reference"]
+    date_filter = (f"FILTER(ALL({ref}), {ref} >= {_typed_lit(lo, day_dim)} && "
+                   f"{ref} <= {_typed_lit(hi, day_dim)})")
+    calc_args = [value["expression"], date_filter]
+    pop = _population_filter(shape, population)
+    if pop:
+        calc_args.append(pop)
+    dax = "EVALUATE\nROW(\n    \"window_total\", CALCULATE(" + ", ".join(calc_args) + ")\n)"
+    return {
+        "name": "meta_recent_week_window_total",
+        "purpose": f"Comparable {value['alias']} over the daily-series window (reconciliation).",
+        "intent": "metadata_template:recent_week_window_total",
+        "dax": dax,
+        "contract_hint": _contract(shape, [], specs[:1], population,
+                                   "recent_week_window_total", None, None),
+    }
+
+
+def build_recent_week_driver_scan(profile: dict, state: dict, day_dim: dict, primary_dim: dict,
+                                  tgt_range: tuple, prev_range: tuple, max_rows: int) -> dict | None:
+    """Largest target-vs-previous-week drivers by the metadata primary dimension.
+    One scan with two windowed CALCULATE measures (target week, previous week) of
+    the primary current value; change = target - previous. Uses FILTER(ALL(day),
+    range) never KEEPFILTERS on a value (per the model gotcha). TOPN-truncated, so
+    the contract is honestly partial ("largest returned drivers")."""
+    shape = shape_from_profile(profile, state)
+    if not shape or not day_dim or not primary_dim or not primary_dim.get("reference"):
+        return None
+    specs = current_additive_specs(shape)
+    if not specs:
+        return None
+    value = specs[0]
+    population = [str(v) for v in state.get("insight_comparable_population", []) or []]
+    ref = day_dim["reference"]
+
+    def _win(rng):
+        lo, hi = rng
+        return (f"CALCULATE({value['expression']}, FILTER(ALL({ref}), "
+                f"{ref} >= {_typed_lit(lo, day_dim)} && {ref} <= {_typed_lit(hi, day_dim)}))")
+
+    tgt, prev = _win(tgt_range), _win(prev_range)
+    args = [primary_dim["reference"]]
+    pop = _population_filter(shape, population)
+    if pop:
+        args.append(pop)
+    args.append(f'"week_cur", {tgt},\n        "week_prev", {prev},\n        '
+                f'"week_change", {tgt} - {prev}')
+    base = "SUMMARIZECOLUMNS(\n        " + ",\n        ".join(args) + "\n    )"
+    dax = ("EVALUATE\n"
+           f"TOPN({max_rows},\n    {base},\n    ABS([week_change]), DESC)\n"
+           f"ORDER BY [week_change] DESC")
+    driver_specs = [{"alias": a, "expression": value["expression"], "phase": "current",
+                     "family": value.get("family"), "bundle_id": value.get("bundle_id"),
+                     "semantic_role": "value"}
+                    for a in ("week_cur", "week_prev", "week_change")]
+    return {
+        "name": f"meta_recent_week_drivers_by_{_slug(primary_dim['column'])}",
+        "purpose": f"Largest target-vs-previous-week drivers by {primary_dim['reference']}.",
+        "intent": "metadata_template:recent_week_drivers",
+        "dax": dax,
+        "contract_hint": _contract(shape, [primary_dim], driver_specs, population,
+                                   "recent_week_drivers", max_rows, "week_change"),
+    }
+
+
 def build_gap_probe(shape: dict, seg_dim: dict, seg_value, drill_dim: dict,
                     population: list[str], max_rows: int,
                     scope_type: str = "comparable") -> dict:

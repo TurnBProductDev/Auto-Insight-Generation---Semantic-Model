@@ -92,19 +92,41 @@ class SignalList(BaseModel):
     signals: List[Signal]
 
 
-def _apply_caps(signals: List[dict], max_signals: int, max_dq: int) -> List[dict]:
-    """Enforce the overall cap and the data-quality sub-cap in the LLM's
-    ranking order, so DQ findings can never crowd out business findings."""
-    kept, dq_count = [], 0
-    for s in signals:
-        if len(kept) >= max_signals:
-            break
-        if s.get("kind") == "data_quality":
-            if dq_count >= max_dq:
-                continue
-            dq_count += 1
-        kept.append(s)
-    return kept
+def _copy_candidate_facts(signal: dict, candidate: dict) -> None:
+    """Copy a deterministic candidate's computed facts onto a signal - the
+    auditable foreign key that prevents small LLM numerical rewrites from breaking
+    evidence assembly. The Phase-3 recent-week structured payload (week bounds,
+    actual/previous/expected, WoW %, robust z, drivers) is copied verbatim so the
+    synthesizer/memory/API/tiles read structured values, never the LLM's prose -
+    including for a rolling-window reading, which reuses the SAME `recent_week`
+    payload with `window_mode: "rolling"` inside it rather than a second key.
+    `score` is copied too so every level (high/period/recent_week/
+    recent_week_rolling/daily) can be ranked on one shared materiality scale
+    with no per-level priority."""
+    signal["candidate_id"] = candidate.get("id")
+    signal["impact_value"] = candidate.get("impact_value")
+    signal["impact_share"] = candidate.get("impact_share")
+    signal["evidence_query"] = candidate.get("table") or signal.get("evidence_query")
+    signal["kind"] = candidate.get("kind", signal.get("kind"))
+    signal["decomposition"] = candidate.get("rate_volume") or signal.get("decomposition")
+    signal["segment_members"] = candidate.get("segment_members") or signal.get("segment_members")
+    signal["score"] = candidate.get("score", signal.get("score", 0.0))
+    if candidate.get("recent_week"):
+        signal["recent_week"] = candidate.get("recent_week")
+        # The memory whitelist (insight_memory.commit_run) reads a TOP-LEVEL
+        # change_pct off the signal, not the nested payload - without this the
+        # rolling-week delta-pct resurface trigger has nothing to compare.
+        signal["change_pct"] = candidate["recent_week"].get("change_pct")
+        for f in ("week_start", "week_end"):
+            if candidate.get(f) is not None:
+                signal[f] = candidate.get(f)
+        if (candidate.get("recent_week") or {}).get("data_as_of") is not None:
+            signal["data_as_of"] = candidate["recent_week"]["data_as_of"]
+    if candidate.get("type") == "daily_incident":
+        for f in ("episode_start", "episode_end", "peak_z", "day_count",
+                  "actual_total", "expected_total"):
+            if candidate.get(f) is not None:
+                signal[f] = candidate.get(f)
 
 
 def _bind_candidates(signals: List[dict], candidates: dict) -> List[dict]:
@@ -130,17 +152,8 @@ def _bind_candidates(signals: List[dict], candidates: dict) -> List[dict]:
                     return 0.0
                 candidate = min(options, key=gap)
         if candidate:
-            signal["candidate_id"] = candidate.get("id")
-            signal["impact_value"] = candidate.get("impact_value")
-            signal["impact_share"] = candidate.get("impact_share")
-            signal["evidence_query"] = candidate.get("table") or signal.get("evidence_query")
-            signal["kind"] = candidate.get("kind", signal.get("kind"))
-            signal["decomposition"] = candidate.get("rate_volume") or signal.get("decomposition")
-            signal["segment_members"] = candidate.get("segment_members") or signal.get("segment_members")
+            _copy_candidate_facts(signal, candidate)
     return signals
-
-
-_LEVEL_RANK = {"high": 0, "period": 1, "weekly": 1, "daily": 2}
 
 
 def _bind_eligible(signals: List[dict], eligible: dict) -> tuple[List[dict], int]:
@@ -158,19 +171,14 @@ def _bind_eligible(signals: List[dict], eligible: dict) -> tuple[List[dict], int
         if cand is None:
             dropped += 1
             continue
-        sig["candidate_id"] = cand.get("id")
-        sig["impact_value"] = cand.get("impact_value")
-        sig["impact_share"] = cand.get("impact_share")
-        sig["evidence_query"] = cand.get("table") or sig.get("evidence_query")
-        sig["kind"] = cand.get("kind", sig.get("kind"))
-        sig["decomposition"] = cand.get("rate_volume") or sig.get("decomposition")
-        sig["segment_members"] = cand.get("segment_members") or sig.get("segment_members")
+        _copy_candidate_facts(sig, cand)
         # Story identity carried from the deterministic candidate (for commit).
         sig["level"] = cand.get("level", "high")
         sig["story_key"] = cand.get("story_key")
         fields = cand.get("story_fields", {}) or {}
         for f in ("segment", "metric", "dimension", "analysis_type",
-                  "period_anchor", "direction"):
+                  "period_anchor", "direction", "axis", "anchor", "week_start", "week_end",
+                  "change_pct", "episode_end", "peak_z"):
             if fields.get(f) is not None:
                 sig[f] = fields.get(f)
         covered = [sig["story_key"]] if sig.get("story_key") else []
@@ -183,15 +191,93 @@ def _bind_eligible(signals: List[dict], eligible: dict) -> tuple[List[dict], int
     return bound, dropped
 
 
-def _slot_fill(signals: List[dict], cap: int, max_dq: int) -> List[dict]:
-    """Cascade slot-filling: order by (level priority high->weekly->daily, then the
-    LLM's materiality rank), take up to `cap`, enforce the data-quality sub-cap.
-    Applied AFTER the LLM so a merge that collapses several high candidates frees
-    the slots for weekly/daily the LLM already saw."""
-    indexed = sorted(enumerate(signals),
-                     key=lambda p: (_LEVEL_RANK.get(p[1].get("level", "high"), 0), p[0]))
+def _signal_from_candidate(cand: dict) -> dict:
+    """Build a signal deterministically from a candidate's structured facts
+    (templated description) - used only as a backstop when the LLM's response
+    dropped an eligible candidate the LLM itself should have covered, so nothing
+    material silently disappears to an LLM omission. No second LLM call."""
+    rw = cand.get("recent_week")
+    if rw:
+        cp = rw.get("change_pct")
+        direction = "declined" if (rw.get("abs_impact") or 0) < 0 else "rose"
+        pct = f"{abs(cp):.1f}% " if isinstance(cp, (int, float)) else ""
+        if rw.get("window_mode") == "rolling":
+            desc = (f"Over the trailing 7 days ending {rw.get('week_end')}, "
+                    f"{cand.get('metric')} {direction} {pct}vs the prior 7 days "
+                    f"to {rw.get('actual')} (previous {rw.get('previous')}, "
+                    f"trailing-median {rw.get('expected')}).")
+            sig_id = f"recent_week_rolling_{rw.get('week_end')}"
+            question = "What drove the trailing 7 days' movement versus the prior 7 days?"
+        else:
+            desc = (f"In the week of {rw.get('week_start')}, {cand.get('metric')} {direction} "
+                    f"{pct}week-over-week to {rw.get('actual')} (previous week "
+                    f"{rw.get('previous')}, trailing-median {rw.get('expected')}).")
+            sig_id = f"recent_week_{rw.get('week_start')}"
+            question = "What drove the most recently completed week's movement versus its norm?"
+    elif cand.get("type") == "daily_incident":
+        direction = "declined" if (cand.get("impact_value") or 0) < 0 else "rose"
+        desc = (f"Between {cand.get('episode_start')} and {cand.get('episode_end')}, "
+                f"{cand.get('metric')} {direction} {cand.get('impact_value')} "
+                f"vs expected {cand.get('expected_total')}.")
+        sig_id = f"daily_incident_{cand.get('episode_start')}"
+        question = "What drove this daily incident?"
+    else:
+        desc = cand.get("detail") or f"{cand.get('type')}: {cand.get('metric')} at {cand.get('segment')}."
+        sig_id = cand.get("id") or "injected_signal"
+        question = "What is driving this finding?"
+    sig = {
+        "id": sig_id, "kind": cand.get("kind", "business"), "description": desc,
+        "affected_segment": cand.get("segment") or "overall", "question": question,
+        "evidence_query": cand.get("table"), "level": cand.get("level", "high"),
+        "story_key": cand.get("story_key"),
+        "covered_story_keys": [cand["story_key"]] if cand.get("story_key") else [],
+        "injected": True,
+    }
+    _copy_candidate_facts(sig, cand)
+    fields = cand.get("story_fields", {}) or {}
+    for f in ("segment", "metric", "axis", "anchor", "analysis_type", "direction",
+              "week_start", "week_end", "change_pct", "episode_end", "peak_z"):
+        if fields.get(f) is not None:
+            sig[f] = fields.get(f)
+    return sig
+
+
+def _backfill_uncovered(bound: List[dict], eligible: dict) -> List[dict]:
+    """No level gets priority ordering - but a level (high/period/recent_week/daily)
+    should never go entirely INVISIBLE just because an LLM prompt is more familiar
+    with older levels than a newer one. This only backstops whole levels the LLM's
+    response touched not at all (not individual candidates: the LLM's job of
+    deduplicating/merging near-duplicate candidates within a level is preserved -
+    injecting every uncovered candidate would flood the list with mechanical
+    near-duplicates instead of synthesized stories). For each level with eligible
+    material candidates but zero covered signals, inject its single best (highest
+    score) candidate; it then competes purely on materiality like everything else."""
+    covered = {s.get("candidate_id") for s in bound}
+    for s in bound:
+        covered |= set(s.get("related_candidate_ids") or [])
+    covered_levels = {s.get("level") for s in bound}
+    business = eligible.get("business_candidates", []) or []
+    by_level: dict = {}
+    for c in business:
+        if c.get("id") and c.get("story_key"):
+            by_level.setdefault(c.get("level", "high"), []).append(c)
+    injected = []
+    for level, cands in by_level.items():
+        if level in covered_levels:
+            continue
+        best = max(cands, key=lambda c: c.get("score", 0.0))
+        injected.append(_signal_from_candidate(best))
+    return bound + injected
+
+
+def _rank_and_cap(signals: List[dict], cap: int, max_dq: int) -> List[dict]:
+    """Take up to `cap` signals ranked purely by materiality score (highest first,
+    ties broken by original order) - no level (high/period/recent_week/daily) gets
+    special priority; whatever the model found competes on equal footing. The DQ
+    sub-cap still holds so reconciliation noise can't crowd out business findings."""
+    ranked = sorted(enumerate(signals), key=lambda p: (-(p[1].get("score") or 0.0), p[0]))
     kept, dq = [], 0
-    for _, s in indexed:
+    for _, s in ranked:
         if len(kept) >= cap:
             break
         if s.get("kind") == "data_quality":
@@ -268,8 +354,9 @@ def run(state: dict) -> dict:
                   "reported in previous runs. Select ONLY from them and return each "
                   "chosen signal's exact `candidate_id`. When you merge several "
                   "candidates into one story, list the others in "
-                  "`related_candidate_ids`. Candidates are level-tagged; prefer "
-                  "higher-priority levels (high, then weekly, then daily) first.")
+                  "`related_candidate_ids`. Select whatever is genuinely material "
+                  "across ALL levels (high, period/weekly, recent_week, daily) - "
+                  "none is prioritized over another; rank purely by materiality.")
 
     llm = get_llm(state, structured_schema=SignalList)
     messages = [
@@ -286,14 +373,18 @@ def run(state: dict) -> dict:
         if dropped:
             log.info(f"Dropped {dropped} signal(s) not bound to an eligible candidate "
                      f"(exact-id-only in memory mode).")
-        signals = _slot_fill(bound, cap, max_dq)
+        before = len(bound)
+        bound = _backfill_uncovered(bound, eligible)
+        if len(bound) > before:
+            log.info(f"Backfilled {len(bound) - before} eligible candidate(s) the LLM "
+                     f"omitted (added to the pool, ranked equally with everything else).")
     else:
         bound = _bind_candidates(raw, eligible)
-        signals = _apply_caps(bound, cap, max_dq)
 
+    signals = _rank_and_cap(bound, cap, max_dq)
     dropped_caps = len(bound) - len(signals)
     if dropped_caps > 0:
-        log.info(f"Caps/slot-fill dropped {dropped_caps} signal(s) "
+        log.info(f"Cap dropped {dropped_caps} lower-materiality signal(s) "
                  f"(max {cap} total, max {max_dq} data-quality).")
 
     reason = "ok" if signals else (novelty.get("reason") or "no_new_selected")

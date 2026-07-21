@@ -63,6 +63,20 @@ def run(state: dict) -> dict:
         "temporal": {**{k: (state.get("insight_temporal_verdict", {}) or {}).get(k)
                         for k in ("enabled", "grain", "column", "reason")},
                      "worst_period_drill": state.get("insight_temporal_drill")},
+        # Phase 3/3b: the recent-week verdict carries the honest caveat when
+        # disabled (load/posting-date axis or stale data). When enabled, phrase
+        # the movement from each signal's structured `recent_week` payload (the
+        # delta % is `change_pct`, NOT impact_share), with hedged contribution
+        # language - and phrase it as "trailing 7 days" rather than "week of"
+        # when `window_mode` is "rolling".
+        "recent_week": {k: (state.get("insight_recent_week_verdict", {}) or {}).get(k)
+                        for k in ("enabled", "reason", "window_mode", "week_start", "week_end",
+                                  "data_as_of", "effective_data_as_of", "drivers")},
+        # Phase 3b: the daily verdict carries the same honest disabled-caveat
+        # pattern - it disables independently of recent-week's own gate/mode,
+        # based only on whether a validated business-day axis exists.
+        "daily": {k: (state.get("insight_daily_verdict", {}) or {}).get(k)
+                 for k in ("enabled", "reason", "incidents_found", "incidents_reported")},
         "note": note,
     }
 

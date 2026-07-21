@@ -183,10 +183,30 @@ def _hint_contract(query: dict, dax: str, hint: dict, rows: list, roles: dict) -
     kind = hint.get("coverage_kind", "unknown")
     intrinsically_partial = kind in {
         "paired_change_tails", "top_concentration", "recent_time_window",
-        "top_cross_dimension", "targeted_gap",
+        "top_cross_dimension", "targeted_gap", "recent_week_drivers",
     }
     if kind == "grand_total":
         completeness, reason = "complete", "single scoped grand total by construction"
+    elif kind in ("recent_week_history", "recent_week_rolling_history"):
+        # A bounded trailing daily window folded to complete windows (Mon-Sun
+        # calendar weeks, or non-overlapping rolling 7-day windows counting back
+        # from "today"): honest about being a WINDOW (not all-time), while every
+        # emitted window is fully covered. Keeps the existing partial|complete|
+        # unknown enum so evidence assembler's completeness=="complete" gate is
+        # not accidentally satisfied.
+        completeness = "partial"
+        reason = ("window fold of a bounded daily window "
+                  f"({hint.get('window_start')}..{hint.get('window_end')}); "
+                  "each emitted window is complete")
+    elif kind == "daily_incidents":
+        # Incident-derived rows, not a complete daily series: only the days that
+        # cleared both statistical tests survive, so this can never claim
+        # window_complete (see the spread below) - never a full daily window.
+        completeness = "partial"
+        reason = ("incident-derived rows mined from a bounded trailing window "
+                  f"({hint.get('window_start')}..{hint.get('window_end')}); not a "
+                  "complete daily series - see per-incident actual_total/"
+                  "expected_total/day_count for audit")
     elif truncated or intrinsically_partial:
         completeness = "partial"
         reason = ("query reached its row limit" if truncated else
@@ -232,6 +252,31 @@ def _hint_contract(query: dict, dax: str, hint: dict, rows: list, roles: dict) -
         "segment_filter": hint.get("segment_filter"),
         "contract_source": hint.get("source", "metadata_template"),
         "dax_hash": dax_hash(dax),
+        # Recent-week/rolling honesty: the bounded-window bounds + which days are
+        # missing expected operating dates, plus the real business-date axis and
+        # the target window (so the stat detector and report read structured
+        # facts, not prose). window_complete is True here because every emitted
+        # week/window IS a complete fold.
+        **({"window_complete": True,
+            "window_start": hint.get("window_start"),
+            "window_end": hint.get("window_end"),
+            "day_limit": hint.get("day_limit"),
+            "missing_expected_dates": hint.get("missing_expected_dates", []),
+            "date_axis": hint.get("date_axis"),
+            "axis": hint.get("axis"),
+            "week_start": hint.get("week_start"),
+            "week_end": hint.get("week_end")}
+           if kind in ("recent_week_history", "recent_week_rolling_history") else {}),
+        # Daily-incidents honesty: NEVER window_complete - this is a sparse,
+        # incident-derived table (only the days that cleared both statistical
+        # tests survive), not a full daily series like the two kinds above.
+        **({"window_complete": False,
+            "window_start": hint.get("window_start"),
+            "window_end": hint.get("window_end"),
+            "day_limit": hint.get("day_limit"),
+            "date_axis": hint.get("date_axis"),
+            "axis": hint.get("axis")}
+           if kind == "daily_incidents" else {}),
     }
 
 

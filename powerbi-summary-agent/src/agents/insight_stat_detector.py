@@ -29,7 +29,7 @@ candidate list and the LLM detector falls back to reading raw scan rows.
 """
 
 import math
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from ..tools import file_io
 from ..utils.logger import RunLogger
@@ -307,6 +307,25 @@ def _robust_z(values: list) -> list:
     return []
 
 
+def _point_robust_z(value, ref: list):
+    """Robust z of ONE value against a reference list (median/MAD, mean/std
+    fallback). Returns None on a too-small or perfectly FLAT reference so callers
+    handle a constant baseline explicitly (a material break from a flat history is
+    detected on materiality, not a z-score that would be infinite/undefined)."""
+    ref = [v for v in ref if _finite(v)]
+    if len(ref) < 3 or not _finite(value):
+        return None
+    med = sorted(ref)[len(ref) // 2]
+    mad = sorted(abs(v - med) for v in ref)[len(ref) // 2]
+    if mad > _EPS:
+        return (value - med) / (1.4826 * mad)
+    mean = sum(ref) / len(ref)
+    std = math.sqrt(sum((v - mean) ** 2 for v in ref) / len(ref))
+    if std > _EPS:
+        return (value - mean) / std
+    return None
+
+
 # --- the detector ---------------------------------------------------------------
 
 class _Detector:
@@ -316,7 +335,6 @@ class _Detector:
         self.conc_pct = float(state.get("insight_stat_concentration_pct", 50.0))
         self.recon_tol_pct = float(state.get("insight_stat_recon_tolerance_pct", 2.0))
         self.trend_window = max(2, int(state.get("insight_stat_trend_window", 3)))
-        self.max_candidates = int(state.get("insight_stat_max_candidates", 20))
         self.row_cap = max(2, int(state.get("max_rows_per_query", 15)))
         self.business = {}       # key -> candidate (dedup keeps best score)
         self.data_quality = {}
@@ -330,19 +348,13 @@ class _Detector:
         self.period_recent = max(1, int(state.get("insight_period_recent_window", 12)))
         self.gated_tables = set(state.get("insight_temporal_gated_tables", []) or [])
         self.drill = state.get("insight_temporal_drill", {}) or {}
-        self.level_caps = {
-            "high": int(state.get("insight_candidates_high", self.max_candidates)),
-            "period": int(state.get("insight_candidates_period", 10)),
-            "daily": int(state.get("insight_candidates_daily", 10)),
-        }
-
-    def _level(self, cand: dict) -> str:
-        ck = str((self.contracts.get(cand.get("table")) or {}).get("coverage_kind", "")).lower()
-        if ck == "period_series" or ck.startswith("weekly") or ck.startswith("monthly"):
-            return "period"
-        if ck.startswith("daily"):
-            return "daily"
-        return "high"
+        # Phase 3 recent-week level
+        self.week_materiality_pct = float(state.get("insight_week_materiality_pct", 3.0))
+        self.week_z_cutoff = float(state.get("insight_week_z_cutoff", 2.5))
+        self.recent_week_drivers = state.get("insight_recent_week_drivers", {}) or {}
+        # Phase 3b rolling-week: always-emitted raw observation (decision #8),
+        # regardless of whether this run's reading clears the significance gate.
+        self.rolling_observation = None
 
     # -- candidate plumbing --
 
@@ -659,6 +671,10 @@ class _Detector:
         # date); mining a slope/change-point on such a table invents movement.
         if t["name"] in self.gated_tables:
             return
+        # The recent-week series has its own dedicated composite detector; a
+        # whole-series trend on 13 weeks would double-report the same story.
+        if str((t.get("contract") or {}).get("coverage_kind", "")).startswith("recent_week"):
+            return
         axis = roles["date"] or roles["period"]
         if axis is None:
             return
@@ -904,6 +920,198 @@ class _Detector:
                                f"moved {_fmt(r[vchg])} - value and volume diverged"),
                 })
 
+    def recent_week(self, t: dict):
+        """The most recently completed window vs the previous window and a
+        trailing norm (Phase 3 calendar / Phase 3b rolling). Emits ONE composite
+        ``recent_week_movement`` candidate with boolean facets - never six
+        per-week rows. Window-relative math only: the WoW/rolling-delta % lives
+        in the structured ``recent_week`` payload, NOT ``impact_share`` (which
+        means share of a grand total elsewhere and would be mislabelled here). A
+        perfectly flat baseline (robust z undefined) is detected on materiality
+        alone; a zero previous window uses the trailing median as the %
+        denominator.
+
+        Shared between calendar weeks (``recent_week_history``) and rolling
+        7-day windows (``recent_week_rolling_history``) - both fold to the same
+        non-overlapping row shape, so the same ``vals[-1]``/``vals[-2]``
+        comparison is valid for either; only wording differs by ``window_mode``.
+        For rolling mode a structured observation is ALWAYS recorded (even when
+        the reading isn't significant), because memory can only learn that a
+        rolling incident recovered if it has a prior "inactive" reading to
+        compare against."""
+        contract = t.get("contract") or {}
+        coverage_kind = contract.get("coverage_kind")
+        if coverage_kind not in ("recent_week_history", "recent_week_rolling_history"):
+            return
+        window_mode = "calendar" if coverage_kind == "recent_week_history" else "rolling"
+        rows, roles = t["rows"], t["roles"]
+        axis = contract.get("axis") or roles["date"]
+        if not axis:
+            return
+        mroles = contract.get("metric_roles") or {}
+
+        def _alias(role_name):
+            for a, r in mroles.items():
+                if r.get("semantic_role") == role_name and r.get("phase") == "current":
+                    return a
+            return None
+
+        value_alias = _alias("value")
+        if not value_alias or value_alias in self.ratio:
+            return
+        volume_alias = _alias("volume")
+
+        series = [(_parse_date(r.get(axis)), r) for r in rows
+                  if _parse_date(r.get(axis)) is not None and _finite(r.get(value_alias))]
+        series.sort(key=lambda kv: kv[0])
+        if len(series) < 4:
+            return
+        vals = [r.get(value_alias) for _, r in series]
+        actual, previous = vals[-1], vals[-2]
+        trailing = vals[:-1]
+        expected = sorted(trailing)[len(trailing) // 2]
+        robust_z = _point_robust_z(actual, trailing)
+        denom = previous if abs(previous) > _EPS else expected
+        change_pct = ((actual - previous) / denom * 100.0) if abs(denom) > _EPS else None
+        abs_impact = actual - previous
+        dev_from_median = actual - expected
+
+        def _sign(x):
+            return (x > _EPS) - (x < -_EPS)
+
+        mat = change_pct is not None and abs(change_pct) >= self.week_materiality_pct
+        # Flat baseline -> materiality alone; otherwise require BOTH materiality
+        # and a robust-z break (a big z on a tiny move is not reported).
+        active = bool(mat and (robust_z is None or abs(robust_z) >= self.week_z_cutoff))
+        abnormal = ((robust_z is not None and abs(robust_z) >= self.week_z_cutoff)
+                    or (robust_z is None and mat))
+
+        if window_mode == "rolling":
+            # Raw canonical fields only - no story_key. insight_novelty_filter is
+            # the single place that computes it (for both this observation and
+            # any real candidate below), so the two can never drift apart.
+            self.rolling_observation = {
+                "axis": contract.get("date_axis") or axis, "metric": value_alias,
+                "segment": "overall (comparable base)", "active": active,
+                "impact_value": _safe(abs_impact), "change_pct": _safe(change_pct),
+                "direction": _sign(abs_impact), "data_as_of": contract.get("window_end"),
+            }
+
+        if not active:
+            return
+
+        deltas = [vals[i] - vals[i - 1] for i in range(1, len(vals))]
+        last_d = deltas[-1]
+        reversal = (len(deltas) >= 2 and _sign(last_d) != 0 and _sign(deltas[-2]) != 0
+                    and _sign(last_d) != _sign(deltas[-2]))
+        run = 0
+        for d in reversed(deltas):
+            if _sign(d) == _sign(last_d) and _sign(d) != 0:
+                run += 1
+            else:
+                break
+        sustained_run = run >= 2
+
+        divergence = False
+        if volume_alias:
+            va, vp = series[-1][1].get(volume_alias), series[-2][1].get(volume_alias)
+            if _finite(va) and _finite(vp):
+                divergence = (_sign(va - vp) != 0 and _sign(last_d) != 0
+                              and _sign(va - vp) != _sign(last_d))
+
+        facets = {"week_over_week": bool(mat), "abnormal_vs_baseline": bool(abnormal),
+                  "reversal": bool(reversal), "sustained_run": bool(sustained_run),
+                  "value_volume_divergence": bool(divergence)}
+
+        ws = series[-1][0]
+        week_start_iso = ws.date().isoformat() if isinstance(ws, datetime) else str(ws)
+        week_end_iso = contract.get("week_end")
+        if not week_end_iso and isinstance(ws, datetime):
+            week_end_iso = (ws.date() + timedelta(days=6)).isoformat()
+
+        drivers = self.recent_week_drivers or {}
+        driver_segments = (drivers.get("top_segments", [])
+                           if drivers.get("week_start") == week_start_iso else [])
+        drivers_truncated = bool(drivers.get("truncated")) if driver_segments else False
+
+        payload = {
+            "window_mode": window_mode,
+            "week_start": week_start_iso, "week_end": week_end_iso,
+            "actual": _safe(actual), "previous": _safe(previous), "expected": _safe(expected),
+            "change_pct": _safe(change_pct), "dev_from_median": _safe(dev_from_median),
+            "robust_z": _safe(robust_z), "abs_impact": _safe(abs_impact),
+            "driver_segments": driver_segments, "drivers_truncated": drivers_truncated,
+            "data_as_of": contract.get("window_end"), "facets": facets,
+        }
+
+        direction = "declined" if abs_impact < 0 else "rose"
+        window_label = (f"week of {week_start_iso}" if window_mode == "calendar"
+                        else f"the trailing 7 days ending {week_end_iso}")
+        pct_label = "WoW" if window_mode == "calendar" else "vs the prior 7 days"
+        detail = (f"{window_label}: {value_alias} {direction} {_fmt(abs_impact)} "
+                  f"({change_pct:+.1f}% {pct_label}) to {_fmt(actual)} from {_fmt(previous)}; "
+                  f"trailing-median {_fmt(expected)}"
+                  + (f", robust z {robust_z:.1f}" if robust_z is not None else ", flat baseline"))
+        extra_facets = [k for k, v in facets.items()
+                        if v and k not in ("week_over_week", "abnormal_vs_baseline")]
+        if extra_facets:
+            detail += "; " + ", ".join(extra_facets)
+        if driver_segments:
+            lead = ", ".join(f"{s['segment']} ({_fmt(s['change'])})" for s in driver_segments[:2])
+            detail += f"; {'largest returned drivers' if drivers_truncated else 'top drivers'}: {lead}"
+
+        self._add("business", {
+            "type": "recent_week_movement",
+            "table": t["name"], "metric": value_alias,
+            "segment": "overall (comparable base)", "anchor": week_start_iso,
+            "axis": contract.get("date_axis") or axis,
+            "week_start": week_start_iso, "week_end": week_end_iso,
+            "impact_value": _safe(abs_impact), "impact_share": None, "share_basis": None,
+            "significance": (_safe(min(abs(robust_z) / (2 * self.week_z_cutoff), 1.0))
+                             if robust_z is not None else 1.0),
+            "score": abs(change_pct) if change_pct is not None else 0.0,
+            "recent_week": payload,
+            "detail": detail,
+        })
+
+    def daily(self, t: dict):
+        """One ``daily_incident`` candidate per already-flagged, already-merged,
+        already-scored incident row from ``insight_daily.py`` - the statistical
+        work (per-reference testing, merging, scoring) happened upstream; this
+        just turns each incident into a ranked candidate. Called exclusively
+        (never alongside concentration/outliers/etc - see ``run()``'s dispatch),
+        since incident rows carry a segment label alongside several numeric
+        fields that those generic methods could otherwise misread as a segment
+        breakdown."""
+        contract = t.get("contract") or {}
+        if contract.get("coverage_kind") != "daily_incidents":
+            return
+        for row in t["rows"]:
+            metric = row.get("metric")
+            share, basis = (
+                self._share(row.get("cumulative_impact"), metric)
+                if metric in self.additive
+                else (None, None)
+            )
+            impact = row.get("cumulative_impact")
+            peak_z = row.get("peak_z")
+            self._add("business", {
+                "type": "daily_incident", "table": t["name"],
+                "metric": metric, "axis": contract.get("date_axis") or row.get("axis"),
+                "segment": row.get("segment"), "anchor": row.get("episode_start"),
+                "episode_start": row.get("episode_start"), "episode_end": row.get("episode_end"),
+                "day_count": row.get("day_count"),
+                "actual_total": _safe(row.get("actual_total")),
+                "expected_total": _safe(row.get("expected_total")),
+                "score": row.get("score", 0.0),
+                "impact_value": _safe(impact), "impact_share": _safe(share),
+                "share_basis": basis, "peak_z": _safe(peak_z),
+                "detail": (f"{row.get('episode_start')}..{row.get('episode_end')}: {metric} "
+                           f"{'declined' if _finite(impact) and impact < 0 else 'rose'} "
+                           f"{_fmt(impact)} vs expected {_fmt(row.get('expected_total'))}"
+                           + (f" (peak z {peak_z:.1f})" if _finite(peak_z) else "")),
+            })
+
     def reconciliation(self, t: dict):
         """Data-quality checks: triple violations, zero-prior bases, coverage
         gaps vs grand totals, non-finite values, non-differentiating metrics."""
@@ -1074,27 +1282,30 @@ class _Detector:
         self.collect_totals(tables)
         self.classify_metrics(tables)
         for t in tables:
+            # Incident rows are an exclusive dispatch, not an added method: they
+            # carry a segment label alongside several numeric fields (peak_z,
+            # cumulative_impact, day_count, ...) that the generic segment-
+            # breakdown methods below could otherwise misread and turn into
+            # spurious concentration/outlier candidates on top of the real ones.
+            if (t.get("contract") or {}).get("coverage_kind") == "daily_incidents":
+                self.daily(t)
+                continue
             self.bridge(t)
             self.concentration(t)
             self.outliers(t)
             self.trend(t)
             self.period(t)
+            self.recent_week(t)
             self.reconciliation(t)
         overall_pv = self.overall_split(tables)
 
         business = sorted(self.business.values(), key=lambda c: c["score"], reverse=True)
         dq = sorted(self.data_quality.values(), key=lambda c: c["score"], reverse=True)
-        # Level-aware cap: keep top-N per level so temporal/daily candidates are
-        # never starved by the far more numerous high-level ones.
-        kept, counts = [], {}
-        for c in business:
-            lv = self._level(c)
-            if counts.get(lv, 0) >= self.level_caps.get(lv, self.max_candidates):
-                continue
-            counts[lv] = counts.get(lv, 0) + 1
-            kept.append(c)
-        business = kept
-        dq = dq[:max(6, self.max_candidates // 2)]
+        # Deliberately do not cap here.  Memory suppression happens in the next
+        # node, and capping before that can let already-reported stories occupy
+        # every slot while a lower-ranked unseen story is discarded.  The
+        # novelty filter applies the configured per-level and overall caps after
+        # it removes previously reported story keys.
         for i, c in enumerate(business + dq):
             c["id"] = f"cand_{i + 1:02d}_{c['type']}"
         return {
@@ -1159,15 +1370,13 @@ def _append_entity_lifecycle_candidates(result: dict, state: dict) -> None:
         })
     if additions:
         # Lifecycle findings carry scope semantics used by every downstream
-        # validator. Reserve capacity for them even when the normal materiality
-        # list already fills the candidate cap; otherwise an LLM can restate a
-        # current-only row without a candidate_id and it would default to a
-        # comparable finding.
-        cap = int(state.get("insight_stat_max_candidates", 20))
+        # validator. Keep them in the uncapped detector output; the novelty
+        # filter removes seen stories first and applies the final shortlist cap.
         ordinary = [c for c in result.get("business_candidates", [])
                     if c.get("type") not in ("new_entity_current_only", "prior_only_entity")]
-        reserved = additions[:cap]
-        result["business_candidates"] = ordinary[:max(0, cap - len(reserved))] + reserved
+        result["business_candidates"] = sorted(
+            ordinary + additions, key=lambda c: c.get("score", 0.0), reverse=True
+        )
         for i, c in enumerate(result.get("business_candidates", []) + result.get("data_quality_candidates", [])):
             c["id"] = f"cand_{i + 1:02d}_{c['type']}"
 
@@ -1177,9 +1386,12 @@ def run(state: dict) -> dict:
     log.info("Insight branch: computing deterministic stat candidates...")
 
     clean = state.get("insight_clean_data", {"queries": []})
+    rolling_observation = None
     try:
-        result = _Detector(state, log).run(clean)
+        detector = _Detector(state, log)
+        result = detector.run(clean)
         _append_entity_lifecycle_candidates(result, state)
+        rolling_observation = detector.rolling_observation
     except Exception as exc:  # noqa: BLE001 - stats must never kill the branch
         log.error(f"Stat detector failed ({exc}); signal detector falls back to raw rows.")
         result = {"note": f"stat pre-pass failed: {exc}",
@@ -1190,4 +1402,7 @@ def run(state: dict) -> dict:
     log.info(f"Stat candidates: {n_b} business, {n_d} data-quality.")
     for c in result["business_candidates"][:5]:
         log.info(f"  [{c['score']:.1f}] {c['type']}: {c['detail']}")
-    return {"insight_stat_candidates": result, **log.updates()}
+    updates = {"insight_stat_candidates": result, **log.updates()}
+    if rolling_observation is not None:
+        updates["insight_rolling_observation"] = rolling_observation
+    return updates

@@ -82,6 +82,35 @@ def build_initial_state(cfg: dict, config_path: str = "") -> dict:
         "insight_period_recent_window": cfg.get("insight_period_recent_window", 12),
         "insight_period_drill": cfg.get("insight_period_drill", True),
         "insight_period_drill_top": cfg.get("insight_period_drill_top", 3),
+        # Phase 3: previous-complete-week monitoring. Capability + freshness gate
+        # disables the level on a load/posting-date axis or stale data.
+        "insight_recent_week_enabled": cfg.get("insight_recent_week_enabled", True),
+        "insight_business_date_override": cfg.get("insight_business_date_override", None),
+        "insight_week_max_date_probes": cfg.get("insight_week_max_date_probes", 3),
+        "insight_week_start": cfg.get("insight_week_start", "monday"),
+        "insight_business_timezone": cfg.get("insight_business_timezone", "naive"),
+        "insight_week_max_data_lag_days": cfg.get("insight_week_max_data_lag_days", 7),
+        "insight_week_history_weeks": cfg.get("insight_week_history_weeks", 13),
+        "insight_week_materiality_pct": cfg.get("insight_week_materiality_pct", 3.0),
+        "insight_week_z_cutoff": cfg.get("insight_week_z_cutoff", 2.5),
+        "insight_week_driver_rows": cfg.get("insight_week_driver_rows", 30),
+        "insight_week_mode": cfg.get("insight_week_mode", "calendar"),
+        # Phase 3b: daily anomaly incidents. Independent of insight_recent_week_enabled -
+        # both consume the same shared insight_business_day_source, so disabling one
+        # never disables the other. Gated the same way (self-disables safely on any
+        # model lacking a clean business-day axis).
+        "insight_daily_enabled": cfg.get("insight_daily_enabled", True),
+        "insight_daily_rolling_window": cfg.get("insight_daily_rolling_window", 28),
+        "insight_daily_recent_days": cfg.get("insight_daily_recent_days", 3),
+        "insight_daily_exclude_today": cfg.get("insight_daily_exclude_today", True),
+        "insight_daily_z_cutoff": cfg.get("insight_daily_z_cutoff", 3.0),
+        "insight_daily_materiality_pct": cfg.get("insight_daily_materiality_pct", 3.0),
+        "insight_daily_min_weekday_occurrences": cfg.get("insight_daily_min_weekday_occurrences", 3),
+        # Phase 3b: rolling-week's structural resurface logic (not a general
+        # Phase-4 switch - that remains future work). growth_pct is named so a
+        # future general re-alert change can reuse it unchanged.
+        "insight_re_alert_growth_pct": cfg.get("insight_re_alert_growth_pct", 50),
+        "insight_rolling_report_delta_pct": cfg.get("insight_rolling_report_delta_pct", 5.0),
         # Business-rule scope (mirrors config/business_rules.md - keep in sync).
         # Drives evidence_contract population classification and the reuse gate.
         "insight_comparable_population": cfg.get("insight_comparable_population", []),

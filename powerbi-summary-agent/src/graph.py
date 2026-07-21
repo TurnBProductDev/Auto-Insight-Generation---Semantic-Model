@@ -8,7 +8,9 @@ START -> load_config -> read_metadata -> semantic_profile -> baseline_scope
       -> baseline_coverage -> understand_report
     +-> plan_dax -> generate_dax -> validate_dax -> execute_dax
     |       -> normalize_results -> generate_summary -> summary_branch_done -+
-    +-> insight_normalize -> insight_evidence_catalog -> insight_stat_detector
+    +-> insight_normalize -> insight_temporal -> insight_business_day_source
+            -> insight_recent_week -> insight_daily -> insight_evidence_catalog
+            -> insight_stat_detector -> insight_novelty_filter
             -> insight_signal_detector -> insight_evidence_assembler -> insight_gap_scan
             -> insight_investigator -> insight_synthesizer
             -> insight_branch_done ----------------------------------------------+
@@ -46,6 +48,9 @@ from .agents import (
     summary_generator,
     insight_result_normalizer,
     insight_temporal,
+    insight_business_day_source,
+    insight_recent_week,
+    insight_daily,
     insight_stat_detector,
     insight_novelty_filter,
     insight_signal_detector,
@@ -214,17 +219,23 @@ def save_outputs(state: dict) -> dict:
                            html_report.render(stub, title="Insight Report", eyebrow="Power BI Insight Report"))
         log.error("Wrote stub insight_report.md/.html due to early stop.")
 
-    # Commit reported insights to persistent memory so future runs don't repeat
-    # them. Only when: memory enabled, the report was truly generated (not a stub),
-    # signals exist, and the store was not corrupt this run. On corruption we keep
-    # the damaged store untouched (novelty guarantee already flagged in the report).
+    # Commit observations + reported insights to persistent memory in a single
+    # transaction. Observations (the daily per-axis cursor, the rolling
+    # observation/activity snapshot) advance whenever the insight branch is
+    # healthy - memory enabled, not fatal, store not corrupt - regardless of
+    # whether anything was reported. Reported story records + journal are
+    # written only when a real report was generated AND signals exist:
+    # "observed" and "reported" are different things, so a synthesizer failure
+    # (only a stub report written) must never mark a story as seen that the
+    # user never actually received. On corruption we keep the damaged store
+    # untouched (novelty guarantee already flagged in the report).
     novelty = state.get("insight_novelty", {}) or {}
     signals = state.get("insight_signals", [])
     if (state.get("insight_memory_enabled", True) and not state.get("fatal")
-            and state.get("insight_report") and signals
             and novelty.get("memory_status") != "corrupt"):
+        reported = signals if state.get("insight_report") else []
         try:
-            res = insight_memory.commit(state, signals)
+            res = insight_memory.commit_run(state, reported)
             if res.get("status") == "ok":
                 log.info(f"Insight memory: committed {res.get('committed')} new "
                          f"finding(s); watermark={res.get('watermark')}.")
@@ -274,6 +285,9 @@ def build_graph():
     # Insight branch
     g.add_node("insight_normalize", insight_result_normalizer.run)
     g.add_node("insight_temporal", insight_temporal.run)
+    g.add_node("insight_business_day_source", insight_business_day_source.run)
+    g.add_node("insight_recent_week", insight_recent_week.run)
+    g.add_node("insight_daily", insight_daily.run)
     g.add_node("insight_evidence_catalog", evidence_contract.run)
     g.add_node("insight_stat_detector", insight_stat_detector.run)
     g.add_node("insight_novelty_filter", insight_novelty_filter.run)
@@ -310,7 +324,10 @@ def build_graph():
 
     # Insight branch
     g.add_edge("insight_normalize", "insight_temporal")
-    g.add_edge("insight_temporal", "insight_evidence_catalog")
+    g.add_edge("insight_temporal", "insight_business_day_source")
+    g.add_edge("insight_business_day_source", "insight_recent_week")
+    g.add_edge("insight_recent_week", "insight_daily")
+    g.add_edge("insight_daily", "insight_evidence_catalog")
     g.add_edge("insight_evidence_catalog", "insight_stat_detector")
     g.add_edge("insight_stat_detector", "insight_novelty_filter")
     g.add_edge("insight_novelty_filter", "insight_signal_detector")

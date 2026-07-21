@@ -74,6 +74,42 @@ class SummaryAgentState(TypedDict, total=False):
     insight_temporal_gated_tables: List[str]      # date tables the gate rejected (skip trend)
     insight_temporal_drill: Dict[str, Any]        # worst-period x primary-dimension attribution
 
+    # --- recent-week (Phase 3): previous-complete-week monitoring ---
+    insight_recent_week_enabled: bool
+    insight_business_date_override: str
+    insight_week_max_date_probes: int
+    insight_week_start: str
+    insight_business_timezone: str
+    insight_week_max_data_lag_days: int
+    insight_week_history_weeks: int
+    insight_week_materiality_pct: float
+    insight_week_z_cutoff: float
+    insight_week_driver_rows: int
+    insight_now_override: str                      # optional ISO 'today' for deterministic offline tests
+    insight_recent_week_verdict: Dict[str, Any]   # capability/freshness gate verdict (report caveat)
+    insight_recent_week_drivers: Dict[str, Any]   # target-vs-previous week x primary-dimension drivers
+    insight_week_mode: str                          # "calendar" | "rolling"
+
+    # --- business-day source (Phase 3b): shared validated fetch, consumed by
+    # both insight_recent_week (folding) and insight_daily (incident detection) ---
+    insight_business_day_source: Dict[str, Any]   # axis/rows/operating_days/data_as_of, post-validation
+    insight_business_day_verdict: Dict[str, Any]  # capability/freshness gate verdict (report caveat)
+
+    # --- daily anomaly incidents (Phase 3b) ---
+    insight_daily_enabled: bool
+    insight_daily_rolling_window: int
+    insight_daily_recent_days: int
+    insight_daily_exclude_today: bool
+    insight_daily_z_cutoff: float
+    insight_daily_materiality_pct: float
+    insight_daily_min_weekday_occurrences: int
+    insight_daily_verdict: Dict[str, Any]         # capability/freshness gate verdict (report caveat)
+
+    # --- rolling-week re-alerting (Phase 3b) ---
+    insight_re_alert_growth_pct: float
+    insight_rolling_report_delta_pct: float
+    insight_rolling_observation: Dict[str, Any]   # always-emitted raw reading, even when inactive
+
     # --- shared pre-fork artifacts ---
     model_metadata: Dict[str, Any]          # Node 2
     pbi_token: str                          # Node 2 (shared by both branches)

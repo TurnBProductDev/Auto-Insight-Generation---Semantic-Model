@@ -164,6 +164,31 @@ def _resolve_chart(sig, inv, stat, tables):
                 "members": sig.get("segment_members") or [seg],
                 "value": sig.get("impact_value"), "metric": metric}
 
+    # Recent-week (Phase 3 calendar / Phase 3b rolling): a KPI of the completed
+    # window's value + its delta % (never a "share of change" - that share does
+    # not exist for a weekly/rolling move). Calendar and rolling share the same
+    # payload/tile type; only wording differs via window_mode.
+    rw = sig.get("recent_week")
+    if rw:
+        return {"type": "week_kpi", "value": rw.get("actual"),
+                "change_pct": rw.get("change_pct"), "week_start": rw.get("week_start"),
+                "window_mode": rw.get("window_mode", "calendar"), "metric": metric}
+
+    # Daily anomaly incident (Phase 3b): a KPI of the incident's actual value +
+    # its deviation from what was expected. Checked via episode_start/end
+    # rather than id/candidate_id naming, since those are the fields
+    # _copy_candidate_facts reliably sets for this signal type.
+    if sig.get("episode_start") is not None and sig.get("episode_end") is not None:
+        expected = sig.get("expected_total")
+        impact = sig.get("impact_value")
+        change_pct = (impact / abs(expected) * 100.0
+                      if isinstance(expected, (int, float)) and expected
+                      and isinstance(impact, (int, float)) else None)
+        actual = sig.get("actual_total") if sig.get("actual_total") is not None else impact
+        label = f"{sig.get('episode_start')}..{sig.get('episode_end')}"
+        return {"type": "week_kpi", "value": actual, "change_pct": change_pct,
+                "week_start": label, "window_mode": "daily", "metric": metric}
+
     if "current_only" in cid or sig.get("impact_share") is None:
         return {"type": "badge", "value": sig.get("impact_value"),
                 "label": seg, "badge": "New store - not comparable", "metric": metric}
@@ -343,6 +368,33 @@ def _kpi_badge_html(spec):
             f'<div class="chip warn">{html.escape(spec.get("badge",""))}</div></div>')
 
 
+def _week_kpi_html(spec):
+    mode = spec.get("window_mode", "calendar")
+    cp = spec.get("change_pct")
+    if isinstance(cp, (int, float)):
+        arrow = "▲" if cp >= 0 else "▼"
+        if mode == "rolling":
+            sub = f"{arrow} {abs(cp):.1f}% vs the prior 7 days"
+        elif mode == "daily":
+            sub = f"{arrow} {abs(cp):.1f}% vs expected"
+        else:
+            sub = f"{arrow} {abs(cp):.1f}% week over week"
+    else:
+        sub = {"rolling": "trailing 7 days", "daily": "daily incident"}.get(
+            mode, "most recent completed week")
+    wk = spec.get("week_start") or ""
+    if not wk:
+        week_line = ""
+    elif mode == "rolling":
+        week_line = f'<div class="kpi-sub">trailing 7 days ending {html.escape(str(wk))}</div>'
+    elif mode == "daily":
+        week_line = f'<div class="kpi-sub">{html.escape(str(wk))}</div>'
+    else:
+        week_line = f'<div class="kpi-sub">week of {html.escape(str(wk))}</div>'
+    return (f'<div class="kpi"><div class="kpi-num">{html.escape(_human(spec.get("value")))}</div>'
+            f'<div class="kpi-sub">{html.escape(sub)}</div>{week_line}</div>')
+
+
 def _chart_html(spec):
     t = spec["type"]
     if t == "bar":
@@ -355,6 +407,8 @@ def _chart_html(spec):
         return _svg_meter(spec)
     if t == "badge":
         return _kpi_badge_html(spec)
+    if t == "week_kpi":
+        return _week_kpi_html(spec)
     return ""
 
 
@@ -397,8 +451,10 @@ def _insights_from_md(md):
         m = re.match(r"\*\*(.+?)\*\*\s*(.*)", p, re.S)
         if m:
             res.append((m.group(1).strip(), m.group(2).strip()))
-        elif p.strip():
-            res.append((p[:90].strip(), p.strip()))
+        # Key-insight paragraphs are required to begin with a bold takeaway.
+        # Ignore unbolded prose such as the one-time comparison-scope sentence;
+        # treating it as an insight would create an extra tile and mis-pair the
+        # real paragraphs with their structured signals.
     return res
 
 

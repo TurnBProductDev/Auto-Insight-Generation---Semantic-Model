@@ -188,6 +188,21 @@ def _signal_severity(sig: Dict[str, Any]) -> Severity:
     val = sig.get("impact_value") or 0
     if sig.get("kind") == "data_quality":
         return "warning"
+    # Recent-week/rolling signals have no annual share; grade by the WoW/rolling
+    # move instead.
+    wow = (sig.get("recent_week") or {}).get("change_pct")
+    if isinstance(wow, (int, float)):
+        if val < 0:
+            return "critical" if abs(wow) >= 10 else "warning"
+        return "positive"
+    # Daily incidents have no annual share either; grade by deviation vs expected.
+    if sig.get("episode_start") is not None:
+        expected = sig.get("expected_total")
+        dev_pct = (abs(val) / abs(expected) * 100.0
+                   if isinstance(expected, (int, float)) and expected else 0.0)
+        if val < 0:
+            return "critical" if dev_pct >= 10 else "warning"
+        return "positive"
     if "current_only" in cid or share is None or "concentration" in cid:
         return "info"
     if val < 0:
@@ -203,6 +218,17 @@ def _insight_stats(sig: Dict[str, Any], family: str) -> List[Dict[str, str]]:
     ]
     if share is not None:
         stats.append({"label": "Share of change", "value": f"{share:+.1f}%"})
+    else:
+        # Recent-week/rolling signals carry a WoW/rolling % (not a share of an
+        # annual total); daily incidents carry a deviation vs expected instead.
+        rw = sig.get("recent_week") or {}
+        if isinstance(rw.get("change_pct"), (int, float)):
+            label = "Vs prior 7 days" if rw.get("window_mode") == "rolling" else "Week over week"
+            stats.append({"label": label, "value": f"{rw['change_pct']:+.1f}%"})
+        elif sig.get("episode_start") is not None:
+            expected = sig.get("expected_total")
+            if isinstance(expected, (int, float)) and expected and isinstance(val, (int, float)):
+                stats.append({"label": "Vs expected", "value": f"{val / abs(expected) * 100.0:+.1f}%"})
     decomp = sig.get("decomposition")
     members = sig.get("segment_members")
     if decomp:
@@ -271,6 +297,7 @@ def _invoke(state: dict, schema, system: str, user: str):
 # --------------------------------------------------------------------------
 def _signal_facts(sig: Dict[str, Any]) -> Dict[str, Any]:
     val = sig.get("impact_value")
+    rw = sig.get("recent_week") or {}
     return {
         "signal_id": sig.get("id"),
         "segment": sig.get("affected_segment"),
@@ -279,6 +306,15 @@ def _signal_facts(sig: Dict[str, Any]) -> Dict[str, Any]:
         "direction": "increase" if (val or 0) >= 0 else "decrease",
         "impact_display": _compact_number(val, signed=True),
         "share_of_change_pct": sig.get("impact_share"),
+        "week_over_week_pct": rw.get("change_pct"),
+        "recent_week": {k: rw.get(k) for k in
+                        ("window_mode", "week_start", "week_end", "actual", "previous",
+                         "expected", "facets")} if rw else None,
+        "daily_incident": {
+            "episode_start": sig.get("episode_start"), "episode_end": sig.get("episode_end"),
+            "actual_total": sig.get("actual_total"), "expected_total": sig.get("expected_total"),
+            "peak_z": sig.get("peak_z"),
+        } if sig.get("episode_start") is not None else None,
         "kind": sig.get("kind"),
         "decomposition": sig.get("decomposition"),
         "analyst_question": sig.get("question"),
@@ -314,18 +350,37 @@ def _assemble_kpi_card(idx: int, sig: Dict[str, Any], text: _KpiCardText, when: 
     val = sig.get("impact_value")
     share = sig.get("impact_share")
     category = text.category.strip() or ("Data Quality" if sig.get("kind") == "data_quality" else family)
+    rw = sig.get("recent_week") or {}
+    wow = rw.get("change_pct")
+    if share is not None:
+        delta, comparison = f"{abs(share):.1f}%", "share of total change"
+    elif isinstance(wow, (int, float)):
+        if rw.get("window_mode") == "rolling":
+            delta = f"{abs(wow):.1f}%"
+            comparison = f"vs the prior 7 days (ending {rw.get('week_end')})"
+        else:
+            delta, comparison = f"{abs(wow):.1f}%", f"week over week (from {rw.get('week_start')})"
+    elif sig.get("episode_start") is not None:
+        expected = sig.get("expected_total")
+        if isinstance(expected, (int, float)) and expected and isinstance(val, (int, float)):
+            delta = f"{abs(val / abs(expected) * 100.0):.1f}%"
+        else:
+            delta = ""
+        comparison = f"vs expected ({sig.get('episode_start')}..{sig.get('episode_end')})"
+    else:
+        delta, comparison = "", "current period"
     card = {
         "id": idx,
         "severity": _signal_severity(sig),
         "category": category,
         "metric": sig.get("affected_segment") or "Segment",
         "value": _compact_number(val, signed=True),
-        "delta": f"{abs(share):.1f}%" if share is not None else "",
+        "delta": delta,
         "deltaDirection": "up" if (val or 0) >= 0 else "down",
         "description": text.description.strip(),
         "displayTime": when.strftime("%I:%M %p").lstrip("0"),
         "isoDate": when.date().isoformat(),
-        "comparisonLabel": "share of total change" if share is not None else "current period",
+        "comparisonLabel": comparison,
         "insight": {
             "title": text.insight_title.strip(),
             "summary": text.insight_summary.strip(),

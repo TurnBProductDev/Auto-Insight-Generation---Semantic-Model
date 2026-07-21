@@ -30,3 +30,7 @@ Rules:
 - No emojis. No markdown. No numbers with more than one decimal place; prefer words
   over pasted raw values.
 - Respect branch scope: describe and point to where to look; do not assert causation.
+- Use natural business wording for current-versus-prior findings. Do not mechanically
+  repeat "comparable", "comparable basis", or "comparable population" across cards.
+  Use those terms only when a card must distinguish the shared comparison group from
+  a new, current-only, excluded, or overall population.

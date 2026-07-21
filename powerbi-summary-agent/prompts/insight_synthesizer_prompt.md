@@ -8,6 +8,14 @@ work. Output GitHub-flavored Markdown with EXACTLY these sections and
 headings:
 
 # Key Insights
+If the findings use one shared comparison population, state that scope once in
+one short, plain-English sentence immediately below this heading. Do not bold
+this scope sentence. After that,
+write the insights naturally. Do not repeat "comparable", "comparable basis",
+or "comparable population" in every heading or paragraph. Use the word again
+only when it is necessary to contrast the shared comparison group with a new,
+current-only, excluded, or overall population.
+
 One short paragraph per business finding, ordered by impact: the finding
 with the most value at stake (its impact_value / impact_share, or the
 amounts the investigation confirmed) comes first - not the most
@@ -68,6 +76,11 @@ Rules:
   a raw name like "FACT_SALES_MONTHLY_TB"), row counts, DAX, or BI jargon such as
   "filter context", "measure definition", "denominator", "probe", "signal",
   or "trail". Say "our checks showed" rather than "probes showed".
+- Keep Key Insights direct and easy to read. Prefer short sentences and natural
+  phrases such as "increased from last year", "declined from last year", or
+  simply "increased"/"declined" when the one-time scope sentence already makes
+  the comparison clear. Do not mechanically repeat the same scope wording or
+  opening phrase in every paragraph.
 - Refer to months and dates in words where the year context is known:
   "March 2026", "late June" - never "month 3".
 - Format numbers for business readers; raw floats from the trails must not
