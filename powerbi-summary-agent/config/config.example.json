@@ -22,6 +22,8 @@
   "insight_probe_max_rows": 20,
   "insight_materiality_pct": 1.0,
   "insight_max_dq_signals": 2,
+  "insight_history_enabled": true,
+  "insight_history_timezone": "Asia/Kolkata",
 
   "metadata_scope_max_entities": 500,
   "insight_metadata_max_dimensions": 5,
@@ -35,5 +37,12 @@
   "insight_stat_concentration_pct": 50.0,
   "insight_stat_recon_tolerance_pct": 2.0,
   "insight_stat_trend_window": 3,
-  "insight_stat_max_candidates": 20
+  "insight_stat_max_candidates": 20,
+
+  "azure_blob_upload": false,
+  "azure_blob_account": "PASTE_YOUR_STORAGE_ACCOUNT",
+  "azure_blob_container": "insightgen",
+  "azure_blob_prefix": "",
+  "azure_blob_history_prefix": "history",
+  "azure_blob_history_feed": "insight_history.json"
 }

@@ -427,7 +427,7 @@ def _legend(spec):
 # --------------------------------------------------------------------------- #
 # Insight text <-> signal pairing
 # --------------------------------------------------------------------------- #
-def _insights_from_md(md):
+def insights_from_markdown(md):
     """Return [(heading, body)] from the '# Key Insights' section only."""
     paras, cur, in_sec = [], [], False
     for raw in (md or "").replace("\r\n", "\n").split("\n"):
@@ -456,6 +456,12 @@ def _insights_from_md(md):
         # treating it as an insight would create an extra tile and mis-pair the
         # real paragraphs with their structured signals.
     return res
+
+
+# Backward-compatible private alias for callers/tests that predate the history
+# feed.  New code should use the public name so the tile board and persisted
+# history cannot drift to different interpretations of an insight paragraph.
+_insights_from_md = insights_from_markdown
 
 
 def _shares_in(text):
@@ -527,7 +533,7 @@ def build_html(report_md, signals, investigations, stat_candidates,
         if sid:
             inv_by_id[sid] = iv
 
-    paras = _insights_from_md(report_md)
+    paras = insights_from_markdown(report_md)
     pairs = _pair(paras, signals) if paras else [
         (s.get("description", "")[:90], s.get("description", ""), s) for s in signals
     ]

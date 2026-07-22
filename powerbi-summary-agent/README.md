@@ -142,6 +142,8 @@ insight_evidence_contracts.json  insight_stat_candidates.json
 insight_signals.json             insight_evidence_briefs.json
 insight_coverage_matrix.json     insight_gap_evidence.json
 insight_investigations.json      insight_report.md / .html
+history/<run-id>.json            immutable dated insight heading/content record
+history/insight_history.json     local single-file newest-first API projection
 
 run_log.txt
 ```
@@ -162,6 +164,9 @@ is not read.
 | `insight_max_scan_queries` | Shared metadata coverage-query cap |
 | `insight_metadata_max_dimensions` | Number of high-value metadata dimensions selected for broad coverage |
 | `insight_max_signals`, `insight_max_dq_signals` | Signal caps |
+| `insight_history_enabled`, `insight_history_timezone` | Write one dated, presentation-ready history JSON per completed insight report |
+| `azure_blob_history_prefix` | Blob prefix for immutable history entries (default `history`) |
+| `azure_blob_history_feed` | Single API-facing history document (default `insight_history.json`) |
 | `insight_max_gap_dimensions_per_signal` | Targeted drill dimensions considered per signal |
 | `insight_total_gap_scan_budget` | Global deterministic gap-query cap |
 | `insight_max_investigation_rounds` | Hard per-signal combined gap/investigation ceiling; the normal adaptive investigator path is 0–3 |
@@ -169,6 +174,21 @@ is not read.
 | `insight_materiality_pct` | Signal materiality floor |
 | `insight_stat_*` | Outlier, concentration, reconciliation, trend, and candidate limits |
 | `insight_comparable_population`, `insight_excluded_entities` | Optional machine-enforced business-rule scope; data discovery audits it |
+
+When Azure Blob upload is enabled, the two latest API payloads keep their
+existing overwrite behavior. Insight history is different: every completed run
+is uploaded with `overwrite=False` to
+`history/<dataset-id>/<YYYY>/<MM>/<DD>/<run-id>.json`. Older entries are never
+edited. The same run is then merged into the root `insight_history.json` using
+an ETag-protected conditional write. That single app-facing file intentionally
+contains only `timezone`, then newest-first `history[]` date sections, each with
+newest-first `runs[]` containing `time`, `status`, and heading/content
+`insights[]`. The application needs only one API read; dataset IDs, run IDs, full
+timestamps, and counts stay in the immutable recovery copies.
+Azure Container Apps Jobs automatically provide
+`CONTAINER_APP_JOB_EXECUTION_NAME`; the writer uses it as the stable run id so a
+replica retry is idempotent. Other schedulers can provide
+`INSIGHT_HISTORY_RUN_ID` for the same behavior.
 
 ## Business rules
 
@@ -194,6 +214,7 @@ python scripts/replay_metadata_scanner.py
 python scripts/replay_stat_detector.py
 python scripts/replay_stat_detector.py --synthetic
 python scripts/replay_evidence_assembler.py
+python scripts/replay_insight_history.py
 ```
 
 The metadata replay validates generated object references, comparable-scope

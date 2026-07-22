@@ -197,9 +197,29 @@ def main(argv=None) -> int:
 
     write_api_payloads(final)
 
+    # Build one immutable, presentation-ready insight-history entry.  A stub
+    # report is never present in final['insight_report'], so failed synthesis
+    # cannot accidentally enter customer-facing history.
+    from .tools.insight_history import build_and_write
+    history_error = None
+    try:
+        history_artifact = build_and_write(final)
+    except Exception as e:  # noqa: BLE001 - visible but does not discard reports
+        history_artifact = None
+        history_error = e
+        print(f"Insight history preparation failed ({type(e).__name__}: {e}).")
+    history_entry = history_artifact[0] if history_artifact else None
+    if history_artifact:
+        entry, local_path = history_artifact
+        print(f"Insight history: prepared {local_path} "
+              f"({entry['insightCount']} insight(s), date={entry['date']['iso']}).")
+    elif history_error is None:
+        print("Insight history skipped: no completed insight report or feature disabled.")
+
     # Best-effort: push the freshly written API JSONs to Azure Blob (never fatal).
-    from .tools.azure_blob import upload_api_payloads
+    from .tools.azure_blob import upload_api_payloads, upload_insight_history
     upload_api_payloads(final)
+    upload_insight_history(final, history_entry)
 
     summary_path = out / "report_summary.md"
     if summary_path.exists():

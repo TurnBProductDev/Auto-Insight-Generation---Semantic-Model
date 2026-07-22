@@ -12,6 +12,7 @@ Auth resolution order (first available wins):
                                         needs the 'Storage Blob Data Contributor' role)
 """
 
+import json
 import os
 from pathlib import Path
 
@@ -78,3 +79,180 @@ def upload_api_payloads(final: dict) -> None:
         print(f"Azure upload skipped ({type(e).__name__}: {e}). "
               f"Set AZURE_STORAGE_CONNECTION_STRING in .env or grant the "
               f"'Storage Blob Data Contributor' role for AAD upload.")
+
+
+def _upload_immutable_history(container_client, blob_name: str, entry: dict) -> str:
+    """Create one history blob exactly once.
+
+    ``overwrite=False`` is the load-bearing behavior.  A duplicate run id is an
+    idempotent retry, not permission to replace the already-published record.
+    """
+    from azure.core.exceptions import ResourceExistsError
+    from azure.storage.blob import ContentSettings
+
+    payload = json.dumps(entry, indent=2, ensure_ascii=False, default=str).encode("utf-8")
+    try:
+        container_client.upload_blob(
+            name=blob_name,
+            data=payload,
+            overwrite=False,
+            content_settings=ContentSettings(content_type="application/json"),
+        )
+        return "created"
+    except ResourceExistsError:
+        return "exists"
+
+
+def _download_immutable_history(container_client, blob_name: str) -> dict:
+    """Read the original run after an idempotent retry finds it already exists."""
+    raw = container_client.get_blob_client(blob_name).download_blob().readall()
+    entry = json.loads(raw.decode("utf-8"))
+    if not isinstance(entry, dict):
+        raise RuntimeError(f"immutable history blob {blob_name!r} is not a JSON object")
+    return entry
+
+
+def _history_feed_blob_name(final: dict) -> str:
+    cfg = final.get("config", {}) or {}
+    root_prefix = str(cfg.get("azure_blob_prefix", "") or "").strip("/")
+    filename = str(
+        cfg.get("azure_blob_history_feed", "insight_history.json")
+        or "insight_history.json"
+    ).strip("/")
+    return "/".join(part for part in (root_prefix, filename) if part)
+
+
+def _update_history_feed(
+    container_client,
+    feed_name: str,
+    entry: dict,
+    *,
+    max_attempts: int = 4,
+) -> tuple[str, dict]:
+    """Atomically merge one run into the single API-facing history JSON.
+
+    The immutable per-run blob is the recovery record. This projection uses the
+    downloaded blob's ETag for an optimistic-concurrency update; if another run
+    wins the race, we re-read, re-merge, and retry without losing either run.
+    """
+    from azure.core import MatchConditions
+    from azure.core.exceptions import (
+        HttpResponseError,
+        ResourceExistsError,
+        ResourceModifiedError,
+        ResourceNotFoundError,
+    )
+    from azure.storage.blob import ContentSettings
+
+    from .insight_history import merge_history_response
+
+    blob = container_client.get_blob_client(feed_name)
+    for _ in range(max(1, int(max_attempts))):
+        etag = None
+        existing = None
+        try:
+            downloader = blob.download_blob()
+            raw = downloader.readall()
+            existing = json.loads(raw.decode("utf-8"))
+            props = downloader.properties
+            etag = getattr(props, "etag", None)
+            if etag is None and isinstance(props, dict):
+                etag = props.get("etag")
+            if not etag:
+                raise RuntimeError("history feed download did not expose an ETag")
+        except ResourceNotFoundError:
+            existing = None
+        except json.JSONDecodeError as exc:
+            raise RuntimeError(
+                f"existing history feed {feed_name!r} is corrupt; refusing to overwrite it"
+            ) from exc
+
+        merged, changed = merge_history_response(existing, entry)
+        if not changed:
+            return "unchanged", merged
+        payload = json.dumps(
+            merged, indent=2, ensure_ascii=False, default=str
+        ).encode("utf-8")
+        try:
+            if etag:
+                blob.upload_blob(
+                    data=payload,
+                    overwrite=True,
+                    etag=etag,
+                    match_condition=MatchConditions.IfNotModified,
+                    content_settings=ContentSettings(content_type="application/json"),
+                )
+            else:
+                blob.upload_blob(
+                    data=payload,
+                    overwrite=False,
+                    content_settings=ContentSettings(content_type="application/json"),
+                )
+            return "updated", merged
+        except (ResourceExistsError, ResourceModifiedError):
+            continue
+        except HttpResponseError as exc:
+            if getattr(exc, "status_code", None) in (409, 412):
+                continue
+            raise
+    raise RuntimeError(
+        f"history feed {feed_name!r} changed concurrently {max_attempts} times"
+    )
+
+
+def upload_insight_history(final: dict, entry: dict | None) -> dict:
+    """Upload a permanent per-run insight-history JSON to the existing container.
+
+    Returns a small status object so the caller/tests can distinguish disabled,
+    created, idempotent-retry, and failed cases.  Like the existing latest-file
+    publisher, failures are visible but do not make the analytical graph fatal.
+    """
+    cfg = final.get("config", {}) or {}
+    if not entry or not cfg.get("insight_history_enabled", True):
+        return {"status": "skipped", "reason": "no_history_entry"}
+    if not cfg.get("azure_blob_upload", False):
+        return {"status": "skipped", "reason": "azure_blob_upload_disabled"}
+
+    account = cfg.get("azure_blob_account")
+    container = cfg.get("azure_blob_container", "insightgen")
+    if not account:
+        print("Azure history upload skipped: 'azure_blob_account' not set in config.json.")
+        return {"status": "failed", "reason": "azure_blob_account_missing"}
+
+    from .insight_history import blob_name
+
+    name = blob_name(final, entry)
+    try:
+        svc, auth = _service_client(account)
+        container_client = svc.get_container_client(container)
+        try:
+            container_client.create_container()
+        except Exception:  # noqa: BLE001 - existing container / no create permission
+            pass
+        status = _upload_immutable_history(container_client, name, entry)
+        verb = "created" if status == "created" else "already exists; kept unchanged"
+        print(f"Azure insight history: {verb} {account}/{container}/{name} (auth={auth}).")
+
+        # On a replica retry, the newly generated report text/time might differ.
+        # The already-created immutable blob is authoritative, so use its exact
+        # original values when repairing/updating the public minimal feed.
+        feed_entry = (
+            entry if status == "created"
+            else _download_immutable_history(container_client, name)
+        )
+        feed_name = _history_feed_blob_name(final)
+        feed_status, _ = _update_history_feed(container_client, feed_name, feed_entry)
+        print(
+            f"Azure insight history feed: {feed_status} "
+            f"{account}/{container}/{feed_name}."
+        )
+        return {
+            "status": status,
+            "blob": name,
+            "feed": feed_name,
+            "feedStatus": feed_status,
+            "auth": auth,
+        }
+    except Exception as e:  # noqa: BLE001 - history is best-effort, but visible
+        print(f"Azure insight history failed ({type(e).__name__}: {e}) for {name}.")
+        return {"status": "failed", "blob": name, "error": str(e)}
