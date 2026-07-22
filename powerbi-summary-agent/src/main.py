@@ -10,6 +10,7 @@ import argparse
 import json
 import os
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 from .graph import build_graph
@@ -28,9 +29,17 @@ except ImportError:
 
 def load_config(config_path: Path) -> dict:
     cfg = json.loads(config_path.read_text(encoding="utf-8"))
-    # Environment override supports deployments that keep tenant selection out
-    # of the JSON file; normalize it into cfg for the rest of the pipeline.
-    cfg["tenant_id"] = os.environ.get("POWERBI_TENANT_ID") or cfg.get("tenant_id")
+    # Environment overrides let one container image target a model without
+    # baking deployment-specific IDs into the image.
+    overrides = {
+        "tenant_id": "POWERBI_TENANT_ID",
+        "workspace_id": "POWERBI_WORKSPACE_ID",
+        "dataset_id": "POWERBI_DATASET_ID",
+        "output_folder": "AGENT_OUTPUT_FOLDER",
+    }
+    for key, env_name in overrides.items():
+        if os.environ.get(env_name):
+            cfg[key] = os.environ[env_name]
     required = ["tenant_id", "workspace_id", "dataset_id"]
     missing = [k for k in required if not cfg.get(k) or str(cfg[k]).startswith("PASTE_")]
     if missing:
@@ -130,7 +139,7 @@ def build_initial_state(cfg: dict, config_path: str = "") -> dict:
     }
 
 
-def write_api_payloads(final: dict) -> None:
+def write_api_payloads(final: dict) -> dict:
     """Post-run: build the MVC/FastAPI content payloads (LLM-authored) from the
     finished run so a single `python -m src.main` produces everything.
 
@@ -143,13 +152,13 @@ def write_api_payloads(final: dict) -> None:
     """
     cfg = final.get("config", {})
     if not cfg.get("api_payloads", True):
-        return
+        return {"status": "skipped", "reason": "api_payloads_disabled"}
     out = PROJECT_ROOT / final.get("output_folder", "outputs")
     summary_md = out / "report_summary.md"
     signals_json = out / "insight_signals.json"
     if not summary_md.exists() or not signals_json.exists():
         print("API payloads skipped: report_summary.md / insight_signals.json not present.")
-        return
+        return {"status": "failed", "reason": "source_artifacts_missing"}
     try:
         from .tools.api_payloads import (
             generate_kpi_insights_payload,
@@ -172,11 +181,28 @@ def write_api_payloads(final: dict) -> None:
         note = f", {dropped} bullet(s) dropped by fidelity guard" if dropped else ""
         print(f"API payloads: {api_dir} "
               f"({len(kpi_payload)} KPI cards, {len(report_payload['sections'])} summary sections{note})")
+        return {
+            "status": "ok",
+            "kpiCards": len(kpi_payload),
+            "summarySections": len(report_payload["sections"]),
+            "droppedBullets": dropped,
+        }
     except Exception as e:  # noqa: BLE001 - best-effort, must never fail the main run
         print(f"API payloads skipped ({type(e).__name__}: {e})")
+        return {"status": "failed", "error": str(e)}
+
+
+def _azure_job_strict(cfg: dict) -> bool:
+    value = os.environ.get("AZURE_JOB_STRICT")
+    if value is not None:
+        return value.strip().lower() in {"1", "true", "yes", "on"}
+    return bool(os.environ.get("CONTAINER_APP_JOB_NAME")) or bool(
+        cfg.get("azure_job_strict", False)
+    )
 
 
 def main(argv=None) -> int:
+    started = datetime.now(timezone.utc)
     parser = argparse.ArgumentParser(description="Power BI Report Summary Agent")
     parser.add_argument("--config", default=str(PROJECT_ROOT / "config" / "config.json"))
     args = parser.parse_args(argv)
@@ -184,8 +210,21 @@ def main(argv=None) -> int:
     cfg = load_config(Path(args.config))
     state = build_initial_state(cfg, str(Path(args.config)))
 
+    from .tools.azure_blob import (
+        hydrate_insight_memory,
+        publish_insight_memory,
+        upload_api_payloads,
+        upload_insight_history,
+    )
+
+    memory_hydration = hydrate_insight_memory(state)
+    if _azure_job_strict(cfg) and memory_hydration.get("status") == "failed":
+        print("Azure job stopped: persistent insight memory could not be hydrated.")
+        return 1
+
     app = build_graph()
     final = app.invoke(state)
+    memory_publish = publish_insight_memory(final, memory_hydration)
 
     print("\n" + "=" * 70)
     print("PIPELINE COMPLETE")
@@ -195,7 +234,7 @@ def main(argv=None) -> int:
     if final.get("errors"):
         print(f"Errors ({len(final['errors'])}): see run_log.txt")
 
-    write_api_payloads(final)
+    api_payloads = write_api_payloads(final)
 
     # Build one immutable, presentation-ready insight-history entry.  A stub
     # report is never present in final['insight_report'], so failed synthesis
@@ -216,10 +255,10 @@ def main(argv=None) -> int:
     elif history_error is None:
         print("Insight history skipped: no completed insight report or feature disabled.")
 
-    # Best-effort: push the freshly written API JSONs to Azure Blob (never fatal).
-    from .tools.azure_blob import upload_api_payloads, upload_insight_history
-    upload_api_payloads(final)
-    upload_insight_history(final, history_entry)
+    # Local runs remain best-effort. Azure jobs inspect these structured results
+    # below and exit non-zero when a required publication did not complete.
+    api_upload = upload_api_payloads(final)
+    history_upload = upload_insight_history(final, history_entry)
 
     summary_path = out / "report_summary.md"
     if summary_path.exists():
@@ -231,7 +270,52 @@ def main(argv=None) -> int:
         print("\n----- insight_report.md -----\n")
         print(insight_path.read_text(encoding="utf-8"))
 
-    return 0
+    strict = _azure_job_strict(cfg)
+    failures = []
+    if not final.get("report_summary"):
+        failures.append("report_summary_missing")
+    if not final.get("insight_report"):
+        failures.append("insight_report_missing")
+    if cfg.get("api_payloads", True) and api_payloads.get("status") != "ok":
+        failures.append("api_payload_generation_failed")
+    if cfg.get("azure_blob_upload", False) and api_upload.get("status") != "ok":
+        failures.append("api_payload_upload_failed")
+    if cfg.get("insight_history_enabled", True) and cfg.get("azure_blob_upload", False):
+        if history_upload.get("status") not in {"created", "exists"}:
+            failures.append("insight_history_archive_failed")
+        if history_upload.get("feedStatus") not in {"updated", "unchanged"}:
+            failures.append("insight_history_feed_failed")
+    if str(cfg.get("insight_memory_storage", "local")).lower() == "azure_blob":
+        if memory_publish.get("status") != "ok":
+            failures.append("insight_memory_publish_failed")
+
+    finished = datetime.now(timezone.utc)
+    manifest = {
+        "runId": os.environ.get("CONTAINER_APP_JOB_EXECUTION_NAME"),
+        "startedAt": started.isoformat(timespec="seconds"),
+        "finishedAt": finished.isoformat(timespec="seconds"),
+        "durationSeconds": round((finished - started).total_seconds(), 3),
+        "status": "failed" if failures else "completed",
+        "strict": strict,
+        "failures": failures,
+        "reports": {
+            "summary": bool(final.get("report_summary")),
+            "insights": bool(final.get("insight_report")),
+        },
+        "apiPayloads": api_payloads,
+        "apiUpload": api_upload,
+        "historyUpload": history_upload,
+        "memoryHydration": memory_hydration,
+        "memoryPublish": memory_publish,
+    }
+    (out / "run_manifest.json").write_text(
+        json.dumps(manifest, indent=2, ensure_ascii=False, default=str),
+        encoding="utf-8",
+    )
+    print(f"Run manifest: {out / 'run_manifest.json'} status={manifest['status']}")
+    if failures:
+        print("Run failures: " + ", ".join(failures))
+    return 1 if strict and failures else 0
 
 
 if __name__ == "__main__":

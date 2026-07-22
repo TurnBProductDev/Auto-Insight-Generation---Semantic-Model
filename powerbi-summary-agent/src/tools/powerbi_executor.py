@@ -18,6 +18,8 @@ from pathlib import Path
 import msal
 import requests
 
+from .azure_identity import access_token, auth_mode
+
 # ---------------------------------------------------------------------------
 # Paths
 # ---------------------------------------------------------------------------
@@ -39,6 +41,10 @@ SCOPES = ["https://analysis.windows.net/powerbi/api/.default"]
 # refresh token in the cache acquires it silently - no second browser login.
 FABRIC_SCOPES = ["https://api.fabric.microsoft.com/.default"]
 FABRIC_BASE = "https://api.fabric.microsoft.com/v1"
+
+
+def _auth_mode() -> str:
+    return auth_mode("POWERBI_AUTH_MODE", local_default="delegated")
 
 
 def _authority(tenant_id=None) -> str:
@@ -68,6 +74,16 @@ def _save_cache(cache: msal.SerializableTokenCache) -> None:
 
 
 def get_powerbi_token(tenant_id=None) -> str:
+    mode = _auth_mode()
+    if mode == "managed_identity":
+        # Container Apps obtains an app-only token without a refresh-token file
+        # or any possibility of opening an interactive browser.
+        return access_token(SCOPES[0])
+    if mode != "delegated":
+        raise RuntimeError(
+            f"Unsupported POWERBI_AUTH_MODE={mode!r}; use auto, delegated, or managed_identity"
+        )
+
     cache = _load_cache()
     app = msal.PublicClientApplication(
         CLIENT_ID, authority=_authority(tenant_id), token_cache=cache)
@@ -95,6 +111,15 @@ def get_fabric_token(allow_interactive: bool = False, tenant_id=None):
     an account already exists in the cache and the shared refresh token mints
     the Fabric audience silently. Returns None instead of launching a browser
     (Fabric enrichment is optional - the pipeline must never hang on it)."""
+    mode = _auth_mode()
+    if mode == "managed_identity":
+        try:
+            return access_token(FABRIC_SCOPES[0])
+        except Exception:  # noqa: BLE001 - definition enrichment is optional
+            return None
+    if mode != "delegated":
+        return None
+
     cache = _load_cache()
     app = msal.PublicClientApplication(
         CLIENT_ID, authority=_authority(tenant_id), token_cache=cache)

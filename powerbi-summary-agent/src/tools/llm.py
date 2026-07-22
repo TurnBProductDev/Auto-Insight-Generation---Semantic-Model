@@ -10,6 +10,8 @@ or by setting LLM_PROVIDER in the environment.
 
 import os
 
+from .azure_identity import auth_mode, default_credential
+
 
 def get_llm(state: dict, structured_schema=None):
     """Return a LangChain chat model. If structured_schema is given, the model is
@@ -27,9 +29,24 @@ def get_llm(state: dict, structured_schema=None):
         deployment = os.environ.get("AZURE_OPENAI_DEPLOYMENT") or model
         api_version = os.environ.get("AZURE_OPENAI_API_VERSION", "2024-12-01-preview")
 
+        configured_auth = state.get("config", {}).get("azure_openai_auth_mode", "auto")
+        mode = auth_mode(
+            "AZURE_OPENAI_AUTH_MODE",
+            configured_auth,
+            local_default="api_key",
+        )
+        if mode == "api_key" and not api_key:
+            raise RuntimeError(
+                f"Azure OpenAI API-key auth selected but {key_env} is not set."
+            )
+        if mode not in {"api_key", "managed_identity"}:
+            raise RuntimeError(
+                f"Unsupported AZURE_OPENAI_AUTH_MODE={mode!r}; "
+                "use auto, api_key, or managed_identity"
+            )
+
         missing = [
             name for name, val in (
-                (key_env, api_key),
                 ("AZURE_OPENAI_ENDPOINT", endpoint),
                 ("AZURE_OPENAI_DEPLOYMENT", deployment),
             ) if not val
@@ -43,14 +60,25 @@ def get_llm(state: dict, structured_schema=None):
         # max_retries lets the SDK ride out transient 429 bursts (it honors the
         # Retry-After header). It does NOT help if the deployment's TPM quota is
         # structurally smaller than a single request -- raise the quota for that.
+        auth_kwargs = {"api_key": api_key}
+        if mode == "managed_identity":
+            from azure.identity import get_bearer_token_provider
+
+            auth_kwargs = {
+                "azure_ad_token_provider": get_bearer_token_provider(
+                    default_credential(),
+                    "https://cognitiveservices.azure.com/.default",
+                )
+            }
+
         llm = AzureChatOpenAI(
             azure_deployment=deployment,
             azure_endpoint=endpoint,
-            api_key=api_key,
             api_version=api_version,
             max_tokens=max_tokens,
             timeout=120,
             max_retries=int(state.get("config", {}).get("llm_max_retries", 6)),
+            **auth_kwargs,
         )
 
     elif provider == "anthropic":

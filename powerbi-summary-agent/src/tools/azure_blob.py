@@ -16,6 +16,8 @@ import json
 import os
 from pathlib import Path
 
+from .azure_identity import default_credential
+
 # .../powerbi-summary-agent/src/tools/azure_blob.py -> parents[2] == project root
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
@@ -31,27 +33,26 @@ def _service_client(account: str):
     key = os.environ.get("AZURE_STORAGE_KEY")
     if key:
         return BlobServiceClient(url, credential=key), "account_key"
-    from azure.identity import DefaultAzureCredential
-    return BlobServiceClient(url, credential=DefaultAzureCredential()), "aad"
+    return BlobServiceClient(url, credential=default_credential()), "aad"
 
 
-def upload_api_payloads(final: dict) -> None:
+def upload_api_payloads(final: dict) -> dict:
     cfg = final.get("config", {})
     if not cfg.get("azure_blob_upload", False):
-        return
+        return {"status": "skipped", "reason": "azure_blob_upload_disabled"}
 
     account = cfg.get("azure_blob_account")
     container = cfg.get("azure_blob_container", "insightgen")
     prefix = str(cfg.get("azure_blob_prefix", "") or "").strip("/")
     if not account:
         print("Azure upload skipped: 'azure_blob_account' not set in config.json.")
-        return
+        return {"status": "failed", "reason": "azure_blob_account_missing"}
 
     api_dir = PROJECT_ROOT / final.get("output_folder", "outputs") / "api"
     files = sorted(api_dir.glob("*.json"))
     if not files:
         print("Azure upload skipped: no outputs/api/*.json to push.")
-        return
+        return {"status": "failed", "reason": "api_payloads_missing"}
 
     try:
         from azure.storage.blob import ContentSettings
@@ -75,10 +76,119 @@ def upload_api_payloads(final: dict) -> None:
         loc = f"{account}/{container}" + (f"/{prefix}" if prefix else "")
         print(f"Azure upload: pushed {len(pushed)} file(s) to {loc} "
               f"[{', '.join(pushed)}] (auth={auth}).")
+        return {"status": "ok", "files": pushed, "auth": auth}
     except Exception as e:  # noqa: BLE001 - best-effort, must never fail the main run
         print(f"Azure upload skipped ({type(e).__name__}: {e}). "
               f"Set AZURE_STORAGE_CONNECTION_STRING in .env or grant the "
               f"'Storage Blob Data Contributor' role for AAD upload.")
+        return {"status": "failed", "error": str(e)}
+
+
+def _memory_blob_name(state: dict) -> str:
+    cfg = state.get("config", {}) or {}
+    root_prefix = str(cfg.get("azure_blob_prefix", "") or "").strip("/")
+    memory_prefix = str(
+        cfg.get("azure_blob_memory_prefix", "insight-memory") or "insight-memory"
+    ).strip("/")
+    dataset = str(state.get("dataset_id") or "unknown_dataset")
+    safe_dataset = "".join(
+        ch if ch.isalnum() or ch in "_.-" else "_" for ch in dataset
+    )
+    return "/".join(
+        part for part in (root_prefix, memory_prefix, safe_dataset, "memory.json")
+        if part
+    )
+
+
+def _memory_storage_enabled(state: dict) -> bool:
+    cfg = state.get("config", {}) or {}
+    mode = str(cfg.get("insight_memory_storage", "local") or "local").lower()
+    return bool(state.get("insight_memory_enabled", True)) and mode == "azure_blob"
+
+
+def hydrate_insight_memory(state: dict) -> dict:
+    """Download the dataset memory before the graph reads novelty state."""
+    if not _memory_storage_enabled(state):
+        return {"status": "skipped", "reason": "local_memory_storage"}
+    cfg = state.get("config", {}) or {}
+    account = cfg.get("azure_blob_account")
+    container = cfg.get("azure_blob_memory_container") or cfg.get(
+        "azure_blob_container", "insightgen"
+    )
+    if not account:
+        return {"status": "failed", "reason": "azure_blob_account_missing"}
+
+    from azure.core.exceptions import ResourceNotFoundError
+    from .insight_memory import store_path
+
+    name = _memory_blob_name(state)
+    try:
+        svc, auth = _service_client(account)
+        blob = svc.get_blob_client(container=container, blob=name)
+        downloader = blob.download_blob()
+        raw = downloader.readall()
+        props = downloader.properties
+        etag = getattr(props, "etag", None)
+        if etag is None and isinstance(props, dict):
+            etag = props.get("etag")
+        path = store_path(state)
+        path.write_bytes(raw)
+        print(f"Azure insight memory: hydrated {account}/{container}/{name} (auth={auth}).")
+        return {"status": "ok", "blob": name, "etag": etag, "auth": auth}
+    except ResourceNotFoundError:
+        print(f"Azure insight memory: no existing store at {account}/{container}/{name}; starting empty.")
+        return {"status": "missing", "blob": name, "etag": None}
+    except Exception as exc:  # noqa: BLE001 - caller decides strictness
+        print(f"Azure insight memory hydration failed ({type(exc).__name__}: {exc}).")
+        return {"status": "failed", "blob": name, "error": str(exc)}
+
+
+def publish_insight_memory(state: dict, hydration: dict | None = None) -> dict:
+    """Conditionally publish the graph-committed memory after a successful run."""
+    if not _memory_storage_enabled(state):
+        return {"status": "skipped", "reason": "local_memory_storage"}
+    novelty = state.get("insight_novelty", {}) or {}
+    if novelty.get("memory_status") == "corrupt":
+        return {"status": "skipped", "reason": "memory_corrupt"}
+
+    cfg = state.get("config", {}) or {}
+    account = cfg.get("azure_blob_account")
+    container = cfg.get("azure_blob_memory_container") or cfg.get(
+        "azure_blob_container", "insightgen"
+    )
+    if not account:
+        return {"status": "failed", "reason": "azure_blob_account_missing"}
+
+    from azure.core import MatchConditions
+    from azure.storage.blob import ContentSettings
+    from .insight_memory import store_path
+
+    path = store_path(state)
+    if not path.exists():
+        return {"status": "failed", "reason": "local_memory_missing"}
+    name = _memory_blob_name(state)
+    etag = (hydration or {}).get("etag")
+    try:
+        svc, auth = _service_client(account)
+        blob = svc.get_blob_client(container=container, blob=name)
+        kwargs = {
+            "data": path.read_bytes(),
+            "content_settings": ContentSettings(content_type="application/json"),
+        }
+        if etag:
+            blob.upload_blob(
+                overwrite=True,
+                etag=etag,
+                match_condition=MatchConditions.IfNotModified,
+                **kwargs,
+            )
+        else:
+            blob.upload_blob(overwrite=False, **kwargs)
+        print(f"Azure insight memory: published {account}/{container}/{name} (auth={auth}).")
+        return {"status": "ok", "blob": name, "auth": auth}
+    except Exception as exc:  # noqa: BLE001 - caller decides strictness
+        print(f"Azure insight memory publish failed ({type(exc).__name__}: {exc}).")
+        return {"status": "failed", "blob": name, "error": str(exc)}
 
 
 def _upload_immutable_history(container_client, blob_name: str, entry: dict) -> str:
