@@ -109,6 +109,52 @@ python -m src.main
 python -m src.main --config path/to/config.json
 ```
 
+### Docker / Azure Container Apps Job
+
+The production image starts through `src.container_entrypoint`, which
+materializes optional `AGENT_CONFIG_B64` / `AGENT_RULES_B64` secrets on the
+ephemeral filesystem and then calls the same `src.main` entry point used by
+local development:
+
+```bash
+docker build -t powerbi-summary-agent:local .
+```
+
+The image intentionally excludes `.env`, `config/config.json`,
+`config/business_rules.md`, local outputs, token caches, and insight memory. It
+uses `config/config.example.json` as a safe base, then reads the deployment
+target from environment variables:
+
+```text
+POWERBI_TENANT_ID
+POWERBI_WORKSPACE_ID
+POWERBI_DATASET_ID
+POWERBI_AUTH_MODE=managed_identity
+AZURE_MANAGED_IDENTITY_CLIENT_ID       # user-assigned identity only
+
+AZURE_OPENAI_API_KEY                   # configure as a Container Apps secret
+AZURE_OPENAI_ENDPOINT
+AZURE_OPENAI_DEPLOYMENT
+AZURE_OPENAI_API_VERSION
+
+AZURE_BLOB_UPLOAD=true
+AZURE_BLOB_ACCOUNT
+AZURE_BLOB_CONTAINER=insightgen
+INSIGHT_MEMORY_STORAGE=azure_blob
+AZURE_BLOB_MEMORY_CONTAINER=insightstate
+```
+
+The complete optional environment-variable set is documented in
+`.env.example`. `AGENT_CONFIG_OVERRIDES_JSON` can supply any additional
+non-secret config tuning as one JSON object. To supply a complete mounted
+configuration instead, set `AGENT_CONFIG_PATH` to that file; a sibling
+`business_rules.md` is picked up automatically.
+
+For Azure Container Apps Jobs, keep one replica and one completion per
+execution. The process exits `0` only after reports, API payloads/history, and
+cloud memory have completed successfully. No HTTP port or health endpoint is
+required for a Job.
+
 Run from the `powerbi-summary-agent` directory. Authentication uses the shared
 repo-root `.pbi_token_cache.json` (also gitignored — created on first login).
 The first login may open a browser; later runs use the cached refresh token
@@ -164,9 +210,13 @@ is not read.
 | `insight_max_scan_queries` | Shared metadata coverage-query cap |
 | `insight_metadata_max_dimensions` | Number of high-value metadata dimensions selected for broad coverage |
 | `insight_max_signals`, `insight_max_dq_signals` | Signal caps |
+| `insight_tiles_enabled` | Optional deterministic `insight_tiles.html` board; disabled by default |
 | `insight_history_enabled`, `insight_history_timezone` | Write one dated, presentation-ready history JSON per completed insight report |
 | `azure_blob_history_prefix` | Blob prefix for immutable history entries (default `history`) |
 | `azure_blob_history_feed` | Single API-facing history document (default `insight_history.json`) |
+| `insight_memory_storage` | `local` or `azure_blob`; cloud mode hydrates and conditionally publishes the internal novelty store |
+| `azure_blob_memory_container` | Private container for cloud memory (recommended: `insightstate`) |
+| `azure_blob_memory_prefix` | Optional prefix before `{dataset-id}/memory.json` |
 | `insight_max_gap_dimensions_per_signal` | Targeted drill dimensions considered per signal |
 | `insight_total_gap_scan_budget` | Global deterministic gap-query cap |
 | `insight_max_investigation_rounds` | Hard per-signal combined gap/investigation ceiling; the normal adaptive investigator path is 0–3 |
@@ -189,6 +239,24 @@ Azure Container Apps Jobs automatically provide
 `CONTAINER_APP_JOB_EXECUTION_NAME`; the writer uses it as the stable run id so a
 replica retry is idempotent. Other schedulers can provide
 `INSIGHT_HISTORY_RUN_ID` for the same behavior.
+
+### Cloud insight memory
+
+For a scheduled Azure runtime, set `insight_memory_storage` to `azure_blob`.
+The app-facing files remain in `insightgen`; internal novelty state is stored
+separately at `insightstate/<dataset-id>/memory.json`. The existing local
+`insight_memory/` directory is not copied, read, deleted, or uploaded in cloud
+mode. Initialize the new empty store once:
+
+```bash
+python scripts/initialize_cloud_memory.py
+```
+
+Initialization uses `overwrite=False`. If a non-empty cloud store already
+exists, the command refuses to reset it. Each run downloads the blob before
+the graph starts and publishes the committed state only after the real reports,
+API JSON, and configured history uploads succeed. The publish uses the ETag
+read at startup, so overlapping runs cannot silently overwrite each other.
 
 ## Business rules
 
@@ -215,6 +283,7 @@ python scripts/replay_stat_detector.py
 python scripts/replay_stat_detector.py --synthetic
 python scripts/replay_evidence_assembler.py
 python scripts/replay_insight_history.py
+python scripts/replay_cloud_memory.py
 ```
 
 The metadata replay validates generated object references, comparable-scope

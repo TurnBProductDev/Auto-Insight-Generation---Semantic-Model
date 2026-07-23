@@ -7,6 +7,8 @@ filter can suppress them and each run surfaces only genuinely unseen findings.
 Design contracts (see the plan / CLAUDE.md):
 
 * One authoritative JSON file per dataset - ``insight_memory/<dataset_id>/memory.json``
+  locally, or an isolated runtime copy hydrated from Azure Blob when cloud
+  memory is enabled.
   - written as a single atomic transaction (temp file + os.replace). ``daily_insights.md``
   is DERIVED from it and may safely lag.
 * Identity is a **story_key**: a stable, level-prefixed SHA-256 of canonical JSON
@@ -52,7 +54,14 @@ def _dataset_dir(state: dict) -> Path:
     ds = str(state.get("dataset_id") or "unknown_dataset")
     # dataset ids are GUIDs, but sanitize defensively for a filesystem path.
     safe = re.sub(r"[^A-Za-z0-9_.-]", "_", ds)
-    d = PROJECT_ROOT / "insight_memory" / safe
+    configured_root = state.get("insight_memory_root")
+    if configured_root:
+        root = Path(str(configured_root))
+        if not root.is_absolute():
+            root = PROJECT_ROOT / root
+    else:
+        root = PROJECT_ROOT / "insight_memory"
+    d = root / safe
     d.mkdir(parents=True, exist_ok=True)
     return d
 

@@ -34,6 +34,7 @@ class SummaryAgentState(TypedDict, total=False):
     insight_probe_max_rows: int
     insight_materiality_pct: float
     insight_max_dq_signals: int
+    insight_tiles_enabled: bool
     insight_stat_z_cutoff: float
     insight_stat_concentration_pct: float
     insight_stat_recon_tolerance_pct: float
@@ -50,6 +51,7 @@ class SummaryAgentState(TypedDict, total=False):
 
     # --- cross-run insight memory (Phase 1) ---
     insight_memory_enabled: bool
+    insight_memory_root: str                  # cloud mode: isolated hydrated runtime directory
     insight_memory_policy: str               # "never_repeat" | "cooldown"
     insight_memory_cooldown_days: int
     insight_max_new_per_run: int
@@ -143,6 +145,7 @@ class SummaryAgentState(TypedDict, total=False):
     insight_query_cache: Dict[str, Any]           # shared sequential cache: gap scan -> investigator
     insight_eligible_candidates: Dict[str, Any]   # novelty_filter: unseen candidates only
     insight_novelty: Dict[str, Any]               # novelty_filter/signal_detector: run summary
+    insight_memory_commit: Dict[str, Any]         # save_outputs result; gates cloud publication
     insight_signals: List[Dict[str, Any]]
     insight_investigations: List[Dict[str, Any]]
     insight_report: str

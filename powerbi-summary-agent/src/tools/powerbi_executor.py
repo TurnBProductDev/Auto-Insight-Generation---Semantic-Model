@@ -18,8 +18,6 @@ from pathlib import Path
 import msal
 import requests
 
-from .azure_identity import access_token, auth_mode
-
 # ---------------------------------------------------------------------------
 # Paths
 # ---------------------------------------------------------------------------
@@ -41,10 +39,6 @@ SCOPES = ["https://analysis.windows.net/powerbi/api/.default"]
 # refresh token in the cache acquires it silently - no second browser login.
 FABRIC_SCOPES = ["https://api.fabric.microsoft.com/.default"]
 FABRIC_BASE = "https://api.fabric.microsoft.com/v1"
-
-
-def _auth_mode() -> str:
-    return auth_mode("POWERBI_AUTH_MODE", local_default="delegated")
 
 
 def _authority(tenant_id=None) -> str:
@@ -73,16 +67,30 @@ def _save_cache(cache: msal.SerializableTokenCache) -> None:
         CACHE_FILE.write_text(cache.serialize())
 
 
+def _resolve_auth_mode() -> str:
+    """Pick the auth backend: "interactive" (local browser + refresh-token cache)
+    vs a non-interactive mode ("managed_identity"/"service_principal") that mints
+    tokens through DefaultAzureCredential.
+
+    POWERBI_AUTH_MODE (env; main.py also surfaces config.json's powerbi_auth_mode
+    into the env) wins; "auto" resolves to managed_identity inside Azure and
+    interactive locally. The interactive branch below is the ONLY code path that
+    reads or writes CACHE_FILE, so a non-interactive run never touches
+    .pbi_token_cache.json - that is the "no token cache in Azure" guarantee.
+    """
+    from . import azure_identity
+
+    return azure_identity.auth_mode(
+        "POWERBI_AUTH_MODE", None, local_default="interactive"
+    )
+
+
 def get_powerbi_token(tenant_id=None) -> str:
-    mode = _auth_mode()
-    if mode == "managed_identity":
-        # Container Apps obtains an app-only token without a refresh-token file
-        # or any possibility of opening an interactive browser.
-        return access_token(SCOPES[0])
-    if mode != "delegated":
-        raise RuntimeError(
-            f"Unsupported POWERBI_AUTH_MODE={mode!r}; use auto, delegated, or managed_identity"
-        )
+    if _resolve_auth_mode() != "interactive":
+        # Managed identity / service principal - no browser, no cache file.
+        from . import azure_identity
+
+        return azure_identity.access_token(SCOPES[0])
 
     cache = _load_cache()
     app = msal.PublicClientApplication(
@@ -111,14 +119,15 @@ def get_fabric_token(allow_interactive: bool = False, tenant_id=None):
     an account already exists in the cache and the shared refresh token mints
     the Fabric audience silently. Returns None instead of launching a browser
     (Fabric enrichment is optional - the pipeline must never hang on it)."""
-    mode = _auth_mode()
-    if mode == "managed_identity":
+    if _resolve_auth_mode() != "interactive":
+        # Same DefaultAzureCredential, second audience. Stay best-effort: return
+        # None (never raise) so enrichment can't fail an automated run.
         try:
-            return access_token(FABRIC_SCOPES[0])
-        except Exception:  # noqa: BLE001 - definition enrichment is optional
+            from . import azure_identity
+
+            return azure_identity.access_token(FABRIC_SCOPES[0])
+        except Exception:  # noqa: BLE001 - optional enrichment, degrade silently
             return None
-    if mode != "delegated":
-        return None
 
     cache = _load_cache()
     app = msal.PublicClientApplication(

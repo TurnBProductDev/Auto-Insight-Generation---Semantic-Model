@@ -101,14 +101,17 @@ def run(state: dict) -> dict:
     file_io.write_text(state, "insight_report.html",
                        html_report.render(report, title=title, eyebrow="Power BI Insight Report"))
 
-    # Insight board: one visual tile per signal (bold heading + data-driven chart
-    # + See-more). Best-effort and never fatal -- a rendering slip must not sink
-    # the run, mirroring the enrichment/HTML philosophy elsewhere.
-    try:
-        insight_tiles.write_from_state(state, report_md=report)
-        log.info("Insight board written (insight_tiles.html).")
-    except Exception as exc:  # noqa: BLE001 - defensive; supplementary artifact
-        log.info(f"Insight board skipped ({type(exc).__name__}: {exc}).")
+    # Optional deterministic visual board. Insight history still reuses the
+    # Markdown heading parser from insight_tiles.py even when this HTML artifact
+    # is disabled, so do not remove the shared module.
+    if state.get("insight_tiles_enabled", False):
+        try:
+            insight_tiles.write_from_state(state, report_md=report)
+            log.info("Insight board written (insight_tiles.html).")
+        except Exception as exc:  # noqa: BLE001 - defensive; supplementary artifact
+            log.info(f"Insight board skipped ({type(exc).__name__}: {exc}).")
+    else:
+        log.info("Insight board disabled (insight_tiles_enabled=false).")
 
     log.info(f"Insight report written ({len(report.split())} words).")
     return {"insight_report": report, **log.updates()}

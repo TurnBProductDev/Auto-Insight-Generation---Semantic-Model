@@ -15,6 +15,7 @@
 
   "execution_mode": "python",
   "fabric_definitions": true,
+  "powerbi_auth_mode": "auto",
 
   "insight_max_signals": 15,
   "insight_max_investigation_rounds": 9,
@@ -22,8 +23,11 @@
   "insight_probe_max_rows": 20,
   "insight_materiality_pct": 1.0,
   "insight_max_dq_signals": 2,
+  "insight_tiles_enabled": false,
   "insight_history_enabled": true,
   "insight_history_timezone": "Asia/Kolkata",
+  "insight_memory_storage": "local",
+  "insight_memory_runtime_folder": "outputs/.runtime/insight_memory",
 
   "metadata_scope_max_entities": 500,
   "insight_metadata_max_dimensions": 5,
@@ -44,5 +48,7 @@
   "azure_blob_container": "insightgen",
   "azure_blob_prefix": "",
   "azure_blob_history_prefix": "history",
-  "azure_blob_history_feed": "insight_history.json"
+  "azure_blob_history_feed": "insight_history.json",
+  "azure_blob_memory_container": "insightstate",
+  "azure_blob_memory_prefix": ""
 }

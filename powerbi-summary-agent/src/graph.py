@@ -197,6 +197,7 @@ def insight_branch_done(state: dict) -> dict:
 # --- Save Outputs ------------------------------------------------------------
 def save_outputs(state: dict) -> dict:
     log = RunLogger(state)
+    memory_commit = {"status": "skipped", "reason": "memory_disabled_or_unhealthy"}
 
     # Ensure both report files exist even on an early stop.
     reason = "; ".join(state.get("errors", [])) or "pipeline stopped early"
@@ -236,12 +237,14 @@ def save_outputs(state: dict) -> dict:
         reported = signals if state.get("insight_report") else []
         try:
             res = insight_memory.commit_run(state, reported)
+            memory_commit = res
             if res.get("status") == "ok":
                 log.info(f"Insight memory: committed {res.get('committed')} new "
                          f"finding(s); watermark={res.get('watermark')}.")
             else:
                 log.error(f"Insight memory: commit skipped (status={res.get('status')}).")
         except Exception as exc:  # noqa: BLE001 - memory must never fail the run
+            memory_commit = {"status": "failed", "error": str(exc)}
             log.error(f"Insight memory: commit failed ({type(exc).__name__}: {exc}).")
 
     run_log = "\n".join(state.get("logs", []) + [f"[save] wrote outputs to /{state.get('output_folder','outputs')}"])
@@ -250,7 +253,7 @@ def save_outputs(state: dict) -> dict:
     file_io.write_text(state, "run_log.txt", run_log)
 
     log.info("Outputs saved.")
-    return log.updates()
+    return {"insight_memory_commit": memory_commit, **log.updates()}
 
 
 # --- Routers -----------------------------------------------------------------

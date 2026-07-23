@@ -10,7 +10,6 @@ import argparse
 import json
 import os
 import sys
-from datetime import datetime, timezone
 from pathlib import Path
 
 from .graph import build_graph
@@ -27,19 +26,77 @@ except ImportError:
     pass
 
 
+def _env_bool(name: str, value: str) -> bool:
+    normalized = value.strip().lower()
+    if normalized in {"1", "true", "yes", "on"}:
+        return True
+    if normalized in {"0", "false", "no", "off"}:
+        return False
+    raise SystemExit(
+        f"{name} must be true/false, yes/no, on/off, or 1/0; got {value!r}."
+    )
+
+
+def _apply_environment_overrides(cfg: dict) -> dict:
+    """Apply deployment settings without baking the real config into an image.
+
+    The real config file remains the most convenient local-development path.
+    Container Apps Jobs can use the committed config template and provide the
+    target identifiers/storage settings as environment variables instead.
+    """
+    raw_overrides = os.environ.get("AGENT_CONFIG_OVERRIDES_JSON")
+    if raw_overrides:
+        try:
+            overrides = json.loads(raw_overrides)
+        except json.JSONDecodeError as exc:
+            raise SystemExit(
+                f"AGENT_CONFIG_OVERRIDES_JSON is not valid JSON: {exc}"
+            ) from exc
+        if not isinstance(overrides, dict):
+            raise SystemExit("AGENT_CONFIG_OVERRIDES_JSON must be a JSON object.")
+        cfg.update(overrides)
+
+    string_overrides = {
+        "POWERBI_TENANT_ID": "tenant_id",
+        "POWERBI_WORKSPACE_ID": "workspace_id",
+        "POWERBI_DATASET_ID": "dataset_id",
+        "AGENT_OUTPUT_FOLDER": "output_folder",
+        "INSIGHT_HISTORY_TIMEZONE": "insight_history_timezone",
+        "INSIGHT_MEMORY_STORAGE": "insight_memory_storage",
+        "INSIGHT_MEMORY_RUNTIME_FOLDER": "insight_memory_runtime_folder",
+        "AZURE_BLOB_ACCOUNT": "azure_blob_account",
+        "AZURE_BLOB_CONTAINER": "azure_blob_container",
+        "AZURE_BLOB_PREFIX": "azure_blob_prefix",
+        "AZURE_BLOB_HISTORY_PREFIX": "azure_blob_history_prefix",
+        "AZURE_BLOB_HISTORY_FEED": "azure_blob_history_feed",
+        "AZURE_BLOB_MEMORY_CONTAINER": "azure_blob_memory_container",
+        "AZURE_BLOB_MEMORY_PREFIX": "azure_blob_memory_prefix",
+    }
+    for env_name, config_name in string_overrides.items():
+        if env_name in os.environ:
+            cfg[config_name] = os.environ[env_name]
+
+    boolean_overrides = {
+        "AZURE_BLOB_UPLOAD": "azure_blob_upload",
+        "INSIGHT_HISTORY_ENABLED": "insight_history_enabled",
+    }
+    for env_name, config_name in boolean_overrides.items():
+        if env_name in os.environ:
+            cfg[config_name] = _env_bool(env_name, os.environ[env_name])
+
+    return cfg
+
+
 def load_config(config_path: Path) -> dict:
     cfg = json.loads(config_path.read_text(encoding="utf-8"))
-    # Environment overrides let one container image target a model without
-    # baking deployment-specific IDs into the image.
-    overrides = {
-        "tenant_id": "POWERBI_TENANT_ID",
-        "workspace_id": "POWERBI_WORKSPACE_ID",
-        "dataset_id": "POWERBI_DATASET_ID",
-        "output_folder": "AGENT_OUTPUT_FOLDER",
-    }
-    for key, env_name in overrides.items():
-        if os.environ.get(env_name):
-            cfg[key] = os.environ[env_name]
+    cfg = _apply_environment_overrides(cfg)
+    # Surface the Power BI auth mode into the env so the REST executor (which has
+    # no config handle) can resolve it. Env wins over config.json; "auto" ->
+    # managed identity in Azure, interactive locally.
+    auth_mode = os.environ.get("POWERBI_AUTH_MODE") or cfg.get("powerbi_auth_mode")
+    if auth_mode:
+        os.environ["POWERBI_AUTH_MODE"] = str(auth_mode)
+        cfg["powerbi_auth_mode"] = str(auth_mode)
     required = ["tenant_id", "workspace_id", "dataset_id"]
     missing = [k for k in required if not cfg.get(k) or str(cfg[k]).startswith("PASTE_")]
     if missing:
@@ -48,13 +105,19 @@ def load_config(config_path: Path) -> dict:
 
 
 def build_initial_state(cfg: dict, config_path: str = "") -> dict:
+    output_folder = cfg.get("output_folder", "outputs")
+    memory_storage = str(cfg.get("insight_memory_storage", "local") or "local").lower()
+    memory_root = cfg.get("insight_memory_runtime_folder")
+    if memory_storage == "azure_blob" and not memory_root:
+        # Never seed cloud memory from the existing local memory directory.
+        memory_root = f"{output_folder}/.runtime/insight_memory"
     return {
         # Node 1 (load_config) reads business_rules.md from beside this path.
         "config_path": config_path,
         "tenant_id": cfg["tenant_id"],
         "workspace_id": cfg["workspace_id"],
         "dataset_id": cfg["dataset_id"],
-        "output_folder": cfg.get("output_folder", "outputs"),
+        "output_folder": output_folder,
         "summary_word_limit": cfg.get("summary_word_limit", 300),
         "max_rows_per_query": cfg.get("max_rows_per_query", 15),
         "ai_provider": os.environ.get("LLM_PROVIDER") or cfg.get("ai_provider", "azure_openai"),
@@ -68,9 +131,11 @@ def build_initial_state(cfg: dict, config_path: str = "") -> dict:
         "insight_probe_max_rows": cfg.get("insight_probe_max_rows", 20),
         "insight_materiality_pct": cfg.get("insight_materiality_pct", 1.0),
         "insight_max_dq_signals": cfg.get("insight_max_dq_signals", 2),
+        "insight_tiles_enabled": cfg.get("insight_tiles_enabled", False),
         # Cross-run insight memory (Phase 1): remember reported findings and only
         # surface unseen ones on later runs.
         "insight_memory_enabled": cfg.get("insight_memory_enabled", True),
+        "insight_memory_root": memory_root,
         "insight_memory_policy": cfg.get("insight_memory_policy", "never_repeat"),
         "insight_memory_cooldown_days": cfg.get("insight_memory_cooldown_days", 14),
         "insight_max_new_per_run": cfg.get("insight_max_new_per_run", 3),
@@ -153,6 +218,9 @@ def write_api_payloads(final: dict) -> dict:
     cfg = final.get("config", {})
     if not cfg.get("api_payloads", True):
         return {"status": "skipped", "reason": "api_payloads_disabled"}
+    if not final.get("report_summary") or not final.get("insight_report"):
+        print("API payloads skipped: this run did not produce both real reports.")
+        return {"status": "failed", "reason": "real_reports_missing"}
     out = PROJECT_ROOT / final.get("output_folder", "outputs")
     summary_md = out / "report_summary.md"
     signals_json = out / "insight_signals.json"
@@ -181,36 +249,26 @@ def write_api_payloads(final: dict) -> dict:
         note = f", {dropped} bullet(s) dropped by fidelity guard" if dropped else ""
         print(f"API payloads: {api_dir} "
               f"({len(kpi_payload)} KPI cards, {len(report_payload['sections'])} summary sections{note})")
-        return {
-            "status": "ok",
-            "kpiCards": len(kpi_payload),
-            "summarySections": len(report_payload["sections"]),
-            "droppedBullets": dropped,
-        }
+        return {"status": "ok"}
     except Exception as e:  # noqa: BLE001 - best-effort, must never fail the main run
         print(f"API payloads skipped ({type(e).__name__}: {e})")
         return {"status": "failed", "error": str(e)}
 
 
-def _azure_job_strict(cfg: dict) -> bool:
-    value = os.environ.get("AZURE_JOB_STRICT")
-    if value is not None:
-        return value.strip().lower() in {"1", "true", "yes", "on"}
-    return bool(os.environ.get("CONTAINER_APP_JOB_NAME")) or bool(
-        cfg.get("azure_job_strict", False)
-    )
-
-
 def main(argv=None) -> int:
-    started = datetime.now(timezone.utc)
     parser = argparse.ArgumentParser(description="Power BI Report Summary Agent")
-    parser.add_argument("--config", default=str(PROJECT_ROOT / "config" / "config.json"))
+    parser.add_argument(
+        "--config",
+        default=os.environ.get("AGENT_CONFIG_PATH")
+        or str(PROJECT_ROOT / "config" / "config.json"),
+    )
     args = parser.parse_args(argv)
 
     cfg = load_config(Path(args.config))
     state = build_initial_state(cfg, str(Path(args.config)))
 
     from .tools.azure_blob import (
+        cloud_memory_enabled,
         hydrate_insight_memory,
         publish_insight_memory,
         upload_api_payloads,
@@ -218,13 +276,12 @@ def main(argv=None) -> int:
     )
 
     memory_hydration = hydrate_insight_memory(state)
-    if _azure_job_strict(cfg) and memory_hydration.get("status") == "failed":
-        print("Azure job stopped: persistent insight memory could not be hydrated.")
+    if cloud_memory_enabled(state) and memory_hydration.get("status") == "failed":
+        print("Pipeline stopped: cloud insight memory could not be hydrated safely.")
         return 1
 
     app = build_graph()
     final = app.invoke(state)
-    memory_publish = publish_insight_memory(final, memory_hydration)
 
     print("\n" + "=" * 70)
     print("PIPELINE COMPLETE")
@@ -255,10 +312,40 @@ def main(argv=None) -> int:
     elif history_error is None:
         print("Insight history skipped: no completed insight report or feature disabled.")
 
-    # Local runs remain best-effort. Azure jobs inspect these structured results
-    # below and exit non-zero when a required publication did not complete.
-    api_upload = upload_api_payloads(final)
+    # Publish app-facing outputs first. Cloud memory advances only after these
+    # deliveries succeed, so a retry cannot suppress an insight the app missed.
+    api_upload = (
+        upload_api_payloads(final)
+        if api_payloads.get("status") == "ok"
+        else {"status": "skipped", "reason": "api_payload_generation_failed"}
+    )
     history_upload = upload_insight_history(final, history_entry)
+
+    delivery_ok = bool(final.get("report_summary") and final.get("insight_report"))
+    if cfg.get("api_payloads", True):
+        delivery_ok = delivery_ok and api_payloads.get("status") == "ok"
+    if cfg.get("azure_blob_upload", False) and cfg.get("api_payloads", True):
+        delivery_ok = delivery_ok and api_upload.get("status") == "ok"
+    if cfg.get("azure_blob_upload", False) and cfg.get("insight_history_enabled", True):
+        delivery_ok = (
+            delivery_ok
+            and history_upload.get("status") in {"created", "exists"}
+            and history_upload.get("feedStatus") in {"updated", "unchanged"}
+        )
+
+    cloud_memory = cloud_memory_enabled(final)
+    memory_commit = final.get("insight_memory_commit", {}) or {}
+    if cloud_memory and delivery_ok and memory_commit.get("status") == "ok":
+        memory_publish = publish_insight_memory(final, memory_hydration)
+    elif cloud_memory:
+        memory_publish = {
+            "status": "skipped",
+            "reason": (
+                "delivery_failed" if not delivery_ok else "memory_commit_failed"
+            ),
+        }
+    else:
+        memory_publish = {"status": "skipped", "reason": "local_memory_storage"}
 
     summary_path = out / "report_summary.md"
     if summary_path.exists():
@@ -270,52 +357,13 @@ def main(argv=None) -> int:
         print("\n----- insight_report.md -----\n")
         print(insight_path.read_text(encoding="utf-8"))
 
-    strict = _azure_job_strict(cfg)
-    failures = []
-    if not final.get("report_summary"):
-        failures.append("report_summary_missing")
-    if not final.get("insight_report"):
-        failures.append("insight_report_missing")
-    if cfg.get("api_payloads", True) and api_payloads.get("status") != "ok":
-        failures.append("api_payload_generation_failed")
-    if cfg.get("azure_blob_upload", False) and api_upload.get("status") != "ok":
-        failures.append("api_payload_upload_failed")
-    if cfg.get("insight_history_enabled", True) and cfg.get("azure_blob_upload", False):
-        if history_upload.get("status") not in {"created", "exists"}:
-            failures.append("insight_history_archive_failed")
-        if history_upload.get("feedStatus") not in {"updated", "unchanged"}:
-            failures.append("insight_history_feed_failed")
-    if str(cfg.get("insight_memory_storage", "local")).lower() == "azure_blob":
-        if memory_publish.get("status") != "ok":
-            failures.append("insight_memory_publish_failed")
-
-    finished = datetime.now(timezone.utc)
-    manifest = {
-        "runId": os.environ.get("CONTAINER_APP_JOB_EXECUTION_NAME"),
-        "startedAt": started.isoformat(timespec="seconds"),
-        "finishedAt": finished.isoformat(timespec="seconds"),
-        "durationSeconds": round((finished - started).total_seconds(), 3),
-        "status": "failed" if failures else "completed",
-        "strict": strict,
-        "failures": failures,
-        "reports": {
-            "summary": bool(final.get("report_summary")),
-            "insights": bool(final.get("insight_report")),
-        },
-        "apiPayloads": api_payloads,
-        "apiUpload": api_upload,
-        "historyUpload": history_upload,
-        "memoryHydration": memory_hydration,
-        "memoryPublish": memory_publish,
-    }
-    (out / "run_manifest.json").write_text(
-        json.dumps(manifest, indent=2, ensure_ascii=False, default=str),
-        encoding="utf-8",
-    )
-    print(f"Run manifest: {out / 'run_manifest.json'} status={manifest['status']}")
-    if failures:
-        print("Run failures: " + ", ".join(failures))
-    return 1 if strict and failures else 0
+    if cloud_memory and memory_publish.get("status") != "ok":
+        print(
+            "Pipeline failed: cloud insight memory was not advanced "
+            f"({memory_publish.get('reason') or memory_publish.get('status')})."
+        )
+        return 1
+    return 0
 
 
 if __name__ == "__main__":

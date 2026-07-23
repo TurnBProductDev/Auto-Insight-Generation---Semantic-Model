@@ -1,0 +1,33 @@
+# Secrets and real deployment configuration must be injected at runtime.
+.env
+.env.*
+!.env.example
+.pbi_token_cache.json
+config/config.json
+config/business_rules.md
+
+# Generated business artifacts and cross-run state belong in Blob Storage.
+outputs/
+outputs_replay/
+outputs_bizlang_preview/
+insight_memory/
+
+# Local environments/caches.
+.venv/
+venv/
+env/
+ENV/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Source-control/editor noise.
+.git/
+.gitignore
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
