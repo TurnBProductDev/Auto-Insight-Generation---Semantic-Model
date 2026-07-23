@@ -33,10 +33,6 @@ class Signal(BaseModel):
             "every covered finding is marked seen and none reappears next run."
         ),
     )
-    decomposition: Optional[List[dict]] = Field(
-        default=None,
-        description="Exact price-volume decomposition carried by the deterministic candidate.",
-    )
     id: str = Field(description="Short snake_case unique id.")
     kind: Literal["business", "data_quality"] = Field(
         description=(

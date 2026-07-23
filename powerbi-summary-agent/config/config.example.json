@@ -16,6 +16,9 @@
   "execution_mode": "python",
   "fabric_definitions": true,
   "powerbi_auth_mode": "auto",
+  "powerbi_query_api": "auto",
+  "powerbi_effective_username": "",
+  "powerbi_rls_roles": [],
 
   "insight_max_signals": 15,
   "insight_max_investigation_rounds": 9,

@@ -130,6 +130,7 @@ POWERBI_TENANT_ID
 POWERBI_WORKSPACE_ID
 POWERBI_DATASET_ID
 POWERBI_AUTH_MODE=managed_identity
+POWERBI_QUERY_API=arrow
 AZURE_MANAGED_IDENTITY_CLIENT_ID       # user-assigned identity only
 
 AZURE_OPENAI_API_KEY                   # configure as a Container Apps secret
@@ -160,6 +161,15 @@ repo-root `.pbi_token_cache.json` (also gitignored — created on first login).
 The first login may open a browser; later runs use the cached refresh token
 silently. The Power BI Execute Queries tenant setting and dataset read/build
 permission are required.
+
+`POWERBI_QUERY_API=auto` preserves the legacy JSON `executeQueries` endpoint
+for interactive local runs and selects the Apache Arrow `executeDaxQueries`
+endpoint for managed-identity/service-principal runs. Set it explicitly to
+`json` or `arrow` to override that choice. Arrow responses are decoded and
+wrapped in the same internal row shape as JSON, so downstream summary,
+insight, history, and memory nodes are unchanged. Optional RLS impersonation
+is disabled by default; it is activated only when
+`POWERBI_EFFECTIVE_USERNAME` and/or `POWERBI_RLS_ROLES` are supplied.
 
 > Offline replay scripts (`scripts/replay_*.py`) read fixtures from `outputs/`,
 > which is gitignored. On a fresh clone those artifacts don't exist yet — do one

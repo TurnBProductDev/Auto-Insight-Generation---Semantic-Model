@@ -60,6 +60,8 @@ def _apply_environment_overrides(cfg: dict) -> dict:
         "POWERBI_TENANT_ID": "tenant_id",
         "POWERBI_WORKSPACE_ID": "workspace_id",
         "POWERBI_DATASET_ID": "dataset_id",
+        "POWERBI_QUERY_API": "powerbi_query_api",
+        "POWERBI_EFFECTIVE_USERNAME": "powerbi_effective_username",
         "AGENT_OUTPUT_FOLDER": "output_folder",
         "INSIGHT_HISTORY_TIMEZONE": "insight_history_timezone",
         "INSIGHT_MEMORY_STORAGE": "insight_memory_storage",
@@ -97,6 +99,29 @@ def load_config(config_path: Path) -> dict:
     if auth_mode:
         os.environ["POWERBI_AUTH_MODE"] = str(auth_mode)
         cfg["powerbi_auth_mode"] = str(auth_mode)
+
+    # The executor intentionally has no state/config dependency. Surface its
+    # wire-format and optional RLS impersonation settings once, before graph
+    # construction. RLS stays disabled unless a username and/or roles are
+    # explicitly configured.
+    query_api = os.environ.get("POWERBI_QUERY_API") or cfg.get(
+        "powerbi_query_api", "auto"
+    )
+    os.environ["POWERBI_QUERY_API"] = str(query_api)
+    cfg["powerbi_query_api"] = str(query_api)
+
+    effective_username = os.environ.get("POWERBI_EFFECTIVE_USERNAME") or cfg.get(
+        "powerbi_effective_username"
+    )
+    if effective_username:
+        os.environ["POWERBI_EFFECTIVE_USERNAME"] = str(effective_username)
+
+    if "POWERBI_RLS_ROLES" not in os.environ:
+        rls_roles = cfg.get("powerbi_rls_roles") or []
+        if rls_roles:
+            if not isinstance(rls_roles, list):
+                raise SystemExit("powerbi_rls_roles in config.json must be a JSON array.")
+            os.environ["POWERBI_RLS_ROLES"] = json.dumps(rls_roles)
     required = ["tenant_id", "workspace_id", "dataset_id"]
     missing = [k for k in required if not cfg.get(k) or str(cfg[k]).startswith("PASTE_")]
     if missing:

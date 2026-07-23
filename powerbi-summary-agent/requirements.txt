@@ -3,8 +3,13 @@ langchain>=0.3
 langchain-core>=0.3
 langchain-anthropic>=0.3
 langchain-openai>=0.3
+# Preserve the SDK versions used by the last production image so an Arrow-only
+# rebuild cannot silently change LLM behaviour.
+anthropic==0.117.1
+openai==2.46.0
 msal>=1.30
 requests>=2.31
+pyarrow>=18.0
 pydantic>=2.7
 python-dotenv>=1.0
 azure-storage-blob>=12.19
