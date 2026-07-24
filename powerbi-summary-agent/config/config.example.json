@@ -4,6 +4,20 @@
   "dataset_id":   "PASTE_YOUR_DATASET_ID",
   "output_folder": "outputs",
   "summary_word_limit": 800,
+  "fresh_summary_enabled": true,
+  "fresh_summary_max_words": 220,
+  "summary_visual_enabled": true,
+  "summary_candidates_max": 12,
+  "summary_temporal_batch_share": 0.5,
+  "summary_delayed_after_periods": 1,
+  "summary_stale_after_periods": 2,
+  "summary_memory_enabled": true,
+  "summary_memory_storage": "local",
+  "summary_memory_runtime_folder": "outputs/.runtime/summary_memory",
+  "summary_memory_policy": "never_repeat",
+  "summary_memory_cooldown_days": 14,
+  "summary_history_enabled": true,
+  "summary_history_timezone": "Asia/Kolkata",
   "max_rows_per_query": 15,
 
   "ai_provider": "azure_openai",
@@ -53,5 +67,14 @@
   "azure_blob_history_prefix": "history",
   "azure_blob_history_feed": "insight_history.json",
   "azure_blob_memory_container": "insightstate",
-  "azure_blob_memory_prefix": ""
+  "azure_blob_memory_prefix": "",
+  "azure_blob_summary_memory_prefix": "summary-memory",
+  "azure_blob_summary_history_prefix": "summary-history",
+  "azure_blob_summary_history_feed": "summary_history.json",
+
+  "ai_content_publish_enabled": false,
+  "ai_content_client": "",
+  "ai_content_report_ids": [],
+  "ai_content_ttl_hours": 24,
+  "ai_content_alert_days": 7
 }

@@ -7,7 +7,10 @@ superstep on a thread pool) and reconverge at save_outputs:
 START -> load_config -> read_metadata -> semantic_profile -> baseline_scope
       -> baseline_coverage -> understand_report
     +-> plan_dax -> generate_dax -> validate_dax -> execute_dax
-    |       -> normalize_results -> generate_summary -> summary_branch_done -+
+    |       -> normalize_results -> summary_period_resolver
+    |       -> summary_candidate_builder -> summary_novelty_filter
+    |       -> fresh_summary_generator -> fresh_summary_validator
+    |       -> summary_branch_done -----------------------------------------+
     +-> insight_normalize -> insight_temporal -> insight_business_day_source
             -> insight_recent_week -> insight_daily -> insight_evidence_catalog
             -> insight_stat_detector -> insight_novelty_filter
@@ -19,7 +22,7 @@ START -> load_config -> read_metadata -> semantic_profile -> baseline_scope
 
 Conditional edges:
   * metadata missing (pre-fork `fatal`)        -> save_outputs (stop everything)
-  * no valid summary DAX (`summary_fatal`)     -> summary_branch_done (insight branch continues)
+  * no valid summary DAX (`summary_fatal`)     -> fresh summary uses shared baseline evidence
 
 The join is an explicit barrier: only summary_branch_done and
 insight_branch_done edge into save_outputs (via a joined edge that waits for
@@ -46,6 +49,11 @@ from .agents import (
     dax_validator,
     result_normalizer,
     summary_generator,
+    summary_period_resolver,
+    summary_candidate_builder,
+    summary_novelty_filter,
+    fresh_summary_generator,
+    fresh_summary_validator,
     insight_result_normalizer,
     insight_temporal,
     insight_business_day_source,
@@ -262,7 +270,15 @@ def _after_metadata(state: dict) -> str:
 
 
 def _after_validation(state: dict) -> str:
-    return "summary_branch_done" if state.get("summary_fatal") else "execute_dax"
+    if state.get("summary_fatal"):
+        # Fresh-summary mode can still produce an honest descriptive view from
+        # the pre-fork baseline portfolio. Legacy mode keeps its old shortcut.
+        return "summary_period_resolver" if state.get("fresh_summary_enabled", True) else "summary_branch_done"
+    return "execute_dax"
+
+
+def _after_normalize(state: dict) -> str:
+    return "summary_period_resolver" if state.get("fresh_summary_enabled", True) else "generate_summary"
 
 
 # --- Build -------------------------------------------------------------------
@@ -283,6 +299,11 @@ def build_graph():
     g.add_node("execute_dax", execute_dax)
     g.add_node("normalize_results", result_normalizer.run)
     g.add_node("generate_summary", summary_generator.run)
+    g.add_node("summary_period_resolver", summary_period_resolver.run)
+    g.add_node("summary_candidate_builder", summary_candidate_builder.run)
+    g.add_node("summary_novelty_filter", summary_novelty_filter.run)
+    g.add_node("fresh_summary_generator", fresh_summary_generator.run)
+    g.add_node("fresh_summary_validator", fresh_summary_validator.run)
     g.add_node("summary_branch_done", summary_branch_done)
 
     # Insight branch
@@ -320,10 +341,23 @@ def build_graph():
     g.add_edge("plan_dax", "generate_dax")
     g.add_edge("generate_dax", "validate_dax")
     g.add_conditional_edges("validate_dax", _after_validation,
-                            {"execute_dax": "execute_dax", "summary_branch_done": "summary_branch_done"})
+                            {
+                                "execute_dax": "execute_dax",
+                                "summary_period_resolver": "summary_period_resolver",
+                                "summary_branch_done": "summary_branch_done",
+                            })
     g.add_edge("execute_dax", "normalize_results")
-    g.add_edge("normalize_results", "generate_summary")
+    g.add_conditional_edges("normalize_results", _after_normalize,
+                            {
+                                "summary_period_resolver": "summary_period_resolver",
+                                "generate_summary": "generate_summary",
+                            })
     g.add_edge("generate_summary", "summary_branch_done")
+    g.add_edge("summary_period_resolver", "summary_candidate_builder")
+    g.add_edge("summary_candidate_builder", "summary_novelty_filter")
+    g.add_edge("summary_novelty_filter", "fresh_summary_generator")
+    g.add_edge("fresh_summary_generator", "fresh_summary_validator")
+    g.add_edge("fresh_summary_validator", "summary_branch_done")
 
     # Insight branch
     g.add_edge("insight_normalize", "insight_temporal")

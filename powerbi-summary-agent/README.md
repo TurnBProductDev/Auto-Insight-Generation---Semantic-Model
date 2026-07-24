@@ -234,6 +234,11 @@ is not read.
 | `insight_materiality_pct` | Signal materiality floor |
 | `insight_stat_*` | Outlier, concentration, reconciliation, trend, and candidate limits |
 | `insight_comparable_population`, `insight_excluded_entities` | Optional machine-enforced business-rule scope; data discovery audits it |
+| `ai_content_publish_enabled` | Also project validated outputs into the per-client app-serving container |
+| `ai_content_client` | Existing tenant container name, for example `cityflower` |
+| `ai_content_report_ids` | Optional report GUID override; when empty, matching report IDs are discovered from Power BI |
+| `ai_content_ttl_hours` | Envelope freshness lifetime (default 24 hours) |
+| `ai_content_alert_days` | Rolling alert retention in calendar days (default 7) |
 
 When Azure Blob upload is enabled, the two latest API payloads keep their
 existing overwrite behavior. Insight history is different: every completed run
@@ -249,6 +254,31 @@ Azure Container Apps Jobs automatically provide
 `CONTAINER_APP_JOB_EXECUTION_NAME`; the writer uses it as the stable run id so a
 replica retry is idempotent. Other schedulers can provide
 `INSIGHT_HISTORY_RUN_ID` for the same behavior.
+
+See [docs/azure-blob-output-schemas.md](docs/azure-blob-output-schemas.md) for
+the complete field-by-field contracts, retention semantics, and LLM-consumption
+guidance for every public and private Azure JSON document.
+
+### Per-client app-serving projection
+
+When `ai_content_publish_enabled` is true, a successful run additionally writes
+the unchanged public payloads into the configured client's existing container:
+
+```text
+ai-content/kpi/client/insights.json
+ai-content/kpi/client/alerts.json
+ai-content/report-summaries/client/{reportId}.json
+ai-content/report-summaries/client/{reportId}.html
+```
+
+JSON blobs use a versioned provenance envelope whose `payload` is the existing
+UI contract. The HTML summary is the generated white/teal document with
+provenance stored as Blob metadata. Report GUIDs can be configured explicitly
+or discovered by matching workspace reports to the run's dataset. Alert updates
+replace a same-day retry, retain seven calendar days, and use an ETag-conditional
+merge. This client delivery occurs before novelty memory commits; failed serving
+publication leaves the affected content eligible for the next run. Private
+`memory.json` is never copied under `ai-content/`.
 
 ### Cloud insight memory
 

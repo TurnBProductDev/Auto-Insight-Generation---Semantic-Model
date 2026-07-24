@@ -40,6 +40,7 @@ from ..utils.json_utils import dumps
 Severity = Literal["critical", "warning", "positive", "info"]
 Tone = Literal["positive", "critical", "warning", "info", "teal"]
 Direction = Literal["up", "down"]
+SummaryType = Literal["new_data", "new_perspective", "no_new_perspective", "memory_unavailable"]
 
 
 # --------------------------------------------------------------------------
@@ -90,6 +91,15 @@ class ReportSection(BaseModel):
     points: List[str]
 
 
+class ReportVisual(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    type: Literal["bar", "line"]
+    title: str
+    labels: List[str]
+    values: List[float]
+    value_label: str
+
+
 class ReportSummaryPayload(BaseModel):
     model_config = ConfigDict(extra="forbid")
     title: str
@@ -97,6 +107,11 @@ class ReportSummaryPayload(BaseModel):
     headline: str
     metrics: List[ReportMetric]
     sections: List[ReportSection]
+    summaryType: Optional[SummaryType] = None
+    dataAsOf: Optional[str] = None
+    grain: Optional[str] = None
+    freshnessStatus: Optional[str] = None
+    visual: Optional[ReportVisual] = None
 
 
 # --------------------------------------------------------------------------
@@ -488,3 +503,48 @@ def generate_report_summary_payload(
     }
     ReportSummaryPayload(**payload)  # strict validation (raises on mismatch)
     return payload, dropped
+
+
+def generate_fresh_report_summary_payload(
+    state: dict,
+    *,
+    title: str = "AI Summary",
+    generated_at: Optional[datetime] = None,
+) -> Dict[str, Any]:
+    """Build the latest-summary API object from the already validated draft.
+
+    Fresh-summary mode intentionally makes no second LLM call here. Markdown,
+    HTML, history, and this payload therefore stay on one source of truth.
+    """
+    summary = state.get("fresh_summary") or {}
+    if not summary.get("heading"):
+        raise ValueError("fresh_summary is missing a heading")
+    metrics = []
+    for metric in summary.get("metrics") or []:
+        value = {
+            "label": str(metric.get("label") or "").strip(),
+            "value": str(metric.get("value") or "").strip(),
+            "tone": metric.get("tone") or "teal",
+        }
+        if value["label"] and value["value"]:
+            metrics.append(ReportMetric(**value).model_dump())
+    visual = summary.get("visual")
+    if visual:
+        visual = ReportVisual(**visual).model_dump()
+    payload = {
+        "title": title,
+        "generatedAt": _now(generated_at).date().isoformat(),
+        "headline": str(summary.get("heading")).strip(),
+        "metrics": metrics,
+        "sections": [{
+            "heading": "Summary",
+            "tone": "teal",
+            "points": [str(item).strip() for item in summary.get("paragraphs") or [] if str(item).strip()],
+        }],
+        "summaryType": summary.get("summary_type"),
+        "dataAsOf": summary.get("data_as_of"),
+        "grain": summary.get("grain"),
+        "freshnessStatus": summary.get("freshness_status"),
+        "visual": visual,
+    }
+    return ReportSummaryPayload(**payload).model_dump()

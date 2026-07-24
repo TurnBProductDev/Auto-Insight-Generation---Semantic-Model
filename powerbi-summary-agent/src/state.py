@@ -17,6 +17,18 @@ class SummaryAgentState(TypedDict, total=False):
     dataset_id: str
     output_folder: str
     summary_word_limit: int
+    fresh_summary_enabled: bool
+    fresh_summary_max_words: int
+    summary_visual_enabled: bool
+    summary_candidates_max: int
+    summary_temporal_batch_share: float
+    summary_delayed_after_periods: int
+    summary_stale_after_periods: int
+    summary_memory_enabled: bool
+    summary_memory_root: str
+    summary_memory_policy: str
+    summary_memory_cooldown_days: int
+    summary_history_enabled: bool
     max_rows_per_query: int
     ai_provider: str
     model: str
@@ -129,6 +141,14 @@ class SummaryAgentState(TypedDict, total=False):
     raw_pbi_results: Dict[str, Any]         # Node 7
     clean_summary_data: Dict[str, Any]      # Node 8
     report_summary: str                     # Node 9
+    summary_period_context: Dict[str, Any]
+    summary_candidates: List[Dict[str, Any]]
+    summary_eligible_candidates: List[Dict[str, Any]]
+    summary_novelty: Dict[str, Any]
+    summary_memory_hydration: Dict[str, Any]
+    fresh_summary: Dict[str, Any]
+    summary_pending_keys: List[str]
+    summary_memory_commit: Dict[str, Any]
 
     # --- insight branch artifacts ---
     insight_dax_plan: Dict[str, Any]
