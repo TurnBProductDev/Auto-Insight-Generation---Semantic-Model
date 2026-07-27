@@ -26,6 +26,11 @@ powerbi-summary-agent/outputs/
 powerbi-summary-agent/outputs_replay/
 powerbi-summary-agent/outputs_bizlang_preview/
 
+# Cross-run insight memory — per-dataset reported-finding store + daily feed
+# (contains real business findings/numbers; mutable run state).
+insight_memory/
+powerbi-summary-agent/insight_memory/
+
 # =====================================================================
 # Python
 # =====================================================================

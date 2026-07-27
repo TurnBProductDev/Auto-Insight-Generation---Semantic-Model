@@ -7,7 +7,8 @@ signals, investigations, reports, or memory.
 from __future__ import annotations
 
 import math
-from typing import Any, List
+import re
+from typing import Any, List, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -18,128 +19,165 @@ from ..utils.json_utils import dumps
 from ..utils.logger import RunLogger
 
 
+class FreshSummaryMetricSelection(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    fact_id: str = Field(description="Exact supported fact id supplying this tile's value")
+    label: str = Field(description="Short presentation label; do not include the value")
+
+
+class FreshSummarySection(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    heading: Literal["What's working", "Risks", "Recommended actions"]
+    points: List[str]
+
+
 class FreshSummaryDraft(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    heading: str
-    paragraphs: List[str]
+    headline: str
+    metrics: List[FreshSummaryMetricSelection]
+    sections: List[FreshSummarySection]
     covered_candidate_ids: List[str] = Field(
         description="Exact candidate ids actually represented in the summary"
     )
+
+
+_SECTION_TONES = {
+    "what's working": "positive",
+    "risks": "warning",
+    "recommended actions": "info",
+}
+_CHANGE_WORDS = {"change", "growth", "variance", "delta", "decline", "increase", "decrease"}
+_RISK_WORDS = {
+    "out of stock", "stockout", "unwanted", "expired", "shortage", "decline", "loss", "risk"
+}
 
 
 def _number(value: Any) -> bool:
     return isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value)
 
 
-def _fmt(value: Any, name: str = "") -> str:
-    if not _number(value):
-        return str(value)
-    value = float(value)
-    lowered = name.casefold()
-    if "%" in name or "percent" in lowered or " pct" in lowered:
-        value = value * 100 if abs(value) <= 1.5 else value
-        return f"{value:+.1f}%"
-    signed = any(token in lowered for token in ("growth", "change", "variance", "delta"))
-    absolute = abs(value)
-    if absolute >= 1_000_000_000:
-        return f"{value / 1_000_000_000:{'+' if signed else ''}.2f}B"
-    if absolute >= 1_000_000:
-        return f"{value / 1_000_000:{'+' if signed else ''}.1f}M"
-    if absolute >= 1_000:
-        return f"{value / 1_000:{'+' if signed else ''}.1f}K"
-    if value.is_integer():
-        return f"{int(value):,}"
-    return f"{value:{'+' if signed else ''},.1f}"
+def _numeric_facts(selected: list[dict]) -> list[dict]:
+    facts: list[dict] = []
+    seen: set[str] = set()
+    for candidate in selected:
+        for fact in (candidate.get("evidence") or {}).get("facts", []) or []:
+            fact_id = str(fact.get("fact_id") or "").strip()
+            display = str(fact.get("display_value") or "").strip()
+            if fact_id and display and fact_id not in seen and _number(fact.get("raw_value")):
+                seen.add(fact_id)
+                facts.append(fact)
+    return facts
 
 
-def _freshness_sentence(period: dict, summary_type: str) -> str:
-    data_as_of = period.get("data_as_of")
-    grain = str(period.get("grain") or "snapshot").replace("_", " ")
-    freshness = period.get("freshness_status")
-    if not data_as_of:
-        return "The source does not expose a reliable business-data watermark."
-    if summary_type == "new_perspective":
-        return (
-            f"The underlying {grain}-level data is unchanged and available through "
-            f"{data_as_of}; this is a different view of that reporting period."
-        )
-    if freshness == "stale":
-        return f"The underlying {grain}-level model is available through {data_as_of} and is currently stale."
-    if freshness == "delayed":
-        return f"The underlying {grain}-level model is available through {data_as_of} and is delayed."
-    return ""
+def _metric_label(fact: dict) -> str:
+    subject = str(fact.get("subject") or "Overall").strip()
+    metric = str(fact.get("metric") or "Value").strip()
+    if subject.casefold() == "overall":
+        return metric[:64]
+    return f"{subject} {metric}"[:64]
+
+
+def _metric_tone(fact: dict) -> str:
+    raw = float(fact.get("raw_value") or 0.0)
+    text = " ".join(
+        str(fact.get(key) or "") for key in ("metric", "statement")
+    ).casefold()
+    if any(token in text for token in _RISK_WORDS) and raw > 0:
+        return "critical" if any(token in text for token in ("out of stock", "expired")) else "warning"
+    tokens = set(re.findall(r"[a-z]+", text))
+    if tokens & _CHANGE_WORDS:
+        return "positive" if raw > 0 else "warning" if raw < 0 else "teal"
+    return "teal"
+
+
+def _fact_sentence(fact: dict) -> str:
+    subject = str(fact.get("subject") or "Overall").strip()
+    metric = str(fact.get("metric") or "performance").strip()
+    value = str(fact.get("display_value") or "").strip()
+    if subject.casefold() == "overall":
+        return f"{metric} was {value}."
+    return f"{subject} recorded {value} for {metric.lower()}."
+
+
+def _headline_from_fact(candidate: dict, facts: list[dict]) -> str:
+    if not facts:
+        return str(candidate.get("title_hint") or "Latest performance summary").strip()
+    fact = facts[0]
+    subject = str(fact.get("subject") or "Overall").strip()
+    metric = str(fact.get("metric") or "performance").strip()
+    value = str(fact.get("display_value") or "").strip()
+    raw = float(fact.get("raw_value") or 0.0)
+    tokens = set(re.findall(r"[a-z]+", metric.casefold()))
+    prefix = "" if subject.casefold() == "overall" else f"{subject} "
+    if tokens & _CHANGE_WORDS:
+        base = re.sub(
+            r"\b(change|growth|variance|delta|increase|decrease|decline)\b",
+            "",
+            metric,
+            flags=re.IGNORECASE,
+        ).strip() or "performance"
+        direction = "increased" if raw > 0 else "decreased" if raw < 0 else "was unchanged"
+        text = f"{prefix}{base} {direction}, a change of {value}."
+    else:
+        text = f"{prefix}{metric} was {value}."
+    return text[:1].upper() + text[1:]
+
+
+def _fact_direction(fact: dict) -> str:
+    raw = float(fact.get("raw_value") or 0.0)
+    text = " ".join(str(fact.get(key) or "") for key in ("metric", "statement")).casefold()
+    if any(token in text for token in _RISK_WORDS) and raw > 0:
+        return "risk"
+    tokens = set(re.findall(r"[a-z]+", text))
+    if tokens & _CHANGE_WORDS:
+        return "working" if raw > 0 else "risk" if raw < 0 else "neutral"
+    return "neutral"
 
 
 def _fallback(candidate: dict, period: dict, summary_type: str) -> dict:
-    heading = str(candidate.get("title_hint") or "Latest performance summary")
-    rows = (candidate.get("evidence") or {}).get("rows", []) or []
-    dimension = str(candidate.get("dimension") or "segment").replace("_", " ")
-    metric = str(candidate.get("metric") or "performance").replace("_", " ")
-    paragraphs: list[str] = []
+    """Return a complete, grounded structured draft when LLM authoring fails."""
+    del period, summary_type  # freshness remains code-owned metadata, not invented prose
+    facts = _numeric_facts([candidate])
+    headline = _headline_from_fact(candidate, facts)
+    metric_selections = [
+        {"fact_id": fact["fact_id"], "label": _metric_label(fact)}
+        for fact in facts[:4]
+    ]
+    working = [fact for fact in facts if _fact_direction(fact) == "working"]
+    risks = [fact for fact in facts if _fact_direction(fact) == "risk"]
+    neutral = [fact for fact in facts if _fact_direction(fact) == "neutral"]
 
-    visual = candidate.get("visual") or {}
-    labels = visual.get("labels") or []
-    values = visual.get("values") or []
-    pairs = [(str(label), value) for label, value in zip(labels, values) if _number(value)]
-    if pairs:
-        display_metric = str(visual.get("value_label") or metric).replace("_", " ")
-        by_label = {label.casefold(): (label, value) for label, value in pairs}
-        if "current" in by_label and "prior" in by_label:
-            current = by_label["current"]
-            prior = by_label["prior"]
-            movement = current[1] - prior[1]
-            relation = "above" if movement > 0 else "below" if movement < 0 else "in line with"
-            sentence = (
-                f"Current {display_metric.lower()} was {_fmt(current[1], display_metric)}, "
-                f"{relation} the prior value of {_fmt(prior[1], display_metric)}."
-            )
-            paragraphs.append(sentence)
-            pairs = []
-    if pairs:
-        high = max(pairs, key=lambda item: item[1])
-        low = min(pairs, key=lambda item: item[1])
-        if high[0] == low[0]:
-            sentence = f"{high[0]} recorded {_fmt(high[1], display_metric)} for {display_metric}."
-        else:
-            sentence = (
-                f"Across the returned {dimension} values, {high[0]} recorded the highest "
-                f"{display_metric} at {_fmt(high[1], display_metric)}, while {low[0]} recorded "
-                f"{_fmt(low[1], display_metric)}."
-            )
-        paragraphs.append(sentence)
-    elif rows:
-        facts = []
-        for key, value in rows[0].items():
-            if _number(value):
-                label = str(key).replace("_", " ").strip()
-                if label.casefold().startswith("comparable "):
-                    label = label[len("comparable "):]
-                label = label.replace("QTY", "quantity").replace("Qty", "quantity")
-                if label.casefold() == "bills growth":
-                    label = "transaction growth"
-                label = label.casefold()
-                facts.append(f"{label} was {_fmt(value, str(key))}")
-        if facts:
-            chosen = facts[:3]
-            if len(chosen) == 1:
-                sentence = chosen[0]
-            elif len(chosen) == 2:
-                sentence = f"{chosen[0]} and {chosen[1]}"
-            else:
-                sentence = f"{chosen[0]}, {chosen[1]}, and {chosen[2]}"
-            paragraphs.append(sentence[0].upper() + sentence[1:] + ".")
-        else:
-            paragraphs.append(str(candidate.get("purpose") or heading).rstrip(".") + ".")
-    else:
-        paragraphs.append(str(candidate.get("purpose") or heading).rstrip(".") + ".")
+    working_points = [_fact_sentence(fact) for fact in (working or neutral)[:2]]
+    if not working_points:
+        working_points = ["No positive movement is visible in this selected perspective."]
+    risk_points = [_fact_sentence(fact) for fact in risks[:2]]
+    if not risk_points:
+        risk_points = ["No material downside is visible in this selected perspective."]
 
-    freshness = _freshness_sentence(period, summary_type)
-    if freshness:
-        paragraphs.append(freshness)
+    dimension = str(candidate.get("dimension") or "business").replace("_", " ").strip()
+    action_points = []
+    if risks:
+        fact = risks[0]
+        action_points.append(
+            "Investigate the drivers behind "
+            f"{str(fact.get('subject') or 'the reported segment')}'s "
+            f"{str(fact.get('metric') or 'movement').lower()} of {fact.get('display_value')} "
+            "and confirm whether it persists in the next reporting cycle."
+        )
+    action_points.append(
+        f"Review the {dimension} breakdown in the next reporting cycle to confirm whether the current pattern persists."
+    )
     return {
-        "heading": heading,
-        "paragraphs": paragraphs,
+        "headline": headline,
+        "metrics": metric_selections,
+        "sections": [
+            {"heading": "What's working", "points": working_points},
+            {"heading": "Risks", "points": risk_points},
+            {"heading": "Recommended actions", "points": action_points[:3]},
+        ],
         "covered_candidate_ids": [candidate.get("candidate_id")],
         "validation_status": "deterministic_fallback",
         "authoring_mode": "deterministic_fallback",
@@ -164,6 +202,7 @@ def _empty_summary(state: dict, kind: str) -> dict:
         "summary_type": kind,
         "heading": heading,
         "paragraphs": paragraphs,
+        "sections": [{"heading": "Summary", "tone": "teal", "points": paragraphs}],
         "covered_candidate_ids": [],
         "covered_summary_keys": [],
         "metrics": [],
@@ -200,6 +239,44 @@ def _supported_fact_lines(selected: list[dict]) -> str:
     return "\n".join(lines) or "- No numeric display facts are available; write qualitatively."
 
 
+def _resolve_metrics(authored: dict, selected: list[dict]) -> list[dict]:
+    facts = {str(fact.get("fact_id")): fact for fact in _numeric_facts(selected)}
+    metrics = []
+    seen: set[str] = set()
+    for selection in authored.get("metrics", []) or []:
+        fact_id = str(selection.get("fact_id") or "").strip()
+        fact = facts.get(fact_id)
+        if not fact or fact_id in seen:
+            continue
+        seen.add(fact_id)
+        metrics.append({
+            "label": str(selection.get("label") or _metric_label(fact)).strip(),
+            "value": str(fact.get("display_value") or "").strip(),
+            "tone": _metric_tone(fact),
+        })
+        if len(metrics) >= 4:
+            break
+    return metrics
+
+
+def _resolve_sections(authored: dict) -> list[dict]:
+    sections = []
+    for section in authored.get("sections", []) or []:
+        heading = str(section.get("heading") or "").strip()
+        points = [
+            str(item).strip()
+            for item in section.get("points", []) or []
+            if str(item).strip()
+        ]
+        if heading and points:
+            sections.append({
+                "heading": heading,
+                "tone": _SECTION_TONES.get(heading.casefold(), "teal"),
+                "points": points[:3],
+            })
+    return sections
+
+
 def _invoke(state: dict, selected: list[dict]) -> dict:
     period = state.get("summary_period_context") or {}
     rules = file_io.read_prompt("_global_rules.md") + file_io.business_rules_block(state)
@@ -208,6 +285,7 @@ def _invoke(state: dict, selected: list[dict]) -> dict:
         "report_context": state.get("report_understanding") or {},
         "reporting_period": period,
         "selected_perspectives": [_perspective_context(candidate) for candidate in selected],
+        "metric_tile_count": min(4, len(_numeric_facts(selected))),
         "maximum_words": int(state.get("fresh_summary_max_words", 220)),
     }
     messages = [
@@ -220,9 +298,12 @@ def _invoke(state: dict, selected: list[dict]) -> dict:
         response = llm.invoke(messages)
         draft = response.model_dump() if hasattr(response, "model_dump") else dict(response)
         errors = validate_draft(draft, selected)
-        word_count = len(
-            " ".join([str(draft.get("heading") or ""), *(draft.get("paragraphs") or [])]).split()
-        )
+        prose = [str(draft.get("headline") or "")]
+        prose.extend(str(metric.get("label") or "") for metric in draft.get("metrics", []) or [])
+        for section in draft.get("sections", []) or []:
+            prose.append(str(section.get("heading") or ""))
+            prose.extend(str(point or "") for point in section.get("points", []) or [])
+        word_count = len(" ".join(prose).split())
         if word_count > int(state.get("fresh_summary_max_words", 220)):
             errors.append(
                 f"draft is {word_count} words; maximum is {int(state.get('fresh_summary_max_words', 220))}"
@@ -283,13 +364,23 @@ def run(state: dict) -> dict:
         authored["covered_candidate_ids"] = [selected[0].get("candidate_id")]
     period = state.get("summary_period_context") or {}
     primary = covered[0]
+    metrics = _resolve_metrics(authored, covered)
+    sections = _resolve_sections(authored)
+    paragraphs = [
+        point
+        for section in sections
+        for point in section.get("points", []) or []
+    ]
     summary = {
         "summary_type": summary_type,
-        "heading": str(authored.get("heading") or primary.get("title_hint") or "Latest performance summary").strip(),
-        "paragraphs": [str(item).strip() for item in authored.get("paragraphs", []) if str(item).strip()],
+        "heading": str(authored.get("headline") or primary.get("title_hint") or "Latest performance summary").strip(),
+        # Kept privately for backward-compatible history readers; the public
+        # app contract receives structured sections only.
+        "paragraphs": paragraphs,
+        "sections": sections,
         "covered_candidate_ids": authored.get("covered_candidate_ids") or [],
         "covered_summary_keys": [item.get("summary_key") for item in covered if item.get("summary_key")],
-        "metrics": primary.get("metrics") or [],
+        "metrics": metrics,
         "visual": primary.get("visual") if state.get("summary_visual_enabled", True) else None,
         "data_as_of": period.get("data_as_of"),
         "grain": period.get("grain") or "snapshot",

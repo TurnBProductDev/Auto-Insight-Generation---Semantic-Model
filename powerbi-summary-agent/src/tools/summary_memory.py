@@ -98,6 +98,7 @@ def story_components(candidate: dict, dataset_id: str, period_anchor: str) -> tu
         "segment": candidate.get("segment"),
         "period_anchor": period_anchor,
         "direction": candidate.get("direction"),
+        "observation_value": candidate.get("observation_value"),
         "score": candidate.get("score"),
     }
     return f"summary:v1:{digest}", fields
@@ -210,6 +211,7 @@ def commit_summary_run(
                 "segment": candidate.get("segment"),
                 "period_anchor": candidate.get("period_anchor"),
                 "direction": candidate.get("direction"),
+                "observation_value": candidate.get("observation_value"),
                 "score": candidate.get("score"),
                 "heading": fresh_summary.get("heading"),
             })

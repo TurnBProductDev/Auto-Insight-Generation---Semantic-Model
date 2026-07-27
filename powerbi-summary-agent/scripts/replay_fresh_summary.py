@@ -32,6 +32,7 @@ def _base_state(root: Path) -> dict:
         "summary_memory_enabled": True,
         "summary_memory_policy": "never_repeat",
         "summary_memory_cooldown_days": 14,
+        "summary_resurface_change_pct": 20,
         "summary_candidates_max": 12,
         "summary_temporal_batch_share": 0.5,
         "summary_delayed_after_periods": 1,
@@ -95,13 +96,16 @@ def _base_state(root: Path) -> dict:
 def _fresh_from(candidate: dict, period: dict, summary_type: str) -> dict:
     draft = _fallback(candidate, period, summary_type)
     assert not validate_draft(draft, [candidate])
+    metrics = fresh_summary_generator._resolve_metrics(draft, [candidate])
+    sections = fresh_summary_generator._resolve_sections(draft)
     return {
         "summary_type": summary_type,
-        "heading": draft["heading"],
-        "paragraphs": draft["paragraphs"],
+        "heading": draft["headline"],
+        "paragraphs": [point for section in sections for point in section["points"]],
+        "sections": sections,
         "covered_candidate_ids": draft["covered_candidate_ids"],
         "covered_summary_keys": [candidate["summary_key"]],
-        "metrics": candidate.get("metrics") or [],
+        "metrics": metrics,
         "visual": candidate.get("visual"),
         "data_as_of": period.get("data_as_of"),
         "grain": period.get("grain"),
@@ -163,6 +167,12 @@ def main(argv=None) -> int:
         # The repair loop must preserve signed figures and still return an
         # LLM-authored draft rather than dropping to a deterministic summary.
         store_candidate = next(candidate for candidate in candidates if candidate["angle"] == "store_overview")
+        metric_selections = [
+            {"fact_id": fact["fact_id"], "label": f"{fact['subject']} {fact['metric']}"}
+            for fact in (store_candidate.get("evidence") or {}).get("facts", [])
+            if fact.get("display_value")
+        ][:4]
+        assert len(metric_selections) == 4
         original_get_llm = fresh_summary_generator.get_llm
         calls = []
 
@@ -171,15 +181,44 @@ def main(argv=None) -> int:
                 calls.append(messages)
                 if len(calls) == 1:
                     return {
-                        "heading": "Comparable store performance",
-                        "paragraphs": ["North led the comparison, while West recorded +118.3K."],
+                        "headline": "Comparable store performance was led by North",
+                        "metrics": metric_selections,
+                        "sections": [
+                            {
+                                "heading": "What's working",
+                                "points": ["North led comparable revenue change at +424.1K."],
+                            },
+                            {
+                                "heading": "Risks",
+                                "points": ["West recorded +118.3K for revenue change."],
+                            },
+                            {
+                                "heading": "Recommended actions",
+                                "points": ["Review West's performance against North and Central."],
+                            },
+                        ],
                         "covered_candidate_ids": [store_candidate["candidate_id"]],
                     }
                 return {
-                    "heading": "Comparable store performance",
-                    "paragraphs": [
-                        "North led comparable revenue change at +424.1K, while West declined by -118.3K. "
-                        "Central remained positive at +44.6K, leaving the distribution led by North."
+                    "headline": "North led comparable store revenue growth with a +424.1K increase",
+                    "metrics": metric_selections,
+                    "sections": [
+                        {
+                            "heading": "What's working",
+                            "points": [
+                                "North led comparable revenue change at +424.1K, while Central remained positive at +44.6K."
+                            ],
+                        },
+                        {
+                            "heading": "Risks",
+                            "points": ["West declined by -118.3K for revenue change."],
+                        },
+                        {
+                            "heading": "Recommended actions",
+                            "points": [
+                                "Review West's performance against North and Central to confirm where the gap is concentrated."
+                            ],
+                        },
                     ],
                     "covered_candidate_ids": [store_candidate["candidate_id"]],
                 }
@@ -203,19 +242,25 @@ def main(argv=None) -> int:
             assert live["authoring_mode"] == "llm"
             assert live["validation_status"] == "validated"
             print("synthetic live LLM summary:")
-            print(live["heading"])
-            print("\n".join(live["paragraphs"]))
+            print(live["headline"])
+            for section in live["sections"]:
+                print(section["heading"])
+                print("\n".join(section["points"]))
 
         state.update(summary_novelty_filter.run(state))
         assert state["summary_novelty"]["summary_type"] == "new_data"
         first = state["summary_eligible_candidates"][0]
         fresh = _fresh_from(first, period, "new_data")
         payload = generate_fresh_report_summary_payload({**state, "fresh_summary": fresh})
-        assert payload["summaryType"] == "new_data"
-        assert payload["dataAsOf"] == "2023-12-31"
-        assert payload["sections"][0]["points"] == fresh["paragraphs"]
+        assert set(payload) == {"title", "generatedAt", "headline", "metrics", "sections"}
+        assert len(payload["metrics"]) == 4
+        assert [section["heading"] for section in payload["sections"]] == [
+            "What's working", "Risks", "Recommended actions"
+        ]
+        assert all(isinstance(metric["value"], str) for metric in payload["metrics"])
         page = summary_visual.render(fresh)
-        assert "#0f9f95" in page and "background:#fff" in page and "emoji" not in page
+        assert "#0f9f95" in page and "background:#fff" in page and "metric-value" in page
+        assert "Recommended actions" in page and "emoji" not in page
         rendered_state = {**state, "fresh_summary": fresh}
         rendered_state.update(fresh_summary_validator.run(rendered_state))
         out = Path(state["output_folder"])
@@ -236,6 +281,18 @@ def main(argv=None) -> int:
         state.update(summary_novelty_filter.run(state))
         assert state["summary_novelty"]["summary_type"] == "no_new_perspective"
         assert not state["summary_eligible_candidates"]
+
+        changed = copy.deepcopy(state)
+        changed["summary_period_context"] = {
+            **period,
+            "data_as_of": "2024-01-01",
+        }
+        changed_candidate = changed["summary_candidates"][0]
+        changed_candidate["observation_value"] *= 1.5
+        changed.update(summary_novelty_filter.run(changed))
+        assert changed["summary_novelty"]["summary_type"] == "new_data"
+        assert changed["summary_novelty"]["resurfaced"] == 1
+        assert changed["summary_eligible_candidates"][0]["summary_key"] == changed_candidate["summary_key"]
 
         advanced = copy.deepcopy(state)
         month_rows = advanced["clean_summary_data"]["queries"][2]["rows"]
@@ -265,6 +322,7 @@ def main(argv=None) -> int:
         feed = summary_history.build_history_response([one, two, three])
         assert feed["history"][0]["date"] == "2026-07-23"
         assert [run["time"] for run in feed["history"][0]["runs"]] == ["14:30:00", "09:00:00"]
+        assert feed["history"][0]["runs"][0]["sections"] == fresh["sections"]
         merged, changed = summary_history.merge_history_response(feed, three)
         assert not changed and merged == feed
         immutable, local_feed = summary_history.write_local(

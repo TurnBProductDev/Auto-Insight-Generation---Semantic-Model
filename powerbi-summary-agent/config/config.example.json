@@ -16,6 +16,7 @@
   "summary_memory_runtime_folder": "outputs/.runtime/summary_memory",
   "summary_memory_policy": "never_repeat",
   "summary_memory_cooldown_days": 14,
+  "summary_resurface_change_pct": 20,
   "summary_history_enabled": true,
   "summary_history_timezone": "Asia/Kolkata",
   "max_rows_per_query": 15,

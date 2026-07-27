@@ -8,8 +8,9 @@ You are given the SOURCE REPORT (report_summary.md) and a list of AVAILABLE
 KEY-METRIC LABELS. Produce:
 
 - `headline` : ONE sentence capturing the single most important takeaway of the
-               report, in plain business English. Copy any figure verbatim from the
-               source; do not introduce a figure that is not in the source.
+               report in plain business English. It must state what changed or
+               what currently stands out and include the most relevant figure,
+               copied verbatim from the source.
 
 - `metrics`  : select the most important 4-8 headline metrics for the stat-tile row.
                Each item is `{label, tone}`:
@@ -36,3 +37,7 @@ STRICT number rule: never invent a number, never re-round, never convert units
 
 No emojis. No markdown syntax inside the strings. Business English only. No
 forecasting or alerting language. Describe; do not assert single root causes.
+Lead with meaning, not a calculation. Put percentages in context and avoid
+"share of total change", "volume effect", "rate effect", "basket mix",
+"product mix", "sell-through", and other analyst shorthand. Use
+"transactions" consistently for bills; do not relabel them as visits or customers.

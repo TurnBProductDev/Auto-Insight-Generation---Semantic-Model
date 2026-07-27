@@ -15,9 +15,10 @@ prose, metric curation and tone). But every number and every enum is owned by co
 never typed by the model:
 
   * KPI figures (value / delta / stats) are injected from the computed signals.
-  * summary metric values are injected from the parsed Key Metrics.
-  * a numeric-fidelity guard drops any section bullet whose figures are not present
-    verbatim in the source markdown.
+  * fresh-summary metric values are injected from deterministic evidence facts;
+    the legacy summary path injects them from parsed Key Metrics.
+  * numeric-fidelity guards reject section prose whose figures are not present
+    in the selected evidence or source markdown.
 
 The final payload is validated against strict pydantic schemas (``extra='forbid'``
 plus ``Literal`` enums): if it does not match the contract, this raises rather than
@@ -40,7 +41,6 @@ from ..utils.json_utils import dumps
 Severity = Literal["critical", "warning", "positive", "info"]
 Tone = Literal["positive", "critical", "warning", "info", "teal"]
 Direction = Literal["up", "down"]
-SummaryType = Literal["new_data", "new_perspective", "no_new_perspective", "memory_unavailable"]
 
 
 # --------------------------------------------------------------------------
@@ -91,15 +91,6 @@ class ReportSection(BaseModel):
     points: List[str]
 
 
-class ReportVisual(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-    type: Literal["bar", "line"]
-    title: str
-    labels: List[str]
-    values: List[float]
-    value_label: str
-
-
 class ReportSummaryPayload(BaseModel):
     model_config = ConfigDict(extra="forbid")
     title: str
@@ -107,11 +98,6 @@ class ReportSummaryPayload(BaseModel):
     headline: str
     metrics: List[ReportMetric]
     sections: List[ReportSection]
-    summaryType: Optional[SummaryType] = None
-    dataAsOf: Optional[str] = None
-    grain: Optional[str] = None
-    freshnessStatus: Optional[str] = None
-    visual: Optional[ReportVisual] = None
 
 
 # --------------------------------------------------------------------------
@@ -177,6 +163,162 @@ def _compact_number(n: Any, *, signed: bool = False) -> str:
     return s
 
 
+def _business_measure(family: str) -> str:
+    return {
+        "Revenue": "revenue",
+        "Quantity": "unit sales",
+        "Transactions": "transactions",
+    }.get(family, "performance")
+
+
+def _sentence(text: Any) -> str:
+    value = re.sub(r"\s+", " ", str(text or "").strip())
+    if value and value[-1] not in ".!?":
+        value += "."
+    return value
+
+
+def _plain_business_text(text: Any) -> str:
+    """Remove recurring analyst shorthand from manager-facing card prose."""
+    value = str(text or "")
+    replacements = (
+        (r"\bmovement decomposition\b", "breakdown of the change"),
+        (r"\bvolume effect\b", "change from units sold"),
+        (r"\brate effect\b", "change from average revenue per item"),
+        (r"\brealized revenue per unit\b", "average revenue per item"),
+        (r"\brevenue per unit\b", "average revenue per item"),
+        (r"\bshare of total change\b", "part of the overall change"),
+        (r"\bbasket mix\b", "items purchased per transaction"),
+        (r"\bproduct mix\b", "mix of products sold"),
+        (r"\bsell-through\b", "sales"),
+        (r"\bbills\b", "transactions"),
+        (r"\bbill\b", "transaction"),
+    )
+    for pattern, replacement in replacements:
+        value = re.sub(pattern, replacement, value, flags=re.IGNORECASE)
+    return re.sub(r"\s+", " ", value).strip()
+
+
+def _share_details(sig: Dict[str, Any], family: str) -> "tuple[str, str, str]":
+    """Return delta, contextual UI label, and contextual stat label."""
+    share = float(sig.get("impact_share") or 0.0)
+    magnitude = f"{abs(share):.1f}%"
+    measure = _business_measure(family)
+    cid = str(sig.get("candidate_id") or "").casefold()
+    analysis_type = str(sig.get("analysis_type") or "").casefold()
+    if "concentration" in cid or "concentration" in analysis_type:
+        return magnitude, f"of current {measure}", f"Share of current {measure}"
+
+    value = float(sig.get("impact_value") or 0.0)
+    total_direction = "increase" if ((value >= 0) == (share >= 0)) else "decline"
+    if share >= 0:
+        return (
+            magnitude,
+            f"of the total {total_direction} in {measure}",
+            f"Share of {measure} {total_direction}",
+        )
+    return (
+        magnitude,
+        f"offsetting the total {total_direction} in {measure}",
+        f"Offset to {measure} {total_direction}",
+    )
+
+
+def _main_change_sentence(sig: Dict[str, Any], family: str) -> str:
+    """Code-owned first sentence: movement, magnitude, and comparison context."""
+    segment = str(sig.get("affected_segment") or "This segment").strip()
+    value = sig.get("impact_value")
+    measure = _business_measure(family)
+    if not isinstance(value, (int, float)):
+        return f"{segment} had a material change in {measure}."
+
+    amount = _compact_number(abs(value))
+    rw = sig.get("recent_week") or {}
+    wow = rw.get("change_pct")
+    if isinstance(wow, (int, float)):
+        direction = "higher" if value >= 0 else "lower"
+        window = "the previous 7 days" if rw.get("window_mode") == "rolling" else "the previous week"
+        return (
+            f"{segment} {measure} was {amount} {direction}, a {abs(wow):.1f}% "
+            f"change from {window}."
+        )
+
+    if sig.get("episode_start") is not None:
+        direction = "above" if value >= 0 else "below"
+        return (
+            f"{segment} {measure} was {amount} {direction} expected from "
+            f"{sig.get('episode_start')} through {sig.get('episode_end')}."
+        )
+
+    cid = str(sig.get("candidate_id") or "").casefold()
+    analysis_type = str(sig.get("analysis_type") or "").casefold()
+    share = sig.get("impact_share")
+    if "current_only" in cid:
+        return (
+            f"{segment} recorded {amount} in current {measure} but is not part of "
+            "the year-over-year comparison."
+        )
+    if share is not None and ("concentration" in cid or "concentration" in analysis_type):
+        return (
+            f"{segment} recorded {amount} in {measure}, representing about "
+            f"{abs(float(share)):.1f}% of current {measure}."
+        )
+
+    if family == "Quantity":
+        base = f"{segment} sold {amount} {'more' if value >= 0 else 'fewer'} units"
+    elif family == "Transactions":
+        base = f"{segment} recorded {amount} {'more' if value >= 0 else 'fewer'} transactions"
+    else:
+        base = f"{segment} {measure} {'increased' if value >= 0 else 'decreased'} by {amount}"
+
+    if share is None:
+        return base + "."
+    share_value = float(share)
+    total_direction = "increase" if ((value >= 0) == (share_value >= 0)) else "decline"
+    if share_value >= 0:
+        if abs(share_value) > 100:
+            context = (
+                f"equivalent to about {abs(share_value):.1f}% of the net {total_direction} "
+                f"in {measure} because movements elsewhere offset part of it"
+            )
+        else:
+            context = (
+                f"accounting for about {abs(share_value):.1f}% of the total "
+                f"{total_direction} in {measure}"
+            )
+    else:
+        context = (
+            f"offsetting about {abs(share_value):.1f}% of the total "
+            f"{total_direction} in {measure}"
+        )
+    return f"{base}, {context}."
+
+
+def _main_decomposition_stat(sig: Dict[str, Any]) -> Optional[Dict[str, str]]:
+    decomp = sig.get("decomposition") or []
+    if not decomp:
+        return None
+    item = decomp[0] or {}
+    driver = str(item.get("driver") or "").casefold()
+    if any(token in driver for token in ("qty", "quantity", "unit")):
+        volume_label, rate_label = "Change from units sold", "Change from revenue per item"
+    elif any(token in driver for token in ("bill", "transaction", "order")):
+        volume_label, rate_label = "Change from transactions", "Change from revenue per transaction"
+    elif "customer" in driver:
+        volume_label, rate_label = "Change from customers", "Change from revenue per customer"
+    else:
+        volume_label, rate_label = "Change from volume", "Change from average value"
+    volume = item.get("volume_effect")
+    rate = item.get("rate_effect")
+    if not isinstance(volume, (int, float)) and not isinstance(rate, (int, float)):
+        return None
+    if not isinstance(rate, (int, float)) or (
+        isinstance(volume, (int, float)) and abs(volume) >= abs(rate)
+    ):
+        return {"label": volume_label, "value": _compact_number(volume, signed=True)}
+    return {"label": rate_label, "value": _compact_number(rate, signed=True)}
+
+
 def _now(generated_at: Optional[datetime]) -> datetime:
     return generated_at or datetime.now()
 
@@ -189,6 +331,9 @@ def _signal_family(sig: Dict[str, Any]) -> str:
         ("revenue", "Revenue"),
         ("quantity", "Quantity"),
         ("qty", "Quantity"),
+        ("transactions", "Transactions"),
+        ("transaction", "Transactions"),
+        ("orders", "Transactions"),
         ("bills", "Transactions"),
     ):
         i = d.find(key)
@@ -228,11 +373,16 @@ def _signal_severity(sig: Dict[str, Any]) -> Severity:
 def _insight_stats(sig: Dict[str, Any], family: str) -> List[Dict[str, str]]:
     val = sig.get("impact_value")
     share = sig.get("impact_share")
+    measure_label = {
+        "Quantity": "Unit sales change",
+        "Transactions": "Transaction change",
+    }.get(family, f"{family} change")
     stats: List[Dict[str, str]] = [
-        {"label": f"{family} impact", "value": _compact_number(val, signed=True)}
+        {"label": measure_label, "value": _compact_number(val, signed=True)}
     ]
     if share is not None:
-        stats.append({"label": "Share of change", "value": f"{share:+.1f}%"})
+        _, _, stat_label = _share_details(sig, family)
+        stats.append({"label": stat_label, "value": f"{abs(float(share)):.1f}%"})
     else:
         # Recent-week/rolling signals carry a WoW/rolling % (not a share of an
         # annual total); daily incidents carry a deviation vs expected instead.
@@ -247,11 +397,9 @@ def _insight_stats(sig: Dict[str, Any], family: str) -> List[Dict[str, str]]:
     decomp = sig.get("decomposition")
     members = sig.get("segment_members")
     if decomp:
-        d0 = decomp[0]
-        stats.append({
-            "label": "Volume / rate",
-            "value": f"{_compact_number(d0.get('volume_effect'))} / {_compact_number(d0.get('rate_effect'))}",
-        })
+        main_stat = _main_decomposition_stat(sig)
+        if main_stat:
+            stats.append(main_stat)
     elif members:
         stats.append({"label": "Segments", "value": ", ".join(str(m) for m in members)})
     return stats[:3]
@@ -313,14 +461,16 @@ def _invoke(state: dict, schema, system: str, user: str):
 def _signal_facts(sig: Dict[str, Any]) -> Dict[str, Any]:
     val = sig.get("impact_value")
     rw = sig.get("recent_week") or {}
+    family = _signal_family(sig)
     return {
         "signal_id": sig.get("id"),
         "segment": sig.get("affected_segment"),
         "segment_members": sig.get("segment_members"),
-        "measure_family": _signal_family(sig),
+        "measure_family": family,
         "direction": "increase" if (val or 0) >= 0 else "decrease",
         "impact_display": _compact_number(val, signed=True),
         "share_of_change_pct": sig.get("impact_share"),
+        "code_owned_main_message": _main_change_sentence(sig, family),
         "week_over_week_pct": rw.get("change_pct"),
         "recent_week": {k: rw.get(k) for k in
                         ("window_mode", "week_start", "week_end", "actual", "previous",
@@ -368,7 +518,7 @@ def _assemble_kpi_card(idx: int, sig: Dict[str, Any], text: _KpiCardText, when: 
     rw = sig.get("recent_week") or {}
     wow = rw.get("change_pct")
     if share is not None:
-        delta, comparison = f"{abs(share):.1f}%", "share of total change"
+        delta, comparison, _ = _share_details(sig, family)
     elif isinstance(wow, (int, float)):
         if rw.get("window_mode") == "rolling":
             delta = f"{abs(wow):.1f}%"
@@ -392,15 +542,20 @@ def _assemble_kpi_card(idx: int, sig: Dict[str, Any], text: _KpiCardText, when: 
         "value": _compact_number(val, signed=True),
         "delta": delta,
         "deltaDirection": "up" if (val or 0) >= 0 else "down",
-        "description": text.description.strip(),
+        "description": " ".join(
+            part for part in (
+                _main_change_sentence(sig, family),
+                _sentence(_plain_business_text(text.description)),
+            ) if part
+        ),
         "displayTime": when.strftime("%I:%M %p").lstrip("0"),
         "isoDate": when.date().isoformat(),
         "comparisonLabel": comparison,
         "insight": {
-            "title": text.insight_title.strip(),
-            "summary": text.insight_summary.strip(),
+            "title": _plain_business_text(text.insight_title),
+            "summary": _sentence(_plain_business_text(text.insight_summary)),
             "stats": _insight_stats(sig, family),
-            "action": text.insight_action.strip(),
+            "action": _sentence(_plain_business_text(text.insight_action)),
         },
     }
     return KpiCard(**card).model_dump()  # strict validation
@@ -479,12 +634,17 @@ def generate_report_summary_payload(
     # sections: numeric-fidelity guard -- a bullet may only ship if every figure
     # it cites appears verbatim in the source markdown.
     src_figs = _figures(md_text)
+    headline = _plain_business_text(authored.headline)
+    if src_figs and not _figures(headline):
+        raise ValueError("summary headline must include the primary source figure")
+    if not _figures(headline) <= src_figs:
+        raise ValueError("summary headline contains a figure not present in the source")
     out_sections: List[Dict[str, Any]] = []
     dropped = 0
     for s in authored.sections:
         kept = []
         for p in s.points:
-            p = p.strip()
+            p = _plain_business_text(p)
             if not p:
                 continue
             if _figures(p) <= src_figs:
@@ -497,7 +657,7 @@ def generate_report_summary_payload(
     payload = {
         "title": title,
         "generatedAt": when.date().isoformat(),
-        "headline": authored.headline.strip(),
+        "headline": headline,
         "metrics": metrics,
         "sections": out_sections,
     }
@@ -528,23 +688,26 @@ def generate_fresh_report_summary_payload(
         }
         if value["label"] and value["value"]:
             metrics.append(ReportMetric(**value).model_dump())
-    visual = summary.get("visual")
-    if visual:
-        visual = ReportVisual(**visual).model_dump()
+    sections = []
+    for section in summary.get("sections") or []:
+        value = {
+            "heading": str(section.get("heading") or "").strip(),
+            "tone": section.get("tone") or "teal",
+            "points": [
+                str(item).strip()
+                for item in section.get("points") or []
+                if str(item).strip()
+            ],
+        }
+        if value["heading"] and value["points"]:
+            sections.append(ReportSection(**value).model_dump())
+    if not sections:
+        raise ValueError("fresh_summary has no renderable structured sections")
     payload = {
         "title": title,
         "generatedAt": _now(generated_at).date().isoformat(),
         "headline": str(summary.get("heading")).strip(),
         "metrics": metrics,
-        "sections": [{
-            "heading": "Summary",
-            "tone": "teal",
-            "points": [str(item).strip() for item in summary.get("paragraphs") or [] if str(item).strip()],
-        }],
-        "summaryType": summary.get("summary_type"),
-        "dataAsOf": summary.get("data_as_of"),
-        "grain": summary.get("grain"),
-        "freshnessStatus": summary.get("freshness_status"),
-        "visual": visual,
+        "sections": sections,
     }
     return ReportSummaryPayload(**payload).model_dump()

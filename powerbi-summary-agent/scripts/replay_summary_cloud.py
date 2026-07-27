@@ -38,6 +38,23 @@ def _state(root: Path) -> dict:
             "summary_type": "new_data",
             "heading": "Revenue moved ahead of the prior period",
             "paragraphs": ["Current revenue was above the prior comparison."],
+            "sections": [
+                {
+                    "heading": "What's working",
+                    "tone": "positive",
+                    "points": ["Current revenue was above the prior comparison."],
+                },
+                {
+                    "heading": "Risks",
+                    "tone": "warning",
+                    "points": ["No material downside is visible in this selected perspective."],
+                },
+                {
+                    "heading": "Recommended actions",
+                    "tone": "info",
+                    "points": ["Monitor the comparison in the next reporting cycle."],
+                },
+            ],
             "covered_summary_keys": ["summary:v1:key-one"],
             "metrics": [],
             "visual": None,

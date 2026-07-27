@@ -1,0 +1,126 @@
+{
+  "kpis": [
+    {
+      "name": "Revenue Growth %",
+      "formula": "(rev_current - rev_past) / abs(rev_past)",
+      "dax": "Revenue Growth % =\n[revenue growth %]",
+      "inputs": ["rev_current", "rev_past"],
+      "source_measures": {
+        "table": "MIS_BASE_FILE_MONTHLY_BRAND_TB / AA_MEASURE_TABLE",
+        "rate": "[Percentage]  (alias: [revenue growth %])",
+        "value": "[revenue Growth]  (absolute currency delta)",
+        "arrow": "[IND]  (alias: [IND REVENUE DEEP DIVE])",
+        "note": "Calls the native measure directly rather than reconstructing from raw columns. The underlying revenue columns are named differently between the local Desktop file (NET_SALE_VAL_CURRENT/_PAST) and the published dataset config.json targets (net_sale_val_current/_ly) -- this model's column names have already drifted at least once; the measure name is the stable surface, so KPIs bind to it, not to raw columns."
+      },
+      "direction": "higher_is_better",
+      "thresholds": { "red": "< -0.03", "amber": "-0.03 to 0.0", "green": ">= 0.0" }
+    },
+    {
+      "name": "Volume Growth %",
+      "formula": "(qty_current - qty_past) / qty_past",
+      "dax": "Volume Growth % =\n[QTY GROWTH %]",
+      "inputs": ["qty_current", "qty_past"],
+      "source_measures": {
+        "table": "AA_MEASURE_TABLE",
+        "rate": "[QTY GROWTH %]",
+        "value": "[QTY Growth]",
+        "arrow": "[IND QTY DEEP DIVE]",
+        "note": "Calls the native measure directly -- see the schema-drift note on Revenue Growth %."
+      },
+      "direction": "higher_is_better",
+      "thresholds": { "red": "< 0.0", "amber": "0.0 to 0.02", "green": ">= 0.02" }
+    },
+    {
+      "name": "Footfall (Transaction Count) Growth %",
+      "formula": "(bills_current - bills_past) / bills_past",
+      "dax": "Footfall Growth % =\n[bills growth %]",
+      "inputs": ["bills_current", "bills_past"],
+      "source_measures": {
+        "table": "AA_MEASURE_TABLE",
+        "rate": "[bills growth %]",
+        "value": "[bills growth]",
+        "arrow": "[IND TRANSACTIONS DEEP DIVE]",
+        "note": "Calls the native measure directly -- see the schema-drift note on Revenue Growth %."
+      },
+      "direction": "higher_is_better",
+      "thresholds": { "red": "< -0.03", "amber": "-0.03 to 0.0", "green": ">= 0.0" }
+    },
+    {
+      "name": "Average Selling Price (ASP) Growth %",
+      "formula": "asp_current = rev_current / qty_current; asp_past = rev_past / qty_past; (asp_current - asp_past) / asp_past",
+      "dax": "ASP Growth % =\nVAR AspCurrent = [retail price current year]\nVAR AspPast = [retail price past year]\nRETURN\nDIVIDE ( AspCurrent - AspPast, AspPast )",
+      "inputs": ["rev_current", "rev_past", "qty_current", "qty_past"],
+      "source_measures": {
+        "table": "AA_MEASURE_TABLE",
+        "rate": "NOT materialized as a % anywhere in the model or dashboard — this is a genuinely new measure",
+        "value": "[RETAIL PRICE GROWTH]  (absolute currency delta, already exists — the dax above reuses it)",
+        "arrow": "[IND RETAIL PRICE DEEP DIVE]"
+      },
+      "direction": "higher_is_better",
+      "thresholds": { "red": "< -0.03", "amber": "-0.03 to 0.0", "green": ">= 0.0" }
+    },
+    {
+      "name": "Average Transaction Value (ATV) Growth %",
+      "formula": "atv_current = rev_current / bills_current; atv_past = rev_past / bills_past; (atv_current - atv_past) / atv_past",
+      "dax": "ATV Growth % =\nVAR AtvCurrent = [SPEND PER TRANSACTION CURRENT YEAR]\nVAR AtvPast = [SPEND PER TRANSACTION PAST YEAR]\nRETURN\nDIVIDE ( AtvCurrent - AtvPast, AtvPast )",
+      "inputs": ["rev_current", "rev_past", "bills_current", "bills_past"],
+      "source_measures": {
+        "table": "AA_MEASURE_TABLE",
+        "rate": "NOT materialized as a % anywhere in the model or dashboard — this is a genuinely new measure",
+        "value": "[SPEND PER TRANSACTION GROWTH]  (absolute currency delta, already exists — the dax above reuses it)",
+        "arrow": "[IND SPEND PER TRANS DEEP DIVE]"
+      },
+      "direction": "higher_is_better",
+      "thresholds": { "red": "< -0.03", "amber": "-0.03 to 0.0", "green": ">= 0.0" }
+    },
+    {
+      "name": "Units Per Transaction (UPT) Growth %",
+      "formula": "upt_current = qty_current / bills_current; upt_past = qty_past / bills_past; (upt_current - upt_past) / upt_past",
+      "dax": "UPT Growth % =\nVAR UptCurrent = [QUANTITY PER TRANSACTION CURRENT YEAR]\nVAR UptPast = [QUANTITY PER TRANSACTION PAST YEAR]\nRETURN\nDIVIDE ( UptCurrent - UptPast, UptPast )",
+      "inputs": ["qty_current", "qty_past", "bills_current", "bills_past"],
+      "source_measures": {
+        "table": "AA_MEASURE_TABLE",
+        "rate": "NOT materialized as a % anywhere in the model or dashboard — this is a genuinely new measure",
+        "value": "[QUANTITY PER TRANSACTION GROWTH]  (absolute unit delta, already exists — the dax above reuses it)",
+        "arrow": "[IND QTY PER TRANS DEEP DIVE]"
+      },
+      "direction": "higher_is_better",
+      "thresholds": { "red": "< 0.0", "amber": "0.0 to 0.02", "green": ">= 0.02" }
+    },
+    {
+      "name": "Category Decline Breadth %",
+      "formula": "categories_declining / categories_total",
+      "dax": "Category Decline Breadth % =\n[COUNT %]",
+      "inputs": ["categories_declining", "categories_total"],
+      "source_measures": {
+        "table": "CAT_TABLE",
+        "rate": "[COUNT %]  (already on the dashboard as a card + gauge)",
+        "declining_count": "[COUNT]",
+        "total_count": "[COUNT_TOTAL]",
+        "growing_count_complement": "[COUNT_PLUS]  (= total - declining)",
+        "note": "Calls the native measure directly. The local Desktop file's CAT_TABLE identifies a category via CATEGORY_NAME; the published dataset's CAT_TABLE has no such column at all (uses special_product_group_name instead) -- reconstructing this KPI's DISTINCTCOUNT/FILTER logic from raw columns would have to guess which one applies, so it defers to the model's own already-correct [Measure]/[COUNT]/[COUNT_TOTAL] internals instead."
+      },
+      "direction": "lower_is_better",
+      "thresholds": { "red": "> 0.55", "amber": "0.40 to 0.55", "green": "< 0.40" }
+    },
+    {
+      "name": "At-Risk Revenue Concentration Delta",
+      "formula": "share_current = declining_rev_current / total_rev_current; share_past = declining_rev_past / total_rev_past; share_current - share_past",
+      "dax": "At-Risk Revenue Concentration Delta =\nVAR ShareCurrent = DIVIDE ( [sum deg cur rev], [sum total cur rev] )\nVAR SharePast = DIVIDE ( [sum deg past rev], [sum total past rev] )\nRETURN\nShareCurrent - SharePast",
+      "inputs": ["declining_rev_current", "total_rev_current", "declining_rev_past", "total_rev_past"],
+      "source_measures": {
+        "table": "CAT_TABLE",
+        "declining_rev_current": "[sum deg cur rev]",
+        "declining_rev_past": "[sum deg past rev]",
+        "total_rev_current": "[sum total cur rev]",
+        "total_rev_past": "[sum total past rev]",
+        "share_current": "[contribution cur]  — already exists, but uses unsafe raw division; the dax above wraps both shares in DIVIDE",
+        "share_past": "[contribution past]  — same caveat as above",
+        "growing_share_complement": "[Measure 1-contr]  (= 1 - contribution cur, currently 45.47%)",
+        "note": "NOT bound to any visual on the dashboard — this KPI is currently invisible on the report canvas"
+      },
+      "direction": "lower_is_better",
+      "thresholds": { "red": "> 0.03", "amber": "-0.03 to 0.03", "green": "<= -0.03" }
+    }
+  ]
+}

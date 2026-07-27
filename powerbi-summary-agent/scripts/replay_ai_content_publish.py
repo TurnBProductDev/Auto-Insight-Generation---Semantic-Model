@@ -108,7 +108,19 @@ def _write_outputs(root: Path, cards: list[dict]) -> None:
     api.mkdir(parents=True, exist_ok=True)
     (api / "kpi_insights.json").write_text(json.dumps(cards), encoding="utf-8")
     (api / "report_summary.json").write_text(
-        json.dumps({"title": "AI Summary", "headline": "Fresh view", "sections": []}),
+        json.dumps({
+            "title": "AI Summary",
+            "generatedAt": "2026-07-23",
+            "headline": "Fresh view",
+            "metrics": [
+                {"label": "Revenue change", "value": "+3.5M", "tone": "positive"},
+            ],
+            "sections": [
+                {"heading": "What's working", "tone": "positive", "points": ["Revenue improved."]},
+                {"heading": "Risks", "tone": "warning", "points": ["No material downside is visible."]},
+                {"heading": "Recommended actions", "tone": "info", "points": ["Monitor the next run."]},
+            ],
+        }),
         encoding="utf-8",
     )
     (root / "report_summary.html").write_text(
@@ -179,6 +191,13 @@ def main() -> int:
         assert insights["expiresAt"] == "2026-07-24T05:05:00Z"
         assert insights["sourceDatasets"] == [DATASET]
         assert insights["payload"] == cards_one
+
+        summary_name = f"ai-content/report-summaries/client/{REPORT}.json"
+        summary = _body(service, summary_name)
+        assert set(summary["payload"]) == {"title", "generatedAt", "headline", "metrics", "sections"}
+        assert [section["heading"] for section in summary["payload"]["sections"]] == [
+            "What's working", "Risks", "Recommended actions"
+        ]
 
         alerts = _body(service, "ai-content/kpi/client/alerts.json")["payload"]
         assert [item["isoDate"] for item in alerts] == ["2026-07-23", "2026-07-17"]

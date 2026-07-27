@@ -13,8 +13,17 @@ def _markdown(summary: dict) -> str:
     grain = str(summary.get("grain") or "snapshot").replace("_", " ")
     freshness = str(summary.get("freshness_status") or "unknown").replace("_", " ")
     lines.extend([f"*Data through {data_as_of} · {grain} grain · {freshness}*", ""])
-    for paragraph in summary.get("paragraphs") or []:
-        lines.extend([str(paragraph).strip(), ""])
+    metrics = summary.get("metrics") or []
+    if metrics:
+        lines.extend(["## Supporting metrics", ""])
+        for metric in metrics:
+            lines.append(f"- {metric.get('label')}: {metric.get('value')}")
+        lines.append("")
+    for section in summary.get("sections") or []:
+        lines.extend([f"## {section.get('heading')}", ""])
+        for point in section.get("points") or []:
+            lines.append(f"- {str(point).strip()}")
+        lines.append("")
     return "\n".join(lines).rstrip() + "\n"
 
 
@@ -47,8 +56,12 @@ def run(state: dict) -> dict:
         file_io.write_json(state, "summary_visual.json", summary["visual"])
 
     log.info(
-        "Fresh summary validated and rendered%s."
-        % (" with one supporting chart" if summary.get("visual") else " without a chart")
+        "Fresh structured summary validated and rendered (%d metric tile(s), %d section(s)%s)."
+        % (
+            len(summary.get("metrics") or []),
+            len(summary.get("sections") or []),
+            ", one supporting chart" if summary.get("visual") else "",
+        )
     )
     return {
         "report_summary": markdown,

@@ -245,7 +245,10 @@ def _fact_sheet(
             break
     for row_index, row in enumerate(selected_rows):
         subject = str(row.get(label_col) or "Overall") if label_col else "Overall"
-        metric_limit = 3 if row_index < 2 else 1
+        # The structured summary layout supports four evidence tiles. Keep four
+        # distinct facts for the leading subject when the query exposes them;
+        # later subjects stay bounded so the prompt remains compact.
+        metric_limit = 4 if row_index == 0 else 3 if row_index == 1 else 1
         for name in chosen_metrics[:metric_limit]:
             value = row.get(name)
             marker = (subject.casefold(), name.casefold())
@@ -442,6 +445,9 @@ def build_candidates(state: dict) -> list[dict]:
             "metric": metric,
             "metric_family": metric_family,
             "direction": "increase" if movement > 0 else "decrease" if movement < 0 else "flat",
+            # Mutable observation for summary-only resurface checks. It is not
+            # part of the stable summary_key canon.
+            "observation_value": movement,
             "score": base_score + min(9.0, math.log10(abs(movement) + 1.0)),
             "period_anchor": anchor,
             "evidence": {

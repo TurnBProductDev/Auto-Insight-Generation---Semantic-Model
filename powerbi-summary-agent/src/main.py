@@ -182,6 +182,7 @@ def build_initial_state(cfg: dict, config_path: str = "") -> dict:
         "summary_memory_root": summary_memory_root,
         "summary_memory_policy": cfg.get("summary_memory_policy", "never_repeat"),
         "summary_memory_cooldown_days": cfg.get("summary_memory_cooldown_days", 14),
+        "summary_resurface_change_pct": cfg.get("summary_resurface_change_pct", 20),
         "summary_history_enabled": bool(
             cfg.get("fresh_summary_enabled", True)
             and cfg.get("summary_history_enabled", True)

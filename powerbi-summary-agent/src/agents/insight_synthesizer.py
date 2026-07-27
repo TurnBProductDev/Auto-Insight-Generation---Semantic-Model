@@ -4,12 +4,114 @@ Mirrors summary_generator: turns the detected signals + investigation trails
 into insight_report.md/.html.
 """
 
+import re
+
 from ..tools import file_io
 from ..tools import html_report
 from ..tools import insight_tiles
 from ..tools.llm import get_llm
 from ..utils.json_utils import dumps
 from ..utils.logger import RunLogger
+
+
+_BUSINESS_FIGURE = re.compile(
+    r"(?<![A-Za-z0-9])[-+]?\d[\d,]*(?:\.\d+)?\s*(?:%|[KMB]\b)|"
+    r"(?<![A-Za-z0-9])[-+]?\d{1,3}(?:,\d{3})+(?:\.\d+)?"
+)
+_TECHNICAL_MANAGER_PHRASES = (
+    "movement decomposition",
+    "volume effect",
+    "rate effect",
+    "share of total change",
+    "realized revenue per unit",
+    "basket mix",
+    "product mix",
+    "sell-through",
+    "materiality",
+    "reconciliation",
+    "z-score",
+    "probe",
+    "signal",
+    "trail",
+)
+_CHANGE_WORDS = re.compile(
+    r"\b(increased?|decreased?|rose|fell|grew|declined?|added|reduced|"
+    r"higher|lower|more|fewer|above|below)\b",
+    re.IGNORECASE,
+)
+_DRIVER_WORDS = re.compile(
+    r"\b(because|mainly|driven|came from|resulted from|due to|led by|explained by|"
+    r"concentrated|while|although|associated|linked|checks showed|no clear driver)\b",
+    re.IGNORECASE,
+)
+_NEXT_CHECK_WORDS = re.compile(
+    r"\b(check|review|compare|confirm|investigate|examine|validate|monitor|verify)\b",
+    re.IGNORECASE,
+)
+
+
+def _response_text(response) -> str:
+    report = response.content if hasattr(response, "content") else str(response)
+    if isinstance(report, list):
+        report = "".join(
+            block.get("text", "") if isinstance(block, dict) else str(block)
+            for block in report
+        )
+    return str(report).strip()
+
+
+def _key_insight_paragraphs(report: str) -> list[str]:
+    match = re.search(
+        r"(?ms)^# Key Insights\s*(.*?)(?=^# Data Quality Watch-outs\s*$)",
+        report or "",
+    )
+    if not match:
+        return []
+    return [
+        paragraph.strip()
+        for paragraph in re.split(r"\n\s*\n", match.group(1))
+        if paragraph.strip().startswith("**")
+    ]
+
+
+def _clarity_issues(report: str, expected_findings: int) -> list[str]:
+    """Check only manager-facing Key Insights; technical appendices stay auditable."""
+    if expected_findings <= 0:
+        return []
+    paragraphs = _key_insight_paragraphs(report)
+    issues: list[str] = []
+    if len(paragraphs) != expected_findings:
+        issues.append(
+            f"Key Insights has {len(paragraphs)} finding paragraph(s); expected {expected_findings}"
+        )
+    for index, paragraph in enumerate(paragraphs, start=1):
+        plain = paragraph.casefold()
+        words = re.findall(r"\b\w+[\w'-]*\b", paragraph)
+        figures = _BUSINESS_FIGURE.findall(paragraph)
+        takeaway_match = re.match(r"\*\*(.+?)\*\*", paragraph, flags=re.DOTALL)
+        takeaway = takeaway_match.group(1) if takeaway_match else ""
+        if len(words) > 90:
+            issues.append(f"finding {index} is {len(words)} words; maximum is 90")
+        if not figures:
+            issues.append(f"finding {index} does not state the size of the change")
+        elif len(figures) > 4:
+            issues.append(f"finding {index} contains {len(figures)} figures; maximum is 4")
+        if not _CHANGE_WORDS.search(paragraph):
+            issues.append(f"finding {index} does not plainly say what changed")
+        if not _BUSINESS_FIGURE.search(takeaway) or not _CHANGE_WORDS.search(takeaway):
+            issues.append(
+                f"finding {index} bold takeaway must state what changed and its figure"
+            )
+        if not _DRIVER_WORDS.search(paragraph):
+            issues.append(f"finding {index} does not explain the main evidenced contributor")
+        if not _NEXT_CHECK_WORDS.search(paragraph):
+            issues.append(f"finding {index} does not end with a specific check")
+        found = [phrase for phrase in _TECHNICAL_MANAGER_PHRASES if phrase in plain]
+        if found:
+            issues.append(
+                f"finding {index} uses analyst shorthand: {', '.join(found)}"
+            )
+    return issues
 
 
 def run(state: dict) -> dict:
@@ -87,11 +189,37 @@ def run(state: dict) -> dict:
         {"role": "user", "content": "SIGNALS + INVESTIGATION TRAILS:\n" + dumps(context)},
     ]
 
-    resp = llm.invoke(messages)
-    report = resp.content if hasattr(resp, "content") else str(resp)
-    if isinstance(report, list):  # some providers return content blocks
-        report = "".join(
-            b.get("text", "") if isinstance(b, dict) else str(b) for b in report
+    report = ""
+    clarity_issues = []
+    expected_business_findings = sum(
+        1 for signal in signals if signal.get("kind") != "data_quality"
+    )
+    for attempt in range(3):
+        report = _response_text(llm.invoke(messages))
+        clarity_issues = _clarity_issues(report, expected_business_findings)
+        if not clarity_issues:
+            break
+        if attempt < 2:
+            log.info(
+                "Insight report clarity check requested a rewrite (%d issue(s))."
+                % len(clarity_issues)
+            )
+            messages.extend([
+                {"role": "assistant", "content": report},
+                {
+                    "role": "user",
+                    "content": (
+                        "Rewrite the complete report. Preserve the supplied facts and required "
+                        "section headings, but fix every manager-facing clarity issue below. "
+                        "Keep technical calculation detail only in Evidence Trail.\n- "
+                        + "\n- ".join(clarity_issues)
+                    ),
+                },
+            ])
+    if clarity_issues:
+        log.error(
+            "Insight report still has %d manager-facing clarity issue(s) after retries."
+            % len(clarity_issues)
         )
 
     file_io.write_text(state, "insight_report.md", report)

@@ -1,0 +1,53 @@
+{
+  "run_at": "2026-07-27T09:00:24.419977+00:00",
+  "results": [
+    {
+      "name": "Revenue Growth %",
+      "value": 0.1266630241563625,
+      "status": "Green",
+      "error": null
+    },
+    {
+      "name": "Volume Growth %",
+      "value": 0.10050717773718554,
+      "status": "Green",
+      "error": null
+    },
+    {
+      "name": "Footfall (Transaction Count) Growth %",
+      "value": 0.12941352576623802,
+      "status": "Green",
+      "error": null
+    },
+    {
+      "name": "Average Selling Price (ASP) Growth %",
+      "value": 0.023767083893951855,
+      "status": "Green",
+      "error": null
+    },
+    {
+      "name": "Average Transaction Value (ATV) Growth %",
+      "value": -0.0024353361697253165,
+      "status": "Amber",
+      "error": null
+    },
+    {
+      "name": "Units Per Transaction (UPT) Growth %",
+      "value": -0.025594122409186987,
+      "status": "Red",
+      "error": null
+    },
+    {
+      "name": "Category Decline Breadth %",
+      "value": 0.3306997742663657,
+      "status": "Green",
+      "error": null
+    },
+    {
+      "name": "At-Risk Revenue Concentration Delta",
+      "value": -0.04537689654789198,
+      "status": "Green",
+      "error": null
+    }
+  ]
+}

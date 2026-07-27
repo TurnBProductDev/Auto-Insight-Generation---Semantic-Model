@@ -19,19 +19,24 @@ current-only, excluded, or overall population.
 One short paragraph per business finding, ordered by impact: the finding
 with the most value at stake (its impact_value / impact_share, or the
 amounts the investigation confirmed) comes first - not the most
-statistically curious one. Each paragraph:
-- Starts with the one-line takeaway in bold, phrased as a plain business
-  statement of what happened and why it matters - not as an observation
-  about metric behavior.
-- States the value at stake: the amount involved and its share of the
-  total, in business-formatted numbers ("about 2.1M, roughly 12% of the
-  quarter").
-- Then gives what the drill-down showed in business terms (which
-  locations, categories, months), with the likely explanation in hedged
-  language.
-- Where the evidence supports it, ends with what the reader should take
-  away or verify next ("worth confirming when this location opened") -
-  still hedged, never a proven cause.
+statistically curious one. Each paragraph must be understandable on its own,
+use 3-5 short sentences, stay under 90 words, and contain no more than four
+figures. Follow this order:
+- Start with the one-line takeaway in bold. State WHAT changed, WHERE it
+  changed, and HOW LARGE the change was. Lead with the business meaning, never
+  the calculation. Example: "Electronics revenue increased by about 552K."
+- Put a percentage in context when one is material. Say "about 27% of the total
+  increase in transactions", never "27% share of total change".
+- State the main evidenced contributor in simple terms. Example: "The increase
+  came mainly from more units being sold, although average revenue per item
+  decreased." Do not make the reader decode a formula.
+- If an explanation is only a possibility, clearly say "may", "could", or
+  "suggests". Keep the measured result and the interpretation in separate
+  sentences.
+- End with ONE specific check or next question. Prefer "Check", "Review",
+  "Compare", "Confirm", or "Investigate".
+- Put secondary figures and calculation detail in Evidence Trail, not in the
+  manager-facing paragraph.
 Signals classified data_quality - or that turned out during investigation
 to be about how a metric is calculated or about data completeness
 (non-differentiating shares, missing prior-period history, growth values
@@ -67,9 +72,12 @@ Rules:
 - Use ONLY the numbers and labels present in the signals and trails. Never
   invent values. (Rounding, unit-scaling, relabeling a raw measure name in
   plain English, or naming a month are NOT inventing.)
-- When a signal carries an exact `decomposition`, state the quantified volume
-  and rate contributions in plain language. Call it a decomposition of the
-  movement, not root cause; at aggregate grain the rate bucket can include mix.
+- When a signal carries an exact `decomposition`, translate it into meaning in
+  Key Insights: say whether the change came mainly from more/fewer units or
+  transactions and whether average revenue per item/transaction rose or fell.
+  Do not use "volume effect", "rate effect", or "movement decomposition" in
+  Key Insights. The quantified calculation may appear in Evidence Trail, where
+  it must still be described as a breakdown of the change rather than root cause.
 - Business language in Key Insights and Data Quality Watch-outs: the reader
   is a business manager, not a BI developer. In those two sections never use
   internal table or column names (write "the underlying sales records", not
@@ -81,6 +89,16 @@ Rules:
   simply "increased"/"declined" when the one-time scope sentence already makes
   the comparison clear. Do not mechanically repeat the same scope wording or
   opening phrase in every paragraph.
+- Use one term for one measure. If the source measure is bills, introduce it as
+  "transactions (bills)" once and then use "transactions". Never silently turn
+  transactions into customers or visits. Say "items purchased per transaction"
+  instead of "basket mix" or "smaller baskets" when precision matters.
+- In Key Insights and Data Quality Watch-outs avoid analyst shorthand such as
+  "share of total change", "realized rate", "sell-through", "product mix",
+  "materiality", "reconciliation", and "z-score". Translate them respectively
+  into the part of the increase/decline, average revenue per item, sales, mix of
+  products sold, size of the business impact, totals not matching, and unusual
+  movement.
 - Refer to months and dates in words where the year context is known:
   "March 2026", "late June" - never "month 3".
 - Format numbers for business readers; raw floats from the trails must not

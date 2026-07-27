@@ -1,4 +1,4 @@
-"""Evidence-grounding checks for fresh summary prose."""
+"""Evidence-grounding and shape checks for structured fresh summaries."""
 
 from __future__ import annotations
 
@@ -18,6 +18,36 @@ _EMOJI = re.compile(
     "]+",
     flags=re.UNICODE,
 )
+_SECTION_TONES = {
+    "what's working": {"positive"},
+    "risks": {"warning", "critical"},
+    "recommended actions": {"info"},
+}
+_ACTION_VERBS = {
+    "assess",
+    "compare",
+    "confirm",
+    "investigate",
+    "monitor",
+    "prioritise",
+    "prioritize",
+    "review",
+    "segment",
+    "validate",
+}
+_TECHNICAL_MANAGER_PHRASES = {
+    "movement decomposition",
+    "volume effect",
+    "rate effect",
+    "share of total change",
+    "realized rate",
+    "basket mix",
+    "product mix",
+    "sell-through",
+    "materiality",
+    "reconciliation",
+    "z-score",
+}
 
 
 def _finite(value: Any) -> bool:
@@ -98,16 +128,122 @@ def validate_text(text: str, candidates: list[dict]) -> list[str]:
     return errors
 
 
+def _facts(selected: list[dict]) -> dict[str, dict]:
+    facts: dict[str, dict] = {}
+    for candidate in selected:
+        for fact in (candidate.get("evidence") or {}).get("facts", []) or []:
+            fact_id = str(fact.get("fact_id") or "").strip()
+            if fact_id and str(fact.get("display_value") or "").strip():
+                facts[fact_id] = fact
+    return facts
+
+
+def _clean_sections(draft: dict) -> list[dict]:
+    return [item for item in draft.get("sections", []) or [] if isinstance(item, dict)]
+
+
 def validate_draft(draft: dict, selected: list[dict]) -> list[str]:
+    """Validate either an LLM draft or the materialized internal summary.
+
+    LLM metric entries carry ``fact_id`` and no values/tones. The final internal
+    summary carries code-injected ``value``/``tone`` fields. Both shapes are
+    checked here so the final renderer cannot accidentally weaken the authoring
+    contract.
+    """
     errors = []
-    heading = str(draft.get("heading") or "").strip()
-    paragraphs = [str(item or "").strip() for item in draft.get("paragraphs", []) or [] if str(item or "").strip()]
-    if not heading:
-        errors.append("heading is empty")
-    if not paragraphs:
+    headline = str(draft.get("headline") or draft.get("heading") or "").strip()
+    if not headline:
+        errors.append("headline is empty")
+    elif selected and _facts(selected) and not parse_numbers(headline):
+        errors.append(
+            "headline must include the exact display value for its main result"
+        )
+
+    sections = _clean_sections(draft)
+    headings: list[str] = []
+    text_parts = [headline]
+    for section in sections:
+        heading = str(section.get("heading") or "").strip()
+        normalized = heading.casefold()
+        headings.append(normalized)
+        points = [
+            str(item or "").strip()
+            for item in section.get("points", []) or []
+            if str(item or "").strip()
+        ]
+        if not heading:
+            errors.append("a section heading is empty")
+        if not points:
+            errors.append(f"section {heading!r} has no points")
+        if len(points) > 3:
+            errors.append(f"section {heading!r} has more than 3 points")
+        tone = str(section.get("tone") or "").strip().casefold()
+        if tone and normalized in _SECTION_TONES and tone not in _SECTION_TONES[normalized]:
+            errors.append(f"section {heading!r} has incompatible tone {tone!r}")
+        if normalized == "recommended actions":
+            for point in points:
+                first = re.sub(r"[^A-Za-z].*$", "", point).casefold()
+                if first not in _ACTION_VERBS:
+                    errors.append(
+                        "recommended actions must start with a safe follow-up verb "
+                        f"({', '.join(sorted(_ACTION_VERBS))}); got {point!r}"
+                    )
+        text_parts.extend([heading, *points])
+
+    if selected:
+        expected = list(_SECTION_TONES)
+        if headings != expected:
+            errors.append(
+                "sections must contain exactly What's working, Risks, and Recommended actions in that order"
+            )
+    elif not sections:
         errors.append("summary content is empty")
-    if heading.startswith("#") or any(paragraph.startswith(("#", "- ", "* ")) for paragraph in paragraphs):
+
+    metrics = [item for item in draft.get("metrics", []) or [] if isinstance(item, dict)]
+    known_facts = _facts(selected)
+    target_metrics = min(4, len(known_facts))
+    if selected and len(metrics) != target_metrics:
+        errors.append(
+            f"metrics must contain exactly {target_metrics} supported tile(s) for this perspective"
+        )
+    seen_fact_ids: set[str] = set()
+    seen_labels: set[str] = set()
+    for metric in metrics:
+        label = str(metric.get("label") or "").strip()
+        fact_id = str(metric.get("fact_id") or "").strip()
+        value = str(metric.get("value") or "").strip()
+        if not label:
+            errors.append("a metric label is empty")
+        elif label.casefold() in seen_labels:
+            errors.append(f"duplicate metric label: {label!r}")
+        seen_labels.add(label.casefold())
+        if fact_id:
+            if fact_id not in known_facts:
+                errors.append(f"unknown metric fact id: {fact_id!r}")
+            if fact_id in seen_fact_ids:
+                errors.append(f"duplicate metric fact id: {fact_id!r}")
+            seen_fact_ids.add(fact_id)
+        elif selected and not value:
+            errors.append(f"metric {label!r} has neither a fact id nor a materialized value")
+        text_parts.extend([label, value])
+
+    formatted = [part for part in text_parts if part]
+    if headline.startswith("#") or any(part.startswith(("#", "- ", "* ")) for part in formatted):
         errors.append("Markdown formatting is not permitted in the structured summary text")
+    manager_text = "\n".join(formatted).casefold()
+    found_technical = sorted(
+        phrase for phrase in _TECHNICAL_MANAGER_PHRASES if phrase in manager_text
+    )
+    if found_technical:
+        errors.append(
+            "manager-facing summary uses analyst shorthand: "
+            + ", ".join(found_technical)
+        )
+    bills_outside_intro = manager_text.replace("transactions (bills)", "transactions")
+    if re.search(r"\bbills?\b", bills_outside_intro):
+        errors.append(
+            "use transactions consistently; bills may appear only once as transactions (bills)"
+        )
     selected_ids = {str(candidate.get("candidate_id")) for candidate in selected}
     covered = [str(item) for item in draft.get("covered_candidate_ids", []) or []]
     unknown = [item for item in covered if item not in selected_ids]
@@ -115,5 +251,5 @@ def validate_draft(draft: dict, selected: list[dict]) -> list[str]:
         errors.append(f"unknown covered candidate ids: {unknown}")
     if selected and str(selected[0].get("candidate_id")) not in covered:
         errors.append("the primary selected perspective was not marked covered")
-    errors.extend(validate_text("\n".join([heading, *paragraphs]), selected))
+    errors.extend(validate_text("\n".join(formatted), selected))
     return errors

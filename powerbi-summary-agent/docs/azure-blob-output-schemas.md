@@ -60,10 +60,11 @@ novelty policy. Memory is internal state, not a customer-facing knowledge base.
 ### Purpose and lifecycle
 
 This is the latest executive summary. It is a single JSON object and is
-overwritten on every successfully published run. Its prose is authored from
-`report_summary.md`; metric values are injected from the report's parsed Key
-Metrics, and bullets containing figures that are not present in the source are
-discarded. The final object is validated with unknown fields forbidden.
+overwritten on every successfully published run. One memory-selected summary
+perspective supplies the evidence; the LLM authors the headline and section
+text, while code injects metric values and tones from that evidence. Unsupported
+figures are rejected. The final object is validated with unknown fields
+forbidden.
 
 The corresponding application contract is `/report/summary?format=json`.
 
@@ -73,21 +74,31 @@ The corresponding application contract is `/report/summary?format=json`.
 {
   "title": "AI Summary",
   "generatedAt": "2026-07-22",
-  "headline": "Comparable revenue improved while quantity softened.",
+  "headline": "Revenue increased, a change of +3.5M, while quantity declined.",
   "metrics": [
     {
-      "label": "Comparable current revenue",
-      "value": "122.6M",
-      "tone": "teal"
+      "label": "Revenue change",
+      "value": "+3.5M",
+      "tone": "positive"
     }
   ],
   "sections": [
     {
-      "heading": "Comparable performance",
-      "tone": "teal",
+      "heading": "What's working",
+      "tone": "positive",
       "points": [
-        "Comparable current revenue is 122.6M."
+        "Revenue change was +3.5M."
       ]
+    },
+    {
+      "heading": "Risks",
+      "tone": "warning",
+      "points": ["Quantity change was -216.2K."]
+    },
+    {
+      "heading": "Recommended actions",
+      "tone": "info",
+      "points": ["Investigate the quantity decline and confirm whether it persists."]
     }
   ]
 }
@@ -99,13 +110,13 @@ The corresponding application contract is `/report/summary?format=json`.
 |---|---|---:|---|
 | `title` | string | Yes | Display title, currently defaulting to `AI Summary`. |
 | `generatedAt` | string | Yes | Payload creation date in `YYYY-MM-DD` form. This is the process clock's date, not necessarily the data watermark. |
-| `headline` | string | Yes | One current-run executive takeaway. |
-| `metrics` | array | Yes | Curated metric tiles. May be empty only when the source contains no usable metrics. |
-| `metrics[].label` | string | Yes | Metric display name copied exactly from the source Key Metrics section. |
+| `headline` | string | Yes | One current-run executive takeaway that includes the primary evidence-backed figure. |
+| `metrics` | array | Yes | Up to four evidence-backed supporting tiles. May be empty when no usable metric fact exists. |
+| `metrics[].label` | string | Yes | Short presentation label for the code-injected evidence value. |
 | `metrics[].value` | string | Yes | Presentation-formatted value, such as `122.6M`, `-1.2%`, or explanatory text. It is **not a numeric field**. |
 | `metrics[].tone` | enum string | Yes | One of `positive`, `critical`, `warning`, `info`, or `teal`. This is a display hint, not a measured severity score. |
 | `sections` | array | Yes | Ordered narrative sections. |
-| `sections[].heading` | string | Yes | Section title. Headings are authored per run and should not be treated as stable identifiers. |
+| `sections[].heading` | string | Yes | Normally the stable layout headings `What's working`, `Risks`, and `Recommended actions`. |
 | `sections[].tone` | enum string | Yes | Same tone enum as metric tiles. |
 | `sections[].points` | string array | Yes | Ordered, presentation-ready bullet text. All figures should be preserved verbatim when an LLM restates them. |
 
@@ -115,8 +126,9 @@ The corresponding application contract is `/report/summary?format=json`.
   supporting context.
 - Preserve values exactly as strings. Do not silently expand `122.6M` into a
   guessed raw number or recalculate percentages from rounded display values.
-- Do not assume a fixed section taxonomy. Match sections by meaning, not by
-  array position or exact heading text.
+- The normal completed-summary taxonomy is fixed and ordered: `What's working`,
+  `Risks`, then `Recommended actions`. Honest no-new-perspective states may use a
+  minimal `Summary` section instead.
 - `generatedAt` says when this JSON was built. Statements about data freshness
   should come from the content itself unless a separate data-as-of field is
   added later.
@@ -145,16 +157,16 @@ The corresponding application contract is `/kpi/insights`.
     "value": "-208.3K",
     "delta": "97.2%",
     "deltaDirection": "down",
-    "description": "Example segment was the main driver of the unit decline.",
+    "description": "Example segment sold 208.3K fewer units, accounting for about 97.2% of the total decline in unit sales. The decline came mainly from fewer items being sold.",
     "displayTime": "3:18 PM",
     "isoDate": "2026-07-22",
-    "comparisonLabel": "share of total change",
+    "comparisonLabel": "of the total decline in unit sales",
     "insight": {
       "title": "Example unit drag",
       "summary": "The decline was concentrated in this segment.",
       "stats": [
-        {"label": "Quantity impact", "value": "-208.3K"},
-        {"label": "Share of change", "value": "+97.2%"}
+        {"label": "Unit sales change", "value": "-208.3K"},
+        {"label": "Share of unit sales decline", "value": "97.2%"}
       ],
       "action": "Review the detailed category and store breakdown."
     }
@@ -174,7 +186,7 @@ The corresponding application contract is `/kpi/insights`.
 | `[].value` | string | Yes | Signed, compact display impact, for example `+766.3K` or `-560.6K`. Not a raw number. |
 | `[].delta` | string | Yes | Absolute display magnitude for the comparison described by `comparisonLabel`; may be an empty string when no comparison applies. |
 | `[].deltaDirection` | enum string | Yes | `up` or `down`; this carries the sign for the front-card `delta`. |
-| `[].description` | string | Yes | Concise card-front explanation. |
+| `[].description` | string | Yes | Plain-language main message stating what changed, the exact amount, the percentage in context when available, and the main evidenced contributor. |
 | `[].displayTime` | string | Yes | Payload-generation time in 12-hour display form. It uses the process clock and has no offset in the value. |
 | `[].isoDate` | string | Yes | Payload-generation date in `YYYY-MM-DD` form. |
 | `[].comparisonLabel` | string | Yes | Defines what `delta` means. This field must be read together with `delta`. |
@@ -187,8 +199,8 @@ The corresponding application contract is `/kpi/insights`.
 | `[].insight.title` | string | Yes | Short insight title. |
 | `[].insight.summary` | string | Yes | Plain-language interpretation of the evidence. |
 | `[].insight.stats` | array | Yes | Up to three display statistics. |
-| `[].insight.stats[].label` | string | Yes | Stat label, such as `Revenue impact`, `Share of change`, `Week over week`, `Vs expected`, `Volume / rate`, or `Segments`. |
-| `[].insight.stats[].value` | string | Yes | Display-formatted statistic. It may contain a compound value such as `1.15M / -383.4K`. |
+| `[].insight.stats[].label` | string | Yes | Contextual stat label, such as `Revenue change`, `Share of revenue increase`, `Offset to revenue increase`, `Change from units sold`, `Week over week`, `Vs expected`, or `Segments`. |
+| `[].insight.stats[].value` | string | Yes | Display-formatted statistic. Calculation shorthand is not exposed in this manager-facing field. |
 | `[].insight.action` | string | Yes | Recommended follow-up analysis or business check; it is not an automatically executed action. |
 
 ### Conditional meaning of `delta`
@@ -198,15 +210,16 @@ The corresponding application contract is `/kpi/insights`.
 
 | Signal type | `delta` means | Typical `comparisonLabel` |
 |---|---|---|
-| Normal current/prior finding | Absolute share of the total change | `share of total change` |
+| Normal current/prior finding | Absolute contribution to or offset against the total increase/decline | `of the total increase in revenue`, `of the total decline in unit sales`, or `offsetting the total increase in revenue` |
+| Concentration finding | Share of the current metric | `of current revenue` |
 | Calendar-week finding | Absolute week-over-week percent | `week over week (from YYYY-MM-DD)` |
 | Rolling-week finding | Absolute percent versus the prior seven days | `vs the prior 7 days (ending YYYY-MM-DD)` |
 | Daily incident | Absolute deviation as a percent of expected | `vs expected (start..end)` |
 | No comparable delta | Empty string | `current period` |
 
-The front-card `delta` is an absolute magnitude; use `deltaDirection` for its
-direction. A nested `Share of change` stat is formatted with its sign and can
-therefore look different from the front-card `delta`.
+The front-card `delta` is an absolute magnitude; use `deltaDirection` for the
+segment movement. The contextual label explains whether the segment contributed
+to the overall increase/decline or moved against it.
 
 ### LLM interpretation
 

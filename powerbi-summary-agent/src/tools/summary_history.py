@@ -77,6 +77,7 @@ def build_entry(
         "headline": summary.get("heading"),
         "paragraphs": list(summary.get("paragraphs") or []),
         "metrics": list(summary.get("metrics") or []),
+        "sections": list(summary.get("sections") or []),
         "visual": summary.get("visual"),
     }
 
@@ -120,6 +121,7 @@ def build_history_response(entries: list[dict]) -> dict:
             "headline": entry.get("headline"),
             "paragraphs": entry.get("paragraphs") or [],
             "metrics": entry.get("metrics") or [],
+            "sections": entry.get("sections") or [],
             "visual": entry.get("visual"),
         })
     timezone_name = (
@@ -147,7 +149,7 @@ def _entries_from_response(response: dict | None) -> list[dict]:
                 "runAt": f"{iso_day}T{raw_time}",
                 **{key: run.get(key) for key in (
                     "status", "summaryType", "dataAsOf", "grain", "freshnessStatus",
-                    "headline", "paragraphs", "metrics", "visual"
+                    "headline", "paragraphs", "metrics", "sections", "visual"
                 )},
             })
     return entries

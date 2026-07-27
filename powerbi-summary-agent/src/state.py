@@ -28,6 +28,7 @@ class SummaryAgentState(TypedDict, total=False):
     summary_memory_root: str
     summary_memory_policy: str
     summary_memory_cooldown_days: int
+    summary_resurface_change_pct: float
     summary_history_enabled: bool
     max_rows_per_query: int
     ai_provider: str
