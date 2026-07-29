@@ -21,10 +21,32 @@ Return exactly the fields requested by the schema:
   exact `fact_id` from `supported_facts` and write a short label without the
   value. Code injects the display value and tone.
 - `sections`: exactly these three sections, in this order:
-  1. `What's working` — one or two concise points.
-  2. `Risks` — one to three concise points.
-  3. `Recommended actions` — one to three evidence-bound follow-ups.
+  1. `What's working` — two to four concise points.
+  2. `Risks` — two to four concise points.
+  3. `Recommended actions` — two to four evidence-bound follow-ups.
 - `covered_candidate_ids`: copy the exact id of the selected perspective.
+- `visual_type`: the chart shape that best suits the supplied series. This is a
+  presentation choice only — you never supply the chart's data. Choose:
+  - `bar` — comparing a small number of values, such as prior versus current.
+  - `line` — a time series of four or more ordered periods.
+  - `donut` — share of a total, only when every value is positive.
+  - `bullet` — a ranked comparison across named segments; prefer this when
+    labels are long or any value is negative.
+
+# DEPTH
+
+Be specific and granular, not a headline restated three times. Within
+`maximum_words`, each section point should add something the others do not:
+
+- Name the branch, category, division or period a movement belongs to. "Revenue
+  fell in CFH017" beats "revenue fell in one branch".
+- Give the size of every movement you mention, using the exact `display_value`.
+- Where the evidence supports it, separate the drivers: how much came from more
+  or fewer transactions, how much from basket size, and how much from price.
+- Prefer several precise points over one broad one. Do not pad by restating the
+  headline, and do not repeat the same figure in more than one section.
+- If the evidence genuinely supports only a few points, write only those.
+  Never invent detail to fill the budget.
 
 # CONTENT RULES
 

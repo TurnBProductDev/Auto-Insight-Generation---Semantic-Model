@@ -170,6 +170,7 @@ def build_initial_state(cfg: dict, config_path: str = "") -> dict:
         "summary_word_limit": cfg.get("summary_word_limit", 300),
         "fresh_summary_enabled": cfg.get("fresh_summary_enabled", True),
         "fresh_summary_max_words": cfg.get("fresh_summary_max_words", 220),
+        "fresh_summary_metric_tiles": cfg.get("fresh_summary_metric_tiles", 6),
         "summary_visual_enabled": cfg.get("summary_visual_enabled", True),
         "summary_candidates_max": cfg.get("summary_candidates_max", 12),
         "summary_temporal_batch_share": cfg.get("summary_temporal_batch_share", 0.5),

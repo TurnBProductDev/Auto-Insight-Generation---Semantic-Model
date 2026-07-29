@@ -42,6 +42,20 @@ class FreshSummaryDraft(BaseModel):
     covered_candidate_ids: List[str] = Field(
         description="Exact candidate ids actually represented in the summary"
     )
+    # Presentation-only. The chart's DATA is built deterministically upstream;
+    # this picks the SHAPE it is drawn in. A request the data cannot support
+    # degrades in summary_visual._chart_body rather than drawing something
+    # misleading, so a bad choice here is cosmetic, never a correctness bug.
+    visual_type: Literal["bar", "line", "donut", "bullet"] = Field(
+        default="bar",
+        description=(
+            "Chart shape best suited to the supplied series: 'bar' to compare a "
+            "few values such as prior versus current, 'line' for a time series "
+            "of four or more ordered periods, 'donut' for share of a total when "
+            "every value is positive, 'bullet' for a ranked comparison across "
+            "named segments, especially with long labels or negative values"
+        ),
+    )
 
 
 _SECTION_TONES = {
@@ -53,6 +67,25 @@ _CHANGE_WORDS = {"change", "growth", "variance", "delta", "decline", "increase",
 _RISK_WORDS = {
     "out of stock", "stockout", "unwanted", "expired", "shortage", "decline", "loss", "risk"
 }
+
+
+_VISUAL_SHAPES = {"bar", "line", "donut", "bullet"}
+
+
+def _visual_with_shape(candidate: dict, authored: dict) -> dict | None:
+    """Deterministic chart data, with the LLM allowed to pick only its shape.
+
+    Splitting these keeps the core invariant intact: labels and values stay
+    code-owned and unmodifiable, while `visual_type` is a presentation choice
+    the renderer can safely override if the data cannot support it.
+    """
+    visual = candidate.get("visual")
+    if not visual:
+        return None
+    shape = str(authored.get("visual_type") or "").casefold().strip()
+    if shape not in _VISUAL_SHAPES:
+        return visual
+    return {**visual, "type": shape}
 
 
 def _number(value: Any) -> bool:
@@ -285,7 +318,9 @@ def _invoke(state: dict, selected: list[dict]) -> dict:
         "report_context": state.get("report_understanding") or {},
         "reporting_period": period,
         "selected_perspectives": [_perspective_context(candidate) for candidate in selected],
-        "metric_tile_count": min(4, len(_numeric_facts(selected))),
+        "metric_tile_count": min(
+            int(state.get("fresh_summary_metric_tiles", 6)), len(_numeric_facts(selected))
+        ),
         "maximum_words": int(state.get("fresh_summary_max_words", 220)),
     }
     messages = [
@@ -381,7 +416,7 @@ def run(state: dict) -> dict:
         "covered_candidate_ids": authored.get("covered_candidate_ids") or [],
         "covered_summary_keys": [item.get("summary_key") for item in covered if item.get("summary_key")],
         "metrics": metrics,
-        "visual": primary.get("visual") if state.get("summary_visual_enabled", True) else None,
+        "visual": _visual_with_shape(primary, authored) if state.get("summary_visual_enabled", True) else None,
         "data_as_of": period.get("data_as_of"),
         "grain": period.get("grain") or "snapshot",
         "freshness_status": period.get("freshness_status") or "unknown",

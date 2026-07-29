@@ -4,14 +4,20 @@
 !.env.example
 .pbi_token_cache.json
 
-# Real config (copy the *.example.* files instead)
+# Real config (copy the *.example.* files instead).
+# The nested globs cover per-report config directories -- read_business_rules()
+# resolves business_rules.md beside whichever config.json a run is given, so a
+# second report lives in config/<report>/ and carries the same secrets.
 config/config.json
 config/business_rules.md
+config/*/config.json
+config/*/business_rules.md
 
-# Generated run artifacts (real business data)
+# Generated run artifacts (real business data). The wildcard covers ad-hoc
+# comparison folders (outputs_v2, outputs_with_rules, ...) created via
+# AGENT_OUTPUT_FOLDER, which the bare outputs/ rule would not match.
 outputs/
-outputs_replay/
-outputs_bizlang_preview/
+outputs_*/
 
 # Python
 __pycache__/

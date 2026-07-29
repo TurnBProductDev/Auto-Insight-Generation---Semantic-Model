@@ -19,6 +19,7 @@ class SummaryAgentState(TypedDict, total=False):
     summary_word_limit: int
     fresh_summary_enabled: bool
     fresh_summary_max_words: int
+    fresh_summary_metric_tiles: int
     summary_visual_enabled: bool
     summary_candidates_max: int
     summary_temporal_batch_share: float

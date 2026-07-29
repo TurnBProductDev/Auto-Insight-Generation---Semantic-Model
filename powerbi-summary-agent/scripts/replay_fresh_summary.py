@@ -259,8 +259,31 @@ def main(argv=None) -> int:
         ]
         assert all(isinstance(metric["value"], str) for metric in payload["metrics"])
         page = summary_visual.render(fresh)
-        assert "#0f9f95" in page and "background:#fff" in page and "metric-value" in page
+        # Visual contract: ScanB design tokens (theme.css), both dark-mode
+        # signals (standalone OS preference + the app's data-theme attribute),
+        # and the stat-tile / pill components that mirror KpiInsights.css.
+        assert "--sb-teal" in page and "--sb-page-bg" in page
+        assert '[data-theme="dark"]' in page and "prefers-color-scheme" in page
+        assert 'class="stat ' in page and 'class="pill ' in page
         assert "Recommended actions" in page and "emoji" not in page
+        # Theme bridge: the app embeds this in an iframe (separate document, so
+        # it cannot inherit data-theme). The inline script must read the host's
+        # theme and accept live toggles.
+        assert "sb-theme" in page and "prefers-color-scheme" in page
+        assert "addEventListener('message'" in page
+        # Self-contained: inline script/style only, never an external fetch.
+        assert "<link" not in page and "<script src" not in page
+        assert "http://" not in page and "https://" not in page
+        # Every chart type must degrade rather than mislead.
+        for kind in ("bar", "line", "donut", "bullet"):
+            variant = {**fresh, "visual": {
+                "type": kind, "title": "t", "labels": ["A", "B", "C"],
+                "values": [3.0, 1.0, 2.0], "value_label": "v"}}
+            assert "<svg" in summary_visual.render(variant), kind
+        negatives = {**fresh, "visual": {
+            "type": "donut", "title": "t", "labels": ["A", "B"],
+            "values": [-5.0, 10.0], "value_label": "v"}}
+        assert 'class="arc' not in summary_visual.render(negatives)
         rendered_state = {**state, "fresh_summary": fresh}
         rendered_state.update(fresh_summary_validator.run(rendered_state))
         out = Path(state["output_folder"])
