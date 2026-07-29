@@ -13,8 +13,9 @@ For each signal return:
                  "Quantity", "Transactions", or "Data Quality". Plain, no numbers.
 - `description`: ONE short sentence explaining the main evidenced contributor in
                  plain business English. Code places a factual first sentence in
-                 front of yours with what changed, the exact amount, and the
-                 percentage in context. Do not repeat the movement or any figure.
+                 front of yours with what changed, the exact amount, before/after
+                 values, and the percentage in context when available. Do not
+                 repeat the movement or any figure.
                  Example: "The increase came mainly from more units being sold,
                  although average revenue per item decreased."
 - `insight_title`   : a short back-of-card heading (<= 6 words), specific to the
@@ -29,6 +30,10 @@ For each signal return:
 Rules:
 - Cover every `signal_id` exactly once. Do not add, drop, merge, or split signals.
 - No emojis. No markdown. Do not write figures; code owns and inserts them.
+- Do not add a measurable supporting claim that is not represented by the
+  code-owned main sentence or injected stats. In particular, do not write
+  "transactions rose", "units fell", or "average value increased" when that
+  supporting metric is not quantified on the card; omit it instead.
 - Respect branch scope: describe and point to where to look; do not assert causation.
 - Lead with meaning, not the analytical calculation. Never use "movement
   decomposition", "volume effect", "rate effect", "share of total change",

@@ -107,6 +107,15 @@ def _copy_candidate_facts(signal: dict, candidate: dict) -> None:
     signal["decomposition"] = candidate.get("rate_volume") or signal.get("decomposition")
     signal["segment_members"] = candidate.get("segment_members") or signal.get("segment_members")
     signal["score"] = candidate.get("score", signal.get("score", 0.0))
+    # Stable deterministic identity/provenance used by the thesis linker and
+    # downstream renderers. Keep the raw evidence member separate from the LLM's
+    # humanized affected_segment (notably, period labels such as "March").
+    signal["candidate_type"] = candidate.get("type")
+    signal["evidence_segment"] = candidate.get("segment")
+    for f in ("metric", "bundle_id", "metric_family", "dimension", "anchor",
+              "period_label", "direction", "current", "prior"):
+        if candidate.get(f) is not None:
+            signal[f] = candidate.get(f)
     if candidate.get("recent_week"):
         signal["recent_week"] = candidate.get("recent_week")
         # The memory whitelist (insight_memory.commit_run) reads a TOP-LEVEL
@@ -123,6 +132,26 @@ def _copy_candidate_facts(signal: dict, candidate: dict) -> None:
                   "actual_total", "expected_total"):
             if candidate.get(f) is not None:
                 signal[f] = candidate.get(f)
+    if candidate.get("type") == "peer_growth_rate_outlier":
+        # Structured rate facts flow onto the signal so the synthesizer/report read
+        # values, never the LLM's prose (Phase 8 surfaces them): current/prior,
+        # reported growth %, peer median, robust z (or flat-peer basis), peer count,
+        # exposure, and the evidence query for provenance.
+        for f in ("reported_growth_pct", "robust_z", "stat_basis", "peer_count",
+                  "peer_median_reported_pct", "business_exposure", "deviation_pct",
+                  "current", "prior"):
+            if candidate.get(f) is not None:
+                signal[f] = candidate.get(f)
+    # Small-peer ordinal context and bridge corroboration ride along on a
+    # change_contribution signal so the report can surface the careful peer-relative
+    # wording (Phase 8). They carry NO story key of their own (Phase 7): the bridge's
+    # existing contribution key remains the suppression identity.
+    if candidate.get("peer_rate_context"):
+        signal["peer_rate_context"] = candidate["peer_rate_context"]
+    if candidate.get("peer_rate_evidence"):
+        signal["peer_rate_evidence"] = candidate["peer_rate_evidence"]
+    if candidate.get("reserved_relative"):
+        signal["reserved_relative"] = True
 
 
 def _bind_candidates(signals: List[dict], candidates: dict) -> List[dict]:
@@ -177,6 +206,8 @@ def _bind_eligible(signals: List[dict], eligible: dict) -> tuple[List[dict], int
                   "change_pct", "episode_end", "peak_z"):
             if fields.get(f) is not None:
                 sig[f] = fields.get(f)
+        if cand.get("reserved_relative"):
+            sig["reserved_relative"] = True
         covered = [sig["story_key"]] if sig.get("story_key") else []
         for rid in (sig.get("related_candidate_ids") or []):
             rc = by_id.get(rid)
@@ -266,12 +297,47 @@ def _backfill_uncovered(bound: List[dict], eligible: dict) -> List[dict]:
     return bound + injected
 
 
+def _reserved_candidate(eligible: dict) -> Optional[dict]:
+    """The one standalone rate mover the novelty filter reserved this run, if any."""
+    for c in (eligible.get("business_candidates", []) or []):
+        if c.get("reserved_relative"):
+            return c
+    return None
+
+
+def _ensure_reserved_relative(bound: List[dict], eligible: dict) -> List[dict]:
+    """Guarantee the reserved standalone rate mover (Phase 6) is represented by a
+    signal even if the LLM ignored it: it occupies the one relative slot by policy
+    in _rank_and_cap, never by competing on score. If the LLM already selected it,
+    just tag that signal; otherwise deterministically backfill one."""
+    reserved = _reserved_candidate(eligible)
+    if reserved is None:
+        return bound
+    rid = reserved.get("id")
+    existing = next((s for s in bound if s.get("candidate_id") == rid), None)
+    if existing is not None:
+        existing["reserved_relative"] = True
+        return bound
+    sig = _signal_from_candidate(reserved)
+    sig["candidate_id"] = rid
+    sig["reserved_relative"] = True
+    return bound + [sig]
+
+
 def _rank_and_cap(signals: List[dict], cap: int, max_dq: int) -> List[dict]:
     """Take up to `cap` signals ranked purely by materiality score (highest first,
     ties broken by original order) - no level (high/period/recent_week/daily) gets
     special priority; whatever the model found competes on equal footing. The DQ
-    sub-cap still holds so reconciliation noise can't crowd out business findings."""
-    ranked = sorted(enumerate(signals), key=lambda p: (-(p[1].get("score") or 0.0), p[0]))
+    sub-cap still holds so reconciliation noise can't crowd out business findings.
+
+    Phase 6: the ONE reserved relative-mover signal takes a slot by POLICY, never by
+    score - it displaces the lowest-ranked selected *business* signal (never a DQ
+    one), keeping the total at `cap` with exactly one rate mover. Its z-score /
+    relative-priority is never compared against contribution scores. If none is
+    reserved, all `cap` slots revert to normal selection."""
+    reserved = next((s for s in signals if s.get("reserved_relative")), None)
+    others = [s for s in signals if s is not reserved]
+    ranked = sorted(enumerate(others), key=lambda p: (-(p[1].get("score") or 0.0), p[0]))
     kept, dq = [], 0
     for _, s in ranked:
         if len(kept) >= cap:
@@ -281,6 +347,20 @@ def _rank_and_cap(signals: List[dict], cap: int, max_dq: int) -> List[dict]:
                 continue
             dq += 1
         kept.append(s)
+    if reserved is not None and not any(s is reserved for s in kept):
+        if len(kept) >= cap:
+            # Displace the LOWEST-ranked business signal (scan from the end);
+            # never evict a data-quality signal (its sub-cap is preserved).
+            for i in range(len(kept) - 1, -1, -1):
+                if kept[i].get("kind") != "data_quality":
+                    kept.pop(i)
+                    break
+            else:
+                # The relative lens may displace only the weakest BUSINESS
+                # finding. A data-quality warning owns its separately-capped slot;
+                # when the selection contains only DQ, the rate slot reverts.
+                return kept
+        kept.append(reserved)
     return kept
 
 
@@ -374,6 +454,13 @@ def run(state: dict) -> dict:
         if len(bound) > before:
             log.info(f"Backfilled {len(bound) - before} eligible candidate(s) the LLM "
                      f"omitted (added to the pool, ranked equally with everything else).")
+        # Phase 6: guarantee the reserved standalone rate mover is represented,
+        # then _rank_and_cap gives it the one relative slot by policy.
+        before = len(bound)
+        bound = _ensure_reserved_relative(bound, eligible)
+        if len(bound) > before:
+            log.info("Reserved-relative rate mover backfilled (LLM omitted it); it "
+                     "takes the one relative slot by policy.")
     else:
         bound = _bind_candidates(raw, eligible)
 

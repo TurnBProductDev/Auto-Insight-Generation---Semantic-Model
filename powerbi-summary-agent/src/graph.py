@@ -15,7 +15,7 @@ START -> load_config -> read_metadata -> semantic_profile -> baseline_scope
             -> insight_recent_week -> insight_daily -> insight_evidence_catalog
             -> insight_stat_detector -> insight_novelty_filter
             -> insight_signal_detector -> insight_evidence_assembler -> insight_gap_scan
-            -> insight_investigator -> insight_synthesizer
+            -> insight_investigator -> insight_thesis_linker -> insight_synthesizer
             -> insight_branch_done ----------------------------------------------+
                                                                                    |
                                              both barriers -> save_outputs -> END -+
@@ -66,6 +66,7 @@ from .agents import (
     evidence_assembler,
     insight_gap_scan,
     insight_investigator,
+    insight_thesis_linker,
     insight_synthesizer,
 )
 
@@ -319,6 +320,7 @@ def build_graph():
     g.add_node("insight_evidence_assembler", evidence_assembler.run)
     g.add_node("insight_gap_scan", insight_gap_scan.run)
     g.add_node("insight_investigator", insight_investigator.run)
+    g.add_node("insight_thesis_linker", insight_thesis_linker.run)
     g.add_node("insight_synthesizer", insight_synthesizer.run)
     g.add_node("insight_branch_done", insight_branch_done)
 
@@ -371,7 +373,8 @@ def build_graph():
     g.add_edge("insight_signal_detector", "insight_evidence_assembler")
     g.add_edge("insight_evidence_assembler", "insight_gap_scan")
     g.add_edge("insight_gap_scan", "insight_investigator")
-    g.add_edge("insight_investigator", "insight_synthesizer")
+    g.add_edge("insight_investigator", "insight_thesis_linker")
+    g.add_edge("insight_thesis_linker", "insight_synthesizer")
     g.add_edge("insight_synthesizer", "insight_branch_done")
 
     # Fan-in: save_outputs waits for BOTH barriers (joined edge). The only other

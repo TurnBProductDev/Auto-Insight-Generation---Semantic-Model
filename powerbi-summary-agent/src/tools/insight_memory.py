@@ -225,6 +225,29 @@ def story_components(candidate: dict, dataset_id: str, scope_h: str,
             "metric": metric,
             "segment": segment,
         }
+    elif level == "rate":
+        # A standalone peer-growth rate outlier (Phase 7). Its suppression identity
+        # is the SAME shape as a high-level story - dataset+scope, the reporting
+        # period, the metric BUNDLE (canonical_metric, never the drifting alias),
+        # the dimension, the segment, and the analysis type - so a re-run of the
+        # same relative mover in the same reporting period is suppressed, while a
+        # new period legitimately resurfaces it. Every MUTABLE reading (direction,
+        # growth %, robust z, deviation, impact, peer count, claim strength) stays
+        # OUT of the key so a genuine reversal or a materially larger movement can
+        # resurface without the identity changing - insight_novelty_filter checks
+        # resurface_check against the stored direction/impact. (This is a dedicated
+        # branch, not the high-level fallback, so future changes to the high canon
+        # can never silently shift the rate key.)
+        canon = {
+            "level": level,
+            "dataset": str(dataset_id),
+            "scope": scope_h,
+            "period_anchor": period_anchor,
+            "analysis_type": analysis_type,
+            "metric": metric,
+            "dimension": dimension,
+            "segment": segment,
+        }
     else:
         canon = {
             "level": level,

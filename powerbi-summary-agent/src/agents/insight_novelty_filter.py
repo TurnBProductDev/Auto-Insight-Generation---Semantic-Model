@@ -25,6 +25,12 @@ def _level_for(candidate: dict, contract: dict | None) -> str:
     the ``period`` (validated sub-annual series) level; Phase 3 adds ``recent_week``
     (the most recently completed week); Phase 3b adds ``recent_week_rolling`` and
     ``daily``."""
+    # A standalone rate outlier gets its OWN level so it is never lumped with (and
+    # buried under) the high-level bridge candidates. It is reserved a single slot
+    # in the novelty filter / signal detector rather than capped by its (small,
+    # deliberately off-scale) relative-priority score.
+    if candidate.get("type") == "peer_growth_rate_outlier":
+        return "rate"
     kind = str((contract or {}).get("coverage_kind", "")).lower()
     # More specific check first: "recent_week_rolling_history" also starts with
     # "recent_week", so it would otherwise collide into that level.
@@ -164,6 +170,13 @@ def run(state: dict) -> dict:
     business = _annotate(business, contracts, dataset_id, scope_h, anchor)
     dq = _annotate(dq, contracts, dataset_id, scope_h, anchor)
 
+    # Phase 6: standalone rate movers are reserved a single slot below - pulled out
+    # here (like rolling-week) so their tiny relative-priority score never buries
+    # them under the per-level / overall caps. At most ONE unseen one is re-added at
+    # the very end, immune to those caps; the rest are dropped this run.
+    rate_candidates = [c for c in business if c.get("type") == "peer_growth_rate_outlier"]
+    business = [c for c in business if c.get("type") != "peer_growth_rate_outlier"]
+
     memory, status = mem.load_store(state)
 
     # --- rolling-week: its own eligibility path, NEVER never_repeat/cooldown ---
@@ -220,10 +233,45 @@ def run(state: dict) -> dict:
         eligible_d, dropped_d = _partition(dq, suppressed_keys)
         reason = None
 
-    unseen_total = len(eligible_b) + len(eligible_d) + len(rolling_out)
+    # Reserve the best UNSEEN (or resurfacing) standalone rate mover (Phase 6/7).
+    # Suppression uses the Phase-7 rate story key; a store that can't be read
+    # (corrupt) emits the best, consistent with the corrupt "emit everything" rule.
+    # A rate story already reported is normally suppressed forever (never_repeat),
+    # BUT a genuine direction reversal or a materially larger movement resurfaces it
+    # - resurface_check compares the candidate against the stored direction/impact,
+    # the plan's "suppress repeats while still allowing meaningful reversals or
+    # materially larger movements to resurface". If every qualified rate candidate
+    # is already seen and unchanged, reserve nothing.
+    reserved_rate = None
+    rate_resurfaced_n = 0
+    if rate_candidates:
+        if status == "corrupt":
+            pool = list(rate_candidates)
+        else:
+            records = memory.get("records", {})
+            growth_pct = float(state.get("insight_re_alert_growth_pct", 50))
+            pool = []
+            for c in rate_candidates:
+                key = c.get("story_key")
+                if key not in suppressed_keys:
+                    pool.append(c)                      # never reported (or cooldown elapsed)
+                elif key in records and mem.resurface_check(records[key], c, growth_pct):
+                    resurfaced = dict(c)
+                    resurfaced["resurfaced"] = True
+                    pool.append(resurfaced)             # reversal / materially larger
+                    rate_resurfaced_n += 1
+        if pool:
+            reserved_rate = dict(max(pool, key=lambda c: c.get("score", 0.0)))
+            reserved_rate["reserved_relative"] = True
+
+    unseen_total = len(eligible_b) + len(eligible_d) + len(rolling_out) + (1 if reserved_rate else 0)
     eligible_b = _cap_per_level(state, eligible_b) + rolling_out
     eligible_d = _cap_per_level(state, eligible_d)
     eligible_b, eligible_d = _cap_overall(state, eligible_b, eligible_d)
+    # The reserved rate mover is appended AFTER every cap, so it is guaranteed to
+    # reach the signal detector (which gives it the one relative slot by policy).
+    if reserved_rate is not None:
+        eligible_b = eligible_b + [reserved_rate]
     eligible_total = len(eligible_b) + len(eligible_d)
     cap_dropped = max(0, unseen_total - eligible_total)
     suppressed_n = sum(1 for c in business + dq if c.get("story_key") in suppressed_keys)
@@ -256,10 +304,14 @@ def run(state: dict) -> dict:
         "level_breakdown": level_breakdown,
         "watermark": watermark,
         "period_anchor": anchor,
-        "resurfaced": resurfaced_n,
+        "resurfaced": resurfaced_n + rate_resurfaced_n,
         "rolling_unavailable": rolling_unavailable,
         "unseen": unseen_total,
         "cap_dropped": cap_dropped,
+        "rate_detected": len(rate_candidates),
+        "rate_reserved": bool(reserved_rate),
+        "rate_resurfaced": rate_resurfaced_n,
+        "reserved_relative_id": reserved_rate.get("id") if reserved_rate else None,
     }
     file_io.write_json(state, "insight_novelty.json", novelty)
     log.info(

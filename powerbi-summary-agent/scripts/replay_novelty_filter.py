@@ -709,6 +709,261 @@ def test_single_story_key_authority() -> None:
           "observation-only dict (single authority - the two can never drift apart)")
 
 
+_RATE_CONTRACT = {
+    "coverage_kind": "full_dimension_breakdown",
+    "grouping_references": ["'MIS_DEEP_DIVE2'[DEPARTMENT]"],
+    "metric_roles": {
+        "net revenue CURRENT": {"bundle_id": "MIS_DEEP_DIVE2::revenue",
+                                "phase": "current", "family": "revenue"}},
+}
+
+
+def _rate_candidate(**over) -> dict:
+    base = {
+        "id": "cand_50_peer_growth_rate_outlier",
+        "type": "peer_growth_rate_outlier",
+        "table": "meta_peer_breakdown_by_dept",
+        "metric": "net revenue CURRENT",
+        "segment": "ELECTRONICS",
+        "bundle_id": "MIS_DEEP_DIVE2::revenue",
+        "dimension": "'MIS_DEEP_DIVE2'[DEPARTMENT]",
+        "direction": 1,
+        "impact_value": 50_000.0,
+        "reported_growth_pct": 40.0,
+        "robust_z": 3.5,
+        "score": 25.0,        # tiny relative-priority, off the bridge scale
+        "kind": "business",
+    }
+    base.update(over)
+    return base
+
+
+def test_rate_reservation() -> None:
+    print("\n=== rate-mover reservation + one-slot selection (Phase 6) ===")
+    contracts = {**CONTRACTS, "meta_peer_breakdown_by_dept": _RATE_CONTRACT}
+
+    # --- novelty filter: the reserved rate mover survives the caps despite a tiny
+    #     score, while lower-scored HIGH candidates are dropped by the caps ---
+    highs = [_candidate(id=f"cand_{i:02d}_change_contribution", segment=f"SEG{i}",
+                        impact_value=-(100 - i) * 1000.0, score=100 - i) for i in range(5)]
+    rate = _rate_candidate()
+    state, tmp = _state({})                          # empty store -> all unseen
+    state["insight_evidence_contracts"] = contracts
+    state["insight_candidates_high"] = 3
+    state["insight_stat_max_candidates"] = 3         # force the caps to bite
+    state["insight_stat_candidates"] = {"business_candidates": highs + [rate],
+                                        "data_quality_candidates": []}
+    out = nf.run(state)
+    nov = out["insight_novelty"]
+    elig = out["insight_eligible_candidates"]["business_candidates"]
+    reserved = [c for c in elig if c.get("reserved_relative")]
+    check(nov["rate_detected"] == 1 and nov["rate_reserved"] is True,
+          "novelty filter reserves the standalone rate mover")
+    check(len(reserved) == 1 and reserved[0]["segment"] == "ELECTRONICS",
+          "the reserved rate mover is in the eligible set, tagged reserved_relative")
+    check(reserved[0].get("level") == "rate", "the rate mover carries its own 'rate' level")
+    # 3 high (cap) + 1 reserved rate = 4; the two lowest HIGH candidates were dropped
+    check(len([c for c in elig if c.get("type") == "change_contribution"]) == 3,
+          "the high-level cap still bit (3 of 5 high candidates kept)")
+    check(any(c["segment"] == "ELECTRONICS" for c in elig),
+          "the reserved rate mover survived caps that dropped higher-scored high candidates")
+
+    # --- seen rate story is NOT reserved ---
+    # (the filter tags level "rate" before hashing, so the key must too)
+    scope_h = mem.scope_hash({"insight_comparable_population": [], "insight_excluded_entities": []})
+    rate_key, _ = mem.story_components({**_rate_candidate(), "level": "rate"},
+                                       DS, scope_h, _RATE_CONTRACT, "2023-12")
+    state2, _t2 = _state({rate_key: {"level": "rate", "last_reported": "2023-12-31"}})
+    state2["insight_evidence_contracts"] = contracts
+    state2["insight_stat_candidates"] = {"business_candidates": [_rate_candidate()],
+                                         "data_quality_candidates": []}
+    nov2 = nf.run(state2)["insight_novelty"]
+    check(nov2["rate_detected"] == 1 and nov2["rate_reserved"] is False,
+          "an already-reported rate story is not reserved (reserve nothing)")
+
+    # --- only the BEST unseen rate mover is reserved when several qualify ---
+    state3, _t3 = _state({})
+    state3["insight_evidence_contracts"] = contracts
+    state3["insight_stat_candidates"] = {"business_candidates": [
+        _rate_candidate(id="cand_50_peer_growth_rate_outlier", segment="ELECTRONICS", score=25.0),
+        _rate_candidate(id="cand_51_peer_growth_rate_outlier", segment="APPAREL", score=60.0),
+    ], "data_quality_candidates": []}
+    out3 = nf.run(state3)
+    res3 = [c for c in out3["insight_eligible_candidates"]["business_candidates"]
+            if c.get("reserved_relative")]
+    check(out3["insight_novelty"]["rate_detected"] == 2 and len(res3) == 1
+          and res3[0]["segment"] == "APPAREL",
+          "with several rate movers, exactly one (the highest-priority) is reserved")
+
+    # --- no rate candidates -> reserve nothing, normal selection ---
+    state4, _t4 = _state({})
+    state4["insight_evidence_contracts"] = contracts
+    state4["insight_stat_candidates"] = {"business_candidates": [_candidate()],
+                                         "data_quality_candidates": []}
+    nov4 = nf.run(state4)["insight_novelty"]
+    check(nov4["rate_detected"] == 0 and nov4["rate_reserved"] is False,
+          "no rate candidate -> nothing reserved")
+
+    # --- signal detector _rank_and_cap: the reserved mover takes ONE slot by policy,
+    #     displacing the lowest-ranked BUSINESS signal, never a data-quality one ---
+    biz = [{"id": f"b{i}", "kind": "business", "score": s}
+           for i, s in enumerate([100, 90, 80, 70])]
+    reserved_sig = {"id": "r", "kind": "business", "score": 25, "reserved_relative": True}
+    out5 = sd._rank_and_cap(biz + [reserved_sig], cap=4, max_dq=2)
+    ids5 = {s["id"] for s in out5}
+    check(len(out5) == 4, "final count never exceeds the cap")
+    check("r" in ids5 and "b3" not in ids5,
+          "the reserved mover displaces the lowest-ranked business signal (b3)")
+    check(sum(1 for s in out5 if s.get("reserved_relative")) == 1,
+          "at most one standalone rate signal survives")
+
+    dq_sig = {"id": "dq1", "kind": "data_quality", "score": 85}
+    out6 = sd._rank_and_cap([biz[0], biz[1], dq_sig, biz[2], reserved_sig], cap=4, max_dq=2)
+    ids6 = {s["id"] for s in out6}
+    check("dq1" in ids6 and "r" in ids6 and "b2" not in ids6,
+          "the reserved mover never evicts a data-quality signal (a business one goes)")
+
+    all_dq = [{"id": "dq1", "kind": "data_quality", "score": 100},
+              {"id": "dq2", "kind": "data_quality", "score": 90}]
+    out_dq = sd._rank_and_cap(all_dq + [reserved_sig], cap=2, max_dq=2)
+    check({s["id"] for s in out_dq} == {"dq1", "dq2"},
+          "when every occupied slot is data-quality, the relative slot reverts instead of evicting DQ")
+
+    out7 = sd._rank_and_cap(biz, cap=4, max_dq=2)
+    check({s["id"] for s in out7} == {"b0", "b1", "b2", "b3"},
+          "no reserved mover -> all slots revert to normal score-ranked selection")
+
+    # --- signal detector backfill: an omitted reserved mover is injected as a signal ---
+    eligible = {"business_candidates": [_rate_candidate(story_key="rate:v1:abc",
+                                                        reserved_relative=True)],
+                "data_quality_candidates": []}
+    out8 = sd._ensure_reserved_relative([], eligible)
+    check(len(out8) == 1 and out8[0].get("reserved_relative")
+          and out8[0].get("candidate_id") == "cand_50_peer_growth_rate_outlier",
+          "the LLM omitting the reserved mover triggers a deterministic backfill")
+    already = [{"id": "s1", "candidate_id": "cand_50_peer_growth_rate_outlier"}]
+    out9 = sd._ensure_reserved_relative(already, eligible)
+    check(len(out9) == 1 and out9[0].get("reserved_relative"),
+          "when the LLM already selected the reserved mover it is tagged, not duplicated")
+
+
+def test_rate_memory() -> None:
+    print("\n=== rate story_key + cross-run memory (Phase 7) ===")
+    contracts = {**CONTRACTS, "meta_peer_breakdown_by_dept": _RATE_CONTRACT}
+    scope_h = mem.scope_hash({"insight_comparable_population": [],
+                              "insight_excluded_entities": []})
+
+    def rkey(anchor="2023-12", **over) -> str:
+        cand = {**_rate_candidate(**over), "level": "rate"}  # the filter tags 'rate' first
+        return mem.story_components(cand, DS, scope_h, _RATE_CONTRACT, anchor)[0]
+
+    # --- the story-key contract for the dedicated 'rate' level ---
+    base = rkey()
+    check(base.startswith("rate:v1:"),
+          "a standalone rate mover gets a dedicated 'rate'-prefixed story key "
+          "(not the high-level fallback)")
+    # every MUTABLE reading is excluded from the key (Phase 7: direction, growth %,
+    # z-score, deviation, impact, peer count) -> a reversal / larger move is ONE story
+    check(base == rkey(direction=-1, impact_value=-50_000.0)
+          == rkey(impact_value=250_000.0, reported_growth_pct=180.0, robust_z=9.9, peer_count=25),
+          "the rate key excludes direction, growth %, z-score, impact and peer count")
+    check(base == rkey(segment="  electronics ") == rkey(segment="ELECTRONICS"),
+          "case / whitespace variants of the rate segment collide to one key")
+    # things that MUST differ
+    check(base != rkey(anchor="2024-01"),
+          "a new reporting period -> a new rate story (so it resurfaces next period)")
+    check(base != rkey(segment="APPAREL"), "a different segment -> a different rate key")
+
+    # --- suppression: a seen rate story with an UNCHANGED reading stays suppressed ---
+    stored = {"level": "rate", "last_reported": "2023-12-31",
+              "direction": 1, "impact_value": 50_000.0}
+    st, _t = _state({base: stored})
+    st["insight_evidence_contracts"] = contracts
+    st["insight_stat_candidates"] = {"business_candidates": [_rate_candidate()],
+                                     "data_quality_candidates": []}
+    nov = nf.run(st)["insight_novelty"]
+    check(nov["rate_detected"] == 1 and nov["rate_reserved"] is False
+          and nov["rate_resurfaced"] == 0,
+          "a previously reported rate story with an unchanged reading is suppressed")
+
+    # --- resurface on a direction reversal (same story key, opposite direction) ---
+    st2, _t2 = _state({base: stored})
+    st2["insight_evidence_contracts"] = contracts
+    st2["insight_stat_candidates"] = {
+        "business_candidates": [_rate_candidate(direction=-1, impact_value=-50_000.0)],
+        "data_quality_candidates": []}
+    out2 = nf.run(st2)
+    nov2 = out2["insight_novelty"]
+    res2 = [c for c in out2["insight_eligible_candidates"]["business_candidates"]
+            if c.get("reserved_relative")]
+    check(nov2["rate_reserved"] is True and nov2["rate_resurfaced"] == 1
+          and nov2["resurfaced"] == 1,
+          "a direction reversal resurfaces a suppressed rate story")
+    check(len(res2) == 1 and res2[0].get("resurfaced") is True,
+          "the resurfaced mover is reserved and tagged 'resurfaced'")
+
+    # --- resurface on a materially larger movement (>= insight_re_alert_growth_pct) ---
+    st3, _t3 = _state({base: stored})
+    st3["insight_evidence_contracts"] = contracts
+    st3["insight_stat_candidates"] = {
+        "business_candidates": [_rate_candidate(impact_value=100_000.0)],  # +100% >= 50% floor
+        "data_quality_candidates": []}
+    nov3 = nf.run(st3)["insight_novelty"]
+    check(nov3["rate_reserved"] is True and nov3["rate_resurfaced"] == 1,
+          "a materially larger movement (>= growth_pct) resurfaces a suppressed rate story")
+
+    # --- a sub-threshold change does NOT resurface (still suppressed) ---
+    st4, _t4 = _state({base: stored})
+    st4["insight_evidence_contracts"] = contracts
+    st4["insight_stat_candidates"] = {
+        "business_candidates": [_rate_candidate(impact_value=60_000.0)],  # +20% < 50%, same dir
+        "data_quality_candidates": []}
+    nov4 = nf.run(st4)["insight_novelty"]
+    check(nov4["rate_reserved"] is False and nov4["rate_resurfaced"] == 0,
+          "a sub-threshold change to a seen rate story stays suppressed (no resurface)")
+
+    # --- reported rate finding round-trips through commit and is suppressed next run ---
+    st5, tmp5 = _state({})
+    st5["insight_evidence_contracts"] = contracts
+    key = rkey()
+    signal = {"id": "electronics_rate", "kind": "business", "level": "rate",
+              "description": "ELECTRONICS grew unusually fast vs peers",
+              "impact_value": 50_000.0, "direction": 1,
+              "story_key": key, "covered_story_keys": [key]}
+    res = mem.commit_run(st5, [signal])
+    memory, _ = mem.load_store(st5)
+    check(res["status"] == "ok" and key in memory["records"]
+          and memory["records"][key].get("direction") == 1
+          and memory["records"][key].get("impact_value") == 50_000.0,
+          "a reported rate story commits its key WITH direction/impact (so it can resurface)")
+    st5["insight_stat_candidates"] = {"business_candidates": [_rate_candidate()],
+                                      "data_quality_candidates": []}
+    nov5 = nf.run(st5)["insight_novelty"]
+    check(nov5["rate_reserved"] is False,
+          "after commit, the same unchanged rate story is suppressed on the next run")
+
+
+def test_ordinal_uses_contribution_key() -> None:
+    print("\n=== ordinal enrichment uses the existing contribution key (Phase 7) ===")
+    # A small-peer ordinal note attaches to an EXISTING bridge (change_contribution)
+    # candidate; it creates no new candidate and no new story key, so it can never
+    # consume a report slot or a memory record of its own.
+    scope_h = mem.scope_hash({"insight_comparable_population": [],
+                              "insight_excluded_entities": []})
+    bridge = _candidate(segment="CFH021")
+    plain_key, _ = mem.story_components(bridge, DS, scope_h,
+                                        CONTRACTS["meta_movers_by_dept"], "2023-12")
+    enriched = _candidate(segment="CFH021", peer_rate_context={
+        "rank_by_rate": 1, "peer_count": 4, "rank_desc": "fastest-growing",
+        "basis": "ordinal_only", "phrase": "the fastest-growing of 4 comparable peers"})
+    enriched_key, _ = mem.story_components(enriched, DS, scope_h,
+                                           CONTRACTS["meta_movers_by_dept"], "2023-12")
+    check(plain_key == enriched_key,
+          "the ordinal note does not change the bridge candidate's contribution story key")
+    check(enriched.get("type") == "change_contribution",
+          "the enriched candidate remains a contribution finding (no rate type/key)")
+
+
 def main() -> int:
     test_story_key()
     test_novelty_filter()
@@ -722,6 +977,9 @@ def main() -> int:
     test_commit_run_observations()
     test_rolling_eligibility()
     test_single_story_key_authority()
+    test_rate_reservation()
+    test_rate_memory()
+    test_ordinal_uses_contribution_key()
     print("\n" + "=" * 50)
     if _FAILURES:
         print(f"{len(_FAILURES)} CHECK(S) FAILED:")

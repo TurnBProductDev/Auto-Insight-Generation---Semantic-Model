@@ -250,6 +250,54 @@ def _cross_query(shape: dict, left: dict, right: dict, population: list[str], ma
     }
 
 
+def _full_breakdown_query(shape: dict, dim: dict, population: list[str], max_rows: int) -> dict:
+    """Complete comparable distribution over ONE peer dimension (Phase 1 rate
+    evidence). Unlike the mover-tail/concentration templates this returns the
+    *whole* population - peer-rate detection needs every peer, not a ranked slice,
+    and a truncated set would bias the peer distribution it measures against. The
+    generous TOPN cap only bounds the query (and satisfies the row-limit
+    validator); if a dimension has more members than the cap the result is
+    truncated, the contract degrades to 'partial', and rate-outlier detection is
+    refused for it (see evidence_contract.assess_peer_eligibility)."""
+    base, specs = _base_table(shape, dim, population)
+    current = next(s for s in specs if s["bundle_id"] == shape["primary"]["id"] and s["phase"] == "current")
+    dax = (
+        "EVALUATE\n"
+        f"TOPN({max_rows},\n    {base},\n    [{current['alias']}], DESC)\n"
+        f"ORDER BY [{current['alias']}] DESC"
+    )
+    return {
+        "name": f"meta_peer_breakdown_by_{_slug(dim['table'])}_{_slug(dim['column'])}",
+        "purpose": f"Complete comparable peer distribution by {dim['reference']} (rate-outlier evidence).",
+        "intent": "metadata_template:full_dimension_breakdown",
+        "dax": dax,
+        "contract_hint": _contract(shape, [dim], specs, population, "full_dimension_breakdown",
+                                     max_rows, current["alias"]),
+    }
+
+
+def build_peer_scans(shape: dict, state: dict, used: int, max_queries: int) -> list[dict]:
+    """Full peer distributions for the rate-outlier lens (Phase 1). One complete
+    breakdown per metadata-ranked non-entity business dimension, comparable-scoped.
+    Gated by ``insight_rate_outlier_mode`` (off -> none) and appended only in the
+    scan-query budget the core diagnostic portfolio leaves unused, capped by
+    ``insight_peer_max_dimensions``. The entity dimension is deliberately excluded:
+    the pre-fork baseline already produces a complete entity breakdown, and small
+    entity populations are enrichment-only (Phase 3), never a standalone peer set."""
+    mode = str(state.get("insight_rate_outlier_mode", "off")).lower()
+    if mode not in ("shadow", "report"):
+        return []
+    population = [str(v) for v in state.get("insight_comparable_population", []) or []]
+    peer_rows = max(20, int(state.get("insight_peer_max_rows", 200)))
+    max_dims = max(0, int(state.get("insight_peer_max_dimensions", 5)))
+    out: list[dict] = []
+    for dim in shape.get("dimensions", []):
+        if len(out) >= max_dims or used + len(out) >= max_queries:
+            break
+        out.append(_full_breakdown_query(shape, dim, population, peer_rows))
+    return out
+
+
 def build_metadata_scans(profile: dict, state: dict) -> list[dict]:
     shape = shape_from_profile(profile, state)
     if not shape:
@@ -270,9 +318,20 @@ def build_metadata_scans(profile: dict, state: dict) -> list[dict]:
         queries.append(_concentration_query(shape, dim, population, max_rows))
     if shape.get("time") and len(queries) < max_queries:
         queries.append(_trend_query(shape, shape["time"], population, max(max_rows, 24)))
-    if shape.get("entity") and shape.get("dimensions") and len(queries) < max_queries:
-        queries.append(_cross_query(shape, shape["entity"], shape["dimensions"][0],
-                                    population, max_rows))
+    # Entity x category interactions over the top-ranked category dimensions
+    # ("which store drove which category"). insight_cross_dimensions controls how
+    # many category levels are crossed with the entity, still bounded by the
+    # overall scan budget.
+    n_cross = max(0, int(state.get("insight_cross_dimensions", 1)))
+    if shape.get("entity"):
+        for dim in shape.get("dimensions", [])[:n_cross]:
+            if len(queries) >= max_queries:
+                break
+            queries.append(_cross_query(shape, shape["entity"], dim, population, max_rows))
+    # Peer distributions (rate-outlier lens) fill only the remaining budget after
+    # the core portfolio, and only when the feature is switched on. Core evidence
+    # is never displaced by them.
+    queries.extend(build_peer_scans(shape, state, len(queries), max_queries))
     return queries[:max_queries]
 
 
@@ -497,4 +556,62 @@ def build_gap_probe(shape: dict, seg_dim: dict, seg_value, drill_dim: dict,
         "value": str(seg_value),
         "values": segment_values,
     }
+    return {"dax": dax, "contract_hint": contract}
+
+
+def build_thesis_interaction_scan(shape: dict, bundle: dict, facet_a: dict,
+                                  facet_b: dict, population: list[str]) -> dict | None:
+    """Build the one-row joint evidence query used by the Phase-9 linker.
+
+    The eight returned cells are current/prior levels for the intersection,
+    each marginal facet, and the comparable overall population.  Their log-
+    growth second difference is the stable ``cell - A - B + overall`` test.
+    """
+    dim_a, dim_b = facet_a.get("dimension") or {}, facet_b.get("dimension") or {}
+    vals_a, vals_b = facet_a.get("values") or [], facet_b.get("values") or []
+    if (not dim_a.get("reference") or not dim_b.get("reference")
+            or dim_a.get("reference") == dim_b.get("reference")
+            or not vals_a or not vals_b):
+        return None
+    current, prior = bundle_phase(bundle, "current"), bundle_phase(bundle, "prior")
+    if not current or not prior:
+        return None
+
+    def _facet_filter(dim: dict, values: list) -> str:
+        rendered = ", ".join(_typed_lit(v, dim) for v in values)
+        return f"TREATAS({{{rendered}}}, {dim['reference']})"
+
+    pop = _population_filter(shape, population)
+    fa, fb = _facet_filter(dim_a, vals_a), _facet_filter(dim_b, vals_b)
+
+    def _calc(expression: str, *filters: str | None) -> str:
+        active = [f for f in filters if f]
+        return (f"CALCULATE({expression}, {', '.join(active)})"
+                if active else expression)
+
+    cells = (
+        ("cell_current", current, (pop, fa, fb)),
+        ("cell_prior", prior, (pop, fa, fb)),
+        ("facet_a_current", current, (pop, fa)),
+        ("facet_a_prior", prior, (pop, fa)),
+        ("facet_b_current", current, (pop, fb)),
+        ("facet_b_prior", prior, (pop, fb)),
+        ("overall_current", current, (pop,)),
+        ("overall_prior", prior, (pop,)),
+    )
+    dax = "EVALUATE\nROW(\n    " + ",\n    ".join(
+        f'"{alias}", {_calc(spec["expression"], *filters)}'
+        for alias, spec, filters in cells
+    ) + "\n)"
+    specs = [{
+        "alias": alias, "phase": spec["phase"], "family": bundle.get("family"),
+        "bundle_id": bundle.get("id"), "semantic_role": "value",
+        "additive_candidate": bool(bundle.get("additive_candidate")),
+    } for alias, spec, _filters in cells]
+    contract = _contract(shape, [], specs, population, "thesis_interaction",
+                         None, None)
+    contract["facet_filters"] = [
+        {"dimension": dim_a, "values": list(vals_a)},
+        {"dimension": dim_b, "values": list(vals_b)},
+    ]
     return {"dax": dax, "contract_hint": contract}

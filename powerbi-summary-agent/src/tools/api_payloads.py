@@ -163,6 +163,22 @@ def _compact_number(n: Any, *, signed: bool = False) -> str:
     return s
 
 
+def _manager_number(n: Any, family: str) -> str:
+    """Readable before/after value; keep sub-million counts exact."""
+    if family in {"Quantity", "Transactions"} and isinstance(n, (int, float)):
+        if abs(float(n)) < 1_000_000:
+            return f"{float(n):,.0f}"
+    return _compact_number(n)
+
+
+def _period_change_pct(current: Any, prior: Any) -> Optional[float]:
+    if not isinstance(current, (int, float)) or not isinstance(prior, (int, float)):
+        return None
+    if abs(float(prior)) <= 1e-9:
+        return None
+    return (float(current) - float(prior)) / abs(float(prior)) * 100.0
+
+
 def _business_measure(family: str) -> str:
     return {
         "Revenue": "revenue",
@@ -224,6 +240,55 @@ def _share_details(sig: Dict[str, Any], family: str) -> "tuple[str, str, str]":
     )
 
 
+def _is_rate_signal(sig: Dict[str, Any]) -> bool:
+    """A standalone peer-growth rate outlier: `stat_basis` is set ONLY for that
+    signal type (copied by insight_signal_detector), so it uniquely identifies it."""
+    return bool(sig.get("stat_basis")) and isinstance(
+        sig.get("reported_growth_pct"), (int, float))
+
+
+def _rate_relative_phrase(sig: Dict[str, Any]) -> str:
+    """The careful, NON-CAUSAL peer-relative clause (Phase 8 wording rule):
+
+    * a small-peer ordinal note -> its pre-built
+      "the fastest/slowest of N comparable members" phrase (an ordinal rank, not a
+      statistical-outlier claim);
+    * a standalone candidate whose ``stat_basis`` proves it passed the configured
+      detector threshold -> "unusually fast relative to its N peers". Renderers do
+      not hard-code the default peer threshold.
+
+    Never asserts a cause - only that the segment's rate is unusual versus peers.
+    """
+    ctx = sig.get("peer_rate_context") or {}
+    if ctx.get("basis") == "ordinal_only" and ctx.get("phrase"):
+        return str(ctx["phrase"])
+    n = sig.get("peer_count")
+    if _is_rate_signal(sig) and isinstance(n, int) and n > 0:
+        return f"unusually fast relative to its {n} peers"
+    if isinstance(n, int) and n > 0:
+        return f"among {n} comparable members"  # safety: no outlier claim on a small set
+    return "unusually fast relative to peers"
+
+
+def _rate_message(sig: Dict[str, Any], family: str) -> str:
+    """Code-owned first sentence for a standalone rate outlier: the segment's own
+    growth %, the peer median, and the careful relative clause - all from the
+    deterministic facts on the signal, never an LLM estimate, and with no cause."""
+    segment = str(sig.get("affected_segment") or "This segment").strip()
+    measure = _business_measure(family)
+    growth = sig.get("reported_growth_pct")
+    median = sig.get("peer_median_reported_pct")
+    phrase = _rate_relative_phrase(sig)
+    if isinstance(growth, (int, float)):
+        verb = "grew" if growth >= 0 else "declined"
+        main = f"{segment} {measure} {verb} {abs(growth):.1f}%, {phrase}"
+    else:
+        main = f"{segment} {measure} moved {phrase}"
+    if isinstance(median, (int, float)):
+        main += f" (peer median {median:+.1f}%)"
+    return main + "."
+
+
 def _main_change_sentence(sig: Dict[str, Any], family: str) -> str:
     """Code-owned first sentence: movement, magnitude, and comparison context."""
     segment = str(sig.get("affected_segment") or "This segment").strip()
@@ -250,6 +315,9 @@ def _main_change_sentence(sig: Dict[str, Any], family: str) -> str:
             f"{sig.get('episode_start')} through {sig.get('episode_end')}."
         )
 
+    if _is_rate_signal(sig):
+        return _rate_message(sig, family)
+
     cid = str(sig.get("candidate_id") or "").casefold()
     analysis_type = str(sig.get("analysis_type") or "").casefold()
     share = sig.get("impact_share")
@@ -263,6 +331,41 @@ def _main_change_sentence(sig: Dict[str, Any], family: str) -> str:
             f"{segment} recorded {amount} in {measure}, representing about "
             f"{abs(float(share)):.1f}% of current {measure}."
         )
+
+    current, prior = sig.get("current"), sig.get("prior")
+    period_pct = _period_change_pct(current, prior)
+    if isinstance(current, (int, float)) and isinstance(prior, (int, float)):
+        if family == "Quantity":
+            base = (
+                f"{segment} sold {amount} {'more' if value >= 0 else 'fewer'} units"
+            )
+        elif family == "Transactions":
+            base = (
+                f"{segment} recorded {amount} {'more' if value >= 0 else 'fewer'} transactions"
+            )
+        else:
+            base = (
+                f"{segment} {measure} {'increased' if value >= 0 else 'decreased'} by {amount}"
+            )
+        pct_text = f" ({abs(period_pct):.1f}%)" if period_pct is not None else ""
+        base += (
+            f"{pct_text}, from {_manager_number(prior, family)} to "
+            f"{_manager_number(current, family)} versus the prior period"
+        )
+        if share is None:
+            return base + "."
+        share_value = float(share)
+        total_direction = "increase" if ((value >= 0) == (share_value >= 0)) else "decline"
+        if share_value >= 0:
+            context = (
+                f"about {abs(share_value):.1f}% of the total {total_direction} in {measure}"
+            )
+        else:
+            context = (
+                f"an offset equal to about {abs(share_value):.1f}% of the total "
+                f"{total_direction} in {measure}"
+            )
+        return f"{base}, representing {context}."
 
     if family == "Quantity":
         base = f"{segment} sold {amount} {'more' if value >= 0 else 'fewer'} units"
@@ -363,6 +466,10 @@ def _signal_severity(sig: Dict[str, Any]) -> Severity:
         if val < 0:
             return "critical" if dev_pct >= 10 else "warning"
         return "positive"
+    # Rate outliers carry no annual share; grade by the segment's own growth
+    # direction (a fast decline reads as a concern, fast growth as positive).
+    if _is_rate_signal(sig):
+        return "positive" if (sig.get("reported_growth_pct") or 0) >= 0 else "warning"
     if "current_only" in cid or share is None or "concentration" in cid:
         return "info"
     if val < 0:
@@ -370,7 +477,30 @@ def _signal_severity(sig: Dict[str, Any]) -> Severity:
     return "positive"
 
 
+def _rate_stats(sig: Dict[str, Any], family: str) -> List[Dict[str, str]]:
+    """Structured rate facts as card stats (code-owned, not LLM-estimated): the
+    segment's growth, the peer median, and the statistical basis (robust z, or a
+    flat-peer break where a z is undefined) plus the peer count."""
+    growth = sig.get("reported_growth_pct")
+    median = sig.get("peer_median_reported_pct")
+    z = sig.get("robust_z")
+    stats: List[Dict[str, str]] = []
+    if isinstance(growth, (int, float)):
+        stats.append({"label": f"{family} growth", "value": f"{growth:+.1f}%"})
+    if isinstance(median, (int, float)):
+        stats.append({"label": "Peer median", "value": f"{median:+.1f}%"})
+    if isinstance(z, (int, float)):
+        stats.append({"label": "Robust z", "value": f"{z:+.1f}"})
+    elif sig.get("stat_basis") == "flat_peer_break":
+        stats.append({"label": "Peer basis", "value": "flat peer set"})
+    if sig.get("peer_count") is not None and len(stats) < 3:
+        stats.append({"label": "Peers", "value": str(sig.get("peer_count"))})
+    return stats[:3]
+
+
 def _insight_stats(sig: Dict[str, Any], family: str) -> List[Dict[str, str]]:
+    if _is_rate_signal(sig):
+        return _rate_stats(sig, family)
     val = sig.get("impact_value")
     share = sig.get("impact_share")
     measure_label = {
@@ -480,6 +610,17 @@ def _signal_facts(sig: Dict[str, Any]) -> Dict[str, Any]:
             "actual_total": sig.get("actual_total"), "expected_total": sig.get("expected_total"),
             "peak_z": sig.get("peak_z"),
         } if sig.get("episode_start") is not None else None,
+        # Rate outlier facts (Phase 8): the LLM writes prose around them; every
+        # number and the careful non-causal relative phrase are owned by code.
+        "rate_outlier": {
+            "reported_growth_pct": sig.get("reported_growth_pct"),
+            "peer_median_pct": sig.get("peer_median_reported_pct"),
+            "robust_z": sig.get("robust_z"), "stat_basis": sig.get("stat_basis"),
+            "peer_count": sig.get("peer_count"),
+            "relative_phrase": _rate_relative_phrase(sig),
+        } if _is_rate_signal(sig) else None,
+        # Small-peer ordinal rank riding on a bridge story (never a standalone claim).
+        "peer_rank": sig.get("peer_rate_context"),
         "kind": sig.get("kind"),
         "decomposition": sig.get("decomposition"),
         "analyst_question": sig.get("question"),
@@ -517,9 +658,7 @@ def _assemble_kpi_card(idx: int, sig: Dict[str, Any], text: _KpiCardText, when: 
     category = text.category.strip() or ("Data Quality" if sig.get("kind") == "data_quality" else family)
     rw = sig.get("recent_week") or {}
     wow = rw.get("change_pct")
-    if share is not None:
-        delta, comparison, _ = _share_details(sig, family)
-    elif isinstance(wow, (int, float)):
+    if isinstance(wow, (int, float)):
         if rw.get("window_mode") == "rolling":
             delta = f"{abs(wow):.1f}%"
             comparison = f"vs the prior 7 days (ending {rw.get('week_end')})"
@@ -532,6 +671,18 @@ def _assemble_kpi_card(idx: int, sig: Dict[str, Any], text: _KpiCardText, when: 
         else:
             delta = ""
         comparison = f"vs expected ({sig.get('episode_start')}..{sig.get('episode_end')})"
+    elif _is_rate_signal(sig):
+        growth = sig.get("reported_growth_pct")
+        median = sig.get("peer_median_reported_pct")
+        delta = f"{abs(growth):.1f}%" if isinstance(growth, (int, float)) else ""
+        comparison = (f"vs peer median {median:+.1f}%"
+                      if isinstance(median, (int, float)) else "relative to peers")
+    elif isinstance(sig.get("current"), (int, float)) and isinstance(sig.get("prior"), (int, float)):
+        period_pct = _period_change_pct(sig.get("current"), sig.get("prior"))
+        delta = f"{abs(period_pct):.1f}%" if period_pct is not None else ""
+        comparison = "vs the prior period"
+    elif share is not None:
+        delta, comparison, _ = _share_details(sig, family)
     else:
         delta, comparison = "", "current period"
     card = {
@@ -701,8 +852,6 @@ def generate_fresh_report_summary_payload(
         }
         if value["heading"] and value["points"]:
             sections.append(ReportSection(**value).model_dump())
-    if not sections:
-        raise ValueError("fresh_summary has no renderable structured sections")
     payload = {
         "title": title,
         "generatedAt": _now(generated_at).date().isoformat(),

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import calendar
 import math
 import re
 from typing import Any
@@ -154,8 +155,138 @@ def _clean_label(value: Any) -> str:
     return lowered[:1].upper() + lowered[1:]
 
 
+def _subject_label(value: Any, label_col: str | None) -> str:
+    """Humanize verified time members without model-specific field names."""
+    text = str(value or "Overall").strip()
+    if "month" in str(label_col or "").casefold():
+        match = re.fullmatch(r"(?:[^=]*=\s*)?(\d{1,2})", text)
+        if match and 1 <= int(match.group(1)) <= 12:
+            return calendar.month_name[int(match.group(1))]
+    return text
+
+
+def _comparison_label(profile: dict | None, numeric: list[str]) -> str:
+    """Resolve the baseline from metadata; never guess that prior means a year."""
+    names = {str(name).casefold() for name in numeric}
+    text_parts = list(names)
+    bundles = []
+    if isinstance(profile, dict):
+        bundles.extend(profile.get("value_bundles") or [])
+        bundles.extend(profile.get("volume_driver_bundles") or [])
+        primary = profile.get("primary_value_bundle")
+        if isinstance(primary, dict):
+            bundles.append(primary)
+    for bundle in bundles:
+        measures = bundle.get("measures") or {}
+        aliases = {
+            str(measures.get(phase) or "").casefold()
+            for phase in ("current", "prior", "change")
+        }
+        if not (aliases & names):
+            continue
+        text_parts.append(str(measures.get("prior") or ""))
+        text_parts.append(str((bundle.get("derived") or {}).get("prior") or ""))
+        for item in bundle.get("evidence") or []:
+            if item.get("phase") != "prior":
+                continue
+            text_parts.extend(
+                str(item.get(key) or "")
+                for key in ("name", "description", "display_folder")
+            )
+            text_parts.extend(
+                str(ref.get("column") or "") for ref in item.get("column_refs") or []
+            )
+    text = " ".join(text_parts).casefold()
+    if re.search(
+        r"\b(?:last|past|prior|previous)[ _-]?year\b|"
+        r"(?:^|[^a-z0-9])(?:ly|py|yoy)(?:$|[^a-z0-9])",
+        text,
+    ):
+        return "the same period last year"
+    if re.search(r"\b(?:last|prior|previous)[ _-]?month\b", text):
+        return "the previous month"
+    if re.search(r"\b(?:last|prior|previous)[ _-]?week\b", text):
+        return "the previous week"
+    return "the stated comparison period"
+
+
 def _is_comparison_metric(name: str) -> bool:
     return bool(_tokens(name) & {"growth", "change", "variance", "delta", "prior", "past", "previous"})
+
+
+def _metric_phase(name: str) -> str | None:
+    text = str(name or "").casefold()
+    tokens = _tokens(name)
+    is_pct = "%" in text or bool(tokens & {"percent", "percentage", "pct"})
+    if is_pct and tokens & {"growth", "change", "variance", "delta"}:
+        return "change_pct"
+    if tokens & {"growth", "change", "variance", "delta"}:
+        return "change"
+    if tokens & {"current", "actual", "curr", "cy", "ty"} or "this year" in text:
+        return "current"
+    if tokens & {"prior", "past", "previous", "prev", "ly", "py"} or "last year" in text:
+        return "prior"
+    return None
+
+
+def _comparison_facts(
+    rows: list[dict],
+    label_col: str | None,
+    numeric: list[str],
+    comparison_label: str = "the stated comparison period",
+) -> list[dict]:
+    """Derive manager-ready before/after/change/% facts from authoritative rows."""
+    facts = []
+    for row in rows[:2]:
+        subject = _subject_label(row.get(label_col), label_col) if label_col else "Overall"
+        families: dict[str, dict[str, str]] = {}
+        for name in numeric:
+            phase = _metric_phase(name)
+            family = _family(name)
+            if phase and family != "performance" and _number(row.get(name)):
+                families.setdefault(family, {}).setdefault(phase, name)
+        for family in ("revenue", "profit", "quantity", "transactions", "rate"):
+            phases = families.get(family, {})
+            current_name, prior_name = phases.get("current"), phases.get("prior")
+            if not current_name or not prior_name:
+                continue
+            current, prior = float(row[current_name]), float(row[prior_name])
+            change_name = phases.get("change")
+            change = (
+                float(row[change_name])
+                if change_name and _number(row.get(change_name))
+                else current - prior
+            )
+            pct = None if abs(prior) <= 1e-9 else (current - prior) / abs(prior) * 100.0
+            direction = "increased" if change > 0 else "decreased" if change < 0 else "was unchanged"
+            current_display = _format_number(current, current_name)
+            prior_display = _format_number(prior, prior_name)
+            change_display = _format_number(change, change_name or f"{family} change")
+            pct_display = f"{abs(pct):.1f}%" if pct is not None else None
+            facts.append({
+                "fact_kind": "comparison",
+                "subject": subject,
+                "metric": f"{family.title()} comparison",
+                "display_value": change_display,
+                "raw_value": change,
+                "current_value": current,
+                "current_display": current_display,
+                "prior_value": prior,
+                "prior_display": prior_display,
+                "change_value": change,
+                "change_display": change_display,
+                "change_pct": pct,
+                "change_pct_display": pct_display,
+                "comparison": comparison_label,
+                "statement": (
+                    f"{subject} - {family.title()} {direction} by {change_display}"
+                    + (f" ({pct_display})" if pct_display else "")
+                    + f", from {prior_display} to {current_display} compared with {comparison_label}"
+                ),
+            })
+            if len(facts) >= 6:
+                return facts
+    return facts
 
 
 def _scope_rows(
@@ -215,6 +346,7 @@ def _fact_sheet(
     numeric: list[str],
     metric: str | None,
     scope: dict,
+    comparison_label: str = "the stated comparison period",
 ) -> list[dict]:
     """Create compact, signed display facts for reliable LLM authoring."""
     if not rows:
@@ -244,7 +376,7 @@ def _fact_sheet(
         if len(chosen_metrics) >= 4:
             break
     for row_index, row in enumerate(selected_rows):
-        subject = str(row.get(label_col) or "Overall") if label_col else "Overall"
+        subject = _subject_label(row.get(label_col), label_col) if label_col else "Overall"
         # The structured summary layout supports four evidence tiles. Keep four
         # distinct facts for the leading subject when the query exposes them;
         # later subjects stay bounded so the prompt remains compact.
@@ -264,6 +396,11 @@ def _fact_sheet(
                 "raw_value": float(value),
                 "statement": f"{subject} — {_clean_label(name)}: {display}",
             })
+    for comparison in _comparison_facts(
+        selected_rows, label_col, numeric, comparison_label
+    ):
+        comparison["fact_id"] = f"F{len(facts) + 1}"
+        facts.append(comparison)
     if scope.get("note"):
         facts.append({
             "fact_id": f"F{len(facts) + 1}",
@@ -419,6 +556,9 @@ def build_candidates(state: dict) -> list[dict]:
         angle = _angle(query, rows, dimension, numeric)
         metric = _primary_metric(numeric)
         metric_family = _family(metric or "")
+        comparison = _comparison_label(
+            state.get("semantic_model_profile") or {}, numeric
+        )
         evidence_rows = _trim_rows(rows, labels, numeric, metric)
         values = [float(row.get(metric)) for row in rows if metric and _number(row.get(metric))]
         movement = sum(values) if values else 0.0
@@ -454,7 +594,9 @@ def build_candidates(state: dict) -> list[dict]:
                 "rows": evidence_rows,
                 "coverage": "returned_rows",
                 "scope": scope,
-                "facts": _fact_sheet(rows, labels, numeric, metric, scope),
+                "facts": _fact_sheet(
+                    rows, labels, numeric, metric, scope, comparison
+                ),
             },
             "metadata_context": _metadata_context(state, dimension, metric, scope),
             "metrics": _metrics(rows, numeric, angle),

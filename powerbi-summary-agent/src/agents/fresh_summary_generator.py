@@ -38,7 +38,12 @@ class FreshSummaryDraft(BaseModel):
 
     headline: str
     metrics: List[FreshSummaryMetricSelection]
-    sections: List[FreshSummarySection]
+    sections: List[FreshSummarySection] = Field(
+        description=(
+            "Only evidence-supported sections, in presentation order; use an empty list when "
+            "no section has a useful supported point"
+        )
+    )
     covered_candidate_ids: List[str] = Field(
         description="Exact candidate ids actually represented in the summary"
     )
@@ -148,16 +153,10 @@ def _fallback(candidate: dict, period: dict, summary_type: str) -> dict:
     ]
     working = [fact for fact in facts if _fact_direction(fact) == "working"]
     risks = [fact for fact in facts if _fact_direction(fact) == "risk"]
-    neutral = [fact for fact in facts if _fact_direction(fact) == "neutral"]
-
-    working_points = [_fact_sentence(fact) for fact in (working or neutral)[:2]]
-    if not working_points:
-        working_points = ["No positive movement is visible in this selected perspective."]
+    working_points = [_fact_sentence(fact) for fact in working[:2]]
     risk_points = [_fact_sentence(fact) for fact in risks[:2]]
-    if not risk_points:
-        risk_points = ["No material downside is visible in this selected perspective."]
 
-    dimension = str(candidate.get("dimension") or "business").replace("_", " ").strip()
+    dimension = str(candidate.get("dimension") or "").replace("_", " ").strip()
     action_points = []
     if risks:
         fact = risks[0]
@@ -167,17 +166,22 @@ def _fallback(candidate: dict, period: dict, summary_type: str) -> dict:
             f"{str(fact.get('metric') or 'movement').lower()} of {fact.get('display_value')} "
             "and confirm whether it persists in the next reporting cycle."
         )
-    action_points.append(
-        f"Review the {dimension} breakdown in the next reporting cycle to confirm whether the current pattern persists."
-    )
+    elif dimension.casefold() not in {"", "business", "overall", "snapshot"}:
+        action_points.append(
+            f"Review the {dimension} breakdown to confirm which areas contributed most to the reported result."
+        )
+
+    sections = []
+    if working_points:
+        sections.append({"heading": "What's working", "points": working_points})
+    if risk_points:
+        sections.append({"heading": "Risks", "points": risk_points})
+    if action_points:
+        sections.append({"heading": "Recommended actions", "points": action_points[:3]})
     return {
         "headline": headline,
         "metrics": metric_selections,
-        "sections": [
-            {"heading": "What's working", "points": working_points},
-            {"heading": "Risks", "points": risk_points},
-            {"heading": "Recommended actions", "points": action_points[:3]},
-        ],
+        "sections": sections,
         "covered_candidate_ids": [candidate.get("candidate_id")],
         "validation_status": "deterministic_fallback",
         "authoring_mode": "deterministic_fallback",

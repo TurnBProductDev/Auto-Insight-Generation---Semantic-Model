@@ -49,6 +49,7 @@
 
   "metadata_scope_max_entities": 500,
   "insight_metadata_max_dimensions": 5,
+  "insight_cross_dimensions": 4,
   "insight_total_gap_scan_budget": 30,
   "insight_max_gap_dimensions_per_signal": 3,
 
@@ -60,6 +61,23 @@
   "insight_stat_recon_tolerance_pct": 2.0,
   "insight_stat_trend_window": 3,
   "insight_stat_max_candidates": 20,
+
+  "insight_rate_outlier_mode": "off",
+  "insight_peer_max_dimensions": 5,
+  "insight_peer_max_rows": 200,
+  "insight_rate_z_cutoff": 3.0,
+  "insight_rate_min_peers": 8,
+  "insight_rate_prior_share_floor_pct": 0.5,
+  "insight_rate_exposure_floor_pct": 2.0,
+  "insight_rate_min_abs_impact_pct": 1.0,
+  "insight_rate_flat_min_pct": 10.0,
+  "insight_rate_min_ordinal_peers": 3,
+
+  "insight_thesis_linking_enabled": false,
+  "insight_thesis_max_links": 2,
+  "insight_thesis_min_shared": 2,
+  "insight_thesis_interaction_tol": 0.15,
+  "insight_thesis_min_impact": 0.0,
 
   "azure_blob_upload": false,
   "azure_blob_account": "PASTE_YOUR_STORAGE_ACCOUNT",

@@ -53,8 +53,26 @@ class SummaryAgentState(TypedDict, total=False):
     insight_stat_recon_tolerance_pct: float
     insight_stat_trend_window: int
     insight_stat_max_candidates: int
+    # rate-outlier lens (peer growth-rate detection): off | shadow | report
+    insight_rate_outlier_mode: str
+    insight_peer_max_dimensions: int
+    insight_peer_max_rows: int
+    insight_rate_z_cutoff: float
+    insight_rate_min_peers: int
+    insight_rate_prior_share_floor_pct: float
+    insight_rate_exposure_floor_pct: float
+    insight_rate_min_abs_impact_pct: float
+    insight_rate_flat_min_pct: float
+    insight_rate_min_ordinal_peers: int
+    # cross-signal thesis linking (Phase 9): connect findings that may share one event
+    insight_thesis_linking_enabled: bool
+    insight_thesis_max_links: int
+    insight_thesis_min_shared: int
+    insight_thesis_interaction_tol: float
+    insight_thesis_min_impact: float
     metadata_scope_max_entities: int
     insight_metadata_max_dimensions: int
+    insight_cross_dimensions: int          # entity x category cross scans (top-N category dims)
     insight_total_gap_scan_budget: int
     insight_max_gap_dimensions_per_signal: int
     # business-rule scope (mirrors config/business_rules.md); drives the
@@ -131,6 +149,7 @@ class SummaryAgentState(TypedDict, total=False):
     semantic_model_profile: Dict[str, Any]  # deterministic metadata interpretation
     baseline_scope_evidence: Dict[str, Any] # pre-fork entity current/prior rows
     baseline_coverage_clean_data: Dict[str, Any] # pre-fork metadata coverage shared by branches
+    insight_peer_coverage: Dict[str, Any]   # Phase 1: per-dimension rate-outlier evidence eligibility
     resolved_entity_scope: Dict[str, Any]   # automatic scope + business-rule override
     report_understanding: Dict[str, Any]    # Node 3
 
@@ -159,6 +178,7 @@ class SummaryAgentState(TypedDict, total=False):
     insight_raw_results: Dict[str, Any]
     insight_clean_data: Dict[str, Any]
     insight_stat_candidates: Dict[str, Any]
+    insight_rate_shadow_candidates: List[Dict[str, Any]]  # Phase 5: shadow-mode rate findings (not reported)
     insight_evidence_contracts: Dict[str, Any]    # evidence_assembler: per-scan-table provenance
     insight_evidence_briefs: Dict[str, Any]       # evidence_assembler: per-signal reuse/gap brief
     insight_coverage_matrix: Dict[str, Any]       # evidence_assembler: per-dimension coverage quality
@@ -169,6 +189,7 @@ class SummaryAgentState(TypedDict, total=False):
     insight_memory_commit: Dict[str, Any]         # save_outputs result; gates cloud publication
     insight_signals: List[Dict[str, Any]]
     insight_investigations: List[Dict[str, Any]]
+    insight_theses: List[Dict[str, Any]]          # Phase 9: cross-signal thesis links (hedged)
     insight_report: str
 
     # --- control / diagnostics ---

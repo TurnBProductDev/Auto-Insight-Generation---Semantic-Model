@@ -189,6 +189,16 @@ def _resolve_chart(sig, inv, stat, tables):
         return {"type": "week_kpi", "value": actual, "change_pct": change_pct,
                 "week_start": label, "window_mode": "daily", "metric": metric}
 
+    # Peer-growth rate outlier (Phase 8): a KPI of the segment's own growth % plus
+    # the careful "unusually fast relative to N peers" sub-line and the peer median.
+    # `stat_basis` is set ONLY on this signal type, so it is a safe discriminator -
+    # checked BEFORE the impact_share-is-None branch below (a rate signal has no
+    # annual share and would otherwise fall into the current-only badge).
+    if sig.get("stat_basis") and isinstance(sig.get("reported_growth_pct"), (int, float)):
+        return {"type": "rate_kpi", "growth_pct": sig.get("reported_growth_pct"),
+                "peer_median": sig.get("peer_median_reported_pct"),
+                "peer_count": sig.get("peer_count"), "metric": metric}
+
     if "current_only" in cid or sig.get("impact_share") is None:
         return {"type": "badge", "value": sig.get("impact_value"),
                 "label": seg, "badge": "New store - not comparable", "metric": metric}
@@ -395,6 +405,19 @@ def _week_kpi_html(spec):
             f'<div class="kpi-sub">{html.escape(sub)}</div>{week_line}</div>')
 
 
+def _rate_kpi_html(spec):
+    g = spec.get("growth_pct")
+    num = (("+" if g >= 0 else "") + _pct(g)) if isinstance(g, (int, float)) else "-"
+    n = spec.get("peer_count")
+    sub = (f"unusually fast relative to {n} peers" if isinstance(n, int) and n > 0
+           else "unusually fast relative to peers")
+    med = spec.get("peer_median")
+    med_line = (f'<div class="kpi-sub">peer median {med:+.1f}%</div>'
+                if isinstance(med, (int, float)) else "")
+    return (f'<div class="kpi"><div class="kpi-num">{html.escape(num)}</div>'
+            f'<div class="kpi-sub">{html.escape(sub)}</div>{med_line}</div>')
+
+
 def _chart_html(spec):
     t = spec["type"]
     if t == "bar":
@@ -409,6 +432,8 @@ def _chart_html(spec):
         return _kpi_badge_html(spec)
     if t == "week_kpi":
         return _week_kpi_html(spec)
+    if t == "rate_kpi":
+        return _rate_kpi_html(spec)
     return ""
 
 

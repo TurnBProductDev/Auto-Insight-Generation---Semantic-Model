@@ -262,8 +262,29 @@ def build_initial_state(cfg: dict, config_path: str = "") -> dict:
         "insight_stat_recon_tolerance_pct": cfg.get("insight_stat_recon_tolerance_pct", 2.0),
         "insight_stat_trend_window": cfg.get("insight_stat_trend_window", 3),
         "insight_stat_max_candidates": cfg.get("insight_stat_max_candidates", 20),
+        # Rate-outlier lens (peer growth-rate detection). Phase 1: honest peer
+        # evidence. off | shadow | report; off plans no peer scans at all.
+        "insight_rate_outlier_mode": cfg.get("insight_rate_outlier_mode", "off"),
+        "insight_peer_max_dimensions": cfg.get("insight_peer_max_dimensions", 5),
+        "insight_peer_max_rows": cfg.get("insight_peer_max_rows", 200),
+        # Phase 2 detector thresholds (shadow-calibration hypotheses, not final).
+        "insight_rate_z_cutoff": cfg.get("insight_rate_z_cutoff", 3.0),
+        "insight_rate_min_peers": cfg.get("insight_rate_min_peers", 8),
+        "insight_rate_prior_share_floor_pct": cfg.get("insight_rate_prior_share_floor_pct", 0.5),
+        "insight_rate_exposure_floor_pct": cfg.get("insight_rate_exposure_floor_pct", 2.0),
+        "insight_rate_min_abs_impact_pct": cfg.get("insight_rate_min_abs_impact_pct", 1.0),
+        "insight_rate_flat_min_pct": cfg.get("insight_rate_flat_min_pct", 10.0),
+        "insight_rate_min_ordinal_peers": cfg.get("insight_rate_min_ordinal_peers", 3),
+        # Phase 9: optional cross-signal joint-interaction verification. It remains
+        # off by default until the rate shadow evaluation earns promotion.
+        "insight_thesis_linking_enabled": cfg.get("insight_thesis_linking_enabled", False),
+        "insight_thesis_max_links": cfg.get("insight_thesis_max_links", 2),
+        "insight_thesis_min_shared": cfg.get("insight_thesis_min_shared", 2),
+        "insight_thesis_interaction_tol": cfg.get("insight_thesis_interaction_tol", 0.15),
+        "insight_thesis_min_impact": cfg.get("insight_thesis_min_impact", 0.0),
         "metadata_scope_max_entities": cfg.get("metadata_scope_max_entities", 500),
         "insight_metadata_max_dimensions": cfg.get("insight_metadata_max_dimensions", 5),
+        "insight_cross_dimensions": cfg.get("insight_cross_dimensions", 1),
         "insight_total_gap_scan_budget": cfg.get("insight_total_gap_scan_budget", 20),
         "insight_max_gap_dimensions_per_signal": cfg.get("insight_max_gap_dimensions_per_signal", 3),
         "config": cfg,

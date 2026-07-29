@@ -173,6 +173,27 @@ def main(argv=None) -> int:
             if fact.get("display_value")
         ][:4]
         assert len(metric_selections) == 4
+        optional_sections = {
+            "headline": "North led comparable store revenue growth with a +424.1K increase",
+            "metrics": metric_selections,
+            "sections": [
+                {
+                    "heading": "What's working",
+                    "points": ["North led comparable revenue change at +424.1K."],
+                }
+            ],
+            "covered_candidate_ids": [store_candidate["candidate_id"]],
+        }
+        assert not validate_draft(optional_sections, [store_candidate])
+        assert not validate_draft({**optional_sections, "sections": []}, [store_candidate])
+        placeholder = copy.deepcopy(optional_sections)
+        placeholder["sections"] = [
+            {"heading": "Risks", "points": ["No material downside is visible."]}
+        ]
+        assert any(
+            "omit the unsupported section" in error
+            for error in validate_draft(placeholder, [store_candidate])
+        )
         original_get_llm = fresh_summary_generator.get_llm
         calls = []
 
@@ -254,13 +275,19 @@ def main(argv=None) -> int:
         payload = generate_fresh_report_summary_payload({**state, "fresh_summary": fresh})
         assert set(payload) == {"title", "generatedAt", "headline", "metrics", "sections"}
         assert len(payload["metrics"]) == 4
-        assert [section["heading"] for section in payload["sections"]] == [
-            "What's working", "Risks", "Recommended actions"
-        ]
+        payload_headings = [section["heading"] for section in payload["sections"]]
+        expected_order = ["What's working", "Risks", "Recommended actions"]
+        assert payload_headings == [heading for heading in expected_order if heading in payload_headings]
+        facts_only_payload = generate_fresh_report_summary_payload({
+            **state,
+            "fresh_summary": {**fresh, "sections": [], "paragraphs": []},
+        })
+        assert facts_only_payload["sections"] == []
         assert all(isinstance(metric["value"], str) for metric in payload["metrics"])
         page = summary_visual.render(fresh)
         assert "#0f9f95" in page and "background:#fff" in page and "metric-value" in page
-        assert "Recommended actions" in page and "emoji" not in page
+        assert "section-icon" in page and "summary-footer" in page
+        assert "No material downside" not in page and "emoji" not in page
         rendered_state = {**state, "fresh_summary": fresh}
         rendered_state.update(fresh_summary_validator.run(rendered_state))
         out = Path(state["output_folder"])

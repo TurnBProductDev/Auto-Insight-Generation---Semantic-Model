@@ -36,7 +36,7 @@ import hashlib
 import re
 
 from .dax_validator import _ALIAS_DEF, _extract_refs
-from .insight_stat_detector import _classify_columns, _coerce_sentinels
+from .insight_stat_detector import _classify_columns, _coerce_sentinels, _finite, _safe
 from ..tools import file_io
 from ..utils.logger import RunLogger
 
@@ -187,6 +187,19 @@ def _hint_contract(query: dict, dax: str, hint: dict, rows: list, roles: dict) -
     }
     if kind == "grand_total":
         completeness, reason = "complete", "single scoped grand total by construction"
+    elif kind == "full_dimension_breakdown":
+        # A complete peer distribution unless the safety cap truncated it. Kept out
+        # of intrinsically_partial precisely so an untruncated breakdown can earn
+        # 'complete' - the ground the rate-outlier lens needs. Reconciliation to
+        # the grand total is a separate, stronger gate (assess_peer_eligibility).
+        if truncated:
+            completeness = "partial"
+            reason = f"peer distribution truncated at the safety cap ({topn} rows)"
+        elif not rows:
+            completeness, reason = "unknown", "empty result"
+        else:
+            completeness = "complete"
+            reason = "full comparable peer distribution (not truncated)"
     elif kind in ("recent_week_history", "recent_week_rolling_history"):
         # A bounded trailing daily window folded to complete windows (Mon-Sun
         # calendar weeks, or non-overlapping rolling 7-day windows counting back
@@ -369,6 +382,192 @@ def build_contracts(state: dict) -> dict:
         hint = q.get("contract_hint") or source.get("contract_hint") or {}
         contracts[name] = extract_contract(q, dax, metadata, state, hint)
     return contracts
+
+
+# --- Phase 1: honest peer evidence gate -----------------------------------------
+#
+# A full_dimension_breakdown scan may carry the rate-outlier lens ONLY when it is
+# provably honest: complete (not truncated), confined to the comparable
+# population, grouped by exactly one dimension, and reconciling - independently
+# per phase - to the scanned comparable grand totals for an additive metric. A
+# table that falls short stays usable as ordinary partial evidence but is marked
+# ineligible with the exact reason. This is deterministic: no auth, no LLM.
+
+# Rank tables by evidence quality so the stat detector (Phase 2) processes the
+# strongest provenance first and dedup retains it. complete+comparable (0) beats
+# other complete (1) beats everything partial/unknown (2).
+def evidence_quality_rank(completeness: str, population_status: str) -> int:
+    if completeness == "complete":
+        return 0 if population_status == "comparable" else 1
+    return 2
+
+
+def _row_get(row: dict, key: str):
+    """Value for an alias, tolerant of table-qualified result keys ('Table'[Alias]
+    or Table.Alias) that clean_rows leaves in place on a name collision."""
+    if key in row:
+        return row[key]
+    for k, v in row.items():
+        if k.split(".")[-1].strip("[]") == key:
+            return v
+    return None
+
+
+def _bundle_triples(metric_specs: list) -> list:
+    """Group a contract's metric specs into per-bundle {phase: alias} triples,
+    carrying the bundle family and whether it is additive-compatible."""
+    by_bundle: dict = {}
+    for m in metric_specs:
+        bid = m.get("bundle_id")
+        if not bid or not m.get("alias") or not m.get("phase"):
+            continue
+        b = by_bundle.setdefault(bid, {"bundle_id": bid, "family": m.get("family"),
+                                       "additive": bool(m.get("additive_candidate")),
+                                       "phases": {}})
+        b["phases"][m["phase"]] = m["alias"]
+    return list(by_bundle.values())
+
+
+def _reconcile_triple(tr: dict, rows: list, totals: dict, tol: float) -> dict:
+    """Reconcile one additive current/prior/change bundle.
+
+    Rate comparison needs all three phases.  Missing prior-year data therefore
+    disables only this bundle, not the other bundles carried by the same complete
+    peer table.  Every present phase is still reported for auditability.
+    """
+    required = ("current", "prior", "change")
+    phases = tr.get("phases", {}) or {}
+    missing = [phase for phase in required if not phases.get(phase)]
+    phase_reports = {}
+    reconciled = bool(tr.get("additive")) and not missing
+    for phase, alias in phases.items():
+        vals = [_row_get(r, alias) for r in rows]
+        breakdown_sum = sum(v for v in vals if _finite(v))
+        grand = totals.get(alias)
+        if not _finite(grand):
+            phase_reports[phase] = {"alias": alias, "breakdown_total": _safe(breakdown_sum),
+                                    "grand_total": None, "diff": None, "reconciled": False}
+            reconciled = False
+            continue
+        diff = breakdown_sum - grand
+        ok = abs(diff) <= tol * max(abs(grand), 1.0)
+        phase_reports[phase] = {"alias": alias, "breakdown_total": _safe(breakdown_sum),
+                                "grand_total": _safe(grand), "diff": _safe(diff),
+                                "reconciled": ok}
+        if not ok:
+            reconciled = False
+    rejection_reasons = []
+    if not tr.get("additive"):
+        rejection_reasons.append("metric bundle is not additive")
+    if missing:
+        rejection_reasons.append(f"missing phases: {', '.join(missing)}")
+    failed = [phase for phase, report in phase_reports.items()
+              if not report.get("reconciled")]
+    if failed:
+        rejection_reasons.append(f"reconciliation failed for phases: {', '.join(failed)}")
+    return {"family": tr.get("family"), "bundle_id": tr.get("bundle_id"),
+            "additive": bool(tr.get("additive")), "phases": phase_reports,
+            "required_phases": list(required), "missing_phases": missing,
+            "reconciled": reconciled, "eligible": reconciled,
+            "rejection_reason": "; ".join(rejection_reasons) or None}
+
+
+def _grand_totals(clean_queries: list) -> dict:
+    """The single comparable-totals row keyed by bare alias (rate reconciliation
+    denominator). Prefer the metadata grand_total table by contract."""
+    for q in clean_queries:
+        hint = q.get("contract_hint") or {}
+        if q.get("status") == "success" and hint.get("coverage_kind") == "grand_total":
+            rows = _coerce_sentinels(q.get("rows") or [])
+            if rows:
+                return {k.split(".")[-1].strip("[]"): v for k, v in rows[0].items()
+                        if _finite(v)}
+    return {}
+
+
+def _assess_one_peer_table(q: dict, hint: dict, totals: dict, tol: float) -> dict:
+    grouping = hint.get("grouping", []) or []
+    dim_ref = (grouping[0].get("reference") if grouping else None) or q.get("query_name")
+    cap = hint.get("topn")
+    rows = _coerce_sentinels(q.get("rows") or []) if q.get("status") == "success" else []
+    n = len(rows)
+    truncated = bool(rows) and cap is not None and n >= int(cap)
+
+    structural_reasons = []
+    if q.get("status") != "success":
+        completeness = "unknown"
+        structural_reasons.append("query did not succeed")
+    elif truncated:
+        completeness = "partial"
+        structural_reasons.append(
+            f"row count ({n}) reached the safety cap ({cap}); distribution truncated")
+    elif n == 0:
+        completeness = "unknown"
+        structural_reasons.append("empty result")
+    else:
+        completeness = "complete"
+
+    population_status = hint.get("population_status", "unknown")
+    if population_status != "comparable":
+        structural_reasons.append(f"population is '{population_status}', not comparable")
+    if len(grouping) != 1:
+        structural_reasons.append(
+            f"{len(grouping)} grouping dimensions; peer rate needs exactly one")
+
+    label_col = grouping[0].get("column") if grouping else None
+    peer_count = sum(1 for r in rows
+                     if label_col and str(_row_get(r, label_col) or "").strip())
+
+    triples = _bundle_triples(hint.get("metrics", []) or [])
+    triple_reports = [_reconcile_triple(tr, rows, totals, tol) for tr in triples]
+    additive_reports = [t for t in triple_reports if t["additive"]]
+    if not additive_reports:
+        structural_reasons.append("no additive metric triple to reconcile")
+
+    structural_eligible = completeness == "complete" and not structural_reasons
+    eligible_bundle_ids = [t["bundle_id"] for t in additive_reports
+                           if structural_eligible and t["eligible"]]
+    eligible = bool(eligible_bundle_ids)
+    metric_rejections = {
+        str(t.get("bundle_id")): t.get("rejection_reason")
+        for t in additive_reports if not t.get("eligible")
+    }
+    reasons = list(structural_reasons)
+    if structural_eligible and not eligible_bundle_ids:
+        reasons.append("no additive current/prior/change bundle reconciled")
+    return {
+        "dimension": dim_ref,
+        "query": q.get("query_name"),
+        "grouping": [g.get("reference") for g in grouping],
+        "row_count": n,
+        "safety_cap": cap,
+        "completeness": completeness,
+        "population_status": population_status,
+        "peer_count": peer_count,
+        "triples": triple_reports,
+        "structural_eligible": structural_eligible,
+        "eligible_bundle_ids": eligible_bundle_ids,
+        "metric_rejections": metric_rejections,
+        "eligible": eligible,
+        "rejection_reason": None if eligible else "; ".join(reasons),
+    }
+
+
+def assess_peer_eligibility(clean_queries: list, state: dict) -> dict:
+    """Phase 1 peer-evidence gate. For every ``full_dimension_breakdown`` scan,
+    decide whether it is honest enough to carry rate-outlier detection and record
+    exactly why. Returns ``{dimension_reference: assessment}``. Pure function over
+    the pre-fork scan rows - no auth, no LLM, no side effects."""
+    tol = float(state.get("insight_stat_recon_tolerance_pct", 2.0)) / 100.0
+    totals = _grand_totals(clean_queries)
+    coverage = {}
+    for q in clean_queries:
+        hint = q.get("contract_hint") or {}
+        if hint.get("coverage_kind") != "full_dimension_breakdown":
+            continue
+        entry = _assess_one_peer_table(q, hint, totals, tol)
+        coverage[entry["dimension"]] = entry
+    return coverage
 
 
 def run(state: dict) -> dict:

@@ -31,6 +31,7 @@ candidate list and the LLM detector falls back to reading raw scan rows.
 import math
 from datetime import datetime, timedelta
 
+from . import insight_rate_shadow
 from ..tools import file_io
 from ..utils.logger import RunLogger
 
@@ -75,6 +76,20 @@ def _finite(v) -> bool:
 def _safe(v, digits: int = 4):
     """A candidate-payload-safe number: finite floats only, else None."""
     return round(float(v), digits) if _finite(v) else None
+
+
+def _change_pct(current, prior):
+    """Conventional percentage change, undefined for a zero prior value."""
+    if not (_finite(current) and _finite(prior)) or abs(prior) <= _EPS:
+        return None
+    return _safe((current - prior) / abs(prior) * 100.0)
+
+
+def _part_pct(part, whole):
+    """Signed share of a reconciled movement, undefined for a zero movement."""
+    if not (_finite(part) and _finite(whole)) or abs(whole) <= _EPS:
+        return None
+    return _safe(part / whole * 100.0)
 
 
 def _fmt(v) -> str:
@@ -282,10 +297,22 @@ def _rate_volume_split(row: dict, rev_tr: dict, vol_tr: dict) -> dict:
         "driver": vol_tr["change"],
         "rate_of": f"{rev_tr['current']} / {vol_tr['current']}",
         "revenue_change": _safe(dR),
+        # Preserve the actual before/after driver values.  Manager-facing output
+        # must be able to say "units rose from X to Y (+Z%)" rather than merely
+        # "units rose".  These values come from the same reconciled row as the
+        # split; no LLM arithmetic or extra REST call is involved.
+        "driver_current": _safe(S1),
+        "driver_prior": _safe(S0),
+        "driver_change": _safe(S1 - S0),
+        "driver_change_pct": _change_pct(S1, S0),
         "volume_effect": _safe(volume_effect),
+        "volume_effect_share_pct": _part_pct(volume_effect, dR),
         "rate_effect": _safe(rate_effect),
+        "rate_effect_share_pct": _part_pct(rate_effect, dR),
         "rate_current": _safe(p1),
         "rate_prior": _safe(p0),
+        "rate_change": _safe(p1 - p0),
+        "rate_change_pct": _change_pct(p1, p0),
         "reconciled": bool(reconciled),
         "basis": "exact price/volume split; rate = revenue per unit of driver "
                  "(blends price and mix at this grain); decomposition, not cause",
@@ -326,6 +353,29 @@ def _point_robust_z(value, ref: list):
     return None
 
 
+def _cell(row: dict, alias: str):
+    """One aliased value from a result row, tolerant of table-qualified keys that
+    clean_rows leaves in place on a name collision ('Table'[Alias] / Table.Alias)."""
+    if alias in row:
+        return row[alias]
+    for k, v in row.items():
+        if k.split(".")[-1].strip("[]") == alias:
+            return v
+    return None
+
+
+def _median(values: list):
+    """Lower median (matches _point_robust_z's internal convention) so a reported
+    peer-median lines up with the reference the robust z is measured against."""
+    s = sorted(v for v in values if _finite(v))
+    return s[len(s) // 2] if s else None
+
+
+def _nth_fastest(n: int) -> str:
+    """Ordinal word for a rate rank ('fastest', '2nd fastest', ...)."""
+    return {1: "fastest", 2: "2nd fastest", 3: "3rd fastest"}.get(n, f"{n}th fastest")
+
+
 # --- the detector ---------------------------------------------------------------
 
 class _Detector:
@@ -355,6 +405,32 @@ class _Detector:
         # Phase 3b rolling-week: always-emitted raw observation (decision #8),
         # regardless of whether this run's reading clears the significance gate.
         self.rolling_observation = None
+        # Rate-outlier lens (Phase 2): only tables the pre-fork peer-evidence gate
+        # marked eligible (complete + comparable + reconciled) may dispatch it.
+        self.peer_coverage = state.get("insight_peer_coverage", {}) or {}
+        self.peer_eligible_queries = {
+            v.get("query") for v in self.peer_coverage.values()
+            if isinstance(v, dict) and v.get("eligible")}
+        self.peer_eligible_bundles = {
+            v.get("query"): set(v.get("eligible_bundle_ids", []) or [])
+            for v in self.peer_coverage.values()
+            if isinstance(v, dict) and v.get("query")
+        }
+        self.rate_mode = str(state.get("insight_rate_outlier_mode", "off")).lower()
+        self.rate_z_cutoff = float(state.get("insight_rate_z_cutoff", 3.0))
+        self.rate_min_peers = max(2, int(state.get("insight_rate_min_peers", 8)))
+        self.rate_prior_share_floor = float(state.get("insight_rate_prior_share_floor_pct", 0.5))
+        self.rate_exposure_floor = float(state.get("insight_rate_exposure_floor_pct", 2.0))
+        self.rate_min_abs_impact = float(state.get("insight_rate_min_abs_impact_pct", 1.0))
+        self.rate_flat_min = float(state.get("insight_rate_flat_min_pct", 10.0))
+        # Phase 3 small-peer ordinal enrichment: a peer set too small for a
+        # defensible statistical outlier (< rate_min_peers) but large enough for a
+        # meaningful rate RANK (>= rate_min_ordinal_peers).
+        self.rate_min_ordinal_peers = max(2, int(state.get("insight_rate_min_ordinal_peers", 3)))
+        self.ordinal_orphans = []
+        # Phase 5 shadow diagnostics: significant rate outliers dropped by a
+        # materiality gate (calibration-relevant), plus disabled-metric events.
+        self.rate_rejections = []
 
     # -- candidate plumbing --
 
@@ -366,7 +442,7 @@ class _Detector:
         # frequently expose the same measure under two names, and both would
         # otherwise emit one candidate each for every finding.
         key = (cand["type"], self.canon.get(cand.get("metric"), cand.get("metric")),
-               cand.get("segment"))
+               cand.get("dimension"), cand.get("segment"))
         pool = self.data_quality if kind == "data_quality" else self.business
         old = pool.get(key)
         if old is None or cand["score"] > old["score"]:
@@ -437,7 +513,12 @@ class _Detector:
                     continue
             if not roles["labels"] or roles["date"] or roles["period"]:
                 continue
-            if len(rows) >= self.row_cap:   # likely truncated: sum unreliable
+            # Construction-time contracts know their own safety cap.  The legacy
+            # detector row cap is only a truncation heuristic for parsed evidence;
+            # applying it to an explicitly complete 200-row peer scan would undo
+            # the Phase-1 reconciliation certificate.
+            if (contract.get("contract_source") == "parsed_dax_and_rows"
+                    and len(rows) >= self.row_cap):
                 continue
             for col in roles["numerics"]:
                 g = self.grand_totals.get(col)
@@ -465,6 +546,9 @@ class _Detector:
         rows, roles = t["rows"], t["roles"]
         if not roles["labels"] or len(rows) < 2:
             return
+        # The source dimension - carried on each candidate so the Phase 4 overlap
+        # merge can match a rate outlier to the bridge story for the same cut.
+        dim_ref = ((t.get("contract") or {}).get("grouping_references") or [None])[0]
 
         # The price/volume split is only meaningful decomposing the table's
         # primary VALUE metric (revenue) by a volume driver (quantity) - never
@@ -511,6 +595,10 @@ class _Detector:
                 cand = {
                     "type": "change_contribution",
                     "table": t["name"], "metric": chg, "segment": seg,
+                    "bundle_id": tr.get("bundle_id"), "metric_family": tr.get("family"),
+                    "dimension": dim_ref,
+                    "current": _safe(cur_v), "prior": _safe(prev_v),
+                    "direction": (1 if r[chg] > _EPS else -1 if r[chg] < -_EPS else 0),
                     "impact_value": _safe(r[chg]),
                     "impact_share": _safe(share),
                     "share_basis": basis,
@@ -804,6 +892,11 @@ class _Detector:
                 "type": "period_change_contribution",
                 "table": t["name"], "metric": chg, "segment": f"{axis}={raw_s}",
                 "anchor": raw_s, "period_label": label,
+                "bundle_id": tr.get("bundle_id"), "metric_family": tr.get("family"),
+                "dimension": ((t.get("contract") or {}).get("grouping_references")
+                              or [axis])[0],
+                "current": _safe(r.get(cur)), "prior": _safe(r.get(prev)),
+                "direction": (1 if r[chg] > _EPS else -1 if r[chg] < -_EPS else 0),
                 "impact_value": _safe(r[chg]), "impact_share": _safe(share),
                 "share_basis": basis if share is not None else None,
                 "significance": 1.0,
@@ -1112,6 +1205,247 @@ class _Detector:
                            + (f" (peak z {peak_z:.1f})" if _finite(peak_z) else "")),
             })
 
+    def _collect_rate_peers(self, rows: list, label_cols: list,
+                            cur_alias: str, prev_alias: str) -> tuple:
+        """Valid peers for one metric with their log growth. Members with a
+        zero/near-zero current or prior are excluded as lifecycle boundaries
+        (a new member has no prior; a discontinued one has no current - neither
+        has a defined growth rate). A genuinely NEGATIVE level on any member,
+        however, returns ``disabled=True``: it cannot be log-transformed and
+        silently dropping it would break the reconciled distribution the peer set
+        depends on, so the whole metric is refused rather than measured on a
+        secretly-incomplete population."""
+        peers = []
+        for r in rows:
+            cur, prev = _cell(r, cur_alias), _cell(r, prev_alias)
+            if not (_finite(cur) and _finite(prev)):
+                return [], True                     # non-finite in a 'complete' table
+            if cur < -_EPS or prev < -_EPS:
+                return [], True                     # negative level poisons the set
+            if cur <= _EPS or prev <= _EPS:
+                continue                            # zero-prior / discontinued lifecycle
+            seg = _segment_of(r, label_cols)
+            if not seg or seg == "overall":
+                continue                            # null / unlabelled member
+            peers.append({"segment": seg, "current": cur, "prior": prev,
+                          "log_growth": math.log(cur / prev),
+                          "reported_pct": (cur - prev) / abs(prev) * 100.0})
+        return peers, False
+
+    def peer_growth_rate_outlier(self, t: dict):
+        """Segments whose growth RATE is a peer-relative outlier (Phase 2).
+
+        Runs ONLY on a full_dimension_breakdown table the pre-fork peer-evidence
+        gate marked eligible (complete + comparable + reconciled). Standalone
+        candidates require at least ``insight_rate_min_peers`` valid peers; smaller
+        peer sets are Phase-3 ordinal enrichment and are not emitted here. Log
+        growth (symmetric under inversion) is the statistical space; the
+        conventional percentage change is what the user is shown. Significance is a
+        LEAVE-ONE-OUT robust z (the segment never inflates its own reference); a
+        perfectly flat reference instead yields a ``flat_peer_break`` judged on how
+        far the segment sits from the flat norm. Two exposure gates keep tiny bases
+        out (denominator quality on the prior share) while still admitting genuine
+        fast growth from a meaningful current scale (business exposure on the larger
+        of the prior/current shares)."""
+        if t["name"] not in self.peer_eligible_queries:
+            return
+        rows, roles = t["rows"], t["roles"]
+        if not roles["labels"]:
+            return
+        for tr in t["triples"]:
+            eligible_bundles = self.peer_eligible_bundles.get(t["name"], set())
+            # Backward-compatible fallback for old replay artifacts that only
+            # carried a table-level eligibility bit. New Phase-1 artifacts always
+            # carry eligible_bundle_ids and are enforced per metric bundle.
+            if eligible_bundles and tr.get("bundle_id") not in eligible_bundles:
+                continue
+            cur_alias, prev_alias = tr.get("current"), tr.get("prior")
+            if not cur_alias or not prev_alias:
+                continue
+            gt_cur = self.grand_totals.get(cur_alias)
+            gt_prev = self.grand_totals.get(prev_alias)
+            if not (_finite(gt_cur) and abs(gt_cur) > _EPS
+                    and _finite(gt_prev) and abs(gt_prev) > _EPS):
+                continue                            # no denominator -> no honest share
+            peers, disabled = self._collect_rate_peers(rows, roles["labels"],
+                                                       cur_alias, prev_alias)
+            if disabled:
+                self.rate_rejections.append({
+                    "segment": None, "metric": cur_alias, "table": t["name"],
+                    "failed_gate": "metric_disabled_nonpositive_peer"})
+                continue
+            if len(peers) < self.rate_min_peers:
+                continue
+            log_growths = [p["log_growth"] for p in peers]
+            reported_growths = [p["reported_pct"] for p in peers]
+            for i, p in enumerate(peers):
+                ref_log = log_growths[:i] + log_growths[i + 1:]
+                ref_reported = reported_growths[:i] + reported_growths[i + 1:]
+                z = _point_robust_z(p["log_growth"], ref_log)
+                self._emit_rate_candidate(t, tr, p, len(peers), cur_alias,
+                                          gt_cur, gt_prev, _median(ref_log),
+                                          _median(ref_reported), z)
+
+    def _emit_rate_candidate(self, t: dict, tr: dict, p: dict, peer_count: int,
+                             cur_alias: str, gt_cur: float, gt_prev: float,
+                             median_log, median_pct, z) -> None:
+        cur, prev, reported = p["current"], p["prior"], p["reported_pct"]
+        deviation = reported - (median_pct if _finite(median_pct) else 0.0)
+        seg = p["segment"]
+        # Significance gate FIRST: an ordinary peer (z below cutoff, or a small gap
+        # from a flat reference) is simply not a rate outlier - it is not recorded
+        # as a "rejection" (that would drown the shadow diagnostics in noise).
+        if z is None:
+            if abs(deviation) < self.rate_flat_min:
+                return
+            stat_basis = "flat_peer_break"
+            significance = _safe(min(abs(deviation) / (2 * self.rate_flat_min), 1.0))
+        else:
+            if abs(z) < self.rate_z_cutoff:
+                return
+            stat_basis = "peer_robust_z"
+            significance = _safe(min(abs(z) / (2 * self.rate_z_cutoff), 1.0))
+        # It IS a significant rate outlier. Now the materiality gates (AND): a tiny
+        # prior base (unreliable %), a segment too small to matter, or an absolute
+        # move too small to move the total. A rejection here is calibration-relevant
+        # (a real outlier dropped as immaterial) and is recorded for shadow review.
+        prior_share = prev / abs(gt_prev) * 100.0
+        current_share = cur / abs(gt_cur) * 100.0
+        exposure = max(prior_share, current_share)
+        abs_change = cur - prev
+        abs_impact_share = abs(abs_change) / abs(gt_cur) * 100.0
+        failed = ("prior_share_below_floor" if prior_share < self.rate_prior_share_floor
+                  else "exposure_below_floor" if exposure < self.rate_exposure_floor
+                  else "abs_impact_below_floor" if abs_impact_share < self.rate_min_abs_impact
+                  else None)
+        if failed:
+            self.rate_rejections.append({
+                "segment": seg, "metric": cur_alias, "table": t["name"],
+                "reported_growth_pct": _safe(reported), "robust_z": _safe(z),
+                "stat_basis": stat_basis, "prior_share": _safe(prior_share),
+                "business_exposure": _safe(exposure), "impact_share": _safe(abs_impact_share),
+                "peer_count": peer_count, "failed_gate": failed})
+            return
+        # relative_priority ranks rate candidates against EACH OTHER only (points
+        # away from the peer-median rate). It is deliberately NOT on the bridge
+        # score scale - selection (Phase 6) never compares the two numerically.
+        priority = abs(deviation)
+        dim_ref = ((t.get("contract") or {}).get("grouping_references") or [None])[0]
+        self._add("business", {
+            "type": "peer_growth_rate_outlier",
+            "table": t["name"], "metric": cur_alias, "segment": seg,
+            "metric_family": tr.get("family"), "bundle_id": tr.get("bundle_id"),
+            "dimension": dim_ref,
+            "current": _safe(cur), "prior": _safe(prev),
+            "impact_value": _safe(abs_change),
+            "abs_change": _safe(abs_change),
+            "reported_growth_pct": _safe(reported),
+            "log_growth": _safe(p["log_growth"]),
+            "peer_median_log_growth": _safe(median_log),
+            "peer_median_reported_pct": _safe(median_pct),
+            "deviation_pct": _safe(deviation),
+            "robust_z": (_safe(z) if z is not None else None),
+            "stat_basis": stat_basis,
+            "peer_count": peer_count,
+            "prior_share": _safe(prior_share),
+            "current_share": _safe(current_share),
+            "business_exposure": _safe(exposure),
+            "impact_share": _safe(abs_impact_share),
+            "share_basis": f"grand_total:{cur_alias}",
+            "direction": (1 if abs_change > _EPS else -1 if abs_change < -_EPS else 0),
+            "evidence_query": t["name"],
+            "reconciliation": {"family": tr.get("family"), "bundle_id": tr.get("bundle_id"),
+                               "additive": True},
+            "relative_priority": _safe(priority),
+            "significance": significance,
+            "score": priority,
+            "detail": (f"{seg}: {cur_alias} moved {reported:+.1f}% vs a peer median of "
+                       f"{median_pct:+.1f}% ("
+                       + (f"robust z {z:+.1f}" if z is not None else "flat peer set")
+                       + f", {peer_count} peers; exposure {exposure:.1f}% of total)"),
+        })
+
+    def peer_ordinal_enrichment(self, t: dict):
+        """Small-peer ordinal context (Phase 3). A complete comparable breakdown
+        with FEWER than ``insight_rate_min_peers`` members (e.g. the four
+        comparable stores) cannot support a defensible statistical-outlier claim,
+        but the rate RANK is still real: 'the fastest decline among the four
+        comparable stores'. This attaches that ordinal note to the EXISTING bridge
+        (change_contribution) candidate for the same value metric + segment - it
+        creates no new candidate and no story key, so it can never consume a
+        report slot on its own. A ranked segment with no bridge candidate to attach
+        to is recorded as an orphan diagnostic (never reported).
+
+        Runs on the pre-fork entity breakdown (full_entity_breakdown, comparable by
+        construction) and on any eligible full_dimension_breakdown that turned out
+        to have a small membership (the 5-7 member dimension case)."""
+        c = t.get("contract") or {}
+        kind = c.get("coverage_kind")
+        if kind == "full_dimension_breakdown":
+            if t["name"] not in self.peer_eligible_queries:
+                return
+        elif kind == "full_entity_breakdown":
+            if not (c.get("completeness") == "complete"
+                    and c.get("population_status") == "comparable"):
+                return
+        else:
+            return
+        rows, roles = t["rows"], t["roles"]
+        if not roles["labels"]:
+            return
+        # Ordinal context is only computed for the PRIMARY VALUE metric (the
+        # headline rate), never every volume driver - one rank note per segment.
+        eligible_bundles = self.peer_eligible_bundles.get(t["name"], set())
+        value_tr = next((tr for tr in t["triples"]
+                         if tr.get("semantic_role") == "value"
+                         and (tr.get("bundle_id") in eligible_bundles
+                              if kind == "full_dimension_breakdown" and eligible_bundles
+                              else tr.get("change") in self.additive)
+                         and tr.get("current") and tr.get("prior")), None)
+        if not value_tr:
+            return
+        cur_alias, prev_alias, chg_alias = (value_tr["current"], value_tr["prior"],
+                                            value_tr["change"])
+        peers, disabled = self._collect_rate_peers(rows, roles["labels"], cur_alias, prev_alias)
+        n = len(peers)
+        if disabled or n < self.rate_min_ordinal_peers or n >= self.rate_min_peers:
+            return
+        median_pct = _median([p["reported_pct"] for p in peers])
+        peer_dim = (c.get("grouping_references") or [None])[0] or roles["labels"][0]
+        # rank 1 = highest growth rate (top); a declining segment is ranked from
+        # the bottom so "fastest decline" reads naturally.
+        ranked = sorted(peers, key=lambda p: p["reported_pct"], reverse=True)
+        canon_chg = self.canon.get(chg_alias, chg_alias)
+        for pos, p in enumerate(ranked):
+            change = p["current"] - p["prior"]
+            direction = 1 if change > _EPS else -1 if change < -_EPS else 0
+            if direction < 0:
+                rank_desc = f"{_nth_fastest(n - pos)}-declining"
+            elif direction > 0:
+                rank_desc = f"{_nth_fastest(pos + 1)}-growing"
+            else:
+                rank_desc = "flat"
+            context = {
+                "peer_dimension": peer_dim,
+                "metric": cur_alias,
+                "reported_growth_pct": _safe(p["reported_pct"]),
+                "peer_median_reported_pct": _safe(median_pct),
+                "peer_count": n,
+                "rank_by_rate": pos + 1,             # 1 = highest rate
+                "rank_desc": rank_desc,
+                "direction": direction,
+                "phrase": (f"the {rank_desc} of {n} comparable peers"
+                           if direction else f"flat among {n} comparable peers"),
+                "basis": "ordinal_only",             # NOT a statistical-outlier claim
+            }
+            bridge_cand = self.business.get(
+                ("change_contribution", canon_chg, peer_dim, p["segment"]))
+            if bridge_cand is not None:
+                bridge_cand["peer_rate_context"] = context
+            else:
+                self.ordinal_orphans.append({"segment": p["segment"], "table": t["name"],
+                                             **context})
+
     def reconciliation(self, t: dict):
         """Data-quality checks: triple violations, zero-prior bases, coverage
         gaps vs grand totals, non-finite values, non-differentiating metrics."""
@@ -1238,6 +1572,42 @@ class _Detector:
                                    f"all {len(vals)} segments - likely not sliced by this dimension"),
                     })
 
+    def _merge_rate_overlap(self):
+        """Phase 4: a standalone rate outlier that describes the SAME cut as an
+        existing bridge (contribution) story is corroboration, not a second story -
+        otherwise the report would carry two paragraphs about one segment ('X drove
+        a large decline' and 'X declined unusually fast'). Attach the rate evidence
+        onto the bridge candidate and drop it from the standalone pool. A rate
+        candidate with NO matching bridge story is a genuinely-new relative mover
+        and is left untouched (it competes for the one relative slot in Phase 6).
+
+        Match on canonical metric bundle + dimension + segment + direction. Segment
+        strings are unique to their dimension, so this never crosses cuts."""
+        def _dir(v):
+            return 1 if _finite(v) and v > _EPS else -1 if _finite(v) and v < -_EPS else 0
+        bridges = {}
+        for key, c in self.business.items():
+            if c.get("type") == "change_contribution":
+                bridges[(c.get("dimension"), c.get("bundle_id"), c.get("segment"),
+                         _dir(c.get("impact_value")))] = key
+        rate_keys = [k for k, c in self.business.items()
+                     if c.get("type") == "peer_growth_rate_outlier"]
+        for rkey in rate_keys:
+            r = self.business[rkey]
+            bkey = bridges.get((r.get("dimension"), r.get("bundle_id"),
+                                r.get("segment"), r.get("direction")))
+            if bkey is None:
+                continue                        # genuinely-new relative mover: keep
+            bridge = self.business[bkey]
+            bridge["peer_rate_evidence"] = {k: r.get(k) for k in (
+                "reported_growth_pct", "log_growth", "peer_median_reported_pct",
+                "peer_median_log_growth", "deviation_pct", "robust_z", "stat_basis",
+                "peer_count", "prior_share", "current_share", "business_exposure",
+                "impact_share", "direction", "metric", "bundle_id", "evidence_query",
+                "relative_priority", "significance")}
+            bridge["has_rate_corroboration"] = True
+            del self.business[rkey]
+
     # -- driver --
 
     def run(self, clean: dict) -> dict:
@@ -1279,9 +1649,29 @@ class _Detector:
                 "contract": contract,
             })
 
-        self.collect_totals(tables)
-        self.classify_metrics(tables)
-        for t in tables:
+        # Shadow must be observational: the extra full peer distributions may be
+        # inspected by the rate lens, but they must not alter synonym/additivity
+        # votes or feed any pre-existing detector.  In report mode they graduate
+        # to ordinary complete evidence; in off mode no rate behavior runs.
+        generic_tables = [
+            t for t in tables
+            if not (self.rate_mode != "report"
+                    and (t.get("contract") or {}).get("coverage_kind")
+                    == "full_dimension_breakdown")
+        ]
+        self.collect_totals(generic_tables)
+        self.classify_metrics(generic_tables)
+        # Process complete + comparable evidence first (stable within a rank), so
+        # when a full peer breakdown and a partial mover-tail describe the same
+        # segment, the dedup (which keeps the first of equal scores) retains the
+        # complete-table provenance. Order-independent passes above are unaffected.
+        def _evidence_rank(t: dict) -> int:
+            c = t.get("contract") or {}
+            if c.get("completeness") == "complete":
+                return 0 if c.get("population_status") == "comparable" else 1
+            return 2
+        generic_tables.sort(key=_evidence_rank)
+        for t in generic_tables:
             # Incident rows are an exclusive dispatch, not an added method: they
             # carry a segment label alongside several numeric fields (peak_z,
             # cumulative_impact, day_count, ...) that the generic segment-
@@ -1297,7 +1687,22 @@ class _Detector:
             self.period(t)
             self.recent_week(t)
             self.reconciliation(t)
-        overall_pv = self.overall_split(tables)
+        overall_pv = self.overall_split(generic_tables)
+
+        # Run the optional rate lens only after the ordinary bridge candidates
+        # exist, so small-peer context can attach to a mover-tail bridge even when
+        # the full peer table itself is shadow-only.  "off" is now a true no-op.
+        if self.rate_mode in ("shadow", "report"):
+            rate_tables = sorted(tables, key=_evidence_rank)
+            for t in rate_tables:
+                kind = (t.get("contract") or {}).get("coverage_kind")
+                if kind == "full_dimension_breakdown":
+                    self.peer_growth_rate_outlier(t)
+                if kind in ("full_dimension_breakdown", "full_entity_breakdown"):
+                    self.peer_ordinal_enrichment(t)
+            # Phase 4: fold a rate outlier into the bridge story for the same cut
+            # (corroboration) before ranking, so overlap never becomes two candidates.
+            self._merge_rate_overlap()
 
         business = sorted(self.business.values(), key=lambda c: c["score"], reverse=True)
         dq = sorted(self.data_quality.values(), key=lambda c: c["score"], reverse=True)
@@ -1321,6 +1726,12 @@ class _Detector:
             "overall_price_volume": overall_pv,
             "business_candidates": business,
             "data_quality_candidates": dq,
+            # Phase 3: small-peer rate ranks that found no bridge candidate to
+            # enrich. Diagnostic only - never reported, never a story key.
+            "peer_ordinal_orphans": self.ordinal_orphans,
+            # Phase 5: significant rate outliers a materiality gate dropped
+            # (shadow calibration - are the floors too strict?).
+            "rate_rejections": self.rate_rejections,
         }
 
 
@@ -1387,11 +1798,17 @@ def run(state: dict) -> dict:
 
     clean = state.get("insight_clean_data", {"queries": []})
     rolling_observation = None
+    shadow_updates = {}
     try:
         detector = _Detector(state, log)
         result = detector.run(clean)
         _append_entity_lifecycle_candidates(result, state)
         rolling_observation = detector.rolling_observation
+        # Phase 5: in shadow mode divert the rate-lens findings out of the reported
+        # set (and write the diagnostics artifact); in report mode they stay. Off is
+        # a no-op. Never raises, and the divert precedes the diagnostics build so a
+        # failure can never leak a shadow finding into the report.
+        shadow_updates = insight_rate_shadow.apply(state, result)
     except Exception as exc:  # noqa: BLE001 - stats must never kill the branch
         log.error(f"Stat detector failed ({exc}); signal detector falls back to raw rows.")
         result = {"note": f"stat pre-pass failed: {exc}",
@@ -1400,9 +1817,12 @@ def run(state: dict) -> dict:
     file_io.write_json(state, "insight_stat_candidates.json", result)
     n_b, n_d = len(result["business_candidates"]), len(result["data_quality_candidates"])
     log.info(f"Stat candidates: {n_b} business, {n_d} data-quality.")
+    if shadow_updates.get("insight_rate_shadow_candidates") is not None:
+        log.info(f"Rate lens in SHADOW mode: {len(shadow_updates['insight_rate_shadow_candidates'])} "
+                 f"finding(s) diverted from the report (see insight_rate_shadow.json).")
     for c in result["business_candidates"][:5]:
         log.info(f"  [{c['score']:.1f}] {c['type']}: {c['detail']}")
-    updates = {"insight_stat_candidates": result, **log.updates()}
+    updates = {"insight_stat_candidates": result, **shadow_updates, **log.updates()}
     if rolling_observation is not None:
         updates["insight_rolling_observation"] = rolling_observation
     return updates

@@ -36,7 +36,16 @@ _ACTION_VERBS = {
     "validate",
 }
 _TECHNICAL_MANAGER_PHRASES = {
+    "accounted for",
+    "associated with",
+    "broader demand",
+    "directional",
+    "growth engine",
+    "linked to",
+    "mix of products",
     "movement decomposition",
+    "overall movement",
+    "product pockets",
     "volume effect",
     "rate effect",
     "share of total change",
@@ -46,7 +55,17 @@ _TECHNICAL_MANAGER_PHRASES = {
     "sell-through",
     "materiality",
     "reconciliation",
+    "total movement",
+    "uplift",
     "z-score",
+}
+_MAX_SIMPLE_WORDS = 28
+_EMPTY_SECTION_PHRASES = {
+    "no clear risk",
+    "no material downside",
+    "no positive movement",
+    "no risk was found",
+    "nothing to report",
 }
 
 
@@ -158,6 +177,10 @@ def validate_draft(draft: dict, selected: list[dict]) -> list[str]:
         errors.append(
             "headline must include the exact display value for its main result"
         )
+    if len(re.findall(r"\b\w+[\w'-]*\b", headline)) > _MAX_SIMPLE_WORDS:
+        errors.append(
+            f"headline must use {_MAX_SIMPLE_WORDS} words or fewer"
+        )
 
     sections = _clean_sections(draft)
     headings: list[str] = []
@@ -177,6 +200,18 @@ def validate_draft(draft: dict, selected: list[dict]) -> list[str]:
             errors.append(f"section {heading!r} has no points")
         if len(points) > 3:
             errors.append(f"section {heading!r} has more than 3 points")
+        for point in points:
+            lowered_point = point.casefold()
+            if any(phrase in lowered_point for phrase in _EMPTY_SECTION_PHRASES):
+                errors.append(
+                    f"section {heading!r} uses an empty placeholder; omit the unsupported section"
+                )
+            word_count = len(re.findall(r"\b\w+[\w'-]*\b", point))
+            if word_count > _MAX_SIMPLE_WORDS:
+                errors.append(
+                    f"section point must use {_MAX_SIMPLE_WORDS} words or fewer; "
+                    f"got {word_count} in {point!r}"
+                )
         tone = str(section.get("tone") or "").strip().casefold()
         if tone and normalized in _SECTION_TONES and tone not in _SECTION_TONES[normalized]:
             errors.append(f"section {heading!r} has incompatible tone {tone!r}")
@@ -192,9 +227,11 @@ def validate_draft(draft: dict, selected: list[dict]) -> list[str]:
 
     if selected:
         expected = list(_SECTION_TONES)
-        if headings != expected:
+        supported_order = [heading for heading in expected if heading in headings]
+        if headings != supported_order:
             errors.append(
-                "sections must contain exactly What's working, Risks, and Recommended actions in that order"
+                "sections may contain What's working, Risks, and Recommended actions at most once "
+                "and only in that order"
             )
     elif not sections:
         errors.append("summary content is empty")

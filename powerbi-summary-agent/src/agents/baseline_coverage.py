@@ -7,6 +7,7 @@ from ..utils.logger import RunLogger
 from .dax_validator import validate_one
 from .scope_validator import validate_comparable_scope
 from .insight_scan_templates import build_metadata_scans
+from .evidence_contract import assess_peer_eligibility
 
 
 def run(state: dict) -> dict:
@@ -60,12 +61,24 @@ def run(state: dict) -> dict:
 
     clean = {"query_count": len(clean_queries), "successful": success,
              "failed": len(clean_queries) - success, "queries": clean_queries}
+
+    # Phase 1 rate-outlier lens: decide, pre-fork, which peer distributions are
+    # honest enough (complete, comparable, reconciled) to carry rate-outlier
+    # detection. Never fatal, and a no-op when insight_rate_outlier_mode is off
+    # (no full_dimension_breakdown scans were planned).
+    peer_coverage = assess_peer_eligibility(clean_queries, state)
+
     file_io.write_json(state, "insight_dax_plan.json", plan)
     file_io.write_json(state, "insight_generated_dax_queries.json", generated)
     file_io.write_json(state, "insight_validated_dax_queries.json", audit)
     file_io.write_json(state, "insight_raw_results.json", raw)
     file_io.write_json(state, "baseline_coverage_clean_data.json", clean)
+    file_io.write_json(state, "insight_peer_coverage.json", peer_coverage)
     log.info(f"Shared metadata coverage: {success}/{len(validated)} queries succeeded pre-fork.")
+    if peer_coverage:
+        eligible = sum(1 for v in peer_coverage.values() if v.get("eligible"))
+        log.info(f"Peer evidence: {eligible}/{len(peer_coverage)} dimension(s) eligible "
+                 f"for rate-outlier detection.")
     return {
         "insight_dax_plan": plan,
         "insight_generated_dax_queries": generated,
@@ -73,6 +86,7 @@ def run(state: dict) -> dict:
         "insight_skipped_dax_queries": [a for a in audit if a.get("status") == "skipped"],
         "insight_raw_results": raw,
         "baseline_coverage_clean_data": clean,
+        "insight_peer_coverage": peer_coverage,
         "insight_fatal": not validated,
         **log.updates(),
     }
