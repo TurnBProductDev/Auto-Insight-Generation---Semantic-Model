@@ -13,17 +13,50 @@ def _markdown(summary: dict) -> str:
     grain = str(summary.get("grain") or "snapshot").replace("_", " ")
     freshness = str(summary.get("freshness_status") or "unknown").replace("_", " ")
     lines.extend([f"*Data through {data_as_of} · {grain} grain · {freshness}*", ""])
-    metrics = summary.get("metrics") or []
-    if metrics:
-        lines.extend(["## Supporting metrics", ""])
-        for metric in metrics:
-            lines.append(f"- {metric.get('label')}: {metric.get('value')}")
-        lines.append("")
-    for section in summary.get("sections") or []:
-        lines.extend([f"## {section.get('heading')}", ""])
-        for point in section.get("points") or []:
-            lines.append(f"- {str(point).strip()}")
-        lines.append("")
+    blocks = summary.get("content_blocks")
+    if blocks is not None:
+        for block in blocks or []:
+            kind = str(block.get("kind") or "")
+            heading = str(block.get("heading") or "").strip()
+            if heading:
+                lines.extend([f"## {heading}", ""])
+            if kind == "paragraph" and block.get("text"):
+                lines.extend([str(block["text"]).strip(), ""])
+            elif kind == "bullets":
+                lines.extend(f"- {str(point).strip()}" for point in block.get("points") or [])
+                lines.append("")
+            elif kind == "chart" and isinstance(block.get("chart"), dict):
+                chart = block["chart"]
+                value_label = str(chart.get("value_label") or "Value")
+                labels = list(chart.get("labels") or [])
+                if chart.get("x_values") and chart.get("y_values"):
+                    for index, (label, x_value, y_value) in enumerate(zip(
+                        labels, chart.get("x_values") or [], chart.get("y_values") or []
+                    )):
+                        detail = f"{chart.get('x_label')}: {x_value}; {chart.get('y_label')}: {y_value}"
+                        sizes = chart.get("size_values") or []
+                        if index < len(sizes):
+                            detail += f"; {chart.get('size_label')}: {sizes[index]}"
+                        lines.append(f"- {label}: {detail}")
+                elif chart.get("series"):
+                    for index, label in enumerate(labels):
+                        details = [
+                            f"{series.get('name')}: {(series.get('values') or [])[index]}"
+                            for series in chart.get("series") or []
+                            if index < len(series.get("values") or [])
+                        ]
+                        lines.append(f"- {label}: {'; '.join(details)}")
+                else:
+                    for label, value in zip(labels, chart.get("values") or []):
+                        lines.append(f"- {label}: {value} {value_label}")
+                lines.append("")
+    else:
+        # Backward-compatible rendering for deterministic empty/legacy records.
+        for section in summary.get("sections") or []:
+            lines.extend([f"## {section.get('heading')}", ""])
+            for point in section.get("points") or []:
+                lines.append(f"- {str(point).strip()}")
+            lines.append("")
     return "\n".join(lines).rstrip() + "\n"
 
 
@@ -32,7 +65,10 @@ def run(state: dict) -> dict:
     summary = dict(state.get("fresh_summary") or {})
     by_id = {
         str(candidate.get("candidate_id")): candidate
-        for candidate in state.get("summary_candidates", []) or []
+        for candidate in (
+            list(state.get("summary_candidates", []) or [])
+            + list(state.get("summary_eligible_candidates", []) or [])
+        )
         if candidate.get("candidate_id")
     }
     selected = [
@@ -52,15 +88,19 @@ def run(state: dict) -> dict:
     file_io.write_text(state, "report_summary.md", markdown)
     file_io.write_text(state, "report_summary.html", summary_visual.render(summary, title=title))
     file_io.write_json(state, "fresh_summary.json", summary)
-    if summary.get("visual"):
-        file_io.write_json(state, "summary_visual.json", summary["visual"])
+    charts = [
+        block.get("chart")
+        for block in summary.get("content_blocks") or []
+        if block.get("kind") == "chart" and isinstance(block.get("chart"), dict)
+    ]
+    if charts:
+        file_io.write_json(state, "summary_visual.json", {"charts": charts})
 
     log.info(
-        "Fresh structured summary validated and rendered (%d metric tile(s), %d section(s)%s)."
+        "Fresh flexible summary validated and rendered (%d narrative block(s), %d interactive chart(s))."
         % (
-            len(summary.get("metrics") or []),
-            len(summary.get("sections") or []),
-            ", one supporting chart" if summary.get("visual") else "",
+            sum(1 for block in summary.get("content_blocks") or [] if block.get("kind") != "chart"),
+            len(charts),
         )
     )
     return {

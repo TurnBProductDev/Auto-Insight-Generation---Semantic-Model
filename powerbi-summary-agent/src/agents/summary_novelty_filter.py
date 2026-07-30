@@ -1,59 +1,149 @@
-"""Summary-only novelty gate. Insight memory is never read or written here."""
+"""Summary-only novelty gate. Insight memory is never read or written here.
+
+Two modes:
+
+* ``summary_focus_enabled`` (default) - deterministic two-stage focus selection
+  (``summary_focus.select_focus``). ``summary_key`` is used only to classify the
+  run as new_data / new_perspective, never for suppression, so it can never evict
+  the same-day pin.
+* legacy - the original ``summary_key`` rotation, preserved unchanged and
+  regression-tested, for a clean rollback of the focus feature.
+"""
 
 from __future__ import annotations
 
-import math
-from datetime import date
-
-from ..tools import file_io, summary_memory
+from ..tools import file_io, summary_focus, summary_memory
 from ..utils.logger import RunLogger
 
+# Relocated shared helpers now live in summary_focus; keep the legacy names
+# available so the legacy path below reads identically to before.
+_as_date = summary_focus._as_date
+_materially_changed = summary_focus._materially_changed
 
-def _as_date(value) -> date | None:
+
+def _memory_unavailable(state, log, candidates, memory_status, reason) -> dict:
+    novelty = {
+        "status": "memory_unavailable",
+        "memory_status": memory_status,
+        "detected": len(candidates),
+        "suppressed": 0,
+        "eligible": 0,
+        "reason": reason,
+    }
+    file_io.write_json(state, "summary_novelty.json", novelty)
+    log.error("Summary memory is unavailable; refusing to guess which perspectives are new.")
+    return {
+        "summary_eligible_candidates": [],
+        "summary_novelty": novelty,
+        "summary_selected_focus": {},
+        **log.updates(),
+    }
+
+
+def _run_focus(state: dict, candidates: list[dict], log: RunLogger) -> dict:
+    enabled = bool(state.get("summary_memory_enabled", True))
+    hydration = state.get("summary_memory_hydration", {}) or {}
+    if hydration.get("status") == "failed":
+        return _memory_unavailable(
+            state, log, candidates, "failed",
+            hydration.get("reason") or hydration.get("error") or "summary memory hydration failed",
+        )
+
+    if enabled:
+        store, status = summary_memory.load_store(state)
+        if status == "corrupt":
+            return _memory_unavailable(
+                state, log, candidates, "corrupt",
+                "summary memory is corrupt; refusing to overwrite it",
+            )
+    else:
+        store, status = summary_memory._empty_store(), "disabled"
+
     try:
-        return date.fromisoformat(str(value or "")[:10])
-    except ValueError:
-        return None
+        result = summary_focus.select_focus(state, candidates, store, status)
+    except ValueError as exc:  # unsupported timezone or other loud config error
+        novelty = {
+            "status": "config_error",
+            "memory_status": status,
+            "detected": len(candidates),
+            "eligible": 0,
+            "reason": str(exc),
+        }
+        file_io.write_json(state, "summary_novelty.json", novelty)
+        log.error(f"Focus selection rejected the configuration loudly: {exc}")
+        return {
+            "summary_eligible_candidates": [],
+            "summary_novelty": novelty,
+            "summary_selected_focus": {},
+            **log.updates(),
+        }
+
+    selected = result.get("selected")
+    audit = result.get("audit", {})
+    summary_type = result.get("summary_type", "no_new_perspective")
+    eligible = [selected] if selected else []
+    selected_focus = {}
+    if selected:
+        selected_focus = {
+            "focus_key": selected.get("focus_key"),
+            "candidate_id": selected.get("candidate_id"),
+            "dimension_role": selected.get("dimension_role"),
+            "segment": selected.get("segment"),
+            "metric_family": selected.get("metric_family"),
+            "lens": selected.get("lens"),
+            "direction": selected.get("direction"),
+            # Mutable tone (R2): reflects current direction, excluded from
+            # focus_key, so a reversal resurfaces the same focus with a flipped
+            # opportunity/risk framing.
+            "sentiment": result.get("sentiment"),
+            "observation_value": selected.get("observation_value"),
+            "materiality": selected.get("materiality", selected.get("observation_value")),
+            "fact_keys": [
+                fact.get("fact_id")
+                for fact in (selected.get("evidence") or {}).get("facts", []) or []
+            ],
+        }
+
+    novelty = {
+        "status": "ok",
+        "mode": "focus",
+        "memory_status": status,
+        "detected": len(candidates),
+        "eligible": len(eligible),
+        "summary_type": summary_type,
+        "selected_focus_key": selected_focus.get("focus_key"),
+        "selected_segment": selected_focus.get("segment"),
+        "selected_role": selected_focus.get("dimension_role"),
+        "selected_sentiment": selected_focus.get("sentiment"),
+        "reason": audit.get("reason"),
+        "audit": audit,
+    }
+    file_io.write_json(state, "summary_novelty.json", novelty)
+    log.info(
+        "Summary focus: detected=%d role=%s segment=%s type=%s reason=%s."
+        % (len(candidates), selected_focus.get("dimension_role"),
+           selected_focus.get("segment"), summary_type, audit.get("reason"))
+    )
+    return {
+        "summary_eligible_candidates": eligible,
+        "summary_novelty": novelty,
+        "summary_selected_focus": selected_focus,
+        # R3: hand the recent-delivery signatures to the deep-dive node so it can
+        # flag a signature that just repeats a recently delivered story.
+        "summary_recent_focus": store.get("recent_focus", []) or [],
+        **log.updates(),
+    }
 
 
-def _materially_changed(candidate: dict, stored: dict, threshold_pct: float) -> bool:
-    old_direction = str(stored.get("direction") or "")
-    new_direction = str(candidate.get("direction") or "")
-    if old_direction and new_direction and old_direction != new_direction:
-        return True
-    old = stored.get("observation_value")
-    new = candidate.get("observation_value")
-    if not all(
-        isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value)
-        for value in (old, new)
-    ):
-        return False
-    old, new = float(old), float(new)
-    if old == new:
-        return False
-    if old == 0:
-        return new != 0
-    return abs(new - old) / abs(old) * 100.0 >= max(0.0, float(threshold_pct))
-
-
-def run(state: dict) -> dict:
-    log = RunLogger(state)
-    candidates = list(state.get("summary_candidates", []) or [])
+def _run_legacy(state: dict, candidates: list[dict], log: RunLogger) -> dict:
     enabled = bool(state.get("summary_memory_enabled", True))
     hydration = state.get("summary_memory_hydration", {}) or {}
 
     if hydration.get("status") == "failed":
-        novelty = {
-            "status": "memory_unavailable",
-            "memory_status": "failed",
-            "detected": len(candidates),
-            "suppressed": 0,
-            "eligible": 0,
-            "reason": hydration.get("reason") or hydration.get("error") or "summary memory hydration failed",
-        }
-        file_io.write_json(state, "summary_novelty.json", novelty)
-        log.error("Summary memory is unavailable; refusing to guess which perspectives are new.")
-        return {"summary_eligible_candidates": [], "summary_novelty": novelty, **log.updates()}
+        return _memory_unavailable(
+            state, log, candidates, "failed",
+            hydration.get("reason") or hydration.get("error") or "summary memory hydration failed",
+        )
 
     if not enabled:
         limit = max(1, int(state.get("summary_candidates_max", 12)))
@@ -72,17 +162,10 @@ def run(state: dict) -> dict:
 
     store, status = summary_memory.load_store(state)
     if status == "corrupt":
-        novelty = {
-            "status": "memory_unavailable",
-            "memory_status": "corrupt",
-            "detected": len(candidates),
-            "suppressed": 0,
-            "eligible": 0,
-            "reason": "summary memory is corrupt; refusing to overwrite it",
-        }
-        file_io.write_json(state, "summary_novelty.json", novelty)
-        log.error("Summary memory is corrupt; novelty guarantee is unavailable and the store will not be overwritten.")
-        return {"summary_eligible_candidates": [], "summary_novelty": novelty, **log.updates()}
+        return _memory_unavailable(
+            state, log, candidates, "corrupt",
+            "summary memory is corrupt; refusing to overwrite it",
+        )
 
     policy = str(state.get("summary_memory_policy", "never_repeat") or "never_repeat")
     cooldown = int(state.get("summary_memory_cooldown_days", 14))
@@ -136,3 +219,11 @@ def run(state: dict) -> dict:
         % (len(candidates), novelty["suppressed"], len(eligible), len(resurfaced), summary_type)
     )
     return {"summary_eligible_candidates": eligible, "summary_novelty": novelty, **log.updates()}
+
+
+def run(state: dict) -> dict:
+    log = RunLogger(state)
+    candidates = list(state.get("summary_candidates", []) or [])
+    if state.get("summary_focus_enabled", True):
+        return _run_focus(state, candidates, log)
+    return _run_legacy(state, candidates, log)

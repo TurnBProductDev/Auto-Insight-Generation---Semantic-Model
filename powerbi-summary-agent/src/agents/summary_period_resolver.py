@@ -118,6 +118,12 @@ def _date_axes(state: dict) -> tuple[list[dict], list[date]]:
                 "column": key,
                 "grain": grain,
                 "periods": len(unique),
+                # Axis-level bounds let optional summary consumers validate a
+                # candidate day axis instead of trusting the global watermark,
+                # which may have come from a different date column.
+                "data_start": unique[0].isoformat(),
+                "data_as_of": unique[-1].isoformat(),
+                "span_days": (unique[-1] - unique[0]).days + 1,
                 "max_bucket_share": bucket_share,
                 "verdict": verdict,
             })

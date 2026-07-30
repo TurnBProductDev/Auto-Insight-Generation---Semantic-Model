@@ -393,10 +393,15 @@ None observed in this run.
     }
     draft = {
         "headline": "Revenue increased, a change of +551.6K",
-        "metrics": [{"fact_id": "F1", "label": "Revenue change"}],
-        "sections": [
-            {"heading": "What's working", "points": ["Revenue increased by +551.6K."]},
-            {"heading": "Recommended actions", "points": ["Review the revenue breakdown."]},
+        "blocks": [
+            {
+                "kind": "paragraph",
+                "heading": "Revenue performance",
+                "text": "Revenue increased by +551.6K.",
+                "points": [],
+                "chart_source_id": "",
+                "chart_type": "bar",
+            },
         ],
         "covered_candidate_ids": ["summary-fixture"],
     }

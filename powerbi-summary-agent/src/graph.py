@@ -9,8 +9,8 @@ START -> load_config -> read_metadata -> semantic_profile -> baseline_scope
     +-> plan_dax -> generate_dax -> validate_dax -> execute_dax
     |       -> normalize_results -> summary_period_resolver
     |       -> summary_candidate_builder -> summary_novelty_filter
-    |       -> fresh_summary_generator -> fresh_summary_validator
-    |       -> summary_branch_done -----------------------------------------+
+    |       -> summary_focus_evidence -> fresh_summary_generator
+    |       -> fresh_summary_validator -> summary_branch_done --------------+
     +-> insight_normalize -> insight_temporal -> insight_business_day_source
             -> insight_recent_week -> insight_daily -> insight_evidence_catalog
             -> insight_stat_detector -> insight_novelty_filter
@@ -52,6 +52,7 @@ from .agents import (
     summary_period_resolver,
     summary_candidate_builder,
     summary_novelty_filter,
+    summary_focus_evidence,
     fresh_summary_generator,
     fresh_summary_validator,
     insight_result_normalizer,
@@ -303,6 +304,7 @@ def build_graph():
     g.add_node("summary_period_resolver", summary_period_resolver.run)
     g.add_node("summary_candidate_builder", summary_candidate_builder.run)
     g.add_node("summary_novelty_filter", summary_novelty_filter.run)
+    g.add_node("summary_focus_evidence", summary_focus_evidence.run)
     g.add_node("fresh_summary_generator", fresh_summary_generator.run)
     g.add_node("fresh_summary_validator", fresh_summary_validator.run)
     g.add_node("summary_branch_done", summary_branch_done)
@@ -357,7 +359,8 @@ def build_graph():
     g.add_edge("generate_summary", "summary_branch_done")
     g.add_edge("summary_period_resolver", "summary_candidate_builder")
     g.add_edge("summary_candidate_builder", "summary_novelty_filter")
-    g.add_edge("summary_novelty_filter", "fresh_summary_generator")
+    g.add_edge("summary_novelty_filter", "summary_focus_evidence")
+    g.add_edge("summary_focus_evidence", "fresh_summary_generator")
     g.add_edge("fresh_summary_generator", "fresh_summary_validator")
     g.add_edge("fresh_summary_validator", "summary_branch_done")
 

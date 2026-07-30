@@ -18,27 +18,12 @@ _EMOJI = re.compile(
     "]+",
     flags=re.UNICODE,
 )
-_SECTION_TONES = {
-    "what's working": {"positive"},
-    "risks": {"warning", "critical"},
-    "recommended actions": {"info"},
-}
-_ACTION_VERBS = {
-    "assess",
-    "compare",
-    "confirm",
-    "investigate",
-    "monitor",
-    "prioritise",
-    "prioritize",
-    "review",
-    "segment",
-    "validate",
-}
+_REMOVED_TEMPLATE_HEADINGS = {"what's working", "risks", "recommended actions"}
 _TECHNICAL_MANAGER_PHRASES = {
     "accounted for",
     "associated with",
     "broader demand",
+    "comparable",
     "directional",
     "growth engine",
     "linked to",
@@ -59,7 +44,6 @@ _TECHNICAL_MANAGER_PHRASES = {
     "uplift",
     "z-score",
 }
-_MAX_SIMPLE_WORDS = 28
 _EMPTY_SECTION_PHRASES = {
     "no clear risk",
     "no material downside",
@@ -71,6 +55,49 @@ _EMPTY_SECTION_PHRASES = {
 
 def _finite(value: Any) -> bool:
     return isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value)
+
+
+def chart_data_is_sufficient(chart: dict | None) -> bool:
+    """Return whether a resolved/source chart can render at least two points.
+
+    Single-series, point, and matrix charts store their values differently.
+    Keeping this contract in one place prevents pre-resolution validation,
+    fallback resolution, and final validation from disagreeing—as happened
+    when valid grouped bars were mistaken for empty single-series charts.
+    """
+    if not isinstance(chart, dict):
+        return False
+    chart_type = str(chart.get("type") or chart.get("default_chart_type") or "").casefold()
+    labels = list(chart.get("labels") or [])
+    if len(labels) < 2:
+        return False
+
+    if chart_type in {"scatter", "bubble"}:
+        x_values = list(chart.get("x_values") or [])
+        y_values = list(chart.get("y_values") or [])
+        points = sum(
+            1 for x_value, y_value in zip(x_values, y_values)
+            if _finite(x_value) and _finite(y_value)
+        )
+        if points < 2:
+            return False
+        if chart_type == "bubble":
+            sizes = list(chart.get("size_values") or [])
+            if sum(1 for value in sizes[:min(len(x_values), len(y_values))] if _finite(value)) < 2:
+                return False
+        return True
+
+    if chart_type in {"heatmap", "grouped_bar"}:
+        series = [item for item in chart.get("series") or [] if isinstance(item, dict)]
+        if len(series) < 2:
+            return False
+        return all(
+            sum(1 for value in (item.get("values") or [])[:len(labels)] if _finite(value)) >= 2
+            for item in series
+        )
+
+    values = list(chart.get("values") or [])
+    return sum(1 for value in values[:len(labels)] if _finite(value)) >= 2
 
 
 def _walk_numbers(value: Any, name: str = ""):
@@ -157,130 +184,245 @@ def _facts(selected: list[dict]) -> dict[str, dict]:
     return facts
 
 
-def _clean_sections(draft: dict) -> list[dict]:
-    return [item for item in draft.get("sections", []) or [] if isinstance(item, dict)]
+def _clean_blocks(draft: dict) -> list[dict]:
+    raw = draft.get("blocks")
+    if raw is None:
+        raw = draft.get("content_blocks")
+    if raw is not None:
+        return [item for item in raw or [] if isinstance(item, dict)]
+    # Legacy deterministic empty summaries still expose sections. Treat them as
+    # bullet blocks so the validator remains backward compatible.
+    return [
+        {
+            "kind": "bullets",
+            "heading": item.get("heading"),
+            "points": item.get("points") or [],
+            "text": "",
+        }
+        for item in draft.get("sections", []) or []
+        if isinstance(item, dict)
+    ]
 
 
-def validate_draft(draft: dict, selected: list[dict]) -> list[str]:
-    """Validate either an LLM draft or the materialized internal summary.
+def _block_text(block: dict) -> list[str]:
+    if str(block.get("kind") or "").casefold() == "paragraph":
+        return [str(block.get("text") or "").strip()]
+    if str(block.get("kind") or "").casefold() == "bullets":
+        return [str(point).strip() for point in block.get("points", []) or [] if str(point).strip()]
+    return []
 
-    LLM metric entries carry ``fact_id`` and no values/tones. The final internal
-    summary carries code-injected ``value``/``tone`` fields. Both shapes are
-    checked here so the final renderer cannot accidentally weaken the authoring
-    contract.
+
+def _first_point(blocks: list[dict]) -> str:
+    for block in blocks:
+        for text in _block_text(block):
+            if text:
+                return text
+    return ""
+
+
+_UNSUPPORTED_CAUSAL = re.compile(
+    r"\b(?:because(?: of)?|caused by|due to|resulted from|as a result of|responsible for)\b",
+    re.IGNORECASE,
+)
+_PARTIAL_AS_COMPLETE = re.compile(
+    r"\b(?:all contributors|entire breakdown|complete breakdown|full picture|fully explains?|"
+    r"every contributor|the total contribution)\b",
+    re.IGNORECASE,
+)
+
+
+def _fact_used(fact: dict, draft: dict, all_text: str) -> bool:
+    subject = str(fact.get("subject") or "").strip().casefold()
+    display = str(fact.get("display_value") or "").strip().casefold()
+    return bool(subject and display and subject in all_text and display in all_text)
+
+
+def focus_rules(draft: dict, selected: list[dict]) -> list[str]:
+    """Deterministic guards for the member-focus deep dive.
+
+    These are enforced in addition to the shared checks whenever the primary
+    selected perspective is a member focus (non-empty ``segment``). They are
+    written to be satisfiable by the inherently-focused deterministic fallback,
+    so strict validation can never dead-end the run. Broad foci (overall/period)
+    and the legacy path carry no ``segment`` and skip these entirely.
     """
-    errors = []
+    errors: list[str] = []
+    primary = selected[0] if selected else {}
+    segment = str(primary.get("segment") or "").strip()
+    if not segment:
+        return errors
+
+    facts = _facts(selected)
+    headline = str(draft.get("headline") or draft.get("heading") or "")
+    blocks = _clean_blocks(draft)
+    first_point = _first_point(blocks)
+    text_pieces = [headline, first_point] + [text for block in blocks for text in _block_text(block)]
+    all_text = " ".join(text_pieces).casefold()
+    segment_cf = segment.casefold()
+
+    if segment_cf not in headline.casefold() and segment_cf not in first_point.casefold():
+        errors.append(f"focus segment {segment!r} must appear in the headline or first point")
+
+    driver_facts = [fact for fact in facts.values() if fact.get("detail_role") == "driver"]
+    contributor_facts = [fact for fact in facts.values() if fact.get("detail_role") == "contributor"]
+    if driver_facts and not any(_fact_used(fact, draft, all_text) for fact in driver_facts):
+        errors.append("the available driver fact must be represented in the summary narrative")
+    if contributor_facts and not any(_fact_used(fact, draft, all_text) for fact in contributor_facts):
+        errors.append("an available contributor fact must be represented in the summary")
+
+    peer_subjects = {
+        str(fact.get("subject") or "").strip()
+        for fact in facts.values()
+        if str(fact.get("subject_role")) == "peer"
+    }
+    headline_cf = headline.casefold()
+    # Do not mistake a shorter peer name for a second subject when it appears
+    # only inside the exact selected focus name. Example: the peer
+    # "FRESH CHICKEN" is nested inside "CF-FRESH CHICKEN & PARTS". Remove
+    # the valid focus mention(s), then look for genuine peer mentions in what
+    # remains; a peer repeated elsewhere in the headline is still rejected.
+    headline_without_focus = re.sub(
+        rf"(?<!\w){re.escape(segment_cf)}(?!\w)",
+        " ",
+        headline_cf,
+    )
+    for subject in peer_subjects:
+        subject_cf = subject.casefold()
+        if len(subject) > 2 and subject_cf != segment_cf and re.search(
+            rf"(?<!\w){re.escape(subject_cf)}(?!\w)", headline_without_focus
+        ):
+            errors.append(f"headline names another member {subject!r}; keep the headline on the focus")
+            break
+
+    coverage = str(primary.get("coverage") or "")
+    partial_detail = any(
+        str(fact.get("coverage") or "") not in {"", "complete"}
+        for fact in contributor_facts
+    )
+    if (coverage and coverage != "complete") or partial_detail:
+        if "%" in all_text and re.search(r"\bof (?:the )?total\b", all_text):
+            errors.append("partial evidence must not be described as a share of the total")
+        if _PARTIAL_AS_COMPLETE.search(all_text):
+            errors.append("partial evidence must not be described as a complete breakdown")
+
+    excluded = {
+        str(item).casefold()
+        for item in ((primary.get("evidence") or {}).get("scope") or {}).get("excluded_entities", []) or []
+        if str(item).strip()
+    }
+    for piece in text_pieces:
+        piece_cf = piece.casefold()
+        if "comparable" in piece_cf and any(member in piece_cf for member in excluded):
+            errors.append("an excluded/current-only entity must not be described as comparable")
+            break
+
+    if _UNSUPPORTED_CAUSAL.search(all_text):
+        errors.append("unsupported causal language is not permitted; describe measured contribution only")
+
+    if "pure price" in all_text:
+        errors.append("rate or mix effects must never be described as pure price")
+
+    return errors
+
+
+def validate_draft(
+    draft: dict,
+    selected: list[dict],
+    *,
+    chart_sources: list[dict] | None = None,
+) -> list[str]:
+    """Validate flexible narrative/chart blocks without imposing a page template."""
+    errors: list[str] = []
     headline = str(draft.get("headline") or draft.get("heading") or "").strip()
     if not headline:
         errors.append("headline is empty")
     elif selected and _facts(selected) and not parse_numbers(headline):
-        errors.append(
-            "headline must include the exact display value for its main result"
-        )
-    if len(re.findall(r"\b\w+[\w'-]*\b", headline)) > _MAX_SIMPLE_WORDS:
-        errors.append(
-            f"headline must use {_MAX_SIMPLE_WORDS} words or fewer"
-        )
+        errors.append("headline must include the exact display value for its main result")
 
-    sections = _clean_sections(draft)
-    headings: list[str] = []
+    if draft.get("metrics"):
+        errors.append("KPI metric cards are not part of the flexible summary layout")
+
+    blocks = _clean_blocks(draft)
     text_parts = [headline]
-    for section in sections:
-        heading = str(section.get("heading") or "").strip()
-        normalized = heading.casefold()
-        headings.append(normalized)
-        points = [
-            str(item or "").strip()
-            for item in section.get("points", []) or []
-            if str(item or "").strip()
-        ]
-        if not heading:
-            errors.append("a section heading is empty")
-        if not points:
-            errors.append(f"section {heading!r} has no points")
-        if len(points) > 3:
-            errors.append(f"section {heading!r} has more than 3 points")
-        for point in points:
-            lowered_point = point.casefold()
-            if any(phrase in lowered_point for phrase in _EMPTY_SECTION_PHRASES):
-                errors.append(
-                    f"section {heading!r} uses an empty placeholder; omit the unsupported section"
-                )
-            word_count = len(re.findall(r"\b\w+[\w'-]*\b", point))
-            if word_count > _MAX_SIMPLE_WORDS:
-                errors.append(
-                    f"section point must use {_MAX_SIMPLE_WORDS} words or fewer; "
-                    f"got {word_count} in {point!r}"
-                )
-        tone = str(section.get("tone") or "").strip().casefold()
-        if tone and normalized in _SECTION_TONES and tone not in _SECTION_TONES[normalized]:
-            errors.append(f"section {heading!r} has incompatible tone {tone!r}")
-        if normalized == "recommended actions":
-            for point in points:
-                first = re.sub(r"[^A-Za-z].*$", "", point).casefold()
-                if first not in _ACTION_VERBS:
+    narrative_count = 0
+    used_sources: set[str] = set()
+    source_map = {
+        str(source.get("source_id")): source
+        for source in chart_sources or []
+        if source.get("source_id")
+    }
+    for index, block in enumerate(blocks, start=1):
+        kind = str(block.get("kind") or "").strip().casefold()
+        heading = str(block.get("heading") or "").strip()
+        if heading.casefold() in _REMOVED_TEMPLATE_HEADINGS:
+            errors.append(f"fixed template heading {heading!r} is not permitted")
+        if heading:
+            text_parts.append(heading)
+
+        if kind == "paragraph":
+            text = str(block.get("text") or "").strip()
+            if not text:
+                errors.append(f"paragraph block {index} is empty")
+            else:
+                narrative_count += 1
+                text_parts.append(text)
+        elif kind == "bullets":
+            points = [str(item).strip() for item in block.get("points", []) or [] if str(item).strip()]
+            if not points:
+                errors.append(f"bullet block {index} has no points")
+            else:
+                narrative_count += 1
+                for point in points:
+                    if any(phrase in point.casefold() for phrase in _EMPTY_SECTION_PHRASES):
+                        errors.append(
+                            f"bullet block {index} uses an empty placeholder; omit unsupported content"
+                        )
+                    text_parts.append(point)
+        elif kind == "chart":
+            source_id = str(block.get("chart_source_id") or "").strip()
+            chart_type = str(block.get("chart_type") or "").strip().casefold()
+            resolved = block.get("chart") if isinstance(block.get("chart"), dict) else None
+            if chart_sources is not None:
+                source = source_map.get(source_id)
+                if not source:
+                    errors.append(f"chart block {index} uses unknown source id {source_id!r}")
+                elif chart_type not in source.get("allowed_chart_types", []):
                     errors.append(
-                        "recommended actions must start with a safe follow-up verb "
-                        f"({', '.join(sorted(_ACTION_VERBS))}); got {point!r}"
+                        f"chart type {chart_type!r} is not allowed for source {source_id!r}"
                     )
-        text_parts.extend([heading, *points])
+                elif not chart_data_is_sufficient({**source, "type": chart_type}):
+                    errors.append(f"chart block {index} has insufficient source data")
+                if source_id in used_sources:
+                    errors.append(f"chart source {source_id!r} is repeated")
+                used_sources.add(source_id)
+            elif not resolved:
+                errors.append(f"resolved chart block {index} has no chart data")
+            elif not chart_data_is_sufficient(resolved):
+                errors.append(f"resolved chart block {index} has insufficient chart data")
+        else:
+            errors.append(f"block {index} has unsupported kind {kind!r}")
 
-    if selected:
-        expected = list(_SECTION_TONES)
-        supported_order = [heading for heading in expected if heading in headings]
-        if headings != supported_order:
-            errors.append(
-                "sections may contain What's working, Risks, and Recommended actions at most once "
-                "and only in that order"
-            )
-    elif not sections:
+    if selected and narrative_count == 0:
+        errors.append("summary must contain at least one evidence-backed paragraph or bullet group")
+    elif not selected and not blocks:
         errors.append("summary content is empty")
-
-    metrics = [item for item in draft.get("metrics", []) or [] if isinstance(item, dict)]
-    known_facts = _facts(selected)
-    target_metrics = min(4, len(known_facts))
-    if selected and len(metrics) != target_metrics:
-        errors.append(
-            f"metrics must contain exactly {target_metrics} supported tile(s) for this perspective"
-        )
-    seen_fact_ids: set[str] = set()
-    seen_labels: set[str] = set()
-    for metric in metrics:
-        label = str(metric.get("label") or "").strip()
-        fact_id = str(metric.get("fact_id") or "").strip()
-        value = str(metric.get("value") or "").strip()
-        if not label:
-            errors.append("a metric label is empty")
-        elif label.casefold() in seen_labels:
-            errors.append(f"duplicate metric label: {label!r}")
-        seen_labels.add(label.casefold())
-        if fact_id:
-            if fact_id not in known_facts:
-                errors.append(f"unknown metric fact id: {fact_id!r}")
-            if fact_id in seen_fact_ids:
-                errors.append(f"duplicate metric fact id: {fact_id!r}")
-            seen_fact_ids.add(fact_id)
-        elif selected and not value:
-            errors.append(f"metric {label!r} has neither a fact id nor a materialized value")
-        text_parts.extend([label, value])
 
     formatted = [part for part in text_parts if part]
     if headline.startswith("#") or any(part.startswith(("#", "- ", "* ")) for part in formatted):
-        errors.append("Markdown formatting is not permitted in the structured summary text")
+        errors.append("Markdown formatting is not permitted in structured summary text")
     manager_text = "\n".join(formatted).casefold()
-    found_technical = sorted(
-        phrase for phrase in _TECHNICAL_MANAGER_PHRASES if phrase in manager_text
-    )
+    found_technical = sorted(phrase for phrase in _TECHNICAL_MANAGER_PHRASES if phrase in manager_text)
     if found_technical:
-        errors.append(
-            "manager-facing summary uses analyst shorthand: "
-            + ", ".join(found_technical)
-        )
+        errors.append("manager-facing summary uses analyst shorthand: " + ", ".join(found_technical))
+    if re.search(
+        r"\bmonths?\s+(?:0?[1-9]|1[0-2])(?:\s*(?:-|–|—|to|through)\s*(?:0?[1-9]|1[0-2]))?\b",
+        manager_text,
+    ):
+        errors.append("use calendar month names instead of month numbers")
     bills_outside_intro = manager_text.replace("transactions (bills)", "transactions")
     if re.search(r"\bbills?\b", bills_outside_intro):
-        errors.append(
-            "use transactions consistently; bills may appear only once as transactions (bills)"
-        )
+        errors.append("use transactions consistently; bills may appear only once as transactions (bills)")
+
     selected_ids = {str(candidate.get("candidate_id")) for candidate in selected}
     covered = [str(item) for item in draft.get("covered_candidate_ids", []) or []]
     unknown = [item for item in covered if item not in selected_ids]
@@ -288,5 +430,7 @@ def validate_draft(draft: dict, selected: list[dict]) -> list[str]:
         errors.append(f"unknown covered candidate ids: {unknown}")
     if selected and str(selected[0].get("candidate_id")) not in covered:
         errors.append("the primary selected perspective was not marked covered")
+
     errors.extend(validate_text("\n".join(formatted), selected))
+    errors.extend(focus_rules(draft, selected))
     return errors

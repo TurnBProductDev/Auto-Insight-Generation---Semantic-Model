@@ -18,7 +18,6 @@ class SummaryAgentState(TypedDict, total=False):
     output_folder: str
     summary_word_limit: int
     fresh_summary_enabled: bool
-    fresh_summary_max_words: int
     summary_visual_enabled: bool
     summary_candidates_max: int
     summary_temporal_batch_share: float
@@ -30,6 +29,38 @@ class SummaryAgentState(TypedDict, total=False):
     summary_memory_cooldown_days: int
     summary_resurface_change_pct: float
     summary_history_enabled: bool
+    summary_now_override: str                 # optional ISO 'today' for deterministic offline tests
+
+    # --- daily focus + deep dive (summary R1) ---
+    summary_focus_enabled: bool
+    summary_focus_timezone: str
+    summary_focus_policy: str
+    summary_focus_cooldown_days: int
+    summary_focus_same_dimension_gap_days: int
+    summary_focus_members_per_dimension: int
+    summary_focus_material_change_pct: float
+    summary_focus_deep_dive_enabled: bool
+    summary_focus_max_queries: int
+    summary_focus_max_child_dimensions: int
+    summary_focus_max_rows_per_breakdown: int
+    summary_focus_reconciliation_tolerance_pct: float
+    summary_focus_include_driver_bridge: bool
+    summary_focus_include_trend: bool
+    summary_focus_daily_trend_enabled: bool
+    summary_focus_daily_trend_min_days: int
+    summary_focus_hierarchy_overrides: Dict[str, Any]
+    # --- R2 editorial rhythm ---
+    summary_focus_schedule: Dict[str, Any]        # weekday -> role(s) soft prior
+    summary_focus_schedule_weight: float
+    summary_focus_override_change_pct: float      # override lane: magnitude threshold
+    summary_focus_override_min_impact_share_pct: float  # override lane: materiality threshold
+    # --- R3 advanced novelty ---
+    summary_focus_fact_overlap_threshold: float   # suppress a focus that repeats a recent story
+    summary_focus_overlap_window_days: int        # recency window for overlap suppression
+    summary_focus_public_metadata: bool           # expose dailyFocus in the API payload
+    summary_recent_focus: List[Dict[str, Any]]    # novelty_filter -> deep dive signature compare
+    summary_selected_focus: Dict[str, Any]    # novelty_filter -> deep dive + commit
+    summary_focus_evidence: Dict[str, Any]    # deep-dive node artifact
     max_rows_per_query: int
     ai_provider: str
     model: str
@@ -47,7 +78,6 @@ class SummaryAgentState(TypedDict, total=False):
     insight_probe_max_rows: int
     insight_materiality_pct: float
     insight_max_dq_signals: int
-    insight_tiles_enabled: bool
     insight_stat_z_cutoff: float
     insight_stat_concentration_pct: float
     insight_stat_recon_tolerance_pct: float

@@ -220,7 +220,6 @@ is not read.
 | `insight_max_scan_queries` | Shared metadata coverage-query cap |
 | `insight_metadata_max_dimensions` | Number of high-value metadata dimensions selected for broad coverage |
 | `insight_max_signals`, `insight_max_dq_signals` | Signal caps |
-| `insight_tiles_enabled` | Optional deterministic `insight_tiles.html` board; disabled by default |
 | `insight_history_enabled`, `insight_history_timezone` | Write one dated, presentation-ready history JSON per completed insight report |
 | `azure_blob_history_prefix` | Blob prefix for immutable history entries (default `history`) |
 | `azure_blob_history_feed` | Single API-facing history document (default `insight_history.json`) |

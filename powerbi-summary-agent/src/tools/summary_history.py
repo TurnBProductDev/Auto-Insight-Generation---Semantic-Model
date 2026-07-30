@@ -12,7 +12,7 @@ from zoneinfo import ZoneInfo
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 DEFAULT_TIMEZONE = "Asia/Kolkata"
 _SAFE = re.compile(r"[^A-Za-z0-9_.-]+")
 
@@ -79,6 +79,9 @@ def build_entry(
         "metrics": list(summary.get("metrics") or []),
         "sections": list(summary.get("sections") or []),
         "visual": summary.get("visual"),
+        # Internal history only.  The public report-summary payload deliberately
+        # remains unchanged until the coordinated R3 API/UI release.
+        "focus": summary.get("focus"),
     }
 
 
@@ -123,6 +126,7 @@ def build_history_response(entries: list[dict]) -> dict:
             "metrics": entry.get("metrics") or [],
             "sections": entry.get("sections") or [],
             "visual": entry.get("visual"),
+            "focus": entry.get("focus"),
         })
     timezone_name = (
         str(valid[0].get("date", {}).get("timezone") or DEFAULT_TIMEZONE)
@@ -149,7 +153,7 @@ def _entries_from_response(response: dict | None) -> list[dict]:
                 "runAt": f"{iso_day}T{raw_time}",
                 **{key: run.get(key) for key in (
                     "status", "summaryType", "dataAsOf", "grain", "freshnessStatus",
-                    "headline", "paragraphs", "metrics", "sections", "visual"
+                    "headline", "paragraphs", "metrics", "sections", "visual", "focus"
                 )},
             })
     return entries

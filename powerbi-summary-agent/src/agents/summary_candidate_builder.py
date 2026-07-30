@@ -330,13 +330,13 @@ def _scope_rows(
         scope.update({
             "population_status": "resolved_comparable_population",
             "note": (
-                f"Comparison is limited to {len(active)} active comparable {entity_label}; "
+                f"Comparison includes {len(active)} active {entity_label} with both current and prior activity; "
                 "current-only and prior-only entities are excluded."
             ),
         })
         return filtered, scope
     if "comparable" in population_status.casefold() or "comparable" in str(query.get("purpose") or "").casefold():
-        scope["note"] = "The evidence is already filtered to the resolved comparable population."
+        scope["note"] = "The evidence is already filtered to the entities included in this comparison."
     return rows, scope
 
 
@@ -487,7 +487,13 @@ def _metrics(rows: list[dict], numeric: list[str], angle: str) -> list[dict]:
     ]
 
 
-def _visual(rows: list[dict], labels: list[str], metric: str | None, angle: str) -> dict | None:
+def _visual(
+    rows: list[dict],
+    labels: list[str],
+    metric: str | None,
+    angle: str,
+    highlight_label: Any = None,
+) -> dict | None:
     if angle == "overall_performance" and rows and metric:
         family = _family(metric)
         compatible = [key for key in rows[0] if _family(key) == family and _number(rows[0].get(key))]
@@ -522,19 +528,233 @@ def _visual(rows: list[dict], labels: list[str], metric: str | None, angle: str)
         points = sorted(points, key=lambda item: abs(item[1]), reverse=True)[:8]
     else:
         points = points[:12]
-    return {
+    visual = {
         "type": chart_type,
         "title": f"{_clean_label(metric)} by {_clean_label(label_col).lower()}",
         "labels": [label for label, _ in points],
         "values": [value for _, value in points],
         "value_label": _clean_label(metric),
     }
+    if highlight_label is not None:
+        target = str(highlight_label)
+        for index, (label, _value) in enumerate(points):
+            if label == target:
+                visual["highlight"] = index
+                break
+    return visual
+
+
+# Breakdown angles whose returned rows can be re-sliced into per-member focus
+# candidates (a member-bearing dimension with a label column and >=2 rows).
+_MEMBER_ANGLES = {
+    "store_overview",
+    "division_overview",
+    "category_overview",
+    "product_overview",
+    "business_breakdown",
+    "largest_declines",
+}
+
+
+def _finalize(candidate: dict, dataset: str, anchor: str) -> dict:
+    """Stamp the two stable identities and a candidate id onto a candidate."""
+    key, _ = summary_memory.story_components(candidate, dataset, anchor)
+    focus_key, _ = summary_memory.focus_components(candidate, dataset)
+    candidate["summary_key"] = key
+    candidate["focus_key"] = focus_key
+    candidate["candidate_id"] = f"summary_{key.rsplit(':', 1)[-1][:12]}"
+    return candidate
+
+
+def _member_materiality(row: dict, numeric: list[str], metric: str | None) -> float:
+    """Signed change vs prior for the leading comparison family (never a sum)."""
+    families: dict[str, dict[str, str]] = {}
+    for name in numeric:
+        phase = _metric_phase(name)
+        family = _family(name)
+        if phase and family != "performance" and _number(row.get(name)):
+            families.setdefault(family, {}).setdefault(phase, name)
+    for family in ("revenue", "profit", "quantity", "transactions", "rate"):
+        phases = families.get(family, {})
+        change_name = phases.get("change")
+        if change_name and _number(row.get(change_name)):
+            return float(row[change_name])
+        current_name, prior_name = phases.get("current"), phases.get("prior")
+        if current_name and prior_name and _number(row.get(current_name)) and _number(row.get(prior_name)):
+            return float(row[current_name]) - float(row[prior_name])
+    return float(row[metric]) if metric and _number(row.get(metric)) else 0.0
+
+
+def _change_pct(rows: list[dict], numeric: list[str]) -> float | None:
+    """Aggregate percent change vs prior for the leading comparison family.
+
+    Summed over ``rows`` so it works for a single member row and for a
+    multi-row grand total alike; ``None`` when no reconcilable prior exists.
+    This is the magnitude signal the R2 override lane reads.
+    """
+    families: dict[str, dict[str, str]] = {}
+    for name in numeric:
+        phase = _metric_phase(name)
+        family = _family(name)
+        if phase and family != "performance":
+            families.setdefault(family, {}).setdefault(phase, name)
+    for family in ("revenue", "profit", "quantity", "transactions", "rate"):
+        phases = families.get(family, {})
+        current_name, prior_name, change_name = phases.get("current"), phases.get("prior"), phases.get("change")
+        if not current_name:
+            continue
+        current = sum(float(row[current_name]) for row in rows if _number(row.get(current_name)))
+        prior = None
+        if prior_name:
+            prior = sum(float(row[prior_name]) for row in rows if _number(row.get(prior_name)))
+        elif change_name:
+            change = sum(float(row[change_name]) for row in rows if _number(row.get(change_name)))
+            prior = current - change
+        if prior is not None and abs(prior) > 1e-9:
+            return (current - prior) / abs(prior) * 100.0
+    return None
+
+
+def _dimension_role(angle: str, dimension: str, state: dict) -> str:
+    role = summary_memory._role_from_angle(angle, dimension)
+    entity = ((state.get("semantic_model_profile") or {}).get("entity_dimension") or {}).get("column")
+    if entity and str(dimension).casefold() == str(entity).casefold():
+        return "store"
+    return role
+
+
+def _resolve_ref(state: dict, column_name: Any) -> str | None:
+    """Resolve a bare column name to a fully-qualified 'Table'[Column] reference."""
+    if not column_name:
+        return None
+    target = str(column_name).casefold()
+    profile = state.get("semantic_model_profile") or {}
+    pools = [profile.get("dimensions") or [], profile.get("time_dimensions") or []]
+    entity = profile.get("entity_dimension")
+    if entity:
+        pools.append([entity])
+    for pool in pools:
+        for dim in pool:
+            if str(dim.get("column") or "").casefold() == target and dim.get("reference"):
+                return dim["reference"]
+    for col in (state.get("model_metadata") or {}).get("columns", []) or []:
+        if str(col.get("column") or "").casefold() == target:
+            table = str(col.get("table") or "")
+            return "'" + table.replace("'", "''") + f"'[{col.get('column')}]"
+    return None
+
+
+def _member_coverage(segment: str, dimension: str, numeric: list[str], state: dict) -> str:
+    """Member candidates reuse returned rows: partial, or invalid if excluded."""
+    resolved = state.get("resolved_entity_scope") or {}
+    entity = ((state.get("semantic_model_profile") or {}).get("entity_dimension") or {}).get("column")
+    if entity and str(dimension).casefold() == str(entity).casefold():
+        excluded = {str(item).casefold() for item in resolved.get("excluded_from_comparison", []) or []}
+        active = {str(item).casefold() for item in resolved.get("active_comparable_population", []) or []}
+        if any(_is_comparison_metric(name) for name in numeric):
+            if str(segment).casefold() in excluded:
+                return "invalid"
+            if active and str(segment).casefold() not in active:
+                return "invalid"
+    return "partial"
+
+
+def _tag_facts(facts: list[dict], focus_subject: str | None, coverage: str) -> list[dict]:
+    """Tag facts with subject_role/coverage.
+
+    ``focus_subject=None`` marks every non-scope fact as ``focus`` (used for
+    broad candidates that describe a whole returned set rather than one member).
+    """
+    for fact in facts:
+        subject = str(fact.get("subject") or "")
+        if subject == "Scope":
+            fact["subject_role"] = "scope"
+            fact["coverage"] = None
+        elif focus_subject is None or subject == focus_subject:
+            fact["subject_role"] = "focus"
+            fact["coverage"] = coverage
+        else:
+            fact["subject_role"] = "peer"
+            fact["coverage"] = "partial"
+    return facts
+
+
+def _member_candidate(
+    state: dict,
+    query: dict,
+    angle: str,
+    dimension: str,
+    dimension_role: str,
+    all_rows: list[dict],
+    labels: list[str],
+    numeric: list[str],
+    metric: str | None,
+    metric_family: str,
+    comparison: str,
+    scope: dict,
+    focus_row: dict,
+    peer_rows: list[dict],
+    label_col: str,
+    anchor: str,
+    dataset: str,
+) -> dict:
+    segment_raw = focus_row.get(label_col)
+    segment = _subject_label(segment_raw, label_col)
+    coverage = _member_coverage(str(segment_raw or ""), dimension, numeric, state)
+    materiality = _member_materiality(focus_row, numeric, metric)
+    ordered = [focus_row, *peer_rows[:2]]
+    facts = _tag_facts(
+        _fact_sheet(ordered, labels, numeric, metric, scope, comparison),
+        segment,
+        coverage,
+    )
+    role_label = _clean_label(dimension).lower() or dimension_role
+    candidate = {
+        "candidate_id": "",
+        "summary_key": "",
+        "focus_key": "",
+        "angle": angle,
+        "candidate_kind": "member",
+        "dimension_role": dimension_role,
+        "lens": summary_memory._lens_from_angle(angle),
+        "coverage": coverage,
+        "title_hint": f"How {segment} performed",
+        "purpose": f"Focus on {segment} within the {role_label} breakdown",
+        "query_name": query.get("query_name"),
+        "dimension": dimension,
+        "dimension_ref": _resolve_ref(state, label_col) or _resolve_ref(state, dimension),
+        "member_value": segment_raw,
+        "segment": segment,
+        "metric": metric,
+        "metric_family": metric_family,
+        "direction": "increase" if materiality > 0 else "decrease" if materiality < 0 else "flat",
+        "observation_value": materiality,
+        "materiality": materiality,
+        "change_pct": _change_pct([focus_row], numeric),
+        "score": 40.0 + min(9.0, math.log10(abs(materiality) + 1.0)),
+        "period_anchor": anchor,
+        "evidence": {
+            "rows": _trim_rows(ordered, labels, numeric, metric),
+            "coverage": coverage,
+            "scope": scope,
+            "facts": facts,
+        },
+        "metadata_context": {
+            **_metadata_context(state, dimension, metric, scope),
+            "segment": segment,
+        },
+        "metrics": [],
+        "visual": _visual(all_rows, labels, metric, angle, highlight_label=segment_raw),
+    }
+    return _finalize(candidate, dataset, anchor)
 
 
 def build_candidates(state: dict) -> list[dict]:
     period = state.get("summary_period_context") or {}
     anchor = str(period.get("period_anchor") or "snapshot")
     dataset = str(state.get("dataset_id") or "unknown_dataset")
+    focus_enabled = bool(state.get("summary_focus_enabled", True))
+    members_cap = max(0, int(state.get("summary_focus_members_per_dimension", 10)))
     candidates = []
     gated_queries = {
         check.get("query")
@@ -556,6 +776,7 @@ def build_candidates(state: dict) -> list[dict]:
         angle = _angle(query, rows, dimension, numeric)
         metric = _primary_metric(numeric)
         metric_family = _family(metric or "")
+        dimension_role = _dimension_role(angle, dimension, state)
         comparison = _comparison_label(
             state.get("semantic_model_profile") or {}, numeric
         )
@@ -576,11 +797,17 @@ def build_candidates(state: dict) -> list[dict]:
         candidate = {
             "candidate_id": "",
             "summary_key": "",
+            "focus_key": "",
             "angle": angle,
+            "candidate_kind": "broad",
+            "dimension_role": dimension_role,
+            "lens": summary_memory._lens_from_angle(angle),
+            "coverage": "complete" if angle == "overall_performance" else "partial",
             "title_hint": _title(angle, dimension),
             "purpose": query.get("purpose") or _title(angle, dimension),
             "query_name": query.get("query_name"),
             "dimension": dimension,
+            "dimension_ref": _resolve_ref(state, labels[0] if labels else dimension),
             "segment": "",
             "metric": metric,
             "metric_family": metric_family,
@@ -588,24 +815,50 @@ def build_candidates(state: dict) -> list[dict]:
             # Mutable observation for summary-only resurface checks. It is not
             # part of the stable summary_key canon.
             "observation_value": movement,
+            "change_pct": _change_pct(rows, numeric),
             "score": base_score + min(9.0, math.log10(abs(movement) + 1.0)),
             "period_anchor": anchor,
             "evidence": {
                 "rows": evidence_rows,
                 "coverage": "returned_rows",
                 "scope": scope,
-                "facts": _fact_sheet(
-                    rows, labels, numeric, metric, scope, comparison
+                "facts": _tag_facts(
+                    _fact_sheet(rows, labels, numeric, metric, scope, comparison),
+                    focus_subject=None,  # broad candidates describe the whole set
+                    coverage="complete" if angle == "overall_performance" else "partial",
                 ),
             },
             "metadata_context": _metadata_context(state, dimension, metric, scope),
             "metrics": _metrics(rows, numeric, angle),
             "visual": _visual(rows, labels, metric, angle),
         }
-        key, _ = summary_memory.story_components(candidate, dataset, anchor)
-        candidate["summary_key"] = key
-        candidate["candidate_id"] = f"summary_{key.rsplit(':', 1)[-1][:12]}"
-        candidates.append(candidate)
+        candidates.append(_finalize(candidate, dataset, anchor))
+
+        # Member-level focus candidates: re-slice the already-returned rows into
+        # one focus candidate per leading member. No new DAX is issued here; the
+        # deep-dive node builds reconciled evidence only for the selected focus.
+        label_col = labels[0] if labels else None
+        if (
+            focus_enabled
+            and members_cap
+            and angle in _MEMBER_ANGLES
+            and label_col
+            and len(rows) >= 2
+        ):
+            ranked = sorted(
+                (row for row in rows if row.get(label_col) not in (None, "")),
+                key=lambda row: abs(_member_materiality(row, numeric, metric)),
+                reverse=True,
+            )
+            for index, focus_row in enumerate(ranked[:members_cap]):
+                peers = [row for j, row in enumerate(ranked) if j != index][:2]
+                candidates.append(
+                    _member_candidate(
+                        state, query, angle, dimension, dimension_role, rows, labels,
+                        numeric, metric, metric_family, comparison, scope, focus_row,
+                        peers, label_col, anchor, dataset,
+                    )
+                )
 
     # One perspective per stable key. Keep the strongest evidence if the LLM
     # planner happened to produce two semantically equivalent queries.

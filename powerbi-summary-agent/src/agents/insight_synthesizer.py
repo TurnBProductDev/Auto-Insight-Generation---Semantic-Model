@@ -10,7 +10,6 @@ import re
 
 from ..tools import file_io
 from ..tools import html_report
-from ..tools import insight_tiles
 from ..tools.llm import get_llm
 from ..tools.summary_validation import parse_numbers
 from ..utils.json_utils import dumps
@@ -1318,18 +1317,6 @@ def run(state: dict) -> dict:
     title = f"{domain} Insight Report" if domain else "Insight Report"
     file_io.write_text(state, "insight_report.html",
                        html_report.render(report, title=title, eyebrow="Power BI Insight Report"))
-
-    # Optional deterministic visual board. Insight history still reuses the
-    # Markdown heading parser from insight_tiles.py even when this HTML artifact
-    # is disabled, so do not remove the shared module.
-    if state.get("insight_tiles_enabled", False):
-        try:
-            insight_tiles.write_from_state(state, report_md=report)
-            log.info("Insight board written (insight_tiles.html).")
-        except Exception as exc:  # noqa: BLE001 - defensive; supplementary artifact
-            log.info(f"Insight board skipped ({type(exc).__name__}: {exc}).")
-    else:
-        log.info("Insight board disabled (insight_tiles_enabled=false).")
 
     log.info(f"Insight report written ({len(report.split())} words).")
     return {"insight_report": report, **log.updates()}

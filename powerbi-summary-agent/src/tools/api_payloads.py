@@ -859,4 +859,18 @@ def generate_fresh_report_summary_payload(
         "metrics": metrics,
         "sections": sections,
     }
-    return ReportSummaryPayload(**payload).model_dump()
+    result = ReportSummaryPayload(**payload).model_dump()
+    # R3 (coordinated UI/API release): expose the selected daily focus as an
+    # additive, code-owned field. Off by default so the shipped contract is
+    # unchanged until the UI opts in with summary_focus_public_metadata.
+    cfg = state.get("config") or {}
+    if cfg.get("summary_focus_public_metadata") or state.get("summary_focus_public_metadata"):
+        focus = state.get("summary_selected_focus") or {}
+        if focus.get("focus_key"):
+            result["dailyFocus"] = {
+                "segment": focus.get("segment") or None,
+                "role": focus.get("dimension_role"),
+                "lens": focus.get("lens"),
+                "sentiment": focus.get("sentiment"),
+            }
+    return result

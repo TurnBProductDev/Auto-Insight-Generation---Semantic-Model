@@ -169,7 +169,6 @@ def build_initial_state(cfg: dict, config_path: str = "") -> dict:
         "output_folder": output_folder,
         "summary_word_limit": cfg.get("summary_word_limit", 300),
         "fresh_summary_enabled": cfg.get("fresh_summary_enabled", True),
-        "fresh_summary_max_words": cfg.get("fresh_summary_max_words", 220),
         "summary_visual_enabled": cfg.get("summary_visual_enabled", True),
         "summary_candidates_max": cfg.get("summary_candidates_max", 12),
         "summary_temporal_batch_share": cfg.get("summary_temporal_batch_share", 0.5),
@@ -183,6 +182,36 @@ def build_initial_state(cfg: dict, config_path: str = "") -> dict:
         "summary_memory_policy": cfg.get("summary_memory_policy", "never_repeat"),
         "summary_memory_cooldown_days": cfg.get("summary_memory_cooldown_days", 14),
         "summary_resurface_change_pct": cfg.get("summary_resurface_change_pct", 20),
+        "summary_now_override": cfg.get("summary_now_override", None),
+        # Daily focus + deep dive (summary R1). Focus rotation and the focused
+        # deep dive default on; disabling summary_focus_enabled reproduces the
+        # previous summary_key rotation exactly.
+        "summary_focus_enabled": cfg.get("summary_focus_enabled", True),
+        "summary_focus_timezone": cfg.get("summary_focus_timezone", "Asia/Kolkata"),
+        "summary_focus_policy": cfg.get("summary_focus_policy", "cooldown"),
+        "summary_focus_cooldown_days": cfg.get("summary_focus_cooldown_days", 14),
+        "summary_focus_same_dimension_gap_days": cfg.get("summary_focus_same_dimension_gap_days", 2),
+        "summary_focus_members_per_dimension": cfg.get("summary_focus_members_per_dimension", 10),
+        "summary_focus_material_change_pct": cfg.get("summary_focus_material_change_pct", 20),
+        "summary_focus_deep_dive_enabled": cfg.get("summary_focus_deep_dive_enabled", True),
+        "summary_focus_max_queries": cfg.get("summary_focus_max_queries", 4),
+        "summary_focus_max_child_dimensions": cfg.get("summary_focus_max_child_dimensions", 2),
+        "summary_focus_max_rows_per_breakdown": cfg.get("summary_focus_max_rows_per_breakdown", 12),
+        "summary_focus_reconciliation_tolerance_pct": cfg.get("summary_focus_reconciliation_tolerance_pct", 2),
+        "summary_focus_include_driver_bridge": cfg.get("summary_focus_include_driver_bridge", True),
+        "summary_focus_include_trend": cfg.get("summary_focus_include_trend", True),
+        "summary_focus_daily_trend_enabled": cfg.get("summary_focus_daily_trend_enabled", False),
+        "summary_focus_daily_trend_min_days": cfg.get("summary_focus_daily_trend_min_days", 14),
+        "summary_focus_hierarchy_overrides": cfg.get("summary_focus_hierarchy_overrides", {}),
+        # R2 editorial rhythm: weekday schedule soft prior + override lane.
+        "summary_focus_schedule": cfg.get("summary_focus_schedule", {}),
+        "summary_focus_schedule_weight": cfg.get("summary_focus_schedule_weight", 0.5),
+        "summary_focus_override_change_pct": cfg.get("summary_focus_override_change_pct", 20),
+        "summary_focus_override_min_impact_share_pct": cfg.get("summary_focus_override_min_impact_share_pct", 2),
+        # R3 advanced novelty: overlap suppression + optional public focus metadata.
+        "summary_focus_fact_overlap_threshold": cfg.get("summary_focus_fact_overlap_threshold", 0.6),
+        "summary_focus_overlap_window_days": cfg.get("summary_focus_overlap_window_days", 7),
+        "summary_focus_public_metadata": cfg.get("summary_focus_public_metadata", False),
         "summary_history_enabled": bool(
             cfg.get("fresh_summary_enabled", True)
             and cfg.get("summary_history_enabled", True)
@@ -199,7 +228,6 @@ def build_initial_state(cfg: dict, config_path: str = "") -> dict:
         "insight_probe_max_rows": cfg.get("insight_probe_max_rows", 20),
         "insight_materiality_pct": cfg.get("insight_materiality_pct", 1.0),
         "insight_max_dq_signals": cfg.get("insight_max_dq_signals", 2),
-        "insight_tiles_enabled": cfg.get("insight_tiles_enabled", False),
         # Cross-run insight memory (Phase 1): remember reported findings and only
         # surface unseen ones on later runs.
         "insight_memory_enabled": cfg.get("insight_memory_enabled", True),

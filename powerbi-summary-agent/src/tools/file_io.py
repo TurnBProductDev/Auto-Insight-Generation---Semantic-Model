@@ -58,6 +58,42 @@ def read_business_rules(config_path=None) -> str:
     return rules_path.read_text(encoding="utf-8")
 
 
+def read_summary_business_rules(config_path=None) -> str:
+    """Read the summary-only business-rules file beside config.json.
+
+    This is deliberately separate from ``business_rules.md``: that file is
+    injected into the insight LLM prompts, and reusing it here would perturb
+    insight output. ``summary_business_rules.md`` is loaded only by the fresh
+    summary generator. Best-effort; a missing file returns "".
+    """
+    if config_path:
+        rules_path = Path(config_path).parent / "summary_business_rules.md"
+    else:
+        rules_path = PROJECT_ROOT / "config" / "summary_business_rules.md"
+    if not rules_path.exists():
+        return ""
+    return rules_path.read_text(encoding="utf-8")
+
+
+def summary_business_rules_block(state: dict) -> str:
+    """Injectable system-prompt section for the summary-only business rules.
+
+    Loaded lazily from the file beside the active config so it is never baked
+    into the insight branch. Returns "" when no file is present so callers can
+    concatenate it unconditionally.
+    """
+    rules = read_summary_business_rules(state.get("config_path")).strip()
+    if not rules:
+        return ""
+    return (
+        "\n\n# SUMMARY REPORTING RULES (authoritative for this summary)\n"
+        "These describe how the daily focus summary should be worded and which "
+        "figures managers care about. They OVERRIDE generic defaults but never "
+        "the global rules above, the model schema, safety, or branch scope.\n\n"
+        + rules
+    )
+
+
 def business_rules_block(state: dict) -> str:
     """Formatted, injectable system-prompt section for the company business rules.
 
