@@ -105,7 +105,10 @@ def _angle(query: dict, rows: list[dict], dimension: str, numeric: list[str], r4
     purpose_tokens = _tokens(query.get("query_name"), query.get("purpose"))
     toks = purpose_tokens | dimension_tokens
     if len(rows) == 1 and (dimension == "overall" or purpose_tokens & {"overall", "grand", "total", "totals"}):
-        return "overall_performance"
+        # Only a comparison-capable grand total is the mandatory Overall
+        # Performance view. A current-only total (e.g. a newly opened branch
+        # reported separately) is a supporting contribution note, not Overall.
+        return "overall_performance" if _has_comparison_family(rows, numeric) else "overall_contribution"
     # Classify from the actual grouping column before reading generic scope words
     # in the query purpose.  For example, "category within the comparable branch
     # population" is a category perspective, not a store perspective.
@@ -233,6 +236,28 @@ def _metric_phase(name: str) -> str | None:
     if tokens & {"prior", "past", "previous", "prev", "ly", "py"} or "last year" in text:
         return "prior"
     return None
+
+
+def _has_comparison_family(rows: list[dict], numeric: list[str]) -> bool:
+    """True when any metric family carries current plus prior/change.
+
+    Overall Performance is a company-level *comparison* view. A single-row total
+    that only exposes current-period measures (for example a newly opened branch
+    shown separately from the like-for-like set) is a contribution note, not the
+    mandatory comparison, and must never seize the Overall slot.
+    """
+    if not rows:
+        return False
+    families: dict[str, set[str]] = {}
+    for name in numeric:
+        phase = _metric_phase(name)
+        family = _family(name)
+        if phase and family != "performance":
+            families.setdefault(family, set()).add(phase)
+    return any(
+        "current" in phases and ("prior" in phases or "change" in phases)
+        for phases in families.values()
+    )
 
 
 def _comparison_facts(
@@ -435,6 +460,7 @@ def _metadata_context(state: dict, dimension: str, metric: str | None, scope: di
 def _title(angle: str, dimension: str) -> str:
     labels = {
         "overall_performance": "Overall performance at a glance",
+        "overall_contribution": "Current-period contribution shown separately",
         "period_movement": "How performance moved across the latest period",
         "store_overview": "How performance varied across stores",
         "division_overview": "How divisions shaped the latest result",
@@ -915,6 +941,7 @@ def build_candidates(state: dict) -> list[dict]:
         movement = sum(values) if values else 0.0
         base_score = {
             "overall_performance": 100,
+            "overall_contribution": 60,
             "period_movement": 95,
             "store_overview": 90,
             "division_overview": 82,

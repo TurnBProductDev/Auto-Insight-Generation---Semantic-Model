@@ -78,13 +78,23 @@ of the total.
   estimate or approximate a new figure.
 - Prefer comparison facts when saying a measure rose or fell. When available,
   state the current value, prior value, amount and percentage in ordinary words.
-- Include resolved contributor and driver facts in the narrative. Describe
-  measured contribution, not an unproven cause.
+- Include resolved contributor facts and every resolved driver fact in the
+  narrative. When both the units side and the average-revenue-per-item/mix side
+  of a revenue change are available, state both, even when one offsets the
+  other. In `balanced_multi_focus` mode, put both company-level driver facts in
+  the opening `Overall Performance` block and both focus-level driver facts in
+  the relevant focus narrative. Describe measured contribution, not an
+  unproven cause.
 - Respect population scope. Never describe a current-only, prior-only or
   excluded entity as year-on-year growth. Treat the internal population label
   as calculation context only: never write the word `comparable` in a headline,
   paragraph, bullet or chart title. If scope genuinely helps the reader, say
   `across the branches included in this comparison` or list the branch codes.
+- In `balanced_multi_focus` mode, lead the `Overall Performance` block with the
+  company-level like-for-like comparison (revenue, transactions and quantity),
+  not with a single-branch total. A `contribution` fact (for example a newly
+  opened branch) may be mentioned once as a supporting note, clearly separate
+  from the like-for-like comparison and never blended into overall growth.
 - A change in average revenue per item may contain rate and mix. Never call it
   pure price.
 - Use transactions consistently. You may introduce it once as

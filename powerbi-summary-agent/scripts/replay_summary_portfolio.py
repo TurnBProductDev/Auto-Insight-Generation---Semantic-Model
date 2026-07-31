@@ -392,11 +392,93 @@ def test_r4_end_to_end():
         assert headings and headings[0] == "Overall Performance", headings
         for focus in selected:
             assert focus["segment"] in headings, (focus["segment"], headings)
+        # Overall block quantifies BOTH sides of the driver bridge (volume AND
+        # rate/mix), and both effects are attached as supported facts.
+        overall_cand = next(c for c in state["summary_candidates"] if c.get("angle") == "overall_performance")
+        bridge_facts = [f for f in (overall_cand.get("evidence") or {}).get("facts", []) if f.get("fact_kind") == "bridge"]
+        assert len(bridge_facts) == 2, bridge_facts
+        overall_block = next(b for b in blocks if b.get("kind") == "bullets" and b.get("heading") == "Overall Performance")
+        joined = " ".join(overall_block["points"]).lower()
+        assert "quantity" in joined and ("rate" in joined or "mix" in joined), overall_block["points"]
         from src.tools.summary_validation import validate_draft
         overall_candidate = next(c for c in state["summary_candidates"] if c.get("angle") == "overall_performance")
         assert not validate_draft(
             fresh, [overall_candidate, *selected], mode="balanced_multi_focus",
         )
+        one_sided_overall = {
+            **fresh,
+            "content_blocks": [
+                {
+                    **block,
+                    "points": [
+                        point for point in block.get("points", [])
+                        if "average revenue per item" not in point.casefold()
+                    ],
+                }
+                if block.get("heading") == "Overall Performance"
+                else block
+                for block in fresh["content_blocks"]
+            ],
+        }
+        assert any("every available overall driver fact" in error for error in validate_draft(
+            one_sided_overall, [overall_candidate, *selected], mode="balanced_multi_focus",
+        )), "a one-sided Overall bridge must be rejected"
+
+        # The focus fallback and portfolio validator must also retain both
+        # sides, including an offsetting negative rate/mix contribution.
+        focus = selected[0]
+        focus_evidence = dict(focus.get("evidence") or {})
+        focus_evidence["facts"] = list(focus_evidence.get("facts") or []) + [
+            {
+                "fact_id": "FOCUS_VOLUME", "fact_kind": "deep_dive",
+                "subject": focus["segment"], "subject_role": "focus", "detail_role": "driver",
+                "metric": "Volume effect on revenue", "raw_value": 111100.0,
+                "display_value": "+111.1K",
+                "statement": f"Within {focus['segment']}, change in units sold added revenue by +111.1K.",
+            },
+            {
+                "fact_id": "FOCUS_RATE_MIX", "fact_kind": "deep_dive",
+                "subject": focus["segment"], "subject_role": "focus", "detail_role": "driver",
+                "metric": "Rate and mix effect on revenue", "raw_value": -22200.0,
+                "display_value": "-22.2K",
+                "statement": (
+                    f"Within {focus['segment']}, average revenue per item and mix reduced "
+                    "revenue by -22.2K."
+                ),
+            },
+        ]
+        focus_with_bridge = {**focus, "evidence": focus_evidence}
+        focus_fallback = fresh_summary_generator._r4_fallback(
+            state, overall_candidate, [focus_with_bridge],
+        )
+        focus_block = next(
+            block for block in focus_fallback["blocks"] if block.get("heading") == focus["segment"]
+        )
+        focus_text = " ".join(focus_block["points"])
+        assert "+111.1K" in focus_text and "-22.2K" in focus_text, focus_block["points"]
+        focus_sources = fresh_summary_generator._chart_sources([overall_candidate, focus_with_bridge])
+        focus_fallback_errors = validate_draft(
+            focus_fallback, [overall_candidate, focus_with_bridge],
+            chart_sources=focus_sources, mode="balanced_multi_focus",
+        )
+        assert not focus_fallback_errors, focus_fallback_errors
+        one_sided_focus = {
+            **focus_fallback,
+            "blocks": [
+                {
+                    **block,
+                    "points": [point for point in block.get("points", []) if "-22.2K" not in point],
+                }
+                if block.get("heading") == focus["segment"]
+                else block
+                for block in focus_fallback["blocks"]
+            ],
+        }
+        assert any(f"every available driver fact for {focus['segment']!r}" in error for error in validate_draft(
+            one_sided_focus, [overall_candidate, focus_with_bridge],
+            chart_sources=focus_sources, mode="balanced_multi_focus",
+        )), "a one-sided focus bridge must be rejected"
+
         bad_order = {**fresh, "content_blocks": list(fresh["content_blocks"])[1:] + [fresh["content_blocks"][0]]}
         assert any("first block" in error for error in validate_draft(
             bad_order, [overall_candidate, *selected], mode="balanced_multi_focus",
@@ -576,6 +658,85 @@ def test_overall_package():
     print("  overall package: families, exact bridge reconciliation, graceful degradation  OK")
 
 
+def test_overall_selector_and_contribution():
+    """A comparison-capable company total is Overall; a current-only total
+    (e.g. a newly opened branch) is a separate contribution and must never seize
+    the Overall slot even when its raw current value is larger."""
+    import tempfile
+    from src.agents import summary_candidate_builder, summary_overall_performance
+    from src.agents.fresh_summary_validator import _fmt_chart_number
+    from src.tools import summary_overall
+
+    lfl = {
+        "net revenue CURRENT": 126_960_704.8, "net revenue PAST": 123_265_708.37,
+        "revenue Growth": 3_694_996.43, "net qty CURRENT": 18_773_558.27,
+        "net qty PAST": 18_989_414.48, "QTY Growth": -215_856.21,
+        "net bills CURRENT": 8_414_798, "net bills PAST": 8_156_383, "bills growth": 258_415,
+    }
+    # Current-only total with a LARGER revenue value than the like-for-like
+    # change - this is exactly what used to win the Overall slot on raw score.
+    new_branch = {
+        "net revenue CURRENT": 11_906_055.96, "net qty CURRENT": 2_113_071.87,
+        "net bills CURRENT": 794_252,
+    }
+    with tempfile.TemporaryDirectory(prefix="overall-sel-") as tmp:
+        state = {
+            "dataset_id": "sel", "output_folder": tmp, "summary_r4_enabled": True,
+            "summary_focus_enabled": True, "summary_overall_trend_enabled": False,
+            "semantic_model_profile": {"entity_dimension": {"column": "STORE_NO"}},
+            "resolved_entity_scope": {
+                "active_comparable_population": ["CFH014", "CFH017", "CFH018", "CFH021"],
+                "excluded_from_comparison": ["CFH022"],
+            },
+            "summary_period_context": {"period_anchor": "2026-07", "data_as_of": "2026-07-30",
+                                       "grain": "day", "freshness_status": "current", "checks": []},
+            "config": {}, "logs": [], "errors": [],
+            "clean_summary_data": {"queries": [
+                {"query_name": "like_for_like_kpi_totals", "status": "success", "rows": [lfl],
+                 "purpose": "Summarize the core like-for-like business position."},
+                {"query_name": "new_branch_current_totals", "status": "success", "rows": [new_branch],
+                 "purpose": "Show the current-period contribution of CFH022 separately from like-for-like."},
+            ]},
+            "baseline_coverage_clean_data": {"queries": []},
+        }
+        state.update(summary_candidate_builder.run(state))
+        cands = state["summary_candidates"]
+        op = [c for c in cands if c["angle"] == "overall_performance"]
+        oc = [c for c in cands if c["angle"] == "overall_contribution"]
+        assert len(op) == 1 and op[0]["query_name"] == "like_for_like_kpi_totals", op
+        assert len(oc) == 1 and oc[0]["query_name"] == "new_branch_current_totals", oc
+        # the current-only total must not out-score its way into the Overall slot
+        assert not any(c["angle"] == "overall_performance" and "new_branch" in c["query_name"] for c in cands)
+
+        state.update(summary_overall_performance.run(state))
+        pkg = state["summary_overall_performance"]
+        assert pkg["status"] == "ok", pkg
+        assert abs(pkg["families"]["revenue"]["change"] - 3_694_996.43) < 1
+        assert abs(pkg["families"]["quantity"]["change"] + 215_856.21) < 1
+        assert abs(pkg["families"]["transactions"]["change"] - 258_415) < 1
+
+        contrib = pkg.get("contribution")
+        assert contrib and contrib["subject"] == "CFH022", contrib
+        disp = {f["fact_id"]: f["display_value"] for f in contrib["facts"]}
+        assert disp.get("CONTRIB_REVENUE") == "11.9M", disp
+        # contribution facts are copyable/supported on the overall candidate
+        overall_cand = next(c for c in state["summary_candidates"] if c["angle"] == "overall_performance")
+        kinds = {f.get("fact_kind") for f in overall_cand["evidence"]["facts"]}
+        assert {"bridge", "contribution"} <= kinds, kinds
+
+    # contribution_note degrades gracefully
+    assert summary_overall.contribution_note(None) is None
+    assert summary_overall.contribution_note({"evidence": {"facts": []}}) is None
+
+    # Markdown chart numbers are human-readable, not raw floats.
+    assert _fmt_chart_number(669_793.8700000001, "Revenue change") == "+669.8K"
+    assert _fmt_chart_number(-2691.129999999999, "Revenue change") == "-2.7K"
+    assert _fmt_chart_number(126_960_704.8, "Revenue") == "127.0M"
+    assert _fmt_chart_number(0.0299, "growth %") == "+3.0%"
+    assert _fmt_chart_number("n/a", "Revenue") == "n/a"
+    print("  overall selector: comparison total wins Overall, current-only becomes note; md formatting  OK")
+
+
 def test_multi_focus_orchestration():
     import tempfile
     from src.agents import summary_multi_focus_evidence as mfe
@@ -587,14 +748,14 @@ def test_multi_focus_orchestration():
 
     def fake_dd(state, foc, cands, per_focus_max):
         return {"focus_key": foc["focus_key"], "queries_attempted": min(per_focus_max, 3),
+                "budget_received": per_focus_max,
                 "signature_fields": foc["_sig"], "facts": [], "sections": {}}
 
     original = mfe._deep_dive_one
     mfe._deep_dive_one = fake_dd
     try:
         with tempfile.TemporaryDirectory(prefix="mfe-") as tmp:
-            base = {"summary_r4_enabled": True, "summary_focus_total_deep_dive_queries": 12,
-                    "summary_focus_max_queries_per_focus": 4, "summary_focus_max_replacements_per_slot": 1,
+            base = {"summary_r4_enabled": True, "summary_focus_max_replacements_per_slot": 1,
                     "summary_focus_fact_overlap_threshold": 0.6, "output_folder": tmp, "logs": [], "errors": []}
             sel = [focus("A", "division", ["A"], {"leading_location": "L1", "driver_class": "D1"}),
                    focus("B", "division", ["B"], {"leading_location": "L2", "driver_class": "D2"}),
@@ -604,8 +765,18 @@ def test_multi_focus_orchestration():
             out = mfe.run({**base, "summary_selected_focuses": sel, "summary_portfolio_reserves": res})
             by_key = out["summary_focus_evidence_by_key"]
             assert len(by_key) == 3, list(by_key)
-            assert sum(d["queries_attempted"] for d in by_key.values()) <= 12
-            assert all(d["queries_attempted"] <= 4 for d in by_key.values())
+            assert sum(d["queries_attempted"] for d in by_key.values()) <= 15
+            assert all(d["queries_attempted"] <= 5 for d in by_key.values())
+            assert next(iter(by_key.values()))["budget_received"] == 5
+
+            # Reusing an output directory with no selected focus must clear the
+            # complete keyed audit instead of leaving the previous run's data.
+            import json
+            audit_path = Path(tmp) / "summary_focus_evidence_by_key.json"
+            assert len(json.loads(audit_path.read_text(encoding="utf-8"))) == 3
+            empty = mfe.run({**base, "summary_selected_focuses": [], "summary_portfolio_reserves": []})
+            assert empty["summary_focus_evidence_by_key"] == {}
+            assert json.loads(audit_path.read_text(encoding="utf-8")) == {}
 
             # Emergent duplicate: B shares A's drilled signature -> replaced by reserve R.
             sel_dup = [focus("A", "division", ["A"], {"leading_location": "L1", "driver_class": "D1"}),
@@ -670,6 +841,7 @@ def main() -> int:
     test_selector_ranking_and_diversity()
     test_selector_rotation_and_override()
     test_overall_package()
+    test_overall_selector_and_contribution()
     test_r4_end_to_end()
     test_multi_focus_orchestration()
     test_required_delivery_gate()

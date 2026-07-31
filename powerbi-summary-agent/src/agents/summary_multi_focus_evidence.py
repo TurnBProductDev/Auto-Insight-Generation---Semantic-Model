@@ -82,11 +82,14 @@ def run(state: dict) -> dict:
     reserves = list(state.get("summary_portfolio_reserves") or [])
     if not selected:
         file_io.write_json(state, "summary_multi_focus_evidence.json", {"focuses": []})
+        # Output folders can be reused across runs.  Replace the keyed audit as
+        # well so yesterday's focus evidence can never masquerade as today's.
+        file_io.write_json(state, "summary_focus_evidence_by_key.json", {})
         log.info("Multi-focus evidence: no focus selected; Overall Performance only.")
         return {"summary_focus_evidence_by_key": {}, **log.updates()}
 
-    total = max(1, int(state.get("summary_focus_total_deep_dive_queries", 12)))
-    per_focus_cap = max(1, int(state.get("summary_focus_max_queries_per_focus", 4)))
+    total = max(1, int(state.get("summary_focus_total_deep_dive_queries", 15)))
+    per_focus_cap = max(1, int(state.get("summary_focus_max_queries_per_focus", 5)))
     max_repl = max(0, int(state.get("summary_focus_max_replacements_per_slot", 1)))
     threshold = float(state.get("summary_focus_fact_overlap_threshold", 0.6) or 0.0)
     target = len(selected)
@@ -158,6 +161,10 @@ def run(state: dict) -> dict:
         "total_budget": total,
         "replacements": replacements,
     })
+    # Persist the COMPLETE per-focus evidence. The reused single-focus node
+    # overwrites summary_focus_evidence.json on every call (last focus wins), so
+    # this keyed file is the full audit trail for all delivered focuses.
+    file_io.write_json(state, "summary_focus_evidence_by_key.json", evidence_by_key)
     log.info(
         "Multi-focus evidence: %d focus(es) deep-dived over %d/%d shared quer(y/ies), %d replacement(s)."
         % (len(delivered), used, total, replacements)

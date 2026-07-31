@@ -72,6 +72,122 @@ def _bridge(families: dict) -> dict | None:
     }
 
 
+def _fmt(value: Any, signed: bool = True) -> str:
+    number = _num(value)
+    if number is None:
+        return str(value)
+    sign = "+" if signed else ""
+    magnitude = abs(number)
+    if magnitude >= 1_000_000_000:
+        return f"{number / 1_000_000_000:{sign}.2f}B"
+    if magnitude >= 1_000_000:
+        return f"{number / 1_000_000:{sign}.1f}M"
+    if magnitude >= 1_000:
+        return f"{number / 1_000:{sign}.1f}K"
+    return f"{number:{sign}.0f}"
+
+
+def bridge_facts(bridge: dict | None, comparison: str = "the comparison period") -> list[dict]:
+    """Both sides of the revenue bridge as supported facts (volume AND rate/mix).
+
+    Promoting both effects to first-class facts lets the summary state the full
+    story ("quantity reduced revenue by -2.0M while rate/mix added +5.0M") with
+    figures that number-validation accepts, instead of only naming the dominant
+    side. Values are derived, never hardcoded.
+    """
+    if not bridge or not bridge.get("reconciles"):
+        return []
+    volume = _num(bridge.get("volume_effect"))
+    rate = _num(bridge.get("rate_mix_effect"))
+    if volume is None or rate is None:
+        return []
+    return [
+        {
+            "fact_id": "OVERALL_VOLUME", "fact_kind": "bridge", "subject": "Overall",
+            "subject_role": "focus", "detail_role": "driver",
+            "metric": "Volume effect on revenue", "display_value": _fmt(volume), "raw_value": volume,
+            "statement": (
+                f"Change in quantity {'added' if volume >= 0 else 'reduced'} revenue by "
+                f"{_fmt(volume)} versus {comparison}."
+            ),
+        },
+        {
+            "fact_id": "OVERALL_RATE_MIX", "fact_kind": "bridge", "subject": "Overall",
+            "subject_role": "focus", "detail_role": "driver",
+            "metric": "Rate and mix effect on revenue", "display_value": _fmt(rate), "raw_value": rate,
+            "statement": (
+                f"Average revenue per item and mix {'added' if rate >= 0 else 'reduced'} revenue by "
+                f"{_fmt(rate)} versus {comparison}."
+            ),
+        },
+    ]
+
+
+def _contribution_family(metric: str) -> str | None:
+    text = str(metric or "").casefold()
+    if "current" not in text:
+        return None
+    if "revenue" in text or "sales" in text or "turnover" in text:
+        return "revenue"
+    if any(token in text for token in ("quantity", "qty", "units", "volume")):
+        return "quantity"
+    if any(token in text for token in ("transaction", "bills", "orders", "visits")):
+        return "transactions"
+    return None
+
+
+def contribution_note(candidate: dict | None, label: str = "") -> dict | None:
+    """A current-only total shown separately from the like-for-like comparison.
+
+    Turns the current-period figures of a ``overall_contribution`` candidate
+    (for example a newly opened branch excluded from the year-on-year set) into
+    a small supporting note plus supported facts the summary may cite once. The
+    facts carry a copyable ``display_value`` and are tagged ``contribution`` so
+    they are never mistaken for a comparison or a driver bridge side. Returns
+    ``None`` when the candidate exposes no usable current figure.
+    """
+    if not candidate:
+        return None
+    subject = str(label).strip() or str(candidate.get("segment") or "").strip() or "New contribution"
+    facts: list[dict] = []
+    seen: set[str] = set()
+    for fact in (candidate.get("evidence") or {}).get("facts", []) or []:
+        if fact.get("fact_kind") == "comparison":
+            continue
+        raw = _num(fact.get("raw_value"))
+        if raw is None:
+            continue
+        family = _contribution_family(str(fact.get("metric") or ""))
+        if family is None or family in seen:
+            continue
+        seen.add(family)
+        facts.append({
+            "fact_id": f"CONTRIB_{family.upper()}",
+            "fact_kind": "contribution",
+            "subject": subject,
+            "subject_role": "context",
+            "detail_role": "context",
+            "metric": f"{family.title()} current (separate contribution)",
+            "display_value": _fmt(raw, signed=False),
+            "raw_value": raw,
+            "statement": (
+                f"{subject} contributed {_fmt(raw, signed=False)} in current {family}; "
+                "this is a separate current-period total and is not part of the "
+                "like-for-like comparison."
+            ),
+        })
+    if not facts:
+        return None
+    return {
+        "subject": subject,
+        "facts": facts,
+        "note": (
+            f"{subject} is shown separately from the like-for-like comparison because it "
+            "reflects current-period activity without a prior-year baseline."
+        ),
+    }
+
+
 def build_overall(candidate: dict | None, period: dict | None = None) -> dict:
     """Return the deterministic Overall Performance package (or an unavailable stub)."""
     if not candidate:

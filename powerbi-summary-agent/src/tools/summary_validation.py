@@ -237,6 +237,23 @@ def _fact_used(fact: dict, draft: dict, all_text: str) -> bool:
     return bool(subject and display and subject in all_text and display in all_text)
 
 
+def _driver_fact_used(fact: dict, draft: dict, all_text: str) -> bool:
+    """Require the driver's figure and its business meaning in the narrative.
+
+    Two bridge sides can legitimately have the same display value.  Checking
+    only subject + number would then let one sentence satisfy both facts, so
+    the bridge metric also supplies a small, generic semantic check.
+    """
+    if not _fact_used(fact, draft, all_text):
+        return False
+    metric = str(fact.get("metric") or "").casefold()
+    if "volume" in metric or "quantity" in metric:
+        return bool(re.search(r"\b(?:quantity|units?|items?|volume)\b", all_text))
+    if "rate" in metric or "mix" in metric:
+        return bool(re.search(r"\b(?:rate|mix)\b|average revenue per item", all_text))
+    return True
+
+
 def focus_rules(draft: dict, selected: list[dict]) -> list[str]:
     """Deterministic guards for the member-focus deep dive.
 
@@ -265,8 +282,11 @@ def focus_rules(draft: dict, selected: list[dict]) -> list[str]:
 
     driver_facts = [fact for fact in facts.values() if fact.get("detail_role") == "driver"]
     contributor_facts = [fact for fact in facts.values() if fact.get("detail_role") == "contributor"]
-    if driver_facts and not any(_fact_used(fact, draft, all_text) for fact in driver_facts):
-        errors.append("the available driver fact must be represented in the summary narrative")
+    missing_driver_facts = [
+        fact for fact in driver_facts if not _driver_fact_used(fact, draft, all_text)
+    ]
+    if missing_driver_facts:
+        errors.append("every available driver fact must be represented in the summary narrative")
     if contributor_facts and not any(_fact_used(fact, draft, all_text) for fact in contributor_facts):
         errors.append("an available contributor fact must be represented in the summary")
 
@@ -343,6 +363,10 @@ def portfolio_rules(draft: dict, selected: list[dict]) -> list[str]:
     ):
         errors.append("the first block must be a narrative section headed 'Overall Performance'")
 
+    first_text = " ".join(
+        [str(first.get("heading") or "").strip(), *_block_text(first)]
+    ).casefold()
+
     headline = str(draft.get("headline") or draft.get("heading") or "")
     text_pieces = [headline]
     for block in blocks:
@@ -351,6 +375,25 @@ def portfolio_rules(draft: dict, selected: list[dict]) -> list[str]:
             text_pieces.append(heading)
         text_pieces.extend(_block_text(block))
     all_text = " ".join(text_pieces).casefold()
+
+    overall = next(
+        (candidate for candidate in selected if candidate.get("angle") == "overall_performance"),
+        None,
+    )
+    overall_driver_facts = [
+        fact for fact in ((overall or {}).get("evidence") or {}).get("facts", []) or []
+        if isinstance(fact, dict)
+        and fact.get("fact_kind") == "bridge"
+        and fact.get("detail_role") == "driver"
+    ]
+    missing_overall_drivers = [
+        fact for fact in overall_driver_facts
+        if not _driver_fact_used(fact, draft, first_text)
+    ]
+    if missing_overall_drivers:
+        errors.append(
+            "every available overall driver fact must appear in the Overall Performance block"
+        )
 
     focuses = [candidate for candidate in selected if str(candidate.get("segment") or "").strip()]
     for focus in focuses:
@@ -364,8 +407,11 @@ def portfolio_rules(draft: dict, selected: list[dict]) -> list[str]:
         ]
         driver_facts = [fact for fact in facts if fact.get("detail_role") == "driver"]
         contributor_facts = [fact for fact in facts if fact.get("detail_role") == "contributor"]
-        if driver_facts and not any(_fact_used(fact, draft, all_text) for fact in driver_facts):
-            errors.append(f"an available driver fact for {segment!r} must be represented")
+        missing_driver_facts = [
+            fact for fact in driver_facts if not _driver_fact_used(fact, draft, all_text)
+        ]
+        if missing_driver_facts:
+            errors.append(f"every available driver fact for {segment!r} must be represented")
         if contributor_facts and not any(_fact_used(fact, draft, all_text) for fact in contributor_facts):
             errors.append(f"an available contributor fact for {segment!r} must be represented")
 

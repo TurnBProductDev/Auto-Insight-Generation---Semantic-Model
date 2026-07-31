@@ -240,9 +240,9 @@ def build_initial_state(cfg: dict, config_path: str = "") -> dict:
             # Legacy summary_focus_max_queries is the fallback for the total
             # (shared) deep-dive budget across all selected focuses.
             "summary_focus_total_deep_dive_queries",
-            cfg.get("summary_focus_max_queries", 12),
+            cfg.get("summary_focus_max_queries", 15),
         ),
-        "summary_focus_max_queries_per_focus": cfg.get("summary_focus_max_queries_per_focus", 4),
+        "summary_focus_max_queries_per_focus": cfg.get("summary_focus_max_queries_per_focus", 5),
         "summary_focus_max_replacements_per_slot": cfg.get("summary_focus_max_replacements_per_slot", 1),
         "summary_required_delivery_channels": cfg.get(
             "summary_required_delivery_channels", ["local_report", "history"]

@@ -448,6 +448,19 @@ def _chart_sources(selected: list[dict]) -> list[dict]:
                 [row.get(trend_value) for row in trend_rows],
                 default_type="line",
             ))
+            # Year-over-year change over time (the movement, not the level), which
+            # is often the more informative monthly view. Default bar so it also
+            # offers a waterfall of the period-by-period +/- swings.
+            change_value = _numeric_column(trend_rows, trend=False)
+            if change_value and change_value != trend_value:
+                add(_chart_source(
+                    f"{candidate_id}:trend:change",
+                    f"{_plain_label(change_value)} over time",
+                    _plain_label(change_value),
+                    trend_labels,
+                    [row.get(change_value) for row in trend_rows],
+                    default_type="bar",
+                ))
             add(_multi_chart_source(
                 f"{candidate_id}:trend:multi",
                 "Measure relationships over time",
@@ -513,10 +526,21 @@ def _fallback_chart_sources(sources: list[dict]) -> list[dict]:
         if source is not None and source not in chosen:
             chosen.append(source)
 
+    def take_first(predicates) -> None:
+        for predicate in predicates:
+            source = next((item for item in sources if predicate(str(item.get("source_id") or ""))), None)
+            if source is not None and source not in chosen:
+                chosen.append(source)
+                return
+
     take(lambda source_id: source_id.endswith(":overview"))
     take(lambda source_id: ":contributor:" in source_id and not source_id.endswith((":multi", ":grouped")))
     take(lambda source_id: source_id.endswith(":location"))
-    take(lambda source_id: source_id.endswith(":trend"))
+    # Prefer the year-over-year change trend (the movement) over the level trend.
+    take_first([
+        lambda source_id: source_id.endswith(":trend:change"),
+        lambda source_id: source_id.endswith(":trend"),
+    ])
     return chosen
 
 
@@ -542,8 +566,10 @@ def _fallback(candidate: dict, period: dict, summary_type: str) -> dict:
     narrative_facts: list[dict] = []
     if contributor_facts:
         narrative_facts.append(contributor_facts[0])
-    if driver_facts:
-        narrative_facts.append(driver_facts[0])
+    # A reconciled bridge has two complementary sides (units and rate/mix).
+    # Keep every supported driver fact so the deterministic fallback cannot
+    # turn a net result into a one-sided explanation.
+    narrative_facts.extend(driver_facts)
     for fact in focus_facts:
         if fact not in narrative_facts:
             narrative_facts.append(fact)
@@ -786,12 +812,31 @@ def _overall_group(overall_candidate: dict | None, overall_pkg: dict) -> list[di
             "chart_source_id": "", "chart_type": "bar",
         }]
     points = _grounded_points(overall_candidate, limit=4)
-    bridge = (overall_pkg or {}).get("bridge") or {}
-    if bridge.get("reconciles"):
-        volume = float(bridge.get("volume_effect") or 0.0)
-        rate = float(bridge.get("rate_mix_effect") or 0.0)
-        driver = "higher volume" if abs(volume) >= abs(rate) else "rate and mix"
-        points.append(f"The revenue movement was driven mainly by {driver}.")
+    # Cite BOTH sides of the driver bridge (volume AND rate/mix), promoted to
+    # supported facts by the overall node, so the offsetting side is never
+    # dropped. Falls back to a qualitative line only when facts are unavailable.
+    bridge_facts = [
+        fact for fact in (overall_candidate.get("evidence") or {}).get("facts", []) or []
+        if fact.get("fact_kind") == "bridge"
+    ]
+    if bridge_facts:
+        for fact in bridge_facts[:2]:
+            statement = str(fact.get("statement") or "").strip()
+            if statement and statement not in points:
+                points.append(statement)
+    else:
+        bridge = (overall_pkg or {}).get("bridge") or {}
+        if bridge.get("reconciles"):
+            volume = float(bridge.get("volume_effect") or 0.0)
+            rate = float(bridge.get("rate_mix_effect") or 0.0)
+            driver = "higher volume" if abs(volume) >= abs(rate) else "rate and mix"
+            points.append(f"The revenue movement was driven mainly by {driver}.")
+    # A separate current-only contribution (e.g. a newly opened branch) is a
+    # supporting note, shown apart from the like-for-like comparison above.
+    for fact in ((overall_pkg or {}).get("contribution") or {}).get("facts", [])[:1]:
+        statement = str(fact.get("statement") or "").strip()
+        if statement and statement not in points:
+            points.append(statement)
     block = {"kind": "bullets", "heading": "Overall Performance", "text": "",
              "points": points or ["Overall business performance for the period."],
              "chart_source_id": "", "chart_type": "bar"}
@@ -804,7 +849,10 @@ def _focus_group(merged_focus: dict) -> list[dict]:
     focus_facts = [fact for fact in facts if str(fact.get("subject_role") or "") == "focus"] or facts
     contributors = [fact for fact in facts if fact.get("detail_role") == "contributor"]
     drivers = [fact for fact in facts if fact.get("detail_role") == "driver"]
-    ordered = [*(contributors[:1]), *(drivers[:1]), *focus_facts]
+    # Preserve both sides of a reconciled units-versus-rate/mix bridge.  The
+    # four-point cap still keeps the block concise: one contributor, up to two
+    # driver facts, then the focus result.
+    ordered = [*(contributors[:1]), *(drivers[:2]), *focus_facts]
     points: list[str] = []
     for fact in ordered:
         statement = str(fact.get("statement") or "").strip() or _fact_sentence(fact)

@@ -16,8 +16,8 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.agents import summary_focus_evidence
-from src.tools import summary_focus, summary_focus_queries, summary_memory
+from src.agents import summary_focus_evidence  # noqa: E402
+from src.tools import summary_focus, summary_focus_queries, summary_memory  # noqa: E402
 
 
 # --- fixtures ----------------------------------------------------------------
@@ -262,7 +262,11 @@ def _test_happy_path(root: Path) -> None:
     metrics = {f["metric"] for f in doc["facts"]}
     assert "Revenue change" in metrics
     assert any(f["subject_role"] == "peer" for f in doc["facts"]), "expected a contributor/location peer fact"
-    assert any("driver" in f["metric"].lower() for f in doc["facts"]), "expected a driver fact"
+    # Both sides of the bridge are emitted as driver facts (volume AND rate/mix).
+    driver_facts = [f for f in doc["facts"] if f.get("detail_role") == "driver"]
+    assert len(driver_facts) == 2, driver_facts
+    assert any("volume" in f["metric"].lower() for f in driver_facts)
+    assert any("rate" in f["metric"].lower() or "mix" in f["metric"].lower() for f in driver_facts)
     assert doc["deep_dive_signature"] and doc["signature_fields"]["top_pos_contributor"] == "Rice"
 
     enriched = result["summary_eligible_candidates"][0]

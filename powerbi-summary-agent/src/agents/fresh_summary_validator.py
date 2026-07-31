@@ -2,9 +2,36 @@
 
 from __future__ import annotations
 
+import math
+import re
+
 from ..tools import file_io, summary_visual
 from ..tools.summary_validation import validate_draft
 from ..utils.logger import RunLogger
+
+
+def _fmt_chart_number(value, label: str = "") -> str:
+    """Human-readable chart value for Markdown (e.g. ``+669.8K``, not
+    ``669793.8700000001``). Non-numeric values pass through unchanged. A sign is
+    shown only for change/growth measures, matched from the value label."""
+    if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
+        return str(value)
+    number = float(value)
+    text = str(label or "").casefold()
+    sign = "+" if re.search(r"change|growth|variance|delta", text) else ""
+    if "%" in text or "percent" in text:
+        pct = number * 100 if abs(number) <= 1.5 else number
+        return f"{pct:{sign}.1f}%"
+    magnitude = abs(number)
+    if magnitude >= 1_000_000_000:
+        return f"{number / 1_000_000_000:{sign}.2f}B"
+    if magnitude >= 1_000_000:
+        return f"{number / 1_000_000:{sign}.1f}M"
+    if magnitude >= 1_000:
+        return f"{number / 1_000:{sign}.1f}K"
+    if 0 < magnitude < 1:
+        return f"{number:{sign}.2f}"
+    return f"{number:{sign}.0f}"
 
 
 def _merge_focus_evidence(candidate: dict, evidence_doc: dict) -> dict:
@@ -95,26 +122,32 @@ def _markdown(summary: dict) -> str:
                 chart = block["chart"]
                 value_label = str(chart.get("value_label") or "Value")
                 labels = list(chart.get("labels") or [])
+                x_label, y_label = chart.get("x_label"), chart.get("y_label")
+                size_label = chart.get("size_label")
                 if chart.get("x_values") and chart.get("y_values"):
                     for index, (label, x_value, y_value) in enumerate(zip(
                         labels, chart.get("x_values") or [], chart.get("y_values") or []
                     )):
-                        detail = f"{chart.get('x_label')}: {x_value}; {chart.get('y_label')}: {y_value}"
+                        detail = (
+                            f"{x_label}: {_fmt_chart_number(x_value, x_label)}; "
+                            f"{y_label}: {_fmt_chart_number(y_value, y_label)}"
+                        )
                         sizes = chart.get("size_values") or []
                         if index < len(sizes):
-                            detail += f"; {chart.get('size_label')}: {sizes[index]}"
+                            detail += f"; {size_label}: {_fmt_chart_number(sizes[index], size_label)}"
                         lines.append(f"- {label}: {detail}")
                 elif chart.get("series"):
                     for index, label in enumerate(labels):
                         details = [
-                            f"{series.get('name')}: {(series.get('values') or [])[index]}"
+                            f"{series.get('name')}: "
+                            f"{_fmt_chart_number((series.get('values') or [])[index], value_label)}"
                             for series in chart.get("series") or []
                             if index < len(series.get("values") or [])
                         ]
                         lines.append(f"- {label}: {'; '.join(details)}")
                 else:
                     for label, value in zip(labels, chart.get("values") or []):
-                        lines.append(f"- {label}: {value} {value_label}")
+                        lines.append(f"- {label}: {_fmt_chart_number(value, value_label)} {value_label}")
                 lines.append("")
     else:
         # Backward-compatible rendering for deterministic empty/legacy records.

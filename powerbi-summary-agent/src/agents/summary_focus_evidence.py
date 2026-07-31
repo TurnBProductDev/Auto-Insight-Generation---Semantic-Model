@@ -1132,11 +1132,20 @@ def _build_facts(selected, scorecard, contributors, location, bridge, trend, rev
             role="peer", coverage=location.get("completeness", "partial"), signed=True,
             detail_role="location")
     if bridge and bridge.get("reconciles"):
-        primary = bridge["volume_effect"] if bridge["driver_class"] == "volume" else bridge["rate_mix_effect"]
-        label = "units sold" if bridge["driver_class"] == "volume" else "average revenue per item"
-        add(segment, "Main driver of the change", primary,
-            f"Most of {segment}'s revenue change came from {label} ({_fmt(primary, signed=True)}).",
-            coverage="complete", signed=True, detail_role="driver")
+        # Emit BOTH sides of the bridge so an offsetting effect is never dropped
+        # (e.g. units added +1.9M while rate/mix removed -1.2M for a net +0.7M).
+        volume = bridge.get("volume_effect")
+        rate = bridge.get("rate_mix_effect")
+        if _number(volume):
+            add(segment, "Volume effect on revenue", volume,
+                f"Within {segment}, change in units sold {'added' if volume >= 0 else 'reduced'} "
+                f"revenue by {_fmt(volume, signed=True)}.",
+                coverage="complete", signed=True, detail_role="driver")
+        if _number(rate):
+            add(segment, "Rate and mix effect on revenue", rate,
+                f"Within {segment}, average revenue per item and mix {'added' if rate >= 0 else 'reduced'} "
+                f"revenue by {_fmt(rate, signed=True)}.",
+                coverage="complete", signed=True, detail_role="driver")
     return facts, signature_fields
 
 
