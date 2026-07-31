@@ -873,4 +873,10 @@ def generate_fresh_report_summary_payload(
                 "lens": focus.get("lens"),
                 "sentiment": focus.get("sentiment"),
             }
+        # R4 (additive): the ordered focus portfolio. The singular dailyFocus
+        # above stays as the first entry for backward compatibility.
+        focuses = summary.get("dailyFocuses")
+        if focuses:
+            result["dailyFocuses"] = list(focuses)
+            result.setdefault("dailyFocus", focuses[0])
     return result

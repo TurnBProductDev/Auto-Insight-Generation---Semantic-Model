@@ -1,0 +1,417 @@
+{
+  "confectionery_chocolate_units_drop": {
+    "signal_id": "confectionery_chocolate_units_drop",
+    "segment": "CF-CONFECTIONERY",
+    "scope_type": "comparable",
+    "comparable_finding": true,
+    "known_facts": [
+      {
+        "fact": "CF-CONFECTIONERY: QTY Growth of -548.5K (from 4.4M to 3.9M), 176.5% of the total change",
+        "metric": "QTY Growth",
+        "impact_value": -548503.5959,
+        "impact_share": 176.5412,
+        "share_basis": "grand_total:QTY Growth",
+        "provenance": {
+          "source_query": "meta_movers_by_mis_deep_dive2_item_category_name",
+          "population_status": "comparable",
+          "completeness": "partial",
+          "truncated": true,
+          "topn": 14,
+          "dax_hash": "8bf4ea0ca14a5016",
+          "parse_confidence": "construction",
+          "coverage_kind": "paired_change_tails",
+          "contract_source": "metadata_template"
+        },
+        "safe_to_reuse": true,
+        "verification_required": false
+      }
+    ],
+    "supporting_queries": [
+      "meta_movers_by_mis_deep_dive2_item_category_name"
+    ],
+    "already_answered": [],
+    "unanswered_questions": [
+      "How does CF-CONFECTIONERY decompose by product_group_name?",
+      "How does CF-CONFECTIONERY decompose by special_product_group_name?",
+      "How does CF-CONFECTIONERY decompose by store_no?"
+    ],
+    "recommended_probes": [
+      {
+        "dimension": "product_group_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "product_group_name",
+          "reference": "'MIS_DEEP_DIVE2'[product_group_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "CF-CONFECTIONERY",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "special_product_group_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "special_product_group_name",
+          "reference": "'MIS_DEEP_DIVE2'[special_product_group_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "CF-CONFECTIONERY",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "store_no",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "store_no",
+          "reference": "'MIS_DEEP_DIVE2'[store_no]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 70
+        },
+        "segment": "CF-CONFECTIONERY",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      }
+    ],
+    "available_dimensions": [
+      "division_name",
+      "max_date",
+      "month",
+      "product_group_name",
+      "sec",
+      "special_product_group",
+      "special_product_group_name",
+      "store_no"
+    ],
+    "stop_condition": "Stop once CF-CONFECTIONERY's movement is decomposed across at least one drill dimension with complete + comparable coverage, or the shared probe budget is exhausted. Facts flagged verification_required may inform the explanation but must not, on their own, end the investigation.",
+    "reuse_summary": {
+      "drill_dimensions": 3,
+      "answered_by_reuse": 0,
+      "facts_reusable": 1,
+      "gaps_needing_probe": 3
+    }
+  },
+  "cfh021_growth_dominates": {
+    "signal_id": "cfh021_growth_dominates",
+    "segment": "CFH021",
+    "scope_type": "comparable",
+    "comparable_finding": true,
+    "known_facts": [
+      {
+        "fact": "CFH021: revenue Growth of 4.2M (from 36.8M to 40.9M), 138.3% of the total change; split: volume 767.7K / rate 3.4M (per QTY Growth)",
+        "metric": "revenue Growth",
+        "impact_value": 4184236.82,
+        "impact_share": 138.3354,
+        "share_basis": "grand_total:revenue Growth",
+        "provenance": {
+          "source_query": "baseline_comparable_entities",
+          "population_status": "comparable",
+          "completeness": "complete",
+          "truncated": false,
+          "topn": null,
+          "dax_hash": "760a090e77329a75",
+          "parse_confidence": "construction",
+          "coverage_kind": "full_entity_breakdown",
+          "contract_source": "pre_fork_baseline_in_memory_filter"
+        },
+        "safe_to_reuse": true,
+        "verification_required": false
+      }
+    ],
+    "supporting_queries": [
+      "baseline_comparable_entities",
+      "meta_cross_store_no_by_item_category_name",
+      "meta_cross_store_no_by_product_group_name",
+      "meta_cross_store_no_by_special_product_group_name"
+    ],
+    "already_answered": [],
+    "unanswered_questions": [
+      "How does CFH021 decompose by item_category_name? (a scan slice exists but is partial/comparable - verification required)",
+      "How does CFH021 decompose by product_group_name? (a scan slice exists but is partial/comparable - verification required)",
+      "How does CFH021 decompose by special_product_group_name? (a scan slice exists but is partial/comparable - verification required)"
+    ],
+    "recommended_probes": [
+      {
+        "dimension": "item_category_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "item_category_name",
+          "reference": "'MIS_DEEP_DIVE2'[item_category_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "CFH021",
+        "reason": "existing slice not reusable (partial/comparable)",
+        "verify_source": "meta_cross_store_no_by_item_category_name",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "product_group_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "product_group_name",
+          "reference": "'MIS_DEEP_DIVE2'[product_group_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "CFH021",
+        "reason": "existing slice not reusable (partial/comparable)",
+        "verify_source": "meta_cross_store_no_by_product_group_name",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "special_product_group_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "special_product_group_name",
+          "reference": "'MIS_DEEP_DIVE2'[special_product_group_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "CFH021",
+        "reason": "existing slice not reusable (partial/comparable)",
+        "verify_source": "meta_cross_store_no_by_special_product_group_name",
+        "template": "segment_by_dimension_change"
+      }
+    ],
+    "available_dimensions": [
+      "division_name",
+      "item_category_name",
+      "max_date",
+      "month",
+      "product_group_name",
+      "sec",
+      "special_product_group",
+      "special_product_group_name"
+    ],
+    "stop_condition": "Stop once CFH021's movement is decomposed across at least one drill dimension with complete + comparable coverage, or the shared probe budget is exhausted. Facts flagged verification_required may inform the explanation but must not, on their own, end the investigation.",
+    "reuse_summary": {
+      "drill_dimensions": 3,
+      "answered_by_reuse": 0,
+      "facts_reusable": 1,
+      "gaps_needing_probe": 3
+    }
+  },
+  "cand_09_period_change_contribution": {
+    "signal_id": "cand_09_period_change_contribution",
+    "segment": "month=4",
+    "scope_type": "comparable",
+    "comparable_finding": true,
+    "known_facts": [
+      {
+        "fact": "April: revenue Growth of 2.1M (from 15.1M to 17.2M), 69.8% of the total change",
+        "metric": "revenue Growth",
+        "impact_value": 2112426.17,
+        "impact_share": 69.8391,
+        "share_basis": "grand_total:period_reconciled",
+        "provenance": {
+          "source_query": "meta_period_by_mis_deep_dive2_month",
+          "population_status": "comparable",
+          "completeness": "complete",
+          "truncated": false,
+          "topn": null,
+          "dax_hash": "233335a3f9ca9477",
+          "parse_confidence": "construction",
+          "coverage_kind": "period_series",
+          "contract_source": "metadata_template"
+        },
+        "safe_to_reuse": true,
+        "verification_required": false
+      }
+    ],
+    "supporting_queries": [
+      "meta_period_by_mis_deep_dive2_month"
+    ],
+    "already_answered": [],
+    "unanswered_questions": [
+      "How does month=4 decompose by product_group_name?",
+      "How does month=4 decompose by special_product_group_name?",
+      "How does month=4 decompose by store_no?"
+    ],
+    "recommended_probes": [
+      {
+        "dimension": "product_group_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "product_group_name",
+          "reference": "'MIS_DEEP_DIVE2'[product_group_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "month=4",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "special_product_group_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "special_product_group_name",
+          "reference": "'MIS_DEEP_DIVE2'[special_product_group_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "month=4",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "store_no",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "store_no",
+          "reference": "'MIS_DEEP_DIVE2'[store_no]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 70
+        },
+        "segment": "month=4",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      }
+    ],
+    "available_dimensions": [
+      "division_name",
+      "item_category_name",
+      "max_date",
+      "product_group_name",
+      "special_product_group",
+      "special_product_group_name",
+      "store_no"
+    ],
+    "stop_condition": "Stop once month=4's movement is decomposed across at least one drill dimension with complete + comparable coverage, or the shared probe budget is exhausted. Facts flagged verification_required may inform the explanation but must not, on their own, end the investigation.",
+    "reuse_summary": {
+      "drill_dimensions": 3,
+      "answered_by_reuse": 0,
+      "facts_reusable": 1,
+      "gaps_needing_probe": 3
+    }
+  },
+  "cfh017_decline_drags_group": {
+    "signal_id": "cfh017_decline_drags_group",
+    "segment": "CFH017",
+    "scope_type": "comparable",
+    "comparable_finding": true,
+    "known_facts": [
+      {
+        "fact": "CFH017: revenue Growth of -1.3M (from 22.2M to 20.9M), -43.3% of the total change; split: volume -1.5M / rate 209.4K (per QTY Growth)",
+        "metric": "revenue Growth",
+        "impact_value": -1310152.06,
+        "impact_share": -43.315,
+        "share_basis": "grand_total:revenue Growth",
+        "provenance": {
+          "source_query": "baseline_comparable_entities",
+          "population_status": "comparable",
+          "completeness": "complete",
+          "truncated": false,
+          "topn": null,
+          "dax_hash": "760a090e77329a75",
+          "parse_confidence": "construction",
+          "coverage_kind": "full_entity_breakdown",
+          "contract_source": "pre_fork_baseline_in_memory_filter"
+        },
+        "safe_to_reuse": true,
+        "verification_required": false
+      }
+    ],
+    "supporting_queries": [
+      "baseline_comparable_entities",
+      "meta_cross_store_no_by_item_category_name",
+      "meta_cross_store_no_by_product_group_name",
+      "meta_cross_store_no_by_special_product_group_name"
+    ],
+    "already_answered": [],
+    "unanswered_questions": [
+      "How does CFH017 decompose by item_category_name? (a scan slice exists but is partial/comparable - verification required)",
+      "How does CFH017 decompose by product_group_name? (a scan slice exists but is partial/comparable - verification required)",
+      "How does CFH017 decompose by special_product_group_name? (a scan slice exists but is partial/comparable - verification required)"
+    ],
+    "recommended_probes": [
+      {
+        "dimension": "item_category_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "item_category_name",
+          "reference": "'MIS_DEEP_DIVE2'[item_category_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "CFH017",
+        "reason": "existing slice not reusable (partial/comparable)",
+        "verify_source": "meta_cross_store_no_by_item_category_name",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "product_group_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "product_group_name",
+          "reference": "'MIS_DEEP_DIVE2'[product_group_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "CFH017",
+        "reason": "existing slice not reusable (partial/comparable)",
+        "verify_source": "meta_cross_store_no_by_product_group_name",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "special_product_group_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "special_product_group_name",
+          "reference": "'MIS_DEEP_DIVE2'[special_product_group_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "CFH017",
+        "reason": "existing slice not reusable (partial/comparable)",
+        "verify_source": "meta_cross_store_no_by_special_product_group_name",
+        "template": "segment_by_dimension_change"
+      }
+    ],
+    "available_dimensions": [
+      "division_name",
+      "item_category_name",
+      "max_date",
+      "month",
+      "product_group_name",
+      "sec",
+      "special_product_group",
+      "special_product_group_name"
+    ],
+    "stop_condition": "Stop once CFH017's movement is decomposed across at least one drill dimension with complete + comparable coverage, or the shared probe budget is exhausted. Facts flagged verification_required may inform the explanation but must not, on their own, end the investigation.",
+    "reuse_summary": {
+      "drill_dimensions": 3,
+      "answered_by_reuse": 0,
+      "facts_reusable": 1,
+      "gaps_needing_probe": 3
+    }
+  }
+}

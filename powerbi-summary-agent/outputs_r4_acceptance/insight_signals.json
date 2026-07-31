@@ -1,0 +1,254 @@
+[
+  {
+    "candidate_id": "cand_01_change_contribution",
+    "related_candidate_ids": [
+      "cand_02_change_contribution",
+      "cand_03_change_contribution",
+      "cand_05_change_contribution"
+    ],
+    "id": "confectionery_chocolate_unit_decline",
+    "kind": "business",
+    "description": "CF-CONFECTIONERY recorded QTY Growth of -548503.5959, equal to 176.5412% of the total Units decline, closely matched by CF-CHOCOLATE at -548078.5959 and concentrated in CHOCOLATE COATED BARS at -473507.2012.",
+    "affected_segment": "CF-CONFECTIONERY",
+    "segment_members": null,
+    "impact_value": -548503.5959,
+    "impact_share": 176.5412,
+    "question": "Why did CF-CONFECTIONERY, especially CF-CHOCOLATE and CHOCOLATE COATED BARS, lose 548503.5959 Units versus last year?",
+    "evidence_query": "meta_movers_by_mis_deep_dive2_item_category_name",
+    "decomposition": null,
+    "score": 176.54119723394456,
+    "candidate_type": "change_contribution",
+    "evidence_segment": "CF-CONFECTIONERY",
+    "metric": "mis_deep_dive2::quantity",
+    "bundle_id": "MIS_DEEP_DIVE2::quantity",
+    "metric_family": "quantity",
+    "dimension": [
+      "'mis_deep_dive2'[item_category_name]"
+    ],
+    "direction": -1,
+    "current": 3868622.1728,
+    "prior": 4417125.7687,
+    "level": "high",
+    "story_key": "high:v1:0f57a65363bf9bfb92a6d585cc4418f82d53fee2ba8cb5937770e6436ec92785",
+    "segment": [
+      "cf-confectionery"
+    ],
+    "analysis_type": "change_contribution",
+    "period_anchor": "2026-07",
+    "covered_story_keys": [
+      "high:v1:0f57a65363bf9bfb92a6d585cc4418f82d53fee2ba8cb5937770e6436ec92785",
+      "high:v1:7d95b8cd929b9419ab36b15d4b4d753f27f5385974838c498a7a456181123e8b",
+      "high:v1:3caa63678b02f6c7498cb86a6d60d69554eec9911d48b02a32451e5ad7f1db59",
+      "high:v1:32358ef1a6828a183e5051b4a26a59d08e7f886e068fcceeb5ede7a29d1b8f35"
+    ]
+  },
+  {
+    "candidate_id": "cand_04_change_contribution",
+    "related_candidate_ids": [
+      "cand_06_change_contribution",
+      "cand_21_change_contribution",
+      "cand_31_change_contribution",
+      "cand_33_change_contribution",
+      "cand_38_change_contribution"
+    ],
+    "id": "cfh021_drove_group_growth",
+    "kind": "business",
+    "description": "CFH021 contributed 4184236.82 of revenue Growth, equal to 138.3354% of the comparable-base total change, with bills growth of 192338 and QTY Growth of 128807.1646; the scan also shows large gains in CFH021 | GM FASHION at 986669.86 and CFH021 | FASHION at 946229.49.",
+    "affected_segment": "CFH021",
+    "segment_members": null,
+    "impact_value": 4184236.82,
+    "impact_share": 138.3354,
+    "question": "What changed in CFH021, especially in GM FASHION and FASHION, that made it contribute 4184236.82 of the group's revenue Growth?",
+    "evidence_query": "baseline_comparable_entities",
+    "decomposition": [
+      {
+        "driver": "QTY Growth",
+        "rate_of": "net revenue CURRENT / net qty CURRENT",
+        "revenue_change": 4184236.82,
+        "driver_current": 6295859.3625,
+        "driver_prior": 6167052.198,
+        "driver_change": 128807.1646,
+        "driver_change_pct": 2.0886,
+        "volume_effect": 767716.4446,
+        "volume_effect_share_pct": 18.3478,
+        "rate_effect": 3416520.3754,
+        "rate_effect_share_pct": 81.6522,
+        "rate_current": 6.5029,
+        "rate_prior": 5.9602,
+        "rate_change": 0.5427,
+        "rate_change_pct": 9.1048,
+        "reconciled": true,
+        "basis": "exact price/volume split; rate = revenue per unit of driver (blends price and mix at this grain); decomposition, not cause"
+      },
+      {
+        "driver": "bills growth",
+        "rate_of": "net revenue CURRENT / net bills CURRENT",
+        "revenue_change": 4184236.82,
+        "driver_current": 2707761.0,
+        "driver_prior": 2515423.0,
+        "driver_change": 192338.0,
+        "driver_change_pct": 7.6463,
+        "volume_effect": 2810557.7641,
+        "volume_effect_share_pct": 67.1701,
+        "rate_effect": 1373679.0559,
+        "rate_effect_share_pct": 32.8299,
+        "rate_current": 15.1199,
+        "rate_prior": 14.6126,
+        "rate_change": 0.5073,
+        "rate_change_pct": 3.4717,
+        "reconciled": true,
+        "basis": "exact price/volume split; rate = revenue per unit of driver (blends price and mix at this grain); decomposition, not cause"
+      }
+    ],
+    "score": 138.33540777864343,
+    "candidate_type": "change_contribution",
+    "evidence_segment": "CFH021",
+    "metric": "mis_deep_dive2::revenue",
+    "bundle_id": "MIS_DEEP_DIVE2::revenue",
+    "metric_family": "revenue",
+    "dimension": [
+      "'mis_deep_dive2'[store_no]"
+    ],
+    "direction": 1,
+    "current": 40941100.48,
+    "prior": 36756863.66,
+    "level": "high",
+    "story_key": "high:v1:34133b88e701a8518367c2db7146b887c9ac740ed2db16a97fef368412ed64d7",
+    "segment": [
+      "cfh021"
+    ],
+    "analysis_type": "change_contribution",
+    "period_anchor": "2026-07",
+    "covered_story_keys": [
+      "high:v1:34133b88e701a8518367c2db7146b887c9ac740ed2db16a97fef368412ed64d7",
+      "high:v1:96802704ce1f0bbe7b5ca05115d1961365b1f0da4a96c06b07bf9b4dec67f9f5",
+      "high:v1:d5c90c50a8a936369cf93a1161bfe02f63326c2b71f3cc4d30308b6811b2c941",
+      "high:v1:3bd85fbc08e5160256ec90e21a01a7d84d726e42daf78e345990a046800fa73e",
+      "high:v1:29b80a4c2b9c9694ea3eaf3d7b9c76c96b1cebf65f1c88533d2b7aa0e9d7c1a2",
+      "high:v1:62c5f74f0f11f6f330cea894e9a2420a55e950f515ddc1cd4c668e533a41c461"
+    ]
+  },
+  {
+    "candidate_id": "cand_10_period_change_contribution",
+    "related_candidate_ids": [
+      "cand_09_period_change_contribution"
+    ],
+    "id": "march_downturn_april_rebound",
+    "kind": "business",
+    "description": "March contributed -2043504.72 of revenue Growth, equal to -67.5605% of the reconciled period change, before April added 2112426.17; within March, the scan attributes the largest declines to IMPORTED FRUITS at -326093.18, SUN FLOWER OIL at -138628.07, and IMPORTED VEGETABLES at -134362.38.",
+    "affected_segment": "month=3",
+    "segment_members": null,
+    "impact_value": -2043504.72,
+    "impact_share": -67.5605,
+    "question": "What was different in March, particularly for IMPORTED FRUITS, SUN FLOWER OIL, and IMPORTED VEGETABLES, before the revenue rebound in April?",
+    "evidence_query": "meta_period_by_mis_deep_dive2_month",
+    "decomposition": null,
+    "score": 67.56048256818772,
+    "candidate_type": "period_change_contribution",
+    "evidence_segment": "month=3",
+    "metric": "mis_deep_dive2::revenue",
+    "bundle_id": "MIS_DEEP_DIVE2::revenue",
+    "metric_family": "revenue",
+    "dimension": "'MIS_DEEP_DIVE2'[month]",
+    "anchor": "3",
+    "period_label": "March",
+    "direction": -1,
+    "current": 18618223.62,
+    "prior": 20661728.34,
+    "level": "period",
+    "story_key": "period:v1:cd3a9f2310406015718d98603658540663a918e4551f3c6e05604848fbaaa94b",
+    "segment": [
+      "month=3"
+    ],
+    "analysis_type": "period_change_contribution",
+    "period_anchor": "2026-07",
+    "covered_story_keys": [
+      "period:v1:cd3a9f2310406015718d98603658540663a918e4551f3c6e05604848fbaaa94b",
+      "period:v1:28d552c7b3fdd5a5fb202451b89576553512360020ec2415e8721241b336aa01"
+    ]
+  },
+  {
+    "candidate_id": "cand_19_change_contribution",
+    "related_candidate_ids": [
+      "cand_20_change_contribution",
+      "cand_08_change_contribution",
+      "cand_36_change_contribution",
+      "cand_46_change_contribution"
+    ],
+    "id": "cfh017_revenue_and_volume_decline",
+    "kind": "business",
+    "description": "CFH017 reduced revenue Growth by -1310152.06, or -43.315% of the comparable-base total change, with QTY Growth of -219999.0739 and bills growth of -92115; the scan also shows weakness in CFH017 | FMCG FOOD at -95955.5537 Units and CFH017 | CF-FRUIT & VEGETABLES at -75782.8642 Units.",
+    "affected_segment": "CFH017",
+    "segment_members": null,
+    "impact_value": -1310152.06,
+    "impact_share": -43.315,
+    "question": "What in CFH017, especially FMCG FOOD and CF-FRUIT & VEGETABLES, is associated with the revenue decline of 1310152.06 and the loss of 92115 transactions?",
+    "evidence_query": "baseline_comparable_entities",
+    "decomposition": [
+      {
+        "driver": "QTY Growth",
+        "rate_of": "net revenue CURRENT / net qty CURRENT",
+        "revenue_change": -1310152.06,
+        "driver_current": 2997270.1,
+        "driver_prior": 3217269.1739,
+        "driver_change": -219999.0739,
+        "driver_change_pct": -6.8381,
+        "volume_effect": -1519556.4741,
+        "volume_effect_share_pct": 115.9832,
+        "rate_effect": 209404.4141,
+        "rate_effect_share_pct": -15.9832,
+        "rate_current": 6.977,
+        "rate_prior": 6.9071,
+        "rate_change": 0.0699,
+        "rate_change_pct": 1.0115,
+        "reconciled": true,
+        "basis": "exact price/volume split; rate = revenue per unit of driver (blends price and mix at this grain); decomposition, not cause"
+      },
+      {
+        "driver": "bills growth",
+        "rate_of": "net revenue CURRENT / net bills CURRENT",
+        "revenue_change": -1310152.06,
+        "driver_current": 1318259.0,
+        "driver_prior": 1410374.0,
+        "driver_change": -92115.0,
+        "driver_change_pct": -6.5312,
+        "volume_effect": -1451374.3839,
+        "volume_effect_share_pct": 110.7791,
+        "rate_effect": 141222.3239,
+        "rate_effect_share_pct": -10.7791,
+        "rate_current": 15.8632,
+        "rate_prior": 15.7561,
+        "rate_change": 0.1071,
+        "rate_change_pct": 0.6799,
+        "reconciled": true,
+        "basis": "exact price/volume split; rate = revenue per unit of driver (blends price and mix at this grain); decomposition, not cause"
+      }
+    ],
+    "score": 43.315048184134916,
+    "candidate_type": "change_contribution",
+    "evidence_segment": "CFH017",
+    "metric": "mis_deep_dive2::revenue",
+    "bundle_id": "MIS_DEEP_DIVE2::revenue",
+    "metric_family": "revenue",
+    "dimension": [
+      "'mis_deep_dive2'[store_no]"
+    ],
+    "direction": -1,
+    "current": 20911860.59,
+    "prior": 22222012.65,
+    "level": "high",
+    "story_key": "high:v1:f42b81638a7fbd2dcebaab57495cf9ce8e96b4676e2b98082adaf78edaeb45b8",
+    "segment": [
+      "cfh017"
+    ],
+    "analysis_type": "change_contribution",
+    "period_anchor": "2026-07",
+    "covered_story_keys": [
+      "high:v1:f42b81638a7fbd2dcebaab57495cf9ce8e96b4676e2b98082adaf78edaeb45b8",
+      "high:v1:a372626ae64abbb5878663bf6177e2a2b0cdd0f65c8a05fd76f0882fcd0a0435",
+      "high:v1:8dee2ba3db9e038a3dfd5daa85aad947d1e12ee1be640e07bb8f22f22b902f04",
+      "high:v1:78fe5fe7e09880795dd3814e0f23b830fed7a9de3d4047c4dad31aa3f4667844",
+      "high:v1:f367d5e7b6fc763453b68f7fb9cb1a38d6a848a0fbef1f76efa6ad7e60e7f63e"
+    ]
+  }
+]

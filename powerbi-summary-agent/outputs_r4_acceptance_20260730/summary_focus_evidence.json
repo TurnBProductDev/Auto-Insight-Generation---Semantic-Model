@@ -1,0 +1,273 @@
+{
+  "focus_key": "focus:v2:9b2971af5efb281f709b716f93202e56d347e76211dce5ea4ac83bbf1e91dd21",
+  "candidate_id": "summary_9b2971af5efb",
+  "segment": "CF-MEAT",
+  "dimension_role": "category",
+  "sections": {
+    "scorecard": {
+      "source": "targeted_dax",
+      "metrics": {
+        "revenue": {
+          "current": 8035462.44,
+          "prior": 7313846.019999999,
+          "change": 721616.4200000018,
+          "change_pct": 9.866442607989196
+        },
+        "quantity": {
+          "current": 773820.4819,
+          "prior": 614922.5496400002,
+          "change": 158897.9322599998,
+          "change_pct": 25.840316370415245
+        },
+        "transactions": {
+          "current": 418536.0,
+          "prior": 350361.0,
+          "change": 68175.0,
+          "change_pct": 19.458501374296798
+        }
+      }
+    },
+    "internal_contributors": [
+      {
+        "dimension": "product_group_name",
+        "reference": "'MIS_DEEP_DIVE2'[product_group_name]",
+        "hierarchy_role": "product_group",
+        "discovery_source": "metadata",
+        "hierarchy_checks": {
+          "semantic_order": true,
+          "relationship_path": true,
+          "parent_filters_child": true,
+          "filter_effect_observed": true,
+          "nestedness": true,
+          "reconciles_to_parent": true,
+          "focus_total": 8035462.440000001,
+          "unfiltered_total": 125844619.76999997
+        },
+        "rows": [
+          {
+            "product_group_name": "CF-FRESH MEAT",
+            "revenue_current": 3439006.8200000003,
+            "revenue_prior": 3816766.1599999988,
+            "revenue_change": -377759.33999999845
+          },
+          {
+            "product_group_name": "CF-FRESH CHICKEN & PARTS",
+            "revenue_current": 4596455.620000001,
+            "revenue_prior": 3497079.8599999994,
+            "revenue_change": 1099375.7600000016
+          }
+        ],
+        "completeness": "complete",
+        "top_positive": {
+          "member": "CF-FRESH CHICKEN & PARTS",
+          "change": 1099375.7600000016
+        },
+        "top_negative": {
+          "member": "CF-FRESH MEAT",
+          "change": -377759.33999999845
+        }
+      }
+    ],
+    "location": {
+      "dimension": "store_no",
+      "rows": [
+        {
+          "store_no": "CFH017",
+          "revenue_current": 1863903.6800000002,
+          "revenue_prior": 1823101.8699999999,
+          "revenue_change": 40801.81000000029,
+          "abs_sort": 40801.81000000029
+        },
+        {
+          "store_no": "CFH014",
+          "revenue_current": 2628950.4000000004,
+          "revenue_prior": 2479976.33,
+          "revenue_change": 148974.0700000003,
+          "abs_sort": 148974.0700000003
+        },
+        {
+          "store_no": "CFH021",
+          "revenue_current": 1354644.24,
+          "revenue_prior": 1120261.33,
+          "revenue_change": 234382.90999999992,
+          "abs_sort": 234382.90999999992
+        },
+        {
+          "store_no": "CFH018",
+          "revenue_current": 2187964.12,
+          "revenue_prior": 1890506.49,
+          "revenue_change": 297457.6300000001,
+          "abs_sort": 297457.6300000001
+        }
+      ],
+      "completeness": "complete",
+      "top_positive": {
+        "member": "CFH018",
+        "change": 297457.6300000001
+      },
+      "top_negative": null
+    },
+    "driver_bridge": {
+      "volume_effect": 1889920.9504130236,
+      "rate_mix_effect": -1168304.5304130216,
+      "total_change": 721616.4200000018,
+      "reconciles": true,
+      "driver_class": "volume"
+    },
+    "period_trend": {
+      "dimension": "month",
+      "reference": "'MIS_DEEP_DIVE2'[month]",
+      "grain": "month",
+      "rows": [
+        {
+          "month": 1,
+          "revenue_current": 1184539.27,
+          "revenue_prior": 1086516.49,
+          "revenue_change": 98022.78000000003
+        },
+        {
+          "month": 2,
+          "revenue_current": 1134907.3599999999,
+          "revenue_prior": 996026.0900000001,
+          "revenue_change": 138881.2699999998
+        },
+        {
+          "month": 3,
+          "revenue_current": 1353706.77,
+          "revenue_prior": 1228370.3399999999,
+          "revenue_change": 125336.43000000017
+        },
+        {
+          "month": 4,
+          "revenue_current": 1125016.62,
+          "revenue_prior": 934661.5299999999,
+          "revenue_change": 190355.0900000002
+        },
+        {
+          "month": 5,
+          "revenue_current": 1270481.9300000002,
+          "revenue_prior": 1068499.1199999999,
+          "revenue_change": 201982.8100000003
+        },
+        {
+          "month": 6,
+          "revenue_current": 957193.53,
+          "revenue_prior": 1054740.49,
+          "revenue_change": -97546.95999999996
+        },
+        {
+          "month": 7,
+          "revenue_current": 1009616.96,
+          "revenue_prior": 945031.96,
+          "revenue_change": 64585.0
+        }
+      ],
+      "completeness": "complete",
+      "direction": "reversal_up"
+    },
+    "daily_trend": {
+      "status": "disabled",
+      "reason": "summary_focus_daily_trend_enabled is false"
+    },
+    "caveats": []
+  },
+  "caveats": [],
+  "queries_attempted": 4,
+  "query_budget": 4,
+  "signature_fields": {
+    "top_pos_contributor": "CF-FRESH CHICKEN & PARTS",
+    "top_neg_contributor": "CF-FRESH MEAT",
+    "leading_location": "CFH018",
+    "driver_class": "volume"
+  },
+  "deep_dive_signature": "8b70a418c2461302",
+  "signature_duplicate": false,
+  "signature_duplicate_of": null,
+  "signature_overlap": 0.0,
+  "facts": [
+    {
+      "fact_id": "D1",
+      "fact_kind": "deep_dive",
+      "subject": "CF-MEAT",
+      "metric": "Revenue change",
+      "display_value": "+721.6K",
+      "raw_value": 721616.4200000018,
+      "statement": "CF-MEAT revenue changed by +721.6K (+9.9%).",
+      "subject_role": "focus",
+      "detail_role": "focus_metric",
+      "coverage": "complete"
+    },
+    {
+      "fact_id": "D2",
+      "fact_kind": "deep_dive",
+      "subject": "CF-MEAT",
+      "metric": "Quantity change",
+      "display_value": "+158.9K",
+      "raw_value": 158897.9322599998,
+      "statement": "CF-MEAT quantity changed by +158.9K.",
+      "subject_role": "focus",
+      "detail_role": "focus_metric",
+      "coverage": "complete"
+    },
+    {
+      "fact_id": "D3",
+      "fact_kind": "deep_dive",
+      "subject": "CF-MEAT",
+      "metric": "Transactions change",
+      "display_value": "+68.2K",
+      "raw_value": 68175.0,
+      "statement": "CF-MEAT transactions changed by +68.2K.",
+      "subject_role": "focus",
+      "detail_role": "focus_metric",
+      "coverage": "complete"
+    },
+    {
+      "fact_id": "D4",
+      "fact_kind": "deep_dive",
+      "subject": "CF-FRESH CHICKEN & PARTS",
+      "metric": "Revenue change in product_group_name",
+      "display_value": "+1.1M",
+      "raw_value": 1099375.7600000016,
+      "statement": "Within CF-MEAT, CF-FRESH CHICKEN & PARTS added +1.1M.",
+      "subject_role": "peer",
+      "detail_role": "contributor",
+      "coverage": "complete"
+    },
+    {
+      "fact_id": "D5",
+      "fact_kind": "deep_dive",
+      "subject": "CF-FRESH MEAT",
+      "metric": "Revenue change in product_group_name",
+      "display_value": "-377.8K",
+      "raw_value": -377759.33999999845,
+      "statement": "Within CF-MEAT, CF-FRESH MEAT reduced revenue by -377.8K.",
+      "subject_role": "peer",
+      "detail_role": "contributor",
+      "coverage": "complete"
+    },
+    {
+      "fact_id": "D6",
+      "fact_kind": "deep_dive",
+      "subject": "CFH018",
+      "metric": "Store contribution",
+      "display_value": "+297.5K",
+      "raw_value": 297457.6300000001,
+      "statement": "CFH018 led CF-MEAT across the stores included in the comparison at +297.5K.",
+      "subject_role": "peer",
+      "detail_role": "location",
+      "coverage": "complete"
+    },
+    {
+      "fact_id": "D7",
+      "fact_kind": "deep_dive",
+      "subject": "CF-MEAT",
+      "metric": "Main driver of the change",
+      "display_value": "+1.9M",
+      "raw_value": 1889920.9504130236,
+      "statement": "Most of CF-MEAT's revenue change came from units sold (+1.9M).",
+      "subject_role": "focus",
+      "detail_role": "driver",
+      "coverage": "complete"
+    }
+  ]
+}

@@ -1,0 +1,104 @@
+{
+  "charts": [
+    {
+      "source_id": "summary_7783fd0e315c:overview",
+      "type": "bar",
+      "title": "Like-for-like revenue: prior versus current",
+      "value_label": "Revenue",
+      "labels": [
+        "Prior",
+        "Current"
+      ],
+      "values": [
+        122819915.62000003,
+        125844619.76999998
+      ],
+      "x_label": "",
+      "y_label": "",
+      "size_label": "",
+      "x_values": [],
+      "y_values": [],
+      "size_values": [],
+      "series": [],
+      "highlight": null
+    },
+    {
+      "source_id": "summary_7955f5c7611c:contributor:0",
+      "type": "waterfall",
+      "title": "CF-FRUIT & VEGETABLES revenue change by product group",
+      "value_label": "Revenue change",
+      "labels": [
+        "CF-PRODUCTION FROM FRUIT & VEG.",
+        "CF-VEGETABLES",
+        "CF-FRUITS"
+      ],
+      "values": [
+        -2733.870000000001,
+        -536336.2800000003,
+        -182884.35000000056
+      ],
+      "x_label": "",
+      "y_label": "",
+      "size_label": "",
+      "x_values": [],
+      "y_values": [],
+      "size_values": [],
+      "series": [],
+      "highlight": null
+    },
+    {
+      "source_id": "summary_bbb0c0707df2:contributor:0",
+      "type": "waterfall",
+      "title": "FMCG FOOD revenue change by category",
+      "value_label": "Revenue change",
+      "labels": [
+        "CF-ROASTERY",
+        "CF-FROZEN FOOD",
+        "CF-BAKERY",
+        "CF-CHILLED & DAIRY",
+        "CF-GROCERY FOOD",
+        "CF-CONFECTIONERY",
+        "CF-STAPLES"
+      ],
+      "values": [
+        4741.540000000037,
+        177304.0100000021,
+        -21575.000000000116,
+        226840.8399999952,
+        344522.52999999374,
+        -119629.63000000268,
+        -72421.53000000864
+      ],
+      "x_label": "",
+      "y_label": "",
+      "size_label": "",
+      "x_values": [],
+      "y_values": [],
+      "size_values": [],
+      "series": [],
+      "highlight": null
+    },
+    {
+      "source_id": "summary_9b2971af5efb:contributor:0",
+      "type": "waterfall",
+      "title": "CF-MEAT revenue change by product group",
+      "value_label": "Revenue change",
+      "labels": [
+        "CF-FRESH MEAT",
+        "CF-FRESH CHICKEN & PARTS"
+      ],
+      "values": [
+        -377759.33999999845,
+        1099375.7600000016
+      ],
+      "x_label": "",
+      "y_label": "",
+      "size_label": "",
+      "x_values": [],
+      "y_values": [],
+      "size_values": [],
+      "series": [],
+      "highlight": null
+    }
+  ]
+}

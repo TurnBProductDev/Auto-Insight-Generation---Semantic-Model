@@ -50,9 +50,12 @@ from .agents import (
     result_normalizer,
     summary_generator,
     summary_period_resolver,
+    summary_focus_universe,
     summary_candidate_builder,
+    summary_overall_performance,
     summary_novelty_filter,
     summary_focus_evidence,
+    summary_multi_focus_evidence,
     fresh_summary_generator,
     fresh_summary_validator,
     insight_result_normalizer,
@@ -283,6 +286,10 @@ def _after_normalize(state: dict) -> str:
     return "summary_period_resolver" if state.get("fresh_summary_enabled", True) else "generate_summary"
 
 
+def _after_novelty(state: dict) -> str:
+    return "summary_multi_focus_evidence" if state.get("summary_r4_enabled") else "summary_focus_evidence"
+
+
 # --- Build -------------------------------------------------------------------
 def build_graph():
     g = StateGraph(SummaryAgentState)
@@ -302,9 +309,12 @@ def build_graph():
     g.add_node("normalize_results", result_normalizer.run)
     g.add_node("generate_summary", summary_generator.run)
     g.add_node("summary_period_resolver", summary_period_resolver.run)
+    g.add_node("summary_focus_universe", summary_focus_universe.run)
     g.add_node("summary_candidate_builder", summary_candidate_builder.run)
+    g.add_node("summary_overall_performance", summary_overall_performance.run)
     g.add_node("summary_novelty_filter", summary_novelty_filter.run)
     g.add_node("summary_focus_evidence", summary_focus_evidence.run)
+    g.add_node("summary_multi_focus_evidence", summary_multi_focus_evidence.run)
     g.add_node("fresh_summary_generator", fresh_summary_generator.run)
     g.add_node("fresh_summary_validator", fresh_summary_validator.run)
     g.add_node("summary_branch_done", summary_branch_done)
@@ -357,10 +367,19 @@ def build_graph():
                                 "generate_summary": "generate_summary",
                             })
     g.add_edge("generate_summary", "summary_branch_done")
-    g.add_edge("summary_period_resolver", "summary_candidate_builder")
-    g.add_edge("summary_candidate_builder", "summary_novelty_filter")
-    g.add_edge("summary_novelty_filter", "summary_focus_evidence")
+    g.add_edge("summary_period_resolver", "summary_focus_universe")
+    g.add_edge("summary_focus_universe", "summary_candidate_builder")
+    g.add_edge("summary_candidate_builder", "summary_overall_performance")
+    g.add_edge("summary_overall_performance", "summary_novelty_filter")
+    # R4 routes the portfolio through the multi-focus deep dive; the single-focus
+    # path keeps the original deep-dive node unchanged.
+    g.add_conditional_edges("summary_novelty_filter", _after_novelty,
+                            {
+                                "summary_focus_evidence": "summary_focus_evidence",
+                                "summary_multi_focus_evidence": "summary_multi_focus_evidence",
+                            })
     g.add_edge("summary_focus_evidence", "fresh_summary_generator")
+    g.add_edge("summary_multi_focus_evidence", "fresh_summary_generator")
     g.add_edge("fresh_summary_generator", "fresh_summary_validator")
     g.add_edge("fresh_summary_validator", "summary_branch_done")
 

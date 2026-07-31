@@ -1,0 +1,56 @@
+{
+  "enabled": true,
+  "grain": "month",
+  "level": "period",
+  "column": "'MIS_DEEP_DIVE2'[month]",
+  "table": "meta_period_by_mis_deep_dive2_month",
+  "primary_metric": "net revenue CURRENT",
+  "gated_date_tables": [
+    "meta_trend_by_mis_deep_dive2_max_date"
+  ],
+  "drill": {
+    "grain_column": "'MIS_DEEP_DIVE2'[month]",
+    "dimension": "'MIS_DEEP_DIVE2'[special_product_group_name]",
+    "period_raw": "3",
+    "period_label": "March",
+    "period_change": -2043504.72,
+    "top_segments": [
+      {
+        "segment": "IMPORTED FRUITS",
+        "change": -326093.18,
+        "share_pct": 34.93
+      },
+      {
+        "segment": "SUN FLOWER OIL",
+        "change": -138628.07,
+        "share_pct": 14.85
+      },
+      {
+        "segment": "IMPORTED VEGETABLES",
+        "change": -134362.38,
+        "share_pct": 14.39
+      }
+    ]
+  },
+  "checks": [
+    {
+      "column": "'MIS_DEEP_DIVE2'[max_date]",
+      "grain": "date",
+      "metric": "net revenue CURRENT",
+      "max_bucket_share": 0.7887517057554426,
+      "verdict": "batch_load_date"
+    },
+    {
+      "column": "'MIS_DEEP_DIVE2'[month]",
+      "grain": "month",
+      "metric": "net revenue CURRENT",
+      "rows": 7,
+      "null_members": 0,
+      "max_bucket_share": 0.1625356204133572,
+      "reconciled": true,
+      "verdict": "ok"
+    }
+  ],
+  "probes_used": 1,
+  "reason": "validated business month grain 'MIS_DEEP_DIVE2'[month]"
+}

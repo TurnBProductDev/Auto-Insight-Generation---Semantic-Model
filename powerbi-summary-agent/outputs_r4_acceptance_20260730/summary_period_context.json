@@ -1,0 +1,57 @@
+{
+  "grain": "day",
+  "axis": "TY_DATE",
+  "data_as_of": "2026-07-29",
+  "period_anchor": "2026-07-29",
+  "freshness_status": "current",
+  "age_in_grain_periods": 1,
+  "today": "2026-07-30",
+  "reason": "validated day axis from summary evidence",
+  "checks": [
+    {
+      "query": "recent_daily_transactions_by_store",
+      "column": "TY_DATE",
+      "grain": "day",
+      "periods": 4,
+      "data_start": "2026-07-26",
+      "data_as_of": "2026-07-29",
+      "span_days": 4,
+      "max_bucket_share": 0.33535252846681746,
+      "verdict": "ok"
+    },
+    {
+      "query": "refresh_recency",
+      "column": "MaxRefreshDate",
+      "grain": "date",
+      "periods": 1,
+      "data_start": "2026-07-29",
+      "data_as_of": "2026-07-29",
+      "span_days": 1,
+      "max_bucket_share": null,
+      "verdict": "insufficient_periods"
+    },
+    {
+      "query": "refresh_recency",
+      "column": "UPDATED_DATE",
+      "grain": "date",
+      "periods": 1,
+      "data_start": "2026-07-29",
+      "data_as_of": "2026-07-29",
+      "span_days": 1,
+      "max_bucket_share": null,
+      "verdict": "insufficient_periods"
+    },
+    {
+      "query": "meta_trend_by_mis_deep_dive2_max_date",
+      "column": "max_date",
+      "grain": "day",
+      "periods": 24,
+      "data_start": "2026-07-06",
+      "data_as_of": "2026-07-29",
+      "span_days": 24,
+      "max_bucket_share": 0.7887517057554426,
+      "verdict": "batch_date"
+    }
+  ],
+  "data_signature": "c8c5ac0b275566740c31104377725a62ee3c4fe0854c623fcd9023fbd0f42b68"
+}

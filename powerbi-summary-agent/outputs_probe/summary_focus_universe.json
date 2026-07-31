@@ -1,0 +1,1228 @@
+{
+  "status": "ok",
+  "metric_family": "revenue",
+  "value_aliases": {
+    "current": "net revenue CURRENT",
+    "prior": "net revenue PAST",
+    "change": "revenue Growth"
+  },
+  "roles": {
+    "division": {
+      "role": "division",
+      "group_ref": "'MIS_DEEP_DIVE2'[division_name]",
+      "parent_refs": [],
+      "column": "division_name",
+      "level": 10,
+      "source": "universe_scan",
+      "status": "ok",
+      "metric_family": "revenue",
+      "members": [
+        {
+          "member": "COMMUNICATION",
+          "hierarchy_path": [
+            "COMMUNICATION"
+          ],
+          "current": 52.17,
+          "prior": 364.35,
+          "change": -312.18,
+          "change_pct": -85.68135034993824,
+          "overall_current": 125844619.77000003,
+          "gross_sibling_change": 3134751.7699999376,
+          "signed_sibling_change": 3024704.149999931,
+          "parent_change": 3024704.1499999613,
+          "full_member_count": 13.0,
+          "global_impact_pct": 0.00024806781614546245,
+          "business_share_pct": 4.1455884324136e-05,
+          "sibling_movement_impact_pct": 0.009958683267607063,
+          "reconciled": true
+        },
+        {
+          "member": "GM HOME WARE",
+          "hierarchy_path": [
+            "GM HOME WARE"
+          ],
+          "current": 4241568.2799999975,
+          "prior": 4260104.420000002,
+          "change": -18536.14000000432,
+          "change_pct": -0.43510999197536837,
+          "overall_current": 125844619.77000003,
+          "gross_sibling_change": 3134751.7699999376,
+          "signed_sibling_change": 3024704.149999931,
+          "parent_change": 3024704.1499999613,
+          "full_member_count": 13.0,
+          "global_impact_pct": 0.014729386154038135,
+          "business_share_pct": 3.370480428763742,
+          "sibling_movement_impact_pct": 0.5913112539690724,
+          "reconciled": true
+        },
+        {
+          "member": "OTHER NON TRADE",
+          "hierarchy_path": [
+            "OTHER NON TRADE"
+          ],
+          "current": 36659.49,
+          "prior": 38680.509999999995,
+          "change": -2021.0199999999968,
+          "change_pct": -5.2249052559027716,
+          "overall_current": 125844619.77000003,
+          "gross_sibling_change": 3134751.7699999376,
+          "signed_sibling_change": 3024704.149999931,
+          "parent_change": 3024704.1499999613,
+          "full_member_count": 13.0,
+          "global_impact_pct": 0.0016059645646303473,
+          "business_share_pct": 0.02913075669583708,
+          "sibling_movement_impact_pct": 0.06447145255141006,
+          "reconciled": true
+        },
+        {
+          "member": "LIVE KITCHEN",
+          "hierarchy_path": [
+            "LIVE KITCHEN"
+          ],
+          "current": 406215.87,
+          "prior": 425988.9599999999,
+          "change": -19773.08999999991,
+          "change_pct": -4.641690714238208,
+          "overall_current": 125844619.77000003,
+          "gross_sibling_change": 3134751.7699999376,
+          "signed_sibling_change": 3024704.149999931,
+          "parent_change": 3024704.1499999613,
+          "full_member_count": 13.0,
+          "global_impact_pct": 0.015712304615118397,
+          "business_share_pct": 0.32279160661967166,
+          "sibling_movement_impact_pct": 0.6307705187132027,
+          "reconciled": true
+        },
+        {
+          "member": "GM FASHION",
+          "hierarchy_path": [
+            "GM FASHION"
+          ],
+          "current": 11151752.11999998,
+          "prior": 10677900.390000006,
+          "change": 473851.72999997437,
+          "change_pct": 4.437686368040507,
+          "overall_current": 125844619.77000003,
+          "gross_sibling_change": 3134751.7699999376,
+          "signed_sibling_change": 3024704.149999931,
+          "parent_change": 3024704.1499999613,
+          "full_member_count": 13.0,
+          "global_impact_pct": 0.37653713831072766,
+          "business_share_pct": 8.861524744070493,
+          "sibling_movement_impact_pct": 15.116084614252687,
+          "reconciled": true
+        },
+        {
+          "member": "HOME FASHION",
+          "hierarchy_path": [
+            "HOME FASHION"
+          ],
+          "current": 1825866.3999999992,
+          "prior": 1819255.2900000012,
+          "change": 6611.109999998007,
+          "change_pct": 0.36339649725564366,
+          "overall_current": 125844619.77000003,
+          "gross_sibling_change": 3134751.7699999376,
+          "signed_sibling_change": 3024704.149999931,
+          "parent_change": 3024704.1499999613,
+          "full_member_count": 13.0,
+          "global_impact_pct": 0.005253391056431975,
+          "business_share_pct": 1.4508895202171097,
+          "sibling_movement_impact_pct": 0.21089740065760096,
+          "reconciled": true
+        },
+        {
+          "member": "FOOTWEAR",
+          "hierarchy_path": [
+            "FOOTWEAR"
+          ],
+          "current": 2099133.5499999993,
+          "prior": 1979310.3300000005,
+          "change": 119823.21999999881,
+          "change_pct": 6.053786421657223,
+          "overall_current": 125844619.77000003,
+          "gross_sibling_change": 3134751.7699999376,
+          "signed_sibling_change": 3024704.149999931,
+          "parent_change": 3024704.1499999613,
+          "full_member_count": 13.0,
+          "global_impact_pct": 0.09521521080439813,
+          "business_share_pct": 1.6680359906021263,
+          "sibling_movement_impact_pct": 3.8224149403702605,
+          "reconciled": true
+        },
+        {
+          "member": "FASHION",
+          "hierarchy_path": [
+            "FASHION"
+          ],
+          "current": 8518700.55,
+          "prior": 7808133.04,
+          "change": 710567.5100000007,
+          "change_pct": 9.100350959183972,
+          "overall_current": 125844619.77000003,
+          "gross_sibling_change": 3134751.7699999376,
+          "signed_sibling_change": 3024704.149999931,
+          "parent_change": 3024704.1499999613,
+          "full_member_count": 13.0,
+          "global_impact_pct": 0.5646387674726736,
+          "business_share_pct": 6.769221096276669,
+          "sibling_movement_impact_pct": 22.667425114812676,
+          "reconciled": true
+        },
+        {
+          "member": "FARM FRESH",
+          "hierarchy_path": [
+            "FARM FRESH"
+          ],
+          "current": 22766375.11999999,
+          "prior": 22620477.45000003,
+          "change": 145897.6699999608,
+          "change_pct": 0.6449805063684039,
+          "overall_current": 125844619.77000003,
+          "gross_sibling_change": 3134751.7699999376,
+          "signed_sibling_change": 3024704.149999931,
+          "parent_change": 3024704.1499999613,
+          "full_member_count": 13.0,
+          "global_impact_pct": 0.11593476961240833,
+          "business_share_pct": 18.090860905781245,
+          "sibling_movement_impact_pct": 4.654201694571935,
+          "reconciled": true
+        },
+        {
+          "member": "FMCG NON-FOOD",
+          "hierarchy_path": [
+            "FMCG NON-FOOD"
+          ],
+          "current": 18844247.660000045,
+          "prior": 18284755.47000002,
+          "change": 559492.1900000237,
+          "change_pct": 3.0598833597637554,
+          "overall_current": 125844619.77000003,
+          "gross_sibling_change": 3134751.7699999376,
+          "signed_sibling_change": 3024704.149999931,
+          "parent_change": 3024704.1499999613,
+          "full_member_count": 13.0,
+          "global_impact_pct": 0.4445896781464157,
+          "business_share_pct": 14.974217963740319,
+          "sibling_movement_impact_pct": 17.84805404225148,
+          "reconciled": true
+        },
+        {
+          "member": "ELECTRONICS",
+          "hierarchy_path": [
+            "ELECTRONICS"
+          ],
+          "current": 6133030.750000006,
+          "prior": 5609328.979999996,
+          "change": 523701.7700000098,
+          "change_pct": 9.336264139030943,
+          "overall_current": 125844619.77000003,
+          "gross_sibling_change": 3134751.7699999376,
+          "signed_sibling_change": 3024704.149999931,
+          "parent_change": 3024704.1499999613,
+          "full_member_count": 13.0,
+          "global_impact_pct": 0.41614951116476295,
+          "business_share_pct": 4.8734946008888125,
+          "sibling_movement_impact_pct": 16.7063234483801,
+          "reconciled": true
+        },
+        {
+          "member": "FMCG FOOD",
+          "hierarchy_path": [
+            "FMCG FOOD"
+          ],
+          "current": 47470731.480000004,
+          "prior": 46930948.720000036,
+          "change": 539782.7599999681,
+          "change_pct": 1.1501637506209947,
+          "overall_current": 125844619.77000003,
+          "gross_sibling_change": 3134751.7699999376,
+          "signed_sibling_change": 3024704.149999931,
+          "parent_change": 3024704.1499999613,
+          "full_member_count": 13.0,
+          "global_impact_pct": 0.4289279597224755,
+          "business_share_pct": 37.721701227084566,
+          "sibling_movement_impact_pct": 17.219314306343907,
+          "reconciled": true
+        },
+        {
+          "member": "GM OTHERS",
+          "hierarchy_path": [
+            "GM OTHERS"
+          ],
+          "current": 2350286.3299999996,
+          "prior": 2364667.7099999986,
+          "change": -14381.379999998957,
+          "change_pct": -0.6081776284752908,
+          "overall_current": 125844619.77000003,
+          "gross_sibling_change": 3134751.7699999376,
+          "signed_sibling_change": 3024704.149999931,
+          "parent_change": 3024704.1499999613,
+          "full_member_count": 13.0,
+          "global_impact_pct": 0.011427886250745636,
+          "business_share_pct": 1.8676097033750838,
+          "sibling_movement_impact_pct": 0.45877252985805766,
+          "reconciled": true
+        }
+      ],
+      "returned_member_count": 13,
+      "max_siblings_per_parent": 13,
+      "pool_capped": false,
+      "diagnostics_reconciled": true,
+      "scope": {
+        "population_status": "comparable",
+        "comparable_entities": [
+          "CFH014",
+          "CFH017",
+          "CFH018",
+          "CFH021"
+        ]
+      }
+    },
+    "department": {
+      "role": "department",
+      "group_ref": "'CAT_TABLE'[dep]",
+      "parent_refs": [
+        "'MIS_DEEP_DIVE2'[division_name]"
+      ],
+      "column": "dep",
+      "level": 20,
+      "source": "universe_scan",
+      "status": "ok",
+      "metric_family": "revenue",
+      "members": [
+        {
+          "member": "COMMUNICATION",
+          "hierarchy_path": [
+            "COMMUNICATION",
+            "COMMUNICATION"
+          ],
+          "current": 52.17,
+          "prior": 364.35,
+          "change": -312.18,
+          "change_pct": -85.68135034993824,
+          "overall_current": 125844619.77000006,
+          "gross_sibling_change": 312.18,
+          "signed_sibling_change": -312.18,
+          "parent_change": -312.18,
+          "full_member_count": 1.0,
+          "global_impact_pct": 0.00024806781614546245,
+          "business_share_pct": 4.1455884324135995e-05,
+          "sibling_movement_impact_pct": 100.0,
+          "reconciled": true
+        },
+        {
+          "member": "GM HOME WARE",
+          "hierarchy_path": [
+            "GM HOME WARE",
+            "GM HOME WARE"
+          ],
+          "current": 4241568.279999995,
+          "prior": 4260104.420000005,
+          "change": -18536.14000000991,
+          "change_pct": -0.43510999197549927,
+          "overall_current": 125844619.77000006,
+          "gross_sibling_change": 18536.14000000991,
+          "signed_sibling_change": -18536.14000000991,
+          "parent_change": -18536.14000000991,
+          "full_member_count": 1.0,
+          "global_impact_pct": 0.014729386154042573,
+          "business_share_pct": 3.370480428763739,
+          "sibling_movement_impact_pct": 100.0,
+          "reconciled": true
+        },
+        {
+          "member": "OTHER NON TRADE",
+          "hierarchy_path": [
+            "OTHER NON TRADE",
+            "OTHER NON TRADE"
+          ],
+          "current": 36659.49,
+          "prior": 38680.509999999995,
+          "change": -2021.0199999999968,
+          "change_pct": -5.2249052559027716,
+          "overall_current": 125844619.77000006,
+          "gross_sibling_change": 2021.0199999999968,
+          "signed_sibling_change": -2021.0199999999968,
+          "parent_change": -2021.0199999999968,
+          "full_member_count": 1.0,
+          "global_impact_pct": 0.001605964564630347,
+          "business_share_pct": 0.029130756695837076,
+          "sibling_movement_impact_pct": 100.0,
+          "reconciled": true
+        },
+        {
+          "member": "LIVE KITCHEN",
+          "hierarchy_path": [
+            "LIVE KITCHEN",
+            "LIVE KITCHEN"
+          ],
+          "current": 406215.87,
+          "prior": 425988.9599999999,
+          "change": -19773.08999999991,
+          "change_pct": -4.641690714238208,
+          "overall_current": 125844619.77000006,
+          "gross_sibling_change": 19773.08999999991,
+          "signed_sibling_change": -19773.08999999991,
+          "parent_change": -19773.08999999991,
+          "full_member_count": 1.0,
+          "global_impact_pct": 0.01571230461511839,
+          "business_share_pct": 0.32279160661967154,
+          "sibling_movement_impact_pct": 100.0,
+          "reconciled": true
+        },
+        {
+          "member": "GM FASHION",
+          "hierarchy_path": [
+            "GM FASHION",
+            "GM FASHION"
+          ],
+          "current": 11151752.119999979,
+          "prior": 10677900.390000006,
+          "change": 473851.7299999725,
+          "change_pct": 4.43768636804049,
+          "overall_current": 125844619.77000006,
+          "gross_sibling_change": 473851.7299999725,
+          "signed_sibling_change": 473851.7299999725,
+          "parent_change": 473851.7299999725,
+          "full_member_count": 1.0,
+          "global_impact_pct": 0.3765371383107261,
+          "business_share_pct": 8.86152474407049,
+          "sibling_movement_impact_pct": 100.0,
+          "reconciled": true
+        },
+        {
+          "member": "HOME FASHION",
+          "hierarchy_path": [
+            "HOME FASHION",
+            "HOME FASHION"
+          ],
+          "current": 1825866.3999999992,
+          "prior": 1819255.2900000012,
+          "change": 6611.109999998007,
+          "change_pct": 0.36339649725564366,
+          "overall_current": 125844619.77000006,
+          "gross_sibling_change": 6611.109999998007,
+          "signed_sibling_change": 6611.109999998007,
+          "parent_change": 6611.109999998007,
+          "full_member_count": 1.0,
+          "global_impact_pct": 0.005253391056431974,
+          "business_share_pct": 1.4508895202171093,
+          "sibling_movement_impact_pct": 100.0,
+          "reconciled": true
+        },
+        {
+          "member": "FOOTWEAR",
+          "hierarchy_path": [
+            "FOOTWEAR",
+            "FOOTWEAR"
+          ],
+          "current": 2099133.5499999993,
+          "prior": 1979310.3300000005,
+          "change": 119823.21999999881,
+          "change_pct": 6.053786421657223,
+          "overall_current": 125844619.77000006,
+          "gross_sibling_change": 119823.21999999881,
+          "signed_sibling_change": 119823.21999999881,
+          "parent_change": 119823.21999999881,
+          "full_member_count": 1.0,
+          "global_impact_pct": 0.0952152108043981,
+          "business_share_pct": 1.668035990602126,
+          "sibling_movement_impact_pct": 100.0,
+          "reconciled": true
+        },
+        {
+          "member": "FASHION",
+          "hierarchy_path": [
+            "FASHION",
+            "FASHION"
+          ],
+          "current": 8518700.550000006,
+          "prior": 7808133.039999999,
+          "change": 710567.5100000072,
+          "change_pct": 9.100350959184057,
+          "overall_current": 125844619.77000006,
+          "gross_sibling_change": 710567.5100000072,
+          "signed_sibling_change": 710567.5100000072,
+          "parent_change": 710567.5100000072,
+          "full_member_count": 1.0,
+          "global_impact_pct": 0.5646387674726787,
+          "business_share_pct": 6.769221096276672,
+          "sibling_movement_impact_pct": 100.0,
+          "reconciled": true
+        },
+        {
+          "member": "FARM FRESH",
+          "hierarchy_path": [
+            "FARM FRESH",
+            "FARM FRESH"
+          ],
+          "current": 22766375.11999999,
+          "prior": 22620477.45000003,
+          "change": 145897.6699999608,
+          "change_pct": 0.6449805063684039,
+          "overall_current": 125844619.77000006,
+          "gross_sibling_change": 145897.6699999608,
+          "signed_sibling_change": 145897.6699999608,
+          "parent_change": 145897.6699999608,
+          "full_member_count": 1.0,
+          "global_impact_pct": 0.11593476961240831,
+          "business_share_pct": 18.090860905781238,
+          "sibling_movement_impact_pct": 100.0,
+          "reconciled": true
+        },
+        {
+          "member": "FMCG NON-FOOD",
+          "hierarchy_path": [
+            "FMCG NON-FOOD",
+            "FMCG NON-FOOD"
+          ],
+          "current": 18844247.660000045,
+          "prior": 18284755.47000002,
+          "change": 559492.1900000237,
+          "change_pct": 3.0598833597637554,
+          "overall_current": 125844619.77000006,
+          "gross_sibling_change": 559492.1900000237,
+          "signed_sibling_change": 559492.1900000237,
+          "parent_change": 559492.1900000237,
+          "full_member_count": 1.0,
+          "global_impact_pct": 0.4445896781464156,
+          "business_share_pct": 14.974217963740315,
+          "sibling_movement_impact_pct": 100.0,
+          "reconciled": true
+        },
+        {
+          "member": "ELECTRONICS",
+          "hierarchy_path": [
+            "ELECTRONICS",
+            "ELECTRONICS"
+          ],
+          "current": 6133030.750000006,
+          "prior": 5609328.979999996,
+          "change": 523701.7700000098,
+          "change_pct": 9.336264139030943,
+          "overall_current": 125844619.77000006,
+          "gross_sibling_change": 523701.7700000098,
+          "signed_sibling_change": 523701.7700000098,
+          "parent_change": 523701.7700000098,
+          "full_member_count": 1.0,
+          "global_impact_pct": 0.4161495111647629,
+          "business_share_pct": 4.873494600888811,
+          "sibling_movement_impact_pct": 100.0,
+          "reconciled": true
+        },
+        {
+          "member": "FMCG FOOD",
+          "hierarchy_path": [
+            "FMCG FOOD",
+            "FMCG FOOD"
+          ],
+          "current": 47470731.48000003,
+          "prior": 46930948.72000005,
+          "change": 539782.7599999756,
+          "change_pct": 1.1501637506210103,
+          "overall_current": 125844619.77000006,
+          "gross_sibling_change": 539782.7599999756,
+          "signed_sibling_change": 539782.7599999756,
+          "parent_change": 539782.7599999756,
+          "full_member_count": 1.0,
+          "global_impact_pct": 0.4289279597224813,
+          "business_share_pct": 37.72170122708457,
+          "sibling_movement_impact_pct": 100.0,
+          "reconciled": true
+        },
+        {
+          "member": "GM OTHERS",
+          "hierarchy_path": [
+            "GM OTHERS",
+            "GM OTHERS"
+          ],
+          "current": 2350286.329999999,
+          "prior": 2364667.7099999986,
+          "change": -14381.379999999423,
+          "change_pct": -0.6081776284753104,
+          "overall_current": 125844619.77000006,
+          "gross_sibling_change": 14381.379999999423,
+          "signed_sibling_change": -14381.379999999423,
+          "parent_change": -14381.379999999423,
+          "full_member_count": 1.0,
+          "global_impact_pct": 0.011427886250746004,
+          "business_share_pct": 1.8676097033750831,
+          "sibling_movement_impact_pct": 100.0,
+          "reconciled": true
+        }
+      ],
+      "returned_member_count": 13,
+      "max_siblings_per_parent": 1,
+      "pool_capped": false,
+      "diagnostics_reconciled": true,
+      "scope": {
+        "population_status": "comparable",
+        "comparable_entities": [
+          "CFH014",
+          "CFH017",
+          "CFH018",
+          "CFH021"
+        ]
+      }
+    },
+    "category": {
+      "role": "category",
+      "group_ref": "'MIS_DEEP_DIVE2'[item_category_name]",
+      "parent_refs": [
+        "'MIS_DEEP_DIVE2'[division_name]",
+        "'CAT_TABLE'[dep]"
+      ],
+      "column": "item_category_name",
+      "level": 30,
+      "source": "universe_scan",
+      "status": "ok",
+      "metric_family": "revenue",
+      "members": [
+        {
+          "member": "CF-BAKERY",
+          "hierarchy_path": [
+            "FMCG FOOD",
+            "FMCG FOOD",
+            "CF-BAKERY"
+          ],
+          "current": 537261.2699999999,
+          "prior": 558836.27,
+          "change": -21575.000000000116,
+          "change_pct": -3.8607014537549817,
+          "overall_current": 125844619.77,
+          "gross_sibling_change": 967035.080000009,
+          "signed_sibling_change": 539782.759999988,
+          "parent_change": 539782.759999983,
+          "full_member_count": 7.0,
+          "global_impact_pct": 0.017144157644110397,
+          "business_share_pct": 0.42692430632467704,
+          "sibling_movement_impact_pct": 2.2310462615275464,
+          "reconciled": true
+        },
+        {
+          "member": "CF-LADIES HAND BAGS",
+          "hierarchy_path": [
+            "GM FASHION",
+            "GM FASHION",
+            "CF-LADIES HAND BAGS"
+          ],
+          "current": 472622.83999999997,
+          "prior": 448606.05000000005,
+          "change": 24016.78999999992,
+          "change_pct": 5.353648262211337,
+          "overall_current": 125844619.77,
+          "gross_sibling_change": 836761.329999999,
+          "signed_sibling_change": 473851.72999999684,
+          "parent_change": 473851.72999999486,
+          "full_member_count": 8.0,
+          "global_impact_pct": 0.019084478974066767,
+          "business_share_pct": 0.37556062457321526,
+          "sibling_movement_impact_pct": 2.8702079241639846,
+          "reconciled": true
+        },
+        {
+          "member": "CF-PERSONAL ACCESSORIES",
+          "hierarchy_path": [
+            "GM OTHERS",
+            "GM OTHERS",
+            "CF-PERSONAL ACCESSORIES"
+          ],
+          "current": 1282118.54,
+          "prior": 1256268.15,
+          "change": 25850.39000000013,
+          "change_pct": 2.057712758219663,
+          "overall_current": 125844619.77,
+          "gross_sibling_change": 66082.15999999968,
+          "signed_sibling_change": -14381.379999999423,
+          "parent_change": -14381.379999999888,
+          "full_member_count": 2.0,
+          "global_impact_pct": 0.020541513850370095,
+          "business_share_pct": 1.018810770252447,
+          "sibling_movement_impact_pct": 39.11856089449899,
+          "reconciled": true
+        },
+        {
+          "member": "CF-STATIONARY",
+          "hierarchy_path": [
+            "GM OTHERS",
+            "GM OTHERS",
+            "CF-STATIONARY"
+          ],
+          "current": 1068167.7900000003,
+          "prior": 1108399.5599999998,
+          "change": -40231.76999999955,
+          "change_pct": -3.6297172474517727,
+          "overall_current": 125844619.77,
+          "gross_sibling_change": 66082.15999999968,
+          "signed_sibling_change": -14381.379999999423,
+          "parent_change": -14381.379999999888,
+          "full_member_count": 2.0,
+          "global_impact_pct": 0.031969400101116104,
+          "business_share_pct": 0.8487989331226379,
+          "sibling_movement_impact_pct": 60.88143910550101,
+          "reconciled": true
+        },
+        {
+          "member": "CF-KIDS FASHION",
+          "hierarchy_path": [
+            "FASHION",
+            "FASHION",
+            "CF-KIDS FASHION"
+          ],
+          "current": 800008.4300000002,
+          "prior": 768706.7200000007,
+          "change": 31301.709999999497,
+          "change_pct": 4.071996404558486,
+          "overall_current": 125844619.77,
+          "gross_sibling_change": 715951.4900000135,
+          "signed_sibling_change": 710567.5100000135,
+          "parent_change": 710567.5100000128,
+          "full_member_count": 4.0,
+          "global_impact_pct": 0.02487330015157429,
+          "business_share_pct": 0.6357112695498116,
+          "sibling_movement_impact_pct": 4.372043418751584,
+          "reconciled": true
+        },
+        {
+          "member": "CF-LADIES FASHION",
+          "hierarchy_path": [
+            "FASHION",
+            "FASHION",
+            "CF-LADIES FASHION"
+          ],
+          "current": 1141143.5899999996,
+          "prior": 1103343.9800000002,
+          "change": 37799.609999999404,
+          "change_pct": 3.425913467167274,
+          "overall_current": 125844619.77,
+          "gross_sibling_change": 715951.4900000135,
+          "signed_sibling_change": 710567.5100000135,
+          "parent_change": 710567.5100000128,
+          "full_member_count": 4.0,
+          "global_impact_pct": 0.030036731064930614,
+          "business_share_pct": 0.9067877451460472,
+          "sibling_movement_impact_pct": 5.279632842163467,
+          "reconciled": true
+        },
+        {
+          "member": "CF-CONFECTIONERY",
+          "hierarchy_path": [
+            "FMCG FOOD",
+            "FMCG FOOD",
+            "CF-CONFECTIONERY"
+          ],
+          "current": 4334715.760000001,
+          "prior": 4454345.390000002,
+          "change": -119629.63000000175,
+          "change_pct": -2.685683743083104,
+          "overall_current": 125844619.77,
+          "gross_sibling_change": 967035.080000009,
+          "signed_sibling_change": 539782.759999988,
+          "parent_change": 539782.759999983,
+          "full_member_count": 7.0,
+          "global_impact_pct": 0.09506137824457091,
+          "business_share_pct": 3.444498277258374,
+          "sibling_movement_impact_pct": 12.37076425397108,
+          "reconciled": true
+        },
+        {
+          "member": "CF-FROZEN FOOD",
+          "hierarchy_path": [
+            "FMCG FOOD",
+            "FMCG FOOD",
+            "CF-FROZEN FOOD"
+          ],
+          "current": 3548588.49,
+          "prior": 3371284.4799999963,
+          "change": 177304.01000000397,
+          "change_pct": 5.259242020418407,
+          "overall_current": 125844619.77,
+          "gross_sibling_change": 967035.080000009,
+          "signed_sibling_change": 539782.759999988,
+          "parent_change": 539782.759999983,
+          "full_member_count": 7.0,
+          "global_impact_pct": 0.14089121197557256,
+          "business_share_pct": 2.8198174037837935,
+          "sibling_movement_impact_pct": 18.33480642708456,
+          "reconciled": true
+        },
+        {
+          "member": "CF-DELICATESSEN",
+          "hierarchy_path": [
+            "FARM FRESH",
+            "FARM FRESH",
+            "CF-DELICATESSEN"
+          ],
+          "current": 179936.14,
+          "prior": 229564.0000000001,
+          "change": -49627.86000000007,
+          "change_pct": -21.618311233468688,
+          "overall_current": 125844619.77,
+          "gross_sibling_change": 1689062.3899999952,
+          "signed_sibling_change": 145897.67000000252,
+          "parent_change": 145897.6700000018,
+          "full_member_count": 4.0,
+          "global_impact_pct": 0.039435821802078205,
+          "business_share_pct": 0.1429827833155366,
+          "sibling_movement_impact_pct": 2.938189867575005,
+          "reconciled": true
+        },
+        {
+          "member": "CF-SMART WATCHES",
+          "hierarchy_path": [
+            "GM FASHION",
+            "GM FASHION",
+            "CF-SMART WATCHES"
+          ],
+          "current": 985379.17,
+          "prior": 1069319.6399999997,
+          "change": -83940.46999999962,
+          "change_pct": -7.8498950977838255,
+          "overall_current": 125844619.77,
+          "gross_sibling_change": 836761.329999999,
+          "signed_sibling_change": 473851.72999999684,
+          "parent_change": 473851.72999999486,
+          "full_member_count": 8.0,
+          "global_impact_pct": 0.06670167556897823,
+          "business_share_pct": 0.7830125529410228,
+          "sibling_movement_impact_pct": 10.031590489488767,
+          "reconciled": true
+        },
+        {
+          "member": "CF-STAPLES",
+          "hierarchy_path": [
+            "FMCG FOOD",
+            "FMCG FOOD",
+            "CF-STAPLES"
+          ],
+          "current": 10867914.049999995,
+          "prior": 10940335.580000004,
+          "change": -72421.53000000864,
+          "change_pct": -0.6619680856262055,
+          "overall_current": 125844619.77,
+          "gross_sibling_change": 967035.080000009,
+          "signed_sibling_change": 539782.759999988,
+          "parent_change": 539782.759999983,
+          "full_member_count": 7.0,
+          "global_impact_pct": 0.057548372057836,
+          "business_share_pct": 8.635978295983367,
+          "sibling_movement_impact_pct": 7.489028216019626,
+          "reconciled": true
+        },
+        {
+          "member": "CF-HOME CARE",
+          "hierarchy_path": [
+            "FMCG NON-FOOD",
+            "FMCG NON-FOOD",
+            "CF-HOME CARE"
+          ],
+          "current": 2304687.9400000004,
+          "prior": 2259038.469999999,
+          "change": 45649.4700000016,
+          "change_pct": 2.0207477918692383,
+          "overall_current": 125844619.77,
+          "gross_sibling_change": 573608.7099999705,
+          "signed_sibling_change": 559492.1899999705,
+          "parent_change": 559492.1899999678,
+          "full_member_count": 4.0,
+          "global_impact_pct": 0.03627447091773402,
+          "business_share_pct": 1.8313758221941985,
+          "sibling_movement_impact_pct": 7.958294426875762,
+          "reconciled": true
+        },
+        {
+          "member": "CF-FRESH BAKES",
+          "hierarchy_path": [
+            "LIVE KITCHEN",
+            "LIVE KITCHEN",
+            "CF-FRESH BAKES"
+          ],
+          "current": 60843.31,
+          "prior": 2684.12,
+          "change": 58159.189999999995,
+          "change_pct": 2166.787997555996,
+          "overall_current": 125844619.77,
+          "gross_sibling_change": 136091.46999999997,
+          "signed_sibling_change": -19773.089999999975,
+          "parent_change": -19773.089999999967,
+          "full_member_count": 2.0,
+          "global_impact_pct": 0.046215078647219625,
+          "business_share_pct": 0.04834796283798252,
+          "sibling_movement_impact_pct": 42.73536761708871,
+          "reconciled": true
+        },
+        {
+          "member": "CF-PLASTICS",
+          "hierarchy_path": [
+            "GM HOME WARE",
+            "GM HOME WARE",
+            "CF-PLASTICS"
+          ],
+          "current": 1479804.1199999996,
+          "prior": 1330726.409999999,
+          "change": 149077.71000000066,
+          "change_pct": 11.202731747091484,
+          "overall_current": 125844619.77,
+          "gross_sibling_change": 324490.62000000244,
+          "signed_sibling_change": -18536.140000000625,
+          "parent_change": -18536.140000000596,
+          "full_member_count": 4.0,
+          "global_impact_pct": 0.11846172706664983,
+          "business_share_pct": 1.1758978037396948,
+          "sibling_movement_impact_pct": 45.94207068296752,
+          "reconciled": true
+        },
+        {
+          "member": "CF-UTENSILS",
+          "hierarchy_path": [
+            "GM HOME WARE",
+            "GM HOME WARE",
+            "CF-UTENSILS"
+          ],
+          "current": 2243529.3500000015,
+          "prior": 2400836.070000003,
+          "change": -157306.7200000016,
+          "change_pct": -6.552164138387067,
+          "overall_current": 125844619.77,
+          "gross_sibling_change": 324490.62000000244,
+          "signed_sibling_change": -18536.140000000625,
+          "parent_change": -18536.140000000596,
+          "full_member_count": 4.0,
+          "global_impact_pct": 0.1250007511544819,
+          "business_share_pct": 1.7827773281848596,
+          "sibling_movement_impact_pct": 48.4780484563777,
+          "reconciled": true
+        },
+        {
+          "member": "CF-MENS FASHION",
+          "hierarchy_path": [
+            "FASHION",
+            "FASHION",
+            "CF-MENS FASHION"
+          ],
+          "current": 6574161.260000002,
+          "prior": 5930003.079999987,
+          "change": 644158.1800000146,
+          "change_pct": 10.862695538431593,
+          "overall_current": 125844619.77,
+          "gross_sibling_change": 715951.4900000135,
+          "signed_sibling_change": 710567.5100000135,
+          "parent_change": 710567.5100000128,
+          "full_member_count": 4.0,
+          "global_impact_pct": 0.5118678741906574,
+          "business_share_pct": 5.22403045280384,
+          "sibling_movement_impact_pct": 89.97232200745925,
+          "reconciled": true
+        },
+        {
+          "member": "CF-EGGS",
+          "hierarchy_path": [
+            "FARM FRESH",
+            "FARM FRESH",
+            "CF-EGGS"
+          ],
+          "current": 1678375.5899999999,
+          "prior": 1482511.98,
+          "change": 195863.60999999987,
+          "change_pct": 13.211603861710438,
+          "overall_current": 125844619.77,
+          "gross_sibling_change": 1689062.3899999952,
+          "signed_sibling_change": 145897.67000000252,
+          "parent_change": 145897.6700000018,
+          "full_member_count": 4.0,
+          "global_impact_pct": 0.15563924016614308,
+          "business_share_pct": 1.3336887926297398,
+          "sibling_movement_impact_pct": 11.595996166843808,
+          "reconciled": true
+        },
+        {
+          "member": "CF-GROCERY FOOD",
+          "hierarchy_path": [
+            "FMCG FOOD",
+            "FMCG FOOD",
+            "CF-GROCERY FOOD"
+          ],
+          "current": 17007912.52,
+          "prior": 16663389.990000004,
+          "change": 344522.5299999956,
+          "change_pct": 2.0675416599308405,
+          "overall_current": 125844619.77,
+          "gross_sibling_change": 967035.080000009,
+          "signed_sibling_change": 539782.759999988,
+          "parent_change": 539782.759999983,
+          "full_member_count": 7.0,
+          "global_impact_pct": 0.2737681838362756,
+          "business_share_pct": 13.51500966118736,
+          "sibling_movement_impact_pct": 35.62668378069515,
+          "reconciled": true
+        },
+        {
+          "member": "CF-WATCHES & SUNGLASSES",
+          "hierarchy_path": [
+            "GM FASHION",
+            "GM FASHION",
+            "CF-WATCHES & SUNGLASSES"
+          ],
+          "current": 2362002.069999999,
+          "prior": 2114974.1099999994,
+          "change": 247027.9599999995,
+          "change_pct": 11.679951959317345,
+          "overall_current": 125844619.77,
+          "gross_sibling_change": 836761.329999999,
+          "signed_sibling_change": 473851.72999999684,
+          "parent_change": 473851.72999999486,
+          "full_member_count": 8.0,
+          "global_impact_pct": 0.1962960041132313,
+          "business_share_pct": 1.8769193902106531,
+          "sibling_movement_impact_pct": 29.521913972769248,
+          "reconciled": true
+        },
+        {
+          "member": "CF-MENS FOOTWEAR",
+          "hierarchy_path": [
+            "FOOTWEAR",
+            "FOOTWEAR",
+            "CF-MENS FOOTWEAR"
+          ],
+          "current": 1649853.43,
+          "prior": 1531597.6400000004,
+          "change": 118255.78999999957,
+          "change_pct": 7.721074184992838,
+          "overall_current": 125844619.77,
+          "gross_sibling_change": 130110.43999999955,
+          "signed_sibling_change": 119823.21999999935,
+          "parent_change": 119823.21999999927,
+          "full_member_count": 4.0,
+          "global_impact_pct": 0.09396968278511218,
+          "business_share_pct": 1.3110242082779189,
+          "sibling_movement_impact_pct": 90.88877879438421,
+          "reconciled": true
+        },
+        {
+          "member": "CF-FASHION JWELRY&HAIR ACCS",
+          "hierarchy_path": [
+            "GM FASHION",
+            "GM FASHION",
+            "CF-FASHION JWELRY&HAIR ACCS"
+          ],
+          "current": 772023.07,
+          "prior": 664681.5399999999,
+          "change": 107341.53000000003,
+          "change_pct": 16.149317160214807,
+          "overall_current": 125844619.77,
+          "gross_sibling_change": 836761.329999999,
+          "signed_sibling_change": 473851.72999999684,
+          "parent_change": 473851.72999999486,
+          "full_member_count": 8.0,
+          "global_impact_pct": 0.0852968765738121,
+          "business_share_pct": 0.6134732429650059,
+          "sibling_movement_impact_pct": 12.82821351220905,
+          "reconciled": true
+        },
+        {
+          "member": "CF-LUGGAGE",
+          "hierarchy_path": [
+            "GM FASHION",
+            "GM FASHION",
+            "CF-LUGGAGE"
+          ],
+          "current": 2107931.6700000004,
+          "prior": 2197130.0100000002,
+          "change": -89198.33999999985,
+          "change_pct": -4.059766130999223,
+          "overall_current": 125844619.77,
+          "gross_sibling_change": 836761.329999999,
+          "signed_sibling_change": 473851.72999999684,
+          "parent_change": 473851.72999999486,
+          "full_member_count": 8.0,
+          "global_impact_pct": 0.0708797405586534,
+          "business_share_pct": 1.6750272469753282,
+          "sibling_movement_impact_pct": 10.65995007202352,
+          "reconciled": true
+        },
+        {
+          "member": "CF-PERSONAL CARE",
+          "hierarchy_path": [
+            "FMCG NON-FOOD",
+            "FMCG NON-FOOD",
+            "CF-PERSONAL CARE"
+          ],
+          "current": 14863945.139999999,
+          "prior": 14425614.630000029,
+          "change": 438330.50999997,
+          "change_pct": 3.0385569089611058,
+          "overall_current": 125844619.77,
+          "gross_sibling_change": 573608.7099999705,
+          "signed_sibling_change": 559492.1899999705,
+          "parent_change": 559492.1899999678,
+          "full_member_count": 4.0,
+          "global_impact_pct": 0.3483108859171612,
+          "business_share_pct": 11.811347332262672,
+          "sibling_movement_impact_pct": 76.4162925629202,
+          "reconciled": true
+        },
+        {
+          "member": "CF-ELECTRONICS",
+          "hierarchy_path": [
+            "ELECTRONICS",
+            "ELECTRONICS",
+            "CF-ELECTRONICS"
+          ],
+          "current": 6045365.250000005,
+          "prior": 5527685.369999996,
+          "change": 517679.88000000827,
+          "change_pct": 9.365219714015826,
+          "overall_current": 125844619.77,
+          "gross_sibling_change": 523701.7700000083,
+          "signed_sibling_change": 523701.7700000083,
+          "parent_change": 523701.77000000793,
+          "full_member_count": 2.0,
+          "global_impact_pct": 0.41136433241734627,
+          "business_share_pct": 4.803832902073065,
+          "sibling_movement_impact_pct": 98.85012991267914,
+          "reconciled": true
+        },
+        {
+          "member": "CF-HOT FOOD",
+          "hierarchy_path": [
+            "LIVE KITCHEN",
+            "LIVE KITCHEN",
+            "CF-HOT FOOD"
+          ],
+          "current": 345372.55999999994,
+          "prior": 423304.8399999999,
+          "change": -77932.27999999997,
+          "change_pct": -18.410439153022672,
+          "overall_current": 125844619.77,
+          "gross_sibling_change": 136091.46999999997,
+          "signed_sibling_change": -19773.089999999975,
+          "parent_change": -19773.089999999967,
+          "full_member_count": 2.0,
+          "global_impact_pct": 0.06192738326233808,
+          "business_share_pct": 0.2744436437816892,
+          "sibling_movement_impact_pct": 57.26463238291127,
+          "reconciled": true
+        },
+        {
+          "member": "CF-CHILLED & DAIRY",
+          "hierarchy_path": [
+            "FMCG FOOD",
+            "FMCG FOOD",
+            "CF-CHILLED & DAIRY"
+          ],
+          "current": 4895282.629999998,
+          "prior": 4668441.789999998,
+          "change": 226840.83999999985,
+          "change_pct": 4.859026848870701,
+          "overall_current": 125844619.77,
+          "gross_sibling_change": 967035.080000009,
+          "signed_sibling_change": 539782.759999988,
+          "parent_change": 539782.759999983,
+          "full_member_count": 7.0,
+          "global_impact_pct": 0.18025469854379605,
+          "business_share_pct": 3.88994192913997,
+          "sibling_movement_impact_pct": 23.457353791136278,
+          "reconciled": true
+        },
+        {
+          "member": "CF-BEAUTY PRODUCTS",
+          "hierarchy_path": [
+            "FMCG NON-FOOD",
+            "FMCG NON-FOOD",
+            "CF-BEAUTY PRODUCTS"
+          ],
+          "current": 980545.5499999997,
+          "prior": 897975.0800000008,
+          "change": 82570.46999999892,
+          "change_pct": 9.195185015601865,
+          "overall_current": 125844619.77,
+          "gross_sibling_change": 573608.7099999705,
+          "signed_sibling_change": 559492.1899999705,
+          "parent_change": 559492.1899999678,
+          "full_member_count": 4.0,
+          "global_impact_pct": 0.06561303149146058,
+          "business_share_pct": 0.7791716100315568,
+          "sibling_movement_impact_pct": 14.39491216930844,
+          "reconciled": true
+        },
+        {
+          "member": "CF-MEAT",
+          "hierarchy_path": [
+            "FARM FRESH",
+            "FARM FRESH",
+            "CF-MEAT"
+          ],
+          "current": 8035462.440000001,
+          "prior": 7313846.020000002,
+          "change": 721616.419999999,
+          "change_pct": 9.866442607989152,
+          "overall_current": 125844619.77,
+          "gross_sibling_change": 1689062.3899999952,
+          "signed_sibling_change": 145897.67000000252,
+          "parent_change": 145897.6700000018,
+          "full_member_count": 4.0,
+          "global_impact_pct": 0.5734185707095478,
+          "business_share_pct": 6.385225252129188,
+          "sibling_movement_impact_pct": 42.722899063545015,
+          "reconciled": true
+        },
+        {
+          "member": "CF-TOYS",
+          "hierarchy_path": [
+            "GM FASHION",
+            "GM FASHION",
+            "CF-TOYS"
+          ],
+          "current": 2229044.3800000004,
+          "prior": 1959397.580000002,
+          "change": 269646.7999999984,
+          "change_pct": 13.761719558722643,
+          "overall_current": 125844619.77,
+          "gross_sibling_change": 836761.329999999,
+          "signed_sibling_change": 473851.72999999684,
+          "parent_change": 473851.72999999486,
+          "full_member_count": 8.0,
+          "global_impact_pct": 0.21426962908133743,
+          "business_share_pct": 1.771267126138499,
+          "sibling_movement_impact_pct": 32.22505514206766,
+          "reconciled": true
+        },
+        {
+          "member": "CF-FRUIT & VEGETABLES",
+          "hierarchy_path": [
+            "FARM FRESH",
+            "FARM FRESH",
+            "CF-FRUIT & VEGETABLES"
+          ],
+          "current": 12872600.950000001,
+          "prior": 13594555.449999997,
+          "change": -721954.4999999963,
+          "change_pct": -5.310614993298633,
+          "overall_current": 125844619.77,
+          "gross_sibling_change": 1689062.3899999952,
+          "signed_sibling_change": 145897.67000000252,
+          "parent_change": 145897.6700000018,
+          "full_member_count": 4.0,
+          "global_impact_pct": 0.5736872194611712,
+          "business_share_pct": 10.228964077706793,
+          "sibling_movement_impact_pct": 42.74291490203617,
+          "reconciled": true
+        }
+      ],
+      "returned_member_count": 30,
+      "max_siblings_per_parent": 8,
+      "pool_capped": true,
+      "diagnostics_reconciled": true,
+      "scope": {
+        "population_status": "comparable",
+        "comparable_entities": [
+          "CFH014",
+          "CFH017",
+          "CFH018",
+          "CFH021"
+        ]
+      }
+    }
+  }
+}

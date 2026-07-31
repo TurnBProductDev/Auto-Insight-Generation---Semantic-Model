@@ -1,0 +1,1134 @@
+[
+  {
+    "signal": {
+      "candidate_id": "cand_01_change_contribution",
+      "related_candidate_ids": [
+        "cand_02_change_contribution",
+        "cand_03_change_contribution"
+      ],
+      "id": "confectionery_chocolate_units_drop",
+      "kind": "business",
+      "description": "CF-CONFECTIONERY recorded QTY Growth of -548503.5959, equal to 176.5412% of the total comparable Units decline, with the same pattern visible in CF-CHOCOLATE at -548078.5959 and concentrated in CHOCOLATE COATED BARS at -473507.2012.",
+      "affected_segment": "CF-CONFECTIONERY",
+      "segment_members": null,
+      "impact_value": -548503.5959,
+      "impact_share": 176.5412,
+      "question": "Why did CF-CONFECTIONERY, especially CF-CHOCOLATE and CHOCOLATE COATED BARS, lose 548503.5959 Units versus last year?",
+      "evidence_query": "meta_movers_by_mis_deep_dive2_item_category_name",
+      "decomposition": null,
+      "score": 176.54119723394456,
+      "candidate_type": "change_contribution",
+      "evidence_segment": "CF-CONFECTIONERY",
+      "metric": "mis_deep_dive2::quantity",
+      "bundle_id": "MIS_DEEP_DIVE2::quantity",
+      "metric_family": "quantity",
+      "dimension": [
+        "'mis_deep_dive2'[item_category_name]"
+      ],
+      "direction": -1,
+      "current": 3868622.1728,
+      "prior": 4417125.7687,
+      "level": "high",
+      "story_key": "high:v1:0f57a65363bf9bfb92a6d585cc4418f82d53fee2ba8cb5937770e6436ec92785",
+      "segment": [
+        "cf-confectionery"
+      ],
+      "analysis_type": "change_contribution",
+      "period_anchor": "2026-07",
+      "covered_story_keys": [
+        "high:v1:0f57a65363bf9bfb92a6d585cc4418f82d53fee2ba8cb5937770e6436ec92785",
+        "high:v1:7d95b8cd929b9419ab36b15d4b4d753f27f5385974838c498a7a456181123e8b",
+        "high:v1:3caa63678b02f6c7498cb86a6d60d69554eec9911d48b02a32451e5ad7f1db59"
+      ]
+    },
+    "probes": [
+      {
+        "tool": "conclude",
+        "status": "accepted"
+      }
+    ],
+    "probe_executions": 0,
+    "concluded": true,
+    "explanation": "CF-CONFECTIONERY lost 548.5K Units versus last year across the four like-for-like branches, moving from 4.4M to 3.9M Units and accounting for 176.5% of the total comparable Units decline. The loss was almost entirely concentrated in product_group_name CF-CHOCOLATE at -548.1K Units, and within that in special_product_group_name CHOCOLATE COATED BARS at -473.5K Units, while other confectionery sub-groups were much smaller offsets either way; store-wise, the decline was broad-based but heaviest in CFH021 at -261.8K Units, followed by CFH018 at -155.5K and CFH014 at -104.1K, with CFH017 down -27.1K. Transactions also fell for the category overall by 6.1K, with the largest transaction decline in CFH017 and smaller declines in CFH021, while CFH014 and CFH018 had transaction growth, so the Units loss appears more associated with fewer items sold within confectionery, especially chocolate coated bars, than with a uniform loss of transactions across every branch. The best next human check is a branch-by-month review of CHOCOLATE COATED BARS in CFH021 and CFH018 to see whether the drop was concentrated in specific months or linked to range, availability, or promotion changes, which this evidence does not show.",
+    "reuse_summary": {
+      "drill_dimensions": 3,
+      "answered_by_reuse": 0,
+      "facts_reusable": 1,
+      "gaps_needing_probe": 3
+    },
+    "gap_probes_used": 3,
+    "probe_budget": 0
+  },
+  {
+    "signal": {
+      "candidate_id": "cand_04_change_contribution",
+      "related_candidate_ids": [
+        "cand_06_change_contribution",
+        "cand_21_change_contribution",
+        "cand_31_change_contribution",
+        "cand_33_change_contribution",
+        "cand_38_change_contribution"
+      ],
+      "id": "cfh021_growth_dominates",
+      "kind": "business",
+      "description": "CFH021 contributed SAR 4184236.82 of revenue Growth, 138.3354% of the comparable total change, alongside bills growth of 192338 and QTY Growth of 128807.1646; the largest supporting sub-segments in the scan were CFH021 | GM FASHION at SAR 986669.86 and CFH021 | FASHION at SAR 946229.49.",
+      "affected_segment": "CFH021",
+      "segment_members": null,
+      "impact_value": 4184236.82,
+      "impact_share": 138.3354,
+      "question": "What changed in CFH021, especially in GM FASHION and FASHION, that lifted revenue by SAR 4184236.82 and transactions by 192338?",
+      "evidence_query": "baseline_comparable_entities",
+      "decomposition": [
+        {
+          "driver": "QTY Growth",
+          "rate_of": "net revenue CURRENT / net qty CURRENT",
+          "revenue_change": 4184236.82,
+          "driver_current": 6295859.3625,
+          "driver_prior": 6167052.198,
+          "driver_change": 128807.1646,
+          "driver_change_pct": 2.0886,
+          "volume_effect": 767716.4446,
+          "volume_effect_share_pct": 18.3478,
+          "rate_effect": 3416520.3754,
+          "rate_effect_share_pct": 81.6522,
+          "rate_current": 6.5029,
+          "rate_prior": 5.9602,
+          "rate_change": 0.5427,
+          "rate_change_pct": 9.1048,
+          "reconciled": true,
+          "basis": "exact price/volume split; rate = revenue per unit of driver (blends price and mix at this grain); decomposition, not cause"
+        },
+        {
+          "driver": "bills growth",
+          "rate_of": "net revenue CURRENT / net bills CURRENT",
+          "revenue_change": 4184236.82,
+          "driver_current": 2707761.0,
+          "driver_prior": 2515423.0,
+          "driver_change": 192338.0,
+          "driver_change_pct": 7.6463,
+          "volume_effect": 2810557.7641,
+          "volume_effect_share_pct": 67.1701,
+          "rate_effect": 1373679.0559,
+          "rate_effect_share_pct": 32.8299,
+          "rate_current": 15.1199,
+          "rate_prior": 14.6126,
+          "rate_change": 0.5073,
+          "rate_change_pct": 3.4717,
+          "reconciled": true,
+          "basis": "exact price/volume split; rate = revenue per unit of driver (blends price and mix at this grain); decomposition, not cause"
+        }
+      ],
+      "score": 138.33540777864343,
+      "candidate_type": "change_contribution",
+      "evidence_segment": "CFH021",
+      "metric": "mis_deep_dive2::revenue",
+      "bundle_id": "MIS_DEEP_DIVE2::revenue",
+      "metric_family": "revenue",
+      "dimension": [
+        "'mis_deep_dive2'[store_no]"
+      ],
+      "direction": 1,
+      "current": 40941100.48,
+      "prior": 36756863.66,
+      "level": "high",
+      "story_key": "high:v1:34133b88e701a8518367c2db7146b887c9ac740ed2db16a97fef368412ed64d7",
+      "segment": [
+        "cfh021"
+      ],
+      "analysis_type": "change_contribution",
+      "period_anchor": "2026-07",
+      "covered_story_keys": [
+        "high:v1:34133b88e701a8518367c2db7146b887c9ac740ed2db16a97fef368412ed64d7",
+        "high:v1:96802704ce1f0bbe7b5ca05115d1961365b1f0da4a96c06b07bf9b4dec67f9f5",
+        "high:v1:d5c90c50a8a936369cf93a1161bfe02f63326c2b71f3cc4d30308b6811b2c941",
+        "high:v1:3bd85fbc08e5160256ec90e21a01a7d84d726e42daf78e345990a046800fa73e",
+        "high:v1:29b80a4c2b9c9694ea3eaf3d7b9c76c96b1cebf65f1c88533d2b7aa0e9d7c1a2",
+        "high:v1:62c5f74f0f11f6f330cea894e9a2420a55e950f515ddc1cd4c668e533a41c461"
+      ]
+    },
+    "probes": [
+      {
+        "tool": "run_dax",
+        "dax": "EVALUATE\nTOPN(\n    20,\n    SUMMARIZECOLUMNS(\n        'MIS_DEEP_DIVE2'[product_group_name],\n        TREATAS({\"CFH021\"}, 'MIS_DEEP_DIVE2'[store_no]),\n        TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no]),\n        TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TRANSACTIONS'[store_no]),\n        TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TABLE'[store_no]),\n        TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_DEEP_DIVE2'[store_no]),\n        \"Revenue Growth\", [revenue Growth],\n        \"Revenue Current\", [net revenue CURRENT],\n        \"Revenue Past\", [net revenue PAST],\n        \"QTY Growth\", [QTY Growth],\n        \"Bills Growth\", [bills growth]\n    ),\n    [Revenue Growth], DESC,\n    'MIS_DEEP_DIVE2'[product_group_name], ASC\n)",
+        "status": "success",
+        "rows": [
+          {
+            "product_group_name": "CF-HEN EGGS",
+            "Revenue Growth": 71587.70000000013,
+            "Revenue Current": 568164.02,
+            "Revenue Past": 496576.3199999999,
+            "QTY Growth": -673.0,
+            "Bills Growth": -222
+          },
+          {
+            "product_group_name": "CF-CRISPS SNACKS & DRY FRUIT",
+            "Revenue Growth": 79173.85000000003,
+            "Revenue Current": 369646.76000000007,
+            "Revenue Past": 290472.91000000003,
+            "QTY Growth": 23437.916589999993,
+            "Bills Growth": 8644
+          },
+          {
+            "product_group_name": "CF-MEDI CARE",
+            "Revenue Growth": 87868.64000000025,
+            "Revenue Current": 832903.4600000001,
+            "Revenue Past": 745034.8199999998,
+            "QTY Growth": 23228.0,
+            "Bills Growth": 3305
+          },
+          {
+            "product_group_name": "CF-PERSONAL ELECTRONICS",
+            "Revenue Growth": 80088.34999999992,
+            "Revenue Current": 471631.1500000001,
+            "Revenue Past": 391542.80000000016,
+            "QTY Growth": 2605.0,
+            "Bills Growth": 2412
+          },
+          {
+            "product_group_name": "CF-BATTERY OPRATED TOYS",
+            "Revenue Growth": 87127.04000000004,
+            "Revenue Current": 483424.89,
+            "Revenue Past": 396297.85,
+            "QTY Growth": 3394.0,
+            "Bills Growth": 2421
+          },
+          {
+            "product_group_name": "CF-PERSONAL ACCS",
+            "Revenue Growth": 88397.87999999995,
+            "Revenue Current": 568632.0199999999,
+            "Revenue Past": 480234.13999999996,
+            "QTY Growth": 11719.0,
+            "Bills Growth": 7648
+          },
+          {
+            "product_group_name": "CF-DAIRY & DESSERTS",
+            "Revenue Growth": 138736.2599999999,
+            "Revenue Current": 1011198.95,
+            "Revenue Past": 872462.6900000001,
+            "QTY Growth": 30120.0,
+            "Bills Growth": 11373
+          },
+          {
+            "product_group_name": "CF-PERFUMES LC",
+            "Revenue Growth": 99391.84000000003,
+            "Revenue Current": 408987.48000000004,
+            "Revenue Past": 309595.64,
+            "QTY Growth": 6691.0,
+            "Bills Growth": 3684
+          },
+          {
+            "product_group_name": "CF-COLOUR COSMETICS",
+            "Revenue Growth": 85498.5799999999,
+            "Revenue Current": 427040.79,
+            "Revenue Past": 341542.2100000001,
+            "QTY Growth": 2841.0,
+            "Bills Growth": 1314
+          },
+          {
+            "product_group_name": "CF-EDIBLE OILS",
+            "Revenue Growth": 122066.81000000029,
+            "Revenue Current": 1573062.6300000004,
+            "Revenue Past": 1450995.82,
+            "QTY Growth": 1393.0,
+            "Bills Growth": 135
+          },
+          {
+            "product_group_name": "CF-SKIN CARE",
+            "Revenue Growth": 231772.330000001,
+            "Revenue Current": 2285602.44,
+            "Revenue Past": 2053830.109999999,
+            "QTY Growth": 13870.0,
+            "Bills Growth": 10816
+          },
+          {
+            "product_group_name": "CF-MENS BOTTOMS",
+            "Revenue Growth": 229773.6499999999,
+            "Revenue Current": 609067.2999999999,
+            "Revenue Past": 379293.65,
+            "QTY Growth": 7546.0,
+            "Bills Growth": 6033
+          },
+          {
+            "product_group_name": "CF-TROLLEY AND SUITCASE",
+            "Revenue Growth": 137521.45000000007,
+            "Revenue Current": 728995.02,
+            "Revenue Past": 591473.57,
+            "QTY Growth": 1988.0,
+            "Bills Growth": 2097
+          },
+          {
+            "product_group_name": "CF-HAIR CARE",
+            "Revenue Growth": 192530.27000000048,
+            "Revenue Current": 1555612.5000000002,
+            "Revenue Past": 1363082.2299999997,
+            "QTY Growth": 15275.0,
+            "Bills Growth": 7884
+          },
+          {
+            "product_group_name": "CF-RECHARGEABLE TORCH",
+            "Revenue Growth": 244669.81000000006,
+            "Revenue Current": 968848.1599999999,
+            "Revenue Past": 724178.3499999999,
+            "QTY Growth": 4782.0,
+            "Bills Growth": 3612
+          },
+          {
+            "product_group_name": "CF-INFANT TOYS",
+            "Revenue Growth": 146021.13999999998,
+            "Revenue Current": 233511.76,
+            "Revenue Past": 87490.62000000002,
+            "QTY Growth": 13117.0,
+            "Bills Growth": 6302
+          },
+          {
+            "product_group_name": "CF-KITCHEN APPLIANCES",
+            "Revenue Growth": 157796.65000000026,
+            "Revenue Current": 712967.1800000002,
+            "Revenue Past": 555170.5299999999,
+            "QTY Growth": 4613.0,
+            "Bills Growth": 4494
+          },
+          {
+            "product_group_name": "CF-FRESH CHICKEN & PARTS",
+            "Revenue Growth": 195379.96999999974,
+            "Revenue Current": 833829.8599999999,
+            "Revenue Past": 638449.8900000001,
+            "QTY Growth": 33444.0,
+            "Bills Growth": 15533
+          },
+          {
+            "product_group_name": "CF-MENS TOP WEAR",
+            "Revenue Growth": 310128.65999999986,
+            "Revenue Current": 830604.94,
+            "Revenue Past": 520476.2800000001,
+            "QTY Growth": 15444.0,
+            "Bills Growth": 11970
+          },
+          {
+            "product_group_name": "CF-WATCHES",
+            "Revenue Growth": 339716.78000000014,
+            "Revenue Current": 1133315.7400000002,
+            "Revenue Past": 793598.9600000001,
+            "QTY Growth": 21137.0,
+            "Bills Growth": 10543
+          }
+        ]
+      },
+      {
+        "tool": "run_dax",
+        "dax": "EVALUATE\nTOPN(\n    20,\n    SUMMARIZECOLUMNS(\n        'MIS_DEEP_DIVE2'[month],\n        TREATAS({\"CFH021\"}, 'MIS_DEEP_DIVE2'[store_no]),\n        TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no]),\n        TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TRANSACTIONS'[store_no]),\n        TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TABLE'[store_no]),\n        TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_DEEP_DIVE2'[store_no]),\n        \"Revenue Growth\", [revenue Growth],\n        \"Revenue Current\", [net revenue CURRENT],\n        \"Revenue Past\", [net revenue PAST],\n        \"QTY Growth\", [QTY Growth],\n        \"Bills Growth\", [bills growth]\n    ),\n    'MIS_DEEP_DIVE2'[month], ASC\n)",
+        "status": "success",
+        "rows": [
+          {
+            "month": 1,
+            "Revenue Growth": 1165393.339999999,
+            "Revenue Current": 6473187.279999999,
+            "Revenue Past": 5307793.94,
+            "QTY Growth": 127124.88415000006,
+            "Bills Growth": 63212
+          },
+          {
+            "month": 2,
+            "Revenue Growth": 1459469.7699999977,
+            "Revenue Current": 6391657.210000004,
+            "Revenue Past": 4932187.440000006,
+            "QTY Growth": 163822.54353999975,
+            "Bills Growth": 87133
+          },
+          {
+            "month": 3,
+            "Revenue Growth": -506266.33000000846,
+            "Revenue Current": 5944593.929999993,
+            "Revenue Past": 6450860.260000002,
+            "QTY Growth": -160084.79579,
+            "Bills Growth": -10076
+          },
+          {
+            "month": 4,
+            "Revenue Growth": 1019128.8899999959,
+            "Revenue Current": 5378583.989999997,
+            "Revenue Past": 4359455.1000000015,
+            "QTY Growth": 75489.25530000008,
+            "Bills Growth": 47137
+          },
+          {
+            "month": 5,
+            "Revenue Growth": 959453.1900000023,
+            "Revenue Current": 6677572.749999997,
+            "Revenue Past": 5718119.559999995,
+            "QTY Growth": 40769.953880000045,
+            "Bills Growth": 42269
+          },
+          {
+            "month": 6,
+            "Revenue Growth": -69549.0999999987,
+            "Revenue Current": 5147123.490000004,
+            "Revenue Past": 5216672.590000003,
+            "QTY Growth": -63850.899270000285,
+            "Bills Growth": -29482
+          },
+          {
+            "month": 7,
+            "Revenue Growth": 156607.06000000332,
+            "Revenue Current": 4928381.830000003,
+            "Revenue Past": 4771774.77,
+            "QTY Growth": -54463.777219999814,
+            "Bills Growth": -7855
+          }
+        ]
+      },
+      {
+        "tool": "conclude",
+        "status": "accepted"
+      }
+    ],
+    "probe_executions": 2,
+    "concluded": true,
+    "explanation": "CFH021 accounts for SAR 4.18M of like-for-like Revenue growth, which is 138.3% of the comparable total change, alongside 192,338 more Transactions and 128,807 more Units from the rows already provided. A complete CFH021 drill by product group shows the gain was spread across several groups rather than one line: the largest visible lifts were CF-WATCHES at SAR 339.7K, CF-MENS TOP WEAR at SAR 310.1K, CF-RECHARGEABLE TORCH at SAR 244.7K, CF-SKIN CARE at SAR 231.8K and CF-MENS BOTTOMS at SAR 229.8K, with the scan’s GM FASHION and FASHION signals therefore likely reflecting a broader fashion-led mix within multiple underlying product groups. The month split shows the growth was concentrated early in the year, especially month 2 at SAR 1.46M, month 1 at SAR 1.17M, month 4 at SAR 1.02M and month 5 at SAR 959.5K, while month 3 and month 6 were down and month 7 was only modestly up, so this was not a steady run-rate improvement through every month. The evidence is therefore most consistent with CFH021’s Revenue lift being associated with a broad-based improvement across fashion-related and selected non-fashion groups, with both more Transactions and a higher average value per unit contributing, rather than a single isolated spike. Best follow-up check: drill CFH021 month-by-month inside GM FASHION and FASHION to confirm which months and item categories inside those two groups produced the largest share of the uplift.",
+    "reuse_summary": {
+      "drill_dimensions": 3,
+      "answered_by_reuse": 0,
+      "facts_reusable": 1,
+      "gaps_needing_probe": 3
+    },
+    "gap_probes_used": 0,
+    "probe_budget": 3
+  },
+  {
+    "signal": {
+      "id": "cand_09_period_change_contribution",
+      "kind": "business",
+      "description": "April: revenue Growth of 2.1M (from 15.1M to 17.2M), 69.8% of the total change",
+      "affected_segment": "month=4",
+      "question": "What is driving this finding?",
+      "evidence_query": "meta_period_by_mis_deep_dive2_month",
+      "level": "period",
+      "story_key": "period:v1:28d552c7b3fdd5a5fb202451b89576553512360020ec2415e8721241b336aa01",
+      "covered_story_keys": [
+        "period:v1:28d552c7b3fdd5a5fb202451b89576553512360020ec2415e8721241b336aa01"
+      ],
+      "injected": true,
+      "candidate_id": "cand_09_period_change_contribution",
+      "impact_value": 2112426.17,
+      "impact_share": 69.8391,
+      "decomposition": null,
+      "segment_members": null,
+      "score": 69.83910046210792,
+      "candidate_type": "period_change_contribution",
+      "evidence_segment": "month=4",
+      "metric": "mis_deep_dive2::revenue",
+      "bundle_id": "MIS_DEEP_DIVE2::revenue",
+      "metric_family": "revenue",
+      "dimension": "'MIS_DEEP_DIVE2'[month]",
+      "anchor": "4",
+      "period_label": "April",
+      "direction": 1,
+      "current": 17197582.68,
+      "prior": 15085156.51,
+      "segment": [
+        "month=4"
+      ],
+      "analysis_type": "period_change_contribution"
+    },
+    "probes": [
+      {
+        "tool": "run_dax",
+        "dax": "EVALUATE TOPN(10, SUMMARIZECOLUMNS( 'MIS_DEEP_DIVE2'[product_group_name], TREATAS({4}, 'MIS_DEEP_DIVE2'[month]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_DEEP_DIVE2'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TRANSACTIONS'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TABLE'[store_no]), \"Revenue Growth\", [revenue Growth], \"Revenue Current\", [net revenue CURRENT], \"Revenue Past\", [net revenue PAST], \"QTY Growth\", [QTY Growth], \"Bills Growth\", [bills growth] ), [Revenue Growth], DESC )",
+        "status": "success",
+        "rows": [
+          {
+            "product_group_name": "CF-MEDI CARE",
+            "Revenue Growth": 56431.24000000011,
+            "Revenue Current": 333168.94000000006,
+            "Revenue Past": 276737.69999999995,
+            "QTY Growth": 13363.0,
+            "Bills Growth": 2540
+          },
+          {
+            "product_group_name": "CF-CHOCOLATE",
+            "Revenue Growth": 94271.02000000014,
+            "Revenue Current": 637627.23,
+            "Revenue Past": 543356.2099999998,
+            "QTY Growth": 7559.248239999986,
+            "Bills Growth": 4067
+          },
+          {
+            "product_group_name": "CF-PULSES SPICES & HERBS",
+            "Revenue Growth": 69398.41000000015,
+            "Revenue Current": 406873.6900000001,
+            "Revenue Past": 337475.27999999997,
+            "QTY Growth": 10850.310000000012,
+            "Bills Growth": 7683
+          },
+          {
+            "product_group_name": "CF-WATCHES",
+            "Revenue Growth": 124199.92000000001,
+            "Revenue Current": 349338.49,
+            "Revenue Past": 225138.56999999998,
+            "QTY Growth": 8403.0,
+            "Bills Growth": 3824
+          },
+          {
+            "product_group_name": "CF-RICE",
+            "Revenue Growth": 212921.52000000025,
+            "Revenue Current": 953129.88,
+            "Revenue Past": 740208.3599999998,
+            "QTY Growth": 7318.669999999998,
+            "Bills Growth": 5119
+          },
+          {
+            "product_group_name": "CF-FROZEN POULTRY",
+            "Revenue Growth": 74807.42999999993,
+            "Revenue Current": 342345.14999999997,
+            "Revenue Past": 267537.72000000003,
+            "QTY Growth": 2931.0,
+            "Bills Growth": -1206
+          },
+          {
+            "product_group_name": "CF-HAIR CARE",
+            "Revenue Growth": 96091.04999999981,
+            "Revenue Current": 566111.9099999999,
+            "Revenue Past": 470020.8600000001,
+            "QTY Growth": 7712.0,
+            "Bills Growth": 5673
+          },
+          {
+            "product_group_name": "CF-SKIN CARE",
+            "Revenue Growth": 140646.33999999985,
+            "Revenue Current": 932914.0099999997,
+            "Revenue Past": 792267.6699999998,
+            "QTY Growth": 18416.0,
+            "Bills Growth": 7770
+          },
+          {
+            "product_group_name": "CF-EDIBLE OILS",
+            "Revenue Growth": 217244.09999999986,
+            "Revenue Current": 882388.6,
+            "Revenue Past": 665144.5000000001,
+            "QTY Growth": 8261.0,
+            "Bills Growth": 8906
+          },
+          {
+            "product_group_name": "CF-FRESH CHICKEN & PARTS",
+            "Revenue Growth": 233063.61999999994,
+            "Revenue Current": 710767.5399999999,
+            "Revenue Past": 477703.92,
+            "QTY Growth": 37387.0,
+            "Bills Growth": 16231
+          }
+        ]
+      },
+      {
+        "tool": "run_dax",
+        "dax": "EVALUATE TOPN(10, SUMMARIZECOLUMNS( 'MIS_DEEP_DIVE2'[store_no], TREATAS({4}, 'MIS_DEEP_DIVE2'[month]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_DEEP_DIVE2'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TRANSACTIONS'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TABLE'[store_no]), \"Revenue Growth\", [revenue Growth], \"Revenue Current\", [net revenue CURRENT], \"Revenue Past\", [net revenue PAST], \"QTY Growth\", [QTY Growth], \"Bills Growth\", [bills growth] ), [Revenue Growth], DESC )",
+        "status": "success",
+        "rows": [
+          {
+            "store_no": "CFH014",
+            "Revenue Growth": 508905.9800000014,
+            "Revenue Current": 5429652.030000001,
+            "Revenue Past": 4920746.05,
+            "QTY Growth": 42802.445399999735,
+            "Bills Growth": 38473
+          },
+          {
+            "store_no": "CFH017",
+            "Revenue Growth": 219619.78999999817,
+            "Revenue Current": 3021526.3599999994,
+            "Revenue Past": 2801906.570000001,
+            "QTY Growth": 28977.499329999962,
+            "Bills Growth": 3068
+          },
+          {
+            "store_no": "CFH021",
+            "Revenue Growth": 1019128.889999995,
+            "Revenue Current": 5378583.989999997,
+            "Revenue Past": 4359455.100000002,
+            "QTY Growth": 75489.2553000002,
+            "Bills Growth": 47137
+          },
+          {
+            "store_no": "CFH018",
+            "Revenue Growth": 364771.5099999993,
+            "Revenue Current": 3367820.3000000007,
+            "Revenue Past": 3003048.7900000014,
+            "QTY Growth": 28426.62254999997,
+            "Bills Growth": 19596
+          }
+        ]
+      },
+      {
+        "tool": "conclude",
+        "status": "accepted"
+      }
+    ],
+    "probe_executions": 2,
+    "concluded": true,
+    "explanation": "April’s comparable revenue increase was SAR 2.1M, which the scan evidence shows was 69.8% of the total period change. The store breakdown shows this was broad-based but concentrated in CFH021, which contributed SAR 1.02M of the April increase, versus SAR 509K from CFH014, SAR 365K from CFH018, and SAR 220K from CFH017. The product-group breakdown points to a mix of category gains rather than one isolated spike, with the largest visible lifts in CF-FRESH CHICKEN & PARTS at SAR 233K, CF-EDIBLE OILS at SAR 217K, and CF-RICE at SAR 213K; these gains were generally associated with higher Units and, in most of the top groups shown, higher Transactions as well. A likely explanation is that April’s uplift was driven mainly by stronger trading in CFH021 alongside broad demand gains across several food and personal-care product groups, rather than a single-category event. Best follow-up check: break CFH021’s April change down further by product_group_name and compare Price versus Basket Size there to see whether the branch’s gain came more from volume or average value per item.",
+    "reuse_summary": {
+      "drill_dimensions": 3,
+      "answered_by_reuse": 0,
+      "facts_reusable": 1,
+      "gaps_needing_probe": 3
+    },
+    "gap_probes_used": 0,
+    "probe_budget": 3
+  },
+  {
+    "signal": {
+      "candidate_id": "cand_19_change_contribution",
+      "related_candidate_ids": [
+        "cand_20_change_contribution",
+        "cand_08_change_contribution",
+        "cand_36_change_contribution",
+        "cand_46_change_contribution"
+      ],
+      "id": "cfh017_decline_drags_group",
+      "kind": "business",
+      "description": "CFH017 reduced comparable revenue Growth by SAR 1310152.06, or -43.315% of the total change, with bills growth of -92115 and QTY Growth of -219999.0739; the scan also shows weakness in CFH017 | FMCG FOOD at -95955.5537 Units and CFH017 | CF-FRUIT & VEGETABLES at -75782.8642 Units.",
+      "affected_segment": "CFH017",
+      "segment_members": null,
+      "impact_value": -1310152.06,
+      "impact_share": -43.315,
+      "question": "What in CFH017, particularly FMCG FOOD and CF-FRUIT & VEGETABLES, is associated with the SAR 1310152.06 revenue shortfall and 92115 fewer transactions?",
+      "evidence_query": "baseline_comparable_entities",
+      "decomposition": [
+        {
+          "driver": "QTY Growth",
+          "rate_of": "net revenue CURRENT / net qty CURRENT",
+          "revenue_change": -1310152.06,
+          "driver_current": 2997270.1,
+          "driver_prior": 3217269.1739,
+          "driver_change": -219999.0739,
+          "driver_change_pct": -6.8381,
+          "volume_effect": -1519556.4741,
+          "volume_effect_share_pct": 115.9832,
+          "rate_effect": 209404.4141,
+          "rate_effect_share_pct": -15.9832,
+          "rate_current": 6.977,
+          "rate_prior": 6.9071,
+          "rate_change": 0.0699,
+          "rate_change_pct": 1.0115,
+          "reconciled": true,
+          "basis": "exact price/volume split; rate = revenue per unit of driver (blends price and mix at this grain); decomposition, not cause"
+        },
+        {
+          "driver": "bills growth",
+          "rate_of": "net revenue CURRENT / net bills CURRENT",
+          "revenue_change": -1310152.06,
+          "driver_current": 1318259.0,
+          "driver_prior": 1410374.0,
+          "driver_change": -92115.0,
+          "driver_change_pct": -6.5312,
+          "volume_effect": -1451374.3839,
+          "volume_effect_share_pct": 110.7791,
+          "rate_effect": 141222.3239,
+          "rate_effect_share_pct": -10.7791,
+          "rate_current": 15.8632,
+          "rate_prior": 15.7561,
+          "rate_change": 0.1071,
+          "rate_change_pct": 0.6799,
+          "reconciled": true,
+          "basis": "exact price/volume split; rate = revenue per unit of driver (blends price and mix at this grain); decomposition, not cause"
+        }
+      ],
+      "score": 43.315048184134916,
+      "candidate_type": "change_contribution",
+      "evidence_segment": "CFH017",
+      "metric": "mis_deep_dive2::revenue",
+      "bundle_id": "MIS_DEEP_DIVE2::revenue",
+      "metric_family": "revenue",
+      "dimension": [
+        "'mis_deep_dive2'[store_no]"
+      ],
+      "direction": -1,
+      "current": 20911860.59,
+      "prior": 22222012.65,
+      "level": "high",
+      "story_key": "high:v1:f42b81638a7fbd2dcebaab57495cf9ce8e96b4676e2b98082adaf78edaeb45b8",
+      "segment": [
+        "cfh017"
+      ],
+      "analysis_type": "change_contribution",
+      "period_anchor": "2026-07",
+      "covered_story_keys": [
+        "high:v1:f42b81638a7fbd2dcebaab57495cf9ce8e96b4676e2b98082adaf78edaeb45b8",
+        "high:v1:a372626ae64abbb5878663bf6177e2a2b0cdd0f65c8a05fd76f0882fcd0a0435",
+        "high:v1:8dee2ba3db9e038a3dfd5daa85aad947d1e12ee1be640e07bb8f22f22b902f04",
+        "high:v1:78fe5fe7e09880795dd3814e0f23b830fed7a9de3d4047c4dad31aa3f4667844",
+        "high:v1:f367d5e7b6fc763453b68f7fb9cb1a38d6a848a0fbef1f76efa6ad7e60e7f63e"
+      ]
+    },
+    "probes": [
+      {
+        "tool": "run_dax",
+        "dax": "EVALUATE\nTOPN(\n    20,\n    SUMMARIZECOLUMNS(\n        'MIS_DEEP_DIVE2'[item_category_name],\n        TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_DEEP_DIVE2'[store_no]),\n        TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no]),\n        TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TRANSACTIONS'[store_no]),\n        TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TABLE'[store_no]),\n        TREATAS({\"CFH017\"}, 'MIS_DEEP_DIVE2'[store_no]),\n        TREATAS({\"CFH017\"}, 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no]),\n        TREATAS({\"CFH017\"}, 'CAT_TRANSACTIONS'[store_no]),\n        TREATAS({\"CFH017\"}, 'CAT_TABLE'[store_no]),\n        \"Revenue Current\", [net revenue CURRENT],\n        \"Revenue Past\", [net revenue PAST],\n        \"Revenue Growth\", [revenue Growth],\n        \"Units Current\", [net qty CURRENT],\n        \"Units Past\", [net qty PAST],\n        \"Units Growth\", [QTY Growth],\n        \"Transactions Current\", [net bills CURRENT],\n        \"Transactions Growth\", [bills growth]\n    ),\n    [Revenue Growth],\n    ASC\n)",
+        "status": "success",
+        "rows": [
+          {
+            "item_category_name": "CF-FASHION JWELRY&HAIR ACCS",
+            "Revenue Current": 80282.92,
+            "Revenue Past": 95154.04000000001,
+            "Revenue Growth": -14871.12000000001,
+            "Units Current": 13636.0,
+            "Units Past": 18273.0,
+            "Units Growth": -4637.0,
+            "Transactions Current": 7279,
+            "Transactions Growth": -1477
+          },
+          {
+            "item_category_name": "CF-BEAUTY PRODUCTS",
+            "Revenue Current": 120938.78999999998,
+            "Revenue Past": 136858.43000000002,
+            "Revenue Growth": -15919.640000000043,
+            "Units Current": 9218.0,
+            "Units Past": 11455.0,
+            "Units Growth": -2237.0,
+            "Transactions Current": 5693,
+            "Transactions Growth": -1365
+          },
+          {
+            "item_category_name": "CF-HOME LINEN",
+            "Revenue Current": 302303.01000000007,
+            "Revenue Past": 332910.27,
+            "Revenue Growth": -30607.25999999995,
+            "Units Current": 10256.0,
+            "Units Past": 11889.0,
+            "Units Growth": -1633.0,
+            "Transactions Current": 6837,
+            "Transactions Growth": -478
+          },
+          {
+            "item_category_name": "CF-PERFUMES",
+            "Revenue Current": 325467.48999999993,
+            "Revenue Past": 342000.89999999997,
+            "Revenue Growth": -16533.410000000033,
+            "Units Current": 25757.0,
+            "Units Past": 28989.0,
+            "Units Growth": -3232.0,
+            "Transactions Current": 12985,
+            "Transactions Growth": -1547
+          },
+          {
+            "item_category_name": "CF-WATCHES & SUNGLASSES",
+            "Revenue Current": 292543.51999999996,
+            "Revenue Past": 327382.16000000003,
+            "Revenue Growth": -34838.64000000007,
+            "Units Current": 22773.0,
+            "Units Past": 25241.0,
+            "Units Growth": -2468.0,
+            "Transactions Current": 11138,
+            "Transactions Growth": -1285
+          },
+          {
+            "item_category_name": "CF-HOME CARE",
+            "Revenue Current": 350561.3499999999,
+            "Revenue Past": 386949.0499999998,
+            "Revenue Growth": -36387.699999999895,
+            "Units Current": 33342.0,
+            "Units Past": 35990.0,
+            "Units Growth": -2648.0,
+            "Transactions Current": 28783,
+            "Transactions Growth": -2010
+          },
+          {
+            "item_category_name": "CF-DELICATESSEN",
+            "Revenue Current": 149972.79999999996,
+            "Revenue Past": 194315.78000000003,
+            "Revenue Growth": -44342.98000000007,
+            "Units Current": 12451.545,
+            "Units Past": 14085.04063,
+            "Units Growth": -1633.4956299999994,
+            "Transactions Current": 17823,
+            "Transactions Growth": -2631
+          },
+          {
+            "item_category_name": "CF-HOT FOOD",
+            "Revenue Current": 4.3999999999999995,
+            "Revenue Past": 26514.17,
+            "Revenue Growth": -26509.769999999997,
+            "Units Current": 1.002,
+            "Units Past": 8966.315,
+            "Units Growth": -8965.313,
+            "Transactions Current": 2,
+            "Transactions Growth": -3278
+          },
+          {
+            "item_category_name": "CF-PERSONAL ACCESSORIES",
+            "Revenue Current": 158003.49,
+            "Revenue Past": 195017.81000000003,
+            "Revenue Growth": -37014.320000000036,
+            "Units Current": 32098.0,
+            "Units Past": 40886.0,
+            "Units Growth": -8788.0,
+            "Transactions Current": 18390,
+            "Transactions Growth": -3255
+          },
+          {
+            "item_category_name": "CF-CONFECTIONERY",
+            "Revenue Current": 654241.5800000001,
+            "Revenue Past": 723718.17,
+            "Revenue Growth": -69476.58999999997,
+            "Units Current": 538872.91651,
+            "Units Past": 565937.32525,
+            "Units Growth": -27064.408739999984,
+            "Transactions Current": 32640,
+            "Transactions Growth": -6556
+          },
+          {
+            "item_category_name": "CF-LUGGAGE",
+            "Revenue Current": 451930.8799999999,
+            "Revenue Past": 531396.3200000001,
+            "Revenue Growth": -79465.44000000018,
+            "Units Current": 8338.0,
+            "Units Past": 9021.0,
+            "Units Growth": -683.0,
+            "Transactions Current": 7330,
+            "Transactions Growth": -177
+          },
+          {
+            "item_category_name": "CF-SMART WATCHES",
+            "Revenue Current": 130542.81000000001,
+            "Revenue Past": 198041.63000000003,
+            "Revenue Growth": -67498.82000000002,
+            "Units Current": 6698.0,
+            "Units Past": 7790.0,
+            "Units Growth": -1092.0,
+            "Transactions Current": 3752,
+            "Transactions Growth": -841
+          },
+          {
+            "item_category_name": "CF-ROASTERY",
+            "Revenue Current": 1400017.3999999997,
+            "Revenue Past": 1514007.7100000004,
+            "Revenue Growth": -113990.31000000075,
+            "Units Current": 50352.99830000001,
+            "Units Past": 59785.717,
+            "Units Growth": -9432.71869999999,
+            "Transactions Current": 66645,
+            "Transactions Growth": -3590
+          },
+          {
+            "item_category_name": "CF-FRUIT & VEGETABLES",
+            "Revenue Current": 1942233.0499999998,
+            "Revenue Past": 2248597.86,
+            "Revenue Growth": -306364.81000000006,
+            "Units Current": 400340.57863,
+            "Units Past": 476123.44282,
+            "Units Growth": -75782.86419,
+            "Transactions Current": 241591,
+            "Transactions Growth": -21715
+          },
+          {
+            "item_category_name": "CF-GROCERY FOOD",
+            "Revenue Current": 2765636.8100000005,
+            "Revenue Past": 2947775.5,
+            "Revenue Growth": -182138.68999999948,
+            "Units Current": 505568.96325000003,
+            "Units Past": 568073.35151,
+            "Units Growth": -62504.38825999992,
+            "Transactions Current": 211153,
+            "Transactions Growth": -16687
+          },
+          {
+            "item_category_name": "CF-MENS FASHION",
+            "Revenue Current": 977092.6299999993,
+            "Revenue Past": 1137689.4900000005,
+            "Revenue Growth": -160596.86000000115,
+            "Units Current": 62303.0,
+            "Units Past": 69579.0,
+            "Units Growth": -7276.0,
+            "Transactions Current": 47823,
+            "Transactions Growth": -4389
+          },
+          {
+            "item_category_name": "CF-CHILLED & DAIRY",
+            "Revenue Current": 934806.5099999998,
+            "Revenue Past": 976688.9599999995,
+            "Revenue Growth": -41882.44999999972,
+            "Units Current": 374327.0,
+            "Units Past": 369580.0,
+            "Units Growth": 4747.0,
+            "Transactions Current": 107095,
+            "Transactions Growth": -8950
+          },
+          {
+            "item_category_name": "CF-ELECTRONICS",
+            "Revenue Current": 848775.9399999995,
+            "Revenue Past": 948653.61,
+            "Revenue Growth": -99877.67000000051,
+            "Units Current": 19659.0,
+            "Units Past": 20645.0,
+            "Units Growth": -986.0,
+            "Transactions Current": 17598,
+            "Transactions Growth": -846
+          },
+          {
+            "item_category_name": "CF-UTENSILS",
+            "Revenue Current": 273483.3899999998,
+            "Revenue Past": 311916.57999999996,
+            "Revenue Growth": -38433.19000000018,
+            "Units Current": 18803.0,
+            "Units Past": 21167.0,
+            "Units Growth": -2364.0,
+            "Transactions Current": 14894,
+            "Transactions Growth": -1767
+          },
+          {
+            "item_category_name": "CF-PERSONAL CARE",
+            "Revenue Current": 1838810.0999999999,
+            "Revenue Past": 1953058.7999999993,
+            "Revenue Growth": -114248.69999999949,
+            "Units Current": 247422.0,
+            "Units Past": 258906.0,
+            "Units Growth": -11484.0,
+            "Transactions Current": 104218,
+            "Transactions Growth": -6013
+          }
+        ]
+      },
+      {
+        "tool": "run_dax",
+        "dax": "EVALUATE\nTOPN(\n    20,\n    SUMMARIZECOLUMNS(\n        'MIS_DEEP_DIVE2'[product_group_name],\n        TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_DEEP_DIVE2'[store_no]),\n        TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no]),\n        TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TRANSACTIONS'[store_no]),\n        TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TABLE'[store_no]),\n        TREATAS({\"CFH017\"}, 'MIS_DEEP_DIVE2'[store_no]),\n        TREATAS({\"CFH017\"}, 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no]),\n        TREATAS({\"CFH017\"}, 'CAT_TRANSACTIONS'[store_no]),\n        TREATAS({\"CFH017\"}, 'CAT_TABLE'[store_no]),\n        \"Revenue Current\", [net revenue CURRENT],\n        \"Revenue Past\", [net revenue PAST],\n        \"Revenue Growth\", [revenue Growth],\n        \"Units Current\", [net qty CURRENT],\n        \"Units Past\", [net qty PAST],\n        \"Units Growth\", [QTY Growth],\n        \"Transactions Current\", [net bills CURRENT],\n        \"Transactions Growth\", [bills growth]\n    ),\n    [Revenue Growth],\n    ASC\n)",
+        "status": "success",
+        "rows": [
+          {
+            "product_group_name": "CF-MEDI CARE",
+            "Revenue Current": 287903.23,
+            "Revenue Past": 316200.29000000004,
+            "Revenue Growth": -28297.060000000056,
+            "Units Current": 38800.0,
+            "Units Past": 39978.0,
+            "Units Growth": -1178.0,
+            "Transactions Current": 12857,
+            "Transactions Growth": -1090
+          },
+          {
+            "product_group_name": "CF-DELICACY",
+            "Revenue Current": 122808.89,
+            "Revenue Past": 153647.00000000003,
+            "Revenue Growth": -30838.11000000003,
+            "Units Current": 10869.951000000001,
+            "Units Past": 11771.71463,
+            "Units Growth": -901.7636299999995,
+            "Transactions Current": 14428,
+            "Transactions Growth": -1201
+          },
+          {
+            "product_group_name": "CF-SKIN CARE",
+            "Revenue Current": 838601.3600000002,
+            "Revenue Past": 869308.7599999999,
+            "Revenue Growth": -30707.399999999674,
+            "Units Current": 130588.0,
+            "Units Past": 133666.0,
+            "Units Growth": -3078.0,
+            "Transactions Current": 44587,
+            "Transactions Growth": -850
+          },
+          {
+            "product_group_name": "CF-KITCHEN APPLIANCES",
+            "Revenue Current": 225197.65,
+            "Revenue Past": 256326.48999999996,
+            "Revenue Growth": -31128.839999999967,
+            "Units Current": 4563.0,
+            "Units Past": 5049.0,
+            "Units Growth": -486.0,
+            "Transactions Current": 4424,
+            "Transactions Growth": -423
+          },
+          {
+            "product_group_name": "CF-FABRIC CLEAN",
+            "Revenue Current": 242575.51,
+            "Revenue Past": 278974.99,
+            "Revenue Growth": -36399.47999999998,
+            "Units Current": 19549.0,
+            "Units Past": 22242.0,
+            "Units Growth": -2693.0,
+            "Transactions Current": 18173,
+            "Transactions Growth": -2028
+          },
+          {
+            "product_group_name": "CF-PASTA & NOODLES",
+            "Revenue Current": 155926.66,
+            "Revenue Past": 201591.68000000005,
+            "Revenue Growth": -45665.02000000005,
+            "Units Current": 82579.0,
+            "Units Past": 109800.0,
+            "Units Growth": -27221.0,
+            "Transactions Current": 19007,
+            "Transactions Growth": -3082
+          },
+          {
+            "product_group_name": "CF-BISCUITS&CAKES",
+            "Revenue Current": 111946.5,
+            "Revenue Past": 151579.70999999996,
+            "Revenue Growth": -39633.20999999996,
+            "Units Current": 86215.74997,
+            "Units Past": 105401.29151,
+            "Units Growth": -19185.54153999999,
+            "Transactions Current": 15761,
+            "Transactions Growth": -3618
+          },
+          {
+            "product_group_name": "CF-SWEETENING",
+            "Revenue Current": 128636.47000000003,
+            "Revenue Past": 160518.48,
+            "Revenue Growth": -31882.00999999998,
+            "Units Current": 13858.0,
+            "Units Past": 15435.0,
+            "Units Growth": -1577.0,
+            "Transactions Current": 12873,
+            "Transactions Growth": -1291
+          },
+          {
+            "product_group_name": "CF-PERSONAL ACCS",
+            "Revenue Current": 158003.49,
+            "Revenue Past": 195017.81000000003,
+            "Revenue Growth": -37014.320000000036,
+            "Units Current": 32098.0,
+            "Units Past": 40886.0,
+            "Units Growth": -8788.0,
+            "Transactions Current": 18390,
+            "Transactions Growth": -3255
+          },
+          {
+            "product_group_name": "CF-MENS TOP WEAR",
+            "Revenue Current": 305765.08999999997,
+            "Revenue Past": 353145.20000000007,
+            "Revenue Growth": -47380.1100000001,
+            "Units Current": 15777.0,
+            "Units Past": 17900.0,
+            "Units Growth": -2123.0,
+            "Transactions Current": 11832,
+            "Transactions Growth": -881
+          },
+          {
+            "product_group_name": "CF-FRUITS",
+            "Revenue Current": 821497.8800000001,
+            "Revenue Past": 908500.8099999999,
+            "Revenue Growth": -87002.92999999982,
+            "Units Current": 147021.50723,
+            "Units Past": 168617.42216,
+            "Units Growth": -21595.91493,
+            "Transactions Current": 76785,
+            "Transactions Growth": -6138
+          },
+          {
+            "product_group_name": "CF-FRESH MEAT",
+            "Revenue Current": 1200407.0300000003,
+            "Revenue Past": 1292256.7400000002,
+            "Revenue Growth": -91849.70999999996,
+            "Units Current": 46094.28599999999,
+            "Units Past": 55315.78332000001,
+            "Units Growth": -9221.497320000017,
+            "Transactions Current": 29327,
+            "Transactions Growth": -2450
+          },
+          {
+            "product_group_name": "CF-NUTS",
+            "Revenue Current": 810207.2999999998,
+            "Revenue Past": 914326.1700000002,
+            "Revenue Growth": -104118.87000000034,
+            "Units Current": 22323.7173,
+            "Units Past": 27358.847000000005,
+            "Units Growth": -5035.129700000005,
+            "Transactions Current": 36076,
+            "Transactions Growth": -3143
+          },
+          {
+            "product_group_name": "CF-BEVERAGES-HOT",
+            "Revenue Current": 444521.46000000014,
+            "Revenue Past": 484888.44999999995,
+            "Revenue Growth": -40366.989999999816,
+            "Units Current": 48715.880000000005,
+            "Units Past": 49901.060000000005,
+            "Units Growth": -1185.1800000000003,
+            "Transactions Current": 24646,
+            "Transactions Growth": -2931
+          },
+          {
+            "product_group_name": "SMART WATCHES",
+            "Revenue Current": 130542.81000000001,
+            "Revenue Past": 198041.63000000003,
+            "Revenue Growth": -67498.82000000002,
+            "Units Current": 6698.0,
+            "Units Past": 7790.0,
+            "Units Growth": -1092.0,
+            "Transactions Current": 3752,
+            "Transactions Growth": -841
+          },
+          {
+            "product_group_name": "CF-CHOCOLATE",
+            "Revenue Current": 654241.5800000001,
+            "Revenue Past": 723187.51,
+            "Revenue Growth": -68945.92999999993,
+            "Units Current": 538872.91651,
+            "Units Past": 565327.32525,
+            "Units Growth": -26454.408739999984,
+            "Transactions Current": 32640,
+            "Transactions Growth": -6284
+          },
+          {
+            "product_group_name": "CF-TROLLEY AND SUITCASE",
+            "Revenue Current": 407851.82999999996,
+            "Revenue Past": 471307.18,
+            "Revenue Growth": -63455.350000000035,
+            "Units Current": 6362.0,
+            "Units Past": 7013.0,
+            "Units Growth": -651.0,
+            "Transactions Current": 5514,
+            "Transactions Growth": -149
+          },
+          {
+            "product_group_name": "CF-PERSONAL ELECTRONICS",
+            "Revenue Current": 189658.58,
+            "Revenue Past": 232031.77000000005,
+            "Revenue Growth": -42373.19000000006,
+            "Units Current": 5585.0,
+            "Units Past": 6273.0,
+            "Units Growth": -688.0,
+            "Transactions Current": 5281,
+            "Transactions Growth": -587
+          },
+          {
+            "product_group_name": "CF-VEGETABLES",
+            "Revenue Current": 1120174.2599999998,
+            "Revenue Past": 1340052.3,
+            "Revenue Growth": -219878.04000000027,
+            "Units Current": 253209.07140000002,
+            "Units Past": 307499.75066,
+            "Units Growth": -54290.679260000004,
+            "Transactions Current": 164704,
+            "Transactions Growth": -15672
+          },
+          {
+            "product_group_name": "CF-MENS BOTTOMS",
+            "Revenue Current": 289019.99,
+            "Revenue Past": 357833.27,
+            "Revenue Growth": -68813.28000000003,
+            "Units Current": 8968.0,
+            "Units Past": 10973.0,
+            "Units Growth": -2005.0,
+            "Transactions Current": 7318,
+            "Transactions Growth": -1390
+          }
+        ]
+      },
+      {
+        "tool": "conclude",
+        "status": "accepted"
+      }
+    ],
+    "probe_executions": 2,
+    "concluded": true,
+    "explanation": "CFH017 accounts for a SAR 1.31M comparable Revenue decline, equal to -43.3% of the total comparable change, and the scan already showed this sat alongside 92,115 fewer Transactions and 219,999 fewer Units. A complete CFH017 item-category drill shows the decline was concentrated in a few large categories, especially CF-FRUIT & VEGETABLES at SAR -306.4K, 75.8K fewer Units and 21.7K fewer Transactions, and CF-GROCERY FOOD at SAR -182.1K, 62.5K fewer Units and 16.7K fewer Transactions; CF-MENS FASHION also fell SAR -160.6K. The product-group drill points to the same pattern inside those categories, with CF-VEGETABLES down SAR -219.9K on 54.3K fewer Units and 15.7K fewer Transactions, and additional declines across groups such as CF-NUTS at SAR -104.1K and CF-FRESH MEAT at SAR -91.8K, so the shortfall looks associated with broad-based volume weakness rather than a single isolated line. The small positive rate effect in the scan means average value per unit rose slightly, but not enough to offset lower Transactions and thinner volume. Best next human check: review CFH017 availability, ranging and promotional execution in Fruit & Vegetables and Grocery Food, especially the CF-VEGETABLES line, to see whether stock, assortment or local pricing changes align with the lost Units and Transactions.",
+    "reuse_summary": {
+      "drill_dimensions": 3,
+      "answered_by_reuse": 0,
+      "facts_reusable": 1,
+      "gaps_needing_probe": 3
+    },
+    "gap_probes_used": 0,
+    "probe_budget": 3
+  }
+]

@@ -7,7 +7,7 @@ import math
 import re
 from typing import Any
 
-from ..tools import file_io, summary_memory
+from ..tools import file_io, summary_memory, summary_roles
 from ..utils.logger import RunLogger
 
 
@@ -100,7 +100,7 @@ def _dimension(labels: list[str], query: dict, state: dict) -> str:
     return "overall"
 
 
-def _angle(query: dict, rows: list[dict], dimension: str, numeric: list[str]) -> str:
+def _angle(query: dict, rows: list[dict], dimension: str, numeric: list[str], r4_enabled: bool = False) -> str:
     dimension_tokens = _tokens(dimension)
     purpose_tokens = _tokens(query.get("query_name"), query.get("purpose"))
     toks = purpose_tokens | dimension_tokens
@@ -113,7 +113,11 @@ def _angle(query: dict, rows: list[dict], dimension: str, numeric: list[str]) ->
         return "period_movement"
     if dimension_tokens & _ENTITY:
         return "store_overview"
-    if dimension_tokens & {"division", "department"}:
+    if "department" in dimension_tokens:
+        # R4 splits Department into its own focus level; with R4 off it collapses
+        # into Division exactly as before so legacy candidates/keys are unchanged.
+        return "department_overview" if r4_enabled else "division_overview"
+    if "division" in dimension_tokens:
         return "division_overview"
     if "category" in dimension_tokens:
         return "category_overview"
@@ -123,7 +127,9 @@ def _angle(query: dict, rows: list[dict], dimension: str, numeric: list[str]) ->
         return "period_movement"
     if purpose_tokens & _ENTITY:
         return "store_overview"
-    if purpose_tokens & {"division", "department"}:
+    if "department" in purpose_tokens:
+        return "department_overview" if r4_enabled else "division_overview"
+    if "division" in purpose_tokens:
         return "division_overview"
     if "category" in purpose_tokens:
         return "category_overview"
@@ -432,6 +438,7 @@ def _title(angle: str, dimension: str) -> str:
         "period_movement": "How performance moved across the latest period",
         "store_overview": "How performance varied across stores",
         "division_overview": "How divisions shaped the latest result",
+        "department_overview": "How departments shaped the latest result",
         "category_overview": "How categories shaped the latest result",
         "product_overview": "How products shaped the latest result",
         "volume_and_transactions": "How volume and transactions moved",
@@ -549,6 +556,7 @@ def _visual(
 _MEMBER_ANGLES = {
     "store_overview",
     "division_overview",
+    "department_overview",
     "category_overview",
     "product_overview",
     "business_breakdown",
@@ -560,8 +568,10 @@ def _finalize(candidate: dict, dataset: str, anchor: str) -> dict:
     """Stamp the two stable identities and a candidate id onto a candidate."""
     key, _ = summary_memory.story_components(candidate, dataset, anchor)
     focus_key, _ = summary_memory.focus_components(candidate, dataset)
+    area_key, _ = summary_memory.area_components(candidate, dataset)
     candidate["summary_key"] = key
     candidate["focus_key"] = focus_key
+    candidate["area_key"] = area_key
     candidate["candidate_id"] = f"summary_{key.rsplit(':', 1)[-1][:12]}"
     return candidate
 
@@ -620,7 +630,10 @@ def _dimension_role(angle: str, dimension: str, state: dict) -> str:
     entity = ((state.get("semantic_model_profile") or {}).get("entity_dimension") or {}).get("column")
     if entity and str(dimension).casefold() == str(entity).casefold():
         return "store"
-    return role
+    # Apply configured role aliases so another model's equivalent hierarchy
+    # (e.g. business_unit -> division) resolves to a canonical focus role. With
+    # no aliases configured this only normalizes the role, leaving it unchanged.
+    return summary_roles.canonical_role(role, dimension, state)
 
 
 def _resolve_ref(state: dict, column_name: Any) -> str | None:
@@ -725,6 +738,10 @@ def _member_candidate(
         "dimension_ref": _resolve_ref(state, label_col) or _resolve_ref(state, dimension),
         "member_value": segment_raw,
         "segment": segment,
+        # Leaf-only path for the legacy re-slice; the universe node supplies the
+        # full Division -> Department -> Category ancestry when it builds the
+        # candidate so identically named members under different parents differ.
+        "hierarchy_path": [segment],
         "metric": metric,
         "metric_family": metric_family,
         "direction": "increase" if materiality > 0 else "decrease" if materiality < 0 else "flat",
@@ -749,11 +766,124 @@ def _member_candidate(
     return _finalize(candidate, dataset, anchor)
 
 
+_UNIVERSE_ANGLE = {
+    "division": "division_overview",
+    "department": "department_overview",
+    "category": "category_overview",
+}
+
+
+def _universe_member_candidates(state: dict, dataset: str, anchor: str) -> list[dict]:
+    """Build rotation member candidates from the deterministic focus universe.
+
+    Each universe member carries the validated per-parent materiality diagnostics
+    (current/prior/change + overall_current/gross_sibling_change/... ) that the
+    portfolio selector reads. These are the PRIMARY rotation candidates in R4;
+    they dedup above any LLM-planned re-slice for the same member via a higher
+    base score, so selection never depends on what the planner happened to ask.
+    """
+    universe = state.get("summary_focus_universe") or {}
+    if str(universe.get("status")) != "ok":
+        return []
+    candidates: list[dict] = []
+    for role, info in (universe.get("roles") or {}).items():
+        if str(info.get("status")) != "ok":
+            continue
+        group_col = info.get("column") or role
+        metric_family = info.get("metric_family") or universe.get("metric_family") or "revenue"
+        angle = _UNIVERSE_ANGLE.get(role, "business_breakdown")
+        lens = summary_memory._lens_from_angle(angle)
+        dimension_ref = _resolve_ref(state, group_col)
+        for member in info.get("members") or []:
+            raw = member.get("member")
+            if not str(raw or "").strip():
+                continue
+            segment = _subject_label(raw, group_col)
+            change = member.get("change")
+            change_val = change if _number(change) else 0.0
+            direction = "increase" if change_val > 0 else "decrease" if change_val < 0 else "flat"
+            path = member.get("hierarchy_path") or [segment]
+            current, prior = member.get("current"), member.get("prior")
+            fact = {
+                "fact_id": "F1",
+                "fact_kind": "comparison",
+                "subject": segment,
+                "subject_role": "focus",
+                "coverage": "partial",
+                "metric": f"{metric_family.title()} comparison",
+                "current_value": current,
+                "prior_value": prior,
+                "change_value": change,
+                "change_pct": member.get("change_pct"),
+                "raw_value": change,
+                "statement": f"{segment} - {metric_family.title()} change of {_format_number(change_val, f'{metric_family} change')}",
+            }
+            candidate = {
+                "candidate_id": "",
+                "summary_key": "",
+                "focus_key": "",
+                "area_key": "",
+                "angle": angle,
+                "candidate_kind": "member",
+                "candidate_source": "universe",
+                "dimension_role": role,
+                "lens": lens,
+                "coverage": "partial",
+                "title_hint": f"How {segment} performed",
+                "purpose": f"Focus on {segment} within the {_clean_label(group_col).lower()} universe",
+                "query_name": f"summary_universe_{role}",
+                "dimension": group_col,
+                "dimension_ref": dimension_ref,
+                "member_value": raw,
+                "segment": segment,
+                "hierarchy_path": list(path),
+                "metric": None,
+                "metric_family": metric_family,
+                "direction": direction,
+                "observation_value": change_val,
+                "materiality": change_val,
+                "change_pct": member.get("change_pct"),
+                # Validated per-parent materiality diagnostics for the selector.
+                "current": current,
+                "prior": prior,
+                "change": change,
+                "overall_current": member.get("overall_current"),
+                "gross_sibling_change": member.get("gross_sibling_change"),
+                "signed_sibling_change": member.get("signed_sibling_change"),
+                "parent_change": member.get("parent_change"),
+                "full_member_count": member.get("full_member_count"),
+                # High base score so a universe member wins the stable-key dedup
+                # over any lower-scored LLM re-slice of the same member.
+                "score": 60.0 + min(9.0, math.log10(abs(change_val) + 1.0)),
+                "period_anchor": anchor,
+                "evidence": {"rows": [], "coverage": "partial", "facts": [fact]},
+                "metadata_context": {
+                    "dimension": _clean_label(group_col),
+                    "metric_family": metric_family,
+                    "segment": segment,
+                },
+                "metrics": [],
+                "visual": None,
+            }
+            finalized = _finalize(candidate, dataset, anchor)
+            # R4 focus identity includes the full hierarchy path, so two
+            # identically named leaves under different parents remain distinct
+            # through selection, same-day pinning, evidence and history.
+            portfolio_focus_key, _ = summary_memory.portfolio_focus_components(
+                finalized, dataset,
+            )
+            finalized["focus_key"] = portfolio_focus_key
+            finalized["candidate_id"] = f"summary_{portfolio_focus_key.rsplit(':', 1)[-1][:12]}"
+            candidates.append(finalized)
+    return candidates
+
+
 def build_candidates(state: dict) -> list[dict]:
     period = state.get("summary_period_context") or {}
     anchor = str(period.get("period_anchor") or "snapshot")
     dataset = str(state.get("dataset_id") or "unknown_dataset")
     focus_enabled = bool(state.get("summary_focus_enabled", True))
+    r4_enabled = bool(state.get("summary_r4_enabled", False))
     members_cap = max(0, int(state.get("summary_focus_members_per_dimension", 10)))
     candidates = []
     gated_queries = {
@@ -773,7 +903,7 @@ def build_candidates(state: dict) -> list[dict]:
         if not rows:
             continue
         labels, numeric = _columns(rows)
-        angle = _angle(query, rows, dimension, numeric)
+        angle = _angle(query, rows, dimension, numeric, r4_enabled=r4_enabled)
         metric = _primary_metric(numeric)
         metric_family = _family(metric or "")
         dimension_role = _dimension_role(angle, dimension, state)
@@ -788,6 +918,7 @@ def build_candidates(state: dict) -> list[dict]:
             "period_movement": 95,
             "store_overview": 90,
             "division_overview": 82,
+            "department_overview": 80,
             "category_overview": 78,
             "product_overview": 74,
             "volume_and_transactions": 72,
@@ -860,13 +991,25 @@ def build_candidates(state: dict) -> list[dict]:
                     )
                 )
 
+    # R4: the deterministic focus universe is the primary source of rotating
+    # Division/Department/Category member candidates (with validated per-parent
+    # materiality diagnostics). Appended after the LLM-derived candidates so the
+    # stable-key dedup below keeps the higher-scored universe member.
+    if r4_enabled:
+        candidates.extend(_universe_member_candidates(state, dataset, anchor))
+
     # One perspective per stable key. Keep the strongest evidence if the LLM
     # planner happened to produce two semantically equivalent queries.
     by_key = {}
     for candidate in candidates:
-        existing = by_key.get(candidate["summary_key"])
+        identity = (
+            ("area", candidate.get("area_key"))
+            if r4_enabled and candidate.get("candidate_source") == "universe"
+            else ("summary", candidate.get("summary_key"))
+        )
+        existing = by_key.get(identity)
         if existing is None or candidate["score"] > existing["score"]:
-            by_key[candidate["summary_key"]] = candidate
+            by_key[identity] = candidate
     return sorted(by_key.values(), key=lambda item: item["score"], reverse=True)
 
 

@@ -1,0 +1,39 @@
+{
+  "queries": [
+    {
+      "name": "grand_totals_with_levers_and_new_branch_split",
+      "purpose": "Provide the headline like-for-like totals, core growth measures, and the separate current revenue from the new branch population.",
+      "intent": "Return one row with comparable-population grand totals for [net revenue CURRENT], [net revenue PAST], [revenue Growth], [revenue growth %], [net qty CURRENT], [net qty PAST], [QTY Growth], [QTY GROWTH %], [net bills CURRENT], derived prior transactions as [net bills CURRENT] - [bills growth], [bills growth], [bills growth %], [retail price current year], [retail price past year], [RETAIL PRICE GROWTH], [QUANTITY PER TRANSACTION CURRENT YEAR], [QUANTITY PER TRANSACTION PAST YEAR], [QUANTITY PER TRANSACTION GROWTH], [SPEND PER TRANSACTION CURRENT YEAR], [SPEND PER TRANSACTION PAST YEAR], and [SPEND PER TRANSACTION GROWTH]. Apply the like-for-like branch filter to all four branch-bearing tables using the exact branch codes CFH014, CFH017, CFH018 and CFH021 on 'MIS_DEEP_DIVE2'[store_no], 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no], 'CAT_TRANSACTIONS'[store_no], and 'CAT_TABLE'[store_no]. Also return a second one-row query or one extra scalar column for current-only new-branch revenue using [net revenue CURRENT] filtered to CFH022 on the same branch-bearing tables, with no prior-year percentage for that branch."
+    },
+    {
+      "name": "latest_month_store_scorecard",
+      "purpose": "Show the most recent month by branch so the summary can lead with the current branch pattern rather than only all-period totals.",
+      "intent": "Identify the latest month from 'MIS_DEEP_DIVE2'[month] within the comparable population, then return up to 15 rows grouped by 'MIS_DEEP_DIVE2'[store_no] for that single latest month, with [net revenue CURRENT], [net revenue PAST], [revenue Growth], [revenue growth %], [net qty CURRENT], [net qty PAST], [QTY Growth], [QTY GROWTH %], [net bills CURRENT], derived prior transactions as [net bills CURRENT] - [bills growth], [bills growth], [bills growth %], [RETAIL PRICE GROWTH], [QUANTITY PER TRANSACTION GROWTH], and [SPEND PER TRANSACTION GROWTH]. Apply the like-for-like branch filter to 'MIS_DEEP_DIVE2'[store_no], 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no], 'CAT_TRANSACTIONS'[store_no], and 'CAT_TABLE'[store_no]. Sort by [revenue Growth] descending."
+    },
+    {
+      "name": "latest_month_division_breakdown",
+      "purpose": "Summarize which divisions are driving the most recent month result across comparable branches.",
+      "intent": "Identify the latest month from 'MIS_DEEP_DIVE2'[month] within the comparable population, then return the top 15 rows grouped by 'MIS_DEEP_DIVE2'[division_name] for that month with [net revenue CURRENT], [net revenue PAST], [revenue Growth], [revenue growth %], [net qty CURRENT], [net qty PAST], [QTY Growth], [QTY GROWTH %], [net bills CURRENT], derived prior transactions as [net bills CURRENT] - [bills growth], [bills growth], [bills growth %], [RETAIL PRICE GROWTH], [QUANTITY PER TRANSACTION GROWTH], and [SPEND PER TRANSACTION GROWTH]. Apply the like-for-like branch filter to 'MIS_DEEP_DIVE2'[store_no], 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no], 'CAT_TRANSACTIONS'[store_no], and 'CAT_TABLE'[store_no]. Sort by ABS([revenue Growth]) descending, breaking ties by [revenue Growth] descending."
+    },
+    {
+      "name": "latest_month_product_group_breakdown",
+      "purpose": "Show the biggest product-group gains and declines in the latest month for recent-trend commentary.",
+      "intent": "Identify the latest month from 'MIS_DEEP_DIVE2'[month] within the comparable population, then return the top 15 rows grouped by 'MIS_DEEP_DIVE2'[product_group_name] for that month with [net revenue CURRENT], [net revenue PAST], [revenue Growth], [revenue growth %], [net qty CURRENT], [net qty PAST], [QTY Growth], [QTY GROWTH %], [net bills CURRENT], derived prior transactions as [net bills CURRENT] - [bills growth], [bills growth], [bills growth %], [RETAIL PRICE GROWTH], [QUANTITY PER TRANSACTION GROWTH], and [SPEND PER TRANSACTION GROWTH]. Apply the like-for-like branch filter to 'MIS_DEEP_DIVE2'[store_no], 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no], 'CAT_TRANSACTIONS'[store_no], and 'CAT_TABLE'[store_no]. Sort by ABS([revenue Growth]) descending, breaking ties by [revenue Growth] descending."
+    },
+    {
+      "name": "category_health_measures",
+      "purpose": "Quantify how many categories are declining and how much revenue they represent for the comparable business.",
+      "intent": "Return one row with the category-health measures from 'CAT_TABLE': [COUNT], [COUNT_TOTAL], [COUNT_PLUS], [COUNT %], [sum deg cur rev], [sum deg past rev], [sum total cur rev], [sum total past rev], [contribution cur], and [contribution past]. Apply the like-for-like branch filter to all four branch-bearing tables using CFH014, CFH017, CFH018 and CFH021 on 'MIS_DEEP_DIVE2'[store_no], 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no], 'CAT_TRANSACTIONS'[store_no], and 'CAT_TABLE'[store_no]. No grouping; one row."
+    },
+    {
+      "name": "recent_daily_transactions_by_store",
+      "purpose": "Add recent branch transaction trend context from the daily transactions table, which is only available for the current year.",
+      "intent": "Return the top 15 rows grouped by 'rep_dept_wise_perf_eval_rpt'[TY_DATE] and 'rep_dept_wise_perf_eval_rpt'[LOC_CODE] for dates on or before the latest nonblank transaction date in 'rep_dept_wise_perf_eval_rpt'[TY_DATE], restricted to branch codes CFH014, CFH017, CFH018 and CFH021 in 'rep_dept_wise_perf_eval_rpt'[LOC_CODE]. Compute true branch transactions from 'rep_dept_wise_perf_eval_rpt'[LOC_BILLS] using a per-date per-branch de-duplicated aggregation rather than summing repeated row values. Sort by 'rep_dept_wise_perf_eval_rpt'[TY_DATE] descending, then by the transaction result descending. This query is current-year only and is for recent context, not last-year comparison."
+    },
+    {
+      "name": "refresh_recency",
+      "purpose": "State the data freshness visible in the model so the summary can say what period the numbers cover.",
+      "intent": "Return one row with 'Latest_Refresh_Table'[MaxRefreshDate] and the [UPDATED_DATE] measure. No grouping, no filters, one row."
+    }
+  ]
+}

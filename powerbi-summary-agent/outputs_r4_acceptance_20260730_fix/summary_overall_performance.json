@@ -1,0 +1,133 @@
+{
+  "status": "ok",
+  "families": {
+    "revenue": {
+      "current": 125844619.76999998,
+      "prior": 122819915.62000003,
+      "change": 3024704.1499999464,
+      "change_pct": 2.4627147272745744,
+      "comparison": "the same period last year"
+    },
+    "quantity": {
+      "current": 18611367.738690004,
+      "prior": 18922062.128709998,
+      "change": -310694.3900199942,
+      "change_pct": -1.641968977306046,
+      "comparison": "the same period last year"
+    },
+    "transactions": {
+      "current": 8338519.0,
+      "prior": 8125232.0,
+      "change": 213287.0,
+      "change_pct": 2.6249958155040987,
+      "comparison": "the same period last year"
+    },
+    "rate": {
+      "current": 6.761707228447778,
+      "prior": 6.490831431826253,
+      "change": 0.2708757966215254,
+      "change_pct": 4.173206460012968,
+      "comparison": "the same period last year"
+    }
+  },
+  "primary_family": "revenue",
+  "bridge": {
+    "volume_effect": -2016664.9124338634,
+    "rate_mix_effect": 5041369.062433813,
+    "total": 3024704.149999949,
+    "revenue_change": 3024704.1499999464,
+    "reconciles": true,
+    "note": "Rate/mix reflects price and mix together, not pure price."
+  },
+  "comparison": "the same period last year",
+  "data_as_of": "2026-07-29",
+  "grain": "month",
+  "freshness_status": "current",
+  "reconciled": true,
+  "coverage": "complete",
+  "visual": {
+    "type": "bar",
+    "title": "Revenue: prior versus current",
+    "labels": [
+      "Prior",
+      "Current"
+    ],
+    "values": [
+      122819915.62000003,
+      125844619.76999998
+    ],
+    "value_label": "Revenue"
+  },
+  "metrics": [
+    {
+      "label": "Revenue change",
+      "value": "+3.0M",
+      "tone": "teal"
+    },
+    {
+      "label": "Quantity change",
+      "value": "-310.7K",
+      "tone": "teal"
+    },
+    {
+      "label": "Quantity per transaction change",
+      "value": "-0.10",
+      "tone": "teal"
+    }
+  ],
+  "trend": {
+    "dimension": "month",
+    "grain": "month",
+    "rows": [
+      {
+        "month": 1,
+        "revenue_current": 20454233.349999987,
+        "revenue_prior": 18707106.079999994,
+        "revenue_change": 1747127.269999992
+      },
+      {
+        "month": 2,
+        "revenue_current": 18942440.02,
+        "revenue_prior": 17205615.580000013,
+        "revenue_change": 1736824.4399999864
+      },
+      {
+        "month": 3,
+        "revenue_current": 18618223.62000002,
+        "revenue_prior": 20661728.339999974,
+        "revenue_change": -2043504.719999954
+      },
+      {
+        "month": 4,
+        "revenue_current": 17197582.679999992,
+        "revenue_prior": 15085156.509999992,
+        "revenue_change": 2112426.17
+      },
+      {
+        "month": 5,
+        "revenue_current": 19951662.679999977,
+        "revenue_prior": 19142998.729999986,
+        "revenue_change": 808663.9499999918
+      },
+      {
+        "month": 6,
+        "revenue_current": 15550337.31000001,
+        "revenue_prior": 16572665.11000002,
+        "revenue_change": -1022327.8000000101
+      },
+      {
+        "month": 7,
+        "revenue_current": 15130140.11,
+        "revenue_prior": 15444645.269999994,
+        "revenue_change": -314505.15999999456
+      }
+    ],
+    "completeness": "complete",
+    "direction": "decelerating",
+    "value_aliases": {
+      "current": "revenue_current",
+      "prior": "revenue_prior",
+      "change": "revenue_change"
+    }
+  }
+}

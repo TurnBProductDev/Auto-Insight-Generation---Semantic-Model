@@ -82,6 +82,9 @@ def build_entry(
         # Internal history only.  The public report-summary payload deliberately
         # remains unchanged until the coordinated R3 API/UI release.
         "focus": summary.get("focus"),
+        # R4 (additive): ordered focus portfolio + overall business position.
+        "focuses": list(summary.get("focuses") or []),
+        "overall": summary.get("overall_performance") or None,
     }
 
 
@@ -127,6 +130,8 @@ def build_history_response(entries: list[dict]) -> dict:
             "sections": entry.get("sections") or [],
             "visual": entry.get("visual"),
             "focus": entry.get("focus"),
+            "focuses": entry.get("focuses") or [],
+            "overall": entry.get("overall"),
         })
     timezone_name = (
         str(valid[0].get("date", {}).get("timezone") or DEFAULT_TIMEZONE)
@@ -153,7 +158,8 @@ def _entries_from_response(response: dict | None) -> list[dict]:
                 "runAt": f"{iso_day}T{raw_time}",
                 **{key: run.get(key) for key in (
                     "status", "summaryType", "dataAsOf", "grain", "freshnessStatus",
-                    "headline", "paragraphs", "metrics", "sections", "visual", "focus"
+                    "headline", "paragraphs", "metrics", "sections", "visual", "focus",
+                    "focuses", "overall"
                 )},
             })
     return entries

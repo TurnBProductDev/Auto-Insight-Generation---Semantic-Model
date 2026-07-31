@@ -1,0 +1,102 @@
+[19:34:24] Node 1: config loaded.
+[19:34:24]   workspace=6d383900-b84d-4bce-afb4-b95453bee00a dataset=b3458a38-ad83-4e9a-b2f2-39d15c6aa22c provider=azure_openai model=claude-sonnet-5 exec_mode=python
+[19:34:24]   business rules loaded and snapshotted (827 lines).
+[19:34:24] Node 2: reading semantic model metadata via INFO.VIEW DAX...
+[19:34:25]   tables: 19 rows
+[19:34:26]   columns: 173 rows
+[19:34:27]   measures: 56 rows
+[19:34:28]   relationships: 15 rows
+[19:34:38]   Fabric TMSL getDefinition: enriched 56/56 measure expressions.
+[19:34:38] Metadata assembled: 19 tables, 56 measures, 7 date fields.
+[19:34:38] Metadata profile: deriving measures, dimensions and relationships...
+[19:34:38] Metadata profile: primary=revenue; fact=MIS_DEEP_DIVE2; entity='MIS_DEEP_DIVE2'[store_no]; 24 drill dimensions; 7 time dimensions.
+[19:34:38] Baseline: discovering entity comparison scope from metadata-selected objects...
+[19:34:38] Baseline scope: 4 comparable, 1 current-only, 0 prior-only; source=business_rule_config_validated_by_data.
+[19:34:38] Shared baseline: executing metadata-driven diagnostic coverage pre-fork...
+[19:34:48] Shared metadata coverage: 13/13 queries succeeded pre-fork.
+[19:34:48] Node 3: understanding the report/model...
+[19:35:02] Domain: 'Sales / Retail'; 20 key measures; time summary possible: True.
+[19:35:02] Insight branch: normalizing raw scan results...
+[19:35:02] Insight scan normalized 15 results (15 successful).
+[19:35:02] Node 4: planning DAX queries automatically...
+[19:35:31] Planned 7 queries: grand_totals_comparable_and_new_branch, latest_month_store_scorecard, recent_month_trend_comparable, latest_month_division_breakdown, latest_month_product_group_breakdown, category_decline_and_revenue_share, latest_true_transactions_by_branch
+[19:35:31] Node 5: generating DAX for each planned query (LLM)...
+[19:35:44]   grand_totals_comparable_and_new_branch: generated.
+[19:35:53]   latest_month_store_scorecard: generated.
+[19:36:02]   recent_month_trend_comparable: generated.
+[19:36:10]   latest_month_division_breakdown: generated.
+[19:36:23]   latest_month_product_group_breakdown: generated.
+[19:36:30]   category_decline_and_revenue_share: generated.
+[19:36:36]   latest_true_transactions_by_branch: generated.
+[19:36:36] Generated 7 DAX statements.
+[19:35:33] Temporal gate: using 'MIS_DEEP_DIVE2'[month] (month, 7 periods, reconciled); gated 1 load-date table(s); worst period March concentrated in IMPORTED FRUITS.
+[19:36:36] Business-day source: disabled - both recent-week and daily monitoring disabled by config.
+[19:36:36] Node 6: validating generated DAX against metadata...
+[19:36:36]   held for repair grand_totals_comparable_and_new_branch: comparison query includes excluded/current-only entities: ['CFH022']
+[19:36:36] 6 of 7 queries passed validation (1 eligible for repair).
+[19:36:37] Node 7: executing 6 DAX queries (mode=python)...
+[19:36:42]   summary: attempting repair for skipped query 'grand_totals_comparable_and_new_branch'...
+[19:36:51]   summary: repair for 'grand_totals_comparable_and_new_branch': success
+[19:36:51] Executed queries: 7/7 succeeded.
+[19:36:37] Recent-week gate: disabled - recent-week monitoring disabled by config.
+[19:36:51] Daily anomaly gate: disabled - daily anomaly monitoring disabled by config.
+[19:36:51] Node 8: normalizing raw Power BI results...
+[19:36:51] Normalized 7 results (7 successful).
+[19:36:51] Evidence catalog: 16 contracts (15 construction-time).
+[19:36:51] Summary period: grain=month data_as_of=2026-07-29 anchor=2026-06 freshness=current.
+[19:36:51] Insight branch: computing deterministic stat candidates...
+[19:36:51] Stat candidates: 137 business, 0 data-quality.
+[19:36:51]   [176.5] change_contribution: CF-CONFECTIONERY: QTY Growth of -548.5K (from 4.4M to 3.9M), 176.5% of the total change
+[19:36:51]   [176.4] change_contribution: CF-CHOCOLATE: QTY Growth of -548.1K (from 4.4M to 3.9M), 176.4% of the total change
+[19:36:51]   [152.4] change_contribution: CHOCOLATE COATED BARS: QTY Growth of -473.5K (from 3.4M to 2.9M), 152.4% of the total change
+[19:36:51]   [138.3] change_contribution: CFH021: revenue Growth of 4.2M (from 36.8M to 40.9M), 138.3% of the total change; split: volume 767.7K / rate 3.4M (per QTY Growth)
+[19:36:51]   [130.2] change_contribution: FMCG FOOD: QTY Growth of -404.4K (from 10.4M to 10.0M), 130.2% of the total change
+[19:36:52] Focus universe: division -> 13 member(s), reconciled=True, pool_capped=False.
+[19:36:52] Focus universe: department -> 13 member(s), reconciled=True, pool_capped=False.
+[19:36:53] Focus universe: category -> 30 member(s), reconciled=True, pool_capped=True.
+[19:36:53] Novelty filter: detected=137 suppressed=0 unseen=137 eligible=50 cap_dropped=87 (status=empty, policy=never_repeat, levels={'high': 46, 'period': 4}).
+[19:36:54] Summary candidates: 129 perspective(s) from summary-owned evidence.
+[19:36:54] Insight branch: detecting notable signals in scan results...
+[19:37:12] Backfilled 1 eligible candidate(s) the LLM omitted (added to the pool, ranked equally with everything else).
+[19:37:12] Cap dropped 1 lower-materiality signal(s) (max 4 total, max 3 data-quality).
+[19:37:12] Detected 4 signals: confectionery_chocolate_units_drop[business], cfh021_growth_dominates[business], cand_09_period_change_contribution[business], cfh017_decline_drags_group[business]
+[19:36:54] Overall Performance: status=ok bridge=yes trend=yes.
+[19:37:12] Insight branch: assembling evidence briefs (deterministic reuse pass)...
+[19:37:12] Evidence briefs: 4 signals; 0 drill-dimensions answered by reuse, 12 gaps flagged for probing.
+[19:37:12] Coverage matrix: 27 dimensions, 3 with trusted (complete+comparable) coverage.
+[19:37:12] Summary portfolio: detected=129 selected=3 type=new_data reason=portfolio.
+[19:37:12] Insight branch: targeted gap scan from metadata-compatible dimensions...
+[19:37:15]   gap scan 'confectionery_chocolate_units_drop': 3 REST calls, filled ['product_group_name', 'special_product_group_name', 'store_no'].
+[19:37:15] Gap scan complete: 3 REST calls; global budget remaining=27.
+[19:37:20] Multi-focus evidence: 3 focus(es) deep-dived over 12/12 shared quer(y/ies), 0 replacement(s).
+[19:38:09] Fresh summary (R4): Overall Performance + 3 focus block-group(s) (mode=llm).
+[19:37:20] Insight branch: investigating 4 signals (tool-calling agent)...
+[19:37:20]   investigating signal 'confectionery_chocolate_units_drop': Why did CF-CONFECTIONERY, especially CF-CHOCOLATE and CHOCOLATE COATED BARS, lose 548503.5959 Units versus last year?
+[19:37:29]   'confectionery_chocolate_units_drop': 0/0 investigator probes (+3 gap-scan), concluded=True.
+[19:37:29]   investigating signal 'cfh021_growth_dominates': What changed in CFH021, especially in GM FASHION and FASHION, that lifted revenue by SAR 4184236.82 and transactions by 192338?
+[19:37:37]     probe 1/3 for 'cfh021_growth_dominates': 20 rows.
+[19:37:42]     probe 2/3 for 'cfh021_growth_dominates': 7 rows.
+[19:37:50]   'cfh021_growth_dominates': 2/3 investigator probes (+0 gap-scan), concluded=True.
+[19:37:50]   investigating signal 'cand_09_period_change_contribution': What is driving this finding?
+[19:37:59]     probe 1/3 for 'cand_09_period_change_contribution': 10 rows.
+[19:38:00]     probe 2/3 for 'cand_09_period_change_contribution': 4 rows.
+[19:38:05]   'cand_09_period_change_contribution': 2/3 investigator probes (+0 gap-scan), concluded=True.
+[19:38:05]   investigating signal 'cfh017_decline_drags_group': What in CFH017, particularly FMCG FOOD and CF-FRUIT & VEGETABLES, is associated with the SAR 1310152.06 revenue shortfall and 92115 fewer transactions?
+[19:38:13]     probe 1/3 for 'cfh017_decline_drags_group': 20 rows.
+[19:38:19]     probe 2/3 for 'cfh017_decline_drags_group': 20 rows.
+[19:38:25]   'cfh017_decline_drags_group': 2/3 investigator probes (+0 gap-scan), concluded=True.
+[19:38:25] Investigations complete for 4 signals.
+[19:38:25] Fresh flexible summary validated and rendered (5 narrative block(s), 4 interactive chart(s)).
+[19:38:25] Thesis linker: disabled (insight_thesis_linking_enabled=false).
+[19:38:25] Insight branch: synthesizing the insight report...
+[19:39:03] Insight report clarity check requested a rewrite (44 issue(s)).
+[19:39:28] Insight report clarity check requested a rewrite (6 issue(s)).
+[19:39:51] Insight report used deterministic quantified wording for manager-facing finding(s) that still failed the LLM clarity check.
+[19:39:51] ERROR: Insight report still has 2 manager-facing clarity issue(s) after retries.
+[19:39:51] Insight report written (1396 words).
+[19:38:25] === summary branch finished ===
+[19:39:51] === insight branch finished ===
+[save] wrote outputs to /outputs_r4_acceptance_20260730_fix
+
+ERRORS:
+- Insight report still has 2 manager-facing clarity issue(s) after retries.

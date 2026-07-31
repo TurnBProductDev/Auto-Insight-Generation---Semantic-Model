@@ -655,6 +655,7 @@ def _perspective_context(candidate: dict) -> dict:
         "aspect": candidate.get("angle"),
         "focus_segment": candidate.get("segment") or None,
         "dimension_role": candidate.get("dimension_role"),
+        "sentiment": candidate.get("sentiment") or (candidate.get("selection") or {}).get("sentiment"),
         "coverage": candidate.get("coverage"),
         "title_hint": candidate.get("title_hint"),
         "business_purpose": candidate.get("purpose"),
@@ -735,7 +736,213 @@ def _legacy_sections(blocks: list[dict]) -> list[dict]:
     return sections
 
 
-def _invoke(state: dict, selected: list[dict]) -> dict:
+def _overall_headline(overall_candidate: dict | None) -> str:
+    """Business-level headline from the overall revenue comparison fact."""
+    if not overall_candidate:
+        return "Overall business performance"
+    facts = _numeric_facts([overall_candidate])
+    revenue = next(
+        (fact for fact in facts
+         if fact.get("fact_kind") == "comparison" and "revenue" in str(fact.get("metric") or "").casefold()),
+        None,
+    )
+    return _headline_from_fact(overall_candidate, [revenue] if revenue else facts[:1])
+
+
+def _grounded_points(candidate: dict, *, focus_only: bool = False, limit: int = 4) -> list[str]:
+    """Verbatim supported-fact statements (never invented numbers)."""
+    facts = _numeric_facts([candidate])
+    if focus_only:
+        facts = [fact for fact in facts if str(fact.get("subject_role") or "") == "focus"] or facts
+    points: list[str] = []
+    for fact in facts:
+        statement = str(fact.get("statement") or "").strip() or _fact_sentence(fact)
+        if statement and statement not in points:
+            points.append(statement)
+        if len(points) >= limit:
+            break
+    return points
+
+
+def _chart_blocks(candidate: dict) -> list[dict]:
+    blocks: list[dict] = []
+    for source in _fallback_chart_sources(_chart_sources([candidate])):
+        blocks.append({
+            "kind": "chart", "heading": source["title"], "text": "", "points": [],
+            "chart_source_id": source["source_id"], "chart_type": source["default_chart_type"],
+        })
+    return blocks
+
+
+def _overall_group(overall_candidate: dict | None, overall_pkg: dict) -> list[dict]:
+    """Overall Performance block (mandatory, first): grounded families + a
+    qualitative volume/rate-mix driver line (no invented figures)."""
+    if not overall_candidate:
+        return [{
+            "kind": "bullets", "heading": "Overall Performance", "text": "",
+            "points": [
+                "Overall business performance could not be confirmed from the available company-level evidence."
+            ],
+            "chart_source_id": "", "chart_type": "bar",
+        }]
+    points = _grounded_points(overall_candidate, limit=4)
+    bridge = (overall_pkg or {}).get("bridge") or {}
+    if bridge.get("reconciles"):
+        volume = float(bridge.get("volume_effect") or 0.0)
+        rate = float(bridge.get("rate_mix_effect") or 0.0)
+        driver = "higher volume" if abs(volume) >= abs(rate) else "rate and mix"
+        points.append(f"The revenue movement was driven mainly by {driver}.")
+    block = {"kind": "bullets", "heading": "Overall Performance", "text": "",
+             "points": points or ["Overall business performance for the period."],
+             "chart_source_id": "", "chart_type": "bar"}
+    return [block] + _chart_blocks(overall_candidate)
+
+
+def _focus_group(merged_focus: dict) -> list[dict]:
+    segment = str(merged_focus.get("segment") or "Focus area")
+    facts = _numeric_facts([merged_focus])
+    focus_facts = [fact for fact in facts if str(fact.get("subject_role") or "") == "focus"] or facts
+    contributors = [fact for fact in facts if fact.get("detail_role") == "contributor"]
+    drivers = [fact for fact in facts if fact.get("detail_role") == "driver"]
+    ordered = [*(contributors[:1]), *(drivers[:1]), *focus_facts]
+    points: list[str] = []
+    for fact in ordered:
+        statement = str(fact.get("statement") or "").strip() or _fact_sentence(fact)
+        if statement and statement not in points:
+            points.append(statement)
+        if len(points) >= 4:
+            break
+    block = {"kind": "bullets", "heading": segment, "text": "",
+             "points": points or [f"{segment} performance for the period."],
+             "chart_source_id": "", "chart_type": "bar"}
+    return [block] + _chart_blocks(merged_focus)
+
+
+def _r4_fallback(state: dict, overall_candidate: dict | None, merged_focuses: list[dict]) -> dict:
+    """Deterministic Overall-first multi-focus draft, grounded in supported facts."""
+    overall_pkg = state.get("summary_overall_performance") or {}
+    blocks: list[dict] = []
+    covered: list[str] = []
+    blocks += _overall_group(overall_candidate, overall_pkg)
+    if overall_candidate:
+        covered.append(overall_candidate.get("candidate_id"))
+    for focus in merged_focuses:
+        blocks += _focus_group(focus)
+        covered.append(focus.get("candidate_id"))
+    return {
+        "headline": _overall_headline(overall_candidate),
+        "blocks": blocks,
+        "covered_candidate_ids": [cid for cid in covered if cid],
+        "validation_status": "deterministic_fallback",
+        "authoring_mode": "deterministic_fallback",
+    }
+
+
+def _merge_focus_evidence(focus: dict, evidence: dict) -> dict:
+    """Attach the multi-focus deep-dive sections + facts onto a focus candidate."""
+    base = focus.get("evidence") or {}
+    return {**focus, "evidence": {
+        **base,
+        "deep_dive": (evidence or {}).get("sections") or base.get("deep_dive") or {},
+        "facts": (evidence or {}).get("facts") or base.get("facts") or [],
+    }}
+
+
+def _merge_overall_evidence(overall: dict | None, package: dict) -> dict | None:
+    """Expose the reconciled Overall trend through the existing chart catalog."""
+    if not overall:
+        return None
+    base = overall.get("evidence") or {}
+    deep_dive = dict(base.get("deep_dive") or {})
+    trend = (package or {}).get("trend")
+    if trend:
+        deep_dive["period_trend"] = trend
+    return {**overall, "evidence": {**base, "deep_dive": deep_dive}}
+
+
+def _run_r4(state: dict, log: RunLogger, novelty: dict) -> dict:
+    period = state.get("summary_period_context") or {}
+    summary_type = str(novelty.get("summary_type") or "new_perspective")
+    candidates = state.get("summary_candidates") or []
+    overall_candidate = next((c for c in candidates if c.get("angle") == "overall_performance"), None)
+    overall_candidate = _merge_overall_evidence(
+        overall_candidate, state.get("summary_overall_performance") or {},
+    )
+    focuses = list(state.get("summary_selected_focuses") or [])
+    evidence_by_key = state.get("summary_focus_evidence_by_key") or {}
+    merged_focuses = [
+        _merge_focus_evidence(focus, evidence_by_key.get(str(focus.get("focus_key"))) or {})
+        for focus in focuses
+    ]
+    covered_set = ([overall_candidate] if overall_candidate else []) + merged_focuses
+    if not covered_set:
+        summary = _empty_summary(state, "no_new_perspective")
+        log.info("Fresh summary (R4): no overall evidence or focus; empty summary.")
+        return {"fresh_summary": summary, **log.updates()}
+
+    if not state.get("summary_llm_authoring_enabled", True):
+        authored = _r4_fallback(state, overall_candidate, merged_focuses)
+        log.info("Balanced summary LLM authoring disabled; used deterministic fallback.")
+    else:
+        try:
+            authored = _invoke(state, covered_set, mode="balanced_multi_focus")
+        except Exception as exc:  # noqa: BLE001 - grounded fallback still delivers
+            authored = _r4_fallback(state, overall_candidate, merged_focuses)
+            log.error(
+                "Balanced summary LLM draft failed validation; used deterministic fallback "
+                f"({type(exc).__name__}: {exc})."
+            )
+    chart_sources = _chart_sources(covered_set) if state.get("summary_visual_enabled", True) else []
+    blocks = _resolve_blocks(authored, chart_sources)
+    sections = _legacy_sections(blocks)
+    paragraphs = [
+        text
+        for block in blocks
+        for text in (
+            [str(block.get("text"))] if block.get("kind") == "paragraph" and block.get("text")
+            else [str(point) for point in block.get("points", []) or []]
+            if block.get("kind") == "bullets"
+            else []
+        )
+    ]
+    summary = {
+        "summary_type": summary_type,
+        "heading": str(authored.get("headline") or "Overall business performance").strip(),
+        "paragraphs": paragraphs,
+        "content_blocks": blocks,
+        "sections": sections,
+        "covered_candidate_ids": authored.get("covered_candidate_ids") or [],
+        "covered_summary_keys": [c.get("summary_key") for c in covered_set if c.get("summary_key")],
+        "metrics": [],
+        "visual": None,
+        "data_as_of": period.get("data_as_of"),
+        "grain": period.get("grain") or "snapshot",
+        "freshness_status": period.get("freshness_status") or "unknown",
+        "period_anchor": period.get("period_anchor"),
+        "validation_status": authored.get("validation_status") or "deterministic_fallback",
+        "authoring_mode": authored.get("authoring_mode") or "deterministic_fallback",
+        "overall_performance": state.get("summary_overall_performance") or {},
+        "focuses": [
+            {"focus_key": f.get("focus_key"), "segment": f.get("segment"),
+             "dimension_role": f.get("dimension_role"), "lens": f.get("lens")}
+            for f in focuses
+        ],
+    }
+    # R3 additive public metadata, off by default (coordinated UI/API opt-in).
+    if state.get("summary_focus_public_metadata"):
+        summary["dailyFocuses"] = [
+            {"segment": f.get("segment"), "role": f.get("dimension_role"),
+             "lens": f.get("lens"), "sentiment": f.get("sentiment") or (f.get("selection") or {}).get("sentiment")}
+            for f in focuses
+        ]
+    log.info(
+        "Fresh summary (R4): Overall Performance + %d focus block-group(s) (mode=%s)."
+        % (len(focuses), summary["authoring_mode"])
+    )
+    return {"fresh_summary": summary, **log.updates()}
+
+
+def _invoke(state: dict, selected: list[dict], *, mode: str = "single_focus") -> dict:
     period = state.get("summary_period_context") or {}
     chart_sources = _chart_sources(selected) if state.get("summary_visual_enabled", True) else []
     rules = (
@@ -746,6 +953,7 @@ def _invoke(state: dict, selected: list[dict]) -> dict:
     task = file_io.read_prompt("fresh_summary_prompt.md")
     focus = state.get("summary_selected_focus") or {}
     context = {
+        "summary_mode": mode,
         "report_context": state.get("report_understanding") or {},
         "reporting_period": period,
         # Mutable tone (R2): opportunity when the focus grew, risk when it fell.
@@ -763,7 +971,13 @@ def _invoke(state: dict, selected: list[dict]) -> dict:
         llm = get_llm(state, structured_schema=FreshSummaryDraft)
         response = llm.invoke(messages)
         draft = response.model_dump() if hasattr(response, "model_dump") else dict(response)
-        errors = validate_draft(draft, selected, chart_sources=chart_sources)
+        errors = validate_draft(
+            draft,
+            selected,
+            chart_sources=chart_sources,
+            mode=mode,
+            require_chart=bool(chart_sources),
+        )
         if not errors:
             draft["validation_status"] = "validated"
             draft["authoring_mode"] = "llm"
@@ -807,6 +1021,10 @@ def run(state: dict) -> dict:
         summary = _empty_summary(state, "memory_unavailable")
         log.error("Fresh summary generation skipped because summary memory is unavailable.")
         return {"fresh_summary": summary, **log.updates()}
+    # R4: Overall Performance first, then the selected focus portfolio. Runs even
+    # with no focus (Overall Performance only).
+    if state.get("summary_r4_enabled"):
+        return _run_r4(state, log, novelty)
     if not eligible:
         summary = _empty_summary(state, "no_new_perspective")
         log.info("Fresh summary: no unused material perspective; no summary LLM call made.")

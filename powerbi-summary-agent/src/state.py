@@ -59,8 +59,34 @@ class SummaryAgentState(TypedDict, total=False):
     summary_focus_overlap_window_days: int        # recency window for overlap suppression
     summary_focus_public_metadata: bool           # expose dailyFocus in the API payload
     summary_recent_focus: List[Dict[str, Any]]    # novelty_filter -> deep dive signature compare
-    summary_selected_focus: Dict[str, Any]    # novelty_filter -> deep dive + commit
-    summary_focus_evidence: Dict[str, Any]    # deep-dive node artifact
+    summary_selected_focus: Dict[str, Any]    # novelty_filter -> deep dive + commit (R4: alias -> first focus)
+    summary_focus_evidence: Dict[str, Any]    # deep-dive node artifact (R4: alias -> first focus evidence)
+    # --- R4 balanced business summary (multi-focus portfolio) ---
+    summary_r4_enabled: bool                       # master switch; false reproduces R1-R3 single-focus
+    summary_focus_allowed_roles: List[str]         # canonical roles that may be a primary focus
+    summary_focus_role_aliases: Dict[str, Any]     # model role/dimension name -> canonical role
+    summary_focus_candidate_pool_per_role: int     # rotation breadth (>= display rows)
+    summary_focus_target_count: int                # target number of focus areas (not a minimum)
+    summary_focus_min_movement_impact_pct: float   # materiality gate: sibling movement impact
+    summary_focus_min_business_share_pct: float    # materiality gate: business share
+    summary_focus_min_change_pct: float            # materiality gate: meaningful movement
+    summary_focus_rotation_window_days: int        # weekly coverage window
+    summary_focus_min_repeat_gap_days: int         # short exact-area repeat gap
+    summary_focus_universe_max_queries: int        # pre-selection breadth budget
+    summary_overall_trend_enabled: bool
+    summary_overall_trend_max_queries: int
+    summary_focus_total_deep_dive_queries: int     # post-selection depth budget (shared)
+    summary_focus_max_queries_per_focus: int
+    summary_focus_max_replacements_per_slot: int
+    summary_required_delivery_channels: List[str]  # channels that must succeed before memory commit
+    summary_focus_universe: Dict[str, Any]         # deterministic per-role universe scans + diagnostics
+    summary_overall_performance: Dict[str, Any]    # deterministic overall business package
+    summary_selected_focuses: List[Dict[str, Any]] # ordered portfolio (R4)
+    summary_focus_evidence_by_key: Dict[str, Any]  # per-focus deep-dive evidence keyed by focus_key
+    summary_weekly_coverage: Dict[str, Any]        # weekly rotation audit surfaced to generator
+    summary_portfolio_reserves: List[Dict[str, Any]]  # ranked reserve candidates for slot replacement
+    summary_pending_area_keys: List[str]           # committed after validated delivery
+    summary_pending_focus_keys: List[str]
     max_rows_per_query: int
     ai_provider: str
     model: str

@@ -12,7 +12,7 @@ Two modes:
 
 from __future__ import annotations
 
-from ..tools import file_io, summary_focus, summary_memory
+from ..tools import file_io, summary_focus, summary_memory, summary_portfolio
 from ..utils.logger import RunLogger
 
 # Relocated shared helpers now live in summary_focus; keep the legacy names
@@ -221,9 +221,131 @@ def _run_legacy(state: dict, candidates: list[dict], log: RunLogger) -> dict:
     return {"summary_eligible_candidates": eligible, "summary_novelty": novelty, **log.updates()}
 
 
+def _run_portfolio(state: dict, candidates: list[dict], log: RunLogger) -> dict:
+    """R4 multi-focus portfolio mode.
+
+    Keeps ownership of memory load/corruption handling, summary-type
+    classification, same-day plan recovery and the novelty artifact, but
+    delegates the actual multi-focus scoring to
+    ``summary_portfolio.select_portfolio`` (reading v3 coverage). Emits the
+    ordered ``summary_selected_focuses`` plus a first-focus alias for backward
+    compatibility.
+    """
+    enabled = bool(state.get("summary_memory_enabled", True))
+    hydration = state.get("summary_memory_hydration", {}) or {}
+    if hydration.get("status") == "failed":
+        return _memory_unavailable(
+            state, log, candidates, "failed",
+            hydration.get("reason") or hydration.get("error") or "summary memory hydration failed",
+        )
+    if enabled:
+        store, status = summary_memory.load_store(state)
+        if status == "corrupt":
+            return _memory_unavailable(
+                state, log, candidates, "corrupt",
+                "summary memory is corrupt; refusing to overwrite it",
+            )
+    else:
+        store, status = summary_memory._empty_store(), "disabled"
+
+    try:
+        today = summary_focus.focus_today(state)
+    except ValueError as exc:  # unsupported timezone or other loud config error
+        novelty = {
+            "status": "config_error", "memory_status": status,
+            "detected": len(candidates), "eligible": 0, "reason": str(exc),
+        }
+        file_io.write_json(state, "summary_novelty.json", novelty)
+        log.error(f"Portfolio selection rejected the configuration loudly: {exc}")
+        return {
+            "summary_eligible_candidates": [], "summary_selected_focuses": [],
+            "summary_novelty": novelty, "summary_selected_focus": {}, **log.updates(),
+        }
+
+    period = state.get("summary_period_context") or {}
+    current_watermark = summary_focus._as_date(period.get("data_as_of"))
+    prior_watermark = summary_focus._as_date(store.get("watermark"))
+    data_advanced = bool(current_watermark and (not prior_watermark or current_watermark > prior_watermark))
+    anchor = period.get("period_anchor")
+    anchor_changed = bool(anchor and anchor != store.get("period_anchor"))
+
+    by_focus: dict = {}
+    by_area: dict = {}
+    for candidate in candidates:
+        by_focus.setdefault(candidate.get("focus_key"), candidate)
+        by_area.setdefault(candidate.get("area_key"), candidate)
+
+    # Same-day recovery: pin the previously delivered portfolio in order, keeping
+    # only focuses whose candidate is still valid this run.
+    recovered = False
+    pinned = summary_memory.pinned_portfolio(store, today.isoformat())
+    if pinned and pinned.get("focus_keys"):
+        if pinned.get("area_keys"):
+            selected = [by_area[key] for key in pinned["area_keys"] if key in by_area]
+        else:
+            # Migrated v2 plans have no area list; keep the legacy fallback.
+            selected = [by_focus[key] for key in pinned["focus_keys"] if key in by_focus]
+        reserves: list = []
+        audit = {"reason": "same_day_recovery", "recovered": True, "pinned": len(pinned["focus_keys"])}
+        recovered = bool(selected)
+    if not recovered:
+        coverage = summary_memory.coverage_map(store)
+        recent = store.get("recent_focus", []) or []
+        result = summary_portfolio.select_portfolio(
+            state, candidates, coverage=coverage, recent_focus=recent,
+            today=today, data_advanced=data_advanced,
+        )
+        selected = result["selected"]
+        reserves = result["reserves"]
+        audit = result["audit"]
+
+    if selected:
+        if data_advanced or anchor_changed:
+            summary_type = "new_data"
+        elif recovered:
+            summary_type = pinned.get("summary_type") or "new_perspective"
+        else:
+            summary_type = "new_perspective"
+    else:
+        summary_type = "no_new_perspective"
+
+    selected_alias = selected[0] if selected else {}
+    novelty = {
+        "status": "ok",
+        "mode": "portfolio",
+        "memory_status": status,
+        "detected": len(candidates),
+        "eligible": len(selected),
+        "summary_type": summary_type,
+        "recovered_same_day": recovered,
+        "selected_areas": [focus.get("area_key") for focus in selected],
+        "selected_segments": [focus.get("segment") for focus in selected],
+        "selected_roles": [focus.get("dimension_role") for focus in selected],
+        "reason": audit.get("reason"),
+        "audit": audit,
+    }
+    file_io.write_json(state, "summary_novelty.json", novelty)
+    log.info(
+        "Summary portfolio: detected=%d selected=%d type=%s reason=%s."
+        % (len(candidates), len(selected), summary_type, audit.get("reason"))
+    )
+    return {
+        "summary_eligible_candidates": selected,
+        "summary_selected_focuses": selected,
+        "summary_portfolio_reserves": reserves,
+        "summary_novelty": novelty,
+        # Backward-compat alias: existing single-focus consumers read the first.
+        "summary_selected_focus": selected_alias,
+        "summary_recent_focus": store.get("recent_focus", []) or [],
+        **log.updates(),
+    }
+
+
 def run(state: dict) -> dict:
     log = RunLogger(state)
     candidates = list(state.get("summary_candidates", []) or [])
+    if state.get("summary_r4_enabled", False):
+        return _run_portfolio(state, candidates, log)
     if state.get("summary_focus_enabled", True):
         return _run_focus(state, candidates, log)
     return _run_legacy(state, candidates, log)

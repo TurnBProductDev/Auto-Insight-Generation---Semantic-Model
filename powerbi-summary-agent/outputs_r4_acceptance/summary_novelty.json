@@ -1,0 +1,42 @@
+{
+  "status": "ok",
+  "mode": "portfolio",
+  "memory_status": "empty",
+  "detected": 123,
+  "eligible": 3,
+  "summary_type": "new_data",
+  "recovered_same_day": false,
+  "selected_areas": [
+    "area:v1:ce792f844e6aeee6e65394998a11bdd5d36f1de637bfe69850138f4bd3c4fa7b",
+    "area:v1:dcd86598416d87d439991d094c0a86e4181ab9906210302b5a85d0af1e7ddfa3",
+    "area:v1:9b047b5ef82781302cf78cc7570c2200cb63436cb8f6604aa44626c870e2ce82"
+  ],
+  "selected_segments": [
+    "CF-FRUIT & VEGETABLES",
+    "FMCG FOOD",
+    "CF-MEAT"
+  ],
+  "selected_roles": [
+    "category",
+    "division",
+    "category"
+  ],
+  "reason": "portfolio",
+  "audit": {
+    "detected": 123,
+    "today": "2026-07-30",
+    "dropped": {
+      "role": 39,
+      "invalid": 0,
+      "evidence": 20,
+      "collapsed_hierarchy": 13,
+      "materiality": 12,
+      "repeat_gap": 0
+    },
+    "eligible": 31,
+    "seeds": 1,
+    "selected": 3,
+    "reserves": 28,
+    "reason": "portfolio"
+  }
+}

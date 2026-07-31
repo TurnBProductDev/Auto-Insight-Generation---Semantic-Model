@@ -1,0 +1,242 @@
+{
+  "schema_version": 3,
+  "watermark": "2026-07-29",
+  "period_anchor": "2026-06",
+  "records": {
+    "summary:v1:7783fd0e315ccf0f7b582812f99c61cc1ae0ef493db0ff562afd0b8ee3b17436": {
+      "first_reported": "2026-07-30T19:40:02+05:30",
+      "times_reported": 1,
+      "last_reported": "2026-07-30T19:40:02+05:30",
+      "angle": "overall_performance",
+      "metric": "revenue",
+      "dimension": "overall",
+      "segment": "",
+      "period_anchor": "2026-06",
+      "direction": "increase",
+      "observation_value": 3024704.1499999464,
+      "score": 106.48068304577556,
+      "heading": "Like-for-like revenue increased by +3.0M, while quantity fell by -310.7K across CFH014, CFH017, CFH018 and CFH021."
+    },
+    "summary:v1:d1d723d606d759ec9bbc46cf595ae9bade4571e6634a4aa782ec83c602c3ed83": {
+      "first_reported": "2026-07-30T19:40:02+05:30",
+      "times_reported": 1,
+      "last_reported": "2026-07-30T19:40:02+05:30",
+      "angle": "category_overview",
+      "metric": "revenue",
+      "dimension": "item_category_name",
+      "segment": "CF-FRUIT & VEGETABLES",
+      "period_anchor": "2026-06",
+      "direction": "decrease",
+      "observation_value": -721954.4999999963,
+      "score": 45.85851042928702,
+      "heading": "Like-for-like revenue increased by +3.0M, while quantity fell by -310.7K across CFH014, CFH017, CFH018 and CFH021."
+    },
+    "summary:v1:73f96c62ff8343cca62caac8d118ef0238ca69b117a9097345b5f8f72eb4fc29": {
+      "first_reported": "2026-07-30T19:40:02+05:30",
+      "times_reported": 1,
+      "last_reported": "2026-07-30T19:40:02+05:30",
+      "angle": "division_overview",
+      "metric": "revenue",
+      "dimension": "division_name",
+      "segment": "FMCG FOOD",
+      "period_anchor": "2026-06",
+      "direction": "increase",
+      "observation_value": 942938.3299999963,
+      "score": 45.97448375053812,
+      "heading": "Like-for-like revenue increased by +3.0M, while quantity fell by -310.7K across CFH014, CFH017, CFH018 and CFH021."
+    },
+    "summary:v1:65a66ea6ce37685e942bca52bdb8dd380e18c883637fc29693d52aea1b9bd893": {
+      "first_reported": "2026-07-30T19:40:02+05:30",
+      "times_reported": 1,
+      "last_reported": "2026-07-30T19:40:02+05:30",
+      "angle": "category_overview",
+      "metric": "revenue",
+      "dimension": "item_category_name",
+      "segment": "CF-MEAT",
+      "period_anchor": "2026-06",
+      "direction": "increase",
+      "observation_value": 721616.419999999,
+      "score": 45.858307008622795,
+      "heading": "Like-for-like revenue increased by +3.0M, while quantity fell by -310.7K across CFH014, CFH017, CFH018 and CFH021."
+    }
+  },
+  "journal": {
+    "2026-07-30": [
+      {
+        "run_id": "20260730T194002360497+0530",
+        "summary_type": "new_data",
+        "heading": "Like-for-like revenue increased by +3.0M, while quantity fell by -310.7K across CFH014, CFH017, CFH018 and CFH021.",
+        "covered_summary_keys": [
+          "summary:v1:7783fd0e315ccf0f7b582812f99c61cc1ae0ef493db0ff562afd0b8ee3b17436",
+          "summary:v1:d1d723d606d759ec9bbc46cf595ae9bade4571e6634a4aa782ec83c602c3ed83",
+          "summary:v1:73f96c62ff8343cca62caac8d118ef0238ca69b117a9097345b5f8f72eb4fc29",
+          "summary:v1:65a66ea6ce37685e942bca52bdb8dd380e18c883637fc29693d52aea1b9bd893"
+        ],
+        "period_anchor": "2026-06"
+      }
+    ]
+  },
+  "focus_records": {
+    "focus:v2:7955f5c7611c5dbbabab3424e4a9fa3e552145814a651963367ed9edde3bb163": {
+      "first_reported": "2026-07-30T19:40:02+05:30",
+      "times_reported": 1,
+      "dimension_role": "category",
+      "lens": "performance",
+      "segment": "CF-FRUIT & VEGETABLES",
+      "metric_family": "revenue",
+      "hierarchy_path": [
+        "FARM FRESH",
+        "FARM FRESH",
+        "CF-FRUIT & VEGETABLES"
+      ],
+      "last_reported": "2026-07-30T19:40:02+05:30",
+      "last_direction": "decrease",
+      "last_global_impact": 0.5736872194611712,
+      "deep_dive_signature": "30a4be9691f51207",
+      "heading": "Like-for-like revenue increased by +3.0M, while quantity fell by -310.7K across CFH014, CFH017, CFH018 and CFH021."
+    },
+    "focus:v2:bbb0c0707df2f36c848183b4c0bb1daa1011fc9acfdf9617fa6a5d43b8b58f07": {
+      "first_reported": "2026-07-30T19:40:02+05:30",
+      "times_reported": 1,
+      "dimension_role": "division",
+      "lens": "performance",
+      "segment": "FMCG FOOD",
+      "metric_family": "revenue",
+      "hierarchy_path": [
+        "FMCG FOOD"
+      ],
+      "last_reported": "2026-07-30T19:40:02+05:30",
+      "last_direction": "increase",
+      "last_global_impact": 0.4289279597224755,
+      "deep_dive_signature": "6678bc8e75ad1b7e",
+      "heading": "Like-for-like revenue increased by +3.0M, while quantity fell by -310.7K across CFH014, CFH017, CFH018 and CFH021."
+    },
+    "focus:v2:9b2971af5efb281f709b716f93202e56d347e76211dce5ea4ac83bbf1e91dd21": {
+      "first_reported": "2026-07-30T19:40:02+05:30",
+      "times_reported": 1,
+      "dimension_role": "category",
+      "lens": "performance",
+      "segment": "CF-MEAT",
+      "metric_family": "revenue",
+      "hierarchy_path": [
+        "FARM FRESH",
+        "FARM FRESH",
+        "CF-MEAT"
+      ],
+      "last_reported": "2026-07-30T19:40:02+05:30",
+      "last_direction": "increase",
+      "last_global_impact": 0.5734185707095478,
+      "deep_dive_signature": "8b70a418c2461302",
+      "heading": "Like-for-like revenue increased by +3.0M, while quantity fell by -310.7K across CFH014, CFH017, CFH018 and CFH021."
+    }
+  },
+  "daily_plan": {
+    "2026-07-30": {
+      "summary_type": "new_data",
+      "area_keys": [
+        "area:v1:ce792f844e6aeee6e65394998a11bdd5d36f1de637bfe69850138f4bd3c4fa7b",
+        "area:v1:dcd86598416d87d439991d094c0a86e4181ab9906210302b5a85d0af1e7ddfa3",
+        "area:v1:9b047b5ef82781302cf78cc7570c2200cb63436cb8f6604aa44626c870e2ce82"
+      ],
+      "focus_keys": [
+        "focus:v2:7955f5c7611c5dbbabab3424e4a9fa3e552145814a651963367ed9edde3bb163",
+        "focus:v2:bbb0c0707df2f36c848183b4c0bb1daa1011fc9acfdf9617fa6a5d43b8b58f07",
+        "focus:v2:9b2971af5efb281f709b716f93202e56d347e76211dce5ea4ac83bbf1e91dd21"
+      ],
+      "candidate_ids": [
+        "summary_7955f5c7611c",
+        "summary_bbb0c0707df2",
+        "summary_9b2971af5efb"
+      ],
+      "reported_at": "2026-07-30T19:40:02+05:30"
+    }
+  },
+  "recent_focus": [
+    {
+      "focus_key": "focus:v2:9b2971af5efb281f709b716f93202e56d347e76211dce5ea4ac83bbf1e91dd21",
+      "area_key": "area:v1:9b047b5ef82781302cf78cc7570c2200cb63436cb8f6604aa44626c870e2ce82",
+      "reported_at": "2026-07-30T19:40:02+05:30",
+      "dimension_role": "category",
+      "segment": "CF-MEAT",
+      "top_pos_contributor": "CF-FRESH CHICKEN & PARTS",
+      "top_neg_contributor": "CF-FRESH MEAT",
+      "leading_location": "CFH018",
+      "driver_class": "volume"
+    },
+    {
+      "focus_key": "focus:v2:bbb0c0707df2f36c848183b4c0bb1daa1011fc9acfdf9617fa6a5d43b8b58f07",
+      "area_key": "area:v1:dcd86598416d87d439991d094c0a86e4181ab9906210302b5a85d0af1e7ddfa3",
+      "reported_at": "2026-07-30T19:40:02+05:30",
+      "dimension_role": "division",
+      "segment": "FMCG FOOD",
+      "top_pos_contributor": "CF-GROCERY FOOD",
+      "top_neg_contributor": "CF-CONFECTIONERY",
+      "leading_location": "CFH021",
+      "driver_class": "rate/mix"
+    },
+    {
+      "focus_key": "focus:v2:7955f5c7611c5dbbabab3424e4a9fa3e552145814a651963367ed9edde3bb163",
+      "area_key": "area:v1:ce792f844e6aeee6e65394998a11bdd5d36f1de637bfe69850138f4bd3c4fa7b",
+      "reported_at": "2026-07-30T19:40:02+05:30",
+      "dimension_role": "category",
+      "segment": "CF-FRUIT & VEGETABLES",
+      "top_pos_contributor": null,
+      "top_neg_contributor": "CF-VEGETABLES",
+      "leading_location": "CFH014",
+      "driver_class": "volume"
+    }
+  ],
+  "area_records": {
+    "area:v1:ce792f844e6aeee6e65394998a11bdd5d36f1de637bfe69850138f4bd3c4fa7b": {
+      "first_covered": "2026-07-30T19:40:02+05:30",
+      "times_covered": 1,
+      "role": "category",
+      "hierarchy_path": [
+        "FARM FRESH",
+        "FARM FRESH",
+        "CF-FRUIT & VEGETABLES"
+      ],
+      "segment": "CF-FRUIT & VEGETABLES",
+      "last_covered": "2026-07-30T19:40:02+05:30",
+      "last_direction": "decrease",
+      "last_global_impact": 0.5736872194611712
+    },
+    "area:v1:dcd86598416d87d439991d094c0a86e4181ab9906210302b5a85d0af1e7ddfa3": {
+      "first_covered": "2026-07-30T19:40:02+05:30",
+      "times_covered": 1,
+      "role": "division",
+      "hierarchy_path": [
+        "FMCG FOOD"
+      ],
+      "segment": "FMCG FOOD",
+      "last_covered": "2026-07-30T19:40:02+05:30",
+      "last_direction": "increase",
+      "last_global_impact": 0.4289279597224755
+    },
+    "area:v1:9b047b5ef82781302cf78cc7570c2200cb63436cb8f6604aa44626c870e2ce82": {
+      "first_covered": "2026-07-30T19:40:02+05:30",
+      "times_covered": 1,
+      "role": "category",
+      "hierarchy_path": [
+        "FARM FRESH",
+        "FARM FRESH",
+        "CF-MEAT"
+      ],
+      "segment": "CF-MEAT",
+      "last_covered": "2026-07-30T19:40:02+05:30",
+      "last_direction": "increase",
+      "last_global_impact": 0.5734185707095478
+    }
+  },
+  "weekly_coverage": {
+    "area:v1:ce792f844e6aeee6e65394998a11bdd5d36f1de637bfe69850138f4bd3c4fa7b": [
+      "2026-07-30"
+    ],
+    "area:v1:dcd86598416d87d439991d094c0a86e4181ab9906210302b5a85d0af1e7ddfa3": [
+      "2026-07-30"
+    ],
+    "area:v1:9b047b5ef82781302cf78cc7570c2200cb63436cb8f6604aa44626c870e2ce82": [
+      "2026-07-30"
+    ]
+  }
+}

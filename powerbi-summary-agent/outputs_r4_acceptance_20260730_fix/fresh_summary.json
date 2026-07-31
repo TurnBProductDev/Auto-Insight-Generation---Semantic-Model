@@ -1,0 +1,388 @@
+{
+  "summary_type": "new_data",
+  "heading": "Like-for-like revenue increased by +3.0M, while quantity fell by -310.7K across CFH014, CFH017, CFH018 and CFH021.",
+  "paragraphs": [
+    "Across CFH014, CFH017, CFH018 and CFH021, like-for-like revenue increased by +3.0M (2.5%), from 122.8M to 125.8M compared with the same period last year. Quantity decreased by -310.7K, from 18.9M to 18.6M, while transactions increased by +213.3K (2.6%), from 8.1M to 8.3M. Quantity per transaction changed by -0.10, and average revenue per item increased by +0.27 (4.2%), from 6.5 to 6.8. Revenue improved, but the business sold fewer units and each basket held fewer items.",
+    "CF-FRUIT & VEGETABLES revenue changed by -722.0K (-5.3%). Quantity changed by -225.0K and transactions changed by -20.3K. Most of CF-FRUIT & VEGETABLES's revenue change came from units sold (-1.0M). Within CF-FRUIT & VEGETABLES, CF-VEGETABLES reduced revenue by -536.3K. CFH014 led CF-FRUIT & VEGETABLES across the stores included in the comparison at +146.2K.",
+    "FMCG FOOD revenue changed by +539.8K (+1.2%). Quantity changed by -404.4K, while transactions changed by +24.9K. Most of FMCG FOOD's revenue change came from average revenue per item (+2.4M). Within FMCG FOOD, CF-GROCERY FOOD added +344.5K, while CF-CONFECTIONERY reduced revenue by -119.6K. CFH021 led FMCG FOOD across the stores included in the comparison at +513.0K.",
+    "CF-MEAT revenue changed by +721.6K (+9.9%). Quantity changed by +158.9K and transactions changed by +68.2K. Most of CF-MEAT's revenue change came from units sold (+1.9M). Within CF-MEAT, CF-FRESH CHICKEN & PARTS added +1.1M, while CF-FRESH MEAT reduced revenue by -377.8K. CFH018 led CF-MEAT across the stores included in the comparison at +297.5K.",
+    "CF-FRUIT & VEGETABLES was down -722.0K, with quantity down -225.0K and transactions down -20.3K.",
+    "FMCG FOOD was up +539.8K, but quantity was down -404.4K and most of the increase came from average revenue per item (+2.4M).",
+    "CF-MEAT was up +721.6K, with quantity up +158.9K and transactions up +68.2K.",
+    "The named contributors were CF-VEGETABLES at -536.3K in CF-FRUIT & VEGETABLES, CF-GROCERY FOOD at +344.5K in FMCG FOOD, and CF-FRESH CHICKEN & PARTS at +1.1M in CF-MEAT."
+  ],
+  "content_blocks": [
+    {
+      "kind": "paragraph",
+      "heading": "Overall Performance",
+      "text": "Across CFH014, CFH017, CFH018 and CFH021, like-for-like revenue increased by +3.0M (2.5%), from 122.8M to 125.8M compared with the same period last year. Quantity decreased by -310.7K, from 18.9M to 18.6M, while transactions increased by +213.3K (2.6%), from 8.1M to 8.3M. Quantity per transaction changed by -0.10, and average revenue per item increased by +0.27 (4.2%), from 6.5 to 6.8. Revenue improved, but the business sold fewer units and each basket held fewer items.",
+      "points": []
+    },
+    {
+      "kind": "chart",
+      "heading": "Like-for-like revenue: prior versus current",
+      "text": "",
+      "points": [],
+      "chart": {
+        "source_id": "summary_7783fd0e315c:overview",
+        "type": "bar",
+        "title": "Like-for-like revenue: prior versus current",
+        "value_label": "Revenue",
+        "labels": [
+          "Prior",
+          "Current"
+        ],
+        "values": [
+          122819915.62000003,
+          125844619.76999998
+        ],
+        "x_label": "",
+        "y_label": "",
+        "size_label": "",
+        "x_values": [],
+        "y_values": [],
+        "size_values": [],
+        "series": [],
+        "highlight": null
+      }
+    },
+    {
+      "kind": "paragraph",
+      "heading": "CF-FRUIT & VEGETABLES",
+      "text": "CF-FRUIT & VEGETABLES revenue changed by -722.0K (-5.3%). Quantity changed by -225.0K and transactions changed by -20.3K. Most of CF-FRUIT & VEGETABLES's revenue change came from units sold (-1.0M). Within CF-FRUIT & VEGETABLES, CF-VEGETABLES reduced revenue by -536.3K. CFH014 led CF-FRUIT & VEGETABLES across the stores included in the comparison at +146.2K.",
+      "points": []
+    },
+    {
+      "kind": "chart",
+      "heading": "CF-FRUIT & VEGETABLES revenue change by product group",
+      "text": "",
+      "points": [],
+      "chart": {
+        "source_id": "summary_7955f5c7611c:contributor:0",
+        "type": "waterfall",
+        "title": "CF-FRUIT & VEGETABLES revenue change by product group",
+        "value_label": "Revenue change",
+        "labels": [
+          "CF-PRODUCTION FROM FRUIT & VEG.",
+          "CF-VEGETABLES",
+          "CF-FRUITS"
+        ],
+        "values": [
+          -2733.870000000001,
+          -536336.2800000003,
+          -182884.35000000056
+        ],
+        "x_label": "",
+        "y_label": "",
+        "size_label": "",
+        "x_values": [],
+        "y_values": [],
+        "size_values": [],
+        "series": [],
+        "highlight": null
+      }
+    },
+    {
+      "kind": "paragraph",
+      "heading": "FMCG FOOD",
+      "text": "FMCG FOOD revenue changed by +539.8K (+1.2%). Quantity changed by -404.4K, while transactions changed by +24.9K. Most of FMCG FOOD's revenue change came from average revenue per item (+2.4M). Within FMCG FOOD, CF-GROCERY FOOD added +344.5K, while CF-CONFECTIONERY reduced revenue by -119.6K. CFH021 led FMCG FOOD across the stores included in the comparison at +513.0K.",
+      "points": []
+    },
+    {
+      "kind": "chart",
+      "heading": "FMCG FOOD revenue change by category",
+      "text": "",
+      "points": [],
+      "chart": {
+        "source_id": "summary_bbb0c0707df2:contributor:0",
+        "type": "waterfall",
+        "title": "FMCG FOOD revenue change by category",
+        "value_label": "Revenue change",
+        "labels": [
+          "CF-ROASTERY",
+          "CF-FROZEN FOOD",
+          "CF-BAKERY",
+          "CF-CHILLED & DAIRY",
+          "CF-GROCERY FOOD",
+          "CF-CONFECTIONERY",
+          "CF-STAPLES"
+        ],
+        "values": [
+          4741.540000000037,
+          177304.0100000021,
+          -21575.000000000116,
+          226840.8399999952,
+          344522.52999999374,
+          -119629.63000000268,
+          -72421.53000000864
+        ],
+        "x_label": "",
+        "y_label": "",
+        "size_label": "",
+        "x_values": [],
+        "y_values": [],
+        "size_values": [],
+        "series": [],
+        "highlight": null
+      }
+    },
+    {
+      "kind": "paragraph",
+      "heading": "CF-MEAT",
+      "text": "CF-MEAT revenue changed by +721.6K (+9.9%). Quantity changed by +158.9K and transactions changed by +68.2K. Most of CF-MEAT's revenue change came from units sold (+1.9M). Within CF-MEAT, CF-FRESH CHICKEN & PARTS added +1.1M, while CF-FRESH MEAT reduced revenue by -377.8K. CFH018 led CF-MEAT across the stores included in the comparison at +297.5K.",
+      "points": []
+    },
+    {
+      "kind": "chart",
+      "heading": "CF-MEAT revenue change by product group",
+      "text": "",
+      "points": [],
+      "chart": {
+        "source_id": "summary_9b2971af5efb:contributor:0",
+        "type": "waterfall",
+        "title": "CF-MEAT revenue change by product group",
+        "value_label": "Revenue change",
+        "labels": [
+          "CF-FRESH MEAT",
+          "CF-FRESH CHICKEN & PARTS"
+        ],
+        "values": [
+          -377759.33999999845,
+          1099375.7600000016
+        ],
+        "x_label": "",
+        "y_label": "",
+        "size_label": "",
+        "x_values": [],
+        "y_values": [],
+        "size_values": [],
+        "series": [],
+        "highlight": null
+      }
+    },
+    {
+      "kind": "bullets",
+      "heading": "Selected areas in brief",
+      "text": "",
+      "points": [
+        "CF-FRUIT & VEGETABLES was down -722.0K, with quantity down -225.0K and transactions down -20.3K.",
+        "FMCG FOOD was up +539.8K, but quantity was down -404.4K and most of the increase came from average revenue per item (+2.4M).",
+        "CF-MEAT was up +721.6K, with quantity up +158.9K and transactions up +68.2K.",
+        "The named contributors were CF-VEGETABLES at -536.3K in CF-FRUIT & VEGETABLES, CF-GROCERY FOOD at +344.5K in FMCG FOOD, and CF-FRESH CHICKEN & PARTS at +1.1M in CF-MEAT."
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "heading": "Overall Performance",
+      "tone": "teal",
+      "points": [
+        "Across CFH014, CFH017, CFH018 and CFH021, like-for-like revenue increased by +3.0M (2.5%), from 122.8M to 125.8M compared with the same period last year. Quantity decreased by -310.7K, from 18.9M to 18.6M, while transactions increased by +213.3K (2.6%), from 8.1M to 8.3M. Quantity per transaction changed by -0.10, and average revenue per item increased by +0.27 (4.2%), from 6.5 to 6.8. Revenue improved, but the business sold fewer units and each basket held fewer items."
+      ]
+    },
+    {
+      "heading": "CF-FRUIT & VEGETABLES",
+      "tone": "teal",
+      "points": [
+        "CF-FRUIT & VEGETABLES revenue changed by -722.0K (-5.3%). Quantity changed by -225.0K and transactions changed by -20.3K. Most of CF-FRUIT & VEGETABLES's revenue change came from units sold (-1.0M). Within CF-FRUIT & VEGETABLES, CF-VEGETABLES reduced revenue by -536.3K. CFH014 led CF-FRUIT & VEGETABLES across the stores included in the comparison at +146.2K."
+      ]
+    },
+    {
+      "heading": "FMCG FOOD",
+      "tone": "teal",
+      "points": [
+        "FMCG FOOD revenue changed by +539.8K (+1.2%). Quantity changed by -404.4K, while transactions changed by +24.9K. Most of FMCG FOOD's revenue change came from average revenue per item (+2.4M). Within FMCG FOOD, CF-GROCERY FOOD added +344.5K, while CF-CONFECTIONERY reduced revenue by -119.6K. CFH021 led FMCG FOOD across the stores included in the comparison at +513.0K."
+      ]
+    },
+    {
+      "heading": "CF-MEAT",
+      "tone": "teal",
+      "points": [
+        "CF-MEAT revenue changed by +721.6K (+9.9%). Quantity changed by +158.9K and transactions changed by +68.2K. Most of CF-MEAT's revenue change came from units sold (+1.9M). Within CF-MEAT, CF-FRESH CHICKEN & PARTS added +1.1M, while CF-FRESH MEAT reduced revenue by -377.8K. CFH018 led CF-MEAT across the stores included in the comparison at +297.5K."
+      ]
+    },
+    {
+      "heading": "Selected areas in brief",
+      "tone": "teal",
+      "points": [
+        "CF-FRUIT & VEGETABLES was down -722.0K, with quantity down -225.0K and transactions down -20.3K.",
+        "FMCG FOOD was up +539.8K, but quantity was down -404.4K and most of the increase came from average revenue per item (+2.4M).",
+        "CF-MEAT was up +721.6K, with quantity up +158.9K and transactions up +68.2K.",
+        "The named contributors were CF-VEGETABLES at -536.3K in CF-FRUIT & VEGETABLES, CF-GROCERY FOOD at +344.5K in FMCG FOOD, and CF-FRESH CHICKEN & PARTS at +1.1M in CF-MEAT."
+      ]
+    }
+  ],
+  "covered_candidate_ids": [
+    "summary_7783fd0e315c",
+    "summary_7955f5c7611c",
+    "summary_bbb0c0707df2",
+    "summary_9b2971af5efb"
+  ],
+  "covered_summary_keys": [
+    "summary:v1:7783fd0e315ccf0f7b582812f99c61cc1ae0ef493db0ff562afd0b8ee3b17436",
+    "summary:v1:d1d723d606d759ec9bbc46cf595ae9bade4571e6634a4aa782ec83c602c3ed83",
+    "summary:v1:73f96c62ff8343cca62caac8d118ef0238ca69b117a9097345b5f8f72eb4fc29",
+    "summary:v1:65a66ea6ce37685e942bca52bdb8dd380e18c883637fc29693d52aea1b9bd893"
+  ],
+  "metrics": [],
+  "visual": null,
+  "data_as_of": "2026-07-29",
+  "grain": "month",
+  "freshness_status": "current",
+  "period_anchor": "2026-06",
+  "validation_status": "validated",
+  "authoring_mode": "llm",
+  "overall_performance": {
+    "status": "ok",
+    "families": {
+      "revenue": {
+        "current": 125844619.76999998,
+        "prior": 122819915.62000003,
+        "change": 3024704.1499999464,
+        "change_pct": 2.4627147272745744,
+        "comparison": "the same period last year"
+      },
+      "quantity": {
+        "current": 18611367.738690004,
+        "prior": 18922062.128709998,
+        "change": -310694.3900199942,
+        "change_pct": -1.641968977306046,
+        "comparison": "the same period last year"
+      },
+      "transactions": {
+        "current": 8338519.0,
+        "prior": 8125232.0,
+        "change": 213287.0,
+        "change_pct": 2.6249958155040987,
+        "comparison": "the same period last year"
+      },
+      "rate": {
+        "current": 6.761707228447778,
+        "prior": 6.490831431826253,
+        "change": 0.2708757966215254,
+        "change_pct": 4.173206460012968,
+        "comparison": "the same period last year"
+      }
+    },
+    "primary_family": "revenue",
+    "bridge": {
+      "volume_effect": -2016664.9124338634,
+      "rate_mix_effect": 5041369.062433813,
+      "total": 3024704.149999949,
+      "revenue_change": 3024704.1499999464,
+      "reconciles": true,
+      "note": "Rate/mix reflects price and mix together, not pure price."
+    },
+    "comparison": "the same period last year",
+    "data_as_of": "2026-07-29",
+    "grain": "month",
+    "freshness_status": "current",
+    "reconciled": true,
+    "coverage": "complete",
+    "visual": {
+      "type": "bar",
+      "title": "Revenue: prior versus current",
+      "labels": [
+        "Prior",
+        "Current"
+      ],
+      "values": [
+        122819915.62000003,
+        125844619.76999998
+      ],
+      "value_label": "Revenue"
+    },
+    "metrics": [
+      {
+        "label": "Revenue change",
+        "value": "+3.0M",
+        "tone": "teal"
+      },
+      {
+        "label": "Quantity change",
+        "value": "-310.7K",
+        "tone": "teal"
+      },
+      {
+        "label": "Quantity per transaction change",
+        "value": "-0.10",
+        "tone": "teal"
+      }
+    ],
+    "trend": {
+      "dimension": "month",
+      "grain": "month",
+      "rows": [
+        {
+          "month": 1,
+          "revenue_current": 20454233.349999987,
+          "revenue_prior": 18707106.079999994,
+          "revenue_change": 1747127.269999992
+        },
+        {
+          "month": 2,
+          "revenue_current": 18942440.02,
+          "revenue_prior": 17205615.580000013,
+          "revenue_change": 1736824.4399999864
+        },
+        {
+          "month": 3,
+          "revenue_current": 18618223.62000002,
+          "revenue_prior": 20661728.339999974,
+          "revenue_change": -2043504.719999954
+        },
+        {
+          "month": 4,
+          "revenue_current": 17197582.679999992,
+          "revenue_prior": 15085156.509999992,
+          "revenue_change": 2112426.17
+        },
+        {
+          "month": 5,
+          "revenue_current": 19951662.679999977,
+          "revenue_prior": 19142998.729999986,
+          "revenue_change": 808663.9499999918
+        },
+        {
+          "month": 6,
+          "revenue_current": 15550337.31000001,
+          "revenue_prior": 16572665.11000002,
+          "revenue_change": -1022327.8000000101
+        },
+        {
+          "month": 7,
+          "revenue_current": 15130140.11,
+          "revenue_prior": 15444645.269999994,
+          "revenue_change": -314505.15999999456
+        }
+      ],
+      "completeness": "complete",
+      "direction": "decelerating",
+      "value_aliases": {
+        "current": "revenue_current",
+        "prior": "revenue_prior",
+        "change": "revenue_change"
+      }
+    }
+  },
+  "focuses": [
+    {
+      "focus_key": "focus:v2:7955f5c7611c5dbbabab3424e4a9fa3e552145814a651963367ed9edde3bb163",
+      "segment": "CF-FRUIT & VEGETABLES",
+      "dimension_role": "category",
+      "lens": "performance"
+    },
+    {
+      "focus_key": "focus:v2:bbb0c0707df2f36c848183b4c0bb1daa1011fc9acfdf9617fa6a5d43b8b58f07",
+      "segment": "FMCG FOOD",
+      "dimension_role": "division",
+      "lens": "performance"
+    },
+    {
+      "focus_key": "focus:v2:9b2971af5efb281f709b716f93202e56d347e76211dce5ea4ac83bbf1e91dd21",
+      "segment": "CF-MEAT",
+      "dimension_role": "category",
+      "lens": "performance"
+    }
+  ]
+}

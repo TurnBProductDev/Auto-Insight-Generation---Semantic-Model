@@ -1,0 +1,825 @@
+{
+  "grand_totals_with_levers_and_new_branch_split": {
+    "status": "success",
+    "purpose": "Provide the headline like-for-like totals, core growth measures, and the separate current revenue from the new branch population.",
+    "query": "EVALUATE\nROW(\n    \"LFL net revenue CURRENT\", CALCULATE([net revenue CURRENT], TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_DEEP_DIVE2'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TRANSACTIONS'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TABLE'[store_no])),\n    \"LFL net revenue PAST\", CALCULATE([net revenue PAST], TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_DEEP_DIVE2'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TRANSACTIONS'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TABLE'[store_no])),\n    \"LFL revenue Growth\", CALCULATE([revenue Growth], TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_DEEP_DIVE2'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TRANSACTIONS'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TABLE'[store_no])),\n    \"LFL revenue growth %\", CALCULATE([revenue growth %], TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_DEEP_DIVE2'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TRANSACTIONS'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TABLE'[store_no])),\n    \"LFL net qty CURRENT\", CALCULATE([net qty CURRENT], TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_DEEP_DIVE2'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TRANSACTIONS'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TABLE'[store_no])),\n    \"LFL net qty PAST\", CALCULATE([net qty PAST], TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_DEEP_DIVE2'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TRANSACTIONS'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TABLE'[store_no])),\n    \"LFL QTY Growth\", CALCULATE([QTY Growth], TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_DEEP_DIVE2'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TRANSACTIONS'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TABLE'[store_no])),\n    \"LFL QTY GROWTH %\", CALCULATE([QTY GROWTH %], TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_DEEP_DIVE2'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TRANSACTIONS'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TABLE'[store_no])),\n    \"LFL net bills CURRENT\", CALCULATE([net bills CURRENT], TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_DEEP_DIVE2'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TRANSACTIONS'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TABLE'[store_no])),\n    \"LFL net bills PAST derived\", CALCULATE([net bills CURRENT], TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_DEEP_DIVE2'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TRANSACTIONS'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TABLE'[store_no])) - CALCULATE([bills growth], TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_DEEP_DIVE2'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TRANSACTIONS'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TABLE'[store_no])),\n    \"LFL bills growth\", CALCULATE([bills growth], TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_DEEP_DIVE2'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TRANSACTIONS'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TABLE'[store_no])),\n    \"LFL bills growth %\", CALCULATE([bills growth %], TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_DEEP_DIVE2'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TRANSACTIONS'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TABLE'[store_no])),\n    \"LFL retail price current year\", CALCULATE([retail price current year], TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_DEEP_DIVE2'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TRANSACTIONS'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TABLE'[store_no])),\n    \"LFL retail price past year\", CALCULATE([retail price past year], TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_DEEP_DIVE2'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TRANSACTIONS'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TABLE'[store_no])),\n    \"LFL RETAIL PRICE GROWTH\", CALCULATE([RETAIL PRICE GROWTH], TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_DEEP_DIVE2'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TRANSACTIONS'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TABLE'[store_no])),\n    \"LFL QUANTITY PER TRANSACTION CURRENT YEAR\", CALCULATE([QUANTITY PER TRANSACTION CURRENT YEAR], TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_DEEP_DIVE2'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TRANSACTIONS'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TABLE'[store_no])),\n    \"LFL QUANTITY PER TRANSACTION PAST YEAR\", CALCULATE([QUANTITY PER TRANSACTION PAST YEAR], TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_DEEP_DIVE2'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TRANSACTIONS'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TABLE'[store_no])),\n    \"LFL QUANTITY PER TRANSACTION GROWTH\", CALCULATE([QUANTITY PER TRANSACTION GROWTH], TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_DEEP_DIVE2'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TRANSACTIONS'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TABLE'[store_no])),\n    \"LFL SPEND PER TRANSACTION CURRENT YEAR\", CALCULATE([SPEND PER TRANSACTION CURRENT YEAR], TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_DEEP_DIVE2'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TRANSACTIONS'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TABLE'[store_no])),\n    \"LFL SPEND PER TRANSACTION PAST YEAR\", CALCULATE([SPEND PER TRANSACTION PAST YEAR], TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_DEEP_DIVE2'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TRANSACTIONS'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TABLE'[store_no])),\n    \"LFL SPEND PER TRANSACTION GROWTH\", CALCULATE([SPEND PER TRANSACTION GROWTH], TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_DEEP_DIVE2'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TRANSACTIONS'[store_no]), TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TABLE'[store_no])),\n    \"New branch net revenue CURRENT\", CALCULATE([net revenue CURRENT], TREATAS({\"CFH022\"}, 'MIS_DEEP_DIVE2'[store_no]), TREATAS({\"CFH022\"}, 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no]), TREATAS({\"CFH022\"}, 'CAT_TRANSACTIONS'[store_no]), TREATAS({\"CFH022\"}, 'CAT_TABLE'[store_no]))\n)",
+    "result": {
+      "results": [
+        {
+          "tables": [
+            {
+              "rows": [
+                {
+                  "[LFL net revenue CURRENT]": 125844619.76999998,
+                  "[LFL net revenue PAST]": 122819915.62000003,
+                  "[LFL revenue Growth]": 3024704.1499999315,
+                  "[LFL revenue growth %]": 0.02462714727274562,
+                  "[LFL net qty CURRENT]": 18611367.738690004,
+                  "[LFL net qty PAST]": 18922062.128709998,
+                  "[LFL QTY Growth]": -310694.3900199942,
+                  "[LFL QTY GROWTH %]": -0.01641968977306046,
+                  "[LFL net bills CURRENT]": 8338519,
+                  "[LFL net bills PAST derived]": 8125232,
+                  "[LFL bills growth]": 213287,
+                  "[LFL bills growth %]": 0.026249958155040987,
+                  "[LFL retail price current year]": 6.761707228447778,
+                  "[LFL retail price past year]": 6.490831431826255,
+                  "[LFL RETAIL PRICE GROWTH]": 0.2708757966215254,
+                  "[LFL QUANTITY PER TRANSACTION CURRENT YEAR]": 2.2319752151059444,
+                  "[LFL QUANTITY PER TRANSACTION PAST YEAR]": 2.328802688798301,
+                  "[LFL QUANTITY PER TRANSACTION GROWTH]": -0.09682747369235667,
+                  "[LFL SPEND PER TRANSACTION CURRENT YEAR]": 15.091962945698148,
+                  "[LFL SPEND PER TRANSACTION PAST YEAR]": 15.115865690973505,
+                  "[LFL SPEND PER TRANSACTION GROWTH]": -0.023902745275359294,
+                  "[New branch net revenue CURRENT]": 11906055.960000003
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "latest_month_store_scorecard": {
+    "status": "success",
+    "purpose": "Show the most recent month by branch so the summary can lead with the current branch pattern rather than only all-period totals.",
+    "query": "EVALUATE\nVAR LatestMonth =\n    CALCULATE (\n        MAX ( 'MIS_DEEP_DIVE2'[month] ),\n        TREATAS ( { \"CFH014\", \"CFH017\", \"CFH018\", \"CFH021\" }, 'MIS_DEEP_DIVE2'[store_no] ),\n        TREATAS ( { \"CFH014\", \"CFH017\", \"CFH018\", \"CFH021\" }, 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no] ),\n        TREATAS ( { \"CFH014\", \"CFH017\", \"CFH018\", \"CFH021\" }, 'CAT_TRANSACTIONS'[store_no] ),\n        TREATAS ( { \"CFH014\", \"CFH017\", \"CFH018\", \"CFH021\" }, 'CAT_TABLE'[store_no] )\n    )\nRETURN\nTOPN (\n    15,\n    SUMMARIZECOLUMNS (\n        'MIS_DEEP_DIVE2'[store_no],\n        TREATAS ( { LatestMonth }, 'MIS_DEEP_DIVE2'[month] ),\n        TREATAS ( { \"CFH014\", \"CFH017\", \"CFH018\", \"CFH021\" }, 'MIS_DEEP_DIVE2'[store_no] ),\n        TREATAS ( { \"CFH014\", \"CFH017\", \"CFH018\", \"CFH021\" }, 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no] ),\n        TREATAS ( { \"CFH014\", \"CFH017\", \"CFH018\", \"CFH021\" }, 'CAT_TRANSACTIONS'[store_no] ),\n        TREATAS ( { \"CFH014\", \"CFH017\", \"CFH018\", \"CFH021\" }, 'CAT_TABLE'[store_no] ),\n        \"month\", LatestMonth,\n        \"net revenue CURRENT\", [net revenue CURRENT],\n        \"net revenue PAST\", [net revenue PAST],\n        \"revenue Growth\", [revenue Growth],\n        \"revenue growth %\", [revenue growth %],\n        \"net qty CURRENT\", [net qty CURRENT],\n        \"net qty PAST\", [net qty PAST],\n        \"QTY Growth\", [QTY Growth],\n        \"QTY GROWTH %\", [QTY GROWTH %],\n        \"net bills CURRENT\", [net bills CURRENT],\n        \"prior transactions\", [net bills CURRENT] - [bills growth],\n        \"bills growth\", [bills growth],\n        \"bills growth %\", [bills growth %],\n        \"RETAIL PRICE GROWTH\", [RETAIL PRICE GROWTH],\n        \"QUANTITY PER TRANSACTION GROWTH\", [QUANTITY PER TRANSACTION GROWTH],\n        \"SPEND PER TRANSACTION GROWTH\", [SPEND PER TRANSACTION GROWTH]\n    ),\n    [revenue Growth], DESC\n)",
+    "result": {
+      "results": [
+        {
+          "tables": [
+            {
+              "rows": [
+                {
+                  "MIS_DEEP_DIVE2[store_no]": "CFH014",
+                  "[month]": 7,
+                  "[net revenue CURRENT]": 4827638.699999998,
+                  "[net revenue PAST]": 5085682.409999998,
+                  "[revenue Growth]": -258043.70999999996,
+                  "[revenue growth %]": -0.05073924975979773,
+                  "[net qty CURRENT]": 670573.2676400001,
+                  "[net qty PAST]": 710192.8886000001,
+                  "[QTY Growth]": -39619.62095999997,
+                  "[QTY GROWTH %]": -0.055787127125564356,
+                  "[net bills CURRENT]": 334861,
+                  "[prior transactions]": 351586,
+                  "[bills growth]": -16725,
+                  "[bills growth %]": -0.04757015353284829,
+                  "[RETAIL PRICE GROWTH]": 0.03828351407037989,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.01742704050743704,
+                  "[SPEND PER TRANSACTION GROWTH]": -0.04813046887214156
+                },
+                {
+                  "MIS_DEEP_DIVE2[store_no]": "CFH017",
+                  "[month]": 7,
+                  "[net revenue CURRENT]": 2338234.7800000017,
+                  "[net revenue PAST]": 2644142.1999999983,
+                  "[revenue Growth]": -305907.41999999667,
+                  "[revenue growth %]": -0.11569249944272923,
+                  "[net qty CURRENT]": 333412.4946,
+                  "[net qty PAST]": 383585.6989,
+                  "[QTY Growth]": -50173.20430000004,
+                  "[QTY GROWTH %]": -0.13080050805825294,
+                  "[net bills CURRENT]": 155548,
+                  "[prior transactions]": 175849,
+                  "[bills growth]": -20301,
+                  "[bills growth %]": -0.1154456380189822,
+                  "[RETAIL PRICE GROWTH]": 0.11981471536090993,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.03786553704022122,
+                  "[SPEND PER TRANSACTION GROWTH]": -0.0041963683755597
+                },
+                {
+                  "MIS_DEEP_DIVE2[store_no]": "CFH021",
+                  "[month]": 7,
+                  "[net revenue CURRENT]": 4928381.830000001,
+                  "[net revenue PAST]": 4771774.770000001,
+                  "[revenue Growth]": 156607.0599999996,
+                  "[revenue growth %]": 0.0328194576543267,
+                  "[net qty CURRENT]": 748995.8752100002,
+                  "[net qty PAST]": 803459.65243,
+                  "[QTY Growth]": -54463.777219999814,
+                  "[QTY GROWTH %]": -0.06778657404298827,
+                  "[net bills CURRENT]": 337512,
+                  "[prior transactions]": 345367,
+                  "[bills growth]": -7855,
+                  "[bills growth %]": -0.022743921683310797,
+                  "[RETAIL PRICE GROWTH]": 0.6409505574759917,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.10722568030005375,
+                  "[SPEND PER TRANSACTION GROWTH]": 0.7855600146343775
+                },
+                {
+                  "MIS_DEEP_DIVE2[store_no]": "CFH018",
+                  "[month]": 7,
+                  "[net revenue CURRENT]": 3035884.8000000007,
+                  "[net revenue PAST]": 2943045.890000002,
+                  "[revenue Growth]": 92838.90999999875,
+                  "[revenue growth %]": 0.03154517920208125,
+                  "[net qty CURRENT]": 468697.60947000014,
+                  "[net qty PAST]": 484039.83233,
+                  "[QTY Growth]": -15342.222859999863,
+                  "[QTY GROWTH %]": -0.03169619902177827,
+                  "[net bills CURRENT]": 222370,
+                  "[prior transactions]": 211666,
+                  "[bills growth]": 10704,
+                  "[bills growth %]": 0.05057023801649769,
+                  "[RETAIL PRICE GROWTH]": 0.3971052433361688,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.17907196290144167,
+                  "[SPEND PER TRANSACTION GROWTH]": -0.2517948516021793
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "latest_month_division_breakdown": {
+    "status": "success",
+    "purpose": "Summarize which divisions are driving the most recent month result across comparable branches.",
+    "query": "EVALUATE\nVAR LatestMonth =\n    CALCULATE(\n        MAX('MIS_DEEP_DIVE2'[month]),\n        TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_DEEP_DIVE2'[store_no]),\n        TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no]),\n        TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TRANSACTIONS'[store_no]),\n        TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TABLE'[store_no])\n    )\nRETURN\nTOPN(\n    15,\n    ADDCOLUMNS(\n        SUMMARIZECOLUMNS(\n            'MIS_DEEP_DIVE2'[division_name],\n            TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_DEEP_DIVE2'[store_no]),\n            TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no]),\n            TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TRANSACTIONS'[store_no]),\n            TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TABLE'[store_no]),\n            TREATAS({LatestMonth}, 'MIS_DEEP_DIVE2'[month]),\n            \"net revenue CURRENT\", [net revenue CURRENT],\n            \"net revenue PAST\", [net revenue PAST],\n            \"revenue Growth\", [revenue Growth],\n            \"revenue growth %\", [revenue growth %],\n            \"net qty CURRENT\", [net qty CURRENT],\n            \"net qty PAST\", [net qty PAST],\n            \"QTY Growth\", [QTY Growth],\n            \"QTY GROWTH %\", [QTY GROWTH %],\n            \"net bills CURRENT\", [net bills CURRENT],\n            \"bills growth\", [bills growth],\n            \"bills growth %\", [bills growth %],\n            \"RETAIL PRICE GROWTH\", [RETAIL PRICE GROWTH],\n            \"QUANTITY PER TRANSACTION GROWTH\", [QUANTITY PER TRANSACTION GROWTH],\n            \"SPEND PER TRANSACTION GROWTH\", [SPEND PER TRANSACTION GROWTH]\n        ),\n        \"prior transactions\", [net bills CURRENT] - [bills growth],\n        \"abs revenue growth\", ABS([revenue Growth])\n    ),\n    [abs revenue growth], DESC,\n    [revenue Growth], DESC\n)",
+    "result": {
+      "results": [
+        {
+          "tables": [
+            {
+              "rows": [
+                {
+                  "MIS_DEEP_DIVE2[division_name]": "FASHION",
+                  "[net revenue CURRENT]": 882705.0,
+                  "[net revenue PAST]": 971016.9599999996,
+                  "[revenue Growth]": -88311.95999999961,
+                  "[revenue growth %]": -0.09094790682131819,
+                  "[net qty CURRENT]": 62045.0,
+                  "[net qty PAST]": 65643.0,
+                  "[QTY Growth]": -3598.0,
+                  "[QTY GROWTH %]": -0.054811632618862634,
+                  "[net bills CURRENT]": 46338,
+                  "[bills growth]": -2011,
+                  "[bills growth %]": -0.04159341454838776,
+                  "[RETAIL PRICE GROWTH]": -0.565540093831812,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.01872509579179482,
+                  "[SPEND PER TRANSACTION GROWTH]": -1.0342278270362186,
+                  "[prior transactions]": 48349,
+                  "[abs revenue growth]": 88311.95999999961
+                },
+                {
+                  "MIS_DEEP_DIVE2[division_name]": "FMCG FOOD",
+                  "[net revenue CURRENT]": 5651911.779999999,
+                  "[net revenue PAST]": 5943431.5699999975,
+                  "[revenue Growth]": -291519.7899999982,
+                  "[revenue growth %]": -0.04904906981203761,
+                  "[net qty CURRENT]": 1169894.15232,
+                  "[net qty PAST]": 1284623.5001400001,
+                  "[QTY Growth]": -114729.34782000002,
+                  "[QTY GROWTH %]": -0.08930970654631233,
+                  "[net bills CURRENT]": 412082,
+                  "[bills growth]": -21129,
+                  "[bills growth %]": -0.048772999762240574,
+                  "[RETAIL PRICE GROWTH]": 0.20453674284999668,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.1263690385726708,
+                  "[SPEND PER TRANSACTION GROWTH]": -0.003981740162140923,
+                  "[prior transactions]": 433211,
+                  "[abs revenue growth]": 291519.7899999982
+                },
+                {
+                  "MIS_DEEP_DIVE2[division_name]": "ELECTRONICS",
+                  "[net revenue CURRENT]": 748278.55,
+                  "[net revenue PAST]": 733575.9199999996,
+                  "[revenue Growth]": 14702.63000000047,
+                  "[revenue growth %]": 0.0200424108795726,
+                  "[net qty CURRENT]": 17436.0,
+                  "[net qty PAST]": 17391.0,
+                  "[QTY Growth]": 45.0,
+                  "[QTY GROWTH %]": 0.0025875452820424355,
+                  "[net bills CURRENT]": 15143,
+                  "[bills growth]": -201,
+                  "[bills growth %]": -0.013099582898852971,
+                  "[RETAIL PRICE GROWTH]": 0.7343696426465058,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.018015904787291426,
+                  "[SPEND PER TRANSACTION GROWTH]": 1.605505420104528,
+                  "[prior transactions]": 15344,
+                  "[abs revenue growth]": 14702.63000000047
+                },
+                {
+                  "MIS_DEEP_DIVE2[division_name]": "FARM FRESH",
+                  "[net revenue CURRENT]": 2881410.8400000017,
+                  "[net revenue PAST]": 2835231.969999999,
+                  "[revenue Growth]": 46178.870000002906,
+                  "[revenue growth %]": 0.01628751033024043,
+                  "[net qty CURRENT]": 449088.6626000001,
+                  "[net qty PAST]": 481606.39611999993,
+                  "[QTY Growth]": -32517.733519999834,
+                  "[QTY GROWTH %]": -0.06751931407467754,
+                  "[net bills CURRENT]": 297453,
+                  "[bills growth]": -8348,
+                  "[bills growth %]": -0.027298798892089953,
+                  "[RETAIL PRICE GROWTH]": 0.5290977208851038,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.06512106910058302,
+                  "[SPEND PER TRANSACTION GROWTH]": 0.4154515078397498,
+                  "[prior transactions]": 305801,
+                  "[abs revenue growth]": 46178.870000002906
+                },
+                {
+                  "MIS_DEEP_DIVE2[division_name]": "FOOTWEAR",
+                  "[net revenue CURRENT]": 235138.54999999996,
+                  "[net revenue PAST]": 238542.74000000014,
+                  "[revenue Growth]": -3404.190000000177,
+                  "[revenue growth %]": -0.014270775962413171,
+                  "[net qty CURRENT]": 8391.0,
+                  "[net qty PAST]": 8582.0,
+                  "[QTY Growth]": -191.0,
+                  "[QTY GROWTH %]": -0.022255884409228616,
+                  "[net bills CURRENT]": 7698,
+                  "[bills growth]": -163,
+                  "[bills growth %]": -0.02073527541025315,
+                  "[RETAIL PRICE GROWTH]": 0.2270038908473957,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.0016952281669533331,
+                  "[SPEND PER TRANSACTION GROWTH]": 0.20031948701172198,
+                  "[prior transactions]": 7861,
+                  "[abs revenue growth]": 3404.190000000177
+                },
+                {
+                  "MIS_DEEP_DIVE2[division_name]": "OTHER NON TRADE",
+                  "[net revenue CURRENT]": 9331.53,
+                  "[net revenue PAST]": 5231.16,
+                  "[revenue Growth]": 4100.370000000001,
+                  "[revenue growth %]": 0.7838357075677289,
+                  "[net qty CURRENT]": 850.0,
+                  "[net qty PAST]": 401.0,
+                  "[QTY Growth]": 449.0,
+                  "[QTY GROWTH %]": 1.119700748129676,
+                  "[net bills CURRENT]": 851,
+                  "[bills growth]": 448,
+                  "[bills growth %]": 1.1116625310173698,
+                  "[RETAIL PRICE GROWTH]": -2.067016194807099,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.0037876910247177653,
+                  "[SPEND PER TRANSACTION GROWTH]": -2.015175752945737,
+                  "[prior transactions]": 403,
+                  "[abs revenue growth]": 4100.370000000001
+                },
+                {
+                  "MIS_DEEP_DIVE2[division_name]": "HOME FASHION",
+                  "[net revenue CURRENT]": 201390.42999999993,
+                  "[net revenue PAST]": 219172.96000000002,
+                  "[revenue Growth]": -17782.530000000086,
+                  "[revenue growth %]": -0.08113468924268799,
+                  "[net qty CURRENT]": 8681.0,
+                  "[net qty PAST]": 9957.0,
+                  "[QTY Growth]": -1276.0,
+                  "[QTY GROWTH %]": -0.12815104951290548,
+                  "[net bills CURRENT]": 5765,
+                  "[bills growth]": -714,
+                  "[bills growth %]": -0.11020219169624942,
+                  "[RETAIL PRICE GROWTH]": 1.1870423740179668,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.031000308288021472,
+                  "[SPEND PER TRANSACTION GROWTH]": 1.1050842242071681,
+                  "[prior transactions]": 6479,
+                  "[abs revenue growth]": 17782.530000000086
+                },
+                {
+                  "MIS_DEEP_DIVE2[division_name]": "LIVE KITCHEN",
+                  "[net revenue CURRENT]": 53453.259999999995,
+                  "[net revenue PAST]": 47048.66,
+                  "[revenue Growth]": 6404.599999999991,
+                  "[revenue growth %]": 0.13612715006123427,
+                  "[net qty CURRENT]": 14816.032,
+                  "[net qty PAST]": 13106.176000000001,
+                  "[QTY Growth]": 1709.855999999998,
+                  "[QTY GROWTH %]": 0.1304618524884755,
+                  "[net bills CURRENT]": 7340,
+                  "[bills growth]": 408,
+                  "[bills growth %]": 0.058857472590882864,
+                  "[RETAIL PRICE GROWTH]": 0.01799028642078726,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.1278555320584076,
+                  "[SPEND PER TRANSACTION GROWTH]": 0.49529084245398103,
+                  "[prior transactions]": 6932,
+                  "[abs revenue growth]": 6404.599999999991
+                },
+                {
+                  "MIS_DEEP_DIVE2[division_name]": "GM HOME WARE",
+                  "[net revenue CURRENT]": 503203.0599999999,
+                  "[net revenue PAST]": 532544.7,
+                  "[revenue Growth]": -29341.640000000072,
+                  "[revenue growth %]": -0.055097046313671086,
+                  "[net qty CURRENT]": 46724.4,
+                  "[net qty PAST]": 50801.0,
+                  "[QTY Growth]": -4076.5999999999985,
+                  "[QTY GROWTH %]": -0.08024645184149916,
+                  "[net bills CURRENT]": 36102,
+                  "[bills growth]": -1957,
+                  "[bills growth %]": -0.051420163430463225,
+                  "[RETAIL PRICE GROWTH]": 0.28664215317897046,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.0405629681892703,
+                  "[SPEND PER TRANSACTION GROWTH]": -0.0542381167794872,
+                  "[prior transactions]": 38059,
+                  "[abs revenue growth]": 29341.640000000072
+                },
+                {
+                  "MIS_DEEP_DIVE2[division_name]": "FMCG NON-FOOD",
+                  "[net revenue CURRENT]": 2369666.4900000007,
+                  "[net revenue PAST]": 2304059.85,
+                  "[revenue Growth]": 65606.6400000006,
+                  "[revenue growth %]": 0.028474364500557826,
+                  "[net qty CURRENT]": 296900.0,
+                  "[net qty PAST]": 300377.0,
+                  "[QTY Growth]": -3477.0,
+                  "[QTY GROWTH %]": -0.011575453513418137,
+                  "[net bills CURRENT]": 139225,
+                  "[bills growth]": 1231,
+                  "[bills growth %]": 0.008920677710625099,
+                  "[RETAIL PRICE GROWTH]": 0.31080221517618334,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.044220265100983536,
+                  "[SPEND PER TRANSACTION GROWTH]": 0.3235975194983638,
+                  "[prior transactions]": 137994,
+                  "[abs revenue growth]": 65606.6400000006
+                },
+                {
+                  "MIS_DEEP_DIVE2[division_name]": "GM FASHION",
+                  "[net revenue CURRENT]": 1300689.17,
+                  "[net revenue PAST]": 1312139.6299999997,
+                  "[revenue Growth]": -11450.45999999973,
+                  "[revenue growth %]": -0.00872655602971136,
+                  "[net qty CURRENT]": 96096.0,
+                  "[net qty PAST]": 95774.0,
+                  "[QTY Growth]": 322.0,
+                  "[QTY GROWTH %]": 0.003362081567022365,
+                  "[net bills CURRENT]": 52141,
+                  "[bills growth]": -641,
+                  "[bills growth %]": -0.012144291614565572,
+                  "[RETAIL PRICE GROWTH]": -0.16506389926097143,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.02848252594107148,
+                  "[SPEND PER TRANSACTION GROWTH]": 0.0860080609452929,
+                  "[prior transactions]": 52782,
+                  "[abs revenue growth]": 11450.45999999973
+                },
+                {
+                  "MIS_DEEP_DIVE2[division_name]": "GM OTHERS",
+                  "[net revenue CURRENT]": 292961.45,
+                  "[net revenue PAST]": 302649.1499999999,
+                  "[revenue Growth]": -9687.699999999895,
+                  "[revenue growth %]": -0.032009671925395784,
+                  "[net qty CURRENT]": 50757.0,
+                  "[net qty PAST]": 53016.0,
+                  "[QTY Growth]": -2259.0,
+                  "[QTY GROWTH %]": -0.042609778180172024,
+                  "[net bills CURRENT]": 30153,
+                  "[bills growth]": -1100,
+                  "[bills growth %]": -0.03519662112437206,
+                  "[RETAIL PRICE GROWTH]": 0.06320533419858787,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.013034057455984183,
+                  "[SPEND PER TRANSACTION GROWTH]": 0.03198777787163287,
+                  "[prior transactions]": 31253,
+                  "[abs revenue growth]": 9687.699999999895
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "latest_month_product_group_breakdown": {
+    "status": "success",
+    "purpose": "Show the biggest product-group gains and declines in the latest month for recent-trend commentary.",
+    "query": "EVALUATE\nVAR LatestMonth =\n    CALCULATE (\n        MAX ( 'MIS_DEEP_DIVE2'[month] ),\n        TREATAS ( { \"CFH014\", \"CFH017\", \"CFH018\", \"CFH021\" }, 'MIS_DEEP_DIVE2'[store_no] ),\n        TREATAS ( { \"CFH014\", \"CFH017\", \"CFH018\", \"CFH021\" }, 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no] ),\n        TREATAS ( { \"CFH014\", \"CFH017\", \"CFH018\", \"CFH021\" }, 'CAT_TRANSACTIONS'[store_no] ),\n        TREATAS ( { \"CFH014\", \"CFH017\", \"CFH018\", \"CFH021\" }, 'CAT_TABLE'[store_no] )\n    )\nVAR ProductGroupTable =\n    SUMMARIZECOLUMNS (\n        'MIS_DEEP_DIVE2'[product_group_name],\n        TREATAS ( { LatestMonth }, 'MIS_DEEP_DIVE2'[month] ),\n        TREATAS ( { \"CFH014\", \"CFH017\", \"CFH018\", \"CFH021\" }, 'MIS_DEEP_DIVE2'[store_no] ),\n        TREATAS ( { \"CFH014\", \"CFH017\", \"CFH018\", \"CFH021\" }, 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no] ),\n        TREATAS ( { \"CFH014\", \"CFH017\", \"CFH018\", \"CFH021\" }, 'CAT_TRANSACTIONS'[store_no] ),\n        TREATAS ( { \"CFH014\", \"CFH017\", \"CFH018\", \"CFH021\" }, 'CAT_TABLE'[store_no] ),\n        \"net revenue CURRENT\", [net revenue CURRENT],\n        \"net revenue PAST\", [net revenue PAST],\n        \"revenue Growth\", [revenue Growth],\n        \"revenue growth %\", [revenue growth %],\n        \"net qty CURRENT\", [net qty CURRENT],\n        \"net qty PAST\", [net qty PAST],\n        \"QTY Growth\", [QTY Growth],\n        \"QTY GROWTH %\", [QTY GROWTH %],\n        \"net bills CURRENT\", [net bills CURRENT],\n        \"prior transactions\", [net bills CURRENT] - [bills growth],\n        \"bills growth\", [bills growth],\n        \"bills growth %\", [bills growth %],\n        \"RETAIL PRICE GROWTH\", [RETAIL PRICE GROWTH],\n        \"QUANTITY PER TRANSACTION GROWTH\", [QUANTITY PER TRANSACTION GROWTH],\n        \"SPEND PER TRANSACTION GROWTH\", [SPEND PER TRANSACTION GROWTH],\n        \"AbsRevenueGrowth\", ABS ( [revenue Growth] )\n    )\nRETURN\nTOPN (\n    15,\n    ProductGroupTable,\n    [AbsRevenueGrowth], DESC,\n    [revenue Growth], DESC\n)",
+    "result": {
+      "results": [
+        {
+          "tables": [
+            {
+              "rows": [
+                {
+                  "MIS_DEEP_DIVE2[product_group_name]": "CF-EDIBLE OILS",
+                  "[net revenue CURRENT]": 688314.0400000002,
+                  "[net revenue PAST]": 716588.04,
+                  "[revenue Growth]": -28273.999999999884,
+                  "[revenue growth %]": -0.03945642185152837,
+                  "[net qty CURRENT]": 40244.0,
+                  "[net qty PAST]": 47879.0,
+                  "[QTY Growth]": -7635.0,
+                  "[QTY GROWTH %]": -0.1594644833852002,
+                  "[net bills CURRENT]": 36081,
+                  "[prior transactions]": 42061,
+                  "[bills growth]": -5980,
+                  "[bills growth %]": -0.14217446090202326,
+                  "[RETAIL PRICE GROWTH]": 2.136873610938606,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.022943626464677624,
+                  "[SPEND PER TRANSACTION GROWTH]": 2.0400354279492703,
+                  "[AbsRevenueGrowth]": 28273.999999999884
+                },
+                {
+                  "MIS_DEEP_DIVE2[product_group_name]": "CF-TROLLEY AND SUITCASE",
+                  "[net revenue CURRENT]": 188790.40000000002,
+                  "[net revenue PAST]": 220314.61,
+                  "[revenue Growth]": -31524.209999999963,
+                  "[revenue growth %]": -0.1430872423758005,
+                  "[net qty CURRENT]": 2486.0,
+                  "[net qty PAST]": 3367.0,
+                  "[QTY Growth]": -881.0,
+                  "[QTY GROWTH %]": -0.26165726165726166,
+                  "[net bills CURRENT]": 2235,
+                  "[prior transactions]": 2772,
+                  "[bills growth]": -537,
+                  "[bills growth %]": -0.1937229437229437,
+                  "[RETAIL PRICE GROWTH]": 10.507927415803536,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.10234221408718058,
+                  "[SPEND PER TRANSACTION GROWTH]": 4.991402592560334,
+                  "[AbsRevenueGrowth]": 31524.209999999963
+                },
+                {
+                  "MIS_DEEP_DIVE2[product_group_name]": "CF-BEVERAGES-COLD",
+                  "[net revenue CURRENT]": 209756.49000000002,
+                  "[net revenue PAST]": 241556.04000000004,
+                  "[revenue Growth]": -31799.550000000017,
+                  "[revenue growth %]": -0.1316446071892883,
+                  "[net qty CURRENT]": 126224.0,
+                  "[net qty PAST]": 143052.0,
+                  "[QTY Growth]": -16828.0,
+                  "[QTY GROWTH %]": -0.11763554511646114,
+                  "[net bills CURRENT]": 46973,
+                  "[prior transactions]": 53770,
+                  "[bills growth]": -6797,
+                  "[bills growth %]": -0.12640877812906826,
+                  "[RETAIL PRICE GROWTH]": -0.026809272075249746,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.02671808334403769,
+                  "[SPEND PER TRANSACTION GROWTH]": -0.026924959740780352,
+                  "[AbsRevenueGrowth]": 31799.550000000017
+                },
+                {
+                  "MIS_DEEP_DIVE2[product_group_name]": "CF-WATCHES",
+                  "[net revenue CURRENT]": 277243.54999999993,
+                  "[net revenue PAST]": 240193.94,
+                  "[revenue Growth]": 37049.60999999993,
+                  "[revenue growth %]": 0.15424872917276733,
+                  "[net qty CURRENT]": 23793.0,
+                  "[net qty PAST]": 21194.0,
+                  "[QTY Growth]": 2599.0,
+                  "[QTY GROWTH %]": 0.12262904595640275,
+                  "[net bills CURRENT]": 10964,
+                  "[prior transactions]": 9974,
+                  "[bills growth]": 990,
+                  "[bills growth %]": 0.09925807098455985,
+                  "[RETAIL PRICE GROWTH]": 0.3192054929302941,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.0451773480074098,
+                  "[SPEND PER TRANSACTION GROWTH]": 1.2047083959703428,
+                  "[AbsRevenueGrowth]": 37049.60999999993
+                },
+                {
+                  "MIS_DEEP_DIVE2[product_group_name]": "CF-MENS PROMO",
+                  "[net revenue CURRENT]": 5713.8099999999995,
+                  "[net revenue PAST]": 43386.369999999995,
+                  "[revenue Growth]": -37672.56,
+                  "[revenue growth %]": -0.8683040318883558,
+                  "[net qty CURRENT]": 319.0,
+                  "[net qty PAST]": 2792.0,
+                  "[QTY Growth]": -2473.0,
+                  "[QTY GROWTH %]": -0.8857449856733525,
+                  "[net bills CURRENT]": 279,
+                  "[prior transactions]": 2066,
+                  "[bills growth]": -1787,
+                  "[bills growth %]": -0.8649564375605033,
+                  "[RETAIL PRICE GROWTH]": 2.372099291751624,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.2080345029787618,
+                  "[SPEND PER TRANSACTION GROWTH]": -0.520573355262016,
+                  "[AbsRevenueGrowth]": 37672.56
+                },
+                {
+                  "MIS_DEEP_DIVE2[product_group_name]": "CF-FRESH MEAT",
+                  "[net revenue CURRENT]": 394040.83,
+                  "[net revenue PAST]": 459377.43000000005,
+                  "[revenue Growth]": -65336.600000000035,
+                  "[revenue growth %]": -0.1422285809731663,
+                  "[net qty CURRENT]": 14724.552000000001,
+                  "[net qty PAST]": 19486.787000000004,
+                  "[QTY Growth]": -4762.235000000002,
+                  "[QTY GROWTH %]": -0.2443827707461472,
+                  "[net bills CURRENT]": 10275,
+                  "[prior transactions]": 12876,
+                  "[bills growth]": -2601,
+                  "[bills growth %]": -0.20200372786579684,
+                  "[RETAIL PRICE GROWTH]": 3.1870123560733283,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.08037288388060881,
+                  "[SPEND PER TRANSACTION GROWTH]": 2.672443149139575,
+                  "[AbsRevenueGrowth]": 65336.600000000035
+                },
+                {
+                  "MIS_DEEP_DIVE2[product_group_name]": "CF-INFANT TOYS",
+                  "[net revenue CURRENT]": 71720.87,
+                  "[net revenue PAST]": 33597.79,
+                  "[revenue Growth]": 38123.079999999994,
+                  "[revenue growth %]": 1.1346901090815793,
+                  "[net qty CURRENT]": 6981.0,
+                  "[net qty PAST]": 5378.0,
+                  "[QTY Growth]": 1603.0,
+                  "[QTY GROWTH %]": 0.29806619561175157,
+                  "[net bills CURRENT]": 3478,
+                  "[prior transactions]": 2620,
+                  "[bills growth]": 858,
+                  "[bills growth %]": 0.32748091603053436,
+                  "[RETAIL PRICE GROWTH]": 4.02645961233884,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.04548371662225836,
+                  "[SPEND PER TRANSACTION GROWTH]": 7.79771275278852,
+                  "[AbsRevenueGrowth]": 38123.079999999994
+                },
+                {
+                  "MIS_DEEP_DIVE2[product_group_name]": "CF-CHOCOLATE",
+                  "[net revenue CURRENT]": 483290.25000000006,
+                  "[net revenue PAST]": 541254.35,
+                  "[revenue Growth]": -57964.09999999992,
+                  "[revenue growth %]": -0.10709216470962298,
+                  "[net qty CURRENT]": 411455.63894000003,
+                  "[net qty PAST]": 481638.45853000006,
+                  "[QTY Growth]": -70182.81959000003,
+                  "[QTY GROWTH %]": -0.14571680966715933,
+                  "[net bills CURRENT]": 23084,
+                  "[prior transactions]": 27003,
+                  "[bills growth]": -3919,
+                  "[bills growth %]": -0.14513202236788506,
+                  "[RETAIL PRICE GROWTH]": 0.05080926136856423,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.012201353898390721,
+                  "[SPEND PER TRANSACTION GROWTH]": 0.8919268077852713,
+                  "[AbsRevenueGrowth]": 57964.09999999992
+                },
+                {
+                  "MIS_DEEP_DIVE2[product_group_name]": "CF-RICE",
+                  "[net revenue CURRENT]": 880072.0599999999,
+                  "[net revenue PAST]": 924523.1799999999,
+                  "[revenue Growth]": -44451.119999999995,
+                  "[revenue growth %]": -0.04808004922061554,
+                  "[net qty CURRENT]": 27066.184999999998,
+                  "[net qty PAST]": 27984.0,
+                  "[QTY Growth]": -917.8150000000023,
+                  "[QTY GROWTH %]": -0.03279784877072621,
+                  "[net bills CURRENT]": 21679,
+                  "[prior transactions]": 23676,
+                  "[bills growth]": -1997,
+                  "[bills growth %]": -0.08434701807737793,
+                  "[RETAIL PRICE GROWTH]": -0.5220073888259193,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.06654144351110935,
+                  "[SPEND PER TRANSACTION GROWTH]": 1.5466420672731687,
+                  "[AbsRevenueGrowth]": 44451.119999999995
+                },
+                {
+                  "MIS_DEEP_DIVE2[product_group_name]": "CF-SKIN CARE",
+                  "[net revenue CURRENT]": 859693.3099999999,
+                  "[net revenue PAST]": 811298.6499999999,
+                  "[revenue Growth]": 48394.66000000003,
+                  "[revenue growth %]": 0.05965085730143892,
+                  "[net qty CURRENT]": 134871.0,
+                  "[net qty PAST]": 138946.0,
+                  "[QTY Growth]": -4075.0,
+                  "[QTY GROWTH %]": -0.029327940350927697,
+                  "[net bills CURRENT]": 45690,
+                  "[prior transactions]": 43975,
+                  "[bills growth]": 1715,
+                  "[bills growth %]": 0.038999431495167707,
+                  "[RETAIL PRICE GROWTH]": 0.5352401807207494,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.207787590468977,
+                  "[SPEND PER TRANSACTION GROWTH]": 0.3666989248676522,
+                  "[AbsRevenueGrowth]": 48394.66000000003
+                },
+                {
+                  "MIS_DEEP_DIVE2[product_group_name]": "CF-FRESH CHICKEN & PARTS",
+                  "[net revenue CURRENT]": 615576.13,
+                  "[net revenue PAST]": 485654.53,
+                  "[revenue Growth]": 129921.59999999998,
+                  "[revenue growth %]": 0.2675185589229446,
+                  "[net qty CURRENT]": 86362.0,
+                  "[net qty PAST]": 68619.0,
+                  "[QTY Growth]": 17743.0,
+                  "[QTY GROWTH %]": 0.2585726985237325,
+                  "[net bills CURRENT]": 44413,
+                  "[prior transactions]": 36579,
+                  "[bills growth]": 7834,
+                  "[bills growth %]": 0.21416659832144128,
+                  "[RETAIL PRICE GROWTH]": 0.050306820449097955,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.06860833967038982,
+                  "[SPEND PER TRANSACTION GROWTH]": 0.5834017371152953,
+                  "[AbsRevenueGrowth]": 129921.59999999998
+                },
+                {
+                  "MIS_DEEP_DIVE2[product_group_name]": "CF-FRUITS",
+                  "[net revenue CURRENT]": 727246.06,
+                  "[net revenue PAST]": 812065.95,
+                  "[revenue Growth]": -84819.8899999999,
+                  "[revenue growth %]": -0.10444950930401638,
+                  "[net qty CURRENT]": 109547.946,
+                  "[net qty PAST]": 134794.91306000002,
+                  "[QTY Growth]": -25246.967060000025,
+                  "[QTY GROWTH %]": -0.18729910860035257,
+                  "[net bills CURRENT]": 72597,
+                  "[prior transactions]": 83556,
+                  "[bills growth]": -10959,
+                  "[bills growth %]": -0.13115754703432428,
+                  "[RETAIL PRICE GROWTH]": 0.6141542677550396,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.10424117953008283,
+                  "[SPEND PER TRANSACTION GROWTH]": 0.29875460462688963,
+                  "[AbsRevenueGrowth]": 84819.8899999999
+                },
+                {
+                  "MIS_DEEP_DIVE2[product_group_name]": "CF-HEN EGGS",
+                  "[net revenue CURRENT]": 176747.40000000002,
+                  "[net revenue PAST]": 83397.08999999998,
+                  "[revenue Growth]": 93350.31000000004,
+                  "[revenue growth %]": 1.1193473297449594,
+                  "[net qty CURRENT]": 16354.0,
+                  "[net qty PAST]": 6535.0,
+                  "[QTY Growth]": 9819.0,
+                  "[QTY GROWTH %]": 1.5025248661055852,
+                  "[net bills CURRENT]": 14956,
+                  "[prior transactions]": 6136,
+                  "[bills growth]": 8820,
+                  "[bills growth %]": 1.4374185136897002,
+                  "[RETAIL PRICE GROWTH]": -1.9540107304540406,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.028448115340853786,
+                  "[SPEND PER TRANSACTION GROWTH]": -1.7736166858682854,
+                  "[AbsRevenueGrowth]": 93350.31000000004
+                },
+                {
+                  "MIS_DEEP_DIVE2[product_group_name]": "CF-FROZEN POULTRY",
+                  "[net revenue CURRENT]": 227384.98,
+                  "[net revenue PAST]": 285611.20000000007,
+                  "[revenue Growth]": -58226.22000000006,
+                  "[revenue growth %]": -0.20386532460911913,
+                  "[net qty CURRENT]": 24908.0,
+                  "[net qty PAST]": 30681.0,
+                  "[QTY Growth]": -5773.0,
+                  "[QTY GROWTH %]": -0.1881620546918288,
+                  "[net bills CURRENT]": 10526,
+                  "[prior transactions]": 13277,
+                  "[bills growth]": -2751,
+                  "[bills growth %]": -0.20720042178202908,
+                  "[RETAIL PRICE GROWTH]": -0.18006382547780575,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.05549269814691549,
+                  "[SPEND PER TRANSACTION GROWTH]": 0.09049411986238098,
+                  "[AbsRevenueGrowth]": 58226.22000000006
+                },
+                {
+                  "MIS_DEEP_DIVE2[product_group_name]": "CF-OTHER EGGS",
+                  "[net revenue CURRENT]": 40953.6,
+                  "[net revenue PAST]": 91329.99000000002,
+                  "[revenue Growth]": -50376.39000000002,
+                  "[revenue growth %]": -0.551586505155645,
+                  "[net qty CURRENT]": 3840.0,
+                  "[net qty PAST]": 7433.0,
+                  "[QTY Growth]": -3593.0,
+                  "[QTY GROWTH %]": -0.48338490515269744,
+                  "[net bills CURRENT]": 3530,
+                  "[prior transactions]": 6995,
+                  "[bills growth]": -3465,
+                  "[bills growth %]": -0.49535382416011436,
+                  "[RETAIL PRICE GROWTH]": -1.622096730795107,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.025202542487855695,
+                  "[SPEND PER TRANSACTION GROWTH]": -1.4548810745028344,
+                  "[AbsRevenueGrowth]": 50376.39000000002
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "category_health_measures": {
+    "status": "success",
+    "purpose": "Quantify how many categories are declining and how much revenue they represent for the comparable business.",
+    "query": "EVALUATE\nCALCULATETABLE(\n    ROW(\n        \"COUNT\", [COUNT],\n        \"COUNT_TOTAL\", [COUNT_TOTAL],\n        \"COUNT_PLUS\", [COUNT_PLUS],\n        \"COUNT %\", [COUNT %],\n        \"sum deg cur rev\", [sum deg cur rev],\n        \"sum deg past rev\", [sum deg past rev],\n        \"sum total cur rev\", [sum total cur rev],\n        \"sum total past rev\", [sum total past rev],\n        \"contribution cur\", [contribution cur],\n        \"contribution past\", [contribution past]\n    ),\n    TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_DEEP_DIVE2'[store_no]),\n    TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no]),\n    TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TRANSACTIONS'[store_no]),\n    TREATAS({\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, 'CAT_TABLE'[store_no])\n)",
+    "result": {
+      "results": [
+        {
+          "tables": [
+            {
+              "rows": [
+                {
+                  "[COUNT]": 429,
+                  "[COUNT_TOTAL]": 884,
+                  "[COUNT_PLUS]": 455,
+                  "[COUNT %]": 0.4852941176470588,
+                  "[sum deg cur rev]": 56336414.65999998,
+                  "[sum deg past rev]": 62962730.430000074,
+                  "[sum total cur rev]": 125844619.77000014,
+                  "[sum total past rev]": 122819915.61999986,
+                  "[contribution cur]": 0.44766645378215775,
+                  "[contribution past]": 0.5126426777950602
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "recent_daily_transactions_by_store": {
+    "status": "success",
+    "purpose": "Add recent branch transaction trend context from the daily transactions table, which is only available for the current year.",
+    "query": "EVALUATE\nTOPN(\n    15,\n    ADDCOLUMNS(\n        FILTER(\n            SUMMARIZECOLUMNS(\n                'rep_dept_wise_perf_eval_rpt'[TY_DATE],\n                'rep_dept_wise_perf_eval_rpt'[LOC_CODE],\n                TREATAS(\n                    { \"CFH014\", \"CFH017\", \"CFH018\", \"CFH021\" },\n                    'rep_dept_wise_perf_eval_rpt'[LOC_CODE]\n                )\n            ),\n            'rep_dept_wise_perf_eval_rpt'[TY_DATE] <= CALCULATE(\n                MAX('rep_dept_wise_perf_eval_rpt'[TY_DATE]),\n                FILTER(\n                    'rep_dept_wise_perf_eval_rpt',\n                    NOT(ISBLANK('rep_dept_wise_perf_eval_rpt'[LOC_BILLS]))\n                )\n            )\n        ),\n        \"Transactions\",\n        CALCULATE(\n            MAX('rep_dept_wise_perf_eval_rpt'[LOC_BILLS])\n        )\n    ),\n    'rep_dept_wise_perf_eval_rpt'[TY_DATE], DESC,\n    [Transactions], DESC\n)",
+    "result": {
+      "results": [
+        {
+          "tables": [
+            {
+              "rows": [
+                {
+                  "rep_dept_wise_perf_eval_rpt[TY_DATE]": "2026-07-26T00:00:00",
+                  "rep_dept_wise_perf_eval_rpt[LOC_CODE]": "CFH018",
+                  "[Transactions]": 2086
+                },
+                {
+                  "rep_dept_wise_perf_eval_rpt[TY_DATE]": "2026-07-26T00:00:00",
+                  "rep_dept_wise_perf_eval_rpt[LOC_CODE]": "CFH021",
+                  "[Transactions]": 2365
+                },
+                {
+                  "rep_dept_wise_perf_eval_rpt[TY_DATE]": "2026-07-26T00:00:00",
+                  "rep_dept_wise_perf_eval_rpt[LOC_CODE]": "CFH014",
+                  "[Transactions]": 3196
+                },
+                {
+                  "rep_dept_wise_perf_eval_rpt[TY_DATE]": "2026-07-28T00:00:00",
+                  "rep_dept_wise_perf_eval_rpt[LOC_CODE]": "CFH017",
+                  "[Transactions]": 1269
+                },
+                {
+                  "rep_dept_wise_perf_eval_rpt[TY_DATE]": "2026-07-27T00:00:00",
+                  "rep_dept_wise_perf_eval_rpt[LOC_CODE]": "CFH017",
+                  "[Transactions]": 1211
+                },
+                {
+                  "rep_dept_wise_perf_eval_rpt[TY_DATE]": "2026-07-27T00:00:00",
+                  "rep_dept_wise_perf_eval_rpt[LOC_CODE]": "CFH021",
+                  "[Transactions]": 2485
+                },
+                {
+                  "rep_dept_wise_perf_eval_rpt[TY_DATE]": "2026-07-27T00:00:00",
+                  "rep_dept_wise_perf_eval_rpt[LOC_CODE]": "CFH018",
+                  "[Transactions]": 2040
+                },
+                {
+                  "rep_dept_wise_perf_eval_rpt[TY_DATE]": "2026-07-29T00:00:00",
+                  "rep_dept_wise_perf_eval_rpt[LOC_CODE]": "CFH021",
+                  "[Transactions]": 290
+                },
+                {
+                  "rep_dept_wise_perf_eval_rpt[TY_DATE]": "2026-07-29T00:00:00",
+                  "rep_dept_wise_perf_eval_rpt[LOC_CODE]": "CFH018",
+                  "[Transactions]": 234
+                },
+                {
+                  "rep_dept_wise_perf_eval_rpt[TY_DATE]": "2026-07-28T00:00:00",
+                  "rep_dept_wise_perf_eval_rpt[LOC_CODE]": "CFH021",
+                  "[Transactions]": 2501
+                },
+                {
+                  "rep_dept_wise_perf_eval_rpt[TY_DATE]": "2026-07-29T00:00:00",
+                  "rep_dept_wise_perf_eval_rpt[LOC_CODE]": "CFH014",
+                  "[Transactions]": 276
+                },
+                {
+                  "rep_dept_wise_perf_eval_rpt[TY_DATE]": "2026-07-27T00:00:00",
+                  "rep_dept_wise_perf_eval_rpt[LOC_CODE]": "CFH014",
+                  "[Transactions]": 3010
+                },
+                {
+                  "rep_dept_wise_perf_eval_rpt[TY_DATE]": "2026-07-28T00:00:00",
+                  "rep_dept_wise_perf_eval_rpt[LOC_CODE]": "CFH018",
+                  "[Transactions]": 2042
+                },
+                {
+                  "rep_dept_wise_perf_eval_rpt[TY_DATE]": "2026-07-29T00:00:00",
+                  "rep_dept_wise_perf_eval_rpt[LOC_CODE]": "CFH017",
+                  "[Transactions]": 143
+                },
+                {
+                  "rep_dept_wise_perf_eval_rpt[TY_DATE]": "2026-07-28T00:00:00",
+                  "rep_dept_wise_perf_eval_rpt[LOC_CODE]": "CFH014",
+                  "[Transactions]": 2935
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "refresh_recency": {
+    "status": "success",
+    "purpose": "State the data freshness visible in the model so the summary can say what period the numbers cover.",
+    "query": "EVALUATE\nROW(\n    \"MaxRefreshDate\", FORMAT(MAX('Latest_Refresh_Table'[MaxRefreshDate]), \"yyyy-mm-dd hh:nn\"),\n    \"UPDATED_DATE\", FORMAT([UPDATED_DATE], \"yyyy-mm-dd hh:nn\")\n)",
+    "result": {
+      "results": [
+        {
+          "tables": [
+            {
+              "rows": [
+                {
+                  "[MaxRefreshDate]": "2026-07-29 00:00",
+                  "[UPDATED_DATE]": "2026-07-29 00:00"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,122 @@
+[
+  {
+    "id": 1,
+    "severity": "critical",
+    "category": "Quantity",
+    "metric": "CF-CONFECTIONERY",
+    "value": "-548.5K",
+    "delta": "12.4%",
+    "deltaDirection": "down",
+    "description": "CF-CONFECTIONERY sold 548.5K fewer units (12.4%), from 4.42M to 3.87M versus the prior period, representing about 176.5% of the total decline in unit sales. The decline was concentrated in chocolate, especially chocolate coated bars, within CF-CONFECTIONERY.",
+    "displayTime": "7:39 PM",
+    "isoDate": "2026-07-30",
+    "comparisonLabel": "vs the prior period",
+    "insight": {
+      "title": "Chocolate units decline",
+      "summary": "Most of the shortfall sat within CF-CHOCOLATE and was heavily concentrated in chocolate coated bars. This suggests the category decline was driven by a narrow part of the range rather than evenly across confectionery.",
+      "stats": [
+        {
+          "label": "Unit sales change",
+          "value": "-548.5K"
+        },
+        {
+          "label": "Share of unit sales decline",
+          "value": "176.5%"
+        }
+      ],
+      "action": "Review CF-CONFECTIONERY chocolate and chocolate coated bars performance by SKU, availability, and promotional activity."
+    }
+  },
+  {
+    "id": 2,
+    "severity": "positive",
+    "category": "Revenue",
+    "metric": "CFH021",
+    "value": "+4.18M",
+    "delta": "11.4%",
+    "deltaDirection": "up",
+    "description": "CFH021 revenue increased by 4.18M (11.4%), from 36.76M to 40.94M versus the prior period, representing about 138.3% of the total increase in revenue. The increase was supported more by higher average revenue per item than by selling more units, with added support from more transactions.",
+    "displayTime": "7:39 PM",
+    "isoDate": "2026-07-30",
+    "comparisonLabel": "vs the prior period",
+    "insight": {
+      "title": "CFH021 growth driver",
+      "summary": "The gain was concentrated in GM FASHION and FASHION within CFH021. This suggests the branch improvement was associated with stronger selling in those areas and a higher average revenue per item.",
+      "stats": [
+        {
+          "label": "Revenue change",
+          "value": "+4.18M"
+        },
+        {
+          "label": "Share of revenue increase",
+          "value": "138.3%"
+        },
+        {
+          "label": "Change from revenue per item",
+          "value": "+3.42M"
+        }
+      ],
+      "action": "Examine CFH021 GM FASHION and FASHION to compare item sales, average revenue per item, and transaction patterns."
+    }
+  },
+  {
+    "id": 3,
+    "severity": "positive",
+    "category": "Revenue",
+    "metric": "month=4",
+    "value": "+2.11M",
+    "delta": "14.0%",
+    "deltaDirection": "up",
+    "description": "month=4 revenue increased by 2.11M (14.0%), from 15.09M to 17.20M versus the prior period, representing about 69.8% of the total increase in revenue. This month accounted for a large part of the total uplift in revenue.",
+    "displayTime": "7:39 PM",
+    "isoDate": "2026-07-30",
+    "comparisonLabel": "vs the prior period",
+    "insight": {
+      "title": "April revenue uplift",
+      "summary": "The increase was concentrated in April's contribution to the overall revenue change. This may reflect a period-specific trading effect, so the result should be read alongside adjacent months.",
+      "stats": [
+        {
+          "label": "Revenue change",
+          "value": "+2.11M"
+        },
+        {
+          "label": "Share of revenue increase",
+          "value": "69.8%"
+        }
+      ],
+      "action": "Compare April against the months before and after to confirm which business areas were most associated with the uplift."
+    }
+  },
+  {
+    "id": 4,
+    "severity": "warning",
+    "category": "Revenue",
+    "metric": "CFH017",
+    "value": "-1.31M",
+    "delta": "5.9%",
+    "deltaDirection": "down",
+    "description": "CFH017 revenue decreased by 1.31M (5.9%), from 22.22M to 20.91M versus the prior period, representing an offset equal to about 43.3% of the total increase in revenue. The decline was linked mainly to selling fewer units, with fewer transactions also weighing on the result.",
+    "displayTime": "7:39 PM",
+    "isoDate": "2026-07-30",
+    "comparisonLabel": "vs the prior period",
+    "insight": {
+      "title": "CFH017 revenue drag",
+      "summary": "The weakness was associated with FMCG FOOD and CF-FRUIT & VEGETABLES in CFH017. Our checks suggest the branch decline was concentrated in those areas rather than spread evenly across the branch.",
+      "stats": [
+        {
+          "label": "Revenue change",
+          "value": "-1.31M"
+        },
+        {
+          "label": "Offset to revenue increase",
+          "value": "43.3%"
+        },
+        {
+          "label": "Change from units sold",
+          "value": "-1.52M"
+        }
+      ],
+      "action": "Investigate CFH017 FMCG FOOD and CF-FRUIT & VEGETABLES to compare item sales and transaction trends against the prior period."
+    }
+  }
+]

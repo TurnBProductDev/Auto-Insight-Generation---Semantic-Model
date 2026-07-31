@@ -1,0 +1,25 @@
+{
+  "focuses": [
+    {
+      "focus_key": "focus:v2:7955f5c7611c5dbbabab3424e4a9fa3e552145814a651963367ed9edde3bb163",
+      "segment": "CF-FRUIT & VEGETABLES",
+      "role": "category",
+      "queries_attempted": 4
+    },
+    {
+      "focus_key": "focus:v2:bbb0c0707df2f36c848183b4c0bb1daa1011fc9acfdf9617fa6a5d43b8b58f07",
+      "segment": "FMCG FOOD",
+      "role": "division",
+      "queries_attempted": 4
+    },
+    {
+      "focus_key": "focus:v2:9b2971af5efb281f709b716f93202e56d347e76211dce5ea4ac83bbf1e91dd21",
+      "segment": "CF-MEAT",
+      "role": "category",
+      "queries_attempted": 4
+    }
+  ],
+  "total_queries_used": 12,
+  "total_budget": 12,
+  "replacements": 0
+}

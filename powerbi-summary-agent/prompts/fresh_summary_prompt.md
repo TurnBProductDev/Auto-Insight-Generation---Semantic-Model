@@ -6,8 +6,10 @@ insight product.
 
 # AUTONOMOUS PRESENTATION
 
-Design this summary for the evidence available today. There is no required page
-template, section list, block order, word count, or number of charts.
+Design this summary for the evidence available today. Apart from the mandatory
+Overall Performance opening in `balanced_multi_focus` mode, there is no fixed
+page template, section list, word count, chart type, or maximum number of
+charts. When chart-ready evidence is available, at least one chart is required.
 
 Return `headline`, `blocks`, and `covered_candidate_ids` exactly as defined by
 the schema. Arrange any useful combination of these blocks in presentation
@@ -20,10 +22,12 @@ order:
   one of that source's `allowed_chart_types`, and use `heading` as a concise
   chart title. Code supplies every plotted value.
 
-Choose charts only when they clarify the written summary. You may choose none,
-one, or several. Do not repeat a chart source. Do not create KPI cards. Do not
-use the fixed headings `What's working`, `Risks`, or `Recommended actions`, and
-do not manufacture recommendations or a generic risk checklist.
+When `available_chart_sources` is non-empty, include at least one chart that
+clarifies the written summary; choose additional charts only when they add
+value. Use zero charts only when `available_chart_sources` is empty. Do not
+repeat a chart source. Do not create KPI cards. Do not use the fixed headings
+`What's working`, `Risks`, or `Recommended actions`, and do not manufacture
+recommendations or a generic risk checklist.
 
 Choose the graph according to the business question, but only from the source's
 `allowed_chart_types`: line or area for a time pattern; bar, horizontal bar or
@@ -33,20 +37,26 @@ measures; bubble when a third measure usefully controls point size; heatmap for
 many members across several measures; and grouped bar for side-by-side
 non-negative measures. The advertised source already owns every axis and value.
 
-# TODAY'S FOCUS
+# SUMMARY MODE
 
-The selected perspective is the complete brief for this run. When
-`focus_segment` is present, name that focus in the headline or opening content
-and keep the whole page about it. Do not turn a store, division, category,
-product, period, volume, or transaction focus into a generic overall report.
-Do not name another member in the headline.
+Read `summary_mode` before authoring:
 
-Use `focus_sentiment` only as today's framing: `opportunity` leads with the
-supported gain, `risk` leads with the supported decline, and `mixed` presents
-the balance plainly. It changes tone, not facts; never invent a positive or
-negative claim to match the label.
+- In `single_focus` mode, the selected perspective is the complete brief. When
+  `focus_segment` is present, name it in the headline or opening content, keep
+  the page about it, and do not name another member in the headline.
+- In `balanced_multi_focus` mode, write a true business summary. The first block
+  must be a paragraph or bullet group headed exactly `Overall Performance` and
+  must explain the company-level result. Then cover every remaining selected
+  Division, Department or Category focus in a balanced way. Name each focus
+  area clearly, but do not force identical subsections or the same amount of
+  detail for every area. Lower hierarchy levels may explain a selected focus;
+  they are supporting drivers, not additional headline focus areas.
 
-The optional `deep_dive` identifies supported contributors, locations, driver
+Use each perspective's `sentiment` (or the single `focus_sentiment`) only as
+framing: `opportunity` leads with a supported gain, `risk` with a supported
+decline, and `mixed` presents the balance plainly. It changes tone, not facts.
+
+An optional `deep_dive` identifies supported contributors, locations, driver
 and trend direction. Use the useful parts to explain what changed, what added or
 reduced the result, where it happened, and how the movement developed. Take
 every written figure from `supported_facts`. When contributor evidence is
@@ -61,7 +71,8 @@ of the total.
 - Keep the tone concise enough to remain useful, but do not target or enforce a
   word limit. Include the detail the evidence warrants.
 - Make the headline a strong executive takeaway containing the exact signed
-  `display_value` of the main result.
+  `display_value` of the main result. In `balanced_multi_focus` mode, headline
+  the overall business result rather than one focus area.
 - Use only supplied evidence. When writing a figure, copy its signed
   `display_value` exactly, including sign, suffix and precision. Never calculate,
   estimate or approximate a new figure.

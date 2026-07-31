@@ -1,0 +1,44 @@
+{
+  "queries": [
+    {
+      "name": "grand_totals_with_ratios",
+      "purpose": "Summarize the comparable business with the main current, prior, change, and ratio measures in one place for the report headline.",
+      "intent": "Grand totals in one row for [net revenue CURRENT], [net revenue PAST], [revenue Growth], [revenue growth %], [net qty CURRENT], [net qty PAST], [QTY Growth], [QTY GROWTH %], [net bills CURRENT], derived prior transactions as [net bills CURRENT] - [bills growth], [bills growth], [bills growth %], [retail price current year], [retail price past year], [RETAIL PRICE GROWTH], [QUANTITY PER TRANSACTION CURRENT YEAR], [QUANTITY PER TRANSACTION PAST YEAR], [QUANTITY PER TRANSACTION GROWTH], [SPEND PER TRANSACTION CURRENT YEAR], [SPEND PER TRANSACTION PAST YEAR], and [SPEND PER TRANSACTION GROWTH], filtered to the comparable branches CFH014, CFH017, CFH018 and CFH021 across the branch-bearing tables 'MIS_DEEP_DIVE2'[store_no], 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no], 'CAT_TABLE'[store_no], and 'CAT_TRANSACTIONS'[store_no], with no grouping and one row."
+    },
+    {
+      "name": "new_branch_totals_cf022",
+      "purpose": "Show the standalone contribution of the new branch that must be separated from like-for-like performance.",
+      "intent": "Grand totals in one row for [net revenue CURRENT], [net qty CURRENT], and [net bills CURRENT], filtered to only branch CFH022 across 'MIS_DEEP_DIVE2'[store_no], 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no], 'CAT_TABLE'[store_no], and 'CAT_TRANSACTIONS'[store_no], with no prior-period percentage calculations and no grouping."
+    },
+    {
+      "name": "recent_month_trend",
+      "purpose": "Show the most recent month-by-month comparable trend so the report can lead with the latest period.",
+      "intent": "Monthly trend grouped by 'MIS_DEEP_DIVE2'[max_date], returning [net revenue CURRENT], [net revenue PAST], [revenue Growth], [revenue growth %], [net qty CURRENT], [net qty PAST], [QTY Growth], [QTY GROWTH %], [net bills CURRENT], derived prior transactions as [net bills CURRENT] - [bills growth], [bills growth], and [bills growth %], filtered to comparable branches CFH014, CFH017, CFH018 and CFH021 across 'MIS_DEEP_DIVE2'[store_no], 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no], 'CAT_TABLE'[store_no], and 'CAT_TRANSACTIONS'[store_no], limited to the 15 most recent rows and sorted by 'MIS_DEEP_DIVE2'[max_date] descending."
+    },
+    {
+      "name": "branch_performance_breakdown",
+      "purpose": "Identify which comparable branches are driving the group result.",
+      "intent": "Breakdown by 'MIS_DEEP_DIVE2'[store_no] for the comparable branches only, returning [net revenue CURRENT], [net revenue PAST], [revenue Growth], [revenue growth %], [net qty CURRENT], [net qty PAST], [QTY Growth], [QTY GROWTH %], [net bills CURRENT], derived prior transactions as [net bills CURRENT] - [bills growth], [bills growth], [bills growth %], [retail price current year], [retail price past year], [RETAIL PRICE GROWTH], [QUANTITY PER TRANSACTION CURRENT YEAR], [QUANTITY PER TRANSACTION PAST YEAR], [QUANTITY PER TRANSACTION GROWTH], [SPEND PER TRANSACTION CURRENT YEAR], [SPEND PER TRANSACTION PAST YEAR], and [SPEND PER TRANSACTION GROWTH], filtered across 'MIS_DEEP_DIVE2'[store_no], 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no], 'CAT_TABLE'[store_no], and 'CAT_TRANSACTIONS'[store_no], limited to 15 rows and sorted by [net revenue CURRENT] descending."
+    },
+    {
+      "name": "division_breakdown",
+      "purpose": "Summarize performance by division to show which major parts of the business are growing or shrinking.",
+      "intent": "Breakdown by 'MIS_DEEP_DIVE2'[division_name] for comparable branches CFH014, CFH017, CFH018 and CFH021, returning [net revenue CURRENT], [net revenue PAST], [revenue Growth], [revenue growth %], [net qty CURRENT], [net qty PAST], [QTY Growth], [QTY GROWTH %], [net bills CURRENT], derived prior transactions as [net bills CURRENT] - [bills growth], [bills growth], [bills growth %], [retail price current year], [retail price past year], [RETAIL PRICE GROWTH], [QUANTITY PER TRANSACTION CURRENT YEAR], [QUANTITY PER TRANSACTION PAST YEAR], [QUANTITY PER TRANSACTION GROWTH], [SPEND PER TRANSACTION CURRENT YEAR], [SPEND PER TRANSACTION PAST YEAR], and [SPEND PER TRANSACTION GROWTH], with the comparable branch filter applied across 'MIS_DEEP_DIVE2'[store_no], 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no], 'CAT_TABLE'[store_no], and 'CAT_TRANSACTIONS'[store_no], limited to 15 rows and sorted by ABS([revenue Growth]) descending."
+    },
+    {
+      "name": "product_group_breakdown",
+      "purpose": "Show the most important product groups by current revenue with enough metrics to explain their movement.",
+      "intent": "Top 15 rows grouped by 'MIS_DEEP_DIVE2'[product_group_name], returning [net revenue CURRENT], [net revenue PAST], [revenue Growth], [revenue growth %], [net qty CURRENT], [net qty PAST], [QTY Growth], [QTY GROWTH %], [net bills CURRENT], derived prior transactions as [net bills CURRENT] - [bills growth], [bills growth], [bills growth %], [retail price current year], [retail price past year], [RETAIL PRICE GROWTH], [QUANTITY PER TRANSACTION CURRENT YEAR], [QUANTITY PER TRANSACTION PAST YEAR], [QUANTITY PER TRANSACTION GROWTH], [SPEND PER TRANSACTION CURRENT YEAR], [SPEND PER TRANSACTION PAST YEAR], and [SPEND PER TRANSACTION GROWTH], filtered to comparable branches CFH014, CFH017, CFH018 and CFH021 across 'MIS_DEEP_DIVE2'[store_no], 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no], 'CAT_TABLE'[store_no], and 'CAT_TRANSACTIONS'[store_no], sorted by [net revenue CURRENT] descending."
+    },
+    {
+      "name": "category_health_summary",
+      "purpose": "Add the model’s category decline and revenue-share health measures needed for report-level category context.",
+      "intent": "Grand totals in one row for [COUNT %], [contribution cur], and [contribution past], filtered to the comparable branches CFH014, CFH017, CFH018 and CFH021 across 'CAT_TABLE'[store_no], 'MIS_DEEP_DIVE2'[store_no], 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no], and 'CAT_TRANSACTIONS'[store_no], with no grouping."
+    },
+    {
+      "name": "branch_by_division_cross",
+      "purpose": "Show the largest branch-by-division combinations behind the comparable revenue movement.",
+      "intent": "Top 15 combinations grouped by 'MIS_DEEP_DIVE2'[store_no] and 'MIS_DEEP_DIVE2'[division_name], returning [net revenue CURRENT], [net revenue PAST], [revenue Growth], [net qty CURRENT], [net qty PAST], [QTY Growth], [net bills CURRENT], and derived prior transactions as [net bills CURRENT] - [bills growth], filtered to comparable branches CFH014, CFH017, CFH018 and CFH021 across 'MIS_DEEP_DIVE2'[store_no], 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no], 'CAT_TABLE'[store_no], and 'CAT_TRANSACTIONS'[store_no], sorted by ABS([revenue Growth]) descending."
+    }
+  ]
+}

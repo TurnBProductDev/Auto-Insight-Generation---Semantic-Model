@@ -1,18 +1,19 @@
 # Summary reporting rules
 
-These rules apply only to the daily focus summary. They describe how to word the
-one selected business focus and its deep dive. They do not change any
-calculation; numbers are always copied from the supplied evidence.
+These rules apply only to the Summary product. They describe how to word either
+the legacy single-focus page or the balanced multi-focus page. They do not
+change any calculation; numbers are always copied from supplied evidence.
 
-## The daily focus
+## Summary structure
 
-- Each day the summary explains ONE deliberately selected business focus: a
-  store, a merchandise area (division, category, product group), a time period,
-  or overall performance. The selected focus is named in `focus_segment`.
-- Keep the whole summary about that one focus. Do not turn a specific focus back
-  into a generic company-wide overview.
-- Lead the headline with the focus and its main movement, stated with the exact
-  signed figure.
+- In single-focus mode, explain the one deliberately selected business focus,
+  keep the page about it, and lead with its exact signed movement.
+- In balanced multi-focus mode, begin with `Overall Performance`, then cover all
+  selected significant focus areas. Only Division, Department and Category may
+  be individual focus areas. Product Group, Product and SKU may appear only as
+  supporting evidence inside a selected area's deep dive.
+- Keep the multi-focus page balanced: do not let one area consume the entire
+  summary when other selected areas have supported material facts.
 
 ## What managers care about
 
@@ -43,8 +44,11 @@ calculation; numbers are always copied from the supplied evidence.
 ## Flexible presentation
 
 - Let the evidence determine the narrative headings, amount of detail, block
-  order and charts. Do not force KPI cards, a risk/success template, or
-  recommended actions into the summary.
+  order and charts. When chart-ready Summary evidence exists, include at least
+  one useful interactive chart; the evidence and business question determine
+  its type and whether more charts help. Use zero charts only when no valid
+  chart dataset is available. Do not force KPI cards, a risk/success template,
+  or recommended actions into the summary.
 - Keep the established report theme and professional tone. Do not use emojis.
 - Display month-of-year values as names (January, February, and so on), never as
   `month 1` through `month 12`.

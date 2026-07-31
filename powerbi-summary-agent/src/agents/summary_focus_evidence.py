@@ -34,6 +34,7 @@ from ..tools import file_io
 from ..tools import powerbi_executor as pbi
 from ..tools import summary_focus
 from ..tools import summary_focus_queries as q
+from ..tools import summary_roles
 from ..utils.logger import RunLogger
 from .dax_validator import validate_one
 from .scope_validator import validate_comparable_scope
@@ -209,8 +210,13 @@ def _discover_child_dimensions(
     """
     focus_norm = str(focus_ref or "").casefold()
     focus_table, focus_column = _ref_parts(focus_ref)
-    parent_level, inferred_role = _semantic_level(focus_column or focus_role)
-    focus_role = str(focus_role or inferred_role or "").casefold()
+    inferred_level, inferred_role = _semantic_level(focus_column)
+    focus_role = summary_roles.canonical_role(
+        focus_role or inferred_role or focus_column, focus_column, state,
+    )
+    parent_level = summary_roles.hierarchy_level(focus_role)
+    if parent_level is None:
+        parent_level = inferred_level
     metadata = state.get("model_metadata", {}) or {}
     entity_ref = str((profile.get("entity_dimension") or {}).get("reference") or "").casefold()
     dimensions = [dim for dim in profile.get("dimensions") or [] if dim.get("reference")]
@@ -218,7 +224,13 @@ def _discover_child_dimensions(
     def compatible(dim: dict) -> tuple[bool, dict]:
         reference = str(dim.get("reference") or "")
         table, column = _ref_parts(reference)
-        level, role = _semantic_level(column)
+        inferred_child_level, inferred_child_role = _semantic_level(column)
+        role = summary_roles.canonical_role(
+            inferred_child_role or column, column, state,
+        )
+        level = summary_roles.hierarchy_level(role)
+        if level is None:
+            level = inferred_child_level
         same_table = bool(focus_table and table == focus_table)
         path = _relationship_distance(metadata, focus_table, table) if focus_table else int(
             dim.get("relationship_distance", 0) or 0

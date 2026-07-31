@@ -20,12 +20,13 @@ from uuid import uuid4
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-SCHEMA_VERSION = 2
+SCHEMA_VERSION = 3
 # Bounded retention for the rotation-tracking channels. Suppression identity
 # lives in focus_records (kept indefinitely, like v1 records); these two are
 # only editorial scaffolding for same-day recovery and R3 overlap checks.
 RECENT_FOCUS_MAX = 400
 DAILY_PLAN_MAX_DAYS = 60
+WEEKLY_COVERAGE_MAX_DATES = 30
 
 
 def _norm_text(value: Any) -> str:
@@ -59,8 +60,11 @@ def _empty_store() -> dict:
         "journal": {},
         # --- schema v2: focus rotation ---
         "focus_records": {},   # focus_key -> focus identity + last delivery
-        "daily_plan": {},      # iso day -> the focus delivered that day (same-day pin)
+        "daily_plan": {},      # iso day -> the focus/portfolio delivered that day (same-day pin)
         "recent_focus": [],    # newest-first signatures for R3 overlap checks
+        # --- schema v3: weekly multi-focus rotation ---
+        "area_records": {},    # area_key -> business-area coverage + last direction/impact
+        "weekly_coverage": {}, # area_key -> recent delivery dates (bounded to the window)
     }
 
 
@@ -78,8 +82,14 @@ def _migrate(data: dict, dataset_id: str) -> dict:
     data.setdefault("focus_records", {})
     data.setdefault("daily_plan", {})
     data.setdefault("recent_focus", [])
-    if int(data.get("schema_version") or 1) < 2:
+    data.setdefault("area_records", {})
+    data.setdefault("weekly_coverage", {})
+    original = int(data.get("schema_version") or 1)
+    if original < 2:
         _backfill_focus_records(data, dataset_id)
+    if original < 3:
+        _backfill_area_records(data, dataset_id)
+        _migrate_daily_plan_v3(data)
     data["schema_version"] = SCHEMA_VERSION
     return data
 
@@ -168,6 +178,79 @@ def focus_components(candidate: dict, dataset_id: str) -> tuple[str, dict]:
     return f"focus:v1:{digest}", fields
 
 
+# --- schema v3: business-area identity (weekly rotation) --------------------
+# area_key answers "have we recently *covered this business area*?" It is the
+# rotation identity and deliberately excludes metric, lens, direction and any
+# number, so covering a Category through different analytical lenses never
+# counts as covering multiple areas. The full hierarchy path (not just the leaf
+# member) is canonicalized so an identically named Category under two different
+# parents produces two distinct area identities.
+def _canonical_path(candidate: dict) -> list[str]:
+    path = candidate.get("hierarchy_path")
+    if isinstance(path, (list, tuple)) and path:
+        cleaned = [_norm_text(part) for part in path if str(part or "").strip()]
+        if cleaned:
+            return cleaned
+    segment = candidate.get("segment")
+    return [_norm_text(segment)] if str(segment or "").strip() else []
+
+
+def area_components(candidate: dict, dataset_id: str) -> tuple[str, dict]:
+    """Return a stable weekly-rotation area key and its persisted fields."""
+    role = _clean_role(candidate.get("dimension_role") or candidate.get("dimension"))
+    path = _canonical_path(candidate)
+    canon = {
+        "namespace": "area",
+        "version": 1,
+        "dataset": _norm_text(dataset_id),
+        "role": role,
+        "path": path,
+    }
+    blob = json.dumps(canon, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+    digest = hashlib.sha256(blob.encode("utf-8")).hexdigest()
+    raw_path = candidate.get("hierarchy_path")
+    if not (isinstance(raw_path, (list, tuple)) and raw_path):
+        raw_path = [candidate.get("segment")] if str(candidate.get("segment") or "").strip() else []
+    fields = {
+        "role": role,
+        "hierarchy_path": list(raw_path),
+        "segment": candidate.get("segment"),
+    }
+    return f"area:v1:{digest}", fields
+
+
+def portfolio_focus_components(candidate: dict, dataset_id: str) -> tuple[str, dict]:
+    """R4 focus identity with the full hierarchy path.
+
+    The R1-R3 ``focus:v1`` key intentionally predates hierarchy paths. R4 can
+    contain identically named leaves under different parents, so its analytical
+    focus key must include that path while still excluding mutable period,
+    direction, sentiment and numbers.
+    """
+    role = _clean_role(candidate.get("dimension_role") or candidate.get("dimension"))
+    lens = _norm_text(candidate.get("lens")) or "performance"
+    metric = _norm_text(candidate.get("metric_family"))
+    path = _canonical_path(candidate)
+    canon = {
+        "namespace": "focus",
+        "version": 2,
+        "dataset": _norm_text(dataset_id),
+        "role": role,
+        "path": path,
+        "metric": metric,
+        "lens": lens,
+    }
+    blob = json.dumps(canon, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+    digest = hashlib.sha256(blob.encode("utf-8")).hexdigest()
+    return f"focus:v2:{digest}", {
+        "dimension_role": role,
+        "hierarchy_path": list(candidate.get("hierarchy_path") or []),
+        "segment": candidate.get("segment"),
+        "metric_family": candidate.get("metric_family"),
+        "lens": lens,
+    }
+
+
 def _role_from_angle(angle: str, dimension: str) -> str:
     text = _norm_text(angle)
     mapping = {
@@ -175,6 +258,7 @@ def _role_from_angle(angle: str, dimension: str) -> str:
         "period_movement": "period",
         "store_overview": "store",
         "division_overview": "division",
+        "department_overview": "department",
         "category_overview": "category",
         "product_overview": "product",
         "volume_and_transactions": "overall",
@@ -230,6 +314,83 @@ def _backfill_focus_records(data: dict, dataset_id: str) -> None:
             "deep_dive_signature": None,
             "backfilled": True,
         }
+
+
+def _backfill_area_records(data: dict, dataset_id: str) -> None:
+    """Best-effort v2->v3 area history from focus_records (leaf-only path).
+
+    v2 focus_records carry a role + segment but no hierarchy path, so the derived
+    area_key is leaf-only and is marked ``backfilled``; a real R4 delivery with
+    the full Division->...->member path supersedes it on the next commit.
+    """
+    area_records = data.setdefault("area_records", {})
+    for record in (data.get("focus_records") or {}).values():
+        role = record.get("dimension_role")
+        segment = record.get("segment")
+        if not role or not str(segment or "").strip():
+            continue
+        area_key, fields = area_components({"dimension_role": role, "segment": segment}, dataset_id)
+        if area_key in area_records:
+            continue
+        area_records[area_key] = {
+            **fields,
+            "first_covered": record.get("first_reported"),
+            "last_covered": record.get("last_reported"),
+            "times_covered": int(record.get("times_reported", 0) or 0),
+            "last_direction": record.get("last_direction"),
+            "last_global_impact": None,
+            "backfilled": True,
+        }
+
+
+def _migrate_daily_plan_v3(data: dict) -> None:
+    """Convert singular v2 daily_plan entries to the v3 multi-focus shape.
+
+    Non-destructive: the singular focus_key/candidate_id are preserved so the
+    legacy single-focus path still reads them.
+    """
+    for entry in (data.get("daily_plan") or {}).values():
+        if not isinstance(entry, dict) or "focus_keys" in entry:
+            continue
+        focus_key = entry.get("focus_key")
+        entry["focus_keys"] = [focus_key] if focus_key else []
+        candidate_id = entry.get("candidate_id")
+        entry["candidate_ids"] = [candidate_id] if candidate_id else []
+        entry.setdefault("area_keys", [])
+
+
+def coverage_map(store: dict) -> dict:
+    """Selector-facing view of area coverage keyed by area_key (§14)."""
+    out: dict = {}
+    for area_key, record in (store.get("area_records") or {}).items():
+        out[area_key] = {
+            "last_covered": record.get("last_covered"),
+            "times": int(record.get("times_covered", 0) or 0),
+            "last_direction": record.get("last_direction"),
+            "last_global_impact": record.get("last_global_impact"),
+        }
+    return out
+
+
+def pinned_portfolio(store: dict, day: str) -> dict | None:
+    """Return the ordered focus set delivered on ``day`` for same-day recovery."""
+    entry = (store.get("daily_plan") or {}).get(day)
+    if not isinstance(entry, dict):
+        return None
+    focus_keys = entry.get("focus_keys")
+    if focus_keys is None and entry.get("focus_key"):
+        focus_keys = [entry.get("focus_key")]
+    if not focus_keys:
+        return None
+    candidate_ids = entry.get("candidate_ids")
+    if candidate_ids is None:
+        candidate_ids = [entry["candidate_id"]] if entry.get("candidate_id") else []
+    return {
+        "focus_keys": list(focus_keys),
+        "area_keys": list(entry.get("area_keys") or []),
+        "candidate_ids": list(candidate_ids),
+        "summary_type": entry.get("summary_type"),
+    }
 
 
 def focus_suppressed(
@@ -393,7 +554,10 @@ def commit_summary_run(
         runs.append(entry)
         journal[today] = runs
 
-        focus_committed = _commit_focus(memory, state, fresh_summary, now, today)
+        if state.get("summary_r4_enabled"):
+            focus_committed = _commit_portfolio(memory, state, fresh_summary, now, today)
+        else:
+            focus_committed = _commit_focus(memory, state, fresh_summary, now, today)
 
         _atomic_write(path, memory)
         return {
@@ -484,6 +648,108 @@ def _commit_focus(memory: dict, state: dict, fresh_summary: dict, now: str, toda
     })
     del recent[RECENT_FOCUS_MAX:]
     return focus_key
+
+
+def _commit_portfolio(memory: dict, state: dict, fresh_summary: dict, now: str, today: str) -> str | None:
+    """Persist the delivered R4 portfolio: area_records, weekly_coverage, the
+    multi-focus same-day plan, focus_records and R3 signatures.
+
+    Reads the ordered ``state["summary_selected_focuses"]`` (the public portfolio
+    from the selector) and optional per-focus deep-dive signatures from
+    ``summary_focus_evidence_by_key``. Returns the lead focus_key, or None when no
+    focus was delivered. Only ever called from inside ``commit_summary_run`` after
+    the required delivery channels have succeeded.
+    """
+    focuses = state.get("summary_selected_focuses") or []
+    if not focuses:
+        return None
+
+    plan_day = today
+    try:
+        from . import summary_focus  # lazy import avoids a module cycle
+        plan_day = summary_focus.focus_today(state).isoformat()
+    except Exception:  # noqa: BLE001 - fall back to the wall-clock day
+        plan_day = today
+    focus_stamp = f"{plan_day}{now[10:]}" if len(now) >= 10 else now
+    day_only = focus_stamp[:10]
+
+    evidence_by_key = state.get("summary_focus_evidence_by_key") or {}
+    focus_records = memory.setdefault("focus_records", {})
+    area_records = memory.setdefault("area_records", {})
+    weekly = memory.setdefault("weekly_coverage", {})
+    recent = memory.setdefault("recent_focus", [])
+
+    area_keys: list[str] = []
+    focus_keys: list[str] = []
+    candidate_ids: list = []
+    for focus in focuses:
+        focus_key = str(focus.get("focus_key") or "")
+        if not focus_key:
+            continue
+        area_key = str(focus.get("area_key") or "")
+        focus_keys.append(focus_key)
+        candidate_ids.append(focus.get("candidate_id"))
+        mfacts = focus.get("materiality_facts") or {}
+        evidence = evidence_by_key.get(focus_key) or {}
+        signature = evidence.get("signature_fields") or {}
+
+        record = focus_records.get(focus_key) or {"first_reported": now, "times_reported": 0}
+        record.update({
+            "dimension_role": focus.get("dimension_role"),
+            "lens": focus.get("lens"),
+            "segment": focus.get("segment"),
+            "metric_family": focus.get("metric_family"),
+            "hierarchy_path": focus.get("hierarchy_path"),
+            "last_reported": focus_stamp,
+            "times_reported": int(record.get("times_reported", 0)) + 1,
+            "last_direction": focus.get("direction"),
+            "last_global_impact": mfacts.get("global_impact_pct"),
+            "deep_dive_signature": evidence.get("deep_dive_signature"),
+            "heading": fresh_summary.get("heading"),
+        })
+        record.pop("backfilled", None)
+        focus_records[focus_key] = record
+
+        if area_key:
+            area_keys.append(area_key)
+            arec = area_records.get(area_key) or {"first_covered": now, "times_covered": 0}
+            arec.update({
+                "role": focus.get("dimension_role"),
+                "hierarchy_path": focus.get("hierarchy_path"),
+                "segment": focus.get("segment"),
+                "last_covered": focus_stamp,
+                "times_covered": int(arec.get("times_covered", 0)) + 1,
+                "last_direction": focus.get("direction"),
+                "last_global_impact": mfacts.get("global_impact_pct"),
+            })
+            arec.pop("backfilled", None)
+            area_records[area_key] = arec
+            dates = [day_only] + [d for d in (weekly.get(area_key) or []) if d != day_only]
+            weekly[area_key] = dates[:WEEKLY_COVERAGE_MAX_DATES]
+
+        recent.insert(0, {
+            "focus_key": focus_key,
+            "area_key": area_key,
+            "reported_at": focus_stamp,
+            "dimension_role": focus.get("dimension_role"),
+            "segment": focus.get("segment"),
+            "top_pos_contributor": signature.get("top_pos_contributor"),
+            "top_neg_contributor": signature.get("top_neg_contributor"),
+            "leading_location": signature.get("leading_location"),
+            "driver_class": signature.get("driver_class"),
+        })
+    del recent[RECENT_FOCUS_MAX:]
+
+    daily_plan = memory.setdefault("daily_plan", {})
+    daily_plan[plan_day] = {
+        "summary_type": fresh_summary.get("summary_type"),
+        "area_keys": area_keys,
+        "focus_keys": focus_keys,
+        "candidate_ids": candidate_ids,
+        "reported_at": focus_stamp,
+    }
+    _prune_daily_plan(daily_plan, plan_day)
+    return focus_keys[0] if focus_keys else None
 
 
 def _prune_daily_plan(daily_plan: dict, today: str) -> None:

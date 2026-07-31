@@ -1,7 +1,18 @@
 {
+  "reporting": {
+    "window": "ytd",
+    "window_note": "Each daily run reports year-to-date: Jan 1 -> latest available business date this year, versus the SAME elapsed window last year. The comparison is like-for-like because the model pairs current/last-year values at the row level and the refresh trims last year to the same elapsed day (verified: July exists as days 1-27 in BOTH 2026 and 2025). No month-end wait; the snapshot updates every refresh.",
+    "data_as_of_source": "MAX(MIS_DEEP_DIVE2[max_date]) over ALL rows = the latest loaded business date. Key the run off this, NOT the calendar date (data typically runs a few days behind today).",
+    "alignment_guard": "The daily job asserts current_elapsed_days == last_year_elapsed_days for the loaded window and flags divergence -- the whole comparison depends on the ETL continuing to trim last year to the same elapsed day.",
+    "bills_caveat": "Footfall / ATV / UPT draw bills from CAT_TRANSACTIONS, which has NO date column (monthly grain). Their elapsed alignment cannot be date-verified and is an ETL assumption (current magnitudes look correct). Confirm with the data owner.",
+    "benchmark_note": "Thresholds are data-driven bands derived from THIS model's own month-to-month volatility (6 complete months, Jan-Jun 2026 vs 2025). On a smooth cumulative YTD number they act as absolute health lines rather than statistical control limits -- fewer false alarms, which suits a YTD alarm. green_at / amber_at are the machine-evaluable cut points; see evaluate_status().",
+    "evaluation": "higher_is_better: green if value>=green_at, else amber if value>=amber_at, else red (severe if severe_at set and value<severe_at).  lower_is_better: green if value<=green_at, else amber if value<=amber_at, else red.",
+    "generated": "2026-07-30, benchmarked against live model via executeQueries."
+  },
   "kpis": [
     {
       "name": "Revenue Growth %",
+      "key": "revenue_growth_pct",
       "formula": "(rev_current - rev_past) / abs(rev_past)",
       "dax": "Revenue Growth % =\n[revenue growth %]",
       "inputs": ["rev_current", "rev_past"],
@@ -13,10 +24,17 @@
         "note": "Calls the native measure directly rather than reconstructing from raw columns. The underlying revenue columns are named differently between the local Desktop file (NET_SALE_VAL_CURRENT/_PAST) and the published dataset config.json targets (net_sale_val_current/_ly) -- this model's column names have already drifted at least once; the measure name is the stable surface, so KPIs bind to it, not to raw columns."
       },
       "direction": "higher_is_better",
-      "thresholds": { "red": "< -0.03", "amber": "-0.03 to 0.0", "green": ">= 0.0" }
+      "benchmark_basis": { "observed_monthly_mean": 0.146, "observed_monthly_std": 0.121, "observed_monthly_range": [-0.036, 0.275], "ytd_current": 0.126 },
+      "thresholds": {
+        "green_at": 0.05,
+        "amber_at": 0.0,
+        "severe_at": -0.09,
+        "labels": { "green": ">= +5%", "amber": "0% to +5%", "red": "< 0% (YoY contraction)", "severe": "< -9% (>2 sigma)" }
+      }
     },
     {
       "name": "Volume Growth %",
+      "key": "volume_growth_pct",
       "formula": "(qty_current - qty_past) / qty_past",
       "dax": "Volume Growth % =\n[QTY GROWTH %]",
       "inputs": ["qty_current", "qty_past"],
@@ -28,10 +46,17 @@
         "note": "Calls the native measure directly -- see the schema-drift note on Revenue Growth %."
       },
       "direction": "higher_is_better",
-      "thresholds": { "red": "< 0.0", "amber": "0.0 to 0.02", "green": ">= 0.02" }
+      "benchmark_basis": { "observed_monthly_mean": 0.122, "observed_monthly_std": 0.118, "observed_monthly_range": [-0.050, 0.235], "ytd_current": 0.100 },
+      "thresholds": {
+        "green_at": 0.03,
+        "amber_at": 0.0,
+        "severe_at": -0.11,
+        "labels": { "green": ">= +3%", "amber": "0% to +3%", "red": "< 0% (YoY contraction)", "severe": "< -11% (>2 sigma)" }
+      }
     },
     {
       "name": "Footfall (Transaction Count) Growth %",
+      "key": "footfall_growth_pct",
       "formula": "(bills_current - bills_past) / bills_past",
       "dax": "Footfall Growth % =\n[bills growth %]",
       "inputs": ["bills_current", "bills_past"],
@@ -40,13 +65,20 @@
         "rate": "[bills growth %]",
         "value": "[bills growth]",
         "arrow": "[IND TRANSACTIONS DEEP DIVE]",
-        "note": "Calls the native measure directly -- see the schema-drift note on Revenue Growth %."
+        "note": "Calls the native measure directly -- see the schema-drift note on Revenue Growth %. Bills come from CAT_TRANSACTIONS (no date column) -- see reporting.bills_caveat."
       },
       "direction": "higher_is_better",
-      "thresholds": { "red": "< -0.03", "amber": "-0.03 to 0.0", "green": ">= 0.0" }
+      "benchmark_basis": { "observed_monthly_mean": 0.151, "observed_monthly_std": 0.110, "observed_monthly_range": [-0.046, 0.265], "ytd_current": 0.129 },
+      "thresholds": {
+        "green_at": 0.05,
+        "amber_at": 0.0,
+        "severe_at": -0.07,
+        "labels": { "green": ">= +5%", "amber": "0% to +5%", "red": "< 0% (YoY contraction)", "severe": "< -7% (>2 sigma)" }
+      }
     },
     {
       "name": "Average Selling Price (ASP) Growth %",
+      "key": "asp_growth_pct",
       "formula": "asp_current = rev_current / qty_current; asp_past = rev_past / qty_past; (asp_current - asp_past) / asp_past",
       "dax": "ASP Growth % =\nVAR AspCurrent = [retail price current year]\nVAR AspPast = [retail price past year]\nRETURN\nDIVIDE ( AspCurrent - AspPast, AspPast )",
       "inputs": ["rev_current", "rev_past", "qty_current", "qty_past"],
@@ -57,10 +89,16 @@
         "arrow": "[IND RETAIL PRICE DEEP DIVE]"
       },
       "direction": "higher_is_better",
-      "thresholds": { "red": "< -0.03", "amber": "-0.03 to 0.0", "green": ">= 0.0" }
+      "benchmark_basis": { "observed_monthly_mean": 0.022, "observed_monthly_std": 0.017, "observed_monthly_range": [0.007, 0.054], "ytd_current": 0.024 },
+      "thresholds": {
+        "green_at": 0.01,
+        "amber_at": 0.0,
+        "labels": { "green": ">= +1%", "amber": "0% to +1%", "red": "< 0%" }
+      }
     },
     {
       "name": "Average Transaction Value (ATV) Growth %",
+      "key": "atv_growth_pct",
       "formula": "atv_current = rev_current / bills_current; atv_past = rev_past / bills_past; (atv_current - atv_past) / atv_past",
       "dax": "ATV Growth % =\nVAR AtvCurrent = [SPEND PER TRANSACTION CURRENT YEAR]\nVAR AtvPast = [SPEND PER TRANSACTION PAST YEAR]\nRETURN\nDIVIDE ( AtvCurrent - AtvPast, AtvPast )",
       "inputs": ["rev_current", "rev_past", "bills_current", "bills_past"],
@@ -71,10 +109,16 @@
         "arrow": "[IND SPEND PER TRANS DEEP DIVE]"
       },
       "direction": "higher_is_better",
-      "thresholds": { "red": "< -0.03", "amber": "-0.03 to 0.0", "green": ">= 0.0" }
+      "benchmark_basis": { "observed_monthly_mean": -0.005, "observed_monthly_std": 0.028, "observed_monthly_range": [-0.058, 0.031], "ytd_current": -0.002 },
+      "thresholds": {
+        "green_at": 0.0,
+        "amber_at": -0.03,
+        "labels": { "green": ">= 0%", "amber": "-3% to 0%", "red": "< -3%" }
+      }
     },
     {
       "name": "Units Per Transaction (UPT) Growth %",
+      "key": "upt_growth_pct",
       "formula": "upt_current = qty_current / bills_current; upt_past = qty_past / bills_past; (upt_current - upt_past) / upt_past",
       "dax": "UPT Growth % =\nVAR UptCurrent = [QUANTITY PER TRANSACTION CURRENT YEAR]\nVAR UptPast = [QUANTITY PER TRANSACTION PAST YEAR]\nRETURN\nDIVIDE ( UptCurrent - UptPast, UptPast )",
       "inputs": ["qty_current", "qty_past", "bills_current", "bills_past"],
@@ -85,10 +129,16 @@
         "arrow": "[IND QTY PER TRANS DEEP DIVE]"
       },
       "direction": "higher_is_better",
-      "thresholds": { "red": "< 0.0", "amber": "0.0 to 0.02", "green": ">= 0.02" }
+      "benchmark_basis": { "observed_monthly_mean": -0.026, "observed_monthly_std": 0.026, "observed_monthly_range": [-0.071, -0.001], "ytd_current": -0.026, "note": "Negative every month this year -- basket depth is structurally shrinking. Bands benchmark against this baseline instead of zero, so the alarm fires on deterioration (< -5%), not on the permanent-negative reading (which a green>=0 rule would flag red forever)." },
+      "thresholds": {
+        "green_at": -0.02,
+        "amber_at": -0.05,
+        "labels": { "green": ">= -2% (at/above trend)", "amber": "-5% to -2%", "red": "< -5% (worse than any observed month)" }
+      }
     },
     {
       "name": "Category Decline Breadth %",
+      "key": "category_decline_breadth",
       "formula": "categories_declining / categories_total",
       "dax": "Category Decline Breadth % =\n[COUNT %]",
       "inputs": ["categories_declining", "categories_total"],
@@ -98,13 +148,20 @@
         "declining_count": "[COUNT]",
         "total_count": "[COUNT_TOTAL]",
         "growing_count_complement": "[COUNT_PLUS]  (= total - declining)",
-        "note": "Calls the native measure directly. The local Desktop file's CAT_TABLE identifies a category via CATEGORY_NAME; the published dataset's CAT_TABLE has no such column at all (uses special_product_group_name instead) -- reconstructing this KPI's DISTINCTCOUNT/FILTER logic from raw columns would have to guess which one applies, so it defers to the model's own already-correct [Measure]/[COUNT]/[COUNT_TOTAL] internals instead."
+        "note": "Calls the native measure directly. The local Desktop file's CAT_TABLE identifies a category via CATEGORY_NAME; the published dataset's CAT_TABLE has no such column at all (uses special_product_group_name instead) -- reconstructing this KPI's DISTINCTCOUNT/FILTER logic from raw columns would have to guess which one applies, so it defers to the model's own already-correct [Measure]/[COUNT]/[COUNT_TOTAL] internals instead.",
+        "scope_note": "When scoping to a period, [COUNT] must be filtered via a RELATED table's month (brand table), NOT CAT_TABLE[month]: [Measure] uses ALLEXCEPT(CAT_TABLE, special_product_group_name) which silently wipes a CAT_TABLE[month] filter (returns all-month decline, e.g. 32% instead of the correct 50% for July). For the YTD window this is moot (no month filter), but critical if a period scope is ever added."
       },
       "direction": "lower_is_better",
-      "thresholds": { "red": "> 0.55", "amber": "0.40 to 0.55", "green": "< 0.40" }
+      "benchmark_basis": { "observed_monthly_mean": 0.373, "observed_monthly_std": 0.106, "observed_monthly_range": [0.259, 0.555], "ytd_current": 0.333 },
+      "thresholds": {
+        "green_at": 0.35,
+        "amber_at": 0.50,
+        "labels": { "green": "< 35%", "amber": "35% to 50%", "red": "> 50%" }
+      }
     },
     {
       "name": "At-Risk Revenue Concentration Delta",
+      "key": "atrisk_concentration_delta",
       "formula": "share_current = declining_rev_current / total_rev_current; share_past = declining_rev_past / total_rev_past; share_current - share_past",
       "dax": "At-Risk Revenue Concentration Delta =\nVAR ShareCurrent = DIVIDE ( [sum deg cur rev], [sum total cur rev] )\nVAR SharePast = DIVIDE ( [sum deg past rev], [sum total past rev] )\nRETURN\nShareCurrent - SharePast",
       "inputs": ["declining_rev_current", "total_rev_current", "declining_rev_past", "total_rev_past"],
@@ -120,7 +177,12 @@
         "note": "NOT bound to any visual on the dashboard — this KPI is currently invisible on the report canvas"
       },
       "direction": "lower_is_better",
-      "thresholds": { "red": "> 0.03", "amber": "-0.03 to 0.03", "green": "<= -0.03" }
+      "benchmark_basis": { "observed_monthly_mean": -0.078, "observed_monthly_std": 0.014, "observed_monthly_range": [-0.101, -0.063], "ytd_current": -0.046, "note": "Always deeply negative (declining categories' share of revenue is falling YoY -- good). Bands benchmark against this baseline so the alarm can actually fire when the delta deteriorates toward 0; the old 'red > +3%' line was effectively unreachable." },
+      "thresholds": {
+        "green_at": -0.06,
+        "amber_at": -0.04,
+        "labels": { "green": "<= -6%", "amber": "-6% to -4%", "red": "> -4% (at-risk share worsening)" }
+      }
     }
   ]
 }

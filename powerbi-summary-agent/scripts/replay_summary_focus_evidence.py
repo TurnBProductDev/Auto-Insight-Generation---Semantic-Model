@@ -530,9 +530,10 @@ def _test_memory_migration_backfill(root: Path) -> None:
     path.write_text(json.dumps(v1), encoding="utf-8")
     store, status = summary_memory.load_store(state)
     assert status == "ok"
-    assert store["schema_version"] == 2
+    assert store["schema_version"] == 3
     assert store["records"], "v1 records must be preserved"
     assert store["focus_records"], "focus_records must be backfilled from v1 records"
+    assert "area_records" in store and "weekly_coverage" in store, "v3 channels must be present"
     backfilled = next(iter(store["focus_records"].values()))
     assert backfilled.get("backfilled") is True and backfilled["dimension_role"] == "store"
     print("  memory: v1 store migrates to v2, focus_records backfilled non-destructively  OK")

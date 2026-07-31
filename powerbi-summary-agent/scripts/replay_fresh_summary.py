@@ -17,7 +17,7 @@ from zoneinfo import ZoneInfo
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.agents import (
+from src.agents import (  # noqa: E402
     fresh_summary_generator,
     fresh_summary_validator,
     summary_candidate_builder,
@@ -25,10 +25,10 @@ from src.agents import (
     summary_novelty_filter,
     summary_period_resolver,
 )
-from src.agents.fresh_summary_generator import _fallback
-from src.tools import summary_history, summary_memory, summary_visual
-from src.tools.api_payloads import generate_fresh_report_summary_payload
-from src.tools.summary_validation import validate_draft
+from src.agents.fresh_summary_generator import _fallback  # noqa: E402
+from src.tools import summary_history, summary_memory, summary_visual  # noqa: E402
+from src.tools.api_payloads import generate_fresh_report_summary_payload  # noqa: E402
+from src.tools.summary_validation import validate_draft  # noqa: E402
 
 
 def _base_state(root: Path) -> dict:
@@ -225,8 +225,14 @@ def main(argv=None) -> int:
         )), "month-of-year codes must not reach the manager-facing summary"
         no_chart = copy.deepcopy(flexible)
         no_chart["blocks"] = no_chart["blocks"][:1]
-        assert not validate_draft(no_chart, [store_candidate], chart_sources=chart_sources)
-        long_form = copy.deepcopy(no_chart)
+        assert any(
+            "evidence-backed chart is required" in error
+            for error in validate_draft(no_chart, [store_candidate], chart_sources=chart_sources)
+        ), "chart-ready evidence must produce at least one chart"
+        assert not validate_draft(
+            no_chart, [store_candidate], chart_sources=[]
+        ), "zero charts remains valid when no chart-ready dataset exists"
+        long_form = copy.deepcopy(flexible)
         long_form["blocks"][0]["points"].append(
             " ".join(["This additional business context remains grounded in the same reported result."] * 40)
         )
@@ -721,7 +727,7 @@ def _focus_mode_checks(temp: Path) -> None:
     assert commit.get("focus_committed") == selected_focus["focus_key"]
 
     store = json.loads(summary_memory.store_path(state).read_text(encoding="utf-8"))
-    assert store["schema_version"] == 2
+    assert store["schema_version"] == 3
     assert selected_focus["focus_key"] in store["focus_records"], "commit must persist focus_records"
     today = state["summary_now_override"]
     assert today in store["daily_plan"], "commit must record the same-day plan"

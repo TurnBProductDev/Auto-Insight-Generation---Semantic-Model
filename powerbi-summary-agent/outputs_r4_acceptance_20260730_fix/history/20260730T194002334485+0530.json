@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "b3458a38-ad83-4e9a-b2f2-39d15c6aa22c",
+  "runId": "20260730T194002334485+0530",
+  "date": {
+    "iso": "2026-07-30",
+    "display": "30 July 2026",
+    "timezone": "Asia/Kolkata"
+  },
+  "runAt": "2026-07-30T19:40:02+05:30",
+  "status": "completed",
+  "insightCount": 4,
+  "insights": [
+    {
+      "heading": "CF-CONFECTIONERY sold 548.5K fewer units (12.4%), moving from 4.4M to 3.9M compared with the same period last year.",
+      "content": "This was 176.5% of the final overall drop. The area-by-area names were not available, so this report cannot explain the above-100% result safely. This report does not have a complete product-and-branch ranking. Check CF-CONFECTIONERY by product and branch to find where the change happened."
+    },
+    {
+      "heading": "CFH021 revenue rose by 4.2M (11.4%), from 36.8M to 40.9M compared with the same period last year.",
+      "content": "It made up 138.3% of the total increase in revenue. CFH021 moved farther than the final total because CFH017 fell by 1.3M and CFH014 fell by 224.1K, partly offset by CFH018 up 374.8K. Revenue per item rose 9.1%, from 5.96 to 6.50, adding 3.4M. Units sold rose by 128.8K (2.1%), from 6.2M to 6.3M, adding 767.7K. Transactions increased by 192,338 (7.6%), from 2.5M to 2.7M. Check GM FASHION and FASHION by month in CFH021."
+    },
+    {
+      "heading": "April revenue rose by 2.1M (14.0%), from 15.1M to 17.2M compared with the same period last year.",
+      "content": "It made up 69.8% of the overall increase. This report does not have a complete product-and-branch ranking. Check April by product and branch to find where the change happened."
+    },
+    {
+      "heading": "CFH017 revenue fell by 1.3M (5.9%), from 22.2M to 20.9M compared with the same period last year.",
+      "content": "It reduced the overall increase by 43.3%. Units sold fell by 220.0K (6.8%), from 3.2M to 3.0M. This reduced revenue by 1.5M. Revenue per item rose 1.0%, from 6.91 to 6.98. This added back 209.4K and made the decline smaller. Check CFH017 by product and branch to find where the change happened."
+    }
+  ]
+}

@@ -111,6 +111,68 @@ def breakdown(
     }
 
 
+def universe_scan(
+    name: str,
+    purpose: str,
+    group_col_ref: str,
+    parent_col_refs: Sequence[str],
+    filters: Sequence[str],
+    current_measure: str,
+    prior_measure: str,
+    change_measure: str | None,
+    pool_rows: int,
+    contract_hint: dict | None = None,
+) -> dict:
+    """One bounded per-role universe scan with full-set broadcast diagnostics.
+
+    Groups by the full hierarchy path (``parent_col_refs`` broad->narrow, then
+    ``group_col_ref``) inside the comparable population ``filters``. Diagnostics
+    are computed *inside* SUMMARIZECOLUMNS - the proven ``breakdown`` pattern -
+    so each is evaluated with the row's parent columns still in filter context
+    and only the leaf removed. That makes the sibling gross/signed change and the
+    parent change *per parent path* (§10), not global, while the full member set
+    (not the returned TOPN) drives the denominator. Columns are stripped before
+    the LLM ever sees a row.
+
+    ``change_measure`` is used when the model exposes one, else the change is the
+    additive difference of the current and prior measures.
+    """
+    change_expr = f"[{change_measure}]" if change_measure else f"([{current_measure}] - [{prior_measure}])"
+    path_cols = list(parent_col_refs) + [group_col_ref]
+    group_by = ", ".join(path_cols)
+    filt = "".join(f"{fragment}, " for fragment in filters)
+    remove_all_path = ", ".join(f"REMOVEFILTERS({ref})" for ref in path_cols)
+    cols = [
+        f'"__cur", [{current_measure}]',
+        f'"__pri", [{prior_measure}]',
+        f'"__chg", {change_expr}',
+        (
+            f'"__gross_sibling_change", CALCULATE(SUMX(VALUES({group_col_ref}), '
+            f'ABS({change_expr})), REMOVEFILTERS({group_col_ref}))'
+        ),
+        (
+            f'"__signed_sibling_change", CALCULATE(SUMX(VALUES({group_col_ref}), '
+            f'{change_expr}), REMOVEFILTERS({group_col_ref}))'
+        ),
+        f'"__parent_change", CALCULATE({change_expr}, REMOVEFILTERS({group_col_ref}))',
+        f'"__overall_current", CALCULATE([{current_measure}], {remove_all_path})',
+        (
+            f'"__full_member_count", CALCULATE(DISTINCTCOUNT({group_col_ref}), '
+            f'REMOVEFILTERS({group_col_ref}))'
+        ),
+    ]
+    inner = f"SUMMARIZECOLUMNS({group_by}, {filt}{', '.join(cols)})"
+    filtered = f"FILTER({inner}, NOT ISBLANK([__cur]))"
+    ranked = f'ADDCOLUMNS({filtered}, "__abs", ABS([__chg]))'
+    dax = f"EVALUATE\nTOPN({int(pool_rows)}, {ranked}, [__abs], DESC)"
+    return {
+        "name": name,
+        "purpose": purpose,
+        "dax": dax,
+        "contract_hint": dict(contract_hint or {}),
+    }
+
+
 def period_trend(
     name: str,
     purpose: str,

@@ -325,18 +325,86 @@ def focus_rules(draft: dict, selected: list[dict]) -> list[str]:
     return errors
 
 
+def portfolio_rules(draft: dict, selected: list[dict]) -> list[str]:
+    """R4 guards: Overall first, then every selected business area covered.
+
+    The page remains flexible after the mandatory opening section. These checks
+    replace the single-focus headline rule, which would incorrectly force the
+    first area into a company-level R4 headline.
+    """
+    errors: list[str] = []
+    blocks = _clean_blocks(draft)
+    if not blocks:
+        return ["balanced summary has no content blocks"]
+    first = blocks[0]
+    if (
+        str(first.get("kind") or "").casefold() not in {"paragraph", "bullets"}
+        or str(first.get("heading") or "").strip().casefold() != "overall performance"
+    ):
+        errors.append("the first block must be a narrative section headed 'Overall Performance'")
+
+    headline = str(draft.get("headline") or draft.get("heading") or "")
+    text_pieces = [headline]
+    for block in blocks:
+        heading = str(block.get("heading") or "").strip()
+        if heading:
+            text_pieces.append(heading)
+        text_pieces.extend(_block_text(block))
+    all_text = " ".join(text_pieces).casefold()
+
+    focuses = [candidate for candidate in selected if str(candidate.get("segment") or "").strip()]
+    for focus in focuses:
+        segment = str(focus.get("segment") or "").strip()
+        if segment.casefold() not in all_text:
+            errors.append(f"selected focus area {segment!r} is missing from the summary")
+
+        facts = [
+            fact for fact in (focus.get("evidence") or {}).get("facts", []) or []
+            if isinstance(fact, dict)
+        ]
+        driver_facts = [fact for fact in facts if fact.get("detail_role") == "driver"]
+        contributor_facts = [fact for fact in facts if fact.get("detail_role") == "contributor"]
+        if driver_facts and not any(_fact_used(fact, draft, all_text) for fact in driver_facts):
+            errors.append(f"an available driver fact for {segment!r} must be represented")
+        if contributor_facts and not any(_fact_used(fact, draft, all_text) for fact in contributor_facts):
+            errors.append(f"an available contributor fact for {segment!r} must be represented")
+
+        partial = str(focus.get("coverage") or "") not in {"", "complete"} or any(
+            str(fact.get("coverage") or "") not in {"", "complete"}
+            for fact in contributor_facts
+        )
+        if partial:
+            if "%" in all_text and re.search(r"\bof (?:the )?total\b", all_text):
+                errors.append("partial evidence must not be described as a share of the total")
+            if _PARTIAL_AS_COMPLETE.search(all_text):
+                errors.append("partial evidence must not be described as a complete breakdown")
+
+    if _UNSUPPORTED_CAUSAL.search(all_text):
+        errors.append("unsupported causal language is not permitted; describe measured contribution only")
+    if "pure price" in all_text:
+        errors.append("rate or mix effects must never be described as pure price")
+    return errors
+
+
 def validate_draft(
     draft: dict,
     selected: list[dict],
     *,
     chart_sources: list[dict] | None = None,
+    mode: str = "single_focus",
+    require_chart: bool = False,
 ) -> list[str]:
     """Validate flexible narrative/chart blocks without imposing a page template."""
     errors: list[str] = []
     headline = str(draft.get("headline") or draft.get("heading") or "").strip()
+    headline_evidence = (
+        [candidate for candidate in selected if candidate.get("angle") == "overall_performance"]
+        if mode == "balanced_multi_focus"
+        else selected
+    )
     if not headline:
         errors.append("headline is empty")
-    elif selected and _facts(selected) and not parse_numbers(headline):
+    elif headline_evidence and _facts(headline_evidence) and not parse_numbers(headline):
         errors.append("headline must include the exact display value for its main result")
 
     if draft.get("metrics"):
@@ -345,6 +413,7 @@ def validate_draft(
     blocks = _clean_blocks(draft)
     text_parts = [headline]
     narrative_count = 0
+    chart_count = 0
     used_sources: set[str] = set()
     source_map = {
         str(source.get("source_id")): source
@@ -379,6 +448,7 @@ def validate_draft(
                         )
                     text_parts.append(point)
         elif kind == "chart":
+            chart_count += 1
             source_id = str(block.get("chart_source_id") or "").strip()
             chart_type = str(block.get("chart_type") or "").strip().casefold()
             resolved = block.get("chart") if isinstance(block.get("chart"), dict) else None
@@ -407,6 +477,12 @@ def validate_draft(
     elif not selected and not blocks:
         errors.append("summary content is empty")
 
+    chart_ready = bool(chart_sources) and any(
+        chart_data_is_sufficient(source) for source in chart_sources or []
+    )
+    if (require_chart or chart_ready) and chart_count == 0:
+        errors.append("at least one evidence-backed chart is required when chart-ready data is available")
+
     formatted = [part for part in text_parts if part]
     if headline.startswith("#") or any(part.startswith(("#", "- ", "* ")) for part in formatted):
         errors.append("Markdown formatting is not permitted in structured summary text")
@@ -428,9 +504,16 @@ def validate_draft(
     unknown = [item for item in covered if item not in selected_ids]
     if unknown:
         errors.append(f"unknown covered candidate ids: {unknown}")
-    if selected and str(selected[0].get("candidate_id")) not in covered:
+    if mode == "balanced_multi_focus":
+        missing = sorted(selected_ids - set(covered))
+        if missing:
+            errors.append(f"selected perspectives were not marked covered: {missing}")
+    elif selected and str(selected[0].get("candidate_id")) not in covered:
         errors.append("the primary selected perspective was not marked covered")
 
     errors.extend(validate_text("\n".join(formatted), selected))
-    errors.extend(focus_rules(draft, selected))
+    if mode == "balanced_multi_focus":
+        errors.extend(portfolio_rules(draft, selected))
+    else:
+        errors.extend(focus_rules(draft, selected))
     return errors

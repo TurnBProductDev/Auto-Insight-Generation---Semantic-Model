@@ -7,6 +7,72 @@ from ..tools.summary_validation import validate_draft
 from ..utils.logger import RunLogger
 
 
+def _merge_focus_evidence(candidate: dict, evidence_doc: dict) -> dict:
+    """Rebuild the grounded R4 candidate used by the authoring validator.
+
+    The multi-focus node stores deep-dive evidence separately so it does not
+    mutate the shared candidate list.  The generator merges that evidence
+    before authoring; final validation must validate against the same merged
+    view rather than the pre-drill candidate snapshot.
+    """
+    base = candidate.get("evidence") or {}
+    if not evidence_doc:
+        return candidate
+    return {
+        **candidate,
+        "evidence": {
+            **base,
+            "deep_dive": evidence_doc.get("sections") or base.get("deep_dive") or {},
+            "facts": evidence_doc.get("facts") or base.get("facts") or [],
+        },
+    }
+
+
+def _merge_overall_evidence(candidate: dict, package: dict) -> dict:
+    """Attach the summary-owned Overall trend exactly as the generator does."""
+    base = candidate.get("evidence") or {}
+    deep_dive = dict(base.get("deep_dive") or {})
+    trend = (package or {}).get("trend")
+    if trend:
+        deep_dive["period_trend"] = trend
+    return {**candidate, "evidence": {**base, "deep_dive": deep_dive}}
+
+
+def _validation_candidates(state: dict, summary: dict) -> list[dict]:
+    """Resolve covered candidates with the same R4 evidence used to author."""
+    candidates = (
+        list(state.get("summary_candidates", []) or [])
+        + list(state.get("summary_eligible_candidates", []) or [])
+    )
+    by_id = {
+        str(candidate.get("candidate_id")): candidate
+        for candidate in candidates
+        if candidate.get("candidate_id")
+    }
+    if state.get("summary_r4_enabled"):
+        package = state.get("summary_overall_performance") or {}
+        for candidate_id, candidate in list(by_id.items()):
+            if candidate.get("angle") == "overall_performance":
+                by_id[candidate_id] = _merge_overall_evidence(candidate, package)
+
+        evidence_by_key = state.get("summary_focus_evidence_by_key") or {}
+        for focus in state.get("summary_selected_focuses", []) or []:
+            candidate_id = str(focus.get("candidate_id") or "")
+            if not candidate_id:
+                continue
+            base = by_id.get(candidate_id) or focus
+            evidence_doc = evidence_by_key.get(str(focus.get("focus_key") or "")) or {}
+            by_id[candidate_id] = _merge_focus_evidence(base, evidence_doc)
+
+    return [
+        by_id[candidate_id]
+        for candidate_id in (
+            str(item) for item in summary.get("covered_candidate_ids", []) or []
+        )
+        if candidate_id in by_id
+    ]
+
+
 def _markdown(summary: dict) -> str:
     lines = [f"# {summary.get('heading') or 'Latest performance summary'}", ""]
     data_as_of = summary.get("data_as_of") or "unknown"
@@ -63,21 +129,23 @@ def _markdown(summary: dict) -> str:
 def run(state: dict) -> dict:
     log = RunLogger(state)
     summary = dict(state.get("fresh_summary") or {})
-    by_id = {
-        str(candidate.get("candidate_id")): candidate
-        for candidate in (
-            list(state.get("summary_candidates", []) or [])
-            + list(state.get("summary_eligible_candidates", []) or [])
-        )
-        if candidate.get("candidate_id")
-    }
-    selected = [
-        by_id[candidate_id]
-        for candidate_id in summary.get("covered_candidate_ids", []) or []
-        if candidate_id in by_id
-    ]
+    selected = _validation_candidates(state, summary)
     if selected:
-        errors = validate_draft(summary, selected)
+        # Authoring validates against the chart-source catalogue before
+        # resolution. Recompute only its availability here so a chart that was
+        # accidentally lost during resolution cannot silently reach the HTML.
+        from .fresh_summary_generator import _chart_sources
+
+        chart_required = bool(
+            state.get("summary_visual_enabled", True)
+            and _chart_sources(selected)
+        )
+        errors = validate_draft(
+            summary,
+            selected,
+            mode="balanced_multi_focus" if state.get("summary_r4_enabled") else "single_focus",
+            require_chart=chart_required,
+        )
         if errors:
             # The generator already has a grounded fallback, so reaching this
             # point is a programming/contract failure rather than a prompt issue.

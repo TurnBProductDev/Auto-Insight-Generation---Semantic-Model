@@ -1,0 +1,39 @@
+{
+  "queries": [
+    {
+      "name": "grand_totals_comparable_and_new_branch",
+      "purpose": "Summarize like-for-like performance and separate the new branch contribution from total current revenue.",
+      "intent": "Return one row with [net revenue CURRENT], [net revenue PAST], [revenue Growth], [revenue growth %], [net qty CURRENT], [net qty PAST], [QTY Growth], [QTY GROWTH %], [net bills CURRENT], a derived prior transactions value as [net bills CURRENT] - [bills growth], [bills growth], [bills growth %], [retail price current year], [retail price past year], [RETAIL PRICE GROWTH], [QUANTITY PER TRANSACTION CURRENT YEAR], [QUANTITY PER TRANSACTION PAST YEAR], [QUANTITY PER TRANSACTION GROWTH], [SPEND PER TRANSACTION CURRENT YEAR], [SPEND PER TRANSACTION PAST YEAR], and [SPEND PER TRANSACTION GROWTH] filtered to the like-for-like branches CFH014, CFH017, CFH018 and CFH021 using TREATAS on all four branch columns: 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no], 'CAT_TRANSACTIONS'[store_no], 'CAT_TABLE'[store_no], and 'MIS_DEEP_DIVE2'[store_no]. Also return separate one-row totals for current-only CFH022 using the same measures where prior-period percentages are not used as a growth basis. No grouping, one row per population."
+    },
+    {
+      "name": "latest_month_store_scorecard",
+      "purpose": "Show the most recent month by branch so the summary can lead with current branch performance.",
+      "intent": "Group by 'MIS_DEEP_DIVE2'[store_no] and 'MIS_DEEP_DIVE2'[month], filtered to the like-for-like branches CFH014, CFH017, CFH018 and CFH021 across 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no], 'CAT_TRANSACTIONS'[store_no], 'CAT_TABLE'[store_no], and 'MIS_DEEP_DIVE2'[store_no], then restrict to the single latest available month value from 'MIS_DEEP_DIVE2'[month]. Return [net revenue CURRENT], [net revenue PAST], [revenue Growth], [revenue growth %], [net qty CURRENT], [net qty PAST], [QTY Growth], [QTY GROWTH %], [net bills CURRENT], derived prior transactions as [net bills CURRENT] - [bills growth], [bills growth], [bills growth %], [retail price current year], [retail price past year], [RETAIL PRICE GROWTH], [QUANTITY PER TRANSACTION CURRENT YEAR], [QUANTITY PER TRANSACTION PAST YEAR], [QUANTITY PER TRANSACTION GROWTH], [SPEND PER TRANSACTION CURRENT YEAR], [SPEND PER TRANSACTION PAST YEAR], and [SPEND PER TRANSACTION GROWTH]. Sort by [net revenue CURRENT] DESC, row limit 15."
+    },
+    {
+      "name": "recent_month_trend_comparable",
+      "purpose": "Show the recent monthly path of revenue, units, and transactions for the like-for-like branches.",
+      "intent": "Group by 'MIS_DEEP_DIVE2'[max_date], filtered to the like-for-like branches CFH014, CFH017, CFH018 and CFH021 across 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no], 'CAT_TRANSACTIONS'[store_no], 'CAT_TABLE'[store_no], and 'MIS_DEEP_DIVE2'[store_no]. Return [net revenue CURRENT], [net revenue PAST], [revenue Growth], [revenue growth %], [net qty CURRENT], [net qty PAST], [QTY Growth], [QTY GROWTH %], [net bills CURRENT], derived prior transactions as [net bills CURRENT] - [bills growth], [bills growth], [bills growth %], [RETAIL PRICE GROWTH], [QUANTITY PER TRANSACTION GROWTH], and [SPEND PER TRANSACTION GROWTH]. Sort by 'MIS_DEEP_DIVE2'[max_date] DESC and limit to 15 rows."
+    },
+    {
+      "name": "latest_month_division_breakdown",
+      "purpose": "Identify which divisions are driving the latest-month result in the like-for-like branches.",
+      "intent": "Group by 'MIS_DEEP_DIVE2'[division_name] and 'MIS_DEEP_DIVE2'[month], filtered to the like-for-like branches CFH014, CFH017, CFH018 and CFH021 across 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no], 'CAT_TRANSACTIONS'[store_no], 'CAT_TABLE'[store_no], and 'MIS_DEEP_DIVE2'[store_no], then restrict to the single latest available month value from 'MIS_DEEP_DIVE2'[month]. Return [net revenue CURRENT], [net revenue PAST], [revenue Growth], [revenue growth %], [net qty CURRENT], [net qty PAST], [QTY Growth], [QTY GROWTH %], [net bills CURRENT], derived prior transactions as [net bills CURRENT] - [bills growth], [bills growth], [bills growth %], [RETAIL PRICE GROWTH], [QUANTITY PER TRANSACTION GROWTH], and [SPEND PER TRANSACTION GROWTH]. Sort by ABS([revenue Growth]) DESC, row limit 15."
+    },
+    {
+      "name": "latest_month_product_group_breakdown",
+      "purpose": "Show the biggest latest-month product group gains and declines behind the branch summary.",
+      "intent": "Group by 'MIS_DEEP_DIVE2'[product_group_name] and 'MIS_DEEP_DIVE2'[month], filtered to the like-for-like branches CFH014, CFH017, CFH018 and CFH021 across 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no], 'CAT_TRANSACTIONS'[store_no], 'CAT_TABLE'[store_no], and 'MIS_DEEP_DIVE2'[store_no], then restrict to the single latest available month value from 'MIS_DEEP_DIVE2'[month]. Return [net revenue CURRENT], [net revenue PAST], [revenue Growth], [revenue growth %], [net qty CURRENT], [net qty PAST], [QTY Growth], [QTY GROWTH %], [net bills CURRENT], derived prior transactions as [net bills CURRENT] - [bills growth], [bills growth], [bills growth %], [RETAIL PRICE GROWTH], [QUANTITY PER TRANSACTION GROWTH], and [SPEND PER TRANSACTION GROWTH]. Return the combined tails as top positive and top negative product groups by [revenue Growth], with a total row limit of 15 and final sort by [revenue Growth] DESC."
+    },
+    {
+      "name": "category_decline_and_revenue_share",
+      "purpose": "Measure how many categories are declining and how much revenue those categories represent.",
+      "intent": "Return one row from 'CAT_TABLE' using the model measures [COUNT], [COUNT_TOTAL], [COUNT %], [sum deg cur rev], [sum deg past rev], [sum total cur rev], [sum total past rev], [contribution cur], and [contribution past], filtered to the like-for-like branches CFH014, CFH017, CFH018 and CFH021 using TREATAS on all four branch columns: 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no], 'CAT_TRANSACTIONS'[store_no], 'CAT_TABLE'[store_no], and 'MIS_DEEP_DIVE2'[store_no]. No grouping, one row."
+    },
+    {
+      "name": "latest_true_transactions_by_branch",
+      "purpose": "Add the current true shopping-trip view from the daily table for recent branch context, without using it for year-on-year comparison.",
+      "intent": "From 'rep_dept_wise_perf_eval_rpt', first identify the latest date with nonblank values in 'rep_dept_wise_perf_eval_rpt'[LOC_BILLS]. Then group by 'rep_dept_wise_perf_eval_rpt'[LOC_CODE] for that date and compute true branch transactions as SUMX over VALUES('rep_dept_wise_perf_eval_rpt'[TY_DATE]) of CALCULATE(MAX('rep_dept_wise_perf_eval_rpt'[LOC_BILLS])) within each branch-date context, so repeated rows do not overcount. Return one row per branch for the comparable branch codes CFH014, CFH017, CFH018 and CFH021. Sort by the computed true transaction total DESC, row limit 15."
+    }
+  ]
+}

@@ -212,6 +212,41 @@ def build_initial_state(cfg: dict, config_path: str = "") -> dict:
         "summary_focus_fact_overlap_threshold": cfg.get("summary_focus_fact_overlap_threshold", 0.6),
         "summary_focus_overlap_window_days": cfg.get("summary_focus_overlap_window_days", 7),
         "summary_focus_public_metadata": cfg.get("summary_focus_public_metadata", False),
+        # R4 balanced business summary: multi-focus portfolio (Overall Performance
+        # first, then up to summary_focus_target_count Division/Department/Category
+        # areas). Master switch defaults off so the R1-R3 single-focus path is
+        # unchanged until R4 is complete and acceptance-tested.
+        "summary_r4_enabled": cfg.get("summary_r4_enabled", False),
+        "summary_focus_allowed_roles": cfg.get(
+            "summary_focus_allowed_roles", ["division", "department", "category"]
+        ),
+        "summary_focus_role_aliases": cfg.get("summary_focus_role_aliases", {}),
+        "summary_focus_candidate_pool_per_role": cfg.get(
+            # Legacy summary_focus_members_per_dimension is the backward-compatible
+            # fallback for the per-role candidate-pool size.
+            "summary_focus_candidate_pool_per_role",
+            cfg.get("summary_focus_members_per_dimension", 30),
+        ),
+        "summary_focus_target_count": cfg.get("summary_focus_target_count", 3),
+        "summary_focus_min_movement_impact_pct": cfg.get("summary_focus_min_movement_impact_pct", 5),
+        "summary_focus_min_business_share_pct": cfg.get("summary_focus_min_business_share_pct", 5),
+        "summary_focus_min_change_pct": cfg.get("summary_focus_min_change_pct", 3),
+        "summary_focus_rotation_window_days": cfg.get("summary_focus_rotation_window_days", 7),
+        "summary_focus_min_repeat_gap_days": cfg.get("summary_focus_min_repeat_gap_days", 2),
+        "summary_focus_universe_max_queries": cfg.get("summary_focus_universe_max_queries", 3),
+        "summary_overall_trend_enabled": cfg.get("summary_overall_trend_enabled", True),
+        "summary_overall_trend_max_queries": cfg.get("summary_overall_trend_max_queries", 1),
+        "summary_focus_total_deep_dive_queries": cfg.get(
+            # Legacy summary_focus_max_queries is the fallback for the total
+            # (shared) deep-dive budget across all selected focuses.
+            "summary_focus_total_deep_dive_queries",
+            cfg.get("summary_focus_max_queries", 12),
+        ),
+        "summary_focus_max_queries_per_focus": cfg.get("summary_focus_max_queries_per_focus", 4),
+        "summary_focus_max_replacements_per_slot": cfg.get("summary_focus_max_replacements_per_slot", 1),
+        "summary_required_delivery_channels": cfg.get(
+            "summary_required_delivery_channels", ["local_report", "history"]
+        ),
         "summary_history_enabled": bool(
             cfg.get("fresh_summary_enabled", True)
             and cfg.get("summary_history_enabled", True)
@@ -399,6 +434,57 @@ def write_api_payloads(final: dict) -> dict:
     }
 
 
+def _summary_delivery_gate(
+    final: dict,
+    cfg: dict,
+    *,
+    api_payloads: dict,
+    api_upload: dict,
+    history_artifact,
+    history_upload: dict,
+    ai_content_upload: dict,
+) -> dict:
+    """Evaluate only explicitly required Summary delivery channels.
+
+    Local report delivery is always load-bearing. History is required by the
+    default R4 configuration. API/blob/app publishing stays visible in its own
+    receipt but cannot freeze weekly rotation unless a deployment explicitly
+    adds that channel to ``summary_required_delivery_channels``.
+    """
+    local_ok = bool(
+        final.get("report_summary")
+        and final.get("fresh_summary")
+        and (final.get("fresh_summary") or {}).get("summary_type") != "memory_unavailable"
+    )
+    receipts = api_upload.get("receipts") or {}
+    channels = {
+        "local_report": local_ok,
+        "history": history_artifact is not None,
+        "api_payload": (api_payloads.get("summaryStatus") or {}).get("status") == "ok",
+        "blob_report": (receipts.get("report_summary.json") or {}).get("status") == "ok",
+        "blob_history": (
+            history_upload.get("status") in {"created", "exists"}
+            and history_upload.get("feedStatus") in {"updated", "unchanged"}
+        ),
+        "ai_content": ai_content_upload.get("summaryStatus") == "ok",
+    }
+    raw = cfg.get("summary_required_delivery_channels", ["local_report", "history"])
+    if isinstance(raw, str):
+        raw = [raw]
+    required = list(dict.fromkeys(str(item).strip().casefold() for item in raw or [] if str(item).strip()))
+    if "local_report" not in required:
+        required.insert(0, "local_report")
+    unknown = [channel for channel in required if channel not in channels]
+    failed = [channel for channel in required if not channels.get(channel, False)]
+    return {
+        "ok": not failed and not unknown,
+        "required": required,
+        "channels": channels,
+        "failed": failed,
+        "unknown": unknown,
+    }
+
+
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description="Power BI Report Summary Agent")
     parser.add_argument(
@@ -524,33 +610,17 @@ def main(argv=None) -> int:
     if ai_content_enabled(final):
         delivery_ok = delivery_ok and ai_content_upload.get("insightStatus") == "ok"
 
-    summary_delivery_ok = bool(
-        final.get("report_summary")
-        and final.get("fresh_summary")
-        and (final.get("fresh_summary") or {}).get("summary_type") != "memory_unavailable"
+    summary_delivery_gate = _summary_delivery_gate(
+        final,
+        cfg,
+        api_payloads=api_payloads,
+        api_upload=api_upload,
+        history_artifact=summary_history_artifact,
+        history_upload=summary_history_upload,
+        ai_content_upload=ai_content_upload,
     )
-    if cfg.get("api_payloads", True):
-        summary_delivery_ok = (
-            summary_delivery_ok
-            and (api_payloads.get("summaryStatus") or {}).get("status") == "ok"
-        )
-    if cfg.get("summary_history_enabled", True):
-        summary_delivery_ok = summary_delivery_ok and summary_history_artifact is not None
-    if cfg.get("azure_blob_upload", False) and cfg.get("api_payloads", True):
-        summary_delivery_ok = (
-            summary_delivery_ok
-            and ((api_upload.get("receipts") or {}).get("report_summary.json") or {}).get("status") == "ok"
-        )
-    if cfg.get("azure_blob_upload", False) and cfg.get("summary_history_enabled", True):
-        summary_delivery_ok = (
-            summary_delivery_ok
-            and summary_history_upload.get("status") in {"created", "exists"}
-            and summary_history_upload.get("feedStatus") in {"updated", "unchanged"}
-        )
-    if ai_content_enabled(final):
-        summary_delivery_ok = (
-            summary_delivery_ok and ai_content_upload.get("summaryStatus") == "ok"
-        )
+    summary_delivery_ok = bool(summary_delivery_gate["ok"])
+    final["summary_delivery_gate"] = summary_delivery_gate
 
     from .tools.summary_memory import commit_summary_run
 
@@ -564,6 +634,7 @@ def main(argv=None) -> int:
         summary_commit = {
             "status": "skipped",
             "reason": "delivery_failed" if not summary_delivery_ok else "memory_disabled",
+            "failed_channels": summary_delivery_gate.get("failed") or summary_delivery_gate.get("unknown"),
         }
     final["summary_memory_commit"] = summary_commit
 
