@@ -1,0 +1,497 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Stock Age Analysis — reference dashboard</title>
+<style>
+:root{
+  --ground:#eef1f0; --card:#fff; --rail:#0e1b19; --ink:#12201e; --mid:#41545a;
+  --muted:#5b7182; --faint:#8fa1a9; --line:#dfe7ec; --soft:#f7fafb;
+  --teal:#0f9f95; --teal-dk:#087f79; --teal-tint:#e2f2ef;
+  --amber:#c08429; --amber-tint:#faf1e1; --amber-dk:#8a5f10;
+  --red:#cf4636; --red-tint:#fbeae7; --green:#2f8f4e; --green-tint:#e8f4ec;
+  --r:12px; --shadow:0 1px 2px rgba(16,24,40,.05),0 10px 28px -20px rgba(16,24,40,.35);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);
+  font-family:'Segoe UI',Inter,Roboto,Arial,sans-serif;font-size:13.5px;line-height:1.5;
+  -webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+h1,h2,h3,h4,p{margin:0}
+
+/* ---------- shell: rail + main, and ONLY those two ---------- */
+.app{display:flex;min-height:100vh}
+.rail{width:172px;flex:0 0 172px;background:var(--rail);color:#cfe0dc;padding:18px 12px;
+  position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:5px}
+.rail .mark{width:34px;height:34px;border-radius:9px;background:rgba(15,159,149,.16);
+  border:1px solid rgba(15,159,149,.5);color:#4fd3c4;display:grid;place-items:center;
+  font-weight:800;font-size:12px;letter-spacing:.04em;margin-bottom:14px}
+.rail .grp{font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:#5f7d78;
+  margin:14px 0 5px;padding-left:9px}
+.rail button{all:unset;cursor:pointer;display:block;padding:8px 11px;border-radius:8px;
+  font-size:12.5px;font-weight:600;color:#a9c2bd}
+.rail button:hover{background:rgba(255,255,255,.06);color:#fff}
+.rail button[aria-current=true]{background:var(--teal);color:#fff}
+.rail .foot{margin-top:auto;font-size:10px;color:#4d6b66;line-height:1.45;padding-left:9px}
+
+main{flex:1;min-width:0}
+.page{max-width:1280px;margin:0 auto;padding:22px 26px 60px}
+
+/* ---------- masthead ---------- */
+.masthead{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;
+  flex-wrap:wrap;margin-bottom:16px}
+.eyebrow{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--teal-dk);
+  font-weight:750;margin-bottom:5px}
+h1{font-size:27px;line-height:1.12;letter-spacing:-.02em;font-weight:700}
+.asat{font-size:12px;color:var(--muted);margin-top:5px}
+.seg{display:inline-flex;background:var(--card);border:1px solid var(--line);
+  border-radius:9px;padding:3px}
+.seg button{all:unset;cursor:pointer;padding:6px 14px;border-radius:7px;font-size:12px;
+  font-weight:650;color:var(--muted)}
+.seg button[aria-pressed=true]{background:var(--teal-tint);color:var(--teal-dk)}
+
+/* ---------- hero: one dark band, verdict + the numbers that prove it ---------- */
+.hero{background:var(--rail);border-radius:var(--r);padding:20px 24px;margin-bottom:14px;
+  display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:26px;align-items:center}
+.hero-tag{display:inline-block;font-size:9px;letter-spacing:.12em;text-transform:uppercase;
+  font-weight:750;color:#f0c46a;background:rgba(240,196,106,.14);padding:4px 9px;
+  border-radius:6px;margin-bottom:10px}
+.hero h2{color:#fff;font-size:23px;line-height:1.22;letter-spacing:-.015em;font-weight:700}
+.hero p{color:#a9c2bd;font-size:12.5px;margin-top:8px;max-width:56ch}
+.hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.hs{border-left:2px solid rgba(255,255,255,.14);padding-left:12px}
+.hs b{display:block;color:#fff;font-size:19px;font-weight:700;line-height:1.15}
+.hs span{display:block;color:#7f9a95;font-size:10.5px;margin-top:3px;line-height:1.35}
+.hs.crit b{color:#ff8b73}
+
+/* ---------- generic blocks ---------- */
+.grid{display:grid;gap:14px}
+.g-2{grid-template-columns:minmax(0,1.55fr) minmax(0,1fr)}
+.g-2e{grid-template-columns:repeat(2,minmax(0,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  padding:16px 18px;box-shadow:var(--shadow)}
+.card>h3{font-size:13.5px;font-weight:700;letter-spacing:-.01em}
+.card>.sub{font-size:11.5px;color:var(--muted);margin-top:2px;margin-bottom:12px}
+.sect{margin:22px 0 10px;display:flex;align-items:baseline;gap:11px}
+.sect h2{font-size:16px;font-weight:700;letter-spacing:-.015em}
+.sect span{font-size:11.5px;color:var(--faint)}
+.note{font-size:11.5px;color:var(--muted);margin-top:10px;line-height:1.5}
+
+/* ---------- KPI row ---------- */
+.kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:11px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  padding:13px 14px 12px;position:relative;overflow:hidden;box-shadow:var(--shadow)}
+.kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--faint)}
+.kpi.crit::before{background:var(--red)} .kpi.warn::before{background:var(--amber)}
+.kpi.good::before{background:var(--green)}
+.kpi .lab{font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);
+  font-weight:650;min-height:24px}
+.kpi .val{font-size:21px;font-weight:750;line-height:1.1;margin:5px 0 4px;letter-spacing:-.02em}
+.kpi.crit .val{color:var(--red)} .kpi.warn .val{color:var(--amber-dk)}
+.kpi .sub{font-size:10.5px;color:var(--muted);line-height:1.4}
+.kpi .pill{display:inline-block;font-size:9px;font-weight:750;letter-spacing:.05em;
+  text-transform:uppercase;padding:2px 6px;border-radius:5px;margin-top:7px}
+.pill-crit{background:var(--red-tint);color:var(--red)}
+.pill-warn{background:var(--amber-tint);color:var(--amber-dk)}
+.pill-ok{background:var(--green-tint);color:var(--green)}
+
+/* ---------- urgency ladder ---------- */
+.ladder{display:flex;flex-direction:column;gap:8px}
+.lrow{display:grid;grid-template-columns:20px minmax(0,1fr) 78px;gap:11px;align-items:center}
+.lrank{width:20px;height:20px;border-radius:6px;display:grid;place-items:center;
+  font-size:10px;font-weight:800;color:#fff;background:var(--faint)}
+.lrow.c1 .lrank{background:var(--red)} .lrow.c2 .lrank{background:var(--amber)}
+.lname{font-size:11.5px;font-weight:650;line-height:1.25;margin-bottom:4px}
+.ltrack{background:#eef2f6;border-radius:99px;height:9px;overflow:hidden}
+.lfill{display:block;height:100%;border-radius:99px}
+.lval{text-align:right}
+.lval b{font-size:14px;font-weight:750;display:block;line-height:1.1}
+.lval span{font-size:10px;color:var(--muted)}
+.ltag{display:inline-block;font-size:8.5px;font-weight:750;letter-spacing:.05em;
+  text-transform:uppercase;padding:1px 6px;border-radius:4px;margin-left:6px;vertical-align:1px}
+.t-crit{background:var(--red-tint);color:var(--red)}
+.t-warn{background:var(--amber-tint);color:var(--amber-dk)}
+
+/* ---------- donut ---------- */
+.donut-row{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.dlegend{display:flex;flex-direction:column;gap:10px;font-size:12px}
+.dlegend div{display:flex;align-items:center;gap:8px}
+.dlegend i{width:11px;height:11px;border-radius:3px;flex:0 0 11px}
+.dlegend b{font-weight:700}
+.dlegend small{display:block;color:var(--muted);font-size:10.5px}
+
+/* ---------- ranked bars ---------- */
+.rbars{display:flex;flex-direction:column;gap:9px}
+.rb{display:grid;grid-template-columns:96px minmax(0,1fr) 96px;gap:11px;align-items:center;font-size:12px}
+.rb-l{font-weight:650}
+.rb-l small{display:block;font-weight:400;font-size:10px;color:var(--muted)}
+.rb-t{background:#eef2f6;border-radius:99px;height:10px;overflow:hidden;position:relative}
+.rb-f{display:block;height:100%;border-radius:99px;background:var(--amber)}
+.rb-v{text-align:right;font-weight:700}
+.rb-v small{display:block;font-weight:600;font-size:10px}
+.over{color:var(--red)} .under{color:var(--muted)}
+
+/* ---------- tables ---------- */
+.scroll{overflow-x:auto;margin-top:4px}
+table{border-collapse:collapse;width:100%;font-size:12px;min-width:440px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
+th{font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);
+  font-weight:700;white-space:nowrap}
+td.n,th.n{text-align:right;white-space:nowrap}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--soft)}
+tr.urgent td{background:var(--red-tint)}
+.act{color:var(--muted);font-size:11px}
+
+/* ---------- chart bits ---------- */
+.dz{fill:var(--faint);font-size:9px} .dzv{fill:var(--ink);font-size:10px;font-weight:700}
+.dza{fill:var(--muted);font-size:9.5px;font-weight:650}
+
+/* ---------- caveats: ONE block, not five ---------- */
+.caveats{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--faint);
+  border-radius:var(--r);padding:15px 18px;margin-top:20px}
+.caveats h3{font-size:12px;font-weight:700;margin-bottom:9px}
+.caveats ul{margin:0;padding-left:17px;color:var(--mid);font-size:11.5px;line-height:1.6}
+.caveats li{margin-bottom:5px}
+.foot{margin-top:18px;padding-top:12px;border-top:1px solid var(--line);
+  display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;
+  font-size:10.5px;color:var(--faint)}
+
+@media (max-width:1080px){
+  .kpis{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .g-2,.g-2e{grid-template-columns:minmax(0,1fr)}
+  .hero{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:720px){.rail{display:none}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media print{
+  .rail,.seg{display:none}.app{display:block}.card,.kpi,.hero{break-inside:avoid;box-shadow:none}
+  body{background:#fff}
+}
+
+.rb-t{position:relative}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <nav class="rail" aria-label="Sections">
+    <div class="mark">AI</div>
+    <div class="grp">Report</div>
+    <button aria-current="true">Summary</button>
+    <button>Locations</button>
+    <button>Divisions</button>
+    <button>Full detail</button>
+    <div class="grp">View</div>
+    <button>All stock</button>
+    <button>High-risk only</button>
+    <p class="foot">Reference design.<br>Figures are the live position as at 12&nbsp;Aug&nbsp;2026.</p>
+  </nav>
+
+  <main>
+  <div class="page">
+
+    <div class="masthead">
+      <div>
+        <p class="eyebrow">Inventory &middot; City Flower</p>
+        <h1>Stock Age Analysis</h1>
+        <p class="asat">Stock position as at 12 August 2026 &middot; 7 locations &middot; 41,916 products</p>
+      </div>
+      <div class="seg" role="group" aria-label="View">
+        <button aria-pressed="true">All stock</button>
+        <button aria-pressed="false">High-risk only</button>
+      </div>
+    </div>
+
+    <section class="hero">
+      <div>
+        <span class="hero-tag">Write-off risk</span>
+        <h2>SAR 788K of stock is more than two years old, inside SAR 3.86M held for over a year.</h2>
+        <p>Aged stock totals SAR 7.13M &mdash; 14.0% of everything held. Food crosses the aged
+           threshold at six months, every other division at nine.</p>
+      </div>
+      <div class="hero-stats">
+        <div class="hs crit"><b>SAR&nbsp;2.76M</b><span>both aged and not selling</span></div>
+        <div class="hs"><b>SAR&nbsp;7.13M</b><span>aged, 14.0% of stock</span></div>
+        <div class="hs"><b>62.1%</b><span>is under three months old</span></div>
+      </div>
+    </section>
+
+    <div class="sect"><h2>Inventory summary</h2><span>the whole position, before any breakdown</span></div>
+
+    <div class="grid g-2">
+      <section class="card">
+        <h3>Where the money is sitting</h3>
+        <p class="sub">Stock value by age. The amber portion of each bar is what counts as aged.</p>
+        <div style="display:flex;gap:16px;font-size:11.5px;color:#5b7182;margin-bottom:8px">
+          <span style="display:inline-flex;align-items:center;gap:6px">
+            <i style="width:11px;height:11px;border-radius:3px;background:#0f9f95;display:inline-block"></i>Not yet aged</span>
+          <span style="display:inline-flex;align-items:center;gap:6px">
+            <i style="width:11px;height:11px;border-radius:3px;background:#c08429;display:inline-block"></i>Aged</span>
+        </div>
+        <svg viewBox="0 0 620 250" width="100%" preserveAspectRatio="xMidYMid meet" role="img"
+             aria-label="Stock value by age band, showing the aged portion of each band">
+          <line x1="8" y1="58" x2="612" y2="58" stroke="#dfe7ec"/>
+          <line x1="8" y1="102" x2="612" y2="102" stroke="#dfe7ec"/>
+          <line x1="8" y1="146" x2="612" y2="146" stroke="#dfe7ec"/>
+          <rect x="16"  y="58"  width="82" height="132" rx="3" fill="#0f9f95"><title>0-03 MONTHS not yet aged: SAR 31.58M</title></rect>
+          <text x="57"  y="50"  text-anchor="middle" class="dzv">SAR 31.58M</text>
+          <rect x="114" y="157" width="82" height="33"  rx="3" fill="#0f9f95"><title>03-06 MONTHS not yet aged: SAR 7.95M</title></rect>
+          <text x="155" y="149" text-anchor="middle" class="dzv">SAR 7.95M</text>
+          <rect x="212" y="173" width="82" height="17"  rx="3" fill="#0f9f95"><title>06-09 MONTHS not yet aged: SAR 4.17M</title></rect>
+          <rect x="212" y="167" width="82" height="4"   rx="2" fill="#c08429"><title>06-09 MONTHS aged (food only): SAR 548K</title></rect>
+          <text x="253" y="159" text-anchor="middle" class="dzv">SAR 4.72M</text>
+          <rect x="310" y="179" width="82" height="11"  rx="3" fill="#c08429"><title>09-12 MONTHS aged: SAR 2.72M</title></rect>
+          <text x="351" y="171" text-anchor="middle" class="dzv">SAR 2.72M</text>
+          <rect x="408" y="177" width="82" height="13"  rx="3" fill="#c08429"><title>12-24 MONTHS aged: SAR 3.07M</title></rect>
+          <text x="449" y="169" text-anchor="middle" class="dzv">SAR 3.07M</text>
+          <rect x="506" y="186" width="82" height="4"   rx="2" fill="#c08429"><title>24+ MONTHS aged: SAR 788K</title></rect>
+          <text x="547" y="178" text-anchor="middle" class="dzv">SAR 788K</text>
+          <line x1="8" y1="190" x2="612" y2="190" stroke="#5b7182"/>
+          <text x="57"  y="206" text-anchor="middle" class="dza">0-03 mo</text>
+          <text x="155" y="206" text-anchor="middle" class="dza">03-06 mo</text>
+          <text x="253" y="206" text-anchor="middle" class="dza">06-09 mo</text>
+          <text x="351" y="206" text-anchor="middle" class="dza">09-12 mo</text>
+          <text x="449" y="206" text-anchor="middle" class="dza">12-24 mo</text>
+          <text x="547" y="206" text-anchor="middle" class="dza">24+ mo</text>
+          <text x="57"  y="218" text-anchor="middle" class="dz">62.1%</text>
+          <text x="155" y="218" text-anchor="middle" class="dz">15.6%</text>
+          <text x="253" y="218" text-anchor="middle" class="dz">9.3%</text>
+          <text x="351" y="218" text-anchor="middle" class="dz">5.4%</text>
+          <text x="449" y="218" text-anchor="middle" class="dz">6.0%</text>
+          <text x="547" y="218" text-anchor="middle" class="dz">1.5%</text>
+          <rect x="408" y="226" width="82" height="2.5" rx="1.2" fill="#cf4636"/>
+          <rect x="506" y="226" width="82" height="2.5" rx="1.2" fill="#cf4636"/>
+          <text x="449" y="240" text-anchor="middle" class="dz" fill="#cf4636">high-risk</text>
+          <text x="547" y="240" text-anchor="middle" class="dz" fill="#cf4636">high-risk</text>
+        </svg>
+        <p class="note">The 06-09 month band is only <b>partly</b> aged &mdash; SAR 548K of SAR 4.72M.
+          That is the split threshold made visible: those are the food lines.</p>
+      </section>
+
+      <section class="card">
+        <h3>Old, or not selling?</h3>
+        <p class="sub">Two independent questions, so four answers. They overlap, so they are never added.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="kpi crit" style="box-shadow:none">
+            <p class="lab">Aged &middot; not selling</p><p class="val">SAR 2.76M</p>
+            <p class="sub">5.4% of all stock. The write-off candidates.</p></div>
+          <div class="kpi warn" style="box-shadow:none">
+            <p class="lab">Aged &middot; still selling</p><p class="val">SAR 4.36M</p>
+            <p class="sub">8.6%. Old, but moving &mdash; may clear on its own.</p></div>
+          <div class="kpi warn" style="box-shadow:none">
+            <p class="lab">Not aged &middot; not selling</p><p class="val">SAR 3.23M</p>
+            <p class="sub">6.4%. A demand problem, not an age one.</p></div>
+          <div class="kpi good" style="box-shadow:none">
+            <p class="lab">Not aged &middot; selling</p><p class="val">SAR 40.47M</p>
+            <p class="sub">79.6%. Healthy stock, turning normally.</p></div>
+        </div>
+        <p class="note">These four add to the SAR 50.83M total. Aged stock and non-moving stock
+          overlap by SAR 2.76M, so the aged figure and the not-selling figure are never summed.</p>
+      </section>
+    </div>
+
+    <div class="kpis" style="margin-top:14px">
+      <div class="kpi"><p class="lab">Stock value</p><p class="val">SAR 50.83M</p>
+        <p class="sub">At landing cost, across all 7 locations.</p></div>
+      <div class="kpi warn"><p class="lab">Aged stock</p><p class="val">SAR 7.13M</p>
+        <p class="sub">14.0% of stock value.</p><span class="pill pill-warn">Watch</span></div>
+      <div class="kpi crit"><p class="lab">Over a year old</p><p class="val">SAR 3.86M</p>
+        <p class="sub">7.6% of stock value. High-risk.</p><span class="pill pill-crit">Off track</span></div>
+      <div class="kpi crit"><p class="lab">Over two years old</p><p class="val">SAR 788K</p>
+        <p class="sub">1.5%. The likeliest write-off.</p><span class="pill pill-crit">Act now</span></div>
+      <div class="kpi crit"><p class="lab">Aged and not selling</p><p class="val">SAR 2.76M</p>
+        <p class="sub">Not added to the aged total &mdash; they overlap.</p><span class="pill pill-crit">Worst case</span></div>
+      <div class="kpi good"><p class="lab">Under three months</p><p class="val">62.1%</p>
+        <p class="sub">SAR 31.58M turning normally.</p><span class="pill pill-ok">Healthy</span></div>
+    </div>
+
+    <div class="sect"><h2>Where it sits</h2><span>the same SAR 7.13M of aged stock, cut two ways</span></div>
+
+    <div class="grid g-2e">
+      <section class="card">
+        <h3>By location</h3>
+        <p class="sub">Bar is aged value. The rate beside it is that location's own stock &mdash;
+          red is worse than the 14.0% company rate.</p>
+        <div class="rbars">
+          <div class="rb"><div class="rb-l">CDC<small>warehouse</small></div>
+            <div class="rb-t"><span class="rb-f" style="width:100%"></span></div>
+            <div class="rb-v">SAR 4.50M<small class="over">17.4%</small></div></div>
+          <div class="rb"><div class="rb-l">CFH017<small>store</small></div>
+            <div class="rb-t"><span class="rb-f" style="width:16.8%"></span></div>
+            <div class="rb-v">SAR 756K<small class="over">18.5%</small></div></div>
+          <div class="rb"><div class="rb-l">CFH021<small>store</small></div>
+            <div class="rb-t"><span class="rb-f" style="width:14.0%"></span></div>
+            <div class="rb-v">SAR 629K<small class="under">10.0%</small></div></div>
+          <div class="rb"><div class="rb-l">CFH014<small>store</small></div>
+            <div class="rb-t"><span class="rb-f" style="width:10.2%"></span></div>
+            <div class="rb-v">SAR 460K<small class="under">9.5%</small></div></div>
+          <div class="rb"><div class="rb-l">CFH018<small>store</small></div>
+            <div class="rb-t"><span class="rb-f" style="width:10.0%"></span></div>
+            <div class="rb-v">SAR 448K<small class="under">12.5%</small></div></div>
+          <div class="rb"><div class="rb-l">CFW001<small>warehouse</small></div>
+            <div class="rb-t"><span class="rb-f" style="width:5.6%"></span></div>
+            <div class="rb-v">SAR 251K<small class="under">4.2%</small></div></div>
+          <div class="rb"><div class="rb-l">CFH022<small>store</small></div>
+            <div class="rb-t"><span class="rb-f" style="width:1.8%"></span></div>
+            <div class="rb-v">SAR 79K<small class="over">34.3%</small></div></div>
+        </div>
+        <p class="note">CFH022 holds the least aged stock in the estate but the <b>worst rate</b>:
+          34.3% of the SAR 231K it carries. Judge severity on the rate, not the bar.</p>
+      </section>
+
+      <section class="card">
+        <h3>By division</h3>
+        <p class="sub">Same measure, cut by merchandise rather than place.</p>
+        <div class="rbars">
+          <div class="rb"><div class="rb-l">GM HOME WARE<small>SAR 4.81M held</small></div>
+            <div class="rb-t"><span class="rb-f" style="width:100%"></span></div>
+            <div class="rb-v">SAR 1.49M<small class="over">31.0%</small></div></div>
+          <div class="rb"><div class="rb-l">GM FASHION<small>SAR 8.40M held</small></div>
+            <div class="rb-t"><span class="rb-f" style="width:80.7%"></span></div>
+            <div class="rb-v">SAR 1.20M<small class="over">14.3%</small></div></div>
+          <div class="rb"><div class="rb-l">FASHION<small>SAR 6.09M held</small></div>
+            <div class="rb-t"><span class="rb-f" style="width:69.5%"></span></div>
+            <div class="rb-v">SAR 1.03M<small class="over">17.0%</small></div></div>
+          <div class="rb"><div class="rb-l">FMCG FOOD<small>SAR 12.77M held</small></div>
+            <div class="rb-t"><span class="rb-f" style="width:62.0%"></span></div>
+            <div class="rb-v">SAR 924K<small class="under">7.2%</small></div></div>
+          <div class="rb"><div class="rb-l">GM OTHERS<small>SAR 3.37M held</small></div>
+            <div class="rb-t"><span class="rb-f" style="width:58.9%"></span></div>
+            <div class="rb-v">SAR 877K<small class="over">26.0%</small></div></div>
+          <div class="rb"><div class="rb-l">FOOTWEAR<small>SAR 2.03M held</small></div>
+            <div class="rb-t"><span class="rb-f" style="width:33.9%"></span></div>
+            <div class="rb-v">SAR 504K<small class="over">24.9%</small></div></div>
+          <div class="rb"><div class="rb-l">FMCG NON-FOOD<small>SAR 9.17M held</small></div>
+            <div class="rb-t"><span class="rb-f" style="width:19.8%"></span></div>
+            <div class="rb-v">SAR 295K<small class="under">3.2%</small></div></div>
+        </div>
+        <p class="note">GM HOME WARE holds both the most aged stock and the worst rate: SAR 1.49M,
+          31.0% of everything it carries.</p>
+      </section>
+    </div>
+
+    <div class="sect"><h2>Full detail</h2><span>every band, section and product type</span></div>
+
+    <div class="grid g-2e">
+      <section class="card">
+        <h3>How much is older than this?</h3>
+        <p class="sub">Share of all stock value at or beyond each age.</p>
+        <svg viewBox="0 0 560 200" width="100%" preserveAspectRatio="xMidYMid meet" role="img"
+             aria-label="Cumulative share of stock at or older than each band">
+          <line x1="10" y1="30" x2="550" y2="30" stroke="#dfe7ec"/>
+          <text x="550" y="27" text-anchor="end" class="dz">100%</text>
+          <line x1="10" y1="70" x2="550" y2="70" stroke="#dfe7ec"/>
+          <text x="550" y="67" text-anchor="end" class="dz">75%</text>
+          <line x1="10" y1="110" x2="550" y2="110" stroke="#dfe7ec"/>
+          <text x="550" y="107" text-anchor="end" class="dz">50%</text>
+          <line x1="10" y1="150" x2="550" y2="150" stroke="#dfe7ec"/>
+          <text x="550" y="147" text-anchor="end" class="dz">25%</text>
+          <polygon points="30,190 30,30 132,130 234,154 336,169 438,178 540,188 540,190"
+                   fill="#0f9f95" opacity=".13"/>
+          <polyline points="30,30 132,130 234,154 336,169 438,178 540,188" fill="none"
+                    stroke="#087f79" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="30"  cy="30"  r="5" fill="#087f79" stroke="#fff" stroke-width="2"><title>0-03 months or older: 100%</title></circle>
+          <circle cx="132" cy="130" r="5" fill="#087f79" stroke="#fff" stroke-width="2"><title>03-06 months or older: 37.9%</title></circle>
+          <circle cx="234" cy="154" r="5" fill="#087f79" stroke="#fff" stroke-width="2"><title>06-09 months or older: 22.2%</title></circle>
+          <circle cx="336" cy="169" r="5" fill="#087f79" stroke="#fff" stroke-width="2"><title>09-12 months or older: 12.9%</title></circle>
+          <circle cx="438" cy="178" r="5" fill="#087f79" stroke="#fff" stroke-width="2"><title>12-24 months or older: 7.6%</title></circle>
+          <circle cx="540" cy="188" r="5" fill="#cf4636" stroke="#fff" stroke-width="2"><title>24+ months: 1.5%</title></circle>
+          <text x="30"  y="22"  text-anchor="start" class="dzv">100%</text>
+          <text x="234" y="146" text-anchor="middle" class="dzv">22.2%</text>
+          <text x="540" y="180" text-anchor="end" class="dzv" fill="#cf4636">1.5%</text>
+          <line x1="10" y1="190" x2="550" y2="190" stroke="#5b7182"/>
+        </svg>
+        <div style="display:flex;justify-content:space-between;font-size:9.5px;color:#5b7182;
+                    font-weight:650;padding:4px 10px 0">
+          <span>0-03</span><span>03-06</span><span>06-09</span><span>09-12</span><span>12-24</span><span>24+</span>
+        </div>
+        <p class="note">Read it as: <b>22.2%</b> of all stock value is six months old or more.
+          This is the reading the bar chart cannot give, because 62% of the value sits in the first bar.</p>
+      </section>
+
+      <section class="card">
+        <h3>Locally bought against imported</h3>
+        <p class="sub">Imported stock is expected to age more &mdash; longer lead times force bigger
+          batches. The question is whether the gap is bigger than that explains.</p>
+        <div class="rbars" style="gap:14px">
+          <div class="rb" style="grid-template-columns:92px minmax(0,1fr) 108px">
+            <div class="rb-l">LOCAL<small>7.4% of it aged</small></div>
+            <div class="rb-t" style="height:16px">
+              <span class="rb-f" style="width:100%;background:#0f9f95"></span>
+              <span style="position:absolute;left:0;top:0;height:100%;width:7.4%;
+                           background:#c08429;border-radius:99px"></span></div>
+            <div class="rb-v">SAR 33.86M<small class="under">SAR 2.51M aged</small></div></div>
+          <div class="rb" style="grid-template-columns:92px minmax(0,1fr) 108px">
+            <div class="rb-l">OVERSEAS<small>27.2% of it aged</small></div>
+            <div class="rb-t" style="height:16px">
+              <span class="rb-f" style="width:50.1%;background:#0f9f95"></span>
+              <span style="position:absolute;left:0;top:0;height:100%;width:13.6%;
+                           background:#c08429;border-radius:99px"></span></div>
+            <div class="rb-v">SAR 16.97M<small class="over">SAR 4.61M aged</small></div></div>
+        </div>
+        <p class="note">Imported stock is <b>half the value but nearly twice the aged total</b>:
+          27.2% of imported stock is aged against 7.4% of local &mdash; a 3.7x gap, wider than lead
+          times alone would explain.</p>
+        <div class="scroll" style="margin-top:12px">
+          <table>
+            <thead><tr><th>Type</th><th class="n">Stock value</th><th class="n">Aged</th><th class="n">Aged share</th></tr></thead>
+            <tbody>
+              <tr><td>LOCAL</td><td class="n">SAR 33.86M</td><td class="n">SAR 2.51M</td><td class="n">7.4%</td></tr>
+              <tr><td>OVERSEAS</td><td class="n">SAR 16.97M</td><td class="n">SAR 4.61M</td><td class="n">27.2%</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <section class="card" style="margin-top:14px">
+      <h3>Every age band</h3>
+      <p class="sub">The full distribution, with the aged portion and the cumulative reading.</p>
+      <div class="scroll">
+        <table>
+          <thead><tr><th>Age band</th><th class="n">Stock value</th><th class="n">Share</th>
+            <th class="n">Of which aged</th><th class="n">This band or older</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>0-03 MONTHS</td><td class="n">SAR 31.58M</td><td class="n">62.1%</td><td class="n">&mdash;</td><td class="n">100.0%</td><td class="act">Fresh</td></tr>
+            <tr><td>03-06 MONTHS</td><td class="n">SAR 7.95M</td><td class="n">15.6%</td><td class="n">&mdash;</td><td class="n">37.9%</td><td class="act">Recent</td></tr>
+            <tr><td>06-09 MONTHS</td><td class="n">SAR 4.72M</td><td class="n">9.3%</td><td class="n">SAR 548K</td><td class="n">22.2%</td><td class="act">Aged for food only</td></tr>
+            <tr><td>09-12 MONTHS</td><td class="n">SAR 2.72M</td><td class="n">5.4%</td><td class="n">SAR 2.72M</td><td class="n">12.9%</td><td class="act">Aged, all divisions</td></tr>
+            <tr class="urgent"><td>12-24 MONTHS</td><td class="n">SAR 3.07M</td><td class="n">6.0%</td><td class="n">SAR 3.07M</td><td class="n">7.6%</td><td class="act"><b>High-risk</b></td></tr>
+            <tr class="urgent"><td>24+ MONTHS</td><td class="n">SAR 788K</td><td class="n">1.5%</td><td class="n">SAR 788K</td><td class="n">1.5%</td><td class="act"><b>High-risk &mdash; write-off</b></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">The six bands add exactly to SAR 50.83M. No stock fell into
+        <b>CANNOT BE DETERMINED</b> this run, so nothing is missing from the distribution.</p>
+    </section>
+
+    <div class="caveats">
+      <h3>What these numbers do and do not say</h3>
+      <ul>
+        <li>Stock figures are a <b>position as at 12 August 2026</b>, not a total over a period.</li>
+        <li><b>Movement between age bands cannot be shown.</b> The model holds only one stock
+          position, so there is no previous snapshot to compare against. Showing how stock aged
+          from one date to the next would need that history to be retained.</li>
+        <li><b>Aged</b> means past the threshold for that division: six months for food, nine months
+          for everything else. <b>High-risk</b> is a separate, universal overlay &mdash; anything over
+          a year, in every division.</li>
+        <li>Aged stock and non-moving stock <b>overlap by SAR 2.76M</b> and are never added together.</li>
+        <li>Age resets when stock is transferred, so a store showing six-month-old stock means it
+          arrived there six months ago &mdash; it may have been at a warehouse for longer before that.</li>
+        <li>This report says how old stock is and which of it is not selling. It does not say
+          <b>why</b> stock is ageing, or what to do about it.</li>
+      </ul>
+    </div>
+
+    <div class="foot">
+      <span>All values in SAR at landing cost, excluding VAT. Every figure is copied or derived
+        arithmetically from the scanned stock position; no number is estimated.</span>
+      <span>AI-assisted analysis</span>
+    </div>
+
+  </div>
+  </main>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Inventory Management &mdash; reference dashboard</title>
+<style>
+:root{
+  --ground:#eef1f0; --card:#fff; --rail:#0e1b19; --ink:#12201e; --mid:#41545a;
+  --muted:#5b7182; --faint:#8fa1a9; --line:#dfe7ec; --soft:#f7fafb;
+  --teal:#0f9f95; --teal-dk:#087f79; --teal-tint:#e2f2ef;
+  --amber:#c08429; --amber-tint:#faf1e1; --amber-dk:#8a5f10;
+  --red:#cf4636; --red-tint:#fbeae7; --green:#2f8f4e; --green-tint:#e8f4ec;
+  --r:12px; --shadow:0 1px 2px rgba(16,24,40,.05),0 10px 28px -20px rgba(16,24,40,.35);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);
+  font-family:'Segoe UI',Inter,Roboto,Arial,sans-serif;font-size:13.5px;line-height:1.5;
+  -webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+h1,h2,h3,h4,p{margin:0}
+
+/* ---------- shell: rail + main, and ONLY those two ---------- */
+.app{display:flex;min-height:100vh}
+.rail{width:172px;flex:0 0 172px;background:var(--rail);color:#cfe0dc;padding:18px 12px;
+  position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:5px}
+.rail .mark{width:34px;height:34px;border-radius:9px;background:rgba(15,159,149,.16);
+  border:1px solid rgba(15,159,149,.5);color:#4fd3c4;display:grid;place-items:center;
+  font-weight:800;font-size:12px;letter-spacing:.04em;margin-bottom:14px}
+.rail .grp{font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:#5f7d78;
+  margin:14px 0 5px;padding-left:9px}
+.rail button{all:unset;cursor:pointer;display:block;padding:8px 11px;border-radius:8px;
+  font-size:12.5px;font-weight:600;color:#a9c2bd}
+.rail button:hover{background:rgba(255,255,255,.06);color:#fff}
+.rail button[aria-current=true]{background:var(--teal);color:#fff}
+.rail .foot{margin-top:auto;font-size:10px;color:#4d6b66;line-height:1.45;padding-left:9px}
+
+main{flex:1;min-width:0}
+.page{max-width:1280px;margin:0 auto;padding:22px 26px 60px}
+
+/* ---------- masthead ---------- */
+.masthead{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;
+  flex-wrap:wrap;margin-bottom:16px}
+.eyebrow{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--teal-dk);
+  font-weight:750;margin-bottom:5px}
+h1{font-size:27px;line-height:1.12;letter-spacing:-.02em;font-weight:700}
+.asat{font-size:12px;color:var(--muted);margin-top:5px}
+.seg{display:inline-flex;background:var(--card);border:1px solid var(--line);
+  border-radius:9px;padding:3px}
+.seg button{all:unset;cursor:pointer;padding:6px 14px;border-radius:7px;font-size:12px;
+  font-weight:650;color:var(--muted)}
+.seg button[aria-pressed=true]{background:var(--teal-tint);color:var(--teal-dk)}
+
+/* ---------- hero: one dark band, verdict + the numbers that prove it ---------- */
+.hero{background:var(--rail);border-radius:var(--r);padding:20px 24px;margin-bottom:14px;
+  display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:26px;align-items:center}
+.hero-tag{display:inline-block;font-size:9px;letter-spacing:.12em;text-transform:uppercase;
+  font-weight:750;color:#f0c46a;background:rgba(240,196,106,.14);padding:4px 9px;
+  border-radius:6px;margin-bottom:10px}
+.hero h2{color:#fff;font-size:23px;line-height:1.22;letter-spacing:-.015em;font-weight:700}
+.hero p{color:#a9c2bd;font-size:12.5px;margin-top:8px;max-width:56ch}
+.hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.hs{border-left:2px solid rgba(255,255,255,.14);padding-left:12px}
+.hs b{display:block;color:#fff;font-size:19px;font-weight:700;line-height:1.15}
+.hs span{display:block;color:#7f9a95;font-size:10.5px;margin-top:3px;line-height:1.35}
+.hs.crit b{color:#ff8b73}
+
+/* ---------- generic blocks ---------- */
+.grid{display:grid;gap:14px}
+.g-2{grid-template-columns:minmax(0,1.55fr) minmax(0,1fr)}
+.g-2e{grid-template-columns:repeat(2,minmax(0,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  padding:16px 18px;box-shadow:var(--shadow)}
+.card>h3{font-size:13.5px;font-weight:700;letter-spacing:-.01em}
+.card>.sub{font-size:11.5px;color:var(--muted);margin-top:2px;margin-bottom:12px}
+.sect{margin:22px 0 10px;display:flex;align-items:baseline;gap:11px}
+.sect h2{font-size:16px;font-weight:700;letter-spacing:-.015em}
+.sect span{font-size:11.5px;color:var(--faint)}
+.note{font-size:11.5px;color:var(--muted);margin-top:10px;line-height:1.5}
+
+/* ---------- KPI row ---------- */
+.kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:11px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  padding:13px 14px 12px;position:relative;overflow:hidden;box-shadow:var(--shadow)}
+.kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--faint)}
+.kpi.crit::before{background:var(--red)} .kpi.warn::before{background:var(--amber)}
+.kpi.good::before{background:var(--green)}
+.kpi .lab{font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);
+  font-weight:650;min-height:24px}
+.kpi .val{font-size:21px;font-weight:750;line-height:1.1;margin:5px 0 4px;letter-spacing:-.02em}
+.kpi.crit .val{color:var(--red)} .kpi.warn .val{color:var(--amber-dk)}
+.kpi .sub{font-size:10.5px;color:var(--muted);line-height:1.4}
+.kpi .pill{display:inline-block;font-size:9px;font-weight:750;letter-spacing:.05em;
+  text-transform:uppercase;padding:2px 6px;border-radius:5px;margin-top:7px}
+.pill-crit{background:var(--red-tint);color:var(--red)}
+.pill-warn{background:var(--amber-tint);color:var(--amber-dk)}
+.pill-ok{background:var(--green-tint);color:var(--green)}
+
+/* ---------- urgency ladder ---------- */
+.ladder{display:flex;flex-direction:column;gap:8px}
+.lrow{display:grid;grid-template-columns:20px minmax(0,1fr) 78px;gap:11px;align-items:center}
+.lrank{width:20px;height:20px;border-radius:6px;display:grid;place-items:center;
+  font-size:10px;font-weight:800;color:#fff;background:var(--faint)}
+.lrow.c1 .lrank{background:var(--red)} .lrow.c2 .lrank{background:var(--amber)}
+.lname{font-size:11.5px;font-weight:650;line-height:1.25;margin-bottom:4px}
+.ltrack{background:#eef2f6;border-radius:99px;height:9px;overflow:hidden}
+.lfill{display:block;height:100%;border-radius:99px}
+.lval{text-align:right}
+.lval b{font-size:14px;font-weight:750;display:block;line-height:1.1}
+.lval span{font-size:10px;color:var(--muted)}
+.ltag{display:inline-block;font-size:8.5px;font-weight:750;letter-spacing:.05em;
+  text-transform:uppercase;padding:1px 6px;border-radius:4px;margin-left:6px;vertical-align:1px}
+.t-crit{background:var(--red-tint);color:var(--red)}
+.t-warn{background:var(--amber-tint);color:var(--amber-dk)}
+
+/* ---------- donut ---------- */
+.donut-row{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.dlegend{display:flex;flex-direction:column;gap:10px;font-size:12px}
+.dlegend div{display:flex;align-items:center;gap:8px}
+.dlegend i{width:11px;height:11px;border-radius:3px;flex:0 0 11px}
+.dlegend b{font-weight:700}
+.dlegend small{display:block;color:var(--muted);font-size:10.5px}
+
+/* ---------- ranked bars ---------- */
+.rbars{display:flex;flex-direction:column;gap:9px}
+.rb{display:grid;grid-template-columns:96px minmax(0,1fr) 96px;gap:11px;align-items:center;font-size:12px}
+.rb-l{font-weight:650}
+.rb-l small{display:block;font-weight:400;font-size:10px;color:var(--muted)}
+.rb-t{background:#eef2f6;border-radius:99px;height:10px;overflow:hidden;position:relative}
+.rb-f{display:block;height:100%;border-radius:99px;background:var(--amber)}
+.rb-v{text-align:right;font-weight:700}
+.rb-v small{display:block;font-weight:600;font-size:10px}
+.over{color:var(--red)} .under{color:var(--muted)}
+
+/* ---------- tables ---------- */
+.scroll{overflow-x:auto;margin-top:4px}
+table{border-collapse:collapse;width:100%;font-size:12px;min-width:440px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
+th{font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);
+  font-weight:700;white-space:nowrap}
+td.n,th.n{text-align:right;white-space:nowrap}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--soft)}
+tr.urgent td{background:var(--red-tint)}
+.act{color:var(--muted);font-size:11px}
+
+/* ---------- chart bits ---------- */
+.dz{fill:var(--faint);font-size:9px} .dzv{fill:var(--ink);font-size:10px;font-weight:700}
+.dza{fill:var(--muted);font-size:9.5px;font-weight:650}
+
+/* ---------- caveats: ONE block, not five ---------- */
+.caveats{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--faint);
+  border-radius:var(--r);padding:15px 18px;margin-top:20px}
+.caveats h3{font-size:12px;font-weight:700;margin-bottom:9px}
+.caveats ul{margin:0;padding-left:17px;color:var(--mid);font-size:11.5px;line-height:1.6}
+.caveats li{margin-bottom:5px}
+.foot{margin-top:18px;padding-top:12px;border-top:1px solid var(--line);
+  display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;
+  font-size:10.5px;color:var(--faint)}
+
+@media (max-width:1080px){
+  .kpis{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .g-2,.g-2e{grid-template-columns:minmax(0,1fr)}
+  .hero{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:720px){.rail{display:none}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media print{
+  .rail,.seg{display:none}.app{display:block}.card,.kpi,.hero{break-inside:avoid;box-shadow:none}
+  body{background:#fff}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <nav class="rail" aria-label="Sections">
+    <div class="mark">AI</div>
+    <div class="grp">Report</div>
+    <button aria-current="true">Summary</button>
+    <button>Locations</button>
+    <button>Divisions</button>
+    <button>Action queue</button>
+    <div class="grp">View</div>
+    <button>All stock</button>
+    <button>Needs action only</button>
+    <p class="foot">Reference design.<br>Figures are the live position as at 12&nbsp;Aug&nbsp;2026.</p>
+  </nav>
+
+  <main>
+  <div class="page">
+
+    <div class="masthead">
+      <div>
+        <p class="eyebrow">Inventory &middot; City Flower</p>
+        <h1>Inventory Management</h1>
+        <p class="asat">Stock position as at 12 August 2026 &middot; 7 locations &middot; 140,113 product lines</p>
+      </div>
+      <div class="seg" role="group" aria-label="View">
+        <button aria-pressed="true">All stock</button>
+        <button aria-pressed="false">Needs action only</button>
+      </div>
+    </div>
+
+    <!-- HERO: the verdict, and the three numbers that prove it -->
+    <section class="hero">
+      <div>
+        <span class="hero-tag">Action needed today</span>
+        <h2>17,717 product lines are out of stock with no order placed and nothing in the warehouse to draw on.</h2>
+        <p>A further 6,042 lines are out at a store while a warehouse holds the stock &mdash; those
+           can be fixed by transfer today, without buying anything.</p>
+      </div>
+      <div class="hero-stats">
+        <div class="hs crit"><b>104,230</b><span>lines need action, of 140,113</span></div>
+        <div class="hs"><b>SAR&nbsp;21.13M</b><span>held above agreed cover</span></div>
+        <div class="hs"><b>SAR&nbsp;46K</b><span>sales missed each day</span></div>
+      </div>
+    </section>
+
+    <!-- SUMMARY: the queue that matters, beside the shape of the estate -->
+    <div class="sect"><h2>Inventory summary</h2><span>the whole position, before any breakdown</span></div>
+
+    <div class="grid g-2">
+      <section class="card">
+        <h3>What needs doing, most urgent first</h3>
+        <p class="sub">Ordered by urgency, not by value. The largest bar is deliberately not at the top.</p>
+        <div class="ladder">
+          <div class="lrow c1">
+            <span class="lrank">1</span>
+            <div><p class="lname">Stock out &mdash; place order<span class="ltag t-crit">most urgent</span></p>
+              <div class="ltrack"><span class="lfill" style="width:100%;background:#cf4636"></span></div></div>
+            <div class="lval"><b>17,717</b><span>no cover</span></div>
+          </div>
+          <div class="lrow c2">
+            <span class="lrank">2</span>
+            <div><p class="lname">Stock out &mdash; available in warehouse<span class="ltag t-warn">free fix</span></p>
+              <div class="ltrack"><span class="lfill" style="width:34.1%;background:#c08429"></span></div></div>
+            <div class="lval"><b>6,042</b><span>transfer</span></div>
+          </div>
+          <div class="lrow c2">
+            <span class="lrank">3</span>
+            <div><p class="lname">On the verge &mdash; place order</p>
+              <div class="ltrack"><span class="lfill" style="width:14.5%;background:#c08429"></span></div></div>
+            <div class="lval"><b>2,566</b><span>SAR 733K</span></div>
+          </div>
+          <div class="lrow c2">
+            <span class="lrank">4</span>
+            <div><p class="lname">On the verge &mdash; available in warehouse</p>
+              <div class="ltrack"><span class="lfill" style="width:4.8%;background:#c08429"></span></div></div>
+            <div class="lval"><b>848</b><span>SAR 83K</span></div>
+          </div>
+          <div class="lrow">
+            <span class="lrank">5</span>
+            <div><p class="lname">Overstock</p>
+              <div class="ltrack"><span class="lfill" style="width:100%;background:#8fa1a9"></span></div></div>
+            <div class="lval"><b>29,932</b><span>SAR 26.89M</span></div>
+          </div>
+          <div class="lrow">
+            <span class="lrank">6</span>
+            <div><p class="lname">Not moving</p>
+              <div class="ltrack"><span class="lfill" style="width:100%;background:#8fa1a9"></span></div></div>
+            <div class="lval"><b>36,377</b><span>SAR 6.41M</span></div>
+          </div>
+        </div>
+        <p class="note">Six of fifteen situations shown. Every one of the 140,113 product lines carries
+          exactly one, and the full list is in <b>Action queue</b>.</p>
+      </section>
+
+      <section class="card">
+        <h3>How much of the estate needs attention</h3>
+        <p class="sub">Product lines, by whether any action is required.</p>
+        <div class="donut-row">
+          <svg viewBox="0 0 150 150" width="150" height="150" role="img"
+               aria-label="104,230 of 140,113 product lines need action">
+            <circle cx="75" cy="75" r="58" fill="none" stroke="#c08429" stroke-width="19"
+              stroke-dasharray="269.5 94.9" stroke-dashoffset="0" transform="rotate(-90 75 75)"/>
+            <circle cx="75" cy="75" r="58" fill="none" stroke="#0f9f95" stroke-width="19"
+              stroke-dasharray="90.9 273.5" stroke-dashoffset="-271.5" transform="rotate(-90 75 75)"/>
+            <text x="75" y="72" text-anchor="middle" font-size="20" font-weight="750" fill="#12201e">74.4%</text>
+            <text x="75" y="88" text-anchor="middle" class="dz">needs action</text>
+          </svg>
+          <div class="dlegend">
+            <div><i style="background:#c08429"></i><span><b>104,230</b> need action
+              <small>SAR 36.03M of stock</small></span></div>
+            <div><i style="background:#0f9f95"></i><span><b>35,883</b> no action needed
+              <small>healthy, new or inactive lines</small></span></div>
+          </div>
+        </div>
+        <p class="note">&ldquo;Needs action&rdquo; covers the eleven situations that represent work.
+          The remaining four are healthy, newly listed, inactive, or could not be classified.</p>
+      </section>
+    </div>
+
+    <!-- KPI ROW -->
+    <div class="kpis" style="margin-top:14px">
+      <div class="kpi"><p class="lab">Stock value</p><p class="val">SAR 50.83M</p>
+        <p class="sub">At landing cost, across all 7 locations.</p></div>
+      <div class="kpi crit"><p class="lab">Held above cover</p><p class="val">SAR 21.13M</p>
+        <p class="sub">41.6% of stock value. The surplus only.</p><span class="pill pill-crit">Off track</span></div>
+      <div class="kpi warn"><p class="lab">Lines needing action</p><p class="val">104,230</p>
+        <p class="sub">of 140,113 product lines.</p><span class="pill pill-warn">Watch</span></div>
+      <div class="kpi crit"><p class="lab">Most urgent lines</p><p class="val">17,717</p>
+        <p class="sub">Out of stock, no order, no warehouse cover.</p><span class="pill pill-crit">Act now</span></div>
+      <div class="kpi warn"><p class="lab">Sales missed / day</p><p class="val">SAR 46K</p>
+        <p class="sub">Top-selling local products, stores only.</p><span class="pill pill-warn">Estimate</span></div>
+      <div class="kpi crit"><p class="lab">Overstocked, more coming</p><p class="val">216</p>
+        <p class="sub">products, SAR 875K of orders still open.</p><span class="pill pill-crit">Review</span></div>
+    </div>
+
+    <!-- BREAKDOWNS -->
+    <div class="sect"><h2>Where it sits</h2><span>the same SAR 21.13M, cut two ways</span></div>
+
+    <div class="grid g-2e">
+      <section class="card">
+        <h3>By location</h3>
+        <p class="sub">Bar is value above cover. The rate beside it is that location&rsquo;s own stock &mdash;
+          red is worse than the 41.6% company rate.</p>
+        <div class="rbars">
+          <div class="rb"><div class="rb-l">CDC<small>warehouse</small></div>
+            <div class="rb-t"><span class="rb-f" style="width:100%"></span></div>
+            <div class="rb-v">SAR 10.85M<small class="under">42.0%</small></div></div>
+          <div class="rb"><div class="rb-l">CFW001<small>warehouse</small></div>
+            <div class="rb-t"><span class="rb-f" style="width:29.2%"></span></div>
+            <div class="rb-v">SAR 3.17M<small class="over">52.9%</small></div></div>
+          <div class="rb"><div class="rb-l">CFH021<small>store</small></div>
+            <div class="rb-t"><span class="rb-f" style="width:20.8%"></span></div>
+            <div class="rb-v">SAR 2.26M<small class="under">36.1%</small></div></div>
+          <div class="rb"><div class="rb-l">CFH017<small>store</small></div>
+            <div class="rb-t"><span class="rb-f" style="width:17.1%"></span></div>
+            <div class="rb-v">SAR 1.86M<small class="over">45.6%</small></div></div>
+          <div class="rb"><div class="rb-l">CFH014<small>store</small></div>
+            <div class="rb-t"><span class="rb-f" style="width:14.8%"></span></div>
+            <div class="rb-v">SAR 1.61M<small class="under">33.0%</small></div></div>
+          <div class="rb"><div class="rb-l">CFH018<small>store</small></div>
+            <div class="rb-t"><span class="rb-f" style="width:11.7%"></span></div>
+            <div class="rb-v">SAR 1.27M<small class="under">35.6%</small></div></div>
+          <div class="rb"><div class="rb-l">CFH022<small>store</small></div>
+            <div class="rb-t"><span class="rb-f" style="width:1.1%"></span></div>
+            <div class="rb-v">SAR 117K<small class="over">50.5%</small></div></div>
+        </div>
+        <p class="note">CFW001 holds the highest rate in the estate: 52.9% of what it carries is above
+          the agreed cover, against 42.0% at CDC.</p>
+      </section>
+
+      <section class="card">
+        <h3>By division</h3>
+        <p class="sub">Same measure, cut by merchandise rather than place.</p>
+        <div class="rbars">
+          <div class="rb"><div class="rb-l">FMCG FOOD<small>SAR 12.77M held</small></div>
+            <div class="rb-t"><span class="rb-f" style="width:100%"></span></div>
+            <div class="rb-v">SAR 5.74M<small class="over">45.0%</small></div></div>
+          <div class="rb"><div class="rb-l">GM FASHION<small>SAR 8.40M held</small></div>
+            <div class="rb-t"><span class="rb-f" style="width:66.8%"></span></div>
+            <div class="rb-v">SAR 3.83M<small class="over">45.7%</small></div></div>
+          <div class="rb"><div class="rb-l">FMCG NON-FOOD<small>SAR 9.17M held</small></div>
+            <div class="rb-t"><span class="rb-f" style="width:48.3%"></span></div>
+            <div class="rb-v">SAR 2.78M<small class="under">30.3%</small></div></div>
+          <div class="rb"><div class="rb-l">FASHION<small>SAR 6.09M held</small></div>
+            <div class="rb-t"><span class="rb-f" style="width:46.9%"></span></div>
+            <div class="rb-v">SAR 2.69M<small class="over">44.2%</small></div></div>
+          <div class="rb"><div class="rb-l">GM HOME WARE<small>SAR 4.81M held</small></div>
+            <div class="rb-t"><span class="rb-f" style="width:44.4%"></span></div>
+            <div class="rb-v">SAR 2.55M<small class="over">53.0%</small></div></div>
+          <div class="rb"><div class="rb-l">GM OTHERS<small>SAR 3.37M held</small></div>
+            <div class="rb-t"><span class="rb-f" style="width:30.3%"></span></div>
+            <div class="rb-v">SAR 1.74M<small class="over">51.6%</small></div></div>
+          <div class="rb"><div class="rb-l">FOOTWEAR<small>SAR 2.03M held</small></div>
+            <div class="rb-t"><span class="rb-f" style="width:0%"></span></div>
+            <div class="rb-v">not set<small class="under">no threshold</small></div></div>
+        </div>
+        <p class="note"><b>FOOTWEAR has no cover threshold configured</b>, so no excess can be calculated
+          for it. That is not the same as zero excess &mdash; SAR 2.03M is simply unmeasured.</p>
+      </section>
+    </div>
+
+    <!-- DETAIL -->
+    <div class="sect"><h2>Action queue</h2><span>every situation, every line accounted for</span></div>
+
+    <section class="card">
+      <div class="scroll">
+        <table>
+          <thead><tr><th>Situation</th><th class="n">Lines</th><th class="n">Stock value</th>
+            <th>What the buying team should do</th></tr></thead>
+          <tbody>
+            <tr class="urgent"><td><b>STOCK OUT - PLACE ORDER</b></td><td class="n">17,717</td><td class="n">SAR 0</td><td class="act">Place an emergency purchase order.</td></tr>
+            <tr><td>STOCK OUT - AVAILABLE IN WAREHOUSE</td><td class="n">6,042</td><td class="n">SAR 0</td><td class="act">Transfer from the warehouse immediately.</td></tr>
+            <tr><td>STOCK OUT - ORDER PLACED</td><td class="n">125</td><td class="n">SAR 0</td><td class="act">Check the order date; consider an emergency transfer.</td></tr>
+            <tr><td>ON THE VERGE OF STOCK OUT - PLACE ORDER</td><td class="n">2,566</td><td class="n">SAR 733K</td><td class="act">Place a purchase order without delay.</td></tr>
+            <tr><td>ON THE VERGE OF STOCK OUT - AVAILABLE IN WAREHOUSE</td><td class="n">848</td><td class="n">SAR 83K</td><td class="act">Transfer from the warehouse now.</td></tr>
+            <tr><td>ON THE VERGE OF STOCK OUT - ORDER PLACED</td><td class="n">75</td><td class="n">SAR 167K</td><td class="act">Check the order will arrive in time.</td></tr>
+            <tr><td>OVERSTOCK</td><td class="n">29,932</td><td class="n">SAR 26.89M</td><td class="act">Review for markdown, promotion or transfer between locations.</td></tr>
+            <tr><td>NON MOVING</td><td class="n">36,377</td><td class="n">SAR 6.41M</td><td class="act">Investigate demand; consider promotion, transfer or clearance.</td></tr>
+            <tr><td>IN STOCK BUT NO SALES</td><td class="n">9,007</td><td class="n">SAR 852K</td><td class="act">Monitor; follow up if there are no sales in 30 days.</td></tr>
+            <tr><td>IN STOCK BUT NO TRANSFERS</td><td class="n">1,541</td><td class="n">SAR 895K</td><td class="act">Check store demand; consider a push transfer.</td></tr>
+            <tr><td>STOCK AVAILABLE - REORDER LEVEL UNKNOW</td><td class="n">798</td><td class="n">SAR 252K</td><td class="act">Set a reorder level so this can be assessed.</td></tr>
+            <tr><td>NEW LISTED SKU</td><td class="n">1,042</td><td class="n">SAR 753K</td><td class="act">Monitor; do not apply excess or non-moving rules yet.</td></tr>
+            <tr><td>NOT ACTIVE</td><td class="n">6,746</td><td class="n">SAR 0</td><td class="act">No stock action; review range planning.</td></tr>
+            <tr><td>STOCK AVAILABLE</td><td class="n">19,037</td><td class="n">SAR 10.13M</td><td class="act">No action needed.</td></tr>
+            <tr><td>NA</td><td class="n">8,260</td><td class="n">SAR 3.67M</td><td class="act">Investigate the source record.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">The fifteen situations account for all 140,113 product lines exactly.
+        <b>NON MOVING - ORDER PLACED</b> &mdash; one of the two the rules call most urgent &mdash;
+        returned no lines at all; confirm whether the source system produces it.</p>
+    </section>
+
+    <div class="grid g-2e" style="margin-top:14px">
+      <section class="card">
+        <h3>How long stock has gone without a sale</h3>
+        <p class="sub">Product lines by days stalled. The longest band is also the largest.</p>
+        <svg viewBox="0 0 560 190" width="100%" preserveAspectRatio="xMidYMid meet" role="img"
+             aria-label="Product lines by days without a sale">
+          <line x1="8" y1="54" x2="552" y2="54" stroke="#dfe7ec"/>
+          <line x1="8" y1="86" x2="552" y2="86" stroke="#dfe7ec"/>
+          <line x1="8" y1="118" x2="552" y2="118" stroke="#dfe7ec"/>
+          <rect x="14"  y="84"  width="72" height="66"  rx="3" fill="#c08429"><title>30-60 days: 7,663 lines</title></rect>
+          <rect x="103" y="105" width="72" height="45"  rx="3" fill="#c08429"><title>61-90 days: 5,232 lines</title></rect>
+          <rect x="192" y="119" width="72" height="31"  rx="3" fill="#c08429"><title>91-120 days: 3,617 lines</title></rect>
+          <rect x="281" y="126" width="72" height="24"  rx="3" fill="#c08429"><title>121-150 days: 2,767 lines</title></rect>
+          <rect x="370" y="130" width="72" height="20"  rx="3" fill="#c08429"><title>151-180 days: 2,326 lines</title></rect>
+          <rect x="459" y="22"  width="72" height="128" rx="3" fill="#cf4636"><title>Over 180 days: 14,772 lines</title></rect>
+          <text x="50"  y="78"  text-anchor="middle" class="dzv">SAR 2.07M</text>
+          <text x="139" y="99"  text-anchor="middle" class="dzv">SAR 1.26M</text>
+          <text x="228" y="113" text-anchor="middle" class="dzv">SAR 513K</text>
+          <text x="317" y="120" text-anchor="middle" class="dzv">SAR 353K</text>
+          <text x="406" y="124" text-anchor="middle" class="dzv">SAR 396K</text>
+          <text x="495" y="16"  text-anchor="middle" class="dzv" fill="#cf4636">SAR 1.82M</text>
+          <line x1="8" y1="150" x2="552" y2="150" stroke="#5b7182"/>
+          <text x="50"  y="165" text-anchor="middle" class="dza">30-60</text>
+          <text x="139" y="165" text-anchor="middle" class="dza">61-90</text>
+          <text x="228" y="165" text-anchor="middle" class="dza">91-120</text>
+          <text x="317" y="165" text-anchor="middle" class="dza">121-150</text>
+          <text x="406" y="165" text-anchor="middle" class="dza">151-180</text>
+          <text x="495" y="165" text-anchor="middle" class="dza">over 180</text>
+          <text x="50"  y="178" text-anchor="middle" class="dz">7,663 lines</text>
+          <text x="139" y="178" text-anchor="middle" class="dz">5,232</text>
+          <text x="228" y="178" text-anchor="middle" class="dz">3,617</text>
+          <text x="317" y="178" text-anchor="middle" class="dz">2,767</text>
+          <text x="406" y="178" text-anchor="middle" class="dz">2,326</text>
+          <text x="495" y="178" text-anchor="middle" class="dz" fill="#cf4636">14,772 lines</text>
+        </svg>
+        <p class="note">14,772 lines have not sold for more than six months &mdash; more than the
+          previous four bands together.</p>
+      </section>
+
+      <section class="card">
+        <h3>Stock written off, by month</h3>
+        <p class="sub">Negative stock adjustments: damage, expiry and wastage.</p>
+        <svg viewBox="0 0 560 190" width="100%" preserveAspectRatio="xMidYMid meet" role="img"
+             aria-label="Stock written off by month">
+          <line x1="10" y1="52" x2="550" y2="52" stroke="#dfe7ec"/>
+          <line x1="10" y1="85" x2="550" y2="85" stroke="#dfe7ec"/>
+          <line x1="10" y1="118" x2="550" y2="118" stroke="#dfe7ec"/>
+          <polygon points="30,150 30,87 210,86 390,28 540,135 540,150" fill="#c08429" opacity=".13"/>
+          <polyline points="30,87 210,86 390,28 540,135" fill="none" stroke="#c08429"
+                    stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="30"  cy="87"  r="5" fill="#c08429" stroke="#fff" stroke-width="2"><title>May 2026: SAR 233K</title></circle>
+          <circle cx="210" cy="86"  r="5" fill="#c08429" stroke="#fff" stroke-width="2"><title>June 2026: SAR 237K</title></circle>
+          <circle cx="390" cy="28"  r="5" fill="#cf4636" stroke="#fff" stroke-width="2"><title>July 2026: SAR 453K</title></circle>
+          <circle cx="540" cy="135" r="5" fill="#c08429" stroke="#fff" stroke-width="2"><title>August 2026: SAR 57K</title></circle>
+          <text x="390" y="18" text-anchor="middle" class="dzv" fill="#cf4636">SAR 453K peak</text>
+          <line x1="10" y1="150" x2="550" y2="150" stroke="#5b7182"/>
+          <text x="30"  y="166" text-anchor="start"  class="dza">May</text>
+          <text x="210" y="166" text-anchor="middle" class="dza">Jun</text>
+          <text x="390" y="166" text-anchor="middle" class="dza">Jul</text>
+          <text x="540" y="166" text-anchor="end"    class="dza">Aug</text>
+          <text x="540" y="180" text-anchor="end" class="dz">part month</text>
+        </svg>
+        <p class="note">July nearly doubled on June. August is a part month and is not comparable.
+          Four points is a shape, not a trend to project forward from.</p>
+      </section>
+    </div>
+
+    <div class="caveats">
+      <h3>What these numbers do and do not say</h3>
+      <ul>
+        <li>Stock figures are a <b>position as at 12 August 2026</b>, not a total over a period. The
+          model keeps one snapshot, so no movement between dates can be shown.</li>
+        <li><b>Above cover</b> is the surplus only &mdash; the value held beyond the agreed cover for
+          that section and location &mdash; not the whole value of an overstocked product
+          (SAR 21.13M above cover, on SAR 26.89M of overstocked lines).</li>
+        <li><b>Sales missed each day</b> counts top-selling, locally bought products at stores only.
+          Across every product and location the raw figure is SAR 293K a day, but that includes
+          warehouses and imported products where it is not meaningful. It is an estimate from the
+          recent rate of sale, not confirmed lost revenue.</li>
+        <li><b>FOOTWEAR has no cover threshold set</b>, so SAR 2.03M of stock cannot be assessed for
+          excess. Six sections are affected, holding SAR 2.09M in total.</li>
+        <li><b>NON MOVING - ORDER PLACED</b> returned no lines. The rules list it as one of the two
+          most urgent situations, so either nothing is in it, or the source system is not producing it.</li>
+      </ul>
+    </div>
+
+    <div class="foot">
+      <span>All values in SAR at landing cost, excluding VAT. Every figure is copied or derived
+        arithmetically from the scanned stock position; no number is estimated.</span>
+      <span>AI-assisted analysis</span>
+    </div>
+
+  </div>
+  </main>
+</div>
+</body>
+</html>

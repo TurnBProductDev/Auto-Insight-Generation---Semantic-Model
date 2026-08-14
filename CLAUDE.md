@@ -444,6 +444,21 @@ aged (14.0%), SAR 3.86M high-risk (7.6%), SAR 2.76M aged and non-moving; all fou
 checks pass and the **division-sensitive threshold is visible in the data** - `06-09 MONTHS` is
 *partially* aged (SAR 547K of SAR 4.72M), which is the fingerprint of FMCG FOOD ageing at six
 months while everything else ages at nine.
+- **`docs/dashboard-reference/` is the design target, and it is a REFERENCE not output.**
+Two hand-authored exemplars carrying the real 2026-08-12 figures -
+`reference_inventory_management.html` and `reference_stock_age_analysis.html` - define
+what a finished inventory page looks like; `README.md` beside them holds the structural
+spec, the severity convention, the palette contract and a numbered gap table against what
+`dashboard_html.py` currently emits. They exist because screenshotting the generated page
+exposed five failures that no test could catch, since every one is a *layout* fault on a
+page whose every *number* was right: the hero inherited the sales renderer's four-child
+grid and emitted three, so the headline floated into the wrong column; the as-at date
+printed three times in the first 120px; a fifteen-row urgency ladder swallowed the
+summary; a 1280px page ran one narrow column; and five identical grey caveat boxes stacked
+at the end. **Render and look at the page before calling a dashboard change done** -
+`chrome --headless=new --screenshot=out.png --window-size=1500,2400 file:///<path>` is
+enough, and it is the only way these surface. Never wire the reference files into the
+pipeline or publish them to a client container.
 - **The inventory dashboard reuses the R6 visual system rather than copying it.**
 `domains/inventory/dashboard_html.py` **imports** `_style`, `_script`, `_layer`, `_kpi_cards`,
 `_tldr`, `_badge`, `_sparkline`, `_donut` and friends from `summary_dashboard_html`, so the two
