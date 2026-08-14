@@ -366,6 +366,19 @@ def test_dashboard() -> None:
     check("the movement limitation is still stated",
           "one stock position" in html)
 
+    # Same seam as replay_stock_health pins: `_signal_cards` reads
+    # signal["value"], and these views were building "value_display", so the
+    # cards rendered with no number - "Fresh but not selling" lost its SAR 3.23M.
+    signals = [s for v in page["views"] for s in (v.get("signals") or [])]
+    check("every signal carries the key the renderer reads",
+          bool(signals) and all(s.get("value") for s in signals),
+          f"missing 'value': {[s.get('label') for s in signals if not s.get('value')]}")
+
+    # The high-risk view ranks by high-risk stock, so it must not be headed
+    # "aged stock" - a different measure with a different total.
+    check("the high-risk view is labelled by the measure it ranks on",
+          "Which divisions hold the high-risk stock" in html)
+
     escaped = dashboard_html.render(
         {**page, "title": '<img src=x onerror=alert(1)>'})
     check("content is escaped", "<img src=x" not in escaped and "&lt;img" in escaped)

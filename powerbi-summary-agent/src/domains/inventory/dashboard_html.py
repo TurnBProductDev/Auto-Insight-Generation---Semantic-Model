@@ -89,7 +89,11 @@ def _age_bar(bands: list[dict]) -> str:
 
 
 def _contribution_rows(cards: list[dict], caption: str) -> str:
-    """Each location's share of the group's aged stock, as ranked bars."""
+    """Each location's share of the group total, as ranked bars.
+
+    What the total *is* differs per report - aged stock, or value above agreed
+    cover - so the caption is supplied by the view rather than written here.
+    """
     if not cards:
         return ""
     peak = max((abs(float(c.get("share_of_group_pct") or 0)) for c in cards),
@@ -125,7 +129,13 @@ def _location_cards(cards: list[dict]) -> str:
     return f'<div class="grid ents">{items}</div>'
 
 
-def _area_table(areas: dict) -> str:
+def _area_table(areas: dict, labels: dict) -> str:
+    """The division table.
+
+    Column headings come from the view, never from this module: both inventory
+    reports render through here and they measure different things (aged stock
+    against value held above agreed cover). See `dashboard.AGEING_LABELS`.
+    """
     rows = areas.get("rows") or []
     if not rows:
         return '<p class="note-band">No division breakdown was returned.</p>'
@@ -141,9 +151,12 @@ def _area_table(areas: dict) -> str:
     )
     return (
         f'<h3 class="block-title">{_safe(areas.get("caption"))}</h3>'
-        '<div class="scroll"><table><thead><tr><th>Division</th>'
-        '<th class="n">Aged stock</th><th class="n">Stock held</th>'
-        '<th class="n">Aged share of its own stock</th><th></th></tr></thead>'
+        '<div class="scroll"><table><thead><tr>'
+        f'<th>{_safe(labels.get("area_member", "Division"))}</th>'
+        f'<th class="n">{_safe(labels.get("area_value", "Value"))}</th>'
+        f'<th class="n">{_safe(labels.get("area_held", "Stock held"))}</th>'
+        f'<th class="n">{_safe(labels.get("area_share", "Share of its own stock"))}</th>'
+        '<th></th></tr></thead>'
         f'<tbody>{body}</tbody></table></div>'
     )
 
@@ -328,6 +341,10 @@ def _view_html(view: dict, active: bool) -> str:
     layers = view.get("layers") or {}
     entities = layers.get("entities") or {}
     areas = layers.get("areas") or {}
+    # Owned by the view, because the two reports measure different things and
+    # this renderer serves both. A missing set would silently reintroduce one
+    # report's vocabulary on the other's page, so there is no default here.
+    labels = view.get("labels") or {}
 
     overview = (
         _hero(view.get("hero") or {}, period)
@@ -359,12 +376,16 @@ def _view_html(view: dict, active: bool) -> str:
         + _tldr(view.get("tldr") or [], key)
         + _layer(key, "overview", "The position at a glance",
                  "a stock position, read four ways", overview, True)
-        + _layer(key, "entities", "Which locations hold the aged stock",
-                 "ranked by value, with each location's own share", entities_body, False)
-        + _layer(key, "areas", "Which divisions hold the aged stock",
-                 "ranked by aged stock held", _area_table(areas), False)
-        + _layer(key, "detail", "Every band, section and type",
-                 "the complete breakdown", _detail_block(layers.get("detail") or {}), False)
+        + _layer(key, "entities",
+                 labels.get("entities_title", "Locations"),
+                 labels.get("entities_sub", ""), entities_body, False)
+        + _layer(key, "areas",
+                 labels.get("areas_title", "Divisions"),
+                 labels.get("areas_sub", ""), _area_table(areas, labels), False)
+        + _layer(key, "detail",
+                 labels.get("detail_title", "Full detail"),
+                 labels.get("detail_sub", ""),
+                 _detail_block(layers.get("detail") or {}), False)
         + '</section>'
     )
 

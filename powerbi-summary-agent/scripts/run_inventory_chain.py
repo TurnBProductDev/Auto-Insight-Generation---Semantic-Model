@@ -70,10 +70,18 @@ def _evidence_from_ageing(report: dict) -> list[dict]:
             "value": value, "score": value / total * 100.0 * 6.0,
             "kind": "write_off_risk"})
 
+    # "Not selling" means something DIFFERENT in each report, and pooling them
+    # into one ranked list is exactly where that bites. Stock Age Analysis
+    # (BR-18) flags a batch from day one if it has not sold since it arrived;
+    # Inventory Management (BR-24) requires 30 consecutive days of no sales with
+    # stock available throughout. Same phrase, two populations. So each finding
+    # states its own definition inline rather than borrowing the shorter word,
+    # and the caveats say so as well.
     aged_nm = float(split.get("aged_non_moving") or 0)
     if aged_nm:
         out.append({
-            "finding": f"SAR {aged_nm / 1e6:.2f}M is both aged and not selling",
+            "finding": f"SAR {aged_nm / 1e6:.2f}M is aged and has not sold since "
+                       f"it arrived",
             "value": aged_nm, "score": aged_nm / total * 100.0 * 3.0,
             "kind": "aged_and_stalled"})
 
@@ -81,7 +89,7 @@ def _evidence_from_ageing(report: dict) -> list[dict]:
     if fresh_nm:
         out.append({
             "finding": f"SAR {fresh_nm / 1e6:.2f}M of stock under nine months old "
-                       f"has never sold",
+                       f"has not sold since it arrived",
             "value": fresh_nm, "score": fresh_nm / total * 100.0 * 2.0,
             "kind": "no_demand"})
     return out
@@ -149,9 +157,9 @@ def _connect(findings: list[dict]) -> list[str]:
             f"orders is the cheapest way to stop the oldest bracket growing.")
     if "no_demand" in kinds and "urgent_action" in kinds:
         lines.append(
-            "Stock that has never sold sits alongside lines that are out of "
-            "stock entirely, so the problem is not the total amount held but "
-            "where it is held.")
+            "Stock that has not sold since it arrived sits alongside lines that "
+            "are out of stock entirely, so the problem is not the total amount "
+            "held but where it is held.")
     return lines
 
 
@@ -215,6 +223,11 @@ def main() -> int:
             "they are described side by side.",
             "Stock figures are a position as at the snapshot date, not a total "
             "over a period.",
+            "The two reports measure \"not selling\" differently, so their "
+            "figures are not interchangeable. Stock Age Analysis counts stock "
+            "that has not sold since it arrived, from day one. Inventory "
+            "Management counts 30 days in a row without a sale while stock was "
+            "available throughout.",
         ],
     }
 

@@ -231,6 +231,35 @@ def test_dashboard() -> None:
     check("no year-on-year language on a stock page",
           "same period last year" not in html.lower()
           and "versus the comparison period" not in html.lower())
+
+    # The defect this pins: both inventory reports render through one module,
+    # and its section headings and column labels were written for Stock Age
+    # Analysis only. This page therefore carried a column headed "Aged stock"
+    # above values that are stock held ABOVE AGREED COVER - labelling FMCG
+    # FOOD's SAR 5.74M of excess as aged stock when its true aged figure was
+    # SAR 0.92M, a ~6x misstatement from a label alone. Inventory Management
+    # has no concept of stock age at all, so ANY ageing vocabulary here is
+    # wrong. Asserting the right words are present (which the checks above do)
+    # cannot catch a right word attached to the wrong number.
+    ageing_words = ("aged stock", "aged share", "age band", "months old",
+                    "high-risk stock", "not aged")
+    leaked = sorted(w for w in ageing_words if w in html.lower())
+    check("no stock-ageing vocabulary reaches the Inventory Management page",
+          not leaked, f"leaked: {leaked}")
+
+    check("the division column is labelled by what it measures",
+          "Above cover" in html and "Aged stock" not in html)
+
+    # `_signal_cards` is imported from the sales renderer and reads
+    # signal["value"]. These views built signal["value_display"], so every
+    # signal card rendered with a label, a note, and an EMPTY number - the
+    # double-warning card said "Stock Out - Place Order" with no 17,717 beside
+    # it. The keys are a seam between two modules, so pin the seam.
+    signals = [s for v in page["views"] for s in (v.get("signals") or [])]
+    check("every signal carries the key the renderer reads",
+          bool(signals) and all(s.get("value") for s in signals),
+          f"missing 'value': {[s.get('label') for s in signals if not s.get('value')]}")
+    check("a signal's number reaches the page", "17,717 lines" in html)
     check("content is escaped",
           "&lt;img" in dashboard_html.render({**page, "title": "<img src=x>"}))
 

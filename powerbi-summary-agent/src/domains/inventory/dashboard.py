@@ -34,6 +34,44 @@ LAYER_TITLES = {
     "detail": "Full detail",
 }
 
+# --- Section headings and column labels ---------------------------------------
+# These belong to the REPORT, not to the renderer, and that is the whole point.
+# They were originally hard-coded in `dashboard_html`, which both inventory
+# reports share, so the Inventory Management page carried the Stock Age report's
+# vocabulary: a column headed "Aged stock" above values that are stock held
+# ABOVE AGREED COVER. On the live model that labelled FMCG FOOD's SAR 5.74M of
+# excess as aged stock, when its true aged figure that day was SAR 0.92M - a ~6x
+# misstatement produced entirely by a label, with the correct caption sitting one
+# line below it. BR-03 in both rulebooks forbids exactly this: one approved name
+# per concept, never two.
+#
+# A view supplies its own set, so the ageing high-risk view can say "high-risk"
+# where it ranks by high-risk stock rather than inheriting "aged".
+
+AGEING_LABELS = {
+    "entities_title": "Which locations hold the aged stock",
+    "entities_sub": "ranked by value, with each location's own share",
+    "areas_title": "Which divisions hold the aged stock",
+    "areas_sub": "ranked by aged stock held",
+    "detail_title": "Every band, section and type",
+    "detail_sub": "the complete breakdown",
+    "area_member": "Division",
+    "area_value": "Aged stock",
+    "area_held": "Stock held",
+    "area_share": "Aged share of its own stock",
+}
+
+#: The high-risk view ranks by stock over a year old, so it must not say "aged".
+AGEING_HIGH_RISK_LABELS = {
+    **AGEING_LABELS,
+    "entities_title": "Which locations hold the high-risk stock",
+    "entities_sub": "ranked by stock more than a year old",
+    "areas_title": "Which divisions hold the high-risk stock",
+    "areas_sub": "ranked by high-risk stock held",
+    "area_value": "High-risk stock",
+    "area_share": "High-risk share of its own stock",
+}
+
 
 def _num(value: Any) -> float | None:
     import math
@@ -178,17 +216,17 @@ def _all_stock_view(report, header, bands, split, total, aged, high_risk,
     migration = report.get("migration") or {}
     if not migration.get("available"):
         signals.append({"label": "No movement over time",
-                        "value_display": "Not available",
+                        "value": "Not available",
                         "note": migration.get("reason")})
     undetermined = _num((report.get("distribution") or {}).get("undetermined_value")) or 0.0
     if undetermined > 0:
         signals.append({"label": "Could not be age-classified",
-                        "value_display": _sar(undetermined),
+                        "value": _sar(undetermined),
                         "note": "Reported separately; not in any age band."})
     fresh_nm = _num(split.get("fresh_non_moving")) or 0.0
     if fresh_nm > 0:
         signals.append({
-            "label": "Fresh but not selling", "value_display": _sar(fresh_nm),
+            "label": "Fresh but not selling", "value": _sar(fresh_nm),
             "note": "Under nine months old with no sales - a demand or "
                     "placement signal, not an age problem."})
 
@@ -198,6 +236,7 @@ def _all_stock_view(report, header, bands, split, total, aged, high_risk,
     return {
         "key": "all",
         "label": "All stock",
+        "labels": dict(AGEING_LABELS),
         "owns_breakdowns": True,
         "period": {"data_as_of": report.get("as_at"), "grain": "snapshot"},
         "hero": {
@@ -258,6 +297,7 @@ def _high_risk_view(report, header, bands, total, high_risk, oldest) -> dict | N
     return {
         "key": "high_risk",
         "label": "High-risk only",
+        "labels": dict(AGEING_HIGH_RISK_LABELS),
         "owns_breakdowns": True,
         "period": {"data_as_of": report.get("as_at"), "grain": "snapshot"},
         "hero": {
@@ -360,6 +400,23 @@ STOCK_HEALTH_LAYER_TITLES = {
     "detail": "Action queue",
 }
 
+#: This report has no concept of stock age at all. Its measure is value held
+#: above the agreed cover (BR-20), and the wording is the plain-English form the
+#: captions and the queue table already use, so the page reads consistently to a
+#: buying-team reader rather than switching register mid-page.
+STOCK_HEALTH_LABELS = {
+    "entities_title": "Which locations hold the most above agreed cover",
+    "entities_sub": "ranked by value held above the agreed cover",
+    "areas_title": "Which divisions hold the most above agreed cover",
+    "areas_sub": "ranked by value held above the agreed cover",
+    "detail_title": "The action queue and full breakdown",
+    "detail_sub": "every product line, ordered by urgency",
+    "area_member": "Division",
+    "area_value": "Above cover",
+    "area_held": "Stock held",
+    "area_share": "Share of its own stock",
+}
+
 
 def build_stock_health(report: dict) -> dict:
     """The Inventory Management page model. Pure."""
@@ -436,8 +493,19 @@ def _stock_health_view(report, header, stock, excess, queue, key) -> dict:
         for row in doubles:
             signals.append({
                 "label": row["action"].title(),
-                "value_display": f"{row['loc_skus']:,} lines",
+                "value": f"{row['loc_skus']:,} lines",
                 "note": row.get("guidance"),
+            })
+        # An urgent situation the data never reported. Shown rather than left
+        # out, because an absent row and a genuinely empty state look identical
+        # on the page and only one of them is good news.
+        for state in report.get("states_absent_urgent") or []:
+            signals.append({
+                "label": state.title(),
+                "value": "Not reported",
+                "note": "Listed in the rules as one of the two most urgent "
+                        "situations, but no lines came back in it. Confirm "
+                        "whether the source system produces this.",
             })
 
     locations = report.get("locations") or []
@@ -446,6 +514,7 @@ def _stock_health_view(report, header, stock, excess, queue, key) -> dict:
     return {
         "key": key,
         "label": "All stock" if not scoped else "Needs action only",
+        "labels": dict(STOCK_HEALTH_LABELS),
         "owns_breakdowns": True,
         "period": {"data_as_of": report.get("as_at"), "grain": "snapshot"},
         "hero": {

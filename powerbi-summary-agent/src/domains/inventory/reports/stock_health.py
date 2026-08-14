@@ -120,6 +120,26 @@ def is_exception(action: Any) -> bool:
     return str(action or "").strip().upper() in {a.upper() for a in EXCEPTION_STATES}
 
 
+def absent_states(queue: Sequence[dict]) -> list[str]:
+    """Documented states the data never returned.
+
+    A state with no rows is indistinguishable from a state the source system
+    never produces, and the difference matters. Measured live on 2026-08-13,
+    `NON MOVING - ORDER PLACED` - which BR-31 names as one of the *two* most
+    urgent situations in the whole report, and which this module sorts first
+    regardless of value - had **zero** rows, while the other fourteen states all
+    had data. So one half of the documented urgency pair can never fire, and
+    nothing said so: the queue simply did not list it, which reads as "no
+    problem here" rather than "never reported".
+
+    Returning it makes the silence visible. It is not an error - a genuinely
+    empty state is good news - but an empty *double-warning* state is a question
+    for whoever owns the source system, not a clean bill of health.
+    """
+    present = {str(r.get("action") or "").strip().upper() for r in queue}
+    return [state for state in ACTION_PRIORITY if state.upper() not in present]
+
+
 def build(scan: dict) -> dict:
     """The whole report model, from one scan. Pure."""
     header = (scan.get("snapshot") or [{}])[0]
@@ -140,10 +160,25 @@ def build(scan: dict) -> dict:
     exception_value = sum(row["stock_value"] for row in exceptions)
     total_rows = sum(row["loc_skus"] for row in queue)
 
+    missing = absent_states(queue)
+    missing_urgent = [s for s in missing
+                      if s.upper() in {d.upper() for d in DOUBLE_WARNING}]
+
+    # `checks` holds guarantees that MUST be true - a false one means the report
+    # is wrong and must not ship. An absent state is not that: it is a fact
+    # about today's data, and on a quiet day it is good news. Putting it here
+    # would fail the audit every day the source system happens not to produce a
+    # state, training the reader to ignore a red build. It goes in
+    # `observations`, which is reported and never fails.
     checks = {
         "queue_covers_every_row": abs(total_rows - (_num(_cell(header, "loc_skus")) or 0)) < 1,
         "excess_within_stock": excess <= stock * 1.0001,
         "opportunity_loss_scoped": opp_scoped <= opp_all * 1.0001,
+    }
+
+    observations = {
+        "documented_states_absent": missing,
+        "urgent_states_absent": missing_urgent,
     }
 
     return {
@@ -172,6 +207,8 @@ def build(scan: dict) -> dict:
         "queue": queue,
         "double_warnings": [r for r in queue
                             if r["action"].upper() in {d.upper() for d in DOUBLE_WARNING}],
+        "states_absent": missing,
+        "states_absent_urgent": missing_urgent,
         "locations": _rank(scan.get("locations") or [], "LOC_CODE"),
         "divisions": _rank(scan.get("divisions") or [], "DEPARTMENT"),
         "sections": _rank(scan.get("sections") or [], "SECTION", top=15),
@@ -179,7 +216,8 @@ def build(scan: dict) -> dict:
         "non_moving_bands": _bands(scan.get("non_moving_bands") or []),
         "damage": _damage(scan.get("damage") or []),
         "checks": checks,
-        "caveats": _caveats(opp_scoped, opp_all),
+        "observations": observations,
+        "caveats": _caveats(opp_scoped, opp_all, missing_urgent),
         "narrative": _narrative(queue, stock, excess, opp_scoped, unwanted, as_at),
     }
 
@@ -256,13 +294,23 @@ def _damage(rows: Sequence[dict]) -> list[dict]:
     return out
 
 
-def _caveats(opp_scoped: float, opp_all: float) -> list[str]:
+def _caveats(opp_scoped: float, opp_all: float,
+             missing_urgent: Sequence[str] = ()) -> list[str]:
     notes = [
         "Stock figures are a position as at the snapshot date, not a total over "
         "a period.",
         "Excess is the value held above the agreed cover for that section and "
         "location - not the whole value of an overstocked product.",
     ]
+
+    # Say it plainly rather than letting an empty row read as good news.
+    for state in missing_urgent:
+        notes.append(
+            f"No product lines came back in the \"{state}\" situation. The rules "
+            f"list this as one of the two most urgent situations in the report, "
+            f"so either nothing is currently in it, or the source system is not "
+            f"producing it. Worth confirming - this report can only flag what "
+            f"the data reports.")
     if opp_all > opp_scoped:
         notes.append(
             f"Opportunity Loss is shown for critical products at stores only "

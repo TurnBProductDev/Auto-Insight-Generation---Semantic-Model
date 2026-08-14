@@ -112,6 +112,25 @@ def audit(folder: Path) -> int:
     for name, ok in (report.get("checks") or {}).items():
         check(f"  {name}", bool(ok))
 
+    # Observations are facts about the data, not guarantees about the artifact.
+    # They are printed so nobody has to notice an absence on their own, and they
+    # never fail the audit - an empty state can be perfectly good news, and a
+    # build that goes red on it would just teach people to ignore red builds.
+    observations = report.get("observations") or {}
+    absent_urgent = observations.get("urgent_states_absent") or []
+    absent_all = observations.get("documented_states_absent") or []
+    if absent_all or absent_urgent:
+        print("\n=== observations (not failures) ===")
+        for state in absent_urgent:
+            print(f"  [NOTE] urgent situation \"{state}\" returned no lines - "
+                  f"confirm the source system produces it")
+        for state in absent_all:
+            if state not in absent_urgent:
+                print(f"  [NOTE] documented situation \"{state}\" returned no lines")
+        check("an absent urgent situation is disclosed to the reader",
+              all(any(state in c for c in report.get("caveats") or [])
+                  for state in absent_urgent))
+
     print("\n=== prose ===")
     known = _known(report)
     for line in report.get("narrative") or []:
