@@ -35,6 +35,40 @@ failure on a page whose every *number* was right:
 
 ---
 
+## The interaction model
+
+Both references are **working pages**, not flat mockups. The first cut had no JavaScript
+at all, so every nav button was dead and only the summary was ever visible — a reference
+that defines the target has to demonstrate the behaviour, not just the composition.
+
+- **Four layers per view**, one visible at a time: `summary`, `locations`, `divisions`,
+  `queue`. The rail switches them and marks the active one with `aria-current="true"`.
+- **Two views**, switched from either the rail or the segment control in the masthead:
+  `all`, and a scoped second view (`Needs action only` / `High-risk only`). Both controls
+  stay in sync.
+- **The URL carries the state** as `#<view>/<layer>` — for example
+  `reference_inventory_management.html#needs/queue`. This makes a tab linkable, survives a
+  reload, and is what lets a screenshot tool reach every tab without a click:
+
+  ```
+  chrome --headless=new --screenshot=out.png --window-size=1400,1100 \
+      "file:///…/reference_inventory_management.html#needs/queue"
+  ```
+
+- **Print shows everything.** `@media print` overrides `[hidden]`, so a printed page
+  carries all four layers rather than whichever tab happened to be open.
+
+### The two scoped views are deliberately different, and that is the point
+
+| | Owns its breakdowns? | Why |
+|---|---|---|
+| Inventory Management — *Needs action only* | **No** | The location and division splits are calculated across all stock, not across the lines needing action. Showing them scoped would print rows that do not add to this view's own totals. Each breakdown layer carries a **pointer** naming the view that does own them. |
+| Stock Age — *High-risk only* | **Yes** | The scan carries a `high_risk` column per location and per division, so the breakdowns genuinely reconcile: the seven locations and the ten divisions each add to SAR 3.86M exactly. |
+
+This is the same `owns_breakdowns` / `pointer` contract the R6 sales dashboard already
+uses. A scoped view must either own its rows or say plainly that it does not — silently
+reusing the wider view's rows is the failure it exists to prevent.
+
 ## The structure both references follow
 
 ```
@@ -111,9 +145,15 @@ drift the shared renderer exists to prevent.
 | 6 | One caveats block | One `.note-band` per caveat | `render` |
 | 7 | KPI cards carry a severity pill | Stripe only, no word | `_kpi` |
 | 8 | Unmeasurable states say so (`FOOTWEAR — not set`) | Prints `SAR 0` | `stock_health.build` (gap 2) |
+| 9 | Scoped view states it does not own breakdowns | Shows the wider view's unfiltered rows | `_stock_health_view` |
+| 10 | `#view/layer` in the URL | No routing | `_script` |
 
-Items 1–7 are presentation and can be done without touching any figure. Item 8 needs the
-threshold scan and is tracked separately.
+Items 1–7, 9 and 10 are presentation and can be done without touching any figure. Item 8
+needs the threshold scan and is tracked separately.
+
+Item 9 is a live defect, not only a design gap: the generated *Needs action only* view
+states that its totals will not match the all-stock view, and then prints unfiltered
+location and division tables underneath that sentence.
 
 ---
 

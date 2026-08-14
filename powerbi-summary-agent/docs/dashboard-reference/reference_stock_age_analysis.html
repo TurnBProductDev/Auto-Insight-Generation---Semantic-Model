@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Stock Age Analysis — reference dashboard</title>
+<title>Stock Age Analysis &mdash; reference dashboard</title>
 <style>
 :root{
   --ground:#eef1f0; --card:#fff; --rail:#0e1b19; --ink:#12201e; --mid:#41545a;
@@ -168,28 +168,33 @@ tr.urgent td{background:var(--red-tint)}
   body{background:#fff}
 }
 
+/* --- layers and views ------------------------------------------------- */
+.layer[hidden],.view[hidden]{display:none}
+.pointer{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--teal);
+  border-radius:var(--r);padding:16px 18px;color:var(--mid);font-size:12.5px;line-height:1.6}
+.pointer b{color:var(--ink)}
+.scoped{background:var(--amber-tint);border:1px solid #e8d3a8;border-radius:var(--r);
+  padding:11px 15px;font-size:11.5px;color:var(--amber-dk);margin-bottom:14px}
+@media print{.layer[hidden],.view[hidden]{display:block}}
+
 .rb-t{position:relative}
 </style>
 </head>
 <body>
 <div class="app">
-
   <nav class="rail" aria-label="Sections">
     <div class="mark">AI</div>
     <div class="grp">Report</div>
-    <button aria-current="true">Summary</button>
-    <button>Locations</button>
-    <button>Divisions</button>
-    <button>Full detail</button>
+    <button data-nav="summary" aria-current="true">Summary</button>
+    <button data-nav="locations">Locations</button>
+    <button data-nav="divisions">Divisions</button>
+    <button data-nav="queue">Full detail</button>
     <div class="grp">View</div>
-    <button>All stock</button>
-    <button>High-risk only</button>
+    <button data-viewbtn="all" aria-current="true">All stock</button>
+    <button data-viewbtn="needs">High-risk only</button>
     <p class="foot">Reference design.<br>Figures are the live position as at 12&nbsp;Aug&nbsp;2026.</p>
   </nav>
-
-  <main>
-  <div class="page">
-
+<main><div class="page">
     <div class="masthead">
       <div>
         <p class="eyebrow">Inventory &middot; City Flower</p>
@@ -197,12 +202,11 @@ tr.urgent td{background:var(--red-tint)}
         <p class="asat">Stock position as at 12 August 2026 &middot; 7 locations &middot; 41,916 products</p>
       </div>
       <div class="seg" role="group" aria-label="View">
-        <button aria-pressed="true">All stock</button>
-        <button aria-pressed="false">High-risk only</button>
+        <button data-viewbtn="all" aria-pressed="true">All stock</button>
+        <button data-viewbtn="needs" aria-pressed="false">High-risk only</button>
       </div>
     </div>
-
-    <section class="hero">
+<div class="view" data-view="all"><div class="layer" data-layer="summary"><section class="hero">
       <div>
         <span class="hero-tag">Write-off risk</span>
         <h2>SAR 788K of stock is more than two years old, inside SAR 3.86M held for over a year.</h2>
@@ -216,9 +220,7 @@ tr.urgent td{background:var(--red-tint)}
       </div>
     </section>
 
-    <div class="sect"><h2>Inventory summary</h2><span>the whole position, before any breakdown</span></div>
-
-    <div class="grid g-2">
+    <div class="sect"><h2>Inventory summary</h2><span>the whole position, before any breakdown</span></div><div class="grid g-2">
       <section class="card">
         <h3>Where the money is sitting</h3>
         <p class="sub">Stock value by age. The amber portion of each bar is what counts as aged.</p>
@@ -305,10 +307,7 @@ tr.urgent td{background:var(--red-tint)}
         <p class="sub">SAR 31.58M turning normally.</p><span class="pill pill-ok">Healthy</span></div>
     </div>
 
-    <div class="sect"><h2>Where it sits</h2><span>the same SAR 7.13M of aged stock, cut two ways</span></div>
-
-    <div class="grid g-2e">
-      <section class="card">
+    </div><div class="layer" data-layer="locations" hidden><div class="sect"><h2>Where it sits</h2><span>by location</span></div><section class="card">
         <h3>By location</h3>
         <p class="sub">Bar is aged value. The rate beside it is that location's own stock &mdash;
           red is worse than the 14.0% company rate.</p>
@@ -337,9 +336,7 @@ tr.urgent td{background:var(--red-tint)}
         </div>
         <p class="note">CFH022 holds the least aged stock in the estate but the <b>worst rate</b>:
           34.3% of the SAR 231K it carries. Judge severity on the rate, not the bar.</p>
-      </section>
-
-      <section class="card">
+      </section></div><div class="layer" data-layer="divisions" hidden><div class="sect"><h2>Where it sits</h2><span>by division</span></div><section class="card">
         <h3>By division</h3>
         <p class="sub">Same measure, cut by merchandise rather than place.</p>
         <div class="rbars">
@@ -367,10 +364,7 @@ tr.urgent td{background:var(--red-tint)}
         </div>
         <p class="note">GM HOME WARE holds both the most aged stock and the worst rate: SAR 1.49M,
           31.0% of everything it carries.</p>
-      </section>
-    </div>
-
-    <div class="sect"><h2>Full detail</h2><span>every band, section and product type</span></div>
+      </section></div><div class="layer" data-layer="queue" hidden><div class="sect"><h2>Full detail</h2><span>every band, section and product type</span></div><div class="sect"><h2>Full detail</h2><span>every band, section and product type</span></div>
 
     <div class="grid g-2e">
       <section class="card">
@@ -465,7 +459,7 @@ tr.urgent td{background:var(--red-tint)}
         <b>CANNOT BE DETERMINED</b> this run, so nothing is missing from the distribution.</p>
     </section>
 
-    <div class="caveats">
+    </div><div class="caveats">
       <h3>What these numbers do and do not say</h3>
       <ul>
         <li>Stock figures are a <b>position as at 12 August 2026</b>, not a total over a period.</li>
@@ -483,15 +477,96 @@ tr.urgent td{background:var(--red-tint)}
       </ul>
     </div>
 
-    <div class="foot">
+    </div><div class="view" data-view="needs" hidden><div class="layer" data-layer="summary">
+    <section class="hero">
+      <div>
+        <span class="hero-tag">High-risk only</span>
+        <h2>SAR 3.86M of stock has been held for more than a year.</h2>
+        <p>This view counts only the 12-24 month and 24+ month bands. Every figure below is
+           scoped to them, so its totals will not match the all-stock view.</p>
+      </div>
+      <div class="hero-stats">
+        <div class="hs crit"><b>SAR&nbsp;788K</b><span>over two years old</span></div>
+        <div class="hs"><b>SAR&nbsp;3.07M</b><span>one to two years old</span></div>
+        <div class="hs"><b>7.6%</b><span>of all stock value</span></div>
+      </div>
+    </section>
+<div class="sect"><h2>Inventory summary</h2><span>scoped to stock over a year old</span></div><div class="scoped">This view counts only stock in the 12-24 month and 24+ month bands. Its totals will not match the all-stock view.</div>
+    <div class="kpis" style="grid-template-columns:repeat(3,minmax(0,1fr));margin-top:14px">
+      <div class="kpi crit"><p class="lab">High-risk stock</p><p class="val">SAR 3.86M</p>
+        <p class="sub">7.6% of all stock value.</p><span class="pill pill-crit">Off track</span></div>
+      <div class="kpi crit"><p class="lab">Over two years old</p><p class="val">SAR 788K</p>
+        <p class="sub">1.5%. Reported separately &mdash; the likeliest write-off.</p>
+        <span class="pill pill-crit">Act now</span></div>
+      <div class="kpi warn"><p class="lab">One to two years old</p><p class="val">SAR 3.07M</p>
+        <p class="sub">6.0% of all stock value.</p><span class="pill pill-warn">Watch</span></div>
+    </div>
+</div><div class="layer" data-layer="locations" hidden><div class="sect"><h2>Where it sits</h2><span>by location</span></div><section class="card"><h3>By location</h3><p class="sub">Bar is stock over a year old. The rate beside it is that location&rsquo;s own stock &mdash; red is worse than the 7.6% company rate.</p><div class="rbars"><div class="rb"><div class="rb-l">CDC<small>SAR 25.85M held</small></div><div class="rb-t"><span class="rb-f" style="width:100.0%"></span></div><div class="rb-v">SAR 2.55M<small class="over">9.9%</small></div></div><div class="rb"><div class="rb-l">CFH017<small>SAR 4.08M held</small></div><div class="rb-t"><span class="rb-f" style="width:15.7%"></span></div><div class="rb-v">SAR 400K<small class="over">9.8%</small></div></div><div class="rb"><div class="rb-l">CFH021<small>SAR 6.26M held</small></div><div class="rb-t"><span class="rb-f" style="width:13.2%"></span></div><div class="rb-v">SAR 338K<small class="under">5.4%</small></div></div><div class="rb"><div class="rb-l">CFH018<small>SAR 3.57M held</small></div><div class="rb-t"><span class="rb-f" style="width:11.8%"></span></div><div class="rb-v">SAR 303K<small class="over">8.5%</small></div></div><div class="rb"><div class="rb-l">CFH014<small>SAR 4.86M held</small></div><div class="rb-t"><span class="rb-f" style="width:8.6%"></span></div><div class="rb-v">SAR 220K<small class="under">4.5%</small></div></div><div class="rb"><div class="rb-l">CFW001<small>SAR 5.99M held</small></div><div class="rb-t"><span class="rb-f" style="width:1.0%"></span></div><div class="rb-v">SAR 26K<small class="under">0.4%</small></div></div><div class="rb"><div class="rb-l">CFH022<small>SAR 231K held</small></div><div class="rb-t"><span class="rb-f" style="width:0.7%"></span></div><div class="rb-v">SAR 17K<small class="under">7.4%</small></div></div></div><p class="note">The seven locations add to SAR 3.86M exactly. CDC holds two thirds of it, but CFH017 carries almost the same <b>rate</b> on a fifth of the stock.</p></section></div><div class="layer" data-layer="divisions" hidden><div class="sect"><h2>Where it sits</h2><span>by division</span></div><section class="card"><h3>By division</h3><p class="sub">Same measure, cut by merchandise rather than place.</p><div class="rbars"><div class="rb"><div class="rb-l">GM HOME WARE<small>SAR 4.81M held</small></div><div class="rb-t"><span class="rb-f" style="width:100.0%"></span></div><div class="rb-v">SAR 875K<small class="over">18.2%</small></div></div><div class="rb"><div class="rb-l">GM FASHION<small>SAR 8.40M held</small></div><div class="rb-t"><span class="rb-f" style="width:84.6%"></span></div><div class="rb-v">SAR 740K<small class="over">8.8%</small></div></div><div class="rb"><div class="rb-l">GM OTHERS<small>SAR 3.37M held</small></div><div class="rb-t"><span class="rb-f" style="width:72.9%"></span></div><div class="rb-v">SAR 637K<small class="over">18.9%</small></div></div><div class="rb"><div class="rb-l">FASHION<small>SAR 6.09M held</small></div><div class="rb-t"><span class="rb-f" style="width:65.2%"></span></div><div class="rb-v">SAR 570K<small class="over">9.4%</small></div></div><div class="rb"><div class="rb-l">FOOTWEAR<small>SAR 2.03M held</small></div><div class="rb-t"><span class="rb-f" style="width:36.1%"></span></div><div class="rb-v">SAR 316K<small class="over">15.6%</small></div></div><div class="rb"><div class="rb-l">FMCG FOOD<small>SAR 12.77M held</small></div><div class="rb-t"><span class="rb-f" style="width:22.5%"></span></div><div class="rb-v">SAR 197K<small class="under">1.5%</small></div></div><div class="rb"><div class="rb-l">ELECTRONICS<small>SAR 2.89M held</small></div><div class="rb-t"><span class="rb-f" style="width:20.7%"></span></div><div class="rb-v">SAR 181K<small class="under">6.3%</small></div></div></div><p class="note">GM OTHERS carries the worst rate at 18.9%, slightly above GM HOME WARE, though GM HOME WARE holds more in absolute terms.</p></section></div><div class="layer" data-layer="queue" hidden><div class="sect"><h2>Full detail</h2><span>the two high-risk bands</span></div><section class="card"><h3>The two high-risk bands</h3><p class="sub">Reported separately. BR-17 requires the oldest band to be called out on its own, even when it is the smaller of the two.</p><div class="scroll"><table><thead><tr><th>Age band</th><th class="n">Stock value</th><th class="n">Share of all stock</th><th class="n">Share of high-risk</th><th>Status</th></tr></thead><tbody><tr class="urgent"><td>12-24 MONTHS</td><td class="n">SAR 3.07M</td><td class="n">6.0%</td><td class="n">79.6%</td><td class="act">High-risk</td></tr><tr class="urgent"><td>24+ MONTHS</td><td class="n">SAR 788K</td><td class="n">1.5%</td><td class="n">20.4%</td><td class="act"><b>High-risk &mdash; write-off candidate</b></td></tr></tbody></table></div><p class="note">The two bands add to SAR 3.86M, 7.6% of the SAR 50.83M held.</p></section></div><div class="caveats"><h3>What these numbers do and do not say</h3><ul><li>Every figure here is scoped to stock <b>over a year old</b>. Totals will not match the all-stock view, and that is expected.</li><li><b>High-risk</b> is a universal overlay &mdash; over a year, in every division. It is separate from <b>aged</b>, which crosses at six months for food and nine for everything else.</li><li>Stock figures are a <b>position as at 12 August 2026</b>. The model holds one snapshot, so no movement between age bands can be shown.</li></ul></div></div><div class="foot">
       <span>All values in SAR at landing cost, excluding VAT. Every figure is copied or derived
         arithmetically from the scanned stock position; no number is estimated.</span>
       <span>AI-assisted analysis</span>
     </div>
 
-  </div>
-  </main>
-</div>
+  </div></div></main></div><script>
+(function(){
+  var LAYERS = ['summary','locations','divisions','queue'];
 
+  function setLayer(name){
+    document.querySelectorAll('.layer').forEach(function(el){
+      el.hidden = el.getAttribute('data-layer') !== name;
+    });
+    document.querySelectorAll('[data-nav]').forEach(function(btn){
+      btn.setAttribute('aria-current',
+        btn.getAttribute('data-nav') === name ? 'true' : 'false');
+    });
+  }
+
+  function setView(name){
+    document.querySelectorAll('.view').forEach(function(el){
+      el.hidden = el.getAttribute('data-view') !== name;
+    });
+    document.querySelectorAll('[data-viewbtn]').forEach(function(btn){
+      var on = btn.getAttribute('data-viewbtn') === name;
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      if (btn.closest('.rail')) btn.setAttribute('aria-current', on ? 'true' : 'false');
+    });
+  }
+
+  var current = {view: 'all', layer: 'summary'};
+
+  function apply(){
+    setView(current.view);
+    setLayer(current.layer);
+    // Keep the address bar in step, so a particular tab can be linked or
+    // reloaded onto - and so a screenshot tool can reach every tab.
+    var hash = '#' + current.view + '/' + current.layer;
+    if (location.hash !== hash){
+      history.replaceState(null, '', hash);
+    }
+  }
+
+  function fromHash(){
+    var parts = (location.hash || '').replace('#', '').split('/');
+    if (parts[0] && document.querySelector('.view[data-view="' + parts[0] + '"]')){
+      current.view = parts[0];
+    }
+    if (parts[1] && LAYERS.indexOf(parts[1]) !== -1){
+      current.layer = parts[1];
+    }
+  }
+
+  document.addEventListener('click', function(ev){
+    var nav = ev.target.closest('[data-nav]');
+    if (nav){ current.layer = nav.getAttribute('data-nav'); apply(); return; }
+    var view = ev.target.closest('[data-viewbtn]');
+    if (view){ current.view = view.getAttribute('data-viewbtn'); apply(); }
+  });
+
+  window.addEventListener('hashchange', function(){ fromHash(); apply(); });
+
+  fromHash();
+  apply();
+})();
+</script>
 </body>
 </html>

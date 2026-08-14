@@ -167,27 +167,32 @@ tr.urgent td{background:var(--red-tint)}
   .rail,.seg{display:none}.app{display:block}.card,.kpi,.hero{break-inside:avoid;box-shadow:none}
   body{background:#fff}
 }
+
+/* --- layers and views ------------------------------------------------- */
+.layer[hidden],.view[hidden]{display:none}
+.pointer{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--teal);
+  border-radius:var(--r);padding:16px 18px;color:var(--mid);font-size:12.5px;line-height:1.6}
+.pointer b{color:var(--ink)}
+.scoped{background:var(--amber-tint);border:1px solid #e8d3a8;border-radius:var(--r);
+  padding:11px 15px;font-size:11.5px;color:var(--amber-dk);margin-bottom:14px}
+@media print{.layer[hidden],.view[hidden]{display:block}}
 </style>
 </head>
 <body>
 <div class="app">
-
   <nav class="rail" aria-label="Sections">
     <div class="mark">AI</div>
     <div class="grp">Report</div>
-    <button aria-current="true">Summary</button>
-    <button>Locations</button>
-    <button>Divisions</button>
-    <button>Action queue</button>
+    <button data-nav="summary" aria-current="true">Summary</button>
+    <button data-nav="locations">Locations</button>
+    <button data-nav="divisions">Divisions</button>
+    <button data-nav="queue">Action queue</button>
     <div class="grp">View</div>
-    <button>All stock</button>
-    <button>Needs action only</button>
+    <button data-viewbtn="all" aria-current="true">All stock</button>
+    <button data-viewbtn="needs">Needs action only</button>
     <p class="foot">Reference design.<br>Figures are the live position as at 12&nbsp;Aug&nbsp;2026.</p>
   </nav>
-
-  <main>
-  <div class="page">
-
+<main><div class="page">
     <div class="masthead">
       <div>
         <p class="eyebrow">Inventory &middot; City Flower</p>
@@ -195,12 +200,11 @@ tr.urgent td{background:var(--red-tint)}
         <p class="asat">Stock position as at 12 August 2026 &middot; 7 locations &middot; 140,113 product lines</p>
       </div>
       <div class="seg" role="group" aria-label="View">
-        <button aria-pressed="true">All stock</button>
-        <button aria-pressed="false">Needs action only</button>
+        <button data-viewbtn="all" aria-pressed="true">All stock</button>
+        <button data-viewbtn="needs" aria-pressed="false">Needs action only</button>
       </div>
     </div>
-
-    <!-- HERO: the verdict, and the three numbers that prove it -->
+<div class="view" data-view="all"><div class="layer" data-layer="summary"><!-- HERO: the verdict, and the three numbers that prove it -->
     <section class="hero">
       <div>
         <span class="hero-tag">Action needed today</span>
@@ -215,10 +219,7 @@ tr.urgent td{background:var(--red-tint)}
       </div>
     </section>
 
-    <!-- SUMMARY: the queue that matters, beside the shape of the estate -->
-    <div class="sect"><h2>Inventory summary</h2><span>the whole position, before any breakdown</span></div>
-
-    <div class="grid g-2">
+    <div class="sect"><h2>Inventory summary</h2><span>the whole position, before any breakdown</span></div><div class="grid g-2">
       <section class="card">
         <h3>What needs doing, most urgent first</h3>
         <p class="sub">Ordered by urgency, not by value. The largest bar is deliberately not at the top.</p>
@@ -289,7 +290,6 @@ tr.urgent td{background:var(--red-tint)}
       </section>
     </div>
 
-    <!-- KPI ROW -->
     <div class="kpis" style="margin-top:14px">
       <div class="kpi"><p class="lab">Stock value</p><p class="val">SAR 50.83M</p>
         <p class="sub">At landing cost, across all 7 locations.</p></div>
@@ -305,11 +305,7 @@ tr.urgent td{background:var(--red-tint)}
         <p class="sub">products, SAR 875K of orders still open.</p><span class="pill pill-crit">Review</span></div>
     </div>
 
-    <!-- BREAKDOWNS -->
-    <div class="sect"><h2>Where it sits</h2><span>the same SAR 21.13M, cut two ways</span></div>
-
-    <div class="grid g-2e">
-      <section class="card">
+    </div><div class="layer" data-layer="locations" hidden><div class="sect"><h2>Where it sits</h2><span>by location</span></div><section class="card">
         <h3>By location</h3>
         <p class="sub">Bar is value above cover. The rate beside it is that location&rsquo;s own stock &mdash;
           red is worse than the 41.6% company rate.</p>
@@ -338,9 +334,7 @@ tr.urgent td{background:var(--red-tint)}
         </div>
         <p class="note">CFW001 holds the highest rate in the estate: 52.9% of what it carries is above
           the agreed cover, against 42.0% at CDC.</p>
-      </section>
-
-      <section class="card">
+      </section></div><div class="layer" data-layer="divisions" hidden><div class="sect"><h2>Where it sits</h2><span>by division</span></div><section class="card">
         <h3>By division</h3>
         <p class="sub">Same measure, cut by merchandise rather than place.</p>
         <div class="rbars">
@@ -368,13 +362,7 @@ tr.urgent td{background:var(--red-tint)}
         </div>
         <p class="note"><b>FOOTWEAR has no cover threshold configured</b>, so no excess can be calculated
           for it. That is not the same as zero excess &mdash; SAR 2.03M is simply unmeasured.</p>
-      </section>
-    </div>
-
-    <!-- DETAIL -->
-    <div class="sect"><h2>Action queue</h2><span>every situation, every line accounted for</span></div>
-
-    <section class="card">
+      </section></div><div class="layer" data-layer="queue" hidden><div class="sect"><h2>Action queue</h2><span>every situation, every line accounted for</span></div><section class="card">
       <div class="scroll">
         <table>
           <thead><tr><th>Situation</th><th class="n">Lines</th><th class="n">Stock value</th>
@@ -470,7 +458,7 @@ tr.urgent td{background:var(--red-tint)}
       </section>
     </div>
 
-    <div class="caveats">
+    </div><div class="caveats">
       <h3>What these numbers do and do not say</h3>
       <ul>
         <li>Stock figures are a <b>position as at 12 August 2026</b>, not a total over a period. The
@@ -489,14 +477,98 @@ tr.urgent td{background:var(--red-tint)}
       </ul>
     </div>
 
-    <div class="foot">
+    </div><div class="view" data-view="needs" hidden><div class="layer" data-layer="summary">
+    <section class="hero">
+      <div>
+        <span class="hero-tag">Needs action only</span>
+        <h2>104,230 of 140,113 product lines are in a situation that needs work.</h2>
+        <p>They hold SAR 36.03M of stock. Every figure in this view is scoped to those
+           lines, so its totals will not match the all-stock view.</p>
+      </div>
+      <div class="hero-stats">
+        <div class="hs crit"><b>17,717</b><span>most urgent, no cover at all</span></div>
+        <div class="hs"><b>SAR&nbsp;36.03M</b><span>held on lines needing action</span></div>
+        <div class="hs"><b>74.4%</b><span>of all product lines</span></div>
+      </div>
+    </section>
+<div class="sect"><h2>Inventory summary</h2><span>scoped to the lines that need work</span></div><div class="scoped">This view counts only lines in a situation that needs action. Its totals will not match the all-stock view.</div><section class="card"><h3>Every situation that needs work</h3><p class="sub">All ten, in urgency order. The four healthy or informational situations are excluded from this view.</p><div class="ladder"><div class="lrow c1"><span class="lrank">1</span><div><p class="lname">Stock out &mdash; place order<span class="ltag t-crit">most urgent</span></p><div class="ltrack"><span class="lfill" style="width:48.7%;background:#cf4636"></span></div></div><div class="lval"><b>17,717</b><span>no cover</span></div></div><div class="lrow c2"><span class="lrank">2</span><div><p class="lname">Stock out &mdash; available in warehouse<span class="ltag t-warn">free fix</span></p><div class="ltrack"><span class="lfill" style="width:16.6%;background:#c08429"></span></div></div><div class="lval"><b>6,042</b><span>transfer</span></div></div><div class="lrow c2"><span class="lrank">3</span><div><p class="lname">Stock out &mdash; order placed</p><div class="ltrack"><span class="lfill" style="width:0.3%;background:#c08429"></span></div></div><div class="lval"><b>125</b><span>SAR 0</span></div></div><div class="lrow c2"><span class="lrank">4</span><div><p class="lname">On the verge &mdash; place order</p><div class="ltrack"><span class="lfill" style="width:7.1%;background:#c08429"></span></div></div><div class="lval"><b>2,566</b><span>SAR 733K</span></div></div><div class="lrow c2"><span class="lrank">5</span><div><p class="lname">On the verge &mdash; available in warehouse</p><div class="ltrack"><span class="lfill" style="width:2.3%;background:#c08429"></span></div></div><div class="lval"><b>848</b><span>SAR 83K</span></div></div><div class="lrow c2"><span class="lrank">6</span><div><p class="lname">On the verge &mdash; order placed</p><div class="ltrack"><span class="lfill" style="width:0.2%;background:#c08429"></span></div></div><div class="lval"><b>75</b><span>SAR 167K</span></div></div><div class="lrow"><span class="lrank">7</span><div><p class="lname">Overstock</p><div class="ltrack"><span class="lfill" style="width:82.3%;background:#8fa1a9"></span></div></div><div class="lval"><b>29,932</b><span>SAR 26.89M</span></div></div><div class="lrow"><span class="lrank">8</span><div><p class="lname">Not moving</p><div class="ltrack"><span class="lfill" style="width:100.0%;background:#8fa1a9"></span></div></div><div class="lval"><b>36,377</b><span>SAR 6.41M</span></div></div><div class="lrow"><span class="lrank">9</span><div><p class="lname">In stock but no sales</p><div class="ltrack"><span class="lfill" style="width:24.8%;background:#8fa1a9"></span></div></div><div class="lval"><b>9,007</b><span>SAR 852K</span></div></div><div class="lrow"><span class="lrank">10</span><div><p class="lname">In stock but no transfers</p><div class="ltrack"><span class="lfill" style="width:4.2%;background:#8fa1a9"></span></div></div><div class="lval"><b>1,541</b><span>SAR 895K</span></div></div></div><p class="note">These ten add to <b>104,230 lines</b> holding <b>SAR 36.03M</b>. The remaining 35,883 lines are healthy, newly listed, inactive, or could not be classified.</p></section>
+    <div class="kpis" style="grid-template-columns:repeat(3,minmax(0,1fr));margin-top:14px">
+      <div class="kpi crit"><p class="lab">Lines needing action</p><p class="val">104,230</p>
+        <p class="sub">of 140,113 product lines.</p><span class="pill pill-crit">74.4%</span></div>
+      <div class="kpi warn"><p class="lab">Value on those lines</p><p class="val">SAR 36.03M</p>
+        <p class="sub">70.9% of all stock value.</p><span class="pill pill-warn">Watch</span></div>
+      <div class="kpi crit"><p class="lab">Most urgent lines</p><p class="val">17,717</p>
+        <p class="sub">Out of stock, no order, no warehouse cover.</p>
+        <span class="pill pill-crit">Act now</span></div>
+    </div>
+</div><div class="layer" data-layer="locations" hidden><div class="sect"><h2>Where it sits</h2><span>by location</span></div><div class="pointer"><b>This view does not own a location or division breakdown.</b> Those splits are calculated across all stock, not across the lines needing action, so showing them here would print rows that do not add up to this view&rsquo;s own totals. Switch to <b>All stock</b> to read them.</div></div><div class="layer" data-layer="divisions" hidden><div class="sect"><h2>Where it sits</h2><span>by division</span></div><div class="pointer"><b>This view does not own a location or division breakdown.</b> Those splits are calculated across all stock, not across the lines needing action, so showing them here would print rows that do not add up to this view&rsquo;s own totals. Switch to <b>All stock</b> to read them.</div></div><div class="layer" data-layer="queue" hidden><div class="sect"><h2>Action queue</h2><span>the ten situations that represent work</span></div><section class="card"><h3>Every situation that needs work</h3><p class="sub">All ten, in urgency order. The four healthy or informational situations are excluded from this view.</p><div class="ladder"><div class="lrow c1"><span class="lrank">1</span><div><p class="lname">Stock out &mdash; place order<span class="ltag t-crit">most urgent</span></p><div class="ltrack"><span class="lfill" style="width:48.7%;background:#cf4636"></span></div></div><div class="lval"><b>17,717</b><span>no cover</span></div></div><div class="lrow c2"><span class="lrank">2</span><div><p class="lname">Stock out &mdash; available in warehouse<span class="ltag t-warn">free fix</span></p><div class="ltrack"><span class="lfill" style="width:16.6%;background:#c08429"></span></div></div><div class="lval"><b>6,042</b><span>transfer</span></div></div><div class="lrow c2"><span class="lrank">3</span><div><p class="lname">Stock out &mdash; order placed</p><div class="ltrack"><span class="lfill" style="width:0.3%;background:#c08429"></span></div></div><div class="lval"><b>125</b><span>SAR 0</span></div></div><div class="lrow c2"><span class="lrank">4</span><div><p class="lname">On the verge &mdash; place order</p><div class="ltrack"><span class="lfill" style="width:7.1%;background:#c08429"></span></div></div><div class="lval"><b>2,566</b><span>SAR 733K</span></div></div><div class="lrow c2"><span class="lrank">5</span><div><p class="lname">On the verge &mdash; available in warehouse</p><div class="ltrack"><span class="lfill" style="width:2.3%;background:#c08429"></span></div></div><div class="lval"><b>848</b><span>SAR 83K</span></div></div><div class="lrow c2"><span class="lrank">6</span><div><p class="lname">On the verge &mdash; order placed</p><div class="ltrack"><span class="lfill" style="width:0.2%;background:#c08429"></span></div></div><div class="lval"><b>75</b><span>SAR 167K</span></div></div><div class="lrow"><span class="lrank">7</span><div><p class="lname">Overstock</p><div class="ltrack"><span class="lfill" style="width:82.3%;background:#8fa1a9"></span></div></div><div class="lval"><b>29,932</b><span>SAR 26.89M</span></div></div><div class="lrow"><span class="lrank">8</span><div><p class="lname">Not moving</p><div class="ltrack"><span class="lfill" style="width:100.0%;background:#8fa1a9"></span></div></div><div class="lval"><b>36,377</b><span>SAR 6.41M</span></div></div><div class="lrow"><span class="lrank">9</span><div><p class="lname">In stock but no sales</p><div class="ltrack"><span class="lfill" style="width:24.8%;background:#8fa1a9"></span></div></div><div class="lval"><b>9,007</b><span>SAR 852K</span></div></div><div class="lrow"><span class="lrank">10</span><div><p class="lname">In stock but no transfers</p><div class="ltrack"><span class="lfill" style="width:4.2%;background:#8fa1a9"></span></div></div><div class="lval"><b>1,541</b><span>SAR 895K</span></div></div></div><p class="note">These ten add to <b>104,230 lines</b> holding <b>SAR 36.03M</b>. The remaining 35,883 lines are healthy, newly listed, inactive, or could not be classified.</p></section></div><div class="caveats"><h3>What these numbers do and do not say</h3><ul><li>Every figure here is scoped to the <b>104,230 lines needing action</b>. Totals will not match the all-stock view, and that is expected.</li><li>Stock figures are a <b>position as at 12 August 2026</b>, not a total over a period.</li><li><b>NON MOVING - ORDER PLACED</b> returned no lines. The rules list it as one of the two most urgent situations, so either nothing is in it, or the source system is not producing it.</li></ul></div></div><div class="foot">
       <span>All values in SAR at landing cost, excluding VAT. Every figure is copied or derived
         arithmetically from the scanned stock position; no number is estimated.</span>
       <span>AI-assisted analysis</span>
     </div>
 
-  </div>
-  </main>
-</div>
+  </div></div></main></div>
+<script>
+(function(){
+  var LAYERS = ['summary','locations','divisions','queue'];
+
+  function setLayer(name){
+    document.querySelectorAll('.layer').forEach(function(el){
+      el.hidden = el.getAttribute('data-layer') !== name;
+    });
+    document.querySelectorAll('[data-nav]').forEach(function(btn){
+      btn.setAttribute('aria-current',
+        btn.getAttribute('data-nav') === name ? 'true' : 'false');
+    });
+  }
+
+  function setView(name){
+    document.querySelectorAll('.view').forEach(function(el){
+      el.hidden = el.getAttribute('data-view') !== name;
+    });
+    document.querySelectorAll('[data-viewbtn]').forEach(function(btn){
+      var on = btn.getAttribute('data-viewbtn') === name;
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      if (btn.closest('.rail')) btn.setAttribute('aria-current', on ? 'true' : 'false');
+    });
+  }
+
+  var current = {view: 'all', layer: 'summary'};
+
+  function apply(){
+    setView(current.view);
+    setLayer(current.layer);
+    // Keep the address bar in step, so a particular tab can be linked or
+    // reloaded onto - and so a screenshot tool can reach every tab.
+    var hash = '#' + current.view + '/' + current.layer;
+    if (location.hash !== hash){
+      history.replaceState(null, '', hash);
+    }
+  }
+
+  function fromHash(){
+    var parts = (location.hash || '').replace('#', '').split('/');
+    if (parts[0] && document.querySelector('.view[data-view="' + parts[0] + '"]')){
+      current.view = parts[0];
+    }
+    if (parts[1] && LAYERS.indexOf(parts[1]) !== -1){
+      current.layer = parts[1];
+    }
+  }
+
+  document.addEventListener('click', function(ev){
+    var nav = ev.target.closest('[data-nav]');
+    if (nav){ current.layer = nav.getAttribute('data-nav'); apply(); return; }
+    var view = ev.target.closest('[data-viewbtn]');
+    if (view){ current.view = view.getAttribute('data-viewbtn'); apply(); }
+  });
+
+  window.addEventListener('hashchange', function(){ fromHash(); apply(); });
+
+  fromHash();
+  apply();
+})();
+</script>
+
 </body>
 </html>

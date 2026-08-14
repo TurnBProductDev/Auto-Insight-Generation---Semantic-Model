@@ -457,8 +457,10 @@ printed three times in the first 120px; a fifteen-row urgency ladder swallowed t
 summary; a 1280px page ran one narrow column; and five identical grey caveat boxes stacked
 at the end. **Render and look at the page before calling a dashboard change done** -
 `chrome --headless=new --screenshot=out.png --window-size=1500,2400 file:///<path>` is
-enough, and it is the only way these surface. Never wire the reference files into the
-pipeline or publish them to a client container.
+enough, and it is the only way these surface. Both are **working pages** - four layers per view,
+two views, and `#<view>/<layer>` in the URL so a tab is linkable and a screenshot tool
+can reach it without a click. Never wire the reference files into the pipeline or publish
+them to a client container.
 - **The inventory dashboard reuses the R6 visual system rather than copying it.**
 `domains/inventory/dashboard_html.py` **imports** `_style`, `_script`, `_layer`, `_kpi_cards`,
 `_tldr`, `_badge`, `_sparkline`, `_donut` and friends from `summary_dashboard_html`, so the two
