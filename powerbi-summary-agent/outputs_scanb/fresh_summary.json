@@ -1,0 +1,596 @@
+{
+  "summary_type": "new_data",
+  "heading": "Revenue comparison was -4.6M.",
+  "paragraphs": [
+    "Overall — Revenue change: -4.6M",
+    "Overall — Quantity change: +957.8K",
+    "Overall — Quantity per transaction change: +0.05",
+    "Overall — Transactions change: -846.0K",
+    "Change in quantity added revenue by +2.2M versus the same period last year.",
+    "Average revenue per item and mix reduced revenue by -6.8M versus the same period last year.",
+    "Within TECHNOLOGY, CONSUMER DEVICES reduced revenue by -1.0M.",
+    "Within TECHNOLOGY, change in units sold reduced revenue by -678.1K.",
+    "Within TECHNOLOGY, average revenue per item and mix reduced revenue by -1.3M.",
+    "TECHNOLOGY revenue changed by -2.0M (-20.1%).",
+    "Within CONSUMER GOODS, BEVERAGES added +95.5K.",
+    "Within CONSUMER GOODS, change in units sold added revenue by +986.3K.",
+    "Within CONSUMER GOODS, average revenue per item and mix reduced revenue by -2.5M.",
+    "CONSUMER GOODS revenue changed by -1.5M (-3.2%).",
+    "Within FRESH MUTTON OTHER, change in units sold reduced revenue by -597.5K.",
+    "Within FRESH MUTTON OTHER, average revenue per item and mix added revenue by +1.8K.",
+    "FRESH MUTTON OTHER revenue changed by -595.7K (-39.3%).",
+    "FRESH MUTTON OTHER quantity changed by -79.0K."
+  ],
+  "content_blocks": [
+    {
+      "kind": "bullets",
+      "heading": "Overall Performance",
+      "text": "",
+      "points": [
+        "Overall — Revenue change: -4.6M",
+        "Overall — Quantity change: +957.8K",
+        "Overall — Quantity per transaction change: +0.05",
+        "Overall — Transactions change: -846.0K",
+        "Change in quantity added revenue by +2.2M versus the same period last year.",
+        "Average revenue per item and mix reduced revenue by -6.8M versus the same period last year."
+      ]
+    },
+    {
+      "kind": "chart",
+      "heading": "Revenue: prior versus current",
+      "text": "",
+      "points": [],
+      "chart": {
+        "source_id": "summary_b0658c94c9fa:overview",
+        "type": "bar",
+        "title": "Revenue: prior versus current",
+        "value_label": "Revenue",
+        "labels": [
+          "Prior",
+          "Current"
+        ],
+        "values": [
+          109603231.74520545,
+          104970368.03835607
+        ],
+        "x_label": "",
+        "y_label": "",
+        "size_label": "",
+        "x_values": [],
+        "y_values": [],
+        "size_values": [],
+        "series": [],
+        "highlight": null
+      }
+    },
+    {
+      "kind": "chart",
+      "heading": "Revenue change over time",
+      "text": "",
+      "points": [],
+      "chart": {
+        "source_id": "summary_b0658c94c9fa:trend:change",
+        "type": "bar",
+        "title": "Revenue change over time",
+        "value_label": "Revenue change",
+        "labels": [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December"
+        ],
+        "values": [
+          1236009.3123287736,
+          -792216.553424648,
+          26789.630136994645,
+          -530397.9671232812,
+          463998.75068494305,
+          -783978.2630137,
+          187719.2493150551,
+          -1304392.25205479,
+          -542645.4356164439,
+          -1730714.709589053,
+          -702066.5287671247,
+          -160968.93972603045
+        ],
+        "x_label": "",
+        "y_label": "",
+        "size_label": "",
+        "x_values": [],
+        "y_values": [],
+        "size_values": [],
+        "series": [],
+        "highlight": null
+      }
+    },
+    {
+      "kind": "bullets",
+      "heading": "TECHNOLOGY",
+      "text": "",
+      "points": [
+        "Within TECHNOLOGY, CONSUMER DEVICES reduced revenue by -1.0M.",
+        "Within TECHNOLOGY, change in units sold reduced revenue by -678.1K.",
+        "Within TECHNOLOGY, average revenue per item and mix reduced revenue by -1.3M.",
+        "TECHNOLOGY revenue changed by -2.0M (-20.1%)."
+      ]
+    },
+    {
+      "kind": "chart",
+      "heading": "Revenue change by section",
+      "text": "",
+      "points": [],
+      "chart": {
+        "source_id": "summary_b12271dbe9de:contributor:0",
+        "type": "bar",
+        "title": "Revenue change by section",
+        "value_label": "Revenue change",
+        "labels": [
+          "ENTERTAINMENTS",
+          "CONSUMER DEVICES"
+        ],
+        "values": [
+          -989406.5753424685,
+          -1001717.3972602747
+        ],
+        "x_label": "",
+        "y_label": "",
+        "size_label": "",
+        "x_values": [],
+        "y_values": [],
+        "size_values": [],
+        "series": [],
+        "highlight": null
+      }
+    },
+    {
+      "kind": "chart",
+      "heading": "Revenue change over time",
+      "text": "",
+      "points": [],
+      "chart": {
+        "source_id": "summary_b12271dbe9de:trend:change",
+        "type": "bar",
+        "title": "Revenue change over time",
+        "value_label": "Revenue change",
+        "labels": [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December"
+        ],
+        "values": [
+          169629.3835616439,
+          -105039.86301369849,
+          -113711.09589041083,
+          -116413.35616438359,
+          -130016.43835616438,
+          -148823.56164383562,
+          -198801.64383561653,
+          -316222.73972602724,
+          -217767.9452054795,
+          -358123.2876712326,
+          -303599.7260273972,
+          -152233.6986301368
+        ],
+        "x_label": "",
+        "y_label": "",
+        "size_label": "",
+        "x_values": [],
+        "y_values": [],
+        "size_values": [],
+        "series": [],
+        "highlight": null
+      }
+    },
+    {
+      "kind": "bullets",
+      "heading": "CONSUMER GOODS",
+      "text": "",
+      "points": [
+        "Within CONSUMER GOODS, BEVERAGES added +95.5K.",
+        "Within CONSUMER GOODS, change in units sold added revenue by +986.3K.",
+        "Within CONSUMER GOODS, average revenue per item and mix reduced revenue by -2.5M.",
+        "CONSUMER GOODS revenue changed by -1.5M (-3.2%)."
+      ]
+    },
+    {
+      "kind": "chart",
+      "heading": "Revenue change by section",
+      "text": "",
+      "points": [],
+      "chart": {
+        "source_id": "summary_a6888756060a:contributor:0",
+        "type": "bar",
+        "title": "Revenue change by section",
+        "value_label": "Revenue change",
+        "labels": [
+          "BEVERAGES",
+          "REFRIDGERATED GOODS",
+          "CLEANING ESSENSTIALS",
+          "PROVISIONS",
+          "PERSONAL CARE",
+          "SPICE MARKET"
+        ],
+        "values": [
+          95494.3835616447,
+          -101517.12328767125,
+          -148877.54246575153,
+          -394568.10684936866,
+          -293172.60273971595,
+          -648612.2410958922
+        ],
+        "x_label": "",
+        "y_label": "",
+        "size_label": "",
+        "x_values": [],
+        "y_values": [],
+        "size_values": [],
+        "series": [],
+        "highlight": null
+      }
+    },
+    {
+      "kind": "chart",
+      "heading": "Revenue change over time",
+      "text": "",
+      "points": [],
+      "chart": {
+        "source_id": "summary_a6888756060a:trend:change",
+        "type": "bar",
+        "title": "Revenue change over time",
+        "value_label": "Revenue change",
+        "labels": [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December"
+        ],
+        "values": [
+          526468.2602739707,
+          -296033.77808219194,
+          -6746.3369862991385,
+          -290086.51780821895,
+          292297.7260273942,
+          -175601.30410959804,
+          13636.706849311944,
+          -372352.52328766696,
+          -218668.9013698618,
+          -783757.4904109645,
+          -83098.9726027376,
+          -97310.10136986524
+        ],
+        "x_label": "",
+        "y_label": "",
+        "size_label": "",
+        "x_values": [],
+        "y_values": [],
+        "size_values": [],
+        "series": [],
+        "highlight": null
+      }
+    },
+    {
+      "kind": "bullets",
+      "heading": "FRESH MUTTON OTHER",
+      "text": "",
+      "points": [
+        "Within FRESH MUTTON OTHER, change in units sold reduced revenue by -597.5K.",
+        "Within FRESH MUTTON OTHER, average revenue per item and mix added revenue by +1.8K.",
+        "FRESH MUTTON OTHER revenue changed by -595.7K (-39.3%).",
+        "FRESH MUTTON OTHER quantity changed by -79.0K."
+      ]
+    },
+    {
+      "kind": "chart",
+      "heading": "Revenue change over time",
+      "text": "",
+      "points": [],
+      "chart": {
+        "source_id": "summary_5c18a1cea216:trend:change",
+        "type": "bar",
+        "title": "Revenue change over time",
+        "value_label": "Revenue change",
+        "labels": [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December"
+        ],
+        "values": [
+          -12788.490410958882,
+          -32463.917808219165,
+          -32216.37808219179,
+          -46803.4794520548,
+          -65725.59999999998,
+          -31748.265753424683,
+          -84031.66575342466,
+          -63763.65479452055,
+          -65932.8410958904,
+          -65819.8109589041,
+          -74730.74520547944,
+          -19684.158904109587
+        ],
+        "x_label": "",
+        "y_label": "",
+        "size_label": "",
+        "x_values": [],
+        "y_values": [],
+        "size_values": [],
+        "series": [],
+        "highlight": null
+      }
+    }
+  ],
+  "sections": [
+    {
+      "heading": "Overall Performance",
+      "tone": "teal",
+      "points": [
+        "Overall — Revenue change: -4.6M",
+        "Overall — Quantity change: +957.8K",
+        "Overall — Quantity per transaction change: +0.05",
+        "Overall — Transactions change: -846.0K",
+        "Change in quantity added revenue by +2.2M versus the same period last year.",
+        "Average revenue per item and mix reduced revenue by -6.8M versus the same period last year."
+      ]
+    },
+    {
+      "heading": "TECHNOLOGY",
+      "tone": "teal",
+      "points": [
+        "Within TECHNOLOGY, CONSUMER DEVICES reduced revenue by -1.0M.",
+        "Within TECHNOLOGY, change in units sold reduced revenue by -678.1K.",
+        "Within TECHNOLOGY, average revenue per item and mix reduced revenue by -1.3M.",
+        "TECHNOLOGY revenue changed by -2.0M (-20.1%)."
+      ]
+    },
+    {
+      "heading": "CONSUMER GOODS",
+      "tone": "teal",
+      "points": [
+        "Within CONSUMER GOODS, BEVERAGES added +95.5K.",
+        "Within CONSUMER GOODS, change in units sold added revenue by +986.3K.",
+        "Within CONSUMER GOODS, average revenue per item and mix reduced revenue by -2.5M.",
+        "CONSUMER GOODS revenue changed by -1.5M (-3.2%)."
+      ]
+    },
+    {
+      "heading": "FRESH MUTTON OTHER",
+      "tone": "teal",
+      "points": [
+        "Within FRESH MUTTON OTHER, change in units sold reduced revenue by -597.5K.",
+        "Within FRESH MUTTON OTHER, average revenue per item and mix added revenue by +1.8K.",
+        "FRESH MUTTON OTHER revenue changed by -595.7K (-39.3%).",
+        "FRESH MUTTON OTHER quantity changed by -79.0K."
+      ]
+    }
+  ],
+  "covered_candidate_ids": [
+    "summary_b0658c94c9fa",
+    "summary_b12271dbe9de",
+    "summary_a6888756060a",
+    "summary_5c18a1cea216"
+  ],
+  "covered_summary_keys": [
+    "summary:v1:b0658c94c9fa61cdcb7c34c0632fe6d33d00a92d0143ae17fe3e9265c4917671",
+    "summary:v1:c6dac664b45e4b6d18e753f23fce9686935272660de8b501f6e3dd5b578c969b",
+    "summary:v1:16b22d5b0447a9e233222d8a5d55297413f82305525bd940c097b1612885f256",
+    "summary:v1:cdc78d3158c8785157b645783953482560bf7b5d75d9dc9a3080a20bf952358a"
+  ],
+  "metrics": [],
+  "visual": null,
+  "data_as_of": "2023-12-31",
+  "grain": "day",
+  "freshness_status": "stale",
+  "period_anchor": "2023-12-31",
+  "validation_status": "deterministic_fallback",
+  "authoring_mode": "deterministic_fallback",
+  "overall_performance": {
+    "status": "ok",
+    "families": {
+      "revenue": {
+        "current": 104970368.03835607,
+        "prior": 109603231.74520545,
+        "change": -4632863.706849381,
+        "change_pct": -4.2269407873112685,
+        "comparison": "the same period last year"
+      },
+      "quantity": {
+        "current": 49053547.01,
+        "prior": 48095725.13,
+        "change": 957821.8799999952,
+        "change_pct": 1.9914906728426638,
+        "comparison": "the same period last year"
+      },
+      "rate": {
+        "current": 2.139913919312643,
+        "prior": 2.2788559991341053,
+        "change": -0.13894207982146245,
+        "change_pct": -6.097010073223412,
+        "comparison": "the same period last year"
+      }
+    },
+    "primary_family": "revenue",
+    "bridge": {
+      "volume_effect": 2182738.137339896,
+      "rate_mix_effect": -6815601.844189281,
+      "total": -4632863.706849385,
+      "revenue_change": -4632863.706849381,
+      "reconciles": true,
+      "note": "Rate/mix reflects price and mix together, not pure price."
+    },
+    "comparison": "the same period last year",
+    "data_as_of": "2023-12-31",
+    "grain": "day",
+    "freshness_status": "stale",
+    "reconciled": true,
+    "coverage": "complete",
+    "visual": {
+      "type": "bar",
+      "title": "Revenue: prior versus current",
+      "labels": [
+        "Prior",
+        "Current"
+      ],
+      "values": [
+        109603231.74520545,
+        104970368.03835607
+      ],
+      "value_label": "Revenue"
+    },
+    "metrics": [
+      {
+        "label": "Revenue change",
+        "value": "-4.6M",
+        "tone": "teal"
+      },
+      {
+        "label": "Quantity change",
+        "value": "+957.8K",
+        "tone": "teal"
+      },
+      {
+        "label": "Quantity per transaction change",
+        "value": "+0.05",
+        "tone": "teal"
+      }
+    ],
+    "trend": {
+      "dimension": "DOC_MONTH",
+      "grain": "month",
+      "rows": [
+        {
+          "DOC_MONTH": 1.0,
+          "revenue_current": 8751799.44657535,
+          "revenue_prior": 7515790.134246576,
+          "revenue_change": 1236009.3123287736
+        },
+        {
+          "DOC_MONTH": 2.0,
+          "revenue_current": 7941502.506849318,
+          "revenue_prior": 8733719.060273966,
+          "revenue_change": -792216.553424648
+        },
+        {
+          "DOC_MONTH": 3.0,
+          "revenue_current": 9401227.104109593,
+          "revenue_prior": 9374437.473972598,
+          "revenue_change": 26789.630136994645
+        },
+        {
+          "DOC_MONTH": 4.0,
+          "revenue_current": 8936778.093150683,
+          "revenue_prior": 9467176.060273964,
+          "revenue_change": -530397.9671232812
+        },
+        {
+          "DOC_MONTH": 5.0,
+          "revenue_current": 9424154.134246588,
+          "revenue_prior": 8960155.383561645,
+          "revenue_change": 463998.75068494305
+        },
+        {
+          "DOC_MONTH": 6.0,
+          "revenue_current": 9414198.715068495,
+          "revenue_prior": 10198176.978082195,
+          "revenue_change": -783978.2630137
+        },
+        {
+          "DOC_MONTH": 7.0,
+          "revenue_current": 8620284.627397256,
+          "revenue_prior": 8432565.3780822,
+          "revenue_change": 187719.2493150551
+        },
+        {
+          "DOC_MONTH": 8.0,
+          "revenue_current": 7710216.010958903,
+          "revenue_prior": 9014608.263013693,
+          "revenue_change": -1304392.25205479
+        },
+        {
+          "DOC_MONTH": 9.0,
+          "revenue_current": 7799281.01917808,
+          "revenue_prior": 8341926.454794524,
+          "revenue_change": -542645.4356164439
+        },
+        {
+          "DOC_MONTH": 10.0,
+          "revenue_current": 9089885.213698624,
+          "revenue_prior": 10820599.923287677,
+          "revenue_change": -1730714.709589053
+        },
+        {
+          "DOC_MONTH": 11.0,
+          "revenue_current": 8025911.156164381,
+          "revenue_prior": 8727977.684931505,
+          "revenue_change": -702066.5287671247
+        },
+        {
+          "DOC_MONTH": 12.0,
+          "revenue_current": 9855130.010958893,
+          "revenue_prior": 10016098.950684924,
+          "revenue_change": -160968.93972603045
+        }
+      ],
+      "completeness": "complete",
+      "direction": "accelerating",
+      "value_aliases": {
+        "current": "revenue_current",
+        "prior": "revenue_prior",
+        "change": "revenue_change"
+      }
+    }
+  },
+  "focuses": [
+    {
+      "focus_key": "focus:v2:b12271dbe9de319b845c3527fb9a744657e3420551674f6fbcdcfa7e01fa7e3b",
+      "segment": "TECHNOLOGY",
+      "dimension_role": "department",
+      "lens": "performance"
+    },
+    {
+      "focus_key": "focus:v2:a6888756060ad8bbb8a1eb96198c19d42f2290bf88516e897a49b663188183eb",
+      "segment": "CONSUMER GOODS",
+      "dimension_role": "department",
+      "lens": "performance"
+    },
+    {
+      "focus_key": "focus:v2:5c18a1cea2161ebe029968f9ebca9aeef5ad929ed97149d3e38dd5a5ae02cbf7",
+      "segment": "FRESH MUTTON OTHER",
+      "dimension_role": "category",
+      "lens": "performance"
+    }
+  ]
+}

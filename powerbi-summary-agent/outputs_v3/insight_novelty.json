@@ -1,0 +1,18 @@
+{
+  "detected": 101,
+  "suppressed": 0,
+  "eligible": 50,
+  "selected": 12,
+  "policy": "disabled",
+  "reason": "ok",
+  "memory_status": "disabled",
+  "level_breakdown": {
+    "high": 50
+  },
+  "watermark": null,
+  "period_anchor": "",
+  "resurfaced": 0,
+  "rolling_unavailable": false,
+  "unseen": 101,
+  "cap_dropped": 51
+}

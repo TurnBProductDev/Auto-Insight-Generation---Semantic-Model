@@ -1,0 +1,106 @@
+[12:03:27] Node 1: config loaded.
+[12:03:27]   workspace=7111406b-1fff-4a8b-bd52-fa6131682262 dataset=643336e7-4360-4b56-82f8-7b72cefad3ed provider=azure_openai model=claude-sonnet-5 exec_mode=python
+[12:03:27]   business rules loaded and snapshotted (910 lines).
+[12:03:27] Node 2: reading semantic model metadata via INFO.VIEW DAX...
+[12:03:28]   tables: 17 rows
+[12:03:29]   columns: 150 rows
+[12:03:30]   measures: 47 rows
+[12:03:31]   relationships: 15 rows
+[12:03:41]   Fabric TMSL getDefinition: enriched 47/47 measure expressions.
+[12:03:41] Metadata assembled: 17 tables, 47 measures, 7 date fields.
+[12:03:41] Metadata profile: deriving measures, dimensions and relationships...
+[12:03:41] Metadata profile: primary=revenue; fact=MIS_DEEP_DIVE2; entity=unresolved; 21 drill dimensions; 7 time dimensions.
+[12:03:41]   metadata profile caveat: No high-confidence entity/location dimension was identified from metadata.
+[12:03:41] Baseline: discovering entity comparison scope from metadata-selected objects...
+[12:03:41] Baseline scope: 0 comparable, 0 current-only, 0 prior-only; source=unresolved.
+[12:03:41]   scope caveat: Metadata could not identify an entity/current/prior scope query.
+[12:03:41] Shared baseline: executing metadata-driven diagnostic coverage pre-fork...
+[12:03:48] Shared metadata coverage: 9/9 queries succeeded pre-fork.
+[12:03:48] Node 3: understanding the report/model...
+[12:03:58] Domain: 'Sales / Retail'; 16 key measures; time summary possible: True.
+[12:03:58] Insight branch: normalizing raw scan results...
+[12:03:58] Insight scan normalized 9 results (9 successful).
+[12:03:58] Node 4: planning DAX queries automatically...
+[12:04:18] Planned 9 queries: latest_complete_month_totals, full_year_grand_totals_with_levers, monthly_trend_by_doc_month, branch_revenue_units_breakdown, department_performance_breakdown, section_performance_breakdown, category_top_current_revenue, category_top_and_bottom_revenue_change, brand_top_revenue_breakdown
+[12:04:18] Node 5: generating DAX for each planned query (LLM)...
+[12:04:25]   latest_complete_month_totals: generated.
+[12:04:30]   full_year_grand_totals_with_levers: generated.
+[12:04:36]   monthly_trend_by_doc_month: generated.
+[12:04:41]   branch_revenue_units_breakdown: generated.
+[12:04:47]   department_performance_breakdown: generated.
+[12:04:52]   section_performance_breakdown: generated.
+[12:04:57]   category_top_current_revenue: generated.
+[12:05:04]   category_top_and_bottom_revenue_change: generated.
+[12:05:09]   brand_top_revenue_breakdown: generated.
+[12:05:09] Generated 9 DAX statements.
+[12:04:19] Temporal gate: using 'MIS_DEEP_DIVE2'[DOC_MONTH] (month, 12 periods, reconciled); gated 1 load-date table(s); worst period October concentrated in LED TV.
+[12:05:09] Business-day source: disabled - both recent-week and daily monitoring disabled by config.
+[12:05:09] Node 6: validating generated DAX against metadata...
+[12:05:09] 9 of 9 queries passed validation (0 eligible for repair).
+[12:05:09] Node 7: executing 9 DAX queries (mode=python)...
+[12:05:16] Executed queries: 9/9 succeeded.
+[12:05:09] Recent-week gate: disabled - recent-week monitoring disabled by config.
+[12:05:16] Daily anomaly gate: disabled - daily anomaly monitoring disabled by config.
+[12:05:16] Node 8: normalizing raw Power BI results...
+[12:05:16] Normalized 9 results (9 successful).
+[12:05:16] Evidence catalog: 10 contracts (10 construction-time).
+[12:05:16] Summary period: grain=day data_as_of=2023-12-31 anchor=2023-12-31 freshness=stale.
+[12:05:16] Insight branch: computing deterministic stat candidates...
+[12:05:16] Stat candidates: 78 business, 0 data-quality.
+[12:05:16]   [100.9] period_sustained_decline: revenue Growth declined for 5 consecutive periods (August to December), totalling -4.4M (95.9% of the total change); steepest: October (-1.7M, 37%), August (-1.3M, 28%); October's fall concentrated in LED TV (-151.8K), BLANKET DOUBLE (-146.3K)
+[12:05:16]   [51.7] change_contribution: CONSUMER GOODS: bills growth of -1.2M (from 24.0M to 22.7M)
+[12:05:16]   [37.4] period_change_contribution: October: revenue Growth of -1.7M (from 10.8M to 9.1M), 37.4% of the total change; concentrated in LED TV (-151.8K), BLANKET DOUBLE (-146.3K)
+[12:05:16]   [29.7] change_contribution: CONSUMER GOODS: QTY Growth of 486.5K (from 23.2M to 23.7M)
+[12:05:16]   [28.7] change_contribution: GREEN GROCERIES: QTY Growth of 394.4K (from 10.2M to 10.6M)
+[12:05:17] Focus universe: department -> 6 member(s), reconciled=True, pool_capped=False.
+[12:05:17] Focus universe: section -> 29 member(s), reconciled=True, pool_capped=False.
+[12:05:18] Focus universe: category -> 30 member(s), reconciled=True, pool_capped=True.
+[12:05:18] Coverage: department=6, section=29, category=30.
+[12:05:18] Novelty filter: detected=78 suppressed=0 unseen=78 eligible=50 cap_dropped=28 (status=ok, policy=never_repeat, levels={'period': 5, 'high': 45}).
+[12:05:18] Summary candidates: 123 perspective(s) from summary-owned evidence.
+[12:05:18] Insight branch: detecting notable signals in scan results...
+[12:05:30] Detected 4 signals: august_to_december_revenue_decline[business], technology_revenue_decline[business], consumer_goods_revenue_transactions_divergence[business], fresh_food_and_green_groceries_mixed_volume_value[business]
+[12:05:19] Overall Performance: status=ok bridge=yes trend=yes contribution=no.
+[12:05:30] Insight branch: assembling evidence briefs (deterministic reuse pass)...
+[12:05:30] Evidence briefs: 4 signals; 0 drill-dimensions answered by reuse, 12 gaps flagged for probing.
+[12:05:30] Coverage matrix: 24 dimensions, 0 with trusted (complete+comparable) coverage.
+[12:05:30] Summary portfolio: detected=123 selected=3 type=new_data reason=same_day_recovery.
+[12:05:30] Insight branch: targeted gap scan from metadata-compatible dimensions...
+[12:05:32]   gap scan 'technology_revenue_decline': 3 REST calls, filled ['CATEGORY_NAME', 'CATEGORY_NAME_2', 'SECTION'].
+[12:05:34]   gap scan 'consumer_goods_revenue_transactions_divergence': 3 REST calls, filled ['CATEGORY_NAME', 'CATEGORY_NAME_2', 'SECTION'].
+[12:05:36]   gap scan 'fresh_food_and_green_groceries_mixed_volume_value': 2 REST calls, filled ['CATEGORY_NAME', 'CATEGORY_NAME_2'].
+[12:05:36] Gap scan complete: 8 REST calls; global budget remaining=22.
+[12:05:41] Multi-focus evidence: 3 focus(es) deep-dived over 11/15 shared quer(y/ies), 0 replacement(s).
+[12:06:13] ERROR: Balanced summary LLM draft failed validation; used deterministic fallback (LengthFinishReasonError: Could not parse response content as the length limit was reached - CompletionUsage(completion_tokens=808, prompt_tokens=30529, total_tokens=31337, completion_tokens_details=CompletionTokensDetails(accepted_prediction_tokens=0, audio_tokens=0, reasoning_tokens=0, rejected_prediction_tokens=0), prompt_tokens_details=PromptTokensDetails(audio_tokens=0, cache_write_tokens=None, cached_tokens=0), latency_checkpoint={'engine_tbt_ms': 33, 'engine_ttft_ms': 1744, 'engine_ttlt_ms': 28044, 'pre_inference_ms': 245, 'service_tbt_ms': 33, 'service_ttft_ms': 2054, 'service_ttlt_ms': 28348, 'total_duration_ms': 28112, 'user_visible_ttft_ms': 1809})).
+[12:06:13] Fresh summary (R4): Overall Performance + 3 focus block-group(s) (mode=deterministic_fallback).
+[12:05:41] Insight branch: investigating 4 signals (tool-calling agent)...
+[12:05:41]   investigating signal 'august_to_december_revenue_decline': What changed from August to December, especially in October and August, to drive almost all of the year's revenue decline?
+[12:05:48]     probe 1/3 for 'august_to_december_revenue_decline': 15 rows.
+[12:05:54]     probe 2/3 for 'august_to_december_revenue_decline': 6 rows.
+[12:05:55]     probe 3/3 for 'august_to_december_revenue_decline': 15 rows.
+[12:06:00]   'august_to_december_revenue_decline': 3/3 investigator probes (+0 gap-scan), concluded=True.
+[12:06:00]   investigating signal 'technology_revenue_decline': Why did TECHNOLOGY lose -1991123.9726 in revenue, and how much of that decline came from LED TV within CONSUMER DEVICES?
+[12:06:08]   'technology_revenue_decline': 0/0 investigator probes (+3 gap-scan), concluded=True.
+[12:06:08]   investigating signal 'consumer_goods_revenue_transactions_divergence': Why did CONSUMER GOODS lose -1491253.2329 in revenue even though Units grew by 486524.24, and which categories within the department drove the -1224468.0 transactions decline?
+[12:06:16]   'consumer_goods_revenue_transactions_divergence': 0/0 investigator probes (+3 gap-scan), concluded=True.
+[12:06:16]   investigating signal 'fresh_food_and_green_groceries_mixed_volume_value': Why did FRESH FOOD, especially GREEN GROCERIES, lose revenue despite higher Units and transactions?
+[12:06:24]   'fresh_food_and_green_groceries_mixed_volume_value': 0/1 investigator probes (+2 gap-scan), concluded=True.
+[12:06:24] Investigations complete for 4 signals.
+[12:06:24] Thesis linker: disabled (insight_thesis_linking_enabled=false).
+[12:06:25] Dashboard entity levers resolved for 5 department(s).
+[12:06:25] Dashboard period scan: 12 month(s), 12 with a reconciled department breakdown, 3 measure family(ies).
+[12:07:18] ERROR: Dashboard authoring for view latest_period did not validate; using the deterministic draft.
+[12:07:18] Dashboard page built: status=ok views=['primary', 'latest_period'] entity_role=department levers=yes mode=llm.
+[12:07:18] Dashboard HTML written (2 view(s), mode=llm, also published as report_summary.html).
+[12:07:18] Fresh flexible summary validated and rendered (4 narrative block(s), 7 interactive chart(s)).
+[12:07:18] Insight branch: synthesizing the insight report...
+[12:07:53] Insight report clarity check requested a rewrite (25 issue(s)).
+[12:08:17] Insight report clarity check requested a rewrite (1 issue(s)).
+[12:08:38] Insight report written (1348 words).
+[12:08:38] === insight branch finished ===
+[12:08:38] === summary branch finished ===
+[save] wrote outputs to /outputs_scanb
+
+ERRORS:
+- Balanced summary LLM draft failed validation; used deterministic fallback (LengthFinishReasonError: Could not parse response content as the length limit was reached - CompletionUsage(completion_tokens=808, prompt_tokens=30529, total_tokens=31337, completion_tokens_details=CompletionTokensDetails(accepted_prediction_tokens=0, audio_tokens=0, reasoning_tokens=0, rejected_prediction_tokens=0), prompt_tokens_details=PromptTokensDetails(audio_tokens=0, cache_write_tokens=None, cached_tokens=0), latency_checkpoint={'engine_tbt_ms': 33, 'engine_ttft_ms': 1744, 'engine_ttlt_ms': 28044, 'pre_inference_ms': 245, 'service_tbt_ms': 33, 'service_ttft_ms': 2054, 'service_ttlt_ms': 28348, 'total_duration_ms': 28112, 'user_visible_ttft_ms': 1809})).
+- Dashboard authoring for view latest_period did not validate; using the deterministic draft.

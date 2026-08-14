@@ -48,6 +48,7 @@ _FULL_REF = re.compile(r"^'((?:[^']|'')+)'\[([^\]]+)\]$")
 _HIERARCHY_PATTERNS = (
     (10, "division", ("division", "div")),
     (20, "department", ("department", "dept", "dep")),
+    (25, "section", ("section", "sec")),
     (30, "category", ("item category", "category")),
     (35, "subcategory", ("sub category", "subcategory")),
     (40, "product_group", ("product group",)),

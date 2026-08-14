@@ -51,7 +51,7 @@ def _overall_trend(state: dict, package: dict) -> dict | None:
         trend_dim["reference"],
         filters,
         measures,
-        int(state.get("summary_focus_max_rows_per_breakdown", 15)),
+        int(state.get("summary_focus_max_rows_per_breakdown", 12)),
         {"population_status": "comparable", "population_codes": comparable} if comparable else {},
     )
     budget = {"used": 0, "max": max(0, int(state.get("summary_overall_trend_max_queries", 1)))}

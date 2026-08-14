@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Set up a client &middot; InsightGen</title>
+<link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div>
+    <span class="eyebrow">AI reports from Power BI</span>
+    <h1>Set up a client</h1>
+  </div>
+  <div class="spacer"></div>
+  <span class="client-chip" id="chip-client">no client chosen</span>
+  <span class="client-chip" id="chip-probe">data not checked</span>
+</header>
+
+<div class="shell">
+  <nav class="steps" id="steps">
+    <div class="rail-label">Setting up a client</div>
+  </nav>
+
+  <main id="main"></main>
+</div>
+
+<div id="toast-host"></div>
+
+<!-- Step templates. The order matters: several answers cannot sensibly be
+     given before the data check has reported what the dashboard contains. -->
+<template id="tpl-client">
+  <h2>Step 1 &middot; Choose a client</h2>
+  <p class="blurb">A client is one Power BI dashboard that the agent writes reports about. Each
+  one keeps its own settings and its own house rules, so nothing you set here can affect anybody
+  else's reports.</p>
+
+  <div class="panel">
+    <h3>Open one you already have</h3>
+    <div id="client-list" class="scroll-x"></div>
+  </div>
+
+  <div class="panel">
+    <h3>Or start a new one</h3>
+    <div class="row">
+      <div class="field">
+        <label for="new-client-name">Short name for this client</label>
+        <input type="text" id="new-client-name" placeholder="northstar" autocomplete="off">
+        <div class="help">Lowercase letters, numbers and hyphens. It only names the folder these
+        settings live in - it is not automatically the name used in cloud storage.</div>
+      </div>
+      <div class="field">
+        <label for="clone-from">Copy the settings from</label>
+        <select id="clone-from"><option value="">Start fresh</option></select>
+        <div class="help">Copying brings across both rule documents and every shared setting, and
+        deliberately clears the ones that must differ - such as the storage folder. Two clients
+        sharing a storage folder would overwrite each other's reports.</div>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn teal" id="btn-create">Start this client</button>
+      <span class="muted small">Nothing is written to disk until you press Save on the
+      'Check &amp; save' step.</span>
+    </div>
+  </div>
+</template>
+
+<template id="tpl-probe">
+  <h2>Step 3 &middot; Check the data</h2>
+  <p class="blurb">Before anything is set up, the agent reads your dashboard once and reports what
+  it found: which product levels exist, whether their figures add up, which shops can be compared
+  fairly, and whether the dates are real trading dates. This takes under two minutes, changes
+  nothing, and can be run as often as you like.</p>
+  <p class="blurb"><strong>It matters because a wrong answer later is silent.</strong> Choose a
+  product level this dashboard does not have and you do not get an error - you get a thinner
+  report, and nobody notices.</p>
+
+  <div class="panel">
+    <div class="actions">
+      <button class="btn teal" id="btn-probe">Check my dashboard</button>
+      <button class="btn secondary" id="btn-probe-cancel" disabled>Stop</button>
+      <label class="inline">
+        <input type="checkbox" id="probe-deep"> thorough check
+      </label>
+      <span class="grow"></span>
+      <span id="probe-state" class="muted small"></span>
+    </div>
+    <div class="help">The thorough check also measures how up to date your data is and whether
+    day-by-day reporting can work here. It takes a little longer. Worth doing once per client.</div>
+    <div style="margin-top:14px"><pre class="log" id="probe-log">Not run yet.</pre></div>
+  </div>
+
+  <div id="probe-results"></div>
+</template>
+
+<template id="tpl-rulebooks">
+  <h2>Step 11 &middot; Your house rules</h2>
+  <p class="blurb">These two documents tell the AI how <em>your</em> business calculates and talks
+  about its numbers - which figures are official, what to exclude, what your managers call things.
+  They are written by a person who knows the business; this page cannot generate them for you.</p>
+  <p class="blurb">The first is sent to the AI on every request about causes and analysis. The
+  second, much shorter, one only shapes the daily summary. They are kept separate per client on
+  purpose: one shared file would let one client's rules leak into another's reports.</p>
+
+  <div class="panel">
+    <div class="tabs" id="rule-tabs">
+      <button data-tab="business" class="active">Main rules (analysis)</button>
+      <button data-tab="summary">Summary rules (wording)</button>
+    </div>
+    <div class="toolbar">
+      <label class="inline">Upload a file: <input type="file" id="rule-upload" accept=".md,.markdown,.txt"></label>
+      <button class="btn secondary" id="btn-rule-template">Start from a template</button>
+      <span class="sep"></span>
+      <span class="muted small" id="rule-size"></span>
+    </div>
+    <textarea class="rulebook" id="rule-text" spellcheck="false"></textarea>
+    <div class="meter"><span id="rule-meter" style="width:0"></span></div>
+    <div class="help small" id="rule-note"></div>
+  </div>
+</template>
+
+<template id="tpl-review">
+  <h2>Step 12 &middot; Check &amp; save</h2>
+  <p class="blurb">Everything is checked here before it is written down. Anything under
+  <strong>Must be fixed</strong> would break the reports or overwrite somebody else's - those stop
+  a client going live. Anything under <strong>Worth reading</strong> will not stop you, but should
+  not be skimmed past.</p>
+
+  <div class="panel">
+    <div class="actions">
+      <button class="btn" id="btn-validate">Check again</button>
+      <label class="inline">
+        <input type="checkbox" id="validate-container" checked> check it as a scheduled cloud job
+      </label>
+      <span class="grow"></span>
+      <button class="btn secondary" id="btn-bundle">Download a copy</button>
+      <button class="btn teal" id="btn-save">Save this client</button>
+    </div>
+    <div class="help">Some rules only apply in the cloud - for example, where files can be saved.
+    Untick the box to check it as a run on this computer instead.</div>
+    <div id="validation" style="margin-top:16px"></div>
+  </div>
+
+  <div class="panel">
+    <h3>Running it on this computer</h3>
+    <p class="small muted">Once saved, this command produces the reports without going anywhere
+    near the cloud - useful for seeing the output before scheduling anything.</p>
+    <pre class="log" id="run-command"></pre>
+  </div>
+
+  <div class="panel">
+    <h3>All the settings, as they will be saved
+      <span class="sub">every one written out, because a missing one changes behaviour silently</span></h3>
+    <details class="raw"><summary>Show them</summary><pre id="config-preview"></pre></details>
+  </div>
+</template>
+
+<template id="tpl-deploy">
+  <h2>Step 13 &middot; Go live</h2>
+  <p class="blurb">This creates the scheduled job that produces the reports automatically each day.
+  The settings and both rule documents are uploaded to Azure with the job; anything already on the
+  job that this app does not manage is left exactly as it was.</p>
+
+  <div id="deploy-gate"></div>
+
+  <div class="panel">
+    <h3>The scheduled job</h3>
+    <div class="row" id="deploy-fields"></div>
+  </div>
+
+  <div class="panel">
+    <h3>Settings applied by the job itself
+      <span class="sub">these win over the form - if the two disagree, the job's value is used</span></h3>
+    <div id="deploy-env"></div>
+  </div>
+
+  <div class="panel">
+    <div class="actions">
+      <button class="btn secondary" id="btn-preview">See what would be sent</button>
+      <button class="btn teal" id="btn-deploy">Create or update the job</button>
+      <button class="btn secondary" id="btn-run-now">Run it once now</button>
+      <span class="grow"></span>
+      <span id="deploy-state" class="muted small"></span>
+    </div>
+    <div class="help">'See what would be sent' changes nothing - it just shows you the request,
+    with passwords and rule documents hidden.</div>
+    <div style="margin-top:14px"><pre class="log" id="deploy-log">Nothing sent yet.</pre></div>
+  </div>
+</template>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

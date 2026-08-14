@@ -12,7 +12,9 @@ import os
 import sys
 from pathlib import Path
 
+from . import config_schema
 from .graph import build_graph
+from .kernel import report as kernel_report
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
@@ -146,7 +148,16 @@ def load_config(config_path: Path) -> dict:
 
 
 def build_initial_state(cfg: dict, config_path: str = "") -> dict:
-    output_folder = cfg.get("output_folder", "outputs")
+    """Seed the graph state from a loaded config.
+
+    ``config_schema`` owns every default, so adding a key there is the only edit
+    needed for it to reach the graph - there is no second copy of a default to
+    drift. Only genuinely derived values are computed here: the two memory
+    roots (which are not config keys) and the identifiers the CLI hard-requires.
+    """
+    state = config_schema.state_defaults(cfg)
+
+    output_folder = state["output_folder"]
     memory_storage = str(cfg.get("insight_memory_storage", "local") or "local").lower()
     memory_root = cfg.get("insight_memory_runtime_folder")
     if memory_storage == "azure_blob" and not memory_root:
@@ -160,200 +171,22 @@ def build_initial_state(cfg: dict, config_path: str = "") -> dict:
         summary_memory_root = f"{output_folder}/.runtime/summary_memory"
     if not summary_memory_root:
         summary_memory_root = f"{output_folder}/.runtime/summary_memory"
-    return {
-        # Node 1 (load_config) reads business_rules.md from beside this path.
-        "config_path": config_path,
-        "tenant_id": cfg["tenant_id"],
-        "workspace_id": cfg["workspace_id"],
-        "dataset_id": cfg["dataset_id"],
-        "output_folder": output_folder,
-        "summary_word_limit": cfg.get("summary_word_limit", 300),
-        "fresh_summary_enabled": cfg.get("fresh_summary_enabled", True),
-        "summary_visual_enabled": cfg.get("summary_visual_enabled", True),
-        "summary_candidates_max": cfg.get("summary_candidates_max", 12),
-        "summary_temporal_batch_share": cfg.get("summary_temporal_batch_share", 0.5),
-        "summary_delayed_after_periods": cfg.get("summary_delayed_after_periods", 1),
-        "summary_stale_after_periods": cfg.get("summary_stale_after_periods", 2),
-        "summary_memory_enabled": bool(
-            cfg.get("fresh_summary_enabled", True)
-            and cfg.get("summary_memory_enabled", True)
-        ),
-        "summary_memory_root": summary_memory_root,
-        "summary_memory_policy": cfg.get("summary_memory_policy", "never_repeat"),
-        "summary_memory_cooldown_days": cfg.get("summary_memory_cooldown_days", 14),
-        "summary_resurface_change_pct": cfg.get("summary_resurface_change_pct", 20),
-        "summary_now_override": cfg.get("summary_now_override", None),
-        # Daily focus + deep dive (summary R1). Focus rotation and the focused
-        # deep dive default on; disabling summary_focus_enabled reproduces the
-        # previous summary_key rotation exactly.
-        "summary_focus_enabled": cfg.get("summary_focus_enabled", True),
-        "summary_focus_timezone": cfg.get("summary_focus_timezone", "Asia/Kolkata"),
-        "summary_focus_policy": cfg.get("summary_focus_policy", "cooldown"),
-        "summary_focus_cooldown_days": cfg.get("summary_focus_cooldown_days", 14),
-        "summary_focus_same_dimension_gap_days": cfg.get("summary_focus_same_dimension_gap_days", 2),
-        "summary_focus_members_per_dimension": cfg.get("summary_focus_members_per_dimension", 10),
-        "summary_focus_material_change_pct": cfg.get("summary_focus_material_change_pct", 20),
-        "summary_focus_deep_dive_enabled": cfg.get("summary_focus_deep_dive_enabled", True),
-        "summary_focus_max_queries": cfg.get("summary_focus_max_queries", 4),
-        "summary_focus_max_child_dimensions": cfg.get("summary_focus_max_child_dimensions", 2),
-        "summary_focus_max_rows_per_breakdown": cfg.get("summary_focus_max_rows_per_breakdown", 12),
-        "summary_focus_reconciliation_tolerance_pct": cfg.get("summary_focus_reconciliation_tolerance_pct", 2),
-        "summary_focus_include_driver_bridge": cfg.get("summary_focus_include_driver_bridge", True),
-        "summary_focus_include_trend": cfg.get("summary_focus_include_trend", True),
-        "summary_focus_daily_trend_enabled": cfg.get("summary_focus_daily_trend_enabled", False),
-        "summary_focus_daily_trend_min_days": cfg.get("summary_focus_daily_trend_min_days", 14),
-        "summary_focus_hierarchy_overrides": cfg.get("summary_focus_hierarchy_overrides", {}),
-        # R2 editorial rhythm: weekday schedule soft prior + override lane.
-        "summary_focus_schedule": cfg.get("summary_focus_schedule", {}),
-        "summary_focus_schedule_weight": cfg.get("summary_focus_schedule_weight", 0.5),
-        "summary_focus_override_change_pct": cfg.get("summary_focus_override_change_pct", 20),
-        "summary_focus_override_min_impact_share_pct": cfg.get("summary_focus_override_min_impact_share_pct", 2),
-        # R3 advanced novelty: overlap suppression + optional public focus metadata.
-        "summary_focus_fact_overlap_threshold": cfg.get("summary_focus_fact_overlap_threshold", 0.6),
-        "summary_focus_overlap_window_days": cfg.get("summary_focus_overlap_window_days", 7),
-        "summary_focus_public_metadata": cfg.get("summary_focus_public_metadata", False),
-        # R4 balanced business summary: multi-focus portfolio (Overall Performance
-        # first, then up to summary_focus_target_count Division/Department/Category
-        # areas). Master switch defaults off so the R1-R3 single-focus path is
-        # unchanged until R4 is complete and acceptance-tested.
-        "summary_r4_enabled": cfg.get("summary_r4_enabled", False),
-        "summary_focus_allowed_roles": cfg.get(
-            "summary_focus_allowed_roles", ["division", "department", "category"]
-        ),
-        "summary_focus_role_aliases": cfg.get("summary_focus_role_aliases", {}),
-        "summary_focus_candidate_pool_per_role": cfg.get(
-            # Legacy summary_focus_members_per_dimension is the backward-compatible
-            # fallback for the per-role candidate-pool size.
-            "summary_focus_candidate_pool_per_role",
-            cfg.get("summary_focus_members_per_dimension", 30),
-        ),
-        "summary_focus_target_count": cfg.get("summary_focus_target_count", 3),
-        "summary_focus_min_movement_impact_pct": cfg.get("summary_focus_min_movement_impact_pct", 5),
-        "summary_focus_min_business_share_pct": cfg.get("summary_focus_min_business_share_pct", 5),
-        "summary_focus_min_change_pct": cfg.get("summary_focus_min_change_pct", 3),
-        "summary_focus_rotation_window_days": cfg.get("summary_focus_rotation_window_days", 7),
-        "summary_focus_min_repeat_gap_days": cfg.get("summary_focus_min_repeat_gap_days", 2),
-        "summary_focus_universe_max_queries": cfg.get("summary_focus_universe_max_queries", 3),
-        "summary_overall_trend_enabled": cfg.get("summary_overall_trend_enabled", True),
-        "summary_overall_trend_max_queries": cfg.get("summary_overall_trend_max_queries", 1),
-        "summary_focus_total_deep_dive_queries": cfg.get(
-            # Legacy summary_focus_max_queries is the fallback for the total
-            # (shared) deep-dive budget across all selected focuses.
-            "summary_focus_total_deep_dive_queries",
-            cfg.get("summary_focus_max_queries", 15),
-        ),
-        "summary_focus_max_queries_per_focus": cfg.get("summary_focus_max_queries_per_focus", 5),
-        "summary_focus_max_replacements_per_slot": cfg.get("summary_focus_max_replacements_per_slot", 1),
-        "summary_required_delivery_channels": cfg.get(
-            "summary_required_delivery_channels", ["local_report", "history"]
-        ),
-        "summary_history_enabled": bool(
-            cfg.get("fresh_summary_enabled", True)
-            and cfg.get("summary_history_enabled", True)
-        ),
-        "max_rows_per_query": cfg.get("max_rows_per_query", 15),
-        "ai_provider": os.environ.get("LLM_PROVIDER") or cfg.get("ai_provider", "azure_openai"),
-        "model": cfg.get("model", "claude-sonnet-5"),
-        "max_tokens": cfg.get("max_tokens", 4096),
-        "execution_mode": cfg.get("execution_mode", "python"),
-        "fabric_definitions": cfg.get("fabric_definitions", True),
-        "insight_max_signals": cfg.get("insight_max_signals", 5),
-        "insight_max_investigation_rounds": cfg.get("insight_max_investigation_rounds", 3),
-        "insight_max_scan_queries": cfg.get("insight_max_scan_queries", 10),
-        "insight_probe_max_rows": cfg.get("insight_probe_max_rows", 20),
-        "insight_materiality_pct": cfg.get("insight_materiality_pct", 1.0),
-        "insight_max_dq_signals": cfg.get("insight_max_dq_signals", 2),
-        # Cross-run insight memory (Phase 1): remember reported findings and only
-        # surface unseen ones on later runs.
-        "insight_memory_enabled": cfg.get("insight_memory_enabled", True),
-        "insight_memory_root": memory_root,
-        "insight_memory_policy": cfg.get("insight_memory_policy", "never_repeat"),
-        "insight_memory_cooldown_days": cfg.get("insight_memory_cooldown_days", 14),
-        "insight_max_new_per_run": cfg.get("insight_max_new_per_run", 3),
-        "insight_reporting_grain": cfg.get("insight_reporting_grain", "month"),
-        "insight_candidates_high": cfg.get("insight_candidates_high", 20),
-        "insight_candidates_weekly": cfg.get("insight_candidates_weekly", 10),
-        "insight_candidates_daily": cfg.get("insight_candidates_daily", 10),
-        # Phase 2: validated sub-annual temporal level (weekly if a clean business-day
-        # column exists, else monthly). Grain gate rejects load/posting-date axes.
-        "insight_temporal_enabled": cfg.get("insight_temporal_enabled", True),
-        "insight_temporal_batch_share": cfg.get("insight_temporal_batch_share", 0.5),
-        "insight_temporal_min_periods": cfg.get("insight_temporal_min_periods", 6),
-        "insight_temporal_recon_tolerance_pct": cfg.get("insight_temporal_recon_tolerance_pct", 2.0),
-        "insight_temporal_max_probes": cfg.get("insight_temporal_max_probes", 3),
-        "insight_temporal_grain_column": cfg.get("insight_temporal_grain_column", ""),
-        "insight_candidates_period": cfg.get("insight_candidates_period", 10),
-        "insight_period_top_movers": cfg.get("insight_period_top_movers", 4),
-        "insight_period_recent_window": cfg.get("insight_period_recent_window", 12),
-        "insight_period_drill": cfg.get("insight_period_drill", True),
-        "insight_period_drill_top": cfg.get("insight_period_drill_top", 3),
-        # Phase 3: previous-complete-week monitoring. Capability + freshness gate
-        # disables the level on a load/posting-date axis or stale data.
-        "insight_recent_week_enabled": cfg.get("insight_recent_week_enabled", True),
-        "insight_business_date_override": cfg.get("insight_business_date_override", None),
-        "insight_week_max_date_probes": cfg.get("insight_week_max_date_probes", 3),
-        "insight_week_start": cfg.get("insight_week_start", "monday"),
-        "insight_business_timezone": cfg.get("insight_business_timezone", "naive"),
-        "insight_week_max_data_lag_days": cfg.get("insight_week_max_data_lag_days", 7),
-        "insight_week_history_weeks": cfg.get("insight_week_history_weeks", 13),
-        "insight_week_materiality_pct": cfg.get("insight_week_materiality_pct", 3.0),
-        "insight_week_z_cutoff": cfg.get("insight_week_z_cutoff", 2.5),
-        "insight_week_driver_rows": cfg.get("insight_week_driver_rows", 30),
-        "insight_week_mode": cfg.get("insight_week_mode", "calendar"),
-        # Phase 3b: daily anomaly incidents. Independent of insight_recent_week_enabled -
-        # both consume the same shared insight_business_day_source, so disabling one
-        # never disables the other. Gated the same way (self-disables safely on any
-        # model lacking a clean business-day axis).
-        "insight_daily_enabled": cfg.get("insight_daily_enabled", True),
-        "insight_daily_rolling_window": cfg.get("insight_daily_rolling_window", 28),
-        "insight_daily_recent_days": cfg.get("insight_daily_recent_days", 3),
-        "insight_daily_exclude_today": cfg.get("insight_daily_exclude_today", True),
-        "insight_daily_z_cutoff": cfg.get("insight_daily_z_cutoff", 3.0),
-        "insight_daily_materiality_pct": cfg.get("insight_daily_materiality_pct", 3.0),
-        "insight_daily_min_weekday_occurrences": cfg.get("insight_daily_min_weekday_occurrences", 3),
-        # Phase 3b: rolling-week's structural resurface logic (not a general
-        # Phase-4 switch - that remains future work). growth_pct is named so a
-        # future general re-alert change can reuse it unchanged.
-        "insight_re_alert_growth_pct": cfg.get("insight_re_alert_growth_pct", 50),
-        "insight_rolling_report_delta_pct": cfg.get("insight_rolling_report_delta_pct", 5.0),
-        # Business-rule scope (mirrors config/business_rules.md - keep in sync).
-        # Drives evidence_contract population classification and the reuse gate.
-        "insight_comparable_population": cfg.get("insight_comparable_population", []),
-        "insight_excluded_entities": cfg.get("insight_excluded_entities", []),
-        "insight_stat_z_cutoff": cfg.get("insight_stat_z_cutoff", 3.0),
-        "insight_stat_concentration_pct": cfg.get("insight_stat_concentration_pct", 50.0),
-        "insight_stat_recon_tolerance_pct": cfg.get("insight_stat_recon_tolerance_pct", 2.0),
-        "insight_stat_trend_window": cfg.get("insight_stat_trend_window", 3),
-        "insight_stat_max_candidates": cfg.get("insight_stat_max_candidates", 20),
-        # Rate-outlier lens (peer growth-rate detection). Phase 1: honest peer
-        # evidence. off | shadow | report; off plans no peer scans at all.
-        "insight_rate_outlier_mode": cfg.get("insight_rate_outlier_mode", "off"),
-        "insight_peer_max_dimensions": cfg.get("insight_peer_max_dimensions", 5),
-        "insight_peer_max_rows": cfg.get("insight_peer_max_rows", 200),
-        # Phase 2 detector thresholds (shadow-calibration hypotheses, not final).
-        "insight_rate_z_cutoff": cfg.get("insight_rate_z_cutoff", 3.0),
-        "insight_rate_min_peers": cfg.get("insight_rate_min_peers", 8),
-        "insight_rate_prior_share_floor_pct": cfg.get("insight_rate_prior_share_floor_pct", 0.5),
-        "insight_rate_exposure_floor_pct": cfg.get("insight_rate_exposure_floor_pct", 2.0),
-        "insight_rate_min_abs_impact_pct": cfg.get("insight_rate_min_abs_impact_pct", 1.0),
-        "insight_rate_flat_min_pct": cfg.get("insight_rate_flat_min_pct", 10.0),
-        "insight_rate_min_ordinal_peers": cfg.get("insight_rate_min_ordinal_peers", 3),
-        # Phase 9: optional cross-signal joint-interaction verification. It remains
-        # off by default until the rate shadow evaluation earns promotion.
-        "insight_thesis_linking_enabled": cfg.get("insight_thesis_linking_enabled", False),
-        "insight_thesis_max_links": cfg.get("insight_thesis_max_links", 2),
-        "insight_thesis_min_shared": cfg.get("insight_thesis_min_shared", 2),
-        "insight_thesis_interaction_tol": cfg.get("insight_thesis_interaction_tol", 0.15),
-        "insight_thesis_min_impact": cfg.get("insight_thesis_min_impact", 0.0),
-        "metadata_scope_max_entities": cfg.get("metadata_scope_max_entities", 500),
-        "insight_metadata_max_dimensions": cfg.get("insight_metadata_max_dimensions", 5),
-        "insight_cross_dimensions": cfg.get("insight_cross_dimensions", 1),
-        "insight_total_gap_scan_budget": cfg.get("insight_total_gap_scan_budget", 20),
-        "insight_max_gap_dimensions_per_signal": cfg.get("insight_max_gap_dimensions_per_signal", 3),
-        "config": cfg,
-        "logs": [],
-        "errors": [],
-    }
+
+    state.update(
+        {
+            # Node 1 (load_config) reads business_rules.md from beside this path.
+            "config_path": config_path,
+            "tenant_id": cfg["tenant_id"],
+            "workspace_id": cfg["workspace_id"],
+            "dataset_id": cfg["dataset_id"],
+            "insight_memory_root": memory_root,
+            "summary_memory_root": summary_memory_root,
+            "config": cfg,
+            "logs": [],
+            "errors": [],
+        }
+    )
+    return state
 
 
 def write_api_payloads(final: dict) -> dict:
@@ -492,10 +325,21 @@ def main(argv=None) -> int:
         default=os.environ.get("AGENT_CONFIG_PATH")
         or str(PROJECT_ROOT / "config" / "config.json"),
     )
+    parser.add_argument(
+        "--report",
+        default=os.environ.get("AGENT_REPORT_ID") or None,
+        help="which report this run produces. Omit to use the report named in "
+             "the config, which is what every pre-WP1 invocation does.",
+    )
     args = parser.parse_args(argv)
 
     cfg = load_config(Path(args.config))
+    if args.report:
+        # The flag wins over the config, mirroring how POWERBI_TENANT_ID
+        # overrides the configured tenant.
+        cfg = {**cfg, "report_id": args.report}
     state = build_initial_state(cfg, str(Path(args.config)))
+    print(f"Report: {kernel_report.from_state(state).summary()}")
 
     from .tools.azure_blob import (
         cloud_memory_enabled,

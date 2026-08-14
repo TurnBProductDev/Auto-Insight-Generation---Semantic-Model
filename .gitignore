@@ -26,6 +26,18 @@ powerbi-summary-agent/outputs/
 powerbi-summary-agent/outputs_replay/
 powerbi-summary-agent/outputs_bizlang_preview/
 
+# golden_master.py writes the *actual* recomputed artifact here when a
+# comparison fails, purely so it can be diffed. The committed expectations
+# live in powerbi-summary-agent/tests/golden/ and ARE tracked.
+outputs_golden/
+powerbi-summary-agent/outputs_golden/
+
+# Live inventory scans and the reports built from them. Real stock values.
+outputs_ageing/
+powerbi-summary-agent/outputs_ageing/
+outputs_stock_health/
+powerbi-summary-agent/outputs_stock_health/
+
 # Cross-run insight memory — per-dataset reported-finding store + daily feed
 # (contains real business findings/numbers; mutable run state).
 insight_memory/
@@ -60,3 +72,6 @@ Thumbs.db
 desktop.ini
 .idea/
 *.swp
+
+outputs_inventory_chain/
+powerbi-summary-agent/outputs_inventory_chain/

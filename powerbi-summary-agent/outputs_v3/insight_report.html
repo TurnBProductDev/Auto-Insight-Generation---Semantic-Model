@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Insight Report</title>
+<style>
+:root{
+  --sb-teal:#2dbdad; --sb-teal-strong:#148D8B; --sb-teal-soft:#f0fdfa;
+  --sb-chrome:#1a3035;
+  --sb-page-bg:#f0f2f4; --sb-surface:#ffffff; --sb-surface-alt:#f8fafc;
+  --sb-text:#1a2a2e; --sb-text-muted:#506675; --sb-text-faint:#8a9ba8;
+  --sb-border:#e8edf0; --sb-border-strong:#d7e0e5;
+  --sb-shadow-sm:0 3px 10px rgba(26,42,46,.08);
+  --sb-font-sans:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --sb-teal:#3ccbb9; --sb-teal-strong:#2dbdad; --sb-teal-soft:rgba(45,189,173,.10);
+  --sb-chrome:#14262a;
+  --sb-page-bg:#0b1415; --sb-surface:#121d1f; --sb-surface-alt:#182527;
+  --sb-text:#edf5f3; --sb-text-muted:#b4c6c2; --sb-text-faint:#7f948f;
+  --sb-border:#233335; --sb-border-strong:#2e4144;
+  --sb-shadow-sm:0 3px 10px rgba(0,0,0,.40);
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --sb-teal:#3ccbb9; --sb-teal-strong:#2dbdad; --sb-teal-soft:rgba(45,189,173,.10);
+  --sb-chrome:#14262a;
+  --sb-page-bg:#0b1415; --sb-surface:#121d1f; --sb-surface-alt:#182527;
+  --sb-text:#edf5f3; --sb-text-muted:#b4c6c2; --sb-text-faint:#7f948f;
+  --sb-border:#233335; --sb-border-strong:#2e4144;
+  --sb-shadow-sm:0 3px 10px rgba(0,0,0,.40);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--sb-page-bg);color:var(--sb-text);
+  font-family:var(--sb-font-sans);font-size:14.5px;line-height:1.68;
+  -webkit-font-smoothing:antialiased}
+.sheet{max-width:940px;margin:36px auto 56px;background:var(--sb-surface);
+  border:1px solid var(--sb-border);border-radius:16px;overflow:hidden;
+  box-shadow:var(--sb-shadow-sm)}
+
+header.report-header{background:var(--sb-chrome);color:#eef6f4;padding:34px 56px 26px}
+header.report-header .eyebrow{display:inline-flex;align-items:center;gap:7px;
+  text-transform:uppercase;letter-spacing:.14em;font-size:10.5px;font-weight:700;
+  color:var(--sb-teal);margin-bottom:12px}
+header.report-header .eyebrow::before{content:"";width:6px;height:6px;
+  border-radius:50%;background:var(--sb-teal)}
+header.report-header h1{font-size:26px;line-height:1.26;margin:0 0 16px;
+  font-weight:700;letter-spacing:-.022em}
+header.report-header .meta{display:flex;gap:8px;flex-wrap:wrap;
+  border-top:1px solid rgba(255,255,255,.14);padding-top:14px}
+header.report-header .meta span{font-size:11.5px;color:rgba(255,255,255,.66);
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);
+  border-radius:999px;padding:4px 11px}
+header.report-header .meta span strong{color:#ffffff;font-weight:650}
+
+main.report-body{padding:38px 56px 24px}
+h2{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;
+  color:var(--sb-teal-strong);margin:40px 0 16px;padding-top:20px;
+  border-top:1px solid var(--sb-border);display:flex;align-items:center;gap:8px}
+h2::before{content:"";width:14px;height:2px;border-radius:2px;background:var(--sb-teal)}
+h2:first-child{margin-top:0;padding-top:0;border-top:none}
+h3{font-size:14.5px;font-weight:700;color:var(--sb-text);margin:24px 0 8px;
+  letter-spacing:-.012em}
+p{margin:0 0 14px;max-width:74ch;color:var(--sb-text-muted)}
+p strong{color:var(--sb-text)}
+ul{margin:0 0 16px;padding-left:20px;list-style:none}
+li{margin-bottom:9px;position:relative;padding-left:4px;color:var(--sb-text-muted)}
+li::before{content:"";position:absolute;left:-14px;top:.62em;width:6px;height:6px;
+  border-radius:50%;background:var(--sb-teal);opacity:.75}
+ul.nested{margin:8px 0 4px;padding-left:18px}
+ul.nested li::before{width:5px;height:2px;top:.78em;border-radius:1px;
+  background:var(--sb-border-strong);opacity:1}
+
+table.kv{width:100%;border-collapse:collapse;margin:4px 0 20px;font-size:14px;
+  border:1px solid var(--sb-border);border-radius:10px;overflow:hidden}
+table.kv td{padding:10px 16px;border-bottom:1px solid var(--sb-border);
+  vertical-align:top}
+table.kv tr:last-child td{border-bottom:none}
+table.kv tr:nth-child(odd) td{background:var(--sb-surface-alt)}
+td.kv-name{width:42%;font-weight:650;color:var(--sb-text);
+  border-right:1px solid var(--sb-border)}
+td.kv-value{color:var(--sb-text-muted);font-variant-numeric:tabular-nums}
+
+code{background:var(--sb-surface-alt);border:1px solid var(--sb-border);
+  padding:1.5px 6px;border-radius:6px;font-size:12.5px;
+  font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;
+  color:var(--sb-teal-strong)}
+strong{font-weight:700;color:var(--sb-text)}
+
+footer.report-footer{margin:22px 56px 0;padding:18px 0 34px;
+  border-top:1px solid var(--sb-border);font-size:11.5px;line-height:1.6;
+  color:var(--sb-text-faint)}
+
+@media (max-width:760px){
+  .sheet{margin:0;border-radius:0;border-left:none;border-right:none}
+  header.report-header,main.report-body{padding-left:22px;padding-right:22px}
+  footer.report-footer{margin-left:22px;margin-right:22px}
+}
+@media print{
+  body{background:#fff}
+  .sheet{margin:0;max-width:none;border:none;border-radius:0;box-shadow:none}
+  header.report-header{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  h2{break-after:avoid}
+  table.kv,li{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+  <div class="sheet">
+    <header class="report-header">
+      <div class="eyebrow">Power BI Insight Report</div>
+      <h1>Insight Report</h1>
+      <div class="meta">
+        <span><strong>Generated</strong>&ensp;29 Jul 2026, 09:34 UTC</span>
+        <span><strong>Source</strong>&ensp;Power BI semantic model</span>
+        <span><strong>Method</strong>&ensp;Automated DAX analysis</span>
+      </div>
+    </header>
+    <main class="report-body">
+<h2>Key Insights</h2>
+<p>These like-for-like findings cover CFH014, CFH017, CFH018 and CFH021; CFH022 is shown separately as new-branch revenue.</p>
+<p><strong>CFH021 revenue increased by about SAR 4.3M.</strong> That was about 125.7% of the net like-for-like revenue change, because weaker performance elsewhere offset part of it. The increase was supported by higher transactions and more units, with average revenue per item and per transaction also higher. The gain was concentrated in mens fashion, grocery food, electronics and personal care. Check whether these gains were broad within each category or concentrated in a few product groups.</p>
+<p><strong>CFH017 revenue decreased by about SAR 1.2M.</strong> Units fell by about 208.5K and transactions by about 87.2K, so this was not just a change in average value per item. The decline was spread across several categories, led by fruit and vegetables, grocery food, mens fashion and personal care. That pattern suggests a broad demand slowdown in the branch rather than one isolated miss. Review CFH017 month by month to see when the decline widened most.</p>
+<p><strong>CF-CONFECTIONERY units decreased by about 533.7K.</strong> That was more than twice the total like-for-like units decline because other categories partly offset it. Most of the drop sat in CF-CHOCOLATE, especially CHOCOLATE COATED BARS, while the revenue decline was much smaller at about SAR 103.3K. This suggests fewer items were sold but average revenue per item rose materially. Check CF-CHOCOLATE by month and branch for transactions, basket size and price.</p>
+<p><strong>FMCG FOOD units decreased by about 370.1K while revenue increased by about SAR 692.9K.</strong> That units decline equalled 148.1% of the total like-for-like units decline, so revenue held up despite weaker item demand. The pattern was associated with higher average revenue per item rather than volume, with edible oils a clear positive and chocolate a major units drag. This means revenue growth in the division looks less secure than the headline suggests. Review the largest opposing groups, especially edible oils and chocolate, at a finer product level.</p>
+<p><strong>CF-FRUIT &amp; VEGETABLES revenue decreased by about SAR 683.8K.</strong> Units also fell by about 216.2K, with the weakness spread across vegetables, imported fruits, local vegetables and imported vegetables. CFH017, CFH021 and CFH018 carried most of the decline, while CFH014 partly offset the revenue drop despite lower units. That pattern suggests average revenue per item rose in CFH014 while item demand still weakened. Compare the imported and local vegetable lines across the three weaker branches.</p>
+<p><strong>CF-FRESH CHICKEN &amp; PARTS revenue increased by about SAR 1.1M.</strong> Units rose by about 188.3K and transactions by about 80.0K, so the gain came with stronger demand rather than price alone. Growth was shared across both FRESH CHICKEN and FRESH CHICKEN PARTS and appeared in all four branches. This makes it one of the strongest contributors inside the like-for-like base. Compare monthly performance by branch to see whether the lift was sustained or linked to a trading period.</p>
+<p><strong>CF-MEAT revenue increased by about SAR 742.3K.</strong> Units increased by about 160.9K and transactions by about 69.3K, while the mix shifted toward higher-volume chicken lines. Fresh chicken and chicken parts drove the increase, while beef and mutton were down. This suggests stronger sales in lower-average-value lines rather than a broad improvement across meat. Check SKU pricing and mix in chicken versus beef and mutton, especially in CFH018 and CFH021.</p>
+<p><strong>CF-EDIBLE OILS revenue increased by about SAR 444.4K.</strong> Units were down by 374 and transactions fell by about 2.4K, so the increase was associated with higher average revenue per item rather than more demand. VEGETABLE OIL more than offset a large decline in SUN FLOWER OIL, and the gain appeared across all four branches. This points to a shift in what sold within oils rather than category-wide volume growth. Investigate whether the change came from pricing, pack sizes or mix within the oil range.</p>
+<p><strong>March revenue decreased by about SAR 2.0M, then April revenue increased by about SAR 2.1M.</strong> April’s recovery was broad across all four branches, with the biggest lift in CFH021. The rebound was strongest in food-led groups such as fresh chicken and parts, edible oils and rice, while March weakness was concentrated in imported fruits and sunflower oil. That all-branch pattern is consistent with Ramadan or Eid moving trade between months, though it does not prove it on its own. Compare these months with holiday timing.</p>
+<p><strong>FARM FRESH and FMCG FOOD accounted for about 73.3% of units and 55.8% of revenue.</strong> These two divisions therefore shaped most of the overall result. Revenue resilience was associated with a few strong pockets, especially fresh chicken and parts and edible oils, while large everyday lines such as chocolate, vegetables and fruits pulled units down. This means the group result is heavily influenced by what happens inside these two divisions. Review the biggest winning and losing product groups within both divisions.</p>
+<p><strong>CFH014 and CFH021 accounted for about 63.6% of revenue and 63.6% of transactions.</strong> Changes in these two branches therefore mattered most to the group result. The main gains were linked to vegetable oil, fresh chicken, hand torch and fresh chicken parts, while the biggest drags included sunflower oil, white rice and mens smart watches. This shows group performance was concentrated in a small number of lines inside the two largest branches. Check these winning and losing lines by branch-month for CFH014 and CFH021.</p>
+<p><strong>CFH022 generated about SAR 11.9M of new-branch revenue.</strong> It had no prior-year revenue, so this should be shown as new-branch revenue rather than like-for-like growth. The branch represented about 8.7% of current revenue across the five branches in view and was led by grocery food, fruit and vegetables, and staples. Its mix looks like normal branch trading, not a one-line distortion. Confirm the management pack shows CFH022 separately from the four-branch like-for-like result.</p>
+<h2>Data Quality Watch-outs</h2>
+<ul>
+<li>Transaction-based measures in this model use category-level counts rather than distinct shopping trips. Our checks showed growth percentages remain usable, but Basket Value and Basket Size should not be described as the average spend or items per shopper unless they are rebuilt from true branch transaction counts.</li>
+<li>Coverage below the grand total, branch and month levels is often partial in this run. The category, product-group and special-product-group checks were enough to support the findings above, but they should not be read as a full census of every lower-level segment unless a complete query is run.</li>
+<li>Some findings relied on reused scan evidence with no new query in the investigation step. Our checks still support those conclusions, but they are less directly auditable than the items backed by fresh drill queries in this run.</li>
+</ul>
+<h2>Evidence Trail</h2>
+<ul>
+<li>cfh021_drove_group_revenue_growth</li>
+<ul class="nested">
+<li>Baseline signal: CFH021 revenue Growth SAR 4,292,580.82, 125.7248% of comparable total change; QTY Growth 148,226.4116; bills growth 200,213.</li>
+<li>Decomposition provided and reconciled:</li>
+<li>Using QTY Growth as driver: volume_effect SAR 883,660.2728; rate_effect SAR 3,408,920.5472; rate_current 6.5032 vs rate_prior 5.9616.</li>
+<li>Using bills growth as driver: volume_effect SAR 2,926,287.4994; rate_effect SAR 1,366,293.3206; rate_current 15.1206 vs rate_prior 14.6159.</li>
+<li>Drill query by <code>MIS_DEEP_DIVE2[item_category_name]</code> for CFH021 succeeded.</li>
+<li>Largest positive category movements returned:</li>
+<li>CF-MENS FASHION: revenue Growth SAR 809,632.74; QTY Growth 47,922; bills growth 37,075.</li>
+<li>CF-GROCERY FOOD: revenue Growth SAR 591,962.81; QTY Growth 164,199.965; bills growth 47,584.</li>
+<li>CF-ELECTRONICS: revenue Growth SAR 583,327.77; QTY Growth 14,620; bills growth 12,515.</li>
+<li>CF-PERSONAL CARE: revenue Growth SAR 533,932.91; QTY Growth 56,229; bills growth 22,830.</li>
+<li>Main offsets returned:</li>
+<li>CF-FRUIT &amp; VEGETABLES: revenue Growth SAR -279,109.08; QTY Growth -61,617.58507; bills growth 4,329.</li>
+<li>CF-HOT FOOD: revenue Growth SAR -50,335.28.</li>
+<li>CF-CONFECTIONERY: revenue Growth SAR -25,252.81; QTY Growth -255,849.45133; bills growth -2,095.</li>
+</ul>
+</ul>
+<ul>
+<li>cfh017_dragged_comparable_performance</li>
+<ul class="nested">
+<li>Baseline signal: CFH017 revenue Growth SAR -1,235,046.25; QTY Growth -208,538.0729; bills growth -87,223; revenue decline equals -36.1731% of total comparable revenue change.</li>
+<li>Drill query by <code>MIS_DEEP_DIVE2[item_category_name]</code> for CFH017 succeeded.</li>
+<li>Largest negative category movements returned:</li>
+<li>CF-FRUIT &amp; VEGETABLES: revenue Growth SAR -300,808.23; QTY Growth -74,530.93419; bills growth -20,962.</li>
+<li>CF-GROCERY FOOD: revenue Growth SAR -172,096.26; QTY Growth -60,346.34826; bills growth -15,826.</li>
+<li>CF-MENS FASHION: revenue Growth SAR -157,904.44; QTY Growth -7,096; bills growth -4,250.</li>
+<li>CF-PERSONAL CARE: revenue Growth SAR -106,284.36; QTY Growth -10,549; bills growth -5,567.</li>
+<li>CF-ROASTERY: revenue Growth SAR -109,362.35; QTY Growth -9,264.7337; bills growth -3,374.</li>
+<li>Drill query by <code>MIS_DEEP_DIVE2[product_group_name]</code> for CFH017 succeeded.</li>
+<li>Largest negative product-group movements returned:</li>
+<li>CF-VEGETABLES: revenue Growth SAR -216,565.99; QTY Growth -53,377.31426; bills growth -15,129.</li>
+<li>CF-FRUITS: revenue Growth SAR -84,758.40; QTY Growth -21,257.34993.</li>
+<li>CF-FRESH MEAT: revenue Growth SAR -87,804.54; QTY Growth -9,054.11632.</li>
+<li>CF-NUTS: revenue Growth SAR -100,651.60; QTY Growth -4,930.9847.</li>
+<li>CF-CHOCOLATE: revenue Growth SAR -65,979.60; QTY Growth -24,247.40874; bills growth -6,143.</li>
+</ul>
+</ul>
+<ul>
+<li>confectionery_chocolate_drove_units_decline</li>
+<ul class="nested">
+<li>Baseline signal: CF-CONFECTIONERY QTY Growth -533,734.5959, equal to 213.6075% of total comparable Units decline.</li>
+<li>Investigation concluded from reused evidence; no new query executed in this run.</li>
+<li>Reported category totals:</li>
+<li>CF-CONFECTIONERY Units from 4.4M to 3.9M in the four like-for-like branches.</li>
+<li>CF-CHOCOLATE contributed -533,309.5959 Units.</li>
+<li>CHOCOLATE COATED BARS contributed -461,381.2012 Units.</li>
+<li>Smaller negatives: CHOCOLATE BAGS -26.7K, CHEWING GUM MINT &amp; MOUTH FRESH -25.8K, GIFT PACK CONFECTIONERY -25.0K.</li>
+<li>Branch split reported:</li>
+<li>CFH021 -255.8K Units; CFH018 -151.2K; CFH014 -101.8K; CFH017 -24.9K.</li>
+<li>Transactions down in CFH021 (-2,095) and CFH017 (-6,415); CFH014 and CFH018 had higher transactions but lower Units.</li>
+<li>Revenue context reported:</li>
+<li>CF-CONFECTIONERY revenue down SAR 103.3K.</li>
+<li>CHOCOLATE COATED BARS revenue down SAR 30.9K.</li>
+</ul>
+</ul>
+<ul>
+<li>fmcg_food_volume_down_revenue_up</li>
+<ul class="nested">
+<li>Baseline signal: FMCG FOOD QTY Growth -370,120.72; 148.1271% of total Units decline; revenue Growth SAR 692,876.41.</li>
+<li>Investigation concluded from reused evidence; no new query executed in this run.</li>
+<li>Division totals reported:</li>
+<li>Current revenue SAR 47.46M.</li>
+<li>Branch split reported:</li>
+<li>Units down in all branches: CFH014 -151.0K; CFH017 -88.5K; CFH018 -67.2K; CFH021 -63.4K.</li>
+<li>Revenue growth by branch: CFH021 +SAR 552.6K; CFH018 +SAR 335.5K; CFH017 -SAR 200.1K; CFH014 +SAR 4.8K.</li>
+<li>Product-group patterns reported:</li>
+<li>CF-EDIBLE OILS: +SAR 444.4K revenue; -374 Units.</li>
+<li>CF-FROZEN POULTRY: +SAR 169.0K revenue; -4.9K Units.</li>
+<li>CF-DRY FRUITS: +SAR 63.2K revenue; -7.7K Units.</li>
+<li>CF-CHOCOLATE: -533.3K Units; -SAR 103.0K revenue.</li>
+<li>SUN FLOWER OIL: -SAR 560.1K revenue; -43.4K Units.</li>
+<li>VEGETABLE OIL: +SAR 670.4K revenue; +30.3K Units.</li>
+</ul>
+</ul>
+<ul>
+<li>fruit_vegetables_broad_decline</li>
+<ul class="nested">
+<li>Baseline signal: CF-FRUIT &amp; VEGETABLES revenue Growth SAR -683,753.3; QTY Growth -216,203.1651; impact share 86.5273%.</li>
+<li>Investigation concluded from reused evidence; no new query executed in this run.</li>
+<li>Product-group split reported:</li>
+<li>CF-VEGETABLES: SAR -515.8K revenue; -140.3K Units.</li>
+<li>CF-FRUITS: SAR -165.2K revenue; -75.6K Units.</li>
+<li>Special product-group split reported:</li>
+<li>IMPORTED VEGETABLES: SAR -314.5K revenue; -75.9K Units.</li>
+<li>IMPORTED FRUITS: SAR -287.9K revenue; -94.9K Units.</li>
+<li>LOCAL VEGETABLES: SAR -211.4K revenue; -77.7K Units.</li>
+<li>LOCAL FRUITS: +SAR 122.7K revenue; +19.3K Units.</li>
+<li>Branch split reported:</li>
+<li>CFH017: SAR -300.8K revenue; -74.5K Units.</li>
+<li>CFH021: SAR -279.1K revenue; -61.6K Units.</li>
+<li>CFH018: SAR -264.5K revenue; -66.8K Units.</li>
+<li>CFH014: +SAR 160.7K revenue; -13.2K Units.</li>
+</ul>
+</ul>
+<ul>
+<li>fresh_chicken_and_parts_strength</li>
+<ul class="nested">
+<li>Baseline signal: CF-FRESH CHICKEN &amp; PARTS revenue Growth SAR 1,110,054.25; bills growth 80,035; QTY Growth 188,331.0; 32.5122% of comparable total revenue change.</li>
+<li>Investigation concluded from reused evidence; no new query executed in this run.</li>
+<li>Special product-group split reported:</li>
+<li>FRESH CHICKEN: +SAR 630.9K revenue; +66.3K Units; +39.1K Transactions.</li>
+<li>FRESH CHICKEN PARTS: +SAR 479.2K revenue; +122.0K Units; +40.9K Transactions.</li>
+<li>Branch split reported:</li>
+<li>CFH014 +SAR 442.1K; CFH018 +SAR 336.4K; CFH021 +SAR 197.4K; CFH017 +SAR 134.1K.</li>
+</ul>
+</ul>
+<ul>
+<li>meat_growth_but_lower_average_value</li>
+<ul class="nested">
+<li>Baseline signal: CF-MEAT revenue Growth SAR 742,310.17; QTY Growth 160,856.3733.</li>
+<li>Decomposition provided and reconciled:</li>
+<li>Using QTY Growth as driver: volume_effect SAR 1,914,104.9225; rate_effect SAR -1,171,794.7525; rate_current 10.3846 vs rate_prior 11.8995.</li>
+<li>Using bills growth as driver: volume_effect SAR 1,448,084.2244; rate_effect SAR -705,774.0544; rate_current 19.1996 vs rate_prior 20.8865.</li>
+<li>Investigation concluded from reused evidence; no new query executed in this run.</li>
+<li>Movement details reported:</li>
+<li>CF-FRESH CHICKEN &amp; PARTS: +SAR 1.11M revenue; +188.3K Units; +80.0K Transactions.</li>
+<li>FRESH CHICKEN: +SAR 630.9K; +66.3K Units; +39.1K Transactions.</li>
+<li>FRESH CHICKEN PARTS: +SAR 479.2K; +122.0K Units; +40.9K Transactions.</li>
+<li>FRESH MEAT BEEF: -SAR 162.1K.</li>
+<li>FRESH MEAT MUTTON: -SAR 160.7K.</li>
+<li>Branch contribution reported:</li>
+<li>CFH018 +SAR 302.2K; CFH021 +SAR 237.8K; CFH014 +SAR 156.0K; CFH017 +SAR 46.3K.</li>
+</ul>
+</ul>
+<ul>
+<li>edible_oils_shifted_to_higher_value_mix</li>
+<ul class="nested">
+<li>Baseline signal: CF-EDIBLE OILS revenue Growth SAR 444,434.3; QTY Growth -374.0; bills growth -2,356.</li>
+<li>Decomposition provided and reconciled:</li>
+<li>Using QTY Growth as driver: volume_effect SAR -5,838.7507; rate_effect SAR 450,273.0507; rate_current 16.8516 vs rate_prior 15.6116.</li>
+<li>Using bills growth as driver: volume_effect SAR -42,859.4734; rate_effect SAR 487,293.7734; rate_current 19.7656 vs rate_prior 18.1916.</li>
+<li>Investigation concluded from reused evidence; no new query executed in this run.</li>
+<li>Product details reported:</li>
+<li>VEGETABLE OIL: +SAR 670.4K; +30,329 Units; +22,520 Transactions.</li>
+<li>SUN FLOWER OIL: -SAR 560.1K; -43,428 Units; -33,409 Transactions.</li>
+<li>OTHER COOKING OIL: +SAR 201.5K.</li>
+<li>Branch split reported:</li>
+<li>CFH018 +SAR 159.4K; CFH014 +SAR 139.9K; CFH021 +SAR 125.8K; CFH017 +SAR 19.3K.</li>
+</ul>
+</ul>
+<ul>
+<li>march_april_calendar_swing</li>
+<ul class="nested">
+<li>Baseline signal: March revenue Growth SAR -2,043,504.72; April revenue Growth SAR 2,112,426.17.</li>
+<li>Temporal context provided:</li>
+<li>Worst period drill flagged March with top negatives IMPORTED FRUITS SAR -326,093.18, SUN FLOWER OIL SAR -138,628.07, IMPORTED VEGETABLES SAR -134,362.38.</li>
+<li>Drill query by <code>MIS_DEEP_DIVE2[product_group_name]</code> for month 4 succeeded.</li>
+<li>Top April product-group gains returned:</li>
+<li>CF-FRESH CHICKEN &amp; PARTS +SAR 233,063.62; QTY Growth 37,387.</li>
+<li>CF-EDIBLE OILS +SAR 217,244.10; QTY Growth 8,261.</li>
+<li>CF-RICE +SAR 212,921.52; QTY Growth 7,318.67.</li>
+<li>CF-SKIN CARE +SAR 140,646.34.</li>
+<li>CF-WATCHES +SAR 124,199.92.</li>
+<li>Drill query by <code>MIS_DEEP_DIVE2[special_product_group_name]</code> for month 4 succeeded.</li>
+<li>Top April special-product-group gains returned:</li>
+<li>VEGETABLE OIL +SAR 286,917.65; QTY Growth 15,187.</li>
+<li>BASMATI RICE +SAR 157,385.32; QTY Growth 5,572.02.</li>
+<li>FRESH CHICKEN +SAR 121,461.15; QTY Growth 12,366.</li>
+<li>FRESH CHICKEN PARTS +SAR 111,602.47; QTY Growth 25,021.</li>
+<li>CHOCOLATE COATED BARS +SAR 73,177.42; QTY Growth -8,928.74776.</li>
+<li>Drill query by <code>MIS_DEEP_DIVE2[store_no]</code> for month 4 succeeded.</li>
+<li>All-branch April revenue gains returned:</li>
+<li>CFH021 +SAR 1,019,128.89; QTY Growth 75,489.2553; bills growth 47,137.</li>
+<li>CFH014 +SAR 508,905.98; QTY Growth 42,802.4454; bills growth 38,473.</li>
+<li>CFH018 +SAR 364,771.51; QTY Growth 28,426.62255; bills growth 19,596.</li>
+<li>CFH017 +SAR 219,619.79; QTY Growth 28,977.49933; bills growth 3,068.</li>
+</ul>
+</ul>
+<ul>
+<li>division_mix_concentrated_in_farm_fresh_and_fmcg_food</li>
+<ul class="nested">
+<li>Baseline signal: FARM FRESH and FMCG FOOD hold 13,644,163.0367 current Units (73.3331%), 5,549,380 current Transactions (66.5726%), and SAR 70,216,044.13 current Revenue (55.8111%).</li>
+<li>Investigation concluded from reused evidence; no new query executed in this run.</li>
+<li>Branch-level summary reported for these divisions:</li>
+<li>CFH014 +SAR 369K revenue growth; CFH018 +SAR 390K; CFH021 +SAR 610K; CFH017 -SAR 466K.</li>
+<li>All four branches showed lower Units than last year, ranging from -82.1K to -146.5K.</li>
+<li>Product-group examples reported:</li>
+<li>Positive: CF-FRESH CHICKEN &amp; PARTS +SAR 1.11M; CF-EDIBLE OILS +SAR 444K.</li>
+<li>Negative Units-heavy lines: CF-CHOCOLATE -533.3K Units; CF-VEGETABLES -140.3K Units; CF-FRUITS -75.6K Units.</li>
+</ul>
+</ul>
+<ul>
+<li>branch_base_concentrated_in_cfh014_cfh021</li>
+<ul class="nested">
+<li>Baseline signal: CFH014 and CFH021 hold SAR 80,014,173.18 of current revenue, 63.5991% of comparable total; net bills CURRENT 5,298,461, 63.5624% of total.</li>
+<li>Drill query by <code>MIS_DEEP_DIVE2[special_product_group_name]</code> for CFH014 and CFH021 succeeded.</li>
+<li>Largest positive special-product-group movements returned:</li>
+<li>VEGETABLE OIL: +SAR 439,322.4; QTY Growth 18,504; bills growth 14,062.</li>
+<li>FRESH CHICKEN: +SAR 418,612.07; QTY Growth 44,446; bills growth 24,607.</li>
+<li>HAND TORCH: +SAR 264,406.98; QTY Growth 3,871; bills growth 3,173.</li>
+<li>FRESH CHICKEN PARTS: +SAR 220,956.98; QTY Growth 58,190; bills growth 20,876.</li>
+<li>EGG BOX PACK: +SAR 179,433.21; QTY Growth 13,157; bills growth 12,108.</li>
+<li>Largest negative special-product-group movements returned:</li>
+<li>SUN FLOWER OIL: SAR -431,949.39; QTY Growth -31,937; bills growth -25,124.</li>
+<li>WHITE RICE: SAR -187,824.29; QTY Growth -6,999; bills growth -5,530.</li>
+<li>MENS SMART WATCHES: SAR -168,583.17; QTY Growth -209; bills growth -872.</li>
+<li>MENS T SHIRT: SAR -127,720.4; QTY Growth -8,000; bills growth -5,192.</li>
+<li>FRESH MEAT BEEF: SAR -118,491.4; QTY Growth -6,337.81132; bills growth -1,263.</li>
+<li>Investigation explanation also reported item-category and product-group winners in these two branches:</li>
+<li>CF-MENS FASHION +SAR 782.7K; CF-ELECTRONICS +SAR 639.8K; CF-GROCERY FOOD +SAR 458.1K; CF-PERSONAL CARE +SAR 457.9K; CF-MEAT +SAR 393.8K.</li>
+<li>CF-FRESH CHICKEN &amp; PARTS +SAR 639.6K; CF-WATCHES +SAR 280.6K; CF-MENS TOP WEAR +SAR 274.8K; CF-EDIBLE OILS +SAR 265.7K; CF-RECHARGEABLE TORCH +SAR 257.9K.</li>
+</ul>
+</ul>
+<ul>
+<li>cfh022_new_branch_revenue</li>
+<ul class="nested">
+<li>Baseline signal: CFH022 current net revenue CURRENT SAR 11,906,055.96; no net revenue PAST.</li>
+<li>Investigation concluded from reused evidence; no new query executed in this run.</li>
+<li>Reported context:</li>
+<li>CFH022 equals about 8.7% of current revenue across five branches: SAR 11.91M of SAR 137.72M.</li>
+<li>Largest item categories reported: CF-GROCERY FOOD SAR 2.21M; CF-FRUIT &amp; VEGETABLES SAR 1.13M; CF-STAPLES SAR 1.06M.</li>
+<li>Largest product groups reported: CF-RICE SAR 684.7K; CF-FRUITS SAR 616.0K.</li>
+</ul>
+</ul>
+<h2>Confidence &amp; Caveats</h2>
+<ul>
+<li>CFH021 growth: high confidence. Supported by the baseline branch result, two reconciled breakdowns of the revenue change, and a successful category drill.</li>
+<li>CFH017 decline: high confidence. Supported by the baseline branch result and two successful drill queries showing the same broad-based weakness.</li>
+<li>Confectionery/chocolate units decline: medium confidence. The conclusion is detailed and internally consistent, but no fresh query was run during investigation in this run.</li>
+<li>FMCG FOOD units down but revenue up: medium confidence. The result is clear in the baseline signal and the reported group details, but the investigation relied on reused evidence rather than a new drill.</li>
+<li>Fruit and vegetables decline: medium confidence. The branch and product details are specific, but they came from reused evidence without a fresh query in this run.</li>
+<li>Fresh chicken and parts strength: medium confidence. The contribution is clear and broad-based, but the investigation did not run a new query in this run.</li>
+<li>Meat growth with lower average revenue per item: medium confidence. Two reconciled breakdowns support the pattern, but the deeper line and branch explanation came from reused evidence.</li>
+<li>Edible oils higher-value pattern: medium confidence. The reconciled breakdown strongly supports the direction, but the detailed mix explanation was not freshly queried in this run.</li>
+<li>March-April swing: high confidence for the existence and breadth of the swing. Three successful April drill queries support the branch and category pattern. Confidence is lower on the holiday interpretation because the model does not contain Ramadan or Eid dates.</li>
+<li>Division concentration in FARM FRESH and FMCG FOOD: medium confidence. The concentration figures are solid, but the internal driver explanation relied on reused evidence.</li>
+<li>Branch concentration in CFH014 and CFH021: high confidence. The concentration figures are solid and the branch-pair drill query succeeded.</li>
+<li>CFH022 new-branch revenue: high confidence. The branch has current revenue and no prior revenue in the supplied evidence, matching the configured exclusion from like-for-like.</li>
+<li>General caveats:</li>
+<ul class="nested">
+<li>Lower-level coverage is partial in several dimensions per the coverage matrix, so examples below branch and month level are strong contributors, not a guaranteed full ranking of every segment unless directly queried.</li>
+<li>This model stores transactions from category-level counts for year-on-year work. Those growth rates are usable, but transaction-based levels such as Basket Value and Basket Size should be treated carefully.</li>
+<li>No queries failed in the supplied investigations, but several investigations concluded from reused scan evidence with zero new probe executions.</li>
+</ul>
+</ul>
+<h2>Suggested Follow-ups</h2>
+<ul>
+<li>Why did CFH021 grow so strongly in a few categories? Drill CF-MENS FASHION, CF-GROCERY FOOD, CF-ELECTRONICS and CF-PERSONAL CARE to <code>product_group_name</code>, then by month within CFH021.</li>
+<li>When did CFH017 weaken most, and was it broad or concentrated? Run a month-by-month breakdown for CFH017 across the largest losing categories and product groups.</li>
+<li>Why did confectionery lose so many units while revenue held up better? Check CF-CHOCOLATE, especially CHOCOLATE COATED BARS, by branch and month for Units, Transactions, Basket Size and Price.</li>
+<li>Is FMCG FOOD revenue being supported by a few higher-value pockets? Compare CF-EDIBLE OILS, CF-CHOCOLATE, CF-FROZEN POULTRY and CF-DRY FRUITS at product-group and, if available, item level.</li>
+<li>Are fruit and vegetable losses mainly imported or local, and in which branches? Split CF-FRUIT &amp; VEGETABLES by branch and <code>special_product_group_name</code>, focusing on CFH017, CFH018 and CFH021.</li>
+<li>Is fresh chicken strength sustained or event-driven? Review monthly performance by branch for FRESH CHICKEN and FRESH CHICKEN PARTS.</li>
+<li>Is meat growth coming from pricing or from a shift toward lower-value chicken lines? This model can test branch and product-group mix further, but separating true price change from product mix would likely need SKU-level price files outside the current evidence.</li>
+<li>What explains the edible oils shift? Within this model, compare VEGETABLE OIL, SUN FLOWER OIL and OTHER COOKING OIL by branch and month; confirming pack-size or ticket price changes would likely need SKU-level data outside this run.</li>
+<li>Was the March-April swing mainly Ramadan or Eid timing? The model can compare March and April patterns by branch and category again, but confirming the calendar effect needs holiday-date mapping outside this model.</li>
+<li>Why do FARM FRESH and FMCG FOOD dominate the group result? Drill both divisions to product-group and branch-month level to isolate which large lines are supporting revenue and which are reducing units.</li>
+<li>Which lines inside CFH014 and CFH021 matter most to group performance now? Split the main winning and losing special product groups by branch and month for these two branches.</li>
+<li>How should management reporting present the new branch? Show two lines side by side for the same period: four-branch like-for-like revenue and separate CFH022 new-branch revenue of SAR 11.9M.</li>
+</ul>
+    </main>
+    <footer class="report-footer">
+      This document was generated automatically from the connected semantic model.
+      Figures reflect only the queries executed in this run and the business rules
+      in force at the time; see the limitations or caveats section above for
+      coverage gaps.
+    </footer>
+  </div>
+</body>
+</html>

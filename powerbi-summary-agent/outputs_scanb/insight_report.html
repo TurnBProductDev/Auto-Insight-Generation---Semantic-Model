@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sales / Retail Insight Report</title>
+<style>
+  :root {
+    --ink: #1f2937;
+    --ink-soft: #5b6472;
+    --ink-faint: #8a93a1;
+    --rule: #e3e7ec;
+    --rule-strong: #cfd6de;
+    --navy: #16324f;
+    --navy-deep: #102538;
+    --accent: #1f4e79;
+    --accent-soft: #eef3f8;
+    --bg: #eef0f3;
+    --panel: #ffffff;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Segoe UI", -apple-system, "Helvetica Neue", Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+  .sheet {
+    max-width: 900px;
+    margin: 40px auto 56px;
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(16, 37, 56, 0.06), 0 12px 32px rgba(16, 37, 56, 0.08);
+  }
+  header.report-header {
+    background: linear-gradient(135deg, var(--navy-deep) 0%, var(--navy) 62%, #1d3e5e 100%);
+    color: #f4f7fa;
+    padding: 40px 64px 34px;
+  }
+  header.report-header .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 11px;
+    font-weight: 600;
+    color: #9db8d1;
+    margin-bottom: 10px;
+  }
+  header.report-header h1 {
+    font-size: 27px;
+    line-height: 1.25;
+    margin: 0 0 14px;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+  }
+  header.report-header .meta {
+    display: flex;
+    gap: 28px;
+    flex-wrap: wrap;
+    font-size: 12.5px;
+    color: #b9c9da;
+    border-top: 1px solid rgba(255, 255, 255, 0.16);
+    padding-top: 14px;
+  }
+  header.report-header .meta span strong {
+    color: #e8eef4;
+    font-weight: 600;
+  }
+  main.report-body { padding: 44px 64px 28px; }
+  h2 {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+    margin: 44px 0 16px;
+    padding-top: 22px;
+    border-top: 1px solid var(--rule);
+  }
+  h2:first-child { margin-top: 0; padding-top: 0; border-top: none; }
+  h3 {
+    font-size: 15px;
+    font-weight: 650;
+    color: var(--ink);
+    margin: 26px 0 8px;
+  }
+  p { margin: 0 0 14px; max-width: 72ch; }
+  ul { margin: 0 0 16px; padding-left: 20px; list-style: none; }
+  li { margin-bottom: 9px; position: relative; padding-left: 4px; }
+  li::before {
+    content: "";
+    position: absolute;
+    left: -14px;
+    top: 0.62em;
+    width: 6px;
+    height: 6px;
+    border-radius: 1px;
+    background: var(--accent);
+    opacity: 0.55;
+  }
+  ul.nested { margin: 8px 0 4px; padding-left: 18px; }
+  ul.nested li::before {
+    width: 5px;
+    height: 2px;
+    top: 0.75em;
+    border-radius: 0;
+    opacity: 0.4;
+  }
+  table.kv {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 4px 0 20px;
+    font-size: 14.5px;
+    border: 1px solid var(--rule);
+  }
+  table.kv td {
+    padding: 9px 16px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  table.kv tr:last-child td { border-bottom: none; }
+  table.kv tr:nth-child(odd) td { background: var(--accent-soft); }
+  td.kv-name {
+    width: 42%;
+    font-weight: 600;
+    color: var(--ink);
+    border-right: 1px solid var(--rule);
+  }
+  td.kv-value {
+    color: var(--ink-soft);
+    font-variant-numeric: tabular-nums;
+  }
+  code {
+    background: var(--accent-soft);
+    border: 1px solid var(--rule);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 12.5px;
+    font-family: Consolas, "Cascadia Mono", "Courier New", monospace;
+    color: var(--accent);
+  }
+  strong { font-weight: 650; color: var(--ink); }
+  footer.report-footer {
+    margin: 20px 64px 0;
+    padding: 18px 0 36px;
+    border-top: 1px solid var(--rule-strong);
+    font-size: 11.5px;
+    line-height: 1.6;
+    color: var(--ink-faint);
+  }
+  @media (max-width: 720px) {
+    .sheet { margin: 0; border-radius: 0; border-left: none; border-right: none; }
+    header.report-header, main.report-body { padding-left: 24px; padding-right: 24px; }
+    footer.report-footer { margin-left: 24px; margin-right: 24px; }
+  }
+  @media print {
+    body { background: #ffffff; }
+    .sheet { margin: 0; max-width: none; border: none; border-radius: 0; box-shadow: none; }
+    header.report-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    h2 { break-after: avoid; }
+    table.kv, li { break-inside: avoid; }
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ink: #dde2e9;
+      --ink-soft: #a6afbc;
+      --ink-faint: #7d8794;
+      --rule: #313843;
+      --rule-strong: #3d4552;
+      --accent: #8fb4d9;
+      --accent-soft: #232a33;
+      --bg: #14171c;
+      --panel: #1b1f26;
+    }
+    .sheet { box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+  <div class="sheet">
+    <header class="report-header">
+      <div class="eyebrow">Power BI Insight Report</div>
+      <h1>Sales / Retail Insight Report</h1>
+      <div class="meta">
+        <span><strong>Generated</strong>&ensp;04 August 2026, 06:38 UTC</span>
+        <span><strong>Source</strong>&ensp;Connected Power BI semantic model</span>
+        <span><strong>Method</strong>&ensp;Automated DAX analysis</span>
+      </div>
+    </header>
+    <main class="report-body">
+<h2>Key Insights</h2>
+<p>These comparisons use the available current-versus-last-year records in this model, at monthly and merchandise levels, for the full year ending 2023-12-31.</p>
+<p><strong>Revenue fell by 4.4M in August-December compared with the stated comparison period.</strong> This five-month stretch made up 95.9% of the full-year revenue decline of 4.6M. The remaining months reduced revenue by 192.1K. Our checks did not measure a business reason for this decline. Check the month-by-month category trend for August and October.</p>
+<p><strong>TECHNOLOGY revenue fell by 2.0M (20.1%), from 9.9M to 7.9M compared with the stated comparison period.</strong> Our checks did not measure a business reason for this decline. Review the monthly path within TECHNOLOGY to see whether the drop was concentrated in a few months or spread through the year.</p>
+<p><strong>CONSUMER GOODS revenue fell by 1.5M (3.2%), from 47.0M to 45.6M compared with the stated comparison period.</strong> Units rose by 486,524.24 in the same comparison. Our checks did not measure a business reason for the revenue decline. Review average revenue per item within CONSUMER GOODS to see whether lower average value per item explains revenue falling while units rose.</p>
+<p><strong>FRESH FOOD revenue fell by 1.5M (6.9%), from 21.0M to 19.6M compared with the stated comparison period.</strong> Our checks did not measure a business reason for this decline. The investigation noted a similar pattern in GREEN GROCERIES, but the manager brief for that area was not supplied. Investigate item pricing and mix within GREEN GROCERIES to test whether lower average revenue per item may explain the value decline.</p>
+<h2>Data Quality Watch-outs</h2>
+<ul>
+<li>Some checked revenue decline sits in rows with no department, section, or category name. Check how unassigned sales are loaded and labelled before treating merchandise totals as complete.</li>
+<li>Branch comparison scope could not be confirmed from the metadata used in this run. Check the branch population behind these results before reusing them as matched comparisons.</li>
+<li>Several merchandise breakdowns were only partial in this run. Check whether the queries returned only selected movers rather than a complete ranking.</li>
+</ul>
+<h2>Evidence Trail</h2>
+<ul>
+<li>august_to_december_revenue_decline</li>
+<ul class="nested">
+<li>Signal summary: revenue down 4,440,787.8658 across August-December; share of full-year decline 95.8541%.</li>
+<li>Manager fact brief: <code>change_display = 4.4M</code>; <code>share_of_total_pct_display = 95.9%</code>; <code>total_change_display = 4.6M</code>; <code>other_change_display = 192.1K</code>; no percentage available for the August-December block itself.</li>
+<li>Probe 1 succeeded: <code>SUMMARIZECOLUMNS(&#x27;MIS_DEEP_DIVE2&#x27;[CATEGORY_NAME], TREATAS({8,9,10,11,12}, &#x27;MIS_DEEP_DIVE2&#x27;[DOC_MONTH]), &quot;Revenue Growth&quot;, [revenue Growth], &quot;Revenue Current&quot;, [net revenue CURRENT], &quot;Revenue Past&quot;, [net revenue PAST], &quot;Units Growth&quot;, [QTY Growth], &quot;Units Current&quot;, [net qty CURRENT], &quot;Units Past&quot;, [net qty PAST])</code>.</li>
+<li>Largest checked category declines in August-December from Probe 1: LED TV -582,105.2055; BLANKET DOUBLE -401,228.4932; TORCHES -355,660.2740; ROASTED NUTS ROASTERY -342,902.0082; FRESH MUTTON OTHER -289,931.2110.</li>
+<li>Probe 1 also showed unassigned category rows: <code>CATEGORY_NAME = blank</code>, revenue growth -111,551.7808; revenue current 3,297,309.5890; revenue past 3,408,861.3699; units growth +172,624.0.</li>
+<li>Probe 2 succeeded: <code>SUMMARIZECOLUMNS(&#x27;MIS_DEEP_DIVE2&#x27;[DEPARTMENT], TREATAS({8,9,10,11,12}, &#x27;MIS_DEEP_DIVE2&#x27;[DOC_MONTH]), &quot;Revenue Growth&quot;, [revenue Growth], &quot;Revenue Current&quot;, [net revenue CURRENT], &quot;Revenue Past&quot;, [net revenue PAST], &quot;Units Growth&quot;, [QTY Growth])</code>.</li>
+<li>Department changes from Probe 2: CONSUMER GOODS -1,555,187.9890; TECHNOLOGY -1,347,947.3973; LIFESTYLE -1,244,350.2356; HOME &amp; LIVING -294,641.6712; blank department -111,551.7808; FRESH FOOD +112,891.2082.</li>
+<li>Probe 3 succeeded: <code>SUMMARIZECOLUMNS(&#x27;MIS_DEEP_DIVE2&#x27;[SECTION], TREATAS({8,9,10,11,12}, &#x27;MIS_DEEP_DIVE2&#x27;[DOC_MONTH]), &quot;Revenue Growth&quot;, [revenue Growth], &quot;Revenue Current&quot;, [net revenue CURRENT], &quot;Revenue Past&quot;, [net revenue PAST], &quot;Units Growth&quot;, [QTY Growth])</code>.</li>
+<li>Section changes from Probe 3 included: PERSONAL CARE -772,489.1781; CONSUMER DEVICES -722,413.9726; ENTERTAINMENTS -625,533.4247; HOME TEXTILES -543,405.2055; PROVISIONS -539,626.8466.</li>
+<li>Temporal context supplied separately: worst period drill was October, period change -1,730,714.71; top category segments LED TV -151,762.47, BLANKET DOUBLE -146,308.22, TORCHES -107,897.81.</li>
+<li>Investigation concluded and accepted after 3 probe executions.</li>
+</ul>
+</ul>
+<ul>
+<li>technology_revenue_decline</li>
+<ul class="nested">
+<li>Signal summary: TECHNOLOGY revenue current 7,916,819.7260; prior 9,907,943.6986; change -1,991,123.9726.</li>
+<li>Manager fact brief: <code>current_display = 7.9M</code>; <code>prior_display = 9.9M</code>; <code>change_display = 2.0M</code>; <code>change_pct_display = 20.1%</code>.</li>
+<li>No new DAX probe was executed in this investigation; conclusion was accepted from previously available evidence.</li>
+<li>Investigation explanation states section split: CONSUMER DEVICES -1.00M and ENTERTAINMENTS -0.99M.</li>
+<li>Investigation explanation states LED TV contributed -916,983.0137, about 91.5% of the CONSUMER DEVICES decline and about 46.1% of the TECHNOLOGY decline.</li>
+<li>Investigation explanation also states LED TV and TORCHES together contributed 1.45M of the 1.99M department decline.</li>
+<li>Supporting August-December probe evidence on period-specific movement inside TECHNOLOGY: CONSUMER DEVICES -722,413.9726; ENTERTAINMENTS -625,533.4247; LED TV -582,105.2055.</li>
+<li>Investigation concluded and accepted with 0 additional probe executions.</li>
+</ul>
+</ul>
+<ul>
+<li>consumer_goods_revenue_transactions_divergence</li>
+<ul class="nested">
+<li>Signal summary: CONSUMER GOODS revenue current 45,556,332.1507; prior 47,047,585.3836; change -1,491,253.2329; units change +486,524.24; transactions change -1,224,468.0.</li>
+<li>Manager fact brief: <code>current_display = 45.6M</code>; <code>prior_display = 47.0M</code>; <code>change_display = 1.5M</code>; <code>change_pct_display = 3.2%</code>.</li>
+<li>No new DAX probe was executed in this investigation; conclusion was accepted from previously available evidence.</li>
+<li>Investigation explanation states section split: SPICE MARKET -648.6K revenue and -46.5K transactions; PROVISIONS -394.6K revenue and -323.1K transactions; PERSONAL CARE -293.2K revenue and -637.4K transactions; BEVERAGES +95.5K revenue despite -100.7K transactions.</li>
+<li>Investigation explanation states largest category transaction declines: UNISEX -243.5K; ROASTED NUTS ROASTERY -170.4K; MEN`S NEEDS -151.5K; HOME CLEANERS -131.9K; BISCUITS -129.6K; ROASTERY group -127.7K.</li>
+<li>Investigation explanation also notes units growth in MINERAL WATER +789.7K with transactions -36.1K, and COFFEE AND TEA +361.0K with transactions -39.2K.</li>
+<li>Supporting August-December probe evidence on sections within this department: SPICE MARKET -174,102.0932; PROVISIONS -539,626.8466; PERSONAL CARE -772,489.1781 in that five-month window.</li>
+<li>Department-level transaction growth context is usable under business rules; branch-level transaction levels are not.</li>
+<li>Investigation concluded and accepted with 0 additional probe executions.</li>
+</ul>
+</ul>
+<ul>
+<li>fresh_food_and_green_groceries_mixed_volume_value</li>
+<ul class="nested">
+<li>Signal summary: FRESH FOOD revenue current 19,592,778.3479; prior 21,046,633.1699; change -1,453,854.8219; units change +427,618.51; transactions change +348,278.0.</li>
+<li>Manager fact brief: <code>current_display = 19.6M</code>; <code>prior_display = 21.0M</code>; <code>change_display = 1.5M</code>; <code>change_pct_display = 6.9%</code>.</li>
+<li>No new DAX probe was executed in this investigation; conclusion was accepted from previously available evidence.</li>
+<li>Investigation explanation states concentrated <code>CATEGORY_NAME_2</code> declines: MUTTON -647.2K; FRUITS -298.0K; VEGETABLES -275.4K; SALADS -246.3K.</li>
+<li>Investigation explanation states units rose in those groups: FRUITS +64.3K; VEGETABLES +257.3K; SALADS +72.9K.</li>
+<li>Investigation explanation states GREEN GROCERIES revenue -819,637.3014 with units +394,409.0 and transactions +269,083.0.</li>
+<li>Supporting August-December department probe showed FRESH FOOD +112,891.2082 in that five-month period, so the full-year decline did not come from August-December alone.</li>
+<li>Investigation concluded and accepted with 0 additional probe executions.</li>
+</ul>
+</ul>
+<h2>Confidence &amp; Caveats</h2>
+<ul>
+<li>August-December decline: moderate confidence. Three supporting probes were run and concluded cleanly across department, section, and category views.</li>
+<li>TECHNOLOGY decline: moderate confidence. The investigation concluded, but it reused prior evidence and ran no fresh query in this run.</li>
+<li>CONSUMER GOODS decline: moderate confidence. The investigation concluded, but the detailed supporting numbers came from reused evidence rather than a fresh probe here.</li>
+<li>FRESH FOOD decline: moderate confidence. The finding is internally consistent, but the supporting drilldown was reused and not re-queried in this run.</li>
+<li>Merchandise hierarchy caveat: unassigned rows exist with blank department, section, and category, so merchandise breakdowns do not fully add to the company total.</li>
+<li>Scope caveat: the branch comparison population was not identified in this run, and metadata warned that no high-confidence entity or location dimension was confirmed.</li>
+<li>Coverage caveat: several dimensions were marked partial in the coverage matrix, so some lists reflect checked movers rather than a full ranked population.</li>
+<li>Time caveat: the model is monthly only, and the data ends at 2023-12-31.</li>
+</ul>
+<h2>Suggested Follow-ups</h2>
+<ul>
+<li>What changed in late 2023 to create almost all of the annual revenue decline? Review monthly category trends for LED TV, BLANKET DOUBLE, and TORCHES across August to December, especially October.</li>
+<li>Was the TECHNOLOGY decline concentrated in a few months or sustained all year? Check month-by-month revenue and units within TECHNOLOGY.</li>
+<li>Why did CONSUMER GOODS sell more units but record lower revenue? Compare average revenue per item over time within CONSUMER GOODS.</li>
+<li>Did FRESH FOOD lose value because of lower prices or a shift toward cheaper items? Review item-level pricing and assortment mix within GREEN GROCERIES.</li>
+<li>How much of the merchandise story is hidden in unassigned rows? Check why sales records are arriving without department, section, or category labels.</li>
+<li>Which branches are in the comparison population for these findings? Confirm branch scope before using these results in branch-matched reporting.</li>
+</ul>
+    </main>
+    <footer class="report-footer">
+      This document was generated automatically from the connected semantic model.
+      Figures reflect only the queries executed in this run; see the limitations
+      or caveats section above for coverage gaps.
+    </footer>
+  </div>
+</body>
+</html>

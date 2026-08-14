@@ -18,6 +18,27 @@ _EMOJI = re.compile(
     "]+",
     flags=re.UNICODE,
 )
+#: Manager-facing precision. The view model holds raw floats, so a draft told to
+#: "copy the figure exactly" can quote 16 decimal places and still be supported.
+MAX_QUOTED_DECIMALS = 2
+
+#: Words the rulebook's naming rule (BR-26) forbids for a measure that has an
+#: approved name. Kept separate from _TECHNICAL_MANAGER_PHRASES so the shared
+#: R1-R5 validator is untouched. Caught on a live draft that wrote "higher
+#: traffic" for a transactions rise: the model counts bills, not people walking
+#: in, so the substitution quietly changes what the sentence claims.
+_OFF_VOCABULARY = {
+    "footfall": "transactions",
+    "traffic": "transactions",
+    "visits": "transactions",
+    "visitors": "transactions",
+    "shoppers": "transactions",
+    "shopper": "transactions",
+    "spend per visit": "basket value",
+    "items per visit": "basket size",
+    "average ticket": "basket value",
+}
+
 _REMOVED_TEMPLATE_HEADINGS = {"what's working", "risks", "recommended actions"}
 _TECHNICAL_MANAGER_PHRASES = {
     "accounted for",
@@ -562,4 +583,202 @@ def validate_draft(
         errors.extend(portfolio_rules(draft, selected))
     else:
         errors.extend(focus_rules(draft, selected))
+    return errors
+
+
+# ---------------------------------------------------------------------------
+# Dashboard (R6) per-slot narrative validation
+# ---------------------------------------------------------------------------
+
+def _dashboard_allowed_numbers(view: dict) -> list[float]:
+    """Every figure the view model actually computed, as the allowed number set.
+
+    The dashboard's supported numbers are not a candidate's ``evidence`` block -
+    they are the whole reconciled view model, which already contains only values
+    copied or derived arithmetically from scanned evidence. Percentages stored as
+    fractions are also allowed in percent form, matching ``evidence_numbers``.
+    """
+    allowed: list[float] = []
+    for value, name in _walk_numbers(view or {}):
+        allowed.append(value)
+        lowered = name.casefold()
+        if "pct" in lowered or "percent" in lowered or "%" in name:
+            if abs(value) <= 2:
+                allowed.append(value * 100.0)
+        # A signed money effect is often quoted without its sign in prose
+        # ("removed 5.2M"), so the magnitude is supported too.
+        allowed.append(abs(value))
+    return allowed
+
+
+def _similar(first: str, second: str) -> float:
+    """Word-overlap similarity, used only to catch the same sentence reused.
+
+    Deliberately crude and symmetric: the goal is to catch "Revenue fell in X" /
+    "Revenue fell in Y" boilerplate, not to police style. Numbers are dropped
+    first, because two genuinely different stories always differ in their figures
+    and would otherwise mask identical wording.
+    """
+    def words(text: str) -> set[str]:
+        stripped = re.sub(r"[-+]?\d[\d,.]*\s*[KMB%]?", " ", text or "", flags=re.IGNORECASE)
+        return {token for token in re.findall(r"[a-z]{4,}", stripped.casefold())}
+
+    left, right = words(first), words(second)
+    if not left or not right:
+        return 0.0
+    return len(left & right) / len(left | right)
+
+
+def dashboard_rules(draft: dict, view: dict,
+                    duplicate_threshold: float = 0.82) -> list[str]:
+    """Validate authored dashboard prose against the code-owned view model.
+
+    The dashboard's structure is code-owned, so there is no page-shape to check.
+    What must be enforced is that the *prose* is grounded, specific and honest:
+
+    * the hero states the result with a real figure;
+    * every entity that got a story carries a number, and no two entity stories
+      are the same sentence with the name swapped (the spec's explicit ban on a
+      repeated generic sentence per store);
+    * nothing claims a cause the data cannot show, and nothing calls a partial
+      breakdown complete;
+    * no internal vocabulary, no emojis, no invented figures.
+    """
+    errors: list[str] = []
+    allowed = _dashboard_allowed_numbers(view)
+
+    def check_text(text: str, where: str, require_number: bool = False) -> None:
+        text = str(text or "").strip()
+        if not text:
+            if require_number:
+                errors.append(f"{where} is empty")
+            return
+        if _EMOJI.search(text):
+            errors.append(f"{where} contains emoji characters")
+        if _UNSUPPORTED_CAUSAL.search(text):
+            errors.append(f"{where} states a cause the evidence cannot prove")
+        if _PARTIAL_AS_COMPLETE.search(text):
+            errors.append(f"{where} describes partial evidence as complete")
+        lowered = text.casefold()
+        for phrase in _TECHNICAL_MANAGER_PHRASES:
+            if phrase in lowered:
+                errors.append(f"{where} uses internal wording {phrase!r}")
+        for phrase, approved in _OFF_VOCABULARY.items():
+            if re.search(r"\b" + re.escape(phrase) + r"\b", lowered):
+                errors.append(
+                    f"{where} says {phrase!r}; the model counts bills, so write "
+                    f"{approved!r}"
+                )
+        for phrase in _EMPTY_SECTION_PHRASES:
+            if phrase in lowered:
+                errors.append(f"{where} uses an empty placeholder; omit unsupported content")
+        parsed = parse_numbers(text)
+        if require_number and not parsed:
+            errors.append(f"{where} must quote the exact figure for its main result")
+        for value, tolerance, token in parsed:
+            if not any(abs(value - known) <= max(tolerance, abs(known) * 0.0005)
+                       for known in allowed):
+                errors.append(f"{where} uses figure {token!r}, which the view model does not support")
+            # Spurious precision. The view model stores percentages as raw floats,
+            # so "copy the figure exactly" let a live draft through with
+            # "+2.7147647284841927%" - technically supported, unreadable, and not a
+            # number any manager would recognise as the same one on the card.
+            decimals = token.partition(".")[2]
+            digits = "".join(ch for ch in decimals if ch.isdigit())
+            if len(digits) > MAX_QUOTED_DECIMALS:
+                errors.append(
+                    f"{where} quotes {token!r} to {len(digits)} decimal places; round to "
+                    f"at most {MAX_QUOTED_DECIMALS}"
+                )
+
+    hero = (draft or {}).get("hero") or {}
+    check_text(hero.get("headline"), "hero headline", require_number=True)
+    check_text(hero.get("narrative"), "hero narrative", require_number=True)
+
+    cards = ((view or {}).get("layers") or {}).get("entities", {}).get("cards") or []
+    known_members = {str(card.get("member")) for card in cards}
+    severity_by_member = {
+        str(card.get("member")): str(card.get("severity") or "steady") for card in cards
+    }
+    rank_by_member = {
+        str(card.get("member")): card.get("rank") for card in cards
+    }
+    stories: list[tuple[str, str, Any]] = []
+    for entry in (draft or {}).get("entities") or []:
+        member = str((entry or {}).get("member") or "").strip()
+        where = f"story for {member or '(unnamed entity)'}"
+        if member and known_members and member not in known_members:
+            errors.append(f"{where} names an entity that is not in this view")
+            continue
+        story = str((entry or {}).get("story") or "")
+        # An area that did not move materially is entitled to the honest
+        # one-line "no material change" instead of a manufactured narrative, so
+        # it is not required to quote a figure and is exempt from the
+        # distinctness check below. Material areas must earn their own story.
+        material = severity_by_member.get(member, "watch") != "steady"
+        check_text(story, where, require_number=material)
+        if material:
+            stories.append((member, story, rank_by_member.get(member)))
+
+    errors.extend(_duplicate_story_errors(stories, duplicate_threshold))
+    return errors
+
+
+def _duplicate_story_errors(stories: list[tuple[str, str, Any]],
+                            threshold: float,
+                            boilerplate_share: float = 0.4,
+                            headline_ranks: int = 3) -> list[str]:
+    """Catch boilerplate across the entity cards, proportionately.
+
+    The banned failure is "the same sentence for every entity with the name
+    swapped". Two of thirteen areas landing on similar wording because they are
+    genuinely in the same situation is not that, and failing on it would make a
+    correct page unpublishable. So this fires on either of two honest signals:
+
+    * **breadth** - near-duplicates account for at least ``boilerplate_share`` of
+      the material stories, i.e. the page really is running one template; or
+    * **prominence** - two of the top-ranked areas, the ones a reader actually
+      reads, share wording.
+    """
+    pairs: list[tuple[str, str]] = []
+    duplicated: set[str] = set()
+    for index, (member, story, rank) in enumerate(stories):
+        for other_member, other_story, other_rank in stories[index + 1:]:
+            if _similar(story, other_story) < threshold:
+                continue
+            pairs.append((member, other_member))
+            duplicated.update({member, other_member})
+            if all(
+                isinstance(value, int) and value <= headline_ranks
+                for value in (rank, other_rank)
+            ):
+                return [
+                    f"stories for {member!r} and {other_member!r} are the same sentence "
+                    "with the name changed, and both are top-ranked; the areas a reader "
+                    "reads first each need their own distinct story"
+                ]
+    if not stories or not pairs:
+        return []
+    if len(duplicated) / len(stories) < boilerplate_share:
+        return []
+    examples = "; ".join(f"{left!r} and {right!r}" for left, right in pairs[:3])
+    return [
+        f"{len(duplicated)} of {len(stories)} entity stories repeat the same sentence "
+        f"with the name changed ({examples}); each entity that moved materially needs "
+        "its own distinct story"
+    ]
+
+    known_focus = {
+        str(entry.get("focus_key"))
+        for entry in ((view or {}).get("layers") or {}).get("areas", {}).get("entries") or []
+    }
+    for entry in (draft or {}).get("areas") or []:
+        key = str((entry or {}).get("focus_key") or "").strip()
+        where = f"area narrative for {key or '(unnamed area)'}"
+        if key and known_focus and key not in known_focus:
+            errors.append(f"{where} names an area that is not under the lens in this view")
+            continue
+        check_text(entry.get("headline"), where + " headline", require_number=True)
+        check_text(entry.get("connect"), where + " connect")
+
     return errors

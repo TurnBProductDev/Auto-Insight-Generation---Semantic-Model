@@ -5,12 +5,17 @@
 .pbi_token_cache.json
 config/config.json
 config/business_rules.md
+# Per-client configuration follows the same rule: the container receives its config
+# and rulebook at runtime through AGENT_CONFIG_B64 / AGENT_RULES_B64, so a client's
+# business logic is never baked into a shared image.
+config/*/
 
 # Generated business artifacts and cross-run state belong in Blob Storage.
-outputs/
-outputs_replay/
-outputs_bizlang_preview/
+# Every run/preview/acceptance artifact folder, not just "outputs" - a per-client or
+# per-experiment folder is still a generated artifact and belongs in Blob Storage.
+outputs*/
 insight_memory/
+summary_memory/
 
 # Local environments/caches.
 .venv/

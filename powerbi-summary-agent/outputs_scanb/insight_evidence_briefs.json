@@ -1,0 +1,407 @@
+{
+  "august_to_december_revenue_decline": {
+    "signal_id": "august_to_december_revenue_decline",
+    "segment": "DOC_MONTH:August..December",
+    "scope_type": "comparable",
+    "comparable_finding": true,
+    "known_facts": [
+      {
+        "fact": "revenue Growth declined for 5 consecutive periods (August to December), totalling -4.4M (95.9% of the total change); steepest: October (-1.7M, 37%), August (-1.3M, 28%); October's fall concentrated in LED TV (-151.8K), BLANKET DOUBLE (-146.3K)",
+        "metric": "revenue Growth",
+        "impact_value": -4440787.8658,
+        "impact_share": 95.8541,
+        "share_basis": "grand_total:period_reconciled",
+        "provenance": {
+          "source_query": "meta_period_by_mis_deep_dive2_doc_month",
+          "population_status": "unfiltered",
+          "completeness": "complete",
+          "truncated": false,
+          "topn": null,
+          "dax_hash": "57f3b8e9eb3dba73",
+          "parse_confidence": "construction",
+          "coverage_kind": "period_series",
+          "contract_source": "metadata_template"
+        },
+        "safe_to_reuse": false,
+        "verification_required": true
+      }
+    ],
+    "supporting_queries": [
+      "meta_period_by_mis_deep_dive2_doc_month"
+    ],
+    "already_answered": [],
+    "unanswered_questions": [
+      "How does DOC_MONTH:August..December decompose by CATEGORY_NAME?",
+      "How does DOC_MONTH:August..December decompose by DEPARTMENT?",
+      "How does DOC_MONTH:August..December decompose by SECTION?"
+    ],
+    "recommended_probes": [
+      {
+        "dimension": "CATEGORY_NAME",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "CATEGORY_NAME",
+          "reference": "'MIS_DEEP_DIVE2'[CATEGORY_NAME]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "DOC_MONTH:August..December",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "DEPARTMENT",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "DEPARTMENT",
+          "reference": "'MIS_DEEP_DIVE2'[DEPARTMENT]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 50
+        },
+        "segment": "DOC_MONTH:August..December",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "SECTION",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "SECTION",
+          "reference": "'MIS_DEEP_DIVE2'[SECTION]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 50
+        },
+        "segment": "DOC_MONTH:August..December",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      }
+    ],
+    "available_dimensions": [
+      "CATEGORY_NAME",
+      "CATEGORY_NAME_0",
+      "CATEGORY_NAME_1",
+      "CATEGORY_NAME_2",
+      "DEPARTMENT",
+      "SECTION",
+      "UPDATED_DATE"
+    ],
+    "stop_condition": "Stop once DOC_MONTH:August..December's movement is decomposed across at least one drill dimension with complete + comparable coverage, or the shared probe budget is exhausted. Facts flagged verification_required may inform the explanation but must not, on their own, end the investigation.",
+    "reuse_summary": {
+      "drill_dimensions": 3,
+      "answered_by_reuse": 0,
+      "facts_reusable": 0,
+      "gaps_needing_probe": 3
+    }
+  },
+  "technology_revenue_decline": {
+    "signal_id": "technology_revenue_decline",
+    "segment": "TECHNOLOGY",
+    "scope_type": "comparable",
+    "comparable_finding": true,
+    "known_facts": [
+      {
+        "fact": "TECHNOLOGY: revenue Growth of -2.0M (from 9.9M to 7.9M)",
+        "metric": "revenue Growth",
+        "impact_value": -1991123.9726,
+        "impact_share": null,
+        "share_basis": null,
+        "provenance": {
+          "source_query": "meta_movers_by_mis_deep_dive2_department",
+          "population_status": "unfiltered",
+          "completeness": "partial",
+          "truncated": false,
+          "topn": 14,
+          "dax_hash": "6247e2d7dc22a447",
+          "parse_confidence": "construction",
+          "coverage_kind": "paired_change_tails",
+          "contract_source": "metadata_template"
+        },
+        "safe_to_reuse": false,
+        "verification_required": true
+      }
+    ],
+    "supporting_queries": [
+      "meta_movers_by_mis_deep_dive2_department"
+    ],
+    "already_answered": [],
+    "unanswered_questions": [
+      "How does TECHNOLOGY decompose by CATEGORY_NAME?",
+      "How does TECHNOLOGY decompose by CATEGORY_NAME_2?",
+      "How does TECHNOLOGY decompose by SECTION?"
+    ],
+    "recommended_probes": [
+      {
+        "dimension": "CATEGORY_NAME",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "CATEGORY_NAME",
+          "reference": "'MIS_DEEP_DIVE2'[CATEGORY_NAME]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "TECHNOLOGY",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "CATEGORY_NAME_2",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "CATEGORY_NAME_2",
+          "reference": "'MIS_DEEP_DIVE2'[CATEGORY_NAME_2]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 50
+        },
+        "segment": "TECHNOLOGY",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "SECTION",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "SECTION",
+          "reference": "'MIS_DEEP_DIVE2'[SECTION]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 50
+        },
+        "segment": "TECHNOLOGY",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      }
+    ],
+    "available_dimensions": [
+      "CATEGORY_NAME",
+      "CATEGORY_NAME_0",
+      "CATEGORY_NAME_1",
+      "CATEGORY_NAME_2",
+      "DOC_MONTH",
+      "SECTION",
+      "SUPPLIER_NAME",
+      "UPDATED_DATE"
+    ],
+    "stop_condition": "Stop once TECHNOLOGY's movement is decomposed across at least one drill dimension with complete + comparable coverage, or the shared probe budget is exhausted. Facts flagged verification_required may inform the explanation but must not, on their own, end the investigation.",
+    "reuse_summary": {
+      "drill_dimensions": 3,
+      "answered_by_reuse": 0,
+      "facts_reusable": 0,
+      "gaps_needing_probe": 3
+    }
+  },
+  "consumer_goods_revenue_transactions_divergence": {
+    "signal_id": "consumer_goods_revenue_transactions_divergence",
+    "segment": "CONSUMER GOODS",
+    "scope_type": "comparable",
+    "comparable_finding": true,
+    "known_facts": [
+      {
+        "fact": "CONSUMER GOODS: revenue Growth of -1.5M (from 47.0M to 45.6M)",
+        "metric": "revenue Growth",
+        "impact_value": -1491253.2329,
+        "impact_share": null,
+        "share_basis": null,
+        "provenance": {
+          "source_query": "meta_movers_by_mis_deep_dive2_department",
+          "population_status": "unfiltered",
+          "completeness": "partial",
+          "truncated": false,
+          "topn": 14,
+          "dax_hash": "6247e2d7dc22a447",
+          "parse_confidence": "construction",
+          "coverage_kind": "paired_change_tails",
+          "contract_source": "metadata_template"
+        },
+        "safe_to_reuse": false,
+        "verification_required": true
+      }
+    ],
+    "supporting_queries": [
+      "meta_movers_by_mis_deep_dive2_department"
+    ],
+    "already_answered": [],
+    "unanswered_questions": [
+      "How does CONSUMER GOODS decompose by CATEGORY_NAME?",
+      "How does CONSUMER GOODS decompose by CATEGORY_NAME_2?",
+      "How does CONSUMER GOODS decompose by SECTION?"
+    ],
+    "recommended_probes": [
+      {
+        "dimension": "CATEGORY_NAME",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "CATEGORY_NAME",
+          "reference": "'MIS_DEEP_DIVE2'[CATEGORY_NAME]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "CONSUMER GOODS",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "CATEGORY_NAME_2",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "CATEGORY_NAME_2",
+          "reference": "'MIS_DEEP_DIVE2'[CATEGORY_NAME_2]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 50
+        },
+        "segment": "CONSUMER GOODS",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "SECTION",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "SECTION",
+          "reference": "'MIS_DEEP_DIVE2'[SECTION]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 50
+        },
+        "segment": "CONSUMER GOODS",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      }
+    ],
+    "available_dimensions": [
+      "CATEGORY_NAME",
+      "CATEGORY_NAME_0",
+      "CATEGORY_NAME_1",
+      "CATEGORY_NAME_2",
+      "DOC_MONTH",
+      "SECTION",
+      "SUPPLIER_NAME",
+      "UPDATED_DATE"
+    ],
+    "stop_condition": "Stop once CONSUMER GOODS's movement is decomposed across at least one drill dimension with complete + comparable coverage, or the shared probe budget is exhausted. Facts flagged verification_required may inform the explanation but must not, on their own, end the investigation.",
+    "reuse_summary": {
+      "drill_dimensions": 3,
+      "answered_by_reuse": 0,
+      "facts_reusable": 0,
+      "gaps_needing_probe": 3
+    }
+  },
+  "fresh_food_and_green_groceries_mixed_volume_value": {
+    "signal_id": "fresh_food_and_green_groceries_mixed_volume_value",
+    "segment": "FRESH FOOD",
+    "scope_type": "comparable",
+    "comparable_finding": true,
+    "known_facts": [
+      {
+        "fact": "FRESH FOOD: revenue Growth of -1.5M (from 21.0M to 19.6M)",
+        "metric": "revenue Growth",
+        "impact_value": -1453854.8219,
+        "impact_share": null,
+        "share_basis": null,
+        "provenance": {
+          "source_query": "meta_movers_by_mis_deep_dive2_department",
+          "population_status": "unfiltered",
+          "completeness": "partial",
+          "truncated": false,
+          "topn": 14,
+          "dax_hash": "6247e2d7dc22a447",
+          "parse_confidence": "construction",
+          "coverage_kind": "paired_change_tails",
+          "contract_source": "metadata_template"
+        },
+        "safe_to_reuse": false,
+        "verification_required": true
+      }
+    ],
+    "supporting_queries": [
+      "meta_movers_by_mis_deep_dive2_department",
+      "meta_concentration_by_mis_deep_dive2_section"
+    ],
+    "already_answered": [],
+    "unanswered_questions": [
+      "How does FRESH FOOD decompose by CATEGORY_NAME?",
+      "How does FRESH FOOD decompose by CATEGORY_NAME_2?",
+      "How does FRESH FOOD decompose by SECTION? (a scan slice exists but is partial/unfiltered - verification required)"
+    ],
+    "recommended_probes": [
+      {
+        "dimension": "CATEGORY_NAME",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "CATEGORY_NAME",
+          "reference": "'MIS_DEEP_DIVE2'[CATEGORY_NAME]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "FRESH FOOD",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "CATEGORY_NAME_2",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "CATEGORY_NAME_2",
+          "reference": "'MIS_DEEP_DIVE2'[CATEGORY_NAME_2]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 50
+        },
+        "segment": "FRESH FOOD",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "SECTION",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "SECTION",
+          "reference": "'MIS_DEEP_DIVE2'[SECTION]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 50
+        },
+        "segment": "FRESH FOOD",
+        "reason": "existing slice not reusable (partial/unfiltered)",
+        "verify_source": "meta_concentration_by_mis_deep_dive2_section",
+        "template": "segment_by_dimension_change"
+      }
+    ],
+    "available_dimensions": [
+      "CATEGORY_NAME",
+      "CATEGORY_NAME_0",
+      "CATEGORY_NAME_1",
+      "CATEGORY_NAME_2",
+      "DOC_MONTH",
+      "SECTION",
+      "SUPPLIER_NAME",
+      "UPDATED_DATE"
+    ],
+    "stop_condition": "Stop once FRESH FOOD's movement is decomposed across at least one drill dimension with complete + comparable coverage, or the shared probe budget is exhausted. Facts flagged verification_required may inform the explanation but must not, on their own, end the investigation.",
+    "reuse_summary": {
+      "drill_dimensions": 3,
+      "answered_by_reuse": 0,
+      "facts_reusable": 0,
+      "gaps_needing_probe": 3
+    }
+  }
+}

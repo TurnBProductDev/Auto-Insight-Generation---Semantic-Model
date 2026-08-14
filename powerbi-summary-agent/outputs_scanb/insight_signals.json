@@ -1,0 +1,183 @@
+[
+  {
+    "candidate_id": "cand_01_period_sustained_decline",
+    "related_candidate_ids": [
+      "cand_03_period_change_contribution",
+      "cand_08_period_change_contribution"
+    ],
+    "id": "august_to_december_revenue_decline",
+    "kind": "business",
+    "description": "Revenue fell for 5 consecutive months from August to December, totalling -4440787.8658 and accounting for 95.8541% of the full-year revenue decline, with the largest monthly drops in October (-1730714.7096) and August (-1304392.2521).",
+    "affected_segment": "DOC_MONTH:August..December",
+    "segment_members": [
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ],
+    "impact_value": -4440787.8658,
+    "impact_share": 95.8541,
+    "question": "What changed from August to December, especially in October and August, to drive almost all of the year's revenue decline?",
+    "evidence_query": "meta_period_by_mis_deep_dive2_doc_month",
+    "decomposition": null,
+    "score": 100.85405802437124,
+    "candidate_type": "period_sustained_decline",
+    "evidence_segment": "DOC_MONTH:August..December",
+    "metric": "mis_deep_dive2::revenue",
+    "anchor": "august..december",
+    "period_label": "August-December",
+    "level": "period",
+    "story_key": "period:v1:fe360cba593dff5d2179170ef5a90a52e7ecd6192eff2ab8777011ca4b943202",
+    "segment": [
+      "doc_month:august..december"
+    ],
+    "analysis_type": "period_sustained_decline",
+    "period_anchor": "2023-12",
+    "direction": -1,
+    "covered_story_keys": [
+      "period:v1:fe360cba593dff5d2179170ef5a90a52e7ecd6192eff2ab8777011ca4b943202",
+      "period:v1:2d8e6f15d4cbb1e96cf7ea95d04ff31d23ceaedb7c847c36115b0e782c680ba6",
+      "period:v1:227f7105c87e1cdf9d33c049434bdcffe8697032416602330c1711e6837fd57a"
+    ]
+  },
+  {
+    "candidate_id": "cand_13_change_contribution",
+    "related_candidate_ids": [
+      "cand_36_change_contribution",
+      "cand_37_change_contribution",
+      "cand_18_change_contribution",
+      "cand_35_change_contribution"
+    ],
+    "id": "technology_revenue_decline",
+    "kind": "business",
+    "description": "TECHNOLOGY revenue fell by -1991123.9726, from 9907943.6986 to 7916819.726, with corroborating declines in CONSUMER DEVICES (-1001717.3973), GENERAL ELECTRONICS PRODUCTS (-1001717.3973), and LED TV (-916983.0137).",
+    "affected_segment": "TECHNOLOGY",
+    "segment_members": null,
+    "impact_value": -1991123.9726,
+    "impact_share": null,
+    "question": "Why did TECHNOLOGY lose -1991123.9726 in revenue, and how much of that decline came from LED TV within CONSUMER DEVICES?",
+    "evidence_query": "meta_movers_by_mis_deep_dive2_department",
+    "decomposition": null,
+    "score": 24.596841840425878,
+    "candidate_type": "change_contribution",
+    "evidence_segment": "TECHNOLOGY",
+    "metric": "mis_deep_dive2::revenue",
+    "bundle_id": "MIS_DEEP_DIVE2::revenue",
+    "metric_family": "revenue",
+    "dimension": [
+      "'mis_deep_dive2'[department]"
+    ],
+    "direction": -1,
+    "current": 7916819.726,
+    "prior": 9907943.6986,
+    "level": "high",
+    "story_key": "high:v1:0838876f3de5ec3d5482676ff9421192a4963412731199631860aac08c95be48",
+    "segment": [
+      "technology"
+    ],
+    "analysis_type": "change_contribution",
+    "period_anchor": "2023-12",
+    "covered_story_keys": [
+      "high:v1:0838876f3de5ec3d5482676ff9421192a4963412731199631860aac08c95be48",
+      "high:v1:c33deaa80877eee3d46251aaece609f27ef400e130ac6f74230f3010ef27faa3",
+      "high:v1:efb760ed639b2b53c36e2074b6874d215cac3e646c4aa94ac6844a54c2212248",
+      "high:v1:5134efdccb9332ae8bc26a8b44c753141990297e21fa1fbaf548ad7f7ef91e84",
+      "high:v1:108b5cb4f7f9c99860e05dd3e97f8a2e11847a86658ddd654970c6995849fd73"
+    ]
+  },
+  {
+    "candidate_id": "cand_23_change_contribution",
+    "related_candidate_ids": [
+      "cand_02_change_contribution",
+      "cand_04_change_contribution"
+    ],
+    "id": "consumer_goods_revenue_transactions_divergence",
+    "kind": "business",
+    "description": "CONSUMER GOODS revenue fell by -1491253.2329 from 47047585.3836 to 45556332.1507 while Units rose by 486524.24 and transactions fell by -1224468.0, making it the largest transactions decline among departments alongside a material revenue decline.",
+    "affected_segment": "CONSUMER GOODS",
+    "segment_members": null,
+    "impact_value": -1491253.2329,
+    "impact_share": null,
+    "question": "Why did CONSUMER GOODS lose -1491253.2329 in revenue even though Units grew by 486524.24, and which categories within the department drove the -1224468.0 transactions decline?",
+    "evidence_query": "meta_movers_by_mis_deep_dive2_department",
+    "decomposition": null,
+    "score": 18.421816229325746,
+    "candidate_type": "change_contribution",
+    "evidence_segment": "CONSUMER GOODS",
+    "metric": "mis_deep_dive2::revenue",
+    "bundle_id": "MIS_DEEP_DIVE2::revenue",
+    "metric_family": "revenue",
+    "dimension": [
+      "'mis_deep_dive2'[department]"
+    ],
+    "direction": -1,
+    "current": 45556332.1507,
+    "prior": 47047585.3836,
+    "level": "high",
+    "story_key": "high:v1:2c566184e9c656ae129f38b66046f023b94b22b1c58b3c3d3e7f02e2c9c9bdd3",
+    "segment": [
+      "consumer goods"
+    ],
+    "analysis_type": "change_contribution",
+    "period_anchor": "2023-12",
+    "covered_story_keys": [
+      "high:v1:2c566184e9c656ae129f38b66046f023b94b22b1c58b3c3d3e7f02e2c9c9bdd3",
+      "high:v1:605c78aaba4bab9ad8782dcef4645647719dc73e25a8bf1ad58091d54a7d6203",
+      "high:v1:2a5232a01b707fd56db20b108e2d6402668bd5ca68ba31c04774b7efc1273bdb"
+    ]
+  },
+  {
+    "candidate_id": "cand_25_change_contribution",
+    "related_candidate_ids": [
+      "cand_12_change_contribution",
+      "cand_31_change_contribution",
+      "cand_05_change_contribution",
+      "cand_07_change_contribution",
+      "cand_16_change_contribution",
+      "cand_17_change_contribution"
+    ],
+    "id": "fresh_food_and_green_groceries_mixed_volume_value",
+    "kind": "business",
+    "description": "FRESH FOOD revenue fell by -1453854.8219 from 21046633.1699 to 19592778.3479 even as Units rose by 427618.51 and transactions rose by 348278.0, and within it GREEN GROCERIES revenue fell by -819637.3014 while Units rose by 394409.0 and transactions rose by 269083.0.",
+    "affected_segment": "FRESH FOOD",
+    "segment_members": [
+      "FRESH FOOD",
+      "GREEN GROCERIES",
+      "VEGETABLE AND FRUITS"
+    ],
+    "impact_value": -1453854.8219,
+    "impact_share": null,
+    "question": "Why did FRESH FOOD, especially GREEN GROCERIES, lose revenue despite higher Units and transactions?",
+    "evidence_query": "meta_movers_by_mis_deep_dive2_department",
+    "decomposition": null,
+    "score": 17.959824504000434,
+    "candidate_type": "change_contribution",
+    "evidence_segment": "FRESH FOOD",
+    "metric": "mis_deep_dive2::revenue",
+    "bundle_id": "MIS_DEEP_DIVE2::revenue",
+    "metric_family": "revenue",
+    "dimension": [
+      "'mis_deep_dive2'[department]"
+    ],
+    "direction": -1,
+    "current": 19592778.3479,
+    "prior": 21046633.1699,
+    "level": "high",
+    "story_key": "high:v1:3e64346b0f116abcd24686b17e1ebe863ea707dbc5fa2d66214ba86cc825e6aa",
+    "segment": [
+      "fresh food"
+    ],
+    "analysis_type": "change_contribution",
+    "period_anchor": "2023-12",
+    "covered_story_keys": [
+      "high:v1:3e64346b0f116abcd24686b17e1ebe863ea707dbc5fa2d66214ba86cc825e6aa",
+      "high:v1:6aafcbac16df670df8e56a5912e8c8c88843d0cf2e7551fb9e1f8c75ca71d3df",
+      "high:v1:d6422654f76abe2e75920b5895ff1454581a909fa1b29cf87395573e1986e9eb",
+      "high:v1:3b2a8db4e6e5bf67cc3c57fd176ba2f17c153469bfba7b8b135e4ca36001a732",
+      "high:v1:03c1d12f5f77f0f9e7805c65ab50b7ad759206e31d5bd939db8e1c8f2f4a96f0",
+      "high:v1:c50dd0a645e8266283c52a0d96cdf1db74716c90608c2b5d240c3df3aa65b90f",
+      "high:v1:bdf50f951a4fd2e3a8fc5840c331b0c673788e805cb1d5c2c3c326c2080e19c5"
+    ]
+  }
+]

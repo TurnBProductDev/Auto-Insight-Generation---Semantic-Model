@@ -1,0 +1,154 @@
+[18:54:56] Node 1: config loaded.
+[18:54:56]   workspace=6d383900-b84d-4bce-afb4-b95453bee00a dataset=b3458a38-ad83-4e9a-b2f2-39d15c6aa22c provider=azure_openai model=claude-sonnet-5 exec_mode=python
+[18:54:56]   no business rules file found (config/business_rules.md); snapshot notes none in force.
+[18:54:56] Node 2: reading semantic model metadata via INFO.VIEW DAX...
+[18:54:57]   tables: 19 rows
+[18:54:58]   columns: 173 rows
+[18:54:59]   measures: 56 rows
+[18:55:00]   relationships: 15 rows
+[18:55:10]   Fabric TMSL getDefinition: enriched 56/56 measure expressions.
+[18:55:10] Metadata assembled: 19 tables, 56 measures, 7 date fields.
+[18:55:10] Metadata profile: deriving measures, dimensions and relationships...
+[18:55:10] Metadata profile: primary=revenue; fact=MIS_DEEP_DIVE2; entity='MIS_DEEP_DIVE2'[store_no]; 24 drill dimensions; 7 time dimensions.
+[18:55:10] Baseline: discovering entity comparison scope from metadata-selected objects...
+[18:55:11] Baseline scope: 4 comparable, 1 current-only, 0 prior-only; source=business_rule_config_validated_by_data.
+[18:55:11] Shared baseline: executing metadata-driven diagnostic coverage pre-fork...
+[18:55:18] Shared metadata coverage: 10/10 queries succeeded pre-fork.
+[18:55:18] Node 3: understanding the report/model...
+[18:55:35] Domain: 'Retail / Sales performance'; 17 key measures; time summary possible: True.
+[18:55:35] Insight branch: normalizing raw scan results...
+[18:55:35] Insight scan normalized 12 results (12 successful).
+[18:55:35] Node 4: planning DAX queries automatically...
+[18:55:52] Planned 8 queries: grand_totals_all_entities, grand_totals_comparable_population, new_entity_totals_cfh022, store_kpi_comparison, division_kpi_summary, category_kpi_summary, store_by_product_group_cross, recent_daily_trend_all_entities
+[18:55:52] Node 5: generating DAX for each planned query (LLM)...
+[18:55:57]   grand_totals_all_entities: generated.
+[18:56:07]   grand_totals_comparable_population: generated.
+[18:56:14]   new_entity_totals_cfh022: generated.
+[18:56:20]   store_kpi_comparison: generated.
+[18:56:25]   division_kpi_summary: generated.
+[18:56:30]   category_kpi_summary: generated.
+[18:56:39]   store_by_product_group_cross: generated.
+[18:56:44]   recent_daily_trend_all_entities: generated.
+[18:56:44] Generated 8 DAX statements.
+[18:55:53] Temporal gate: using 'MIS_DEEP_DIVE2'[month] (month, 7 periods, reconciled); gated 1 load-date table(s); worst period March concentrated in IMPORTED FRUITS.
+[18:56:44] Business-day source: disabled - both recent-week and daily monitoring disabled by config.
+[18:56:44] Node 6: validating generated DAX against metadata...
+[18:56:44]   held for repair grand_totals_all_entities: comparison query is not provably filtered to the resolved comparable population on 'MIS_DEEP_DIVE2'[store_no]
+[18:56:44]   held for repair new_entity_totals_cfh022: comparison query includes excluded/current-only entities: ['CFH022']
+[18:56:44]   held for repair store_kpi_comparison: comparison query is not provably filtered to the resolved comparable population on 'MIS_DEEP_DIVE2'[store_no]
+[18:56:44]   held for repair division_kpi_summary: comparison query is not provably filtered to the resolved comparable population on 'MIS_DEEP_DIVE2'[store_no]
+[18:56:44]   held for repair category_kpi_summary: comparison query is not provably filtered to the resolved comparable population on 'MIS_DEEP_DIVE2'[store_no]
+[18:56:44]   held for repair store_by_product_group_cross: comparison query is not provably filtered to the resolved comparable population on 'MIS_DEEP_DIVE2'[store_no]
+[18:56:44]   held for repair recent_daily_trend_all_entities: comparison query is not provably filtered to the resolved comparable population on 'MIS_DEEP_DIVE2'[store_no]
+[18:56:44] 1 of 8 queries passed validation (7 eligible for repair).
+[18:56:44] Node 7: executing 1 DAX queries (mode=python)...
+[18:56:45]   summary: attempting repair for skipped query 'grand_totals_all_entities'...
+[18:56:50]   summary: repair for 'grand_totals_all_entities': failed
+[18:56:50]   summary: attempting repair for skipped query 'new_entity_totals_cfh022'...
+[18:56:58]   summary: repair for 'new_entity_totals_cfh022': failed
+[18:56:58]   summary: attempting repair for skipped query 'store_kpi_comparison'...
+[18:57:04]   summary: repair for 'store_kpi_comparison': failed
+[18:57:04]   summary: attempting repair for skipped query 'division_kpi_summary'...
+[18:57:10]   summary: repair for 'division_kpi_summary': failed
+[18:57:10]   summary: attempting repair for skipped query 'category_kpi_summary'...
+[18:57:16]   summary: repair for 'category_kpi_summary': failed
+[18:57:16]   summary: attempting repair for skipped query 'store_by_product_group_cross'...
+[18:57:22]   summary: repair for 'store_by_product_group_cross': failed
+[18:57:22]   summary: attempting repair for skipped query 'recent_daily_trend_all_entities'...
+[18:57:28]   summary: repair for 'recent_daily_trend_all_entities': failed
+[18:57:28] Executed queries: 1/8 succeeded.
+[18:57:28] ERROR:   query 'grand_totals_all_entities' failed: still invalid after repair attempt: comparison query is not provably filtered to the resolved comparable population on 'MIS_DEEP_DIVE2'[store_no] (original: comparison query is not provably filtered t
+[18:57:28] ERROR:   query 'new_entity_totals_cfh022' failed: still invalid after repair attempt: comparison query includes excluded/current-only entities: ['CFH022'] (original: comparison query includes excluded/current-only entities: ['CFH022'])
+[18:57:28] ERROR:   query 'store_kpi_comparison' failed: still invalid after repair attempt: comparison query is not provably filtered to the resolved comparable population on 'MIS_DEEP_DIVE2'[store_no] (original: comparison query is not provably filtered t
+[18:57:28] ERROR:   query 'division_kpi_summary' failed: still invalid after repair attempt: comparison query is not provably filtered to the resolved comparable population on 'MIS_DEEP_DIVE2'[store_no] (original: comparison query is not provably filtered t
+[18:57:28] ERROR:   query 'category_kpi_summary' failed: still invalid after repair attempt: comparison query is not provably filtered to the resolved comparable population on 'MIS_DEEP_DIVE2'[store_no] (original: comparison query is not provably filtered t
+[18:57:28] ERROR:   query 'store_by_product_group_cross' failed: still invalid after repair attempt: comparison query is not provably filtered to the resolved comparable population on 'MIS_DEEP_DIVE2'[store_no] (original: comparison query is not provably filtered t
+[18:57:28] ERROR:   query 'recent_daily_trend_all_entities' failed: still invalid after repair attempt: comparison query is not provably filtered to the resolved comparable population on 'MIS_DEEP_DIVE2'[store_no] (original: comparison query is not provably filtered t
+[18:56:44] Recent-week gate: disabled - recent-week monitoring disabled by config.
+[18:57:28] Daily anomaly gate: disabled - daily anomaly monitoring disabled by config.
+[18:57:28] Node 8: normalizing raw Power BI results...
+[18:57:28] Normalized 8 results (1 successful).
+[18:57:28] Evidence catalog: 13 contracts (12 construction-time).
+[18:57:28] Summary period: grain=month data_as_of=2026-07-27 anchor=2026-06 freshness=current.
+[18:57:28] Insight branch: computing deterministic stat candidates...
+[18:57:28] Stat candidates: 101 business, 0 data-quality.
+[18:57:28]   [222.1] change_contribution: CF-CONFECTIONERY: QTY Growth of -529.6K (from 4.4M to 3.9M), 222.1% of the total change
+[18:57:28]   [221.9] change_contribution: CF-CHOCOLATE: QTY Growth of -529.2K (from 4.4M to 3.9M), 221.9% of the total change
+[18:57:28]   [192.3] change_contribution: CHOCOLATE COATED BARS: QTY Growth of -458.7K (from 3.4M to 2.9M), 192.3% of the total change
+[18:57:28]   [152.9] change_contribution: FMCG FOOD: QTY Growth of -364.6K (from 10.4M to 10.0M), 152.9% of the total change
+[18:57:28]   [123.8] change_contribution: CFH021: revenue Growth of 4.3M (from 36.5M to 40.8M), 123.8% of the total change; split: volume 901.4K / rate 3.4M (per QTY Growth)
+[18:57:28] Summary candidates: 7 perspective(s) from summary-owned evidence.
+[18:57:28] Novelty filter: memory disabled - passing all candidates through.
+[18:57:34] Fresh summary: authored new_data perspective summary_7783fd0e315c (mode=llm).
+[18:57:28] Insight branch: detecting notable signals in scan results...
+[18:57:55] Detected 13 signals: confectionery_chocolate_volume_decline[business], fmcg_food_volume_down_revenue_still_up[business], cfh021_dominates_comparable_growth[business], monthly_revenue_swings_centered_in_april_and_march[business], farm_fresh_fmcg_food_dominate_comparable_base[business], cfh014_cfh021_concentrate_store_base[business], cfh017_decline_across_revenue_qty_and_bills[business], fresh_chicken_parts_group_growth_with_rate_pressure[business], meat_growth_driven_by_volume_with_lower_rate[business], fruit_and_vegetables_decline_in_revenue_and_volume[business], sun_flower_oil_decline[business], edible_oils_revenue_up_without_volume_gain[business], cfh022_current_only_store_outside_comparable_base[business]
+[18:57:55] Fresh structured summary validated and rendered (4 metric tile(s), 3 section(s), one supporting chart).
+[18:57:55] Insight branch: assembling evidence briefs (deterministic reuse pass)...
+[18:57:55] Evidence briefs: 13 signals; 0 drill-dimensions answered by reuse, 39 gaps flagged for probing.
+[18:57:55] Coverage matrix: 27 dimensions, 3 with trusted (complete+comparable) coverage.
+[18:57:55] Insight branch: targeted gap scan from metadata-compatible dimensions...
+[18:57:57]   gap scan 'confectionery_chocolate_volume_decline': 3 REST calls, filled ['product_group_name', 'special_product_group_name', 'store_no'].
+[18:57:59]   gap scan 'fmcg_food_volume_down_revenue_still_up': 3 REST calls, filled ['product_group_name', 'special_product_group_name', 'store_no'].
+[18:58:02]   gap scan 'farm_fresh_fmcg_food_dominate_comparable_base': 3 REST calls, filled ['product_group_name', 'special_product_group_name', 'store_no'].
+[18:58:03]   gap scan 'cfh014_cfh021_concentrate_store_base': 2 REST calls, filled ['item_category_name', 'product_group_name'].
+[18:58:05]   gap scan 'fresh_chicken_parts_group_growth_with_rate_pressure': 3 REST calls, filled ['item_category_name', 'special_product_group_name', 'store_no'].
+[18:58:07]   gap scan 'meat_growth_driven_by_volume_with_lower_rate': 3 REST calls, filled ['product_group_name', 'special_product_group_name', 'store_no'].
+[18:58:09]   gap scan 'fruit_and_vegetables_decline_in_revenue_and_volume': 3 REST calls, filled ['product_group_name', 'special_product_group_name', 'store_no'].
+[18:58:11]   gap scan 'sun_flower_oil_decline': 2 REST calls, filled ['item_category_name', 'product_group_name'].
+[18:58:13]   gap scan 'edible_oils_revenue_up_without_volume_gain': 3 REST calls, filled ['item_category_name', 'special_product_group_name', 'store_no'].
+[18:58:15]   gap scan 'cfh022_current_only_store_outside_comparable_base': 3 REST calls, filled ['item_category_name', 'product_group_name', 'special_product_group_name'].
+[18:58:15] Gap scan complete: 28 REST calls; global budget remaining=2.
+[18:57:55] === summary branch finished ===
+[18:58:15] Insight branch: investigating 13 signals (tool-calling agent)...
+[18:58:15]   investigating signal 'confectionery_chocolate_volume_decline': Why did CF-CONFECTIONERY lose 529636.4292 units, especially within CF-CHOCOLATE and CHOCOLATE COATED BARS?
+[18:58:23]   'confectionery_chocolate_volume_decline': 0/0 investigator probes (+3 gap-scan), concluded=True.
+[18:58:23]   investigating signal 'fmcg_food_volume_down_revenue_still_up': Why did FMCG FOOD lose 364641.2883 units while still adding 713542.89 in revenue Growth?
+[18:58:33]   'fmcg_food_volume_down_revenue_still_up': 0/0 investigator probes (+3 gap-scan), concluded=True.
+[18:58:33]   investigating signal 'cfh021_dominates_comparable_growth': Why did CFH021 contribute 4296708.76 of revenue Growth, and which departments or product groups drove its higher revenue per unit and transaction growth?
+[18:58:42]     probe 1/3 for 'cfh021_dominates_comparable_growth': 20 rows.
+[18:58:43]     probe 2/3 for 'cfh021_dominates_comparable_growth': 20 rows.
+[18:58:44]     probe 3/3 for 'cfh021_dominates_comparable_growth': 20 rows.
+[18:58:51]   'cfh021_dominates_comparable_growth': 3/3 investigator probes (+0 gap-scan), concluded=True.
+[18:58:51]   investigating signal 'monthly_revenue_swings_centered_in_april_and_march': Why did April add 2112426.17 in revenue Growth after March fell by 2043504.72, and which product groups explain the month-to-month swing?
+[18:58:57]     probe 1/3 for 'monthly_revenue_swings_centered_in_april_and_march': 20 rows.
+[18:59:00]     probe 2/3 for 'monthly_revenue_swings_centered_in_april_and_march': 20 rows.
+[18:59:06]   'monthly_revenue_swings_centered_in_april_and_march': 2/3 investigator probes (+0 gap-scan), concluded=True.
+[18:59:06]   investigating signal 'farm_fresh_fmcg_food_dominate_comparable_base': How much of current performance concentration in the comparable base is being driven by FARM FRESH versus FMCG FOOD, and are recent changes mainly coming from one of the two?
+[18:59:15]   'farm_fresh_fmcg_food_dominate_comparable_base': 0/0 investigator probes (+3 gap-scan), concluded=True.
+[18:59:15]   investigating signal 'cfh014_cfh021_concentrate_store_base': What specific categories or product groups make CFH014 and CFH021 account for 63.5904% of comparable net revenue CURRENT?
+[18:59:22]   'cfh014_cfh021_concentrate_store_base': 0/1 investigator probes (+2 gap-scan), concluded=True.
+[18:59:22]   investigating signal 'cfh017_decline_across_revenue_qty_and_bills': Why did CFH017 lose 1223427.93 in revenue Growth, along with declines in quantity and bills?
+[18:59:28]     probe 1/3 for 'cfh017_decline_across_revenue_qty_and_bills': 20 rows.
+[18:59:34]   'cfh017_decline_across_revenue_qty_and_bills': 1/3 investigator probes (+0 gap-scan), concluded=True.
+[18:59:34]   investigating signal 'fresh_chicken_parts_group_growth_with_rate_pressure': Why did CF-FRESH CHICKEN & PARTS add 1108089.71 in revenue while revenue per unit moved lower in the decomposition?
+[18:59:43]   'fresh_chicken_parts_group_growth_with_rate_pressure': 0/0 investigator probes (+3 gap-scan), concluded=True.
+[18:59:43]   investigating signal 'meat_growth_driven_by_volume_with_lower_rate': Why did CF-MEAT grow revenue by 742010.12 while the decomposition shows a large negative rate effect against strong volume gains?
+[18:59:50]   'meat_growth_driven_by_volume_with_lower_rate': 0/0 investigator probes (+3 gap-scan), concluded=True.
+[18:59:50]   investigating signal 'fruit_and_vegetables_decline_in_revenue_and_volume': Why did CF-FRUIT & VEGETABLES lose 677690.02 in revenue and 213974.2031 in quantity?
+[18:59:57]   'fruit_and_vegetables_decline_in_revenue_and_volume': 0/0 investigator probes (+3 gap-scan), concluded=True.
+[18:59:57]   investigating signal 'sun_flower_oil_decline': Why did SUN FLOWER OIL lose 558877.87 in revenue with lower bills and quantity despite a positive rate contribution in the decomposition?
+[19:00:04]     probe 1/1 for 'sun_flower_oil_decline': 4 rows.
+[19:00:09]   'sun_flower_oil_decline': 1/1 investigator probes (+2 gap-scan), concluded=True.
+[19:00:09]   investigating signal 'edible_oils_revenue_up_without_volume_gain': Why did CF-EDIBLE OILS add 448691.84 in revenue when quantity was nearly flat and bills were lower?
+[19:00:17]   'edible_oils_revenue_up_without_volume_gain': 0/0 investigator probes (+3 gap-scan), concluded=True.
+[19:00:17]   investigating signal 'cfh022_current_only_store_outside_comparable_base': What explains CFH022 appearing as a current-only store with 11906055.96 in net revenue CURRENT, and how should it be handled in performance comparisons?
+[19:00:25]   'cfh022_current_only_store_outside_comparable_base': 0/0 investigator probes (+3 gap-scan), concluded=True.
+[19:00:25] Investigations complete for 13 signals.
+[19:00:25] Insight branch: synthesizing the insight report...
+[19:01:32] Insight report clarity check requested a rewrite (5 issue(s)).
+[19:02:25] Insight report clarity check requested a rewrite (10 issue(s)).
+[19:03:17] ERROR: Insight report still has 7 manager-facing clarity issue(s) after retries.
+[19:03:17] Insight board disabled (insight_tiles_enabled=false).
+[19:03:17] Insight report written (3596 words).
+[19:03:17] === insight branch finished ===
+[save] wrote outputs to /outputs_no_rules
+
+ERRORS:
+-   query 'grand_totals_all_entities' failed: still invalid after repair attempt: comparison query is not provably filtered to the resolved comparable population on 'MIS_DEEP_DIVE2'[store_no] (original: comparison query is not provably filtered t
+-   query 'new_entity_totals_cfh022' failed: still invalid after repair attempt: comparison query includes excluded/current-only entities: ['CFH022'] (original: comparison query includes excluded/current-only entities: ['CFH022'])
+-   query 'store_kpi_comparison' failed: still invalid after repair attempt: comparison query is not provably filtered to the resolved comparable population on 'MIS_DEEP_DIVE2'[store_no] (original: comparison query is not provably filtered t
+-   query 'division_kpi_summary' failed: still invalid after repair attempt: comparison query is not provably filtered to the resolved comparable population on 'MIS_DEEP_DIVE2'[store_no] (original: comparison query is not provably filtered t
+-   query 'category_kpi_summary' failed: still invalid after repair attempt: comparison query is not provably filtered to the resolved comparable population on 'MIS_DEEP_DIVE2'[store_no] (original: comparison query is not provably filtered t
+-   query 'store_by_product_group_cross' failed: still invalid after repair attempt: comparison query is not provably filtered to the resolved comparable population on 'MIS_DEEP_DIVE2'[store_no] (original: comparison query is not provably filtered t
+-   query 'recent_daily_trend_all_entities' failed: still invalid after repair attempt: comparison query is not provably filtered to the resolved comparable population on 'MIS_DEEP_DIVE2'[store_no] (original: comparison query is not provably filtered t
+- Insight report still has 7 manager-facing clarity issue(s) after retries.

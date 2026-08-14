@@ -1,0 +1,6 @@
+{
+  "enabled": false,
+  "level": "daily",
+  "reason": "daily anomaly monitoring disabled by config",
+  "analysis_complete": false
+}

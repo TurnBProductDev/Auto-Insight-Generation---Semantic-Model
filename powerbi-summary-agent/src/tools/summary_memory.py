@@ -18,9 +18,17 @@ from pathlib import Path
 from typing import Any, Iterable
 from uuid import uuid4
 
+from ..kernel import report, scoping
+
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-SCHEMA_VERSION = 3
+# v4 (WP1): the store is report-scoped. The shape is unchanged from v3 - what
+# changed is which report it belongs to, recorded in the ``scope`` block so a
+# store found on disk can say which report wrote it.
+# v5 (WP4): adds ``state_records`` for reports whose findings are states that
+# persist rather than periods that end - a stock exception has no period to
+# anchor novelty to. Purely additive; no existing record is rewritten.
+SCHEMA_VERSION = 5
 # Bounded retention for the rotation-tracking channels. Suppression identity
 # lives in focus_records (kept indefinitely, like v1 records); these two are
 # only editorial scaffolding for same-day recovery and R3 overlap checks.
@@ -40,14 +48,24 @@ def _safe_dataset(value: Any) -> str:
 
 
 def store_path(state: dict) -> Path:
+    """This report's store, per dataset AND per report (WP1).
+
+    Summary rotation belongs to one report: two reports over the same semantic
+    model must not share a daily plan or suppress each other's focus areas. A
+    pre-WP1 store sitting at the dataset root is copied into place on first use
+    - see ``kernel.scoping.migrate_store``.
+    """
     root = Path(
         state.get("summary_memory_root")
         or f"{state.get('output_folder', 'outputs')}/.runtime/summary_memory"
     )
     if not root.is_absolute():
         root = PROJECT_ROOT / root
-    path = root / _safe_dataset(state.get("dataset_id")) / "memory.json"
-    path.parent.mkdir(parents=True, exist_ok=True)
+    # The dataset segment keeps this module's historical sanitiser so an
+    # existing directory is never relocated.
+    path, _status = scoping.scoped_store(
+        root, _safe_dataset(state.get("dataset_id")),
+        report_id=state.get("report_id") or report.DEFAULT_REPORT_ID)
     return path
 
 
@@ -65,15 +83,21 @@ def _empty_store() -> dict:
         # --- schema v3: weekly multi-focus rotation ---
         "area_records": {},    # area_key -> business-area coverage + last direction/impact
         "weekly_coverage": {}, # area_key -> recent delivery dates (bounded to the window)
+        # --- schema v4: which report owns this store ---
+        "scope": {},           # {report_id, dataset_id} - stamped on first write
+        # --- schema v5: states that persist rather than periods that end ---
+        "state_records": {},   # state_key -> position, first_seen, duration
     }
 
 
-def _migrate(data: dict, dataset_id: str) -> dict:
-    """Non-destructively bring a v1 store up to the v2 shape in memory.
+def _migrate(data: dict, dataset_id: str, report_id: str = "") -> dict:
+    """Non-destructively bring an older store up to the current shape in memory.
 
     v1 records are preserved untouched. ``focus_records`` is best-effort
     backfilled so a store that only ever ran the legacy path still has a
     period-independent focus history to rotate against on the first focus run.
+    v4 adds only the ``scope`` stamp; no record is rewritten, because a store
+    that changed location did not change meaning.
     """
     data.setdefault("watermark", None)
     data.setdefault("period_anchor", None)
@@ -84,12 +108,21 @@ def _migrate(data: dict, dataset_id: str) -> dict:
     data.setdefault("recent_focus", [])
     data.setdefault("area_records", {})
     data.setdefault("weekly_coverage", {})
+    data.setdefault("scope", {})
+    data.setdefault("state_records", {})
     original = int(data.get("schema_version") or 1)
     if original < 2:
         _backfill_focus_records(data, dataset_id)
     if original < 3:
         _backfill_area_records(data, dataset_id)
         _migrate_daily_plan_v3(data)
+    if original < 4 and report_id:
+        # A pre-WP1 store was copied here from the dataset root, so it belongs
+        # to whichever report claimed it first - recorded, not guessed at later.
+        data["scope"] = {"report_id": report_id, "dataset_id": dataset_id,
+                         "migrated_from": "dataset_root"}
+    elif report_id and not data["scope"].get("report_id"):
+        data["scope"] = {"report_id": report_id, "dataset_id": dataset_id}
     data["schema_version"] = SCHEMA_VERSION
     return data
 
@@ -103,7 +136,9 @@ def load_store(state: dict) -> tuple[dict, str]:
         data = json.loads(path.read_text(encoding="utf-8"))
         if not isinstance(data, dict) or not isinstance(data.get("records"), dict):
             return _empty_store(), "corrupt"
-        return _migrate(data, str(state.get("dataset_id") or "unknown_dataset")), "ok"
+        return _migrate(
+            data, str(state.get("dataset_id") or "unknown_dataset"),
+            str(state.get("report_id") or report.DEFAULT_REPORT_ID)), "ok"
     except (OSError, ValueError, json.JSONDecodeError):
         return _empty_store(), "corrupt"
 

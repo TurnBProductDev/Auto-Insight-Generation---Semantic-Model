@@ -109,6 +109,22 @@ python -m src.main
 python -m src.main --config path/to/config.json
 ```
 
+### Or configure a client through the UI
+
+Steps 2 and 3 above are hand-editing a ~200-key file where a missing key does
+not error - it silently changes behaviour. The onboarding wizard resolves the
+dataset from a report id, probes the live model, fills the keys the probe can
+answer, refuses the destructive defaults, writes `config/<client>/` and can
+deploy the scheduled job:
+
+```bash
+pip install -r requirements.txt -r requirements-ui.txt
+python -m src.api.app                    # http://127.0.0.1:8020
+python -m src.api.app --allow-deploy     # also expose the ARM endpoints
+```
+
+See [`docs/config-ui.md`](docs/config-ui.md).
+
 ### Docker / Azure Container Apps Job
 
 The production image starts through `src.container_entrypoint`, which
@@ -208,6 +224,12 @@ run_log.txt
 
 Operational settings live in `config/config.json`; `config/agent_settings.json`
 is not read.
+
+**`src/config_schema.py` is the authoritative catalogue** of every key - type,
+default, wizard group, help text and per-client flag. `main.build_initial_state`
+builds the graph state from it, so there is no second copy of a default to
+drift, and `scripts/replay_config_schema.py` fails if the schema and the code
+ever separate. The table below is a summary; the schema is the full list.
 
 | Key | Meaning |
 |---|---|
@@ -323,6 +345,8 @@ python scripts/replay_stat_detector.py --synthetic
 python scripts/replay_evidence_assembler.py
 python scripts/replay_insight_history.py
 python scripts/replay_cloud_memory.py
+python scripts/replay_config_schema.py
+python scripts/replay_config_ui.py
 ```
 
 The metadata replay validates generated object references, comparable-scope

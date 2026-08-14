@@ -727,7 +727,7 @@ def _focus_mode_checks(temp: Path) -> None:
     assert commit.get("focus_committed") == selected_focus["focus_key"]
 
     store = json.loads(summary_memory.store_path(state).read_text(encoding="utf-8"))
-    assert store["schema_version"] == 3
+    assert store["schema_version"] == 5  # v5 (WP4): adds state_records
     assert selected_focus["focus_key"] in store["focus_records"], "commit must persist focus_records"
     today = state["summary_now_override"]
     assert today in store["daily_plan"], "commit must record the same-day plan"

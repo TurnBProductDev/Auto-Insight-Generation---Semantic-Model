@@ -1,0 +1,5 @@
+{
+  "enabled": false,
+  "level": "recent_week",
+  "reason": "recent-week monitoring disabled by config"
+}

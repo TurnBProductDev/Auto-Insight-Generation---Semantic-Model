@@ -1,0 +1,48 @@
+{
+  "domain": "Sales / Retail",
+  "fact_tables": [
+    "MIS_DEEP_DIVE2",
+    "CAT_TRANSACTIONS",
+    "MIS_BASE_FILE_MONTHLY_BRAND_TB",
+    "CAT_TABLE"
+  ],
+  "dimension_tables": [
+    "ODS",
+    "Users",
+    "UserOdsMapping"
+  ],
+  "important_measures": [
+    "net revenue CURRENT",
+    "net revenue PAST",
+    "revenue Growth",
+    "revenue growth %",
+    "net qty CURRENT",
+    "net qty PAST",
+    "QTY Growth",
+    "QTY GROWTH %",
+    "net bills CURRENT",
+    "bills growth",
+    "bills growth %",
+    "retail price current year",
+    "retail price past year",
+    "RETAIL PRICE GROWTH",
+    "QUANTITY PER TRANSACTION GROWTH",
+    "SPEND PER TRANSACTION GROWTH"
+  ],
+  "important_dimensions": [
+    "MIS_DEEP_DIVE2[LOC_CODE]",
+    "MIS_DEEP_DIVE2[DEPARTMENT]",
+    "MIS_DEEP_DIVE2[SECTION]",
+    "MIS_DEEP_DIVE2[CATEGORY_NAME]",
+    "MIS_BASE_FILE_MONTHLY_BRAND_TB[BRAND_NAME]",
+    "MIS_BASE_FILE_MONTHLY_BRAND_TB[SUPPLIER_NAME]",
+    "MIS_DEEP_DIVE2[DOC_MONTH]"
+  ],
+  "date_fields": [
+    "MIS_DEEP_DIVE2[UPDATED_DATE]",
+    "MIS_BASE_FILE_MONTHLY_BRAND_TB[MAX_DATE]",
+    "Latest_Refresh_Log[MaxRefreshDate]"
+  ],
+  "time_summary_possible": true,
+  "notes": "The model is retail-sales focused with revenue, quantity and transaction measures, but no high-confidence standalone entity/location dimension was identified from metadata."
+}

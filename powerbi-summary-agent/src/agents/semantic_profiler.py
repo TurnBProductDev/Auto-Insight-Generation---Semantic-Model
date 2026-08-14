@@ -19,6 +19,7 @@ from __future__ import annotations
 import re
 from collections import Counter, defaultdict, deque
 
+from ..domains.sales import families as sales_families
 from ..tools import file_io
 from ..utils.logger import RunLogger
 
@@ -31,27 +32,14 @@ _CURRENT = {"current", "curr", "cy", "actual", "this", "ty"}
 _PRIOR = {"past", "prior", "previous", "prev", "ly", "py", "last"}
 _CHANGE = {"growth", "grwth", "change", "chg", "variance", "var", "delta", "difference", "diff", "yoy"}
 
-_FAMILY_TOKENS = {
-    "revenue": {"revenue", "rev", "sales", "sale", "turnover", "gmv", "value", "amount"},
-    "profit": {"profit", "contribution", "earnings", "ebit", "ebitda"},
-    "cost": {"cost", "expense", "spend"},
-    "quantity": {"quantity", "qty", "units", "unit", "volume"},
-    "transactions": {"transactions", "transaction", "bills", "bill", "orders", "order", "visits", "visit"},
-    "customers": {"customers", "customer", "clients", "client", "shoppers", "shopper"},
-    "margin": {"margin", "rate", "ratio", "percent", "percentage", "price", "average", "avg"},
-}
-_VALUE_FAMILIES = {"revenue", "profit", "cost"}
-_VOLUME_FAMILIES = {"quantity", "transactions", "customers"}
-_FAMILY_PRIORITY = {
-    "revenue": 100,
-    "profit": 90,
-    "cost": 70,
-    "quantity": 60,
-    "transactions": 55,
-    "customers": 50,
-    "margin": 20,
-    "other": 0,
-}
+# The retail vocabulary now has one owner (WP3): src/domains/sales/families.py.
+# Re-sourced rather than restated, so this module and summary_candidate_builder
+# can no longer drift apart unnoticed - brief §1.3. Values are unchanged, which
+# the golden master proves.
+_FAMILY_TOKENS = sales_families.PROFILER_FAMILY_TOKENS
+_VALUE_FAMILIES = sales_families.PROFILER_VALUE_FAMILIES
+_VOLUME_FAMILIES = sales_families.PROFILER_VOLUME_FAMILIES
+_FAMILY_PRIORITY = sales_families.PROFILER_FAMILY_PRIORITY
 
 _ENTITY_TOKENS = {
     "store", "branch", "outlet", "shop", "site", "location", "warehouse",

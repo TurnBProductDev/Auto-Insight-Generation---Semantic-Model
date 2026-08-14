@@ -1,0 +1,1793 @@
+[
+  {
+    "candidate_id": "summary_2e225a20fa6f",
+    "summary_key": "summary:v1:2e225a20fa6ff11479914944424f2732b2911806d0178e3e86d54080619a17da",
+    "angle": "overall_performance",
+    "title_hint": "Overall performance at a glance",
+    "purpose": "Show the headline totals for like-for-like branches and isolate current revenue from the new branch.",
+    "query_name": "grand_totals_full_scope_and_comparable",
+    "dimension": "overall",
+    "segment": "",
+    "metric": "revenue Growth",
+    "metric_family": "revenue",
+    "direction": "increase",
+    "observation_value": 3414267.9799999297,
+    "score": 106.53329773234056,
+    "period_anchor": "2026-07-28",
+    "evidence": {
+      "rows": [
+        {
+          "revenue Growth": 3414267.9799999297,
+          "QTY Growth": -249866.9500199929,
+          "QUANTITY PER TRANSACTION GROWTH": -0.09705338029165889,
+          "bills growth": 240076,
+          "RETAIL PRICE GROWTH": 0.27068055190481566,
+          "SPEND PER TRANSACTION GROWTH": -0.02583151290785146
+        }
+      ],
+      "coverage": "returned_rows",
+      "scope": {
+        "population_status": "returned_rows",
+        "comparable_entities": [
+          "CFH014",
+          "CFH017",
+          "CFH018",
+          "CFH021"
+        ],
+        "excluded_entities": [
+          "CFH022"
+        ],
+        "note": ""
+      },
+      "facts": [
+        {
+          "fact_id": "F1",
+          "subject": "Overall",
+          "metric": "Revenue change",
+          "display_value": "+3.4M",
+          "raw_value": 3414267.9799999297,
+          "statement": "Overall — Revenue change: +3.4M"
+        },
+        {
+          "fact_id": "F2",
+          "subject": "Overall",
+          "metric": "Quantity change",
+          "display_value": "-249.9K",
+          "raw_value": -249866.9500199929,
+          "statement": "Overall — Quantity change: -249.9K"
+        },
+        {
+          "fact_id": "F3",
+          "subject": "Overall",
+          "metric": "Quantity per transaction change",
+          "display_value": "-0.10",
+          "raw_value": -0.09705338029165889,
+          "statement": "Overall — Quantity per transaction change: -0.10"
+        },
+        {
+          "fact_id": "F4",
+          "subject": "Overall",
+          "metric": "Transactions change",
+          "display_value": "+240.1K",
+          "raw_value": 240076.0,
+          "statement": "Overall — Transactions change: +240.1K"
+        }
+      ]
+    },
+    "metadata_context": {
+      "dimension": "Overall",
+      "metric": "Revenue change",
+      "metric_family": "revenue",
+      "metric_phase": null,
+      "metric_description": "",
+      "population_status": "returned_rows",
+      "scope_note": ""
+    },
+    "metrics": [
+      {
+        "label": "Revenue change",
+        "value": "+3.4M",
+        "tone": "teal"
+      },
+      {
+        "label": "Quantity change",
+        "value": "-249.9K",
+        "tone": "teal"
+      },
+      {
+        "label": "Quantity per transaction change",
+        "value": "-0.10",
+        "tone": "teal"
+      }
+    ],
+    "visual": {
+      "type": "bar",
+      "title": "Revenue: prior versus current",
+      "labels": [
+        "Prior",
+        "Current"
+      ],
+      "values": [
+        122395957.62000005,
+        125810225.6
+      ],
+      "value_label": "Revenue"
+    }
+  },
+  {
+    "candidate_id": "summary_85750267fcdd",
+    "summary_key": "summary:v1:85750267fcdda68ec909fd072ca172fb8ccdc9fe5499489f327505e1d15e8014",
+    "angle": "period_movement",
+    "title_hint": "How performance moved across the latest period",
+    "purpose": "Add a current-year recent transactions view using the daily branch transaction table, without using it for year-on-year comparison.",
+    "query_name": "daily_transactions_recent_true_branch_counts",
+    "dimension": "TY_DATE",
+    "segment": "",
+    "metric": "True Branch Transactions",
+    "metric_family": "transactions",
+    "direction": "increase",
+    "observation_value": 35510.0,
+    "score": 99.55036290233166,
+    "period_anchor": "2026-07-28",
+    "evidence": {
+      "rows": [
+        {
+          "TY_DATE": "2026-07-25T00:00:00",
+          "LOC_CODE": "CFH014",
+          "True Branch Transactions": 2770
+        },
+        {
+          "TY_DATE": "2026-07-25T00:00:00",
+          "LOC_CODE": "CFH017",
+          "True Branch Transactions": 1204
+        },
+        {
+          "TY_DATE": "2026-07-26T00:00:00",
+          "LOC_CODE": "CFH017",
+          "True Branch Transactions": 1159
+        },
+        {
+          "TY_DATE": "2026-07-25T00:00:00",
+          "LOC_CODE": "CFH021",
+          "True Branch Transactions": 2848
+        },
+        {
+          "TY_DATE": "2026-07-27T00:00:00",
+          "LOC_CODE": "CFH017",
+          "True Branch Transactions": 1211
+        },
+        {
+          "TY_DATE": "2026-07-26T00:00:00",
+          "LOC_CODE": "CFH021",
+          "True Branch Transactions": 2365
+        },
+        {
+          "TY_DATE": "2026-07-26T00:00:00",
+          "LOC_CODE": "CFH014",
+          "True Branch Transactions": 3196
+        },
+        {
+          "TY_DATE": "2026-07-27T00:00:00",
+          "LOC_CODE": "CFH018",
+          "True Branch Transactions": 2040
+        },
+        {
+          "TY_DATE": "2026-07-25T00:00:00",
+          "LOC_CODE": "CFH018",
+          "True Branch Transactions": 2389
+        },
+        {
+          "TY_DATE": "2026-07-28T00:00:00",
+          "LOC_CODE": "CFH017",
+          "True Branch Transactions": 1269
+        }
+      ],
+      "coverage": "returned_rows",
+      "scope": {
+        "population_status": "returned_rows",
+        "comparable_entities": [
+          "CFH014",
+          "CFH017",
+          "CFH018",
+          "CFH021"
+        ],
+        "excluded_entities": [
+          "CFH022"
+        ],
+        "note": ""
+      },
+      "facts": [
+        {
+          "fact_id": "F1",
+          "subject": "2026-07-26T00:00:00",
+          "metric": "True branch transactions",
+          "display_value": "3.2K",
+          "raw_value": 3196.0,
+          "statement": "2026-07-26T00:00:00 — True branch transactions: 3.2K"
+        },
+        {
+          "fact_id": "F2",
+          "subject": "2026-07-27T00:00:00",
+          "metric": "True branch transactions",
+          "display_value": "3.0K",
+          "raw_value": 3010.0,
+          "statement": "2026-07-27T00:00:00 — True branch transactions: 3.0K"
+        },
+        {
+          "fact_id": "F3",
+          "subject": "2026-07-28T00:00:00",
+          "metric": "True branch transactions",
+          "display_value": "2.9K",
+          "raw_value": 2935.0,
+          "statement": "2026-07-28T00:00:00 — True branch transactions: 2.9K"
+        },
+        {
+          "fact_id": "F4",
+          "subject": "2026-07-25T00:00:00",
+          "metric": "True branch transactions",
+          "display_value": "2.8K",
+          "raw_value": 2848.0,
+          "statement": "2026-07-25T00:00:00 — True branch transactions: 2.8K"
+        }
+      ]
+    },
+    "metadata_context": {
+      "dimension": "Ty date",
+      "metric": "True branch transactions",
+      "metric_family": "transactions",
+      "metric_phase": null,
+      "metric_description": "",
+      "population_status": "returned_rows",
+      "scope_note": ""
+    },
+    "metrics": [],
+    "visual": {
+      "type": "line",
+      "title": "True branch transactions by ty date",
+      "labels": [
+        "2026-07-25T00:00:00",
+        "2026-07-25T00:00:00",
+        "2026-07-26T00:00:00",
+        "2026-07-25T00:00:00",
+        "2026-07-27T00:00:00",
+        "2026-07-26T00:00:00",
+        "2026-07-26T00:00:00",
+        "2026-07-27T00:00:00",
+        "2026-07-25T00:00:00",
+        "2026-07-28T00:00:00",
+        "2026-07-28T00:00:00",
+        "2026-07-28T00:00:00"
+      ],
+      "values": [
+        2770.0,
+        1204.0,
+        1159.0,
+        2848.0,
+        1211.0,
+        2365.0,
+        3196.0,
+        2040.0,
+        2389.0,
+        1269.0,
+        2501.0,
+        2935.0
+      ],
+      "value_label": "True branch transactions"
+    }
+  },
+  {
+    "candidate_id": "summary_4ec4268bfc34",
+    "summary_key": "summary:v1:4ec4268bfc3447f0fba48a2f8725461501c628c4af8f2abf6b7daa92d3d19fcc",
+    "angle": "store_overview",
+    "title_hint": "How performance varied across stores",
+    "purpose": "Show which like-for-like branches are driving the group result.",
+    "query_name": "branch_performance_comparable",
+    "dimension": "store_no",
+    "segment": "",
+    "metric": "revenue Growth",
+    "metric_family": "revenue",
+    "direction": "increase",
+    "observation_value": 3414267.979999963,
+    "score": 96.53329773234056,
+    "period_anchor": "2026-07-28",
+    "evidence": {
+      "rows": [
+        {
+          "store_no": "CFH014",
+          "SPEND PER TRANSACTION CURRENT YEAR": 15.081337964635114,
+          "revenue Growth": -82327.9999999702,
+          "QTY Growth": -132176.1824699985,
+          "QUANTITY PER TRANSACTION GROWTH": -0.10266535348067674,
+          "bills growth": 61423,
+          "RETAIL PRICE GROWTH": 0.1591073834515777,
+          "SPEND PER TRANSACTION GROWTH": -0.39867190464534197
+        },
+        {
+          "store_no": "CFH017",
+          "SPEND PER TRANSACTION CURRENT YEAR": 15.863801863303584,
+          "revenue Growth": -1235046.2500000075,
+          "QTY Growth": -208538.07285000058,
+          "QUANTITY PER TRANSACTION GROWTH": -0.007270265359036632,
+          "bills growth": -87223,
+          "RETAIL PRICE GROWTH": 0.06861837076465616,
+          "SPEND PER TRANSACTION GROWTH": 0.10579587037838145
+        },
+        {
+          "store_no": "CFH021",
+          "SPEND PER TRANSACTION CURRENT YEAR": 15.12060413415022,
+          "revenue Growth": 4292580.819999948,
+          "QTY Growth": 148226.41159000155,
+          "QUANTITY PER TRANSACTION GROWTH": -0.12657465145048485,
+          "bills growth": 200213,
+          "RETAIL PRICE GROWTH": 0.5416145704121202,
+          "SPEND PER TRANSACTION GROWTH": 0.5047325401512914
+        },
+        {
+          "store_no": "CFH018",
+          "SPEND PER TRANSACTION CURRENT YEAR": 14.47496047354977,
+          "revenue Growth": 439061.4099999927,
+          "QTY Growth": -57379.10628999723,
+          "QUANTITY PER TRANSACTION GROWTH": -0.1254931881408634,
+          "bills growth": 65663,
+          "RETAIL PRICE GROWTH": 0.2010370268335926,
+          "SPEND PER TRANSACTION GROWTH": -0.3092049128445655
+        }
+      ],
+      "coverage": "returned_rows",
+      "scope": {
+        "population_status": "resolved_comparable_population",
+        "comparable_entities": [
+          "CFH014",
+          "CFH017",
+          "CFH018",
+          "CFH021"
+        ],
+        "excluded_entities": [
+          "CFH022"
+        ],
+        "note": "Comparison is limited to 4 active comparable stores; current-only and prior-only entities are excluded."
+      },
+      "facts": [
+        {
+          "fact_id": "F1",
+          "subject": "CFH021",
+          "metric": "Revenue change",
+          "display_value": "+4.3M",
+          "raw_value": 4292580.819999948,
+          "statement": "CFH021 — Revenue change: +4.3M"
+        },
+        {
+          "fact_id": "F2",
+          "subject": "CFH021",
+          "metric": "Quantity change",
+          "display_value": "+148.2K",
+          "raw_value": 148226.41159000155,
+          "statement": "CFH021 — Quantity change: +148.2K"
+        },
+        {
+          "fact_id": "F3",
+          "subject": "CFH021",
+          "metric": "Quantity per transaction change",
+          "display_value": "-0.13",
+          "raw_value": -0.12657465145048485,
+          "statement": "CFH021 — Quantity per transaction change: -0.13"
+        },
+        {
+          "fact_id": "F4",
+          "subject": "CFH021",
+          "metric": "Transactions change",
+          "display_value": "+200.2K",
+          "raw_value": 200213.0,
+          "statement": "CFH021 — Transactions change: +200.2K"
+        },
+        {
+          "fact_id": "F5",
+          "subject": "CFH017",
+          "metric": "Revenue change",
+          "display_value": "-1.2M",
+          "raw_value": -1235046.2500000075,
+          "statement": "CFH017 — Revenue change: -1.2M"
+        },
+        {
+          "fact_id": "F6",
+          "subject": "CFH017",
+          "metric": "Quantity change",
+          "display_value": "-208.5K",
+          "raw_value": -208538.07285000058,
+          "statement": "CFH017 — Quantity change: -208.5K"
+        },
+        {
+          "fact_id": "F7",
+          "subject": "CFH017",
+          "metric": "Quantity per transaction change",
+          "display_value": "-0.007",
+          "raw_value": -0.007270265359036632,
+          "statement": "CFH017 — Quantity per transaction change: -0.007"
+        },
+        {
+          "fact_id": "F8",
+          "subject": "CFH018",
+          "metric": "Revenue change",
+          "display_value": "+439.1K",
+          "raw_value": 439061.4099999927,
+          "statement": "CFH018 — Revenue change: +439.1K"
+        },
+        {
+          "fact_id": "F9",
+          "subject": "CFH014",
+          "metric": "Revenue change",
+          "display_value": "-82.3K",
+          "raw_value": -82327.9999999702,
+          "statement": "CFH014 — Revenue change: -82.3K"
+        },
+        {
+          "fact_id": "F10",
+          "subject": "Scope",
+          "metric": "Population",
+          "display_value": "",
+          "statement": "Comparison is limited to 4 active comparable stores; current-only and prior-only entities are excluded."
+        }
+      ]
+    },
+    "metadata_context": {
+      "dimension": "Store",
+      "metric": "Revenue change",
+      "metric_family": "revenue",
+      "metric_phase": null,
+      "metric_description": "",
+      "population_status": "resolved_comparable_population",
+      "scope_note": "Comparison is limited to 4 active comparable stores; current-only and prior-only entities are excluded."
+    },
+    "metrics": [],
+    "visual": {
+      "type": "bar",
+      "title": "Revenue change by store",
+      "labels": [
+        "CFH021",
+        "CFH017",
+        "CFH018",
+        "CFH014"
+      ],
+      "values": [
+        4292580.819999948,
+        -1235046.2500000075,
+        439061.4099999927,
+        -82327.9999999702
+      ],
+      "value_label": "Revenue change"
+    }
+  },
+  {
+    "candidate_id": "summary_c68d115ed3f1",
+    "summary_key": "summary:v1:c68d115ed3f1605a0c74a2277a9fb1a712f50f9aa82456a8a6760b16b7a77b42",
+    "angle": "division_overview",
+    "title_hint": "How divisions shaped the latest result",
+    "purpose": "Show the main higher-level categories behind current like-for-like performance.",
+    "query_name": "division_breakdown_comparable",
+    "dimension": "division_name",
+    "segment": "",
+    "metric": "revenue Growth",
+    "metric_family": "revenue",
+    "direction": "increase",
+    "observation_value": 3414267.9799999245,
+    "score": 88.53329773234056,
+    "period_anchor": "2026-07-28",
+    "evidence": {
+      "rows": [
+        {
+          "division_name": "FASHION",
+          "SPEND PER TRANSACTION CURRENT YEAR": 20.955352709754745,
+          "revenue Growth": 734710.0200000079,
+          "QTY Growth": 69404.0,
+          "QUANTITY PER TRANSACTION GROWTH": -0.010812178266235373,
+          "bills growth": 54035,
+          "RETAIL PRICE GROWTH": -0.7036892806691988,
+          "SPEND PER TRANSACTION GROWTH": -1.128285898206574
+        },
+        {
+          "division_name": "FMCG FOOD",
+          "SPEND PER TRANSACTION CURRENT YEAR": 14.445788720072905,
+          "revenue Growth": 692876.4099999741,
+          "QTY Growth": -370120.7200099956,
+          "QUANTITY PER TRANSACTION GROWTH": -0.14745161265350104,
+          "bills growth": 35715,
+          "RETAIL PRICE GROWTH": 0.2350600220150536,
+          "SPEND PER TRANSACTION GROWTH": 0.054452694648828626
+        },
+        {
+          "division_name": "ELECTRONICS",
+          "SPEND PER TRANSACTION CURRENT YEAR": 48.834282892483664,
+          "revenue Growth": 541747.6500000041,
+          "QTY Growth": 19516.0,
+          "QUANTITY PER TRANSACTION GROWTH": 0.003291029441113924,
+          "bills growth": 16903,
+          "RETAIL PRICE GROWTH": -2.4359006796108957,
+          "SPEND PER TRANSACTION GROWTH": -2.6111204209079375
+        },
+        {
+          "division_name": "FARM FRESH",
+          "SPEND PER TRANSACTION CURRENT YEAR": 10.051581421869434,
+          "revenue Growth": 210218.36999996006,
+          "QTY Growth": -59422.741510002874,
+          "QUANTITY PER TRANSACTION GROWTH": -0.0643527156537651,
+          "bills growth": 51940,
+          "RETAIL PRICE GROWTH": 0.1589914844776521,
+          "SPEND PER TRANSACTION GROWTH": -0.14097275256099095
+        },
+        {
+          "division_name": "FOOTWEAR",
+          "SPEND PER TRANSACTION CURRENT YEAR": 33.272861355529116,
+          "revenue Growth": 125629.6799999983,
+          "QTY Growth": 5517.0,
+          "QUANTITY PER TRANSACTION GROWTH": -0.006117182236487162,
+          "bills growth": 5323,
+          "RETAIL PRICE GROWTH": -0.6374312696970144,
+          "SPEND PER TRANSACTION GROWTH": -0.8914281928848027
+        },
+        {
+          "division_name": "OTHER NON TRADE",
+          "SPEND PER TRANSACTION CURRENT YEAR": 7.276595871377529,
+          "revenue Growth": -1851.4400000000023,
+          "QTY Growth": 2441.0,
+          "QUANTITY PER TRANSACTION GROWTH": 0.07080310870032513,
+          "bills growth": 2085,
+          "RETAIL PRICE GROWTH": -6.248101838451631,
+          "SPEND PER TRANSACTION GROWTH": -5.764694341964832
+        },
+        {
+          "division_name": "HOME FASHION",
+          "SPEND PER TRANSACTION CURRENT YEAR": 35.32316291580393,
+          "revenue Growth": 11867.429999998538,
+          "QTY Growth": -3877.0,
+          "QUANTITY PER TRANSACTION GROWTH": -0.07807629330023125,
+          "bills growth": 100,
+          "RETAIL PRICE GROWTH": 1.2684296000933664,
+          "SPEND PER TRANSACTION GROWTH": 0.16160524474897642
+        },
+        {
+          "division_name": "LIVE KITCHEN",
+          "SPEND PER TRANSACTION CURRENT YEAR": 7.824502090276842,
+          "revenue Growth": -18682.82999999984,
+          "QTY Growth": -10178.538500000024,
+          "QUANTITY PER TRANSACTION GROWTH": -0.0705548906525637,
+          "bills growth": -3286,
+          "RETAIL PRICE GROWTH": 0.20978184786506082,
+          "SPEND PER TRANSACTION GROWTH": 0.12734375498070083
+        },
+        {
+          "division_name": "GM HOME WARE",
+          "SPEND PER TRANSACTION CURRENT YEAR": 14.1535776769831,
+          "revenue Growth": -2331.739999998361,
+          "QTY Growth": 5157.049999999988,
+          "QUANTITY PER TRANSACTION GROWTH": -0.014384198325713138,
+          "bills growth": 7097,
+          "RETAIL PRICE GROWTH": -0.14773720378519428,
+          "SPEND PER TRANSACTION GROWTH": -0.3513570971535387
+        },
+        {
+          "division_name": "FMCG NON-FOOD",
+          "SPEND PER TRANSACTION CURRENT YEAR": 17.25593804957943,
+          "revenue Growth": 616228.3799999952,
+          "QTY Growth": 46633.0,
+          "QUANTITY PER TRANSACTION GROWTH": -0.03990490391464796,
+          "bills growth": 40533,
+          "RETAIL PRICE GROWTH": 0.10602249686863541,
+          "SPEND PER TRANSACTION GROWTH": -0.07915305011421125
+        }
+      ],
+      "coverage": "returned_rows",
+      "scope": {
+        "population_status": "returned_rows",
+        "comparable_entities": [
+          "CFH014",
+          "CFH017",
+          "CFH018",
+          "CFH021"
+        ],
+        "excluded_entities": [
+          "CFH022"
+        ],
+        "note": ""
+      },
+      "facts": [
+        {
+          "fact_id": "F1",
+          "subject": "FASHION",
+          "metric": "Revenue change",
+          "display_value": "+734.7K",
+          "raw_value": 734710.0200000079,
+          "statement": "FASHION — Revenue change: +734.7K"
+        },
+        {
+          "fact_id": "F2",
+          "subject": "FASHION",
+          "metric": "Quantity change",
+          "display_value": "+69.4K",
+          "raw_value": 69404.0,
+          "statement": "FASHION — Quantity change: +69.4K"
+        },
+        {
+          "fact_id": "F3",
+          "subject": "FASHION",
+          "metric": "Quantity per transaction change",
+          "display_value": "-0.01",
+          "raw_value": -0.010812178266235373,
+          "statement": "FASHION — Quantity per transaction change: -0.01"
+        },
+        {
+          "fact_id": "F4",
+          "subject": "FASHION",
+          "metric": "Transactions change",
+          "display_value": "+54.0K",
+          "raw_value": 54035.0,
+          "statement": "FASHION — Transactions change: +54.0K"
+        },
+        {
+          "fact_id": "F5",
+          "subject": "FMCG FOOD",
+          "metric": "Revenue change",
+          "display_value": "+692.9K",
+          "raw_value": 692876.4099999741,
+          "statement": "FMCG FOOD — Revenue change: +692.9K"
+        },
+        {
+          "fact_id": "F6",
+          "subject": "FMCG FOOD",
+          "metric": "Quantity change",
+          "display_value": "-370.1K",
+          "raw_value": -370120.7200099956,
+          "statement": "FMCG FOOD — Quantity change: -370.1K"
+        },
+        {
+          "fact_id": "F7",
+          "subject": "FMCG FOOD",
+          "metric": "Quantity per transaction change",
+          "display_value": "-0.15",
+          "raw_value": -0.14745161265350104,
+          "statement": "FMCG FOOD — Quantity per transaction change: -0.15"
+        },
+        {
+          "fact_id": "F8",
+          "subject": "FMCG NON-FOOD",
+          "metric": "Revenue change",
+          "display_value": "+616.2K",
+          "raw_value": 616228.3799999952,
+          "statement": "FMCG NON-FOOD — Revenue change: +616.2K"
+        },
+        {
+          "fact_id": "F9",
+          "subject": "ELECTRONICS",
+          "metric": "Revenue change",
+          "display_value": "+541.7K",
+          "raw_value": 541747.6500000041,
+          "statement": "ELECTRONICS — Revenue change: +541.7K"
+        },
+        {
+          "fact_id": "F10",
+          "subject": "GM FASHION",
+          "metric": "Revenue change",
+          "display_value": "+510.3K",
+          "raw_value": 510270.6599999871,
+          "statement": "GM FASHION — Revenue change: +510.3K"
+        }
+      ]
+    },
+    "metadata_context": {
+      "dimension": "Division name",
+      "metric": "Revenue change",
+      "metric_family": "revenue",
+      "metric_phase": null,
+      "metric_description": "",
+      "population_status": "returned_rows",
+      "scope_note": ""
+    },
+    "metrics": [],
+    "visual": {
+      "type": "bar",
+      "title": "Revenue change by division name",
+      "labels": [
+        "FASHION",
+        "FMCG FOOD",
+        "FMCG NON-FOOD",
+        "ELECTRONICS",
+        "GM FASHION",
+        "FARM FRESH",
+        "FOOTWEAR",
+        "LIVE KITCHEN"
+      ],
+      "values": [
+        734710.0200000079,
+        692876.4099999741,
+        616228.3799999952,
+        541747.6500000041,
+        510270.6599999871,
+        210218.36999996006,
+        125629.6799999983,
+        -18682.82999999984
+      ],
+      "value_label": "Revenue change"
+    }
+  },
+  {
+    "candidate_id": "summary_5e95493288cb",
+    "summary_key": "summary:v1:5e95493288cb95eb1ba47e1b97c0b795dff10993929bb3592c8ccf543b5dfac0",
+    "angle": "category_overview",
+    "title_hint": "How categories shaped the latest result",
+    "purpose": "Largest positive and negative comparable movements by 'MIS_DEEP_DIVE2'[item_category_name].",
+    "query_name": "meta_movers_by_mis_deep_dive2_item_category_name",
+    "dimension": "item_category_name",
+    "segment": "",
+    "metric": "revenue Growth",
+    "metric_family": "revenue",
+    "direction": "increase",
+    "observation_value": 2124709.9199999776,
+    "score": 84.32729984996793,
+    "period_anchor": "2026-07-28",
+    "evidence": {
+      "rows": [
+        {
+          "item_category_name": "CF-MEAT",
+          "revenue Growth": 742310.1699999999,
+          "QTY Growth": 160856.37326000025,
+          "bills growth": 69331,
+          "net revenue CURRENT": 8032566.560000002,
+          "net qty CURRENT": 773510.4599000001,
+          "net bills CURRENT": 418372
+        },
+        {
+          "item_category_name": "CF-MENS FASHION",
+          "revenue Growth": 662231.0900000148,
+          "QTY Growth": 57635.0,
+          "bills growth": 47393,
+          "net revenue CURRENT": 6572860.290000002,
+          "net qty CURRENT": 416681.0,
+          "net bills CURRENT": 322973
+        },
+        {
+          "item_category_name": "CF-ELECTRONICS",
+          "revenue Growth": 535149.2100000037,
+          "QTY Growth": 19392.0,
+          "bills growth": 16770,
+          "net revenue CURRENT": 6043625.220000002,
+          "net qty CURRENT": 140241.0,
+          "net bills CURRENT": 123602
+        },
+        {
+          "item_category_name": "CF-PERSONAL CARE",
+          "revenue Growth": 484148.02999996766,
+          "QTY Growth": 52106.0,
+          "bills growth": 39745,
+          "net revenue CURRENT": 14859794.109999996,
+          "net qty CURRENT": 2043696.0,
+          "net bills CURRENT": 826262
+        },
+        {
+          "item_category_name": "CF-GROCERY FOOD",
+          "revenue Growth": 391912.6399999894,
+          "QTY Growth": 78092.3566800002,
+          "bills growth": 27943,
+          "net revenue CURRENT": 17003077.909999996,
+          "net qty CURRENT": 2770222.4481900004,
+          "net bills CURRENT": 1239912
+        },
+        {
+          "item_category_name": "CF-TOYS",
+          "revenue Growth": 277359.6699999992,
+          "QTY Growth": 18813.0,
+          "bills growth": 10741,
+          "net revenue CURRENT": 2228772.210000002,
+          "net qty CURRENT": 168283.0,
+          "net bills CURRENT": 98678
+        },
+        {
+          "item_category_name": "CF-WATCHES & SUNGLASSES",
+          "revenue Growth": 253386.40999999968,
+          "QTY Growth": 11582.0,
+          "bills growth": 6505,
+          "net revenue CURRENT": 2361358.58,
+          "net qty CURRENT": 201047.0,
+          "net bills CURRENT": 96096
+        },
+        {
+          "item_category_name": "CF-DELICATESSEN",
+          "revenue Growth": -48918.90000000008,
+          "QTY Growth": -1680.949630000001,
+          "bills growth": -2179,
+          "net revenue CURRENT": 179903.68000000002,
+          "net qty CURRENT": 14803.423,
+          "net bills CURRENT": 21012
+        },
+        {
+          "item_category_name": "CF-HOT FOOD",
+          "revenue Growth": -76842.02000000002,
+          "QTY Growth": -29911.043500000043,
+          "bills growth": -13697,
+          "net revenue CURRENT": 345303.11999999994,
+          "net qty CURRENT": 78981.271,
+          "net bills CURRENT": 41096
+        },
+        {
+          "item_category_name": "CF-LUGGAGE",
+          "revenue Growth": -80545.1399999992,
+          "QTY Growth": 876.0,
+          "bills growth": 2238,
+          "net revenue CURRENT": 2107511.640000001,
+          "net qty CURRENT": 43460.0,
+          "net bills CURRENT": 38681
+        }
+      ],
+      "coverage": "returned_rows",
+      "scope": {
+        "population_status": "comparable",
+        "comparable_entities": [
+          "CFH014",
+          "CFH017",
+          "CFH018",
+          "CFH021"
+        ],
+        "excluded_entities": [
+          "CFH022"
+        ],
+        "note": "The evidence is already filtered to the resolved comparable population."
+      },
+      "facts": [
+        {
+          "fact_id": "F1",
+          "subject": "CF-MEAT",
+          "metric": "Revenue change",
+          "display_value": "+742.3K",
+          "raw_value": 742310.1699999999,
+          "statement": "CF-MEAT — Revenue change: +742.3K"
+        },
+        {
+          "fact_id": "F2",
+          "subject": "CF-MEAT",
+          "metric": "Quantity change",
+          "display_value": "+160.9K",
+          "raw_value": 160856.37326000025,
+          "statement": "CF-MEAT — Quantity change: +160.9K"
+        },
+        {
+          "fact_id": "F3",
+          "subject": "CF-MEAT",
+          "metric": "Transactions change",
+          "display_value": "+69.3K",
+          "raw_value": 69331.0,
+          "statement": "CF-MEAT — Transactions change: +69.3K"
+        },
+        {
+          "fact_id": "F4",
+          "subject": "CF-MEAT",
+          "metric": "Revenue current",
+          "display_value": "8.0M",
+          "raw_value": 8032566.560000002,
+          "statement": "CF-MEAT — Revenue current: 8.0M"
+        },
+        {
+          "fact_id": "F5",
+          "subject": "CF-FRUIT & VEGETABLES",
+          "metric": "Revenue change",
+          "display_value": "-683.8K",
+          "raw_value": -683753.2999999952,
+          "statement": "CF-FRUIT & VEGETABLES — Revenue change: -683.8K"
+        },
+        {
+          "fact_id": "F6",
+          "subject": "CF-FRUIT & VEGETABLES",
+          "metric": "Quantity change",
+          "display_value": "-216.2K",
+          "raw_value": -216203.16514000203,
+          "statement": "CF-FRUIT & VEGETABLES — Quantity change: -216.2K"
+        },
+        {
+          "fact_id": "F7",
+          "subject": "CF-FRUIT & VEGETABLES",
+          "metric": "Transactions change",
+          "display_value": "-14.5K",
+          "raw_value": -14498.0,
+          "statement": "CF-FRUIT & VEGETABLES — Transactions change: -14.5K"
+        },
+        {
+          "fact_id": "F8",
+          "subject": "CF-MENS FASHION",
+          "metric": "Revenue change",
+          "display_value": "+662.2K",
+          "raw_value": 662231.0900000148,
+          "statement": "CF-MENS FASHION — Revenue change: +662.2K"
+        },
+        {
+          "fact_id": "F9",
+          "subject": "CF-ELECTRONICS",
+          "metric": "Revenue change",
+          "display_value": "+535.1K",
+          "raw_value": 535149.2100000037,
+          "statement": "CF-ELECTRONICS — Revenue change: +535.1K"
+        },
+        {
+          "fact_id": "F10",
+          "subject": "CF-PERSONAL CARE",
+          "metric": "Revenue change",
+          "display_value": "+484.1K",
+          "raw_value": 484148.02999996766,
+          "statement": "CF-PERSONAL CARE — Revenue change: +484.1K"
+        },
+        {
+          "fact_id": "F11",
+          "subject": "Scope",
+          "metric": "Population",
+          "display_value": "",
+          "statement": "The evidence is already filtered to the resolved comparable population."
+        }
+      ]
+    },
+    "metadata_context": {
+      "dimension": "Item category name",
+      "metric": "Revenue change",
+      "metric_family": "revenue",
+      "metric_phase": null,
+      "metric_description": "",
+      "population_status": "comparable",
+      "scope_note": "The evidence is already filtered to the resolved comparable population."
+    },
+    "metrics": [],
+    "visual": {
+      "type": "bar",
+      "title": "Revenue change by item category name",
+      "labels": [
+        "CF-MEAT",
+        "CF-FRUIT & VEGETABLES",
+        "CF-MENS FASHION",
+        "CF-ELECTRONICS",
+        "CF-PERSONAL CARE",
+        "CF-GROCERY FOOD",
+        "CF-TOYS",
+        "CF-WATCHES & SUNGLASSES"
+      ],
+      "values": [
+        742310.1699999999,
+        -683753.2999999952,
+        662231.0900000148,
+        535149.2100000037,
+        484148.02999996766,
+        391912.6399999894,
+        277359.6699999992,
+        253386.40999999968
+      ],
+      "value_label": "Revenue change"
+    }
+  },
+  {
+    "candidate_id": "summary_97b8631a3692",
+    "summary_key": "summary:v1:97b8631a3692e3e68637144ab02f07265644b2cd1ff30dd17983cbbe4291c075",
+    "angle": "category_overview",
+    "title_hint": "How categories shaped the latest result",
+    "purpose": "Quantify how many categories are declining and what share of revenue they represent for the like-for-like branches.",
+    "query_name": "category_risk_summary_comparable",
+    "dimension": "category",
+    "segment": "",
+    "metric": "COUNT",
+    "metric_family": "performance",
+    "direction": "increase",
+    "observation_value": 426.0,
+    "score": 80.63042787502502,
+    "period_anchor": "2026-07-28",
+    "evidence": {
+      "rows": [
+        {
+          "COUNT": 426,
+          "COUNT %": 0.4819004524886878,
+          "COUNT_TOTAL": 884,
+          "sum deg cur rev": 56213599.79999998,
+          "sum deg past rev": 62652264.73000007,
+          "contribution cur": 0.4468126460461569
+        }
+      ],
+      "coverage": "returned_rows",
+      "scope": {
+        "population_status": "returned_rows",
+        "comparable_entities": [
+          "CFH014",
+          "CFH017",
+          "CFH018",
+          "CFH021"
+        ],
+        "excluded_entities": [
+          "CFH022"
+        ],
+        "note": ""
+      },
+      "facts": [
+        {
+          "fact_id": "F1",
+          "subject": "Overall",
+          "metric": "Count",
+          "display_value": "426.0",
+          "raw_value": 426.0,
+          "statement": "Overall — Count: 426.0"
+        },
+        {
+          "fact_id": "F2",
+          "subject": "Overall",
+          "metric": "Count %",
+          "display_value": "48.2%",
+          "raw_value": 0.4819004524886878,
+          "statement": "Overall — Count %: 48.2%"
+        },
+        {
+          "fact_id": "F3",
+          "subject": "Overall",
+          "metric": "Count total",
+          "display_value": "884.0",
+          "raw_value": 884.0,
+          "statement": "Overall — Count total: 884.0"
+        },
+        {
+          "fact_id": "F4",
+          "subject": "Overall",
+          "metric": "Sum deg cur rev",
+          "display_value": "56.2M",
+          "raw_value": 56213599.79999998,
+          "statement": "Overall — Sum deg cur rev: 56.2M"
+        }
+      ]
+    },
+    "metadata_context": {
+      "dimension": "Category",
+      "metric": "Count",
+      "metric_family": "performance",
+      "metric_phase": null,
+      "metric_description": "",
+      "population_status": "returned_rows",
+      "scope_note": ""
+    },
+    "metrics": [],
+    "visual": null
+  },
+  {
+    "candidate_id": "summary_463fa03758fa",
+    "summary_key": "summary:v1:463fa03758fabb00517fa5c1887f2aea7747abba0fb467b91798e7a52f770b8e",
+    "angle": "product_overview",
+    "title_hint": "How products shaped the latest result",
+    "purpose": "Identify the product groups with the largest positive and negative like-for-like revenue changes.",
+    "query_name": "product_group_movers_comparable",
+    "dimension": "product_group_name",
+    "segment": "",
+    "metric": "revenue Growth",
+    "metric_family": "revenue",
+    "direction": "increase",
+    "observation_value": 2953699.3900000085,
+    "score": 80.47036644034328,
+    "period_anchor": "2026-07-28",
+    "evidence": {
+      "rows": [
+        {
+          "product_group_name": "CF-MENS BOTTOMS",
+          "SPEND PER TRANSACTION CURRENT YEAR": 39.30435562244679,
+          "revenue Growth": 161717.96000000043,
+          "QTY Growth": 5611.0,
+          "QUANTITY PER TRANSACTION GROWTH": -0.008819519362602612,
+          "bills growth": 4916,
+          "RETAIL PRICE GROWTH": -0.38561199816847846,
+          "SPEND PER TRANSACTION GROWTH": -0.7573749156115781
+        },
+        {
+          "product_group_name": "CF-FRUITS",
+          "SPEND PER TRANSACTION CURRENT YEAR": 10.099185422309775,
+          "revenue Growth": -165181.29000000004,
+          "QTY Growth": -75619.65179999988,
+          "QUANTITY PER TRANSACTION GROWTH": -0.13318530696358777,
+          "bills growth": 2957,
+          "RETAIL PRICE GROWTH": 0.24450947009377888,
+          "SPEND PER TRANSACTION GROWTH": -0.32175327213242433
+        },
+        {
+          "product_group_name": "CF-FROZEN POULTRY",
+          "SPEND PER TRANSACTION CURRENT YEAR": 26.88970107039231,
+          "revenue Growth": 169033.88999999943,
+          "QTY Growth": -4920.0,
+          "QUANTITY PER TRANSACTION GROWTH": 0.3300112099178092,
+          "bills growth": -13879,
+          "RETAIL PRICE GROWTH": 0.991828011729389,
+          "SPEND PER TRANSACTION GROWTH": 5.653887192075224
+        },
+        {
+          "product_group_name": "CF-INFANT TOYS",
+          "SPEND PER TRANSACTION CURRENT YEAR": 18.167607905252176,
+          "revenue Growth": 237774.43000000023,
+          "QTY Growth": 20896.0,
+          "QUANTITY PER TRANSACTION GROWTH": 0.05974661473150977,
+          "bills growth": 9937,
+          "RETAIL PRICE GROWTH": 1.3763599958857684,
+          "SPEND PER TRANSACTION GROWTH": 3.208323632188618
+        },
+        {
+          "product_group_name": "CF-MENS TOP WEAR",
+          "SPEND PER TRANSACTION CURRENT YEAR": 25.513485943217088,
+          "revenue Growth": 261595.35999999964,
+          "QTY Growth": 14795.0,
+          "QUANTITY PER TRANSACTION GROWTH": -0.046385792848641305,
+          "bills growth": 13728,
+          "RETAIL PRICE GROWTH": -0.23810615859054352,
+          "SPEND PER TRANSACTION GROWTH": -1.2205211606983397
+        },
+        {
+          "product_group_name": "CF-HAIR CARE",
+          "SPEND PER TRANSACTION CURRENT YEAR": 20.408614696274327,
+          "revenue Growth": 223556.3000000012,
+          "QTY Growth": 21648.0,
+          "QUANTITY PER TRANSACTION GROWTH": -0.010656200308271968,
+          "bills growth": 13671,
+          "RETAIL PRICE GROWTH": -0.09914797837198641,
+          "SPEND PER TRANSACTION GROWTH": -0.29825067913512626
+        },
+        {
+          "product_group_name": "CF-WATCHES",
+          "SPEND PER TRANSACTION CURRENT YEAR": 25.298442029784884,
+          "revenue Growth": 293109.2399999988,
+          "QTY Growth": 13482.0,
+          "QUANTITY PER TRANSACTION GROWTH": -0.04277254137548203,
+          "bills growth": 7915,
+          "RETAIL PRICE GROWTH": 0.7412448028830845,
+          "SPEND PER TRANSACTION GROWTH": 1.122524582513467
+        },
+        {
+          "product_group_name": "CF-RECHARGEABLE TORCH",
+          "SPEND PER TRANSACTION CURRENT YEAR": 62.54188315504877,
+          "revenue Growth": 238310.0199999991,
+          "QTY Growth": 4922.0,
+          "QUANTITY PER TRANSACTION GROWTH": -0.004421589024488748,
+          "bills growth": 3982,
+          "RETAIL PRICE GROWTH": -0.10938153569318843,
+          "SPEND PER TRANSACTION GROWTH": -0.357177618431912
+        },
+        {
+          "product_group_name": "CF-SKIN CARE",
+          "SPEND PER TRANSACTION CURRENT YEAR": 18.90280440134006,
+          "revenue Growth": 287823.24000000115,
+          "QTY Growth": 11464.0,
+          "QUANTITY PER TRANSACTION GROWTH": -0.14975769718122312,
+          "bills growth": 20514,
+          "RETAIL PRICE GROWTH": 0.20197118023304395,
+          "SPEND PER TRANSACTION GROWTH": -0.29625282544183307
+        },
+        {
+          "product_group_name": "CF-FRESH CHICKEN & PARTS",
+          "SPEND PER TRANSACTION CURRENT YEAR": 14.134549154482006,
+          "revenue Growth": 1110054.2500000028,
+          "QTY Growth": 188331.0,
+          "QUANTITY PER TRANSACTION GROWTH": 0.12531272179208375,
+          "bills growth": 80035,
+          "RETAIL PRICE GROWTH": -0.5346070810900327,
+          "SPEND PER TRANSACTION GROWTH": -0.0865372342345676
+        }
+      ],
+      "coverage": "returned_rows",
+      "scope": {
+        "population_status": "returned_rows",
+        "comparable_entities": [
+          "CFH014",
+          "CFH017",
+          "CFH018",
+          "CFH021"
+        ],
+        "excluded_entities": [
+          "CFH022"
+        ],
+        "note": ""
+      },
+      "facts": [
+        {
+          "fact_id": "F1",
+          "subject": "CF-FRESH CHICKEN & PARTS",
+          "metric": "Revenue change",
+          "display_value": "+1.1M",
+          "raw_value": 1110054.2500000028,
+          "statement": "CF-FRESH CHICKEN & PARTS — Revenue change: +1.1M"
+        },
+        {
+          "fact_id": "F2",
+          "subject": "CF-FRESH CHICKEN & PARTS",
+          "metric": "Quantity change",
+          "display_value": "+188.3K",
+          "raw_value": 188331.0,
+          "statement": "CF-FRESH CHICKEN & PARTS — Quantity change: +188.3K"
+        },
+        {
+          "fact_id": "F3",
+          "subject": "CF-FRESH CHICKEN & PARTS",
+          "metric": "Quantity per transaction change",
+          "display_value": "+0.13",
+          "raw_value": 0.12531272179208375,
+          "statement": "CF-FRESH CHICKEN & PARTS — Quantity per transaction change: +0.13"
+        },
+        {
+          "fact_id": "F4",
+          "subject": "CF-FRESH CHICKEN & PARTS",
+          "metric": "Transactions change",
+          "display_value": "+80.0K",
+          "raw_value": 80035.0,
+          "statement": "CF-FRESH CHICKEN & PARTS — Transactions change: +80.0K"
+        },
+        {
+          "fact_id": "F5",
+          "subject": "CF-VEGETABLES",
+          "metric": "Revenue change",
+          "display_value": "-515.8K",
+          "raw_value": -515838.1400000006,
+          "statement": "CF-VEGETABLES — Revenue change: -515.8K"
+        },
+        {
+          "fact_id": "F6",
+          "subject": "CF-VEGETABLES",
+          "metric": "Quantity change",
+          "display_value": "-140.3K",
+          "raw_value": -140303.52234000154,
+          "statement": "CF-VEGETABLES — Quantity change: -140.3K"
+        },
+        {
+          "fact_id": "F7",
+          "subject": "CF-VEGETABLES",
+          "metric": "Quantity per transaction change",
+          "display_value": "-0.10",
+          "raw_value": -0.10283046908676496,
+          "statement": "CF-VEGETABLES — Quantity per transaction change: -0.10"
+        },
+        {
+          "fact_id": "F8",
+          "subject": "CF-EDIBLE OILS",
+          "metric": "Revenue change",
+          "display_value": "+444.4K",
+          "raw_value": 444434.3000000017,
+          "statement": "CF-EDIBLE OILS — Revenue change: +444.4K"
+        },
+        {
+          "fact_id": "F9",
+          "subject": "CF-FRESH MEAT",
+          "metric": "Revenue change",
+          "display_value": "-367.7K",
+          "raw_value": -367744.07999999775,
+          "statement": "CF-FRESH MEAT — Revenue change: -367.7K"
+        },
+        {
+          "fact_id": "F10",
+          "subject": "CF-DAIRY & DESSERTS",
+          "metric": "Revenue change",
+          "display_value": "+314.7K",
+          "raw_value": 314652.3200000026,
+          "statement": "CF-DAIRY & DESSERTS — Revenue change: +314.7K"
+        }
+      ]
+    },
+    "metadata_context": {
+      "dimension": "Product group name",
+      "metric": "Revenue change",
+      "metric_family": "revenue",
+      "metric_phase": null,
+      "metric_description": "",
+      "population_status": "returned_rows",
+      "scope_note": ""
+    },
+    "metrics": [],
+    "visual": {
+      "type": "bar",
+      "title": "Revenue change by product group name",
+      "labels": [
+        "CF-FRESH CHICKEN & PARTS",
+        "CF-VEGETABLES",
+        "CF-EDIBLE OILS",
+        "CF-FRESH MEAT",
+        "CF-DAIRY & DESSERTS",
+        "CF-WATCHES",
+        "CF-SKIN CARE",
+        "CF-MENS TOP WEAR"
+      ],
+      "values": [
+        1110054.2500000028,
+        -515838.1400000006,
+        444434.3000000017,
+        -367744.07999999775,
+        314652.3200000026,
+        293109.2399999988,
+        287823.24000000115,
+        261595.35999999964
+      ],
+      "value_label": "Revenue change"
+    }
+  },
+  {
+    "candidate_id": "summary_11c32126ba47",
+    "summary_key": "summary:v1:11c32126ba47883d39946658faa2305c14636b92d2ce5b88809e23f18c695b8e",
+    "angle": "product_overview",
+    "title_hint": "How products shaped the latest result",
+    "purpose": "Top contributors to the primary current value by 'MIS_DEEP_DIVE2'[special_product_group_name].",
+    "query_name": "meta_concentration_by_mis_deep_dive2_special_product_group_name",
+    "dimension": "special_product_group_name",
+    "segment": "",
+    "metric": "revenue Growth",
+    "metric_family": "revenue",
+    "direction": "increase",
+    "observation_value": 934001.1000000006,
+    "score": 79.9703478526941,
+    "period_anchor": "2026-07-28",
+    "evidence": {
+      "rows": [
+        {
+          "special_product_group_name": "IMPORTED FRUITS",
+          "revenue Growth": -287881.77999999933,
+          "QTY Growth": -94903.06002999994,
+          "bills growth": -15700,
+          "net revenue CURRENT": 5311020.540000001,
+          "net qty CURRENT": 901622.05171,
+          "net bills CURRENT": 502265
+        },
+        {
+          "special_product_group_name": "IMPORTED VEGETABLES",
+          "revenue Growth": -314543.31000000006,
+          "QTY Growth": -75877.11753000005,
+          "bills growth": -16276,
+          "net revenue CURRENT": 3596260.63,
+          "net qty CURRENT": 643963.5302999999,
+          "net bills CURRENT": 487805
+        },
+        {
+          "special_product_group_name": "BASMATI RICE",
+          "revenue Growth": 126473.14999999944,
+          "QTY Growth": 13573.380000000005,
+          "bills growth": 9712,
+          "net revenue CURRENT": 2983860.0399999996,
+          "net qty CURRENT": 93551.38,
+          "net bills CURRENT": 76324
+        },
+        {
+          "special_product_group_name": "CHOCOLATE COATED BARS",
+          "revenue Growth": -30883.68999999948,
+          "QTY Growth": -461381.20119999954,
+          "bills growth": -1638,
+          "net revenue CURRENT": 2873336.45,
+          "net qty CURRENT": 2921656.2488,
+          "net bills CURRENT": 107775
+        },
+        {
+          "special_product_group_name": "SOAPS",
+          "revenue Growth": 137510.9900000007,
+          "QTY Growth": -143.0,
+          "bills growth": 9315,
+          "net revenue CURRENT": 2790180.6000000006,
+          "net qty CURRENT": 765036.0,
+          "net bills CURRENT": 157158
+        },
+        {
+          "special_product_group_name": "LOCAL VEGETABLES",
+          "revenue Growth": -211385.26000000024,
+          "QTY Growth": -77709.77190999978,
+          "bills growth": -7559,
+          "net revenue CURRENT": 2694103.3200000003,
+          "net qty CURRENT": 681669.7786700001,
+          "net bills CURRENT": 431440
+        },
+        {
+          "special_product_group_name": "FRESH CHICKEN PARTS",
+          "revenue Growth": 479197.76000000024,
+          "QTY Growth": 121996.0,
+          "bills growth": 40899,
+          "net revenue CURRENT": 2621639.2,
+          "net qty CURRENT": 472414.0,
+          "net bills CURRENT": 215860
+        },
+        {
+          "special_product_group_name": "SUN FLOWER OIL",
+          "revenue Growth": -560076.0400000005,
+          "QTY Growth": -43428.0,
+          "bills growth": -33409,
+          "net revenue CURRENT": 2395150.8799999994,
+          "net qty CURRENT": 119381.0,
+          "net bills CURRENT": 106431
+        },
+        {
+          "special_product_group_name": "VEGETABLE OIL",
+          "revenue Growth": 670411.9299999999,
+          "QTY Growth": 30329.0,
+          "bills growth": 22520,
+          "net revenue CURRENT": 2034700.86,
+          "net qty CURRENT": 134230.0,
+          "net bills CURRENT": 112863
+        },
+        {
+          "special_product_group_name": "FRESH CHICKEN",
+          "revenue Growth": 630856.4899999995,
+          "QTY Growth": 66335.0,
+          "bills growth": 39136,
+          "net revenue CURRENT": 1973036.2899999996,
+          "net qty CURRENT": 167791.0,
+          "net bills CURRENT": 109207
+        }
+      ],
+      "coverage": "returned_rows",
+      "scope": {
+        "population_status": "comparable",
+        "comparable_entities": [
+          "CFH014",
+          "CFH017",
+          "CFH018",
+          "CFH021"
+        ],
+        "excluded_entities": [
+          "CFH022"
+        ],
+        "note": "The evidence is already filtered to the resolved comparable population."
+      },
+      "facts": [
+        {
+          "fact_id": "F1",
+          "subject": "VEGETABLE OIL",
+          "metric": "Revenue change",
+          "display_value": "+670.4K",
+          "raw_value": 670411.9299999999,
+          "statement": "VEGETABLE OIL — Revenue change: +670.4K"
+        },
+        {
+          "fact_id": "F2",
+          "subject": "VEGETABLE OIL",
+          "metric": "Quantity change",
+          "display_value": "+30.3K",
+          "raw_value": 30329.0,
+          "statement": "VEGETABLE OIL — Quantity change: +30.3K"
+        },
+        {
+          "fact_id": "F3",
+          "subject": "VEGETABLE OIL",
+          "metric": "Transactions change",
+          "display_value": "+22.5K",
+          "raw_value": 22520.0,
+          "statement": "VEGETABLE OIL — Transactions change: +22.5K"
+        },
+        {
+          "fact_id": "F4",
+          "subject": "VEGETABLE OIL",
+          "metric": "Revenue current",
+          "display_value": "2.0M",
+          "raw_value": 2034700.86,
+          "statement": "VEGETABLE OIL — Revenue current: 2.0M"
+        },
+        {
+          "fact_id": "F5",
+          "subject": "FRESH CHICKEN",
+          "metric": "Revenue change",
+          "display_value": "+630.9K",
+          "raw_value": 630856.4899999995,
+          "statement": "FRESH CHICKEN — Revenue change: +630.9K"
+        },
+        {
+          "fact_id": "F6",
+          "subject": "FRESH CHICKEN",
+          "metric": "Quantity change",
+          "display_value": "+66.3K",
+          "raw_value": 66335.0,
+          "statement": "FRESH CHICKEN — Quantity change: +66.3K"
+        },
+        {
+          "fact_id": "F7",
+          "subject": "FRESH CHICKEN",
+          "metric": "Transactions change",
+          "display_value": "+39.1K",
+          "raw_value": 39136.0,
+          "statement": "FRESH CHICKEN — Transactions change: +39.1K"
+        },
+        {
+          "fact_id": "F8",
+          "subject": "SUN FLOWER OIL",
+          "metric": "Revenue change",
+          "display_value": "-560.1K",
+          "raw_value": -560076.0400000005,
+          "statement": "SUN FLOWER OIL — Revenue change: -560.1K"
+        },
+        {
+          "fact_id": "F9",
+          "subject": "FRESH CHICKEN PARTS",
+          "metric": "Revenue change",
+          "display_value": "+479.2K",
+          "raw_value": 479197.76000000024,
+          "statement": "FRESH CHICKEN PARTS — Revenue change: +479.2K"
+        },
+        {
+          "fact_id": "F10",
+          "subject": "IMPORTED VEGETABLES",
+          "metric": "Revenue change",
+          "display_value": "-314.5K",
+          "raw_value": -314543.31000000006,
+          "statement": "IMPORTED VEGETABLES — Revenue change: -314.5K"
+        },
+        {
+          "fact_id": "F11",
+          "subject": "Scope",
+          "metric": "Population",
+          "display_value": "",
+          "statement": "The evidence is already filtered to the resolved comparable population."
+        }
+      ]
+    },
+    "metadata_context": {
+      "dimension": "Special product group name",
+      "metric": "Revenue change",
+      "metric_family": "revenue",
+      "metric_phase": null,
+      "metric_description": "",
+      "population_status": "comparable",
+      "scope_note": "The evidence is already filtered to the resolved comparable population."
+    },
+    "metrics": [],
+    "visual": {
+      "type": "bar",
+      "title": "Revenue change by special product group name",
+      "labels": [
+        "VEGETABLE OIL",
+        "FRESH CHICKEN",
+        "SUN FLOWER OIL",
+        "FRESH CHICKEN PARTS",
+        "IMPORTED VEGETABLES",
+        "IMPORTED FRUITS",
+        "HAND TORCH",
+        "LOCAL VEGETABLES"
+      ],
+      "values": [
+        670411.9299999999,
+        630856.4899999995,
+        -560076.0400000005,
+        479197.76000000024,
+        -314543.31000000006,
+        -287881.77999999933,
+        270414.65000000014,
+        -211385.26000000024
+      ],
+      "value_label": "Revenue change"
+    }
+  },
+  {
+    "candidate_id": "summary_3ef5f065194b",
+    "summary_key": "summary:v1:3ef5f065194bc470f9d0c54c14a4d21b576a059a1471d5201a103b0808ee6e49",
+    "angle": "product_overview",
+    "title_hint": "How products shaped the latest result",
+    "purpose": "Largest positive and negative comparable movements by 'MIS_DEEP_DIVE2'[special_product_group].",
+    "query_name": "meta_movers_by_mis_deep_dive2_special_product_group",
+    "dimension": "special_product_group",
+    "segment": "",
+    "metric": "revenue Growth",
+    "metric_family": "revenue",
+    "direction": "increase",
+    "observation_value": 684256.24,
+    "score": 79.8352194012965,
+    "period_anchor": "2026-07-28",
+    "evidence": {
+      "rows": [
+        {
+          "special_product_group": "2477",
+          "revenue Growth": 670411.9299999999,
+          "QTY Growth": 30329.0,
+          "bills growth": 22520,
+          "net revenue CURRENT": 2034700.86,
+          "net qty CURRENT": 134230.0,
+          "net bills CURRENT": 112863
+        },
+        {
+          "special_product_group": "2092",
+          "revenue Growth": 630856.4899999995,
+          "QTY Growth": 66335.0,
+          "bills growth": 39136,
+          "net revenue CURRENT": 1973036.2899999996,
+          "net qty CURRENT": 167791.0,
+          "net bills CURRENT": 109207
+        },
+        {
+          "special_product_group": "2093",
+          "revenue Growth": 479197.76000000024,
+          "QTY Growth": 121996.0,
+          "bills growth": 40899,
+          "net revenue CURRENT": 2621639.2,
+          "net qty CURRENT": 472414.0,
+          "net bills CURRENT": 215860
+        },
+        {
+          "special_product_group": "2341",
+          "revenue Growth": 325312.14,
+          "QTY Growth": 23643.0,
+          "bills growth": 21865,
+          "net revenue CURRENT": 384659.98000000004,
+          "net qty CURRENT": 29537.0,
+          "net bills CURRENT": 27310
+        },
+        {
+          "special_product_group": "2027",
+          "revenue Growth": 270414.65000000014,
+          "QTY Growth": 4157.0,
+          "bills growth": 3582,
+          "net revenue CURRENT": 1672743.1500000001,
+          "net qty CURRENT": 27935.0,
+          "net bills CURRENT": 22290
+        },
+        {
+          "special_product_group": "2973",
+          "revenue Growth": 206050.6499999999,
+          "QTY Growth": 10830.0,
+          "bills growth": 6170,
+          "net revenue CURRENT": 364109.6299999999,
+          "net qty CURRENT": 14967.0,
+          "net bills CURRENT": 9304
+        },
+        {
+          "special_product_group": "2474",
+          "revenue Growth": 201477.31999999995,
+          "QTY Growth": 6662.0,
+          "bills growth": 4183,
+          "net revenue CURRENT": 861408.5299999999,
+          "net qty CURRENT": 63910.0,
+          "net bills CURRENT": 54152
+        },
+        {
+          "special_product_group": "2289",
+          "revenue Growth": -185905.4999999998,
+          "QTY Growth": -12404.0,
+          "bills growth": -8090,
+          "net revenue CURRENT": 169588.24000000008,
+          "net qty CURRENT": 16171.0,
+          "net bills CURRENT": 12040
+        },
+        {
+          "special_product_group": "2091",
+          "revenue Growth": -211385.26000000024,
+          "QTY Growth": -77709.77190999978,
+          "bills growth": -7559,
+          "net revenue CURRENT": 2694103.3200000003,
+          "net qty CURRENT": 681669.7786700001,
+          "net bills CURRENT": 431440
+        },
+        {
+          "special_product_group": "2553",
+          "revenue Growth": -252887.8500000001,
+          "QTY Growth": -8976.000000000007,
+          "bills growth": -8833,
+          "net revenue CURRENT": 1109441.8600000003,
+          "net qty CURRENT": 39357.2,
+          "net bills CURRENT": 28345
+        }
+      ],
+      "coverage": "returned_rows",
+      "scope": {
+        "population_status": "comparable",
+        "comparable_entities": [
+          "CFH014",
+          "CFH017",
+          "CFH018",
+          "CFH021"
+        ],
+        "excluded_entities": [
+          "CFH022"
+        ],
+        "note": "The evidence is already filtered to the resolved comparable population."
+      },
+      "facts": [
+        {
+          "fact_id": "F1",
+          "subject": "2477",
+          "metric": "Revenue change",
+          "display_value": "+670.4K",
+          "raw_value": 670411.9299999999,
+          "statement": "2477 — Revenue change: +670.4K"
+        },
+        {
+          "fact_id": "F2",
+          "subject": "2477",
+          "metric": "Quantity change",
+          "display_value": "+30.3K",
+          "raw_value": 30329.0,
+          "statement": "2477 — Quantity change: +30.3K"
+        },
+        {
+          "fact_id": "F3",
+          "subject": "2477",
+          "metric": "Transactions change",
+          "display_value": "+22.5K",
+          "raw_value": 22520.0,
+          "statement": "2477 — Transactions change: +22.5K"
+        },
+        {
+          "fact_id": "F4",
+          "subject": "2477",
+          "metric": "Revenue current",
+          "display_value": "2.0M",
+          "raw_value": 2034700.86,
+          "statement": "2477 — Revenue current: 2.0M"
+        },
+        {
+          "fact_id": "F5",
+          "subject": "2092",
+          "metric": "Revenue change",
+          "display_value": "+630.9K",
+          "raw_value": 630856.4899999995,
+          "statement": "2092 — Revenue change: +630.9K"
+        },
+        {
+          "fact_id": "F6",
+          "subject": "2092",
+          "metric": "Quantity change",
+          "display_value": "+66.3K",
+          "raw_value": 66335.0,
+          "statement": "2092 — Quantity change: +66.3K"
+        },
+        {
+          "fact_id": "F7",
+          "subject": "2092",
+          "metric": "Transactions change",
+          "display_value": "+39.1K",
+          "raw_value": 39136.0,
+          "statement": "2092 — Transactions change: +39.1K"
+        },
+        {
+          "fact_id": "F8",
+          "subject": "2476",
+          "metric": "Revenue change",
+          "display_value": "-560.1K",
+          "raw_value": -560076.0400000005,
+          "statement": "2476 — Revenue change: -560.1K"
+        },
+        {
+          "fact_id": "F9",
+          "subject": "2093",
+          "metric": "Revenue change",
+          "display_value": "+479.2K",
+          "raw_value": 479197.76000000024,
+          "statement": "2093 — Revenue change: +479.2K"
+        },
+        {
+          "fact_id": "F10",
+          "subject": "2341",
+          "metric": "Revenue change",
+          "display_value": "+325.3K",
+          "raw_value": 325312.14,
+          "statement": "2341 — Revenue change: +325.3K"
+        },
+        {
+          "fact_id": "F11",
+          "subject": "Scope",
+          "metric": "Population",
+          "display_value": "",
+          "statement": "The evidence is already filtered to the resolved comparable population."
+        }
+      ]
+    },
+    "metadata_context": {
+      "dimension": "Special product group",
+      "metric": "Revenue change",
+      "metric_family": "revenue",
+      "metric_phase": null,
+      "metric_description": "",
+      "population_status": "comparable",
+      "scope_note": "The evidence is already filtered to the resolved comparable population."
+    },
+    "metrics": [],
+    "visual": {
+      "type": "bar",
+      "title": "Revenue change by special product group",
+      "labels": [
+        "2477",
+        "2092",
+        "2476",
+        "2093",
+        "2341",
+        "2089",
+        "2084",
+        "2972"
+      ],
+      "values": [
+        670411.9299999999,
+        630856.4899999995,
+        -560076.0400000005,
+        479197.76000000024,
+        325312.14,
+        -314543.31000000006,
+        -287881.77999999933,
+        -286784.95999999973
+      ],
+      "value_label": "Revenue change"
+    }
+  }
+]

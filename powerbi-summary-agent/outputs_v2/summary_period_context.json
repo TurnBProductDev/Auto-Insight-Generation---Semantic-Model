@@ -1,0 +1,21 @@
+{
+  "grain": "month",
+  "axis": "'MIS_DEEP_DIVE2'[month]",
+  "data_as_of": "2026-07-28",
+  "period_anchor": "2026-06",
+  "freshness_status": "current",
+  "age_in_grain_periods": 0,
+  "today": "2026-07-29",
+  "reason": "metadata fallback after rejecting batch/load date evidence",
+  "checks": [
+    {
+      "query": "meta_trend_by_mis_deep_dive2_max_date",
+      "column": "max_date",
+      "grain": "day",
+      "periods": 24,
+      "max_bucket_share": 0.9742800722428662,
+      "verdict": "batch_date"
+    }
+  ],
+  "data_signature": "99f9e4299237a9d3f19597f2529b278141f35b761cb24eafff12b5d64e2ea26c"
+}

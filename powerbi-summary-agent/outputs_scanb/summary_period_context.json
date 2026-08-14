@@ -1,0 +1,24 @@
+{
+  "grain": "day",
+  "axis": "'MIS_BASE_FILE_MONTHLY_BRAND_TB'[MAX_DATE]",
+  "data_as_of": "2023-12-31",
+  "period_anchor": "2023-12-31",
+  "freshness_status": "stale",
+  "age_in_grain_periods": 947,
+  "today": "2026-08-04",
+  "reason": "metadata fallback after rejecting batch/load date evidence",
+  "checks": [
+    {
+      "query": "meta_trend_by_mis_deep_dive2_updated_date",
+      "column": "UPDATED_DATE",
+      "grain": "day",
+      "periods": 24,
+      "data_start": "2023-11-05",
+      "data_as_of": "2023-12-31",
+      "span_days": 57,
+      "max_bucket_share": 0.5483245803688239,
+      "verdict": "batch_date"
+    }
+  ],
+  "data_signature": "53b43f4de5623184c770712278525ef156bc6e0c35c384154430628daf87a537"
+}

@@ -1,0 +1,186 @@
+{
+  "cases": {
+    "outputs_r4_acceptance:coverage": {
+      "inputs": [
+        "outputs_r4_acceptance/summary_focus_universe.json"
+      ],
+      "params": {
+        "collapse_mirrors": true,
+        "material_change_pct": 10.0,
+        "material_share_pct": 5.0
+      },
+      "sha256": "5ce2222af48d4ccdc4fb1c42d7746f6d34295230c34ef8da6a51c309ce082452",
+      "snapshot": "tests/golden/outputs_r4_acceptance/coverage.json"
+    },
+    "outputs_r4_acceptance:semantic_profile": {
+      "inputs": [
+        "outputs_r4_acceptance/model_metadata.json"
+      ],
+      "params": {},
+      "sha256": "67e2176fb17f02bdedfc357a2152fb49e26ed030f6f6973b074cac89c66dd60b",
+      "snapshot": "tests/golden/outputs_r4_acceptance/semantic_profile.json"
+    },
+    "outputs_r4_acceptance:top_movers": {
+      "inputs": [
+        "outputs_r4_acceptance/summary_focus_universe.json"
+      ],
+      "params": {
+        "collapse_mirrors": true,
+        "limit": 5,
+        "material_change_pct": 10.0,
+        "material_share_pct": 5.0
+      },
+      "sha256": "300e71c0e92498b0e1053edfae40575cea1d8d64325925d9a4343f5e9aa2ef5f",
+      "snapshot": "tests/golden/outputs_r4_acceptance/top_movers.json"
+    },
+    "outputs_r4_acceptance_20260730_fix:coverage": {
+      "inputs": [
+        "outputs_r4_acceptance_20260730_fix/summary_focus_universe.json"
+      ],
+      "params": {
+        "collapse_mirrors": true,
+        "material_change_pct": 10.0,
+        "material_share_pct": 5.0
+      },
+      "sha256": "5ce2222af48d4ccdc4fb1c42d7746f6d34295230c34ef8da6a51c309ce082452",
+      "snapshot": "tests/golden/outputs_r4_acceptance_20260730_fix/coverage.json"
+    },
+    "outputs_r4_acceptance_20260730_fix:dashboard": {
+      "inputs": [
+        "outputs_r4_acceptance_20260730_fix/summary_focus_universe.json",
+        "outputs_r4_acceptance_20260730_fix/summary_overall_performance.json",
+        "outputs_r4_acceptance_20260730_fix/summary_period_context.json"
+      ],
+      "params": {
+        "collapse_mirrors": true,
+        "material_change_pct": 10.0,
+        "material_share_pct": 5.0,
+        "title": "Sales vs Previous Year"
+      },
+      "sha256": "2f43da977a0a3cf8b04047c002ed2497684f1d336e3f80551ba638e9059e873b",
+      "snapshot": "tests/golden/outputs_r4_acceptance_20260730_fix/dashboard.json"
+    },
+    "outputs_r4_acceptance_20260730_fix:dashboard_html": {
+      "inputs": [
+        "outputs_r4_acceptance_20260730_fix/summary_focus_universe.json",
+        "outputs_r4_acceptance_20260730_fix/summary_overall_performance.json",
+        "outputs_r4_acceptance_20260730_fix/summary_period_context.json"
+      ],
+      "params": {
+        "collapse_mirrors": true,
+        "display_rows": 8,
+        "material_change_pct": 10.0,
+        "material_share_pct": 5.0,
+        "title": "Sales vs Previous Year"
+      },
+      "sha256": "15b4c84a4595979785ae8ae1c2cf644c2c1c0d63b1e7bccb6a9a6a4c18cb07cb",
+      "snapshot": "tests/golden/outputs_r4_acceptance_20260730_fix/dashboard_html.html"
+    },
+    "outputs_r4_acceptance_20260730_fix:semantic_profile": {
+      "inputs": [
+        "outputs_r4_acceptance_20260730_fix/model_metadata.json"
+      ],
+      "params": {},
+      "sha256": "67e2176fb17f02bdedfc357a2152fb49e26ed030f6f6973b074cac89c66dd60b",
+      "snapshot": "tests/golden/outputs_r4_acceptance_20260730_fix/semantic_profile.json"
+    },
+    "outputs_r4_acceptance_20260730_fix:top_movers": {
+      "inputs": [
+        "outputs_r4_acceptance_20260730_fix/summary_focus_universe.json"
+      ],
+      "params": {
+        "collapse_mirrors": true,
+        "limit": 5,
+        "material_change_pct": 10.0,
+        "material_share_pct": 5.0
+      },
+      "sha256": "300e71c0e92498b0e1053edfae40575cea1d8d64325925d9a4343f5e9aa2ef5f",
+      "snapshot": "tests/golden/outputs_r4_acceptance_20260730_fix/top_movers.json"
+    },
+    "outputs_scanb:coverage": {
+      "inputs": [
+        "outputs_scanb/summary_focus_universe.json"
+      ],
+      "params": {
+        "collapse_mirrors": true,
+        "material_change_pct": 10.0,
+        "material_share_pct": 5.0
+      },
+      "sha256": "a164a524d3eb33879735bb23d56dbd4eeb65ac0c37956a13dcf543cd518779c9",
+      "snapshot": "tests/golden/outputs_scanb/coverage.json"
+    },
+    "outputs_scanb:dashboard": {
+      "inputs": [
+        "outputs_scanb/summary_focus_universe.json",
+        "outputs_scanb/summary_overall_performance.json",
+        "outputs_scanb/summary_period_context.json",
+        "outputs_scanb/summary_focus_evidence_by_key.json"
+      ],
+      "params": {
+        "collapse_mirrors": true,
+        "material_change_pct": 10.0,
+        "material_share_pct": 5.0,
+        "title": "Sales vs Previous Year"
+      },
+      "sha256": "09599fbd6e0a94dedd3cf62012419a6f4bc8a008a759d4bc7d99a8255f24274c",
+      "snapshot": "tests/golden/outputs_scanb/dashboard.json"
+    },
+    "outputs_scanb:dashboard_html": {
+      "inputs": [
+        "outputs_scanb/summary_focus_universe.json",
+        "outputs_scanb/summary_overall_performance.json",
+        "outputs_scanb/summary_period_context.json",
+        "outputs_scanb/summary_focus_evidence_by_key.json"
+      ],
+      "params": {
+        "collapse_mirrors": true,
+        "display_rows": 8,
+        "material_change_pct": 10.0,
+        "material_share_pct": 5.0,
+        "title": "Sales vs Previous Year"
+      },
+      "sha256": "a21c5f57d8414c3e4f9f6650390bc3b292c1a6eb70209d45c7d9e9a31522ae2f",
+      "snapshot": "tests/golden/outputs_scanb/dashboard_html.html"
+    },
+    "outputs_scanb:semantic_profile": {
+      "inputs": [
+        "outputs_scanb/model_metadata.json"
+      ],
+      "params": {},
+      "sha256": "867c3e0e19fb31b55b25b12acd0dc72c426f6a4c94a0576b49dc213fde3edb51",
+      "snapshot": "tests/golden/outputs_scanb/semantic_profile.json"
+    },
+    "outputs_scanb:top_movers": {
+      "inputs": [
+        "outputs_scanb/summary_focus_universe.json"
+      ],
+      "params": {
+        "collapse_mirrors": true,
+        "limit": 5,
+        "material_change_pct": 10.0,
+        "material_share_pct": 5.0
+      },
+      "sha256": "643325848171ceaf4bac14c2f6ab56e9148d42c3e72301f92a7ca27dc3f5c660",
+      "snapshot": "tests/golden/outputs_scanb/top_movers.json"
+    }
+  },
+  "generated_by": "python scripts/golden_master.py --update",
+  "inputs": {
+    "outputs_r4_acceptance/model_metadata.json": "3d2c9ec4edc84b5ac58c42b5439cb05e74a759ad64b4cf304973f3b8ec53c245",
+    "outputs_r4_acceptance/summary_focus_universe.json": "e42b89fa8a46d80a959e4d0a25bbf38faec704ac785ac09c36858a0dcfe48cba",
+    "outputs_r4_acceptance_20260730_fix/model_metadata.json": "3d2c9ec4edc84b5ac58c42b5439cb05e74a759ad64b4cf304973f3b8ec53c245",
+    "outputs_r4_acceptance_20260730_fix/summary_focus_universe.json": "e42b89fa8a46d80a959e4d0a25bbf38faec704ac785ac09c36858a0dcfe48cba",
+    "outputs_r4_acceptance_20260730_fix/summary_overall_performance.json": "1a0427740d5ade34fe03b67803114b2b249eb05e489f527085928569144357bc",
+    "outputs_r4_acceptance_20260730_fix/summary_period_context.json": "ac82b43571655cea864a88f2a209119160a436968bae0812b245576b6898e8d9",
+    "outputs_scanb/model_metadata.json": "ee87a8cfad9b1ba66be33158129141c601bed1a652159829aaab76ddd454e03e",
+    "outputs_scanb/summary_focus_evidence_by_key.json": "5aab9f01e75b077f7d74517031cbfff46112a2670b07d2be27a5128fc7e82572",
+    "outputs_scanb/summary_focus_universe.json": "011969d32818a8038e35e3ef261cc3152adc9dd6f3480a3abdc662a151672e51",
+    "outputs_scanb/summary_overall_performance.json": "ff5c812a7c8cdf2ceece73349bbf59aabf9f8b5a538034020c0220d251a08111",
+    "outputs_scanb/summary_period_context.json": "44b489f88681cb40d84ad0901263da7b794767c206c24b6b2af2438566ba803b"
+  },
+  "not_covered": [
+    "outputs_r4_acceptance: overall package status='unavailable' - dashboard not covered"
+  ],
+  "note": "Recomputed snapshots plus pinned input hashes. Do not hand-edit: a difference in verify means the code changed, and the fix is to diagnose the code, not to re-record. See scripts/golden_master.py.",
+  "schema_version": 1
+}

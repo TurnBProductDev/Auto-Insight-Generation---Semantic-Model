@@ -73,6 +73,12 @@ class SummaryAgentState(TypedDict, total=False):
     summary_focus_rotation_window_days: int        # weekly coverage window
     summary_focus_min_repeat_gap_days: int         # short exact-area repeat gap
     summary_focus_universe_max_queries: int        # pre-selection breadth budget
+    summary_coverage_roles: List[str]              # levels reported as full ranked coverage
+    summary_coverage_max_queries: int              # coverage-only scan budget (separate from focus)
+    summary_coverage_material_change_pct: float    # coverage severity: meaningful movement
+    summary_coverage_material_share_pct: float     # coverage severity: matters to the business
+    summary_coverage_display_rows: int             # rows shown per level before "show all"
+    summary_coverage: Dict[str, Any]               # full ranked coverage per business level
     summary_overall_trend_enabled: bool
     summary_overall_trend_max_queries: int
     summary_focus_total_deep_dive_queries: int     # post-selection depth budget (shared)
@@ -82,6 +88,30 @@ class SummaryAgentState(TypedDict, total=False):
     summary_focus_universe: Dict[str, Any]         # deterministic per-role universe scans + diagnostics
     summary_overall_performance: Dict[str, Any]    # deterministic overall business package
     summary_selected_focuses: List[Dict[str, Any]] # ordered portfolio (R4)
+    # --- R6 interactive dashboard (four layers, two time views) ---
+    summary_r6_enabled: bool                       # master switch; false reproduces R1-R5 exactly
+    summary_dashboard: Dict[str, Any]              # code-owned page model (views -> layers)
+    summary_dashboard_entity_role: str             # which scanned level is the estate ("" = auto)
+    summary_dashboard_exposure_role: str           # level used for declining-area signals ("" = auto)
+    summary_dashboard_entity_levers: bool          # spend one scan on per-entity three levers
+    summary_dashboard_entity_rows: int             # row cap for that scan
+    summary_dashboard_max_queries: int             # dashboard-owned scan budget
+    summary_dashboard_period_view: bool            # add the latest-complete-period view
+    summary_dashboard_period_scan: bool            # one scan by period x entity (real period view)
+    summary_dashboard_period_scan_rows: int        # row cap for that scan
+    summary_dashboard_tldr: int                    # executive-summary item count
+    summary_dashboard_movers: int                  # movers per side in the detail layer
+    summary_dashboard_eyebrow: str                 # small label above the report title
+    summary_dashboard_replaces_summary_html: bool  # also write report_summary.html from the dashboard
+    summary_rag_bands: Dict[str, Any]              # measure band thresholds (rulebook-owned)
+    summary_rag_measure_bands: Dict[str, Any]      # measure -> band set name
+    summary_rag_cautions: Dict[str, Any]           # measure -> plain-language caution line
+    summary_calendar_events: List[Dict[str, Any]]  # moveable events (name/current/prior dates)
+    summary_calendar_min_members: int              # smallest cohort that can show a pattern
+    summary_calendar_uniform_count_share_pct: float
+    summary_calendar_uniform_business_share_pct: float
+    summary_calendar_cluster_spread_pct: float     # how tightly the moves must cluster
+    summary_calendar_exception_deviation_pct: float # gap that makes an area a genuine exception
     summary_focus_evidence_by_key: Dict[str, Any]  # per-focus deep-dive evidence keyed by focus_key
     summary_weekly_coverage: Dict[str, Any]        # weekly rotation audit surfaced to generator
     summary_portfolio_reserves: List[Dict[str, Any]]  # ranked reserve candidates for slot replacement

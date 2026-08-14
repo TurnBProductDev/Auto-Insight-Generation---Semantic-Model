@@ -612,7 +612,7 @@ def test_r4_end_to_end():
         commit = summary_memory.commit_summary_run(state, fresh["covered_summary_keys"], fresh)
         assert commit["status"] == "ok", commit
         store = _json.loads(summary_memory.store_path(state).read_text(encoding="utf-8"))
-        assert store["schema_version"] == 3
+        assert store["schema_version"] == 5  # v5 (WP4): adds state_records
         assert len(store["area_records"]) == len(selected)
         assert all(s["area_key"] in store["weekly_coverage"] for s in selected)
         plan = store["daily_plan"]["2026-08-01"]

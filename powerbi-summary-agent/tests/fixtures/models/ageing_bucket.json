@@ -1,0 +1,472 @@
+{
+  "tables": [
+    {
+      "name": "FACT_STOCK_AGEING",
+      "description": "Stock value by age bucket, captured per snapshot.",
+      "is_hidden": false
+    },
+    {
+      "name": "DIM_STORE",
+      "description": "",
+      "is_hidden": false
+    },
+    {
+      "name": "DIM_PRODUCT",
+      "description": "",
+      "is_hidden": false
+    },
+    {
+      "name": "DIM_AGE_BUCKET",
+      "description": "Ordered age bands. Order carries the meaning.",
+      "is_hidden": false
+    },
+    {
+      "name": "DIM_CALENDAR",
+      "description": "",
+      "is_hidden": false
+    }
+  ],
+  "columns": [
+    {
+      "table": "FACT_STOCK_AGEING",
+      "column": "SNAPSHOT_DATE",
+      "data_type": "DateTime",
+      "category": "date",
+      "is_hidden": false,
+      "description": "As-at date of the ageing position.",
+      "data_category": "",
+      "source_column": "SNAPSHOT_DATE",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": false
+    },
+    {
+      "table": "FACT_STOCK_AGEING",
+      "column": "RECEIPT_DATE",
+      "data_type": "DateTime",
+      "category": "date",
+      "is_hidden": false,
+      "description": "Date the stock was received. Age is measured from here to the snapshot.",
+      "data_category": "",
+      "source_column": "RECEIPT_DATE",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": false
+    },
+    {
+      "table": "FACT_STOCK_AGEING",
+      "column": "AGE_BUCKET_CODE",
+      "data_type": "String",
+      "category": "categorical",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "AGE_BUCKET_CODE",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": true
+    },
+    {
+      "table": "FACT_STOCK_AGEING",
+      "column": "STORE_CODE",
+      "data_type": "String",
+      "category": "categorical",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "STORE_CODE",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": true
+    },
+    {
+      "table": "FACT_STOCK_AGEING",
+      "column": "PRODUCT_CODE",
+      "data_type": "String",
+      "category": "categorical",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "PRODUCT_CODE",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": true
+    },
+    {
+      "table": "FACT_STOCK_AGEING",
+      "column": "AGEING_VALUE",
+      "data_type": "Decimal",
+      "category": "numeric",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "AGEING_VALUE",
+      "sort_by_column": "",
+      "summarize_by": "Sum",
+      "is_key": false
+    },
+    {
+      "table": "FACT_STOCK_AGEING",
+      "column": "AGEING_UNITS",
+      "data_type": "Decimal",
+      "category": "numeric",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "AGEING_UNITS",
+      "sort_by_column": "",
+      "summarize_by": "Sum",
+      "is_key": false
+    },
+    {
+      "table": "FACT_STOCK_AGEING",
+      "column": "DAYS_HELD",
+      "data_type": "Integer",
+      "category": "numeric",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "DAYS_HELD",
+      "sort_by_column": "",
+      "summarize_by": "None",
+      "is_key": false
+    },
+    {
+      "table": "DIM_AGE_BUCKET",
+      "column": "AGE_BUCKET_CODE",
+      "data_type": "String",
+      "category": "categorical",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "AGE_BUCKET_CODE",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": true
+    },
+    {
+      "table": "DIM_AGE_BUCKET",
+      "column": "AGE_BUCKET",
+      "data_type": "String",
+      "category": "categorical",
+      "is_hidden": false,
+      "description": "0-30 Days, 31-60 Days, 61-90 Days, 90+ Days.",
+      "data_category": "",
+      "source_column": "AGE_BUCKET",
+      "sort_by_column": "AGE_BUCKET_SORT",
+      "summarize_by": "Default",
+      "is_key": false
+    },
+    {
+      "table": "DIM_AGE_BUCKET",
+      "column": "AGE_BUCKET_SORT",
+      "data_type": "Integer",
+      "category": "numeric",
+      "is_hidden": false,
+      "description": "1..4. Establishes bucket order; adjacency is meaningful.",
+      "data_category": "",
+      "source_column": "AGE_BUCKET_SORT",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": false
+    },
+    {
+      "table": "DIM_AGE_BUCKET",
+      "column": "AGE_BUCKET_LOWER_DAYS",
+      "data_type": "Integer",
+      "category": "numeric",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "AGE_BUCKET_LOWER_DAYS",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": false
+    },
+    {
+      "table": "DIM_AGE_BUCKET",
+      "column": "AGE_BUCKET_UPPER_DAYS",
+      "data_type": "Integer",
+      "category": "numeric",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "AGE_BUCKET_UPPER_DAYS",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": false
+    },
+    {
+      "table": "DIM_STORE",
+      "column": "STORE_CODE",
+      "data_type": "String",
+      "category": "categorical",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "STORE_CODE",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": true
+    },
+    {
+      "table": "DIM_STORE",
+      "column": "STORE_NAME",
+      "data_type": "String",
+      "category": "categorical",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "STORE_NAME",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": false
+    },
+    {
+      "table": "DIM_STORE",
+      "column": "REGION_NAME",
+      "data_type": "String",
+      "category": "categorical",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "REGION_NAME",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": false
+    },
+    {
+      "table": "DIM_PRODUCT",
+      "column": "PRODUCT_CODE",
+      "data_type": "String",
+      "category": "categorical",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "PRODUCT_CODE",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": true
+    },
+    {
+      "table": "DIM_PRODUCT",
+      "column": "PRODUCT_NAME",
+      "data_type": "String",
+      "category": "categorical",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "PRODUCT_NAME",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": false
+    },
+    {
+      "table": "DIM_PRODUCT",
+      "column": "DIVISION_NAME",
+      "data_type": "String",
+      "category": "categorical",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "DIVISION_NAME",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": false
+    },
+    {
+      "table": "DIM_PRODUCT",
+      "column": "DEPARTMENT_NAME",
+      "data_type": "String",
+      "category": "categorical",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "DEPARTMENT_NAME",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": false
+    },
+    {
+      "table": "DIM_PRODUCT",
+      "column": "CATEGORY_NAME",
+      "data_type": "String",
+      "category": "categorical",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "CATEGORY_NAME",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": false
+    },
+    {
+      "table": "DIM_CALENDAR",
+      "column": "DATE",
+      "data_type": "DateTime",
+      "category": "date",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "DATE",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": true
+    },
+    {
+      "table": "DIM_CALENDAR",
+      "column": "MONTH_NAME",
+      "data_type": "String",
+      "category": "categorical",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "MONTH_NAME",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": false
+    }
+  ],
+  "measures": [
+    {
+      "name": "Ageing Value Current",
+      "table": "FACT_STOCK_AGEING",
+      "expression": "CALCULATE(SUM(FACT_STOCK_AGEING[AGEING_VALUE]), LASTNONBLANK(FACT_STOCK_AGEING[SNAPSHOT_DATE], 1))",
+      "format_string": "#,0",
+      "description": "Stock value by age band as at the current snapshot.",
+      "display_folder": "",
+      "is_hidden": false
+    },
+    {
+      "name": "Ageing Value Prior Snapshot",
+      "table": "FACT_STOCK_AGEING",
+      "expression": "CALCULATE(SUM(FACT_STOCK_AGEING[AGEING_VALUE]), LASTNONBLANK(FACT_STOCK_AGEING[SNAPSHOT_DATE], 1))",
+      "format_string": "#,0",
+      "description": "The same measure at the previous snapshot.",
+      "display_folder": "",
+      "is_hidden": false
+    },
+    {
+      "name": "Ageing Value Change",
+      "table": "FACT_STOCK_AGEING",
+      "expression": "[Ageing Value Current] - [Ageing Value Prior Snapshot]",
+      "format_string": "#,0",
+      "description": "Signed movement between the two snapshots.",
+      "display_folder": "",
+      "is_hidden": false
+    },
+    {
+      "name": "Ageing Units Current",
+      "table": "FACT_STOCK_AGEING",
+      "expression": "CALCULATE(SUM(FACT_STOCK_AGEING[AGEING_UNITS]), LASTNONBLANK(FACT_STOCK_AGEING[SNAPSHOT_DATE], 1))",
+      "format_string": "",
+      "description": "",
+      "display_folder": "",
+      "is_hidden": false
+    },
+    {
+      "name": "Ageing Units Prior Snapshot",
+      "table": "FACT_STOCK_AGEING",
+      "expression": "CALCULATE(SUM(FACT_STOCK_AGEING[AGEING_UNITS]), LASTNONBLANK(FACT_STOCK_AGEING[SNAPSHOT_DATE], 1))",
+      "format_string": "",
+      "description": "",
+      "display_folder": "",
+      "is_hidden": false
+    },
+    {
+      "name": "Ageing Units Change",
+      "table": "FACT_STOCK_AGEING",
+      "expression": "[Ageing Units Current] - [Ageing Units Prior Snapshot]",
+      "format_string": "",
+      "description": "",
+      "display_folder": "",
+      "is_hidden": false
+    },
+    {
+      "name": "Share of Value Over 90 Days",
+      "table": "FACT_STOCK_AGEING",
+      "expression": "DIVIDE(CALCULATE([Ageing Value Current], DIM_AGE_BUCKET[AGE_BUCKET_SORT] = 4), [Ageing Value Current])",
+      "format_string": "0.0%",
+      "description": "Higher is worse.",
+      "display_folder": "",
+      "is_hidden": false
+    }
+  ],
+  "relationships": [
+    {
+      "from_table": "FACT_STOCK_AGEING",
+      "from_column": "STORE_CODE",
+      "to_table": "DIM_STORE",
+      "to_column": "STORE_CODE",
+      "is_active": true,
+      "cross_filtering_behavior": "OneDirection",
+      "from_cardinality": "Many",
+      "to_cardinality": "One"
+    },
+    {
+      "from_table": "FACT_STOCK_AGEING",
+      "from_column": "PRODUCT_CODE",
+      "to_table": "DIM_PRODUCT",
+      "to_column": "PRODUCT_CODE",
+      "is_active": true,
+      "cross_filtering_behavior": "OneDirection",
+      "from_cardinality": "Many",
+      "to_cardinality": "One"
+    },
+    {
+      "from_table": "FACT_STOCK_AGEING",
+      "from_column": "AGE_BUCKET_CODE",
+      "to_table": "DIM_AGE_BUCKET",
+      "to_column": "AGE_BUCKET_CODE",
+      "is_active": true,
+      "cross_filtering_behavior": "OneDirection",
+      "from_cardinality": "Many",
+      "to_cardinality": "One"
+    },
+    {
+      "from_table": "FACT_STOCK_AGEING",
+      "from_column": "SNAPSHOT_DATE",
+      "to_table": "DIM_CALENDAR",
+      "to_column": "DATE",
+      "is_active": true,
+      "cross_filtering_behavior": "OneDirection",
+      "from_cardinality": "Many",
+      "to_cardinality": "One"
+    }
+  ],
+  "date_fields": [
+    "FACT_STOCK_AGEING[SNAPSHOT_DATE]",
+    "FACT_STOCK_AGEING[RECEIPT_DATE]",
+    "DIM_CALENDAR[DATE]"
+  ],
+  "numeric_fields": [
+    "FACT_STOCK_AGEING[AGEING_VALUE]",
+    "FACT_STOCK_AGEING[AGEING_UNITS]",
+    "FACT_STOCK_AGEING[DAYS_HELD]",
+    "DIM_AGE_BUCKET[AGE_BUCKET_SORT]",
+    "DIM_AGE_BUCKET[AGE_BUCKET_LOWER_DAYS]",
+    "DIM_AGE_BUCKET[AGE_BUCKET_UPPER_DAYS]"
+  ],
+  "categorical_fields": [
+    "FACT_STOCK_AGEING[AGE_BUCKET_CODE]",
+    "FACT_STOCK_AGEING[STORE_CODE]",
+    "FACT_STOCK_AGEING[PRODUCT_CODE]",
+    "DIM_AGE_BUCKET[AGE_BUCKET_CODE]",
+    "DIM_AGE_BUCKET[AGE_BUCKET]",
+    "DIM_STORE[STORE_CODE]",
+    "DIM_STORE[STORE_NAME]",
+    "DIM_STORE[REGION_NAME]",
+    "DIM_PRODUCT[PRODUCT_CODE]",
+    "DIM_PRODUCT[PRODUCT_NAME]",
+    "DIM_PRODUCT[DIVISION_NAME]",
+    "DIM_PRODUCT[DEPARTMENT_NAME]",
+    "DIM_PRODUCT[CATEGORY_NAME]",
+    "DIM_CALENDAR[MONTH_NAME]"
+  ],
+  "counts": {
+    "tables": 5,
+    "columns": 23,
+    "measures": 7,
+    "relationships": 4
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "timezone": "Asia/Riyadh",
+  "history": [
+    {
+      "date": "2026-08-04",
+      "runs": [
+        {
+          "time": "09:38:50",
+          "status": "completed",
+          "insights": [
+            {
+              "heading": "Revenue fell by 4.4M in August-December compared with the stated comparison period.",
+              "content": "This five-month stretch made up 95.9% of the full-year revenue decline of 4.6M. The remaining months reduced revenue by 192.1K. Our checks did not measure a business reason for this decline. Check the month-by-month category trend for August and October."
+            },
+            {
+              "heading": "TECHNOLOGY revenue fell by 2.0M (20.1%), from 9.9M to 7.9M compared with the stated comparison period.",
+              "content": "Our checks did not measure a business reason for this decline. Review the monthly path within TECHNOLOGY to see whether the drop was concentrated in a few months or spread through the year."
+            },
+            {
+              "heading": "CONSUMER GOODS revenue fell by 1.5M (3.2%), from 47.0M to 45.6M compared with the stated comparison period.",
+              "content": "Units rose by 486,524.24 in the same comparison. Our checks did not measure a business reason for the revenue decline. Review average revenue per item within CONSUMER GOODS to see whether lower average value per item explains revenue falling while units rose."
+            },
+            {
+              "heading": "FRESH FOOD revenue fell by 1.5M (6.9%), from 21.0M to 19.6M compared with the stated comparison period.",
+              "content": "Our checks did not measure a business reason for this decline. The investigation noted a similar pattern in GREEN GROCERIES, but the manager brief for that area was not supplied. Investigate item pricing and mix within GREEN GROCERIES to test whether lower average revenue per item may explain the value decline."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

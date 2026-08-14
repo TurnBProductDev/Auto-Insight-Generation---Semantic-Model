@@ -1,0 +1,13 @@
+{
+  "type": "bar",
+  "title": "Revenue: prior versus current",
+  "labels": [
+    "Prior",
+    "Current"
+  ],
+  "values": [
+    122395957.62000005,
+    125810225.6
+  ],
+  "value_label": "Revenue"
+}

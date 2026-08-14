@@ -1,0 +1,577 @@
+Request URL: 'https://turnbtestblobstorage.blob.core.windows.net/insightstate/b3458a38-ad83-4e9a-b2f2-39d15c6aa22c/memory.json'
+Request method: 'GET'
+Request headers:
+    'x-ms-range': 'REDACTED'
+    'x-ms-version': 'REDACTED'
+    'Accept': 'application/xml'
+    'User-Agent': 'azsdk-python-storage-blob/12.30.0 Python/3.12.4 (Windows-11-10.0.26200-SP0)'
+    'x-ms-date': 'REDACTED'
+    'x-ms-client-request-id': '27a0772d-8f3c-11f1-8843-8038fb2e9432'
+    'Authorization': 'REDACTED'
+No body was attached to the request
+Response status: 206
+Response headers:
+    'Content-Length': '134033'
+    'Content-Type': 'application/json'
+    'Content-Range': 'REDACTED'
+    'Last-Modified': 'Mon, 03 Aug 2026 13:03:11 GMT'
+    'Accept-Ranges': 'REDACTED'
+    'ETag': '"0x8DEF15F9274359C"'
+    'Server': 'Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0'
+    'x-ms-request-id': '098f187f-f01e-0064-5548-234a8c000000'
+    'x-ms-client-request-id': '27a0772d-8f3c-11f1-8843-8038fb2e9432'
+    'x-ms-version': 'REDACTED'
+    'x-ms-creation-time': 'REDACTED'
+    'x-ms-blob-content-md5': 'REDACTED'
+    'x-ms-lease-status': 'REDACTED'
+    'x-ms-lease-state': 'REDACTED'
+    'x-ms-blob-type': 'REDACTED'
+    'x-ms-server-encrypted': 'REDACTED'
+    'x-ms-access-tier': 'REDACTED'
+    'x-ms-access-tier-inferred': 'REDACTED'
+    'Date': 'Mon, 03 Aug 2026 13:06:33 GMT'
+Request URL: 'https://turnbtestblobstorage.blob.core.windows.net/insightstate/summary-memory/b3458a38-ad83-4e9a-b2f2-39d15c6aa22c/memory.json'
+Request method: 'GET'
+Request headers:
+    'x-ms-range': 'REDACTED'
+    'x-ms-version': 'REDACTED'
+    'Accept': 'application/xml'
+    'User-Agent': 'azsdk-python-storage-blob/12.30.0 Python/3.12.4 (Windows-11-10.0.26200-SP0)'
+    'x-ms-date': 'REDACTED'
+    'x-ms-client-request-id': '27d576a7-8f3c-11f1-8692-8038fb2e9432'
+    'Authorization': 'REDACTED'
+No body was attached to the request
+Response status: 206
+Response headers:
+    'Content-Length': '41983'
+    'Content-Type': 'application/json'
+    'Content-Range': 'REDACTED'
+    'Last-Modified': 'Mon, 03 Aug 2026 13:03:10 GMT'
+    'Accept-Ranges': 'REDACTED'
+    'ETag': '"0x8DEF15F921AA322"'
+    'Server': 'Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0'
+    'x-ms-request-id': 'f8e884a0-c01e-0032-5b48-23bb63000000'
+    'x-ms-client-request-id': '27d576a7-8f3c-11f1-8692-8038fb2e9432'
+    'x-ms-version': 'REDACTED'
+    'x-ms-creation-time': 'REDACTED'
+    'x-ms-blob-content-md5': 'REDACTED'
+    'x-ms-lease-status': 'REDACTED'
+    'x-ms-lease-state': 'REDACTED'
+    'x-ms-blob-type': 'REDACTED'
+    'x-ms-server-encrypted': 'REDACTED'
+    'x-ms-access-tier': 'REDACTED'
+    'x-ms-access-tier-inferred': 'REDACTED'
+    'Date': 'Mon, 03 Aug 2026 13:06:34 GMT'
+[18:36:35] Node 1: config loaded.
+[18:36:35]   workspace=6d383900-b84d-4bce-afb4-b95453bee00a dataset=b3458a38-ad83-4e9a-b2f2-39d15c6aa22c provider=azure_openai model=claude-sonnet-5 exec_mode=python
+[18:36:35]   business rules loaded and snapshotted (827 lines).
+[18:36:35] Node 2: reading semantic model metadata via INFO.VIEW DAX...
+[18:36:37]   tables: 19 rows
+[18:36:37]   columns: 173 rows
+[18:36:38]   measures: 56 rows
+[18:36:39]   relationships: 15 rows
+[18:36:49]   Fabric TMSL getDefinition: enriched 56/56 measure expressions.
+[18:36:49] Metadata assembled: 19 tables, 56 measures, 7 date fields.
+[18:36:49] Metadata profile: deriving measures, dimensions and relationships...
+[18:36:49] Metadata profile: primary=revenue; fact=MIS_DEEP_DIVE2; entity='MIS_DEEP_DIVE2'[store_no]; 24 drill dimensions; 7 time dimensions.
+[18:36:49] Baseline: discovering entity comparison scope from metadata-selected objects...
+[18:36:50] Baseline scope: 4 comparable, 0 current-only, 0 prior-only; source=business_rule_config_validated_by_data.
+[18:36:50]   scope caveat: Automatically comparable entities omitted by business rules: ['CFH022']
+[18:36:50] Shared baseline: executing metadata-driven diagnostic coverage pre-fork...
+[18:36:56] Shared metadata coverage: 10/10 queries succeeded pre-fork.
+[18:36:56] Node 3: understanding the report/model...
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[18:37:07] Domain: 'Sales / Retail'; 24 key measures; time summary possible: True.
+[18:37:07] Insight branch: normalizing raw scan results...
+[18:37:07] Node 4: planning DAX queries automatically...
+[18:37:07] Insight scan normalized 12 results (12 successful).
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[18:37:33] Planned 8 queries: grand_totals_with_levers_and_refresh, latest_month_like_for_like_store_scorecard, new_branch_current_contribution, latest_month_division_breakdown, latest_month_category_movers, latest_month_store_category_interactions, recent_monthly_trend, category_health_measures
+[18:37:33] Node 5: generating DAX for each planned query (LLM)...
+[18:37:35] Temporal gate: using 'MIS_DEEP_DIVE2'[month] (month, 8 periods, reconciled); gated 1 load-date table(s); worst period March concentrated in IMPORTED FRUITS.
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[18:37:41]   grand_totals_with_levers_and_refresh: generated.
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[18:37:50]   latest_month_like_for_like_store_scorecard: generated.
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[18:38:03]   new_branch_current_contribution: generated.
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[18:38:14]   latest_month_division_breakdown: generated.
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[18:38:27]   latest_month_category_movers: generated.
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[18:38:35]   latest_month_store_category_interactions: generated.
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[18:38:42]   recent_monthly_trend: generated.
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[18:38:48]   category_health_measures: generated.
+[18:38:48] Generated 8 DAX statements.
+[18:38:48] Node 6: validating generated DAX against metadata...
+[18:38:48]   held for repair new_branch_current_contribution: comparison query includes excluded/current-only entities: ['CFH022']
+[18:38:48] Business-day source: disabled - both recent-week and daily monitoring disabled by config.
+[18:38:48] 7 of 8 queries passed validation (1 eligible for repair).
+[18:38:48] Node 7: executing 7 DAX queries (mode=python)...
+[18:38:48] Recent-week gate: disabled - recent-week monitoring disabled by config.
+[18:38:54]   summary: attempting repair for skipped query 'new_branch_current_contribution'...
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[18:39:00]   summary: repair for 'new_branch_current_contribution': success
+[18:39:00] Executed queries: 8/8 succeeded.
+[18:39:00] Node 8: normalizing raw Power BI results...
+[18:39:00] Daily anomaly gate: disabled - daily anomaly monitoring disabled by config.
+[18:39:00] Normalized 8 results (8 successful).
+[18:39:00] Summary period: grain=month data_as_of=2026-08-02 anchor=2026-07 freshness=current.
+[18:39:00] Evidence catalog: 13 contracts (12 construction-time).
+[18:39:00] Insight branch: computing deterministic stat candidates...
+[18:39:00] Stat candidates: 99 business, 0 data-quality.
+[18:39:00]   [197.1] change_contribution: CF-CONFECTIONERY: QTY Growth of -547.8K (from 4.5M to 3.9M), 197.1% of the total change
+[18:39:00]   [197.0] change_contribution: CF-CHOCOLATE: QTY Growth of -547.4K (from 4.5M to 3.9M), 197.0% of the total change
+[18:39:00]   [171.1] change_contribution: CHOCOLATE COATED BARS: QTY Growth of -475.4K (from 3.5M to 3.0M), 171.1% of the total change
+[18:39:00]   [139.3] change_contribution: FMCG FOOD: QTY Growth of -387.2K (from 10.7M to 10.3M), 139.3% of the total change
+[18:39:00]   [126.0] change_contribution: CFH021: revenue Growth of 4.3M (from 37.8M to 42.2M), 126.0% of the total change; split: volume 762.6K / rate 3.5M (per QTY Growth)
+[18:39:00] Focus universe: division -> 13 member(s), reconciled=True, pool_capped=False.
+[18:39:01] Focus universe: department -> 13 member(s), reconciled=True, pool_capped=False.
+[18:39:02] Focus universe: section -> 30 member(s), reconciled=True, pool_capped=True.
+[18:39:03] Focus universe: category -> 30 member(s), reconciled=True, pool_capped=True.
+[18:39:04] Focus universe: store -> 4 member(s), reconciled=True, pool_capped=False.
+[18:39:04] Coverage: division=13, section=30, store=4.
+[18:39:04] Novelty filter: detected=99 suppressed=34 unseen=65 eligible=50 cap_dropped=15 (status=ok, policy=never_repeat, levels={'high': 50}).
+[18:39:04] Summary candidates: 159 perspective(s) from summary-owned evidence.
+[18:39:04] Insight branch: detecting notable signals in scan results...
+[18:39:04] Overall Performance: status=ok bridge=yes trend=yes contribution=yes.
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[18:39:17] Detected 4 signals: cfh014_units_down_despite_transaction_growth[business], imported_fruits_major_units_drag[business], fmcg_food_revenue_up_on_lower_units[business], vegetable_oil_outsized_revenue_gain[business]
+[18:39:17] Insight branch: assembling evidence briefs (deterministic reuse pass)...
+[18:39:17] Evidence briefs: 4 signals; 0 drill-dimensions answered by reuse, 12 gaps flagged for probing.
+[18:39:17] Coverage matrix: 27 dimensions, 3 with trusted (complete+comparable) coverage.
+[18:39:17] Summary portfolio: detected=159 selected=3 type=new_data reason=same_day_recovery.
+[18:39:17] Insight branch: targeted gap scan from metadata-compatible dimensions...
+[18:39:18]   gap scan 'imported_fruits_major_units_drag': 2 REST calls, filled ['item_category_name', 'product_group_name'].
+[18:39:20]   gap scan 'fmcg_food_revenue_up_on_lower_units': 3 REST calls, filled ['product_group_name', 'special_product_group_name', 'store_no'].
+[18:39:20] Focus deep dive: CF-MENS FASHION enriched with 8 fact(s) over 5 fresh quer(y/ies); caveats: this deep dive repeats a recently delivered story (same contributors or driver).
+[18:39:21]   gap scan 'vegetable_oil_outsized_revenue_gain': 2 REST calls, filled ['item_category_name', 'product_group_name'].
+[18:39:21] Gap scan complete: 7 REST calls; global budget remaining=23.
+[18:39:23] Focus deep dive: CF-PERSONAL CARE enriched with 8 fact(s) over 5 fresh quer(y/ies); caveats: this deep dive repeats a recently delivered story (same contributors or driver).
+[18:39:26] Focus deep dive: CF-ELECTRONICS enriched with 8 fact(s) over 5 fresh quer(y/ies); caveats: this deep dive repeats a recently delivered story (same contributors or driver).
+[18:39:26] Multi-focus evidence: 3 focus(es) deep-dived over 15/15 shared quer(y/ies), 0 replacement(s).
+[18:39:26] Insight branch: investigating 4 signals (tool-calling agent)...
+[18:39:26]   investigating signal 'cfh014_units_down_despite_transaction_growth': Why did CFH014 lose 133588.2515 Units even though Transactions rose by 64181, and which categories in CFH014 drove the thinner baskets?
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[18:39:35]     probe 1/3 for 'cfh014_units_down_despite_transaction_growth': 20 rows.
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[18:39:38]     probe 2/3 for 'cfh014_units_down_despite_transaction_growth': 20 rows.
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[18:39:43]   'cfh014_units_down_despite_transaction_growth': 2/3 investigator probes (+0 gap-scan), concluded=True.
+[18:39:43]   investigating signal 'imported_fruits_major_units_drag': Why did IMPORTED FRUITS lose 101357.39 Units overall, and what changed in CFH021 where the category was down 61996.8091 Units?
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[18:39:50]     probe 1/1 for 'imported_fruits_major_units_drag': 4 rows.
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[18:39:55]   'imported_fruits_major_units_drag': 1/1 investigator probes (+2 gap-scan), concluded=True.
+[18:39:55]   investigating signal 'fmcg_food_revenue_up_on_lower_units': Why did FMCG FOOD grow Revenue by 683960.25 while losing 387154.4344 Units, and which FMCG FOOD categories were associated with the higher average value per item?
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[18:40:02] Fresh summary (R4): Overall Performance + 3 focus block-group(s) (mode=llm).
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[18:40:03]   'fmcg_food_revenue_up_on_lower_units': 0/0 investigator probes (+3 gap-scan), concluded=True.
+[18:40:03]   investigating signal 'vegetable_oil_outsized_revenue_gain': What changed in VEGETABLE OIL to deliver 661944.18 of Revenue growth, and how much came from distribution across branches versus a higher average value per item?
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[18:40:10]     probe 1/1 for 'vegetable_oil_outsized_revenue_gain': 4 rows.
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[18:40:15]   'vegetable_oil_outsized_revenue_gain': 1/1 investigator probes (+2 gap-scan), concluded=True.
+[18:40:15] Investigations complete for 4 signals.
+[18:40:15] Thesis linker: disabled (insight_thesis_linking_enabled=false).
+[18:40:16] Dashboard entity levers resolved for 4 store(s).
+[18:40:17] Dashboard period scan: 8 month(s), 8 with a reconciled store breakdown, 3 measure family(ies).
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[18:40:42] Dashboard page built: status=ok views=['primary', 'latest_period'] entity_role=store levers=yes mode=llm.
+[18:40:42] Insight branch: synthesizing the insight report...
+[18:40:42] Dashboard HTML written (2 view(s), mode=llm).
+[18:40:42] Fresh flexible summary validated and rendered (5 narrative block(s), 2 interactive chart(s)).
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[18:41:16] Insight report clarity check requested a rewrite (53 issue(s)).
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[18:41:42] Insight report clarity check requested a rewrite (9 issue(s)).
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[18:42:07] Insight report written (1557 words).
+[18:42:07] === insight branch finished ===
+[18:42:07] === summary branch finished ===
+[18:42:07] Insight memory: committed 4 new finding(s); watermark=2026-08-02.
+[18:42:07] Outputs saved.
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+Request URL: 'https://turnbtestblobstorage.blob.core.windows.net/cityflower/ai-content/kpi/client/insights.json'
+Request method: 'PUT'
+Request headers:
+    'Content-Length': '5543'
+    'x-ms-blob-type': 'REDACTED'
+    'x-ms-blob-content-type': 'REDACTED'
+    'x-ms-version': 'REDACTED'
+    'Content-Type': 'application/octet-stream'
+    'Accept': 'application/xml'
+    'User-Agent': 'azsdk-python-storage-blob/12.30.0 Python/3.12.4 (Windows-11-10.0.26200-SP0)'
+    'x-ms-date': 'REDACTED'
+    'x-ms-client-request-id': 'f377d09a-8f3c-11f1-952b-8038fb2e9432'
+    'Authorization': 'REDACTED'
+A body is sent with the request
+Response status: 201
+Response headers:
+    'Content-Length': '0'
+    'Content-MD5': 'REDACTED'
+    'Last-Modified': 'Mon, 03 Aug 2026 13:12:16 GMT'
+    'ETag': '"0x8DEF160D74F96B5"'
+    'Server': 'Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0'
+    'x-ms-request-id': 'acde4aa0-a01e-001b-2749-238517000000'
+    'x-ms-client-request-id': 'f377d09a-8f3c-11f1-952b-8038fb2e9432'
+    'x-ms-version': 'REDACTED'
+    'x-ms-content-crc64': 'REDACTED'
+    'x-ms-request-server-encrypted': 'REDACTED'
+    'Date': 'Mon, 03 Aug 2026 13:12:15 GMT'
+Request URL: 'https://turnbtestblobstorage.blob.core.windows.net/cityflower/ai-content/kpi/client/alerts.json'
+Request method: 'GET'
+Request headers:
+    'x-ms-range': 'REDACTED'
+    'x-ms-version': 'REDACTED'
+    'Accept': 'application/xml'
+    'User-Agent': 'azsdk-python-storage-blob/12.30.0 Python/3.12.4 (Windows-11-10.0.26200-SP0)'
+    'x-ms-date': 'REDACTED'
+    'x-ms-client-request-id': 'f3ba0992-8f3c-11f1-9749-8038fb2e9432'
+    'Authorization': 'REDACTED'
+No body was attached to the request
+Response status: 206
+Response headers:
+    'Content-Length': '37427'
+    'Content-Type': 'application/json'
+    'Content-Range': 'REDACTED'
+    'Last-Modified': 'Mon, 03 Aug 2026 13:03:10 GMT'
+    'Accept-Ranges': 'REDACTED'
+    'ETag': '"0x8DEF15F91E172F9"'
+    'Server': 'Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0'
+    'x-ms-request-id': 'acde4abb-a01e-001b-3f49-238517000000'
+    'x-ms-client-request-id': 'f3ba0992-8f3c-11f1-9749-8038fb2e9432'
+    'x-ms-version': 'REDACTED'
+    'x-ms-creation-time': 'REDACTED'
+    'x-ms-blob-content-md5': 'REDACTED'
+    'x-ms-lease-status': 'REDACTED'
+    'x-ms-lease-state': 'REDACTED'
+    'x-ms-blob-type': 'REDACTED'
+    'x-ms-server-encrypted': 'REDACTED'
+    'x-ms-access-tier': 'REDACTED'
+    'x-ms-access-tier-inferred': 'REDACTED'
+    'Date': 'Mon, 03 Aug 2026 13:12:15 GMT'
+Request URL: 'https://turnbtestblobstorage.blob.core.windows.net/cityflower/ai-content/kpi/client/alerts.json'
+Request method: 'PUT'
+Request headers:
+    'Content-Length': '37395'
+    'x-ms-blob-type': 'REDACTED'
+    'x-ms-blob-content-type': 'REDACTED'
+    'If-Match': '"0x8DEF15F91E172F9"'
+    'x-ms-version': 'REDACTED'
+    'Content-Type': 'application/octet-stream'
+    'Accept': 'application/xml'
+    'User-Agent': 'azsdk-python-storage-blob/12.30.0 Python/3.12.4 (Windows-11-10.0.26200-SP0)'
+    'x-ms-date': 'REDACTED'
+    'x-ms-client-request-id': 'f3c84ea7-8f3c-11f1-b551-8038fb2e9432'
+    'Authorization': 'REDACTED'
+A body is sent with the request
+Response status: 201
+Response headers:
+    'Content-Length': '0'
+    'Content-MD5': 'REDACTED'
+    'Last-Modified': 'Mon, 03 Aug 2026 13:12:16 GMT'
+    'ETag': '"0x8DEF160D76B7F19"'
+    'Server': 'Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0'
+    'x-ms-request-id': 'acde4acd-a01e-001b-4f49-238517000000'
+    'x-ms-client-request-id': 'f3c84ea7-8f3c-11f1-b551-8038fb2e9432'
+    'x-ms-version': 'REDACTED'
+    'x-ms-content-crc64': 'REDACTED'
+    'x-ms-request-server-encrypted': 'REDACTED'
+    'Date': 'Mon, 03 Aug 2026 13:12:15 GMT'
+Request URL: 'https://turnbtestblobstorage.blob.core.windows.net/cityflower/ai-content/report-summaries/client/20abf754-1bc0-444d-8789-baad7a1dca57.json'
+Request method: 'PUT'
+Request headers:
+    'Content-Length': '3637'
+    'x-ms-blob-type': 'REDACTED'
+    'x-ms-blob-content-type': 'REDACTED'
+    'x-ms-version': 'REDACTED'
+    'Content-Type': 'application/octet-stream'
+    'Accept': 'application/xml'
+    'User-Agent': 'azsdk-python-storage-blob/12.30.0 Python/3.12.4 (Windows-11-10.0.26200-SP0)'
+    'x-ms-date': 'REDACTED'
+    'x-ms-client-request-id': 'f3d6788a-8f3c-11f1-b778-8038fb2e9432'
+    'Authorization': 'REDACTED'
+A body is sent with the request
+Response status: 201
+Response headers:
+    'Content-Length': '0'
+    'Content-MD5': 'REDACTED'
+    'Last-Modified': 'Mon, 03 Aug 2026 13:12:16 GMT'
+    'ETag': '"0x8DEF160D7740960"'
+    'Server': 'Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0'
+    'x-ms-request-id': 'acde4aed-a01e-001b-6a49-238517000000'
+    'x-ms-client-request-id': 'f3d6788a-8f3c-11f1-b778-8038fb2e9432'
+    'x-ms-version': 'REDACTED'
+    'x-ms-content-crc64': 'REDACTED'
+    'x-ms-request-server-encrypted': 'REDACTED'
+    'Date': 'Mon, 03 Aug 2026 13:12:15 GMT'
+Request URL: 'https://turnbtestblobstorage.blob.core.windows.net/cityflower/ai-content/report-summaries/client/20abf754-1bc0-444d-8789-baad7a1dca57.html'
+Request method: 'PUT'
+Request headers:
+    'Content-Length': '49531'
+    'x-ms-meta-schemaversion': 'REDACTED'
+    'x-ms-meta-client': 'REDACTED'
+    'x-ms-meta-generatedfor': 'REDACTED'
+    'x-ms-meta-generatedat': 'REDACTED'
+    'x-ms-meta-expiresat': 'REDACTED'
+    'x-ms-meta-sourcedatasets': 'REDACTED'
+    'x-ms-meta-reportid': 'REDACTED'
+    'x-ms-blob-type': 'REDACTED'
+    'x-ms-blob-content-type': 'REDACTED'
+    'x-ms-version': 'REDACTED'
+    'Content-Type': 'application/octet-stream'
+    'Accept': 'application/xml'
+    'User-Agent': 'azsdk-python-storage-blob/12.30.0 Python/3.12.4 (Windows-11-10.0.26200-SP0)'
+    'x-ms-date': 'REDACTED'
+    'x-ms-client-request-id': 'f3de1bcd-8f3c-11f1-a71e-8038fb2e9432'
+    'Authorization': 'REDACTED'
+A body is sent with the request
+Response status: 201
+Response headers:
+    'Content-Length': '0'
+    'Content-MD5': 'REDACTED'
+    'Last-Modified': 'Mon, 03 Aug 2026 13:12:16 GMT'
+    'ETag': '"0x8DEF160D77CBAB4"'
+    'Server': 'Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0'
+    'x-ms-request-id': 'acde4afe-a01e-001b-7749-238517000000'
+    'x-ms-client-request-id': 'f3de1bcd-8f3c-11f1-a71e-8038fb2e9432'
+    'x-ms-version': 'REDACTED'
+    'x-ms-content-crc64': 'REDACTED'
+    'x-ms-request-server-encrypted': 'REDACTED'
+    'Date': 'Mon, 03 Aug 2026 13:12:15 GMT'
+Request URL: 'https://turnbtestblobstorage.blob.core.windows.net/insightstate/summary-memory/b3458a38-ad83-4e9a-b2f2-39d15c6aa22c/memory.json'
+Request method: 'PUT'
+Request headers:
+    'Content-Length': '43993'
+    'x-ms-blob-type': 'REDACTED'
+    'x-ms-blob-content-type': 'REDACTED'
+    'If-Match': '"0x8DEF15F921AA322"'
+    'x-ms-version': 'REDACTED'
+    'Content-Type': 'application/octet-stream'
+    'Accept': 'application/xml'
+    'User-Agent': 'azsdk-python-storage-blob/12.30.0 Python/3.12.4 (Windows-11-10.0.26200-SP0)'
+    'x-ms-date': 'REDACTED'
+    'x-ms-client-request-id': 'f3eb4412-8f3c-11f1-9383-8038fb2e9432'
+    'Authorization': 'REDACTED'
+A body is sent with the request
+Response status: 201
+Response headers:
+    'Content-Length': '0'
+    'Content-MD5': 'REDACTED'
+    'Last-Modified': 'Mon, 03 Aug 2026 13:12:17 GMT'
+    'ETag': '"0x8DEF160D7A2DAD4"'
+    'Server': 'Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0'
+    'x-ms-request-id': '95be5768-701e-0055-2c49-23ab9f000000'
+    'x-ms-client-request-id': 'f3eb4412-8f3c-11f1-9383-8038fb2e9432'
+    'x-ms-version': 'REDACTED'
+    'x-ms-content-crc64': 'REDACTED'
+    'x-ms-request-server-encrypted': 'REDACTED'
+    'Date': 'Mon, 03 Aug 2026 13:12:17 GMT'
+Request URL: 'https://turnbtestblobstorage.blob.core.windows.net/insightstate/b3458a38-ad83-4e9a-b2f2-39d15c6aa22c/memory.json'
+Request method: 'PUT'
+Request headers:
+    'Content-Length': '143017'
+    'x-ms-blob-type': 'REDACTED'
+    'x-ms-blob-content-type': 'REDACTED'
+    'If-Match': '"0x8DEF15F9274359C"'
+    'x-ms-version': 'REDACTED'
+    'Content-Type': 'application/octet-stream'
+    'Accept': 'application/xml'
+    'User-Agent': 'azsdk-python-storage-blob/12.30.0 Python/3.12.4 (Windows-11-10.0.26200-SP0)'
+    'x-ms-date': 'REDACTED'
+    'x-ms-client-request-id': 'f41002aa-8f3c-11f1-8d0a-8038fb2e9432'
+    'Authorization': 'REDACTED'
+A body is sent with the request
+Response status: 201
+Response headers:
+    'Content-Length': '0'
+    'Content-MD5': 'REDACTED'
+    'Last-Modified': 'Mon, 03 Aug 2026 13:12:17 GMT'
+    'ETag': '"0x8DEF160D7E50FF6"'
+    'Server': 'Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0'
+    'x-ms-request-id': '5c7b2cbc-601e-0004-3149-233613000000'
+    'x-ms-client-request-id': 'f41002aa-8f3c-11f1-8d0a-8038fb2e9432'
+    'x-ms-version': 'REDACTED'
+    'x-ms-content-crc64': 'REDACTED'
+    'x-ms-request-server-encrypted': 'REDACTED'
+    'Date': 'Mon, 03 Aug 2026 13:12:17 GMT'
+Cloud insight memory: hydrated turnbtestblobstorage/insightstate/b3458a38-ad83-4e9a-b2f2-39d15c6aa22c/memory.json (auth=connection_string).
+Cloud summary memory: hydrated turnbtestblobstorage/insightstate/summary-memory/b3458a38-ad83-4e9a-b2f2-39d15c6aa22c/memory.json (auth=connection_string).
+
+======================================================================
+PIPELINE COMPLETE
+======================================================================
+Outputs: C:\Users\TURNRETAIL\OneDrive - turnb.com (1)\Auto-Insight-Generation\powerbi-summary-agent\outputs
+API payloads: C:\Users\TURNRETAIL\OneDrive - turnb.com (1)\Auto-Insight-Generation\powerbi-summary-agent\outputs\api (summary=ok, insights=ok)
+Insight history: prepared C:\Users\TURNRETAIL\OneDrive - turnb.com (1)\Auto-Insight-Generation\powerbi-summary-agent\outputs\history\20260803T161216464499+0300.json (4 insight(s), date=2026-08-03).
+Summary history: prepared C:\Users\TURNRETAIL\OneDrive - turnb.com (1)\Auto-Insight-Generation\powerbi-summary-agent\outputs\summary-history\20260803T161216486307+0300.json and C:\Users\TURNRETAIL\OneDrive - turnb.com (1)\Auto-Insight-Generation\powerbi-summary-agent\outputs\summary_history.json (type=new_data, dataAsOf=2026-08-02).
+AI content: published 4 blob(s) to turnbtestblobstorage/cityflower/ai-content for 1 report(s) (auth=connection_string, report_ids=powerbi_discovery).
+Cloud summary memory: published turnbtestblobstorage/insightstate/summary-memory/b3458a38-ad83-4e9a-b2f2-39d15c6aa22c/memory.json (auth=connection_string).
+Cloud insight memory: published turnbtestblobstorage/insightstate/b3458a38-ad83-4e9a-b2f2-39d15c6aa22c/memory.json (auth=connection_string).
+
+----- report_summary.md -----
+
+# Like-for-like revenue increased by +3.4M (2.7%) to 129.5M across branches CFH014, CFH017, CFH018 and CFH021.
+
+*Data through 2026-08-02 · month grain · current*
+
+## Overall Performance
+
+Across branches CFH014, CFH017, CFH018 and CFH021, revenue increased by +3.4M (2.7%), from 126.1M to 129.5M compared with the same period last year. Transactions increased by +241.3K (2.9%), from 8.3M to 8.6M, while quantity decreased by -277.9K, from 19.4M to 19.1M. Quantity per transaction changed by -0.10, and average revenue per item increased by +0.27 (4.2%), from 6.5 to 6.8. Change in quantity reduced revenue by -1.8M, while average revenue per item and mix added revenue by +5.2M. Separately from the like-for-like comparison, CFH022 contributed 11.9M in current revenue, 2.1M in current quantity and 794.3K in current transactions.
+
+## Revenue change by month
+
+- January: +1.7M Revenue change
+- February: +1.7M Revenue change
+- March: -2.0M Revenue change
+- April: +2.1M Revenue change
+- May: +808.7K Revenue change
+- June: -1.0M Revenue change
+- July: +972.8K Revenue change
+- August: -889.4K Revenue change
+
+## CF-MENS FASHION
+
+CF-MENS FASHION revenue changed by +647.4K (+10.6%). Quantity changed by +56.7K and transactions changed by +46.9K. Within CF-MENS FASHION, change in units sold added revenue by +928.8K, while average revenue per item and mix reduced revenue by -281.3K. Among the largest returned contributors, MEN R/N TSHIRT added +143.4K and MENS T SHIRT reduced revenue by -192.4K. CFH021 led CF-MENS FASHION across the stores included in the comparison at +807.0K.
+
+## CF-MENS FASHION revenue change by product group
+
+- MENS VEST: +43.4K Revenue change
+- MENS NIGHT SUIT: +44.6K Revenue change
+- MENS SOCKS: +60.6K Revenue change
+- MENS BOXER: +67.5K Revenue change
+- MEN F/S TSHIRT: +63.5K Revenue change
+- MENS TRACK PANT: +62.9K Revenue change
+- MENS CARGOS: +84.1K Revenue change
+- MEN R/N TSHIRT: +143.4K Revenue change
+- MENS POLO TSHIRTS: +106.0K Revenue change
+- MENS T SHIRT: -192.4K Revenue change
+- CF-MENS PROMO: -113.8K Revenue change
+- MEN H/S SHIRT: +77.6K Revenue change
+
+## CF-PERSONAL CARE
+
+CF-PERSONAL CARE revenue changed by +504.2K (+3.4%). Quantity changed by +49.8K and transactions changed by +40.6K. Within CF-PERSONAL CARE, change in units sold added revenue by +359.0K and average revenue per item and mix added revenue by +145.2K. Among the largest returned contributors, SOAPS added +140.8K and SKIN CREAMS reduced revenue by -39.7K. CFH021 led CF-PERSONAL CARE across the stores included in the comparison at +547.7K.
+
+## CF-ELECTRONICS
+
+CF-ELECTRONICS revenue changed by +530.5K (+9.3%). Quantity changed by +18.9K and transactions changed by +16.3K. Within CF-ELECTRONICS, change in units sold added revenue by +858.4K, while average revenue per item and mix reduced revenue by -327.9K. Among the largest returned contributors, HAND TORCH added +270.9K and BLENDERS reduced revenue by -69.6K. CFH021 led CF-ELECTRONICS across the stores included in the comparison at +590.1K.
+
+## Selected section highlights
+
+- CFH021 led all three selected sections: +807.0K in CF-MENS FASHION, +547.7K in CF-PERSONAL CARE, and +590.1K in CF-ELECTRONICS.
+- CF-MENS FASHION and CF-ELECTRONICS both showed positive revenue change alongside a negative average revenue per item and mix contribution.
+- CF-PERSONAL CARE showed positive contributions from both change in units sold and average revenue per item and mix.
+- The section deep dives are partial, so the named product groups are the largest returned contributors rather than a full section breakdown.
+
+
+----- insight_report.md -----
+
+# Key Insights
+These comparisons include only branches with both current and last-year data: CFH014, CFH017, CFH018 and CFH021.
+
+**CFH014 units sold fell by 133.6K (2.4%), from 5.7M to 5.5M compared with the same period last year.** It made up 48.1% of the total decline in units sold. No measured reason was supplied for the branch total. Our checks showed large category declines inside CFH014, including CF-CONFECTIONERY down 102.5K units and CF-GROCERY FOOD down 32.4K units. CF-FRUIT & VEGETABLES also sold 14.8K fewer units while transactions increased by 28.8K. The data does not directly measure why this happened. Check assortment, pack-size, and availability changes in the largest declining categories.
+
+**IMPORTED FRUITS units sold fell by 101.4K (9.9%), from 1.0M to 920.0K compared with the same period last year.** It made up 36.5% of the total decline in units sold. No measured reason was supplied for the category total. Our checks showed the decline was concentrated in CFH021, CFH018, and CFH017, while CFH014 increased by 19.2K units. In CFH021 alone, units sold fell by 62.0K, revenue fell by SAR 207.8K, and transactions fell by 13,478. The data does not directly measure why this happened. Investigate CFH021 imported-fruit assortment, availability, and pricing.
+
+**FMCG FOOD revenue rose by 684.0K (1.4%), from 48.2M to 48.9M compared with the same period last year.** It made up 20.0% of the total increase in revenue. Units sold fell by 387.2K (3.6%), from 10.7M to 10.3M. Selling fewer units reduced revenue by 1.7M. Revenue per item rose from 4.51 to 4.75, up 5.2%, and added 2.4M. Transactions increased by 37,215 (1.1%), from 3.3M to 3.4M. Check item-level pricing and what was sold within FMCG FOOD, especially oils and poultry.
+
+**VEGETABLE OIL revenue rose by 661.9K (46.8%), from 1.4M to 2.1M compared with the same period last year.** It made up 19.3% of the total increase in revenue. Units sold rose by 30,638 (28.7%), from 106,917 to 137,555. Selling more units added 405.3K to revenue. Revenue per item rose from 13.23 to 15.09, up 14.1%, and added 256.7K. Transactions increased by 23,036 (24.8%), from 92,980 to 116,016. Check SKU, promotion, and pack-size changes in VEGETABLE OIL by branch.
+
+# Data Quality Watch-outs
+- None observed in this run.
+
+# Evidence Trail
+- CFH014 units down despite transaction growth
+  - Baseline signal: CFH014 `QTY Growth` was -133,588.2515, 48.0698% of the total units decline; `bills growth` was 64,181 and `revenue Growth` was -70,748.97.
+  - Item-category drill for `MIS_DEEP_DIVE2[item_category_name]` with branch filters applied to all four branch-bearing tables succeeded.
+  - Largest category unit declines in CFH014 included:
+    - `CF-CONFECTIONERY`: `QTY Growth` -102,472.40962; `bills growth` 1,387; `revenue Growth` -26,219.22.
+    - `CF-GROCERY FOOD`: `QTY Growth` -32,415.56916; `bills growth` -13,001; `revenue Growth` -126,350.56.
+    - `CF-FROZEN FOOD`: `QTY Growth` -22,024.0; `bills growth` -13,384; `revenue Growth` -79,121.10.
+    - `CF-FRUIT & VEGETABLES`: `QTY Growth` -14,765.77569; `bills growth` 28,816; `revenue Growth` 176,161.02.
+    - `CF-PERSONAL CARE`: `QTY Growth` -11,965.0; `bills growth` 9,835; `revenue Growth` -73,213.33.
+  - Offsetting positives included:
+    - `CF-MEAT`: `QTY Growth` 54,703.654; `bills growth` 23,860; `revenue Growth` 158,533.42.
+    - `CF-CHILLED & DAIRY`: `QTY Growth` 9,730.0; `bills growth` 10,764; `revenue Growth` 67,505.38.
+    - `CF-ELECTRONICS`: `QTY Growth` 3,564.0; `bills growth` 3,044; `revenue Growth` 54,268.68.
+  - Product-group drill for `MIS_DEEP_DIVE2[product_group_name]` also succeeded.
+  - Largest product-group declines shown in returned rows included `CF-WATCHES` -6,632 units, `CF-LIVING ACCESSORIES` -3,719, `CF-LADIES NIGHTWEAR` -1,659, `CF-OTHER STATIONARIES` -1,587, `CF-NUTS` -1,529.02, and `CF-COOK WARE` -1,405.
+  - Investigation conclusion accepted: pattern is more consistent with thinner baskets in key categories than with a broad loss of transactions.
+
+- IMPORTED FRUITS major units drag
+  - Baseline signal: `IMPORTED FRUITS` `QTY Growth` was -101,357.39, 36.472% of the total units decline; current units 919,968.0487 vs prior 1,021,325.4387; current transactions 514,371 vs prior 532,096.
+  - Branch split query for `MIS_DEEP_DIVE2[store_no]` filtered to `special_product_group_name = "IMPORTED FRUITS"` succeeded.
+  - Returned branch results:
+    - `CFH021`: `QTY Growth` -61,996.80913; `revenue Growth` -207,822.60; `bills growth` -13,478; current transactions 178,178; prior derived 191,656.
+    - `CFH018`: `QTY Growth` -33,226.89774; `revenue Growth` -128,973.36; `bills growth` -12,272; current transactions 88,681; prior derived 100,953.
+    - `CFH017`: `QTY Growth` -25,327.09893; `revenue Growth` -113,454.02; `bills growth` -8,748; current transactions 67,377; prior derived 76,125.
+    - `CFH014`: `QTY Growth` 19,193.41577; `revenue Growth` 150,279.47; `bills growth` 16,773; current transactions 180,135; prior derived 163,362.
+  - Investigation conclusion accepted: decline concentrated in CFH021, CFH018, and CFH017; further breakdown below this level was not available in this model view because the slice collapsed to a single member.
+  - Temporal context available from period drill: worst period by `special_product_group_name` was March, total change -2,043,504.72; `IMPORTED FRUITS` contributed -326,093.18 and 34.93% of that month’s decline.
+
+- FMCG FOOD revenue up on lower units
+  - Baseline signal: `FMCG FOOD` `revenue Growth` was 683,960.25, 19.9834% of the total revenue increase; current revenue 48,900,793.31 vs prior 48,216,833.06.
+  - Exact decomposition supplied and marked reconciled:
+    - Using units:
+      - current units 10,296,387.5346 vs prior 10,683,541.9691; `driver_change` -387,154.4344 (-3.6238%).
+      - volume contribution to revenue change: -1,747,300.7349.
+      - `rate_of = net revenue CURRENT / net qty CURRENT`; rate current 4.7493 vs prior 4.5132; rate change 5.2319%.
+      - rate contribution to revenue change: 2,431,260.9849.
+    - Using transactions:
+      - current transactions 3,386,248 vs prior 3,349,033; `driver_change` 37,215 (1.1112%).
+      - transaction contribution to revenue change: 535,793.2998.
+      - `rate_of = net revenue CURRENT / net bills CURRENT`; rate current 14.441 vs prior 14.3972; rate contribution 148,166.9502.
+  - Investigation conclusion accepted without additional queries.
+  - Investigation narrative reported concentration by branch from reused evidence:
+    - `CFH021` revenue +533.4K.
+    - `CFH018` revenue +351.0K.
+    - `CFH017` revenue -208.5K.
+  - Investigation narrative also cited within-division associations from reused evidence:
+    - `CF-EDIBLE OILS` product group revenue +446.9K with units down 700.
+    - `VEGETABLE OIL` special product group revenue +661.9K with units up 30.6K.
+    - `SUN FLOWER OIL` revenue -573.3K with units down 44.5K.
+    - `WHOLE CHICKEN` revenue +94.1K with units down 17.7K.
+  - No separate DAX probe was run in this investigation; findings rely on supplied signal decomposition and accepted investigation summary.
+
+- VEGETABLE OIL outsized revenue gain
+  - Baseline signal: `VEGETABLE OIL` `revenue Growth` was 661,944.18, 19.3401% of the total revenue increase; current revenue 2,076,205.77 vs prior 1,414,261.59.
+  - Exact decomposition supplied and marked reconciled:
+    - Using units:
+      - current units 137,555 vs prior 106,917; change 30,638 (28.6559%).
+      - volume contribution to revenue change: 405,269.0086 (61.224%).
+      - `rate_of = net revenue CURRENT / net qty CURRENT`; rate current 15.0936 vs prior 13.2277; rate contribution 256,675.1714 (38.776%).
+    - Using transactions:
+      - current transactions 116,016 vs prior 92,980; change 23,036 (24.7752%).
+      - transaction contribution to revenue change: 350,386.4271 (52.9329%).
+      - `rate_of = net revenue CURRENT / net bills CURRENT`; rate current 17.8959 vs prior 15.2104; rate contribution 311,557.7529 (47.0671%).
+  - Branch split query for `MIS_DEEP_DIVE2[store_no]` filtered to `special_product_group_name = "VEGETABLE OIL"` succeeded.
+  - Returned branch results:
+    - `CFH014`: `revenue Growth` 239,869.46; `QTY Growth` 9,753; `bills growth` 8,054.
+    - `CFH021`: `revenue Growth` 196,452.68; `QTY Growth` 8,821; `bills growth` 6,190.
+    - `CFH018`: `revenue Growth` 168,862.12; `QTY Growth` 8,837; `bills growth` 6,215.
+    - `CFH017`: `revenue Growth` 56,759.92; `QTY Growth` 3,227; `bills growth` 2,577.
+  - Investigation conclusion accepted: gain was broad-based, with about 91.4% of the increase coming from CFH014, CFH021, and CFH018.
+  - Investigation narrative reported that in this view all of the gain sat in `item_category_name = CF-GROCERY FOOD` and `product_group_name = CF-EDIBLE OILS`.
+
+# Confidence & Caveats
+- CFH014 units decline: moderate confidence. Two successful drills supported the finding and the investigation concluded. Basket Size itself was not directly queried, so the thinner-basket reading is inferred from units and transactions moving apart.
+- IMPORTED FRUITS decline: moderate confidence. One successful branch drill supported the concentration in CFH021, CFH018, and CFH017, and the investigation concluded. Further detail below the special product group was not available in the supplied results.
+- FMCG FOOD revenue growth: moderate confidence. The arithmetic is strong because both supplied decompositions reconciled exactly, and the investigation concluded. No extra DAX probe was run in this trail, so the within-division category examples rely on accepted reused evidence.
+- VEGETABLE OIL revenue growth: high confidence. The decomposition reconciled exactly and a successful branch drill confirmed the gain across all four branches. The model still cannot separate whether the higher revenue per item came from price changes or from a different mix of items sold.
+- Coverage limits: several dimension areas in the coverage matrix are marked partial or not trusted, including `special_product_group_name`, `product_group_name`, `item_category_name`, and `division_name`. Recent-period month series exists, but only one supplied time detail was available here: March as the worst month for the imported-fruits-led decline.
+- Scope caveat: all findings are for the four-branch comparison set only. CFH022 is excluded from these comparisons by business rule.
+
+# Suggested Follow-ups
+- Why did CFH014 sell fewer items despite more recorded purchases? Query branch-category Basket Size growth directly for CFH014, then compare CF-CONFECTIONERY, CF-FRUIT & VEGETABLES, CF-GROCERY FOOD, and CF-PERSONAL CARE by month.
+- What changed in IMPORTED FRUITS in CFH021, CFH018, and CFH017? Use month-by-branch queries in this model first; SKU availability, wastage, and price-label checks would need data outside this model.
+- Is FMCG FOOD growth sustainable if units stay down? Query the latest complete month for FMCG FOOD by branch and special product group, then test whether the rise still comes from higher revenue per item rather than higher units.
+- What exactly lifted VEGETABLE OIL? Query month-by-branch movement within `CF-EDIBLE OILS`; confirming whether this was price, promotion, or pack-size change would need item-level pricing and promotion data outside this model.

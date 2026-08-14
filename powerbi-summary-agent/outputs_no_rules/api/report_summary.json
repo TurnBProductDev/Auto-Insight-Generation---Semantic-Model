@@ -1,0 +1,54 @@
+{
+  "title": "AI Summary",
+  "generatedAt": "2026-07-28",
+  "headline": "Comparable stores delivered revenue growth of +3.5M in June 2026.",
+  "metrics": [
+    {
+      "label": "Revenue change",
+      "value": "+3.5M",
+      "tone": "positive"
+    },
+    {
+      "label": "Transactions change",
+      "value": "+244.0K",
+      "tone": "positive"
+    },
+    {
+      "label": "Quantity change",
+      "value": "-238.5K",
+      "tone": "warning"
+    },
+    {
+      "label": "Retail price change",
+      "value": "+0.27",
+      "tone": "positive"
+    }
+  ],
+  "sections": [
+    {
+      "heading": "What's working",
+      "tone": "positive",
+      "points": [
+        "Revenue increased by +3.5M across the comparable store population.",
+        "Transactions rose by +244.0K, alongside a retail price change of +0.27."
+      ]
+    },
+    {
+      "heading": "Risks",
+      "tone": "warning",
+      "points": [
+        "Quantity declined by -238.5K, indicating fewer units sold despite higher revenue.",
+        "No other positive volume movement is visible in the supplied evidence beyond transactions growth."
+      ]
+    },
+    {
+      "heading": "Recommended actions",
+      "tone": "info",
+      "points": [
+        "Review the June 2026 comparable-store results against prior periods to confirm whether revenue growth of +3.5M is being sustained by transactions of +244.0K and retail price change of +0.27.",
+        "Investigate where the quantity decline of -238.5K is concentrated within the comparable store population.",
+        "Monitor whether revenue growth of +3.5M continues alongside lower quantity and higher transactions in future monthly updates."
+      ]
+    }
+  ]
+}

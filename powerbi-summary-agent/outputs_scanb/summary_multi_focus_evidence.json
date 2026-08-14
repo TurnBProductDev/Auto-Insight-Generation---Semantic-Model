@@ -1,0 +1,25 @@
+{
+  "focuses": [
+    {
+      "focus_key": "focus:v2:b12271dbe9de319b845c3527fb9a744657e3420551674f6fbcdcfa7e01fa7e3b",
+      "segment": "TECHNOLOGY",
+      "role": "department",
+      "queries_attempted": 4
+    },
+    {
+      "focus_key": "focus:v2:a6888756060ad8bbb8a1eb96198c19d42f2290bf88516e897a49b663188183eb",
+      "segment": "CONSUMER GOODS",
+      "role": "department",
+      "queries_attempted": 4
+    },
+    {
+      "focus_key": "focus:v2:5c18a1cea2161ebe029968f9ebca9aeef5ad929ed97149d3e38dd5a5ae02cbf7",
+      "segment": "FRESH MUTTON OTHER",
+      "role": "category",
+      "queries_attempted": 3
+    }
+  ],
+  "total_queries_used": 11,
+  "total_budget": 15,
+  "replacements": 0
+}

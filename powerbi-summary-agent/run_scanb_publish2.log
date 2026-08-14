@@ -1,0 +1,907 @@
+Request URL: 'https://turnbtestblobstorage.blob.core.windows.net/insightstate/643336e7-4360-4b56-82f8-7b72cefad3ed/memory.json'
+Request method: 'GET'
+Request headers:
+    'x-ms-range': 'REDACTED'
+    'x-ms-version': 'REDACTED'
+    'Accept': 'application/xml'
+    'User-Agent': 'azsdk-python-storage-blob/12.30.0 Python/3.12.4 (Windows-11-10.0.26200-SP0)'
+    'x-ms-date': 'REDACTED'
+    'x-ms-client-request-id': '661d8d06-8fce-11f1-aae9-8038fb2e9432'
+    'Authorization': 'REDACTED'
+No body was attached to the request
+Response status: 206
+Response headers:
+    'Content-Length': '55335'
+    'Content-Type': 'application/json'
+    'Content-Range': 'REDACTED'
+    'Last-Modified': 'Tue, 04 Aug 2026 06:31:52 GMT'
+    'Accept-Ranges': 'REDACTED'
+    'ETag': '"0x8DEF1F2122EE961"'
+    'Server': 'Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0'
+    'x-ms-request-id': 'c1ff9766-701e-0027-3ddb-23acd0000000'
+    'x-ms-client-request-id': '661d8d06-8fce-11f1-aae9-8038fb2e9432'
+    'x-ms-version': 'REDACTED'
+    'x-ms-creation-time': 'REDACTED'
+    'x-ms-blob-content-md5': 'REDACTED'
+    'x-ms-lease-status': 'REDACTED'
+    'x-ms-lease-state': 'REDACTED'
+    'x-ms-blob-type': 'REDACTED'
+    'x-ms-server-encrypted': 'REDACTED'
+    'x-ms-access-tier': 'REDACTED'
+    'x-ms-access-tier-inferred': 'REDACTED'
+    'Date': 'Tue, 04 Aug 2026 06:33:25 GMT'
+Request URL: 'https://turnbtestblobstorage.blob.core.windows.net/insightstate/summary-memory/643336e7-4360-4b56-82f8-7b72cefad3ed/memory.json'
+Request method: 'GET'
+Request headers:
+    'x-ms-range': 'REDACTED'
+    'x-ms-version': 'REDACTED'
+    'Accept': 'application/xml'
+    'User-Agent': 'azsdk-python-storage-blob/12.30.0 Python/3.12.4 (Windows-11-10.0.26200-SP0)'
+    'x-ms-date': 'REDACTED'
+    'x-ms-client-request-id': '66671deb-8fce-11f1-9eea-8038fb2e9432'
+    'Authorization': 'REDACTED'
+No body was attached to the request
+Response status: 206
+Response headers:
+    'Content-Length': '20539'
+    'Content-Type': 'application/json'
+    'Content-Range': 'REDACTED'
+    'Last-Modified': 'Tue, 04 Aug 2026 06:31:51 GMT'
+    'Accept-Ranges': 'REDACTED'
+    'ETag': '"0x8DEF1F211EEB561"'
+    'Server': 'Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0'
+    'x-ms-request-id': 'cb230e99-801e-0051-3fdb-232698000000'
+    'x-ms-client-request-id': '66671deb-8fce-11f1-9eea-8038fb2e9432'
+    'x-ms-version': 'REDACTED'
+    'x-ms-creation-time': 'REDACTED'
+    'x-ms-blob-content-md5': 'REDACTED'
+    'x-ms-lease-status': 'REDACTED'
+    'x-ms-lease-state': 'REDACTED'
+    'x-ms-blob-type': 'REDACTED'
+    'x-ms-server-encrypted': 'REDACTED'
+    'x-ms-access-tier': 'REDACTED'
+    'x-ms-access-tier-inferred': 'REDACTED'
+    'Date': 'Tue, 04 Aug 2026 06:33:26 GMT'
+[12:03:27] Node 1: config loaded.
+[12:03:27]   workspace=7111406b-1fff-4a8b-bd52-fa6131682262 dataset=643336e7-4360-4b56-82f8-7b72cefad3ed provider=azure_openai model=claude-sonnet-5 exec_mode=python
+[12:03:27]   business rules loaded and snapshotted (910 lines).
+[12:03:27] Node 2: reading semantic model metadata via INFO.VIEW DAX...
+[12:03:28]   tables: 17 rows
+[12:03:29]   columns: 150 rows
+[12:03:30]   measures: 47 rows
+[12:03:31]   relationships: 15 rows
+[12:03:41]   Fabric TMSL getDefinition: enriched 47/47 measure expressions.
+[12:03:41] Metadata assembled: 17 tables, 47 measures, 7 date fields.
+[12:03:41] Metadata profile: deriving measures, dimensions and relationships...
+[12:03:41] Metadata profile: primary=revenue; fact=MIS_DEEP_DIVE2; entity=unresolved; 21 drill dimensions; 7 time dimensions.
+[12:03:41]   metadata profile caveat: No high-confidence entity/location dimension was identified from metadata.
+[12:03:41] Baseline: discovering entity comparison scope from metadata-selected objects...
+[12:03:41] Baseline scope: 0 comparable, 0 current-only, 0 prior-only; source=unresolved.
+[12:03:41]   scope caveat: Metadata could not identify an entity/current/prior scope query.
+[12:03:41] Shared baseline: executing metadata-driven diagnostic coverage pre-fork...
+[12:03:48] Shared metadata coverage: 9/9 queries succeeded pre-fork.
+[12:03:48] Node 3: understanding the report/model...
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[12:03:58] Domain: 'Sales / Retail'; 16 key measures; time summary possible: True.
+[12:03:58] Insight branch: normalizing raw scan results...
+[12:03:58] Node 4: planning DAX queries automatically...
+[12:03:58] Insight scan normalized 9 results (9 successful).
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[12:04:18] Planned 9 queries: latest_complete_month_totals, full_year_grand_totals_with_levers, monthly_trend_by_doc_month, branch_revenue_units_breakdown, department_performance_breakdown, section_performance_breakdown, category_top_current_revenue, category_top_and_bottom_revenue_change, brand_top_revenue_breakdown
+[12:04:18] Node 5: generating DAX for each planned query (LLM)...
+[12:04:19] Temporal gate: using 'MIS_DEEP_DIVE2'[DOC_MONTH] (month, 12 periods, reconciled); gated 1 load-date table(s); worst period October concentrated in LED TV.
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[12:04:25]   latest_complete_month_totals: generated.
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[12:04:30]   full_year_grand_totals_with_levers: generated.
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[12:04:36]   monthly_trend_by_doc_month: generated.
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[12:04:41]   branch_revenue_units_breakdown: generated.
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[12:04:47]   department_performance_breakdown: generated.
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[12:04:52]   section_performance_breakdown: generated.
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[12:04:57]   category_top_current_revenue: generated.
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[12:05:04]   category_top_and_bottom_revenue_change: generated.
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[12:05:09]   brand_top_revenue_breakdown: generated.
+[12:05:09] Generated 9 DAX statements.
+[12:05:09] Node 6: validating generated DAX against metadata...
+[12:05:09] Business-day source: disabled - both recent-week and daily monitoring disabled by config.
+[12:05:09] 9 of 9 queries passed validation (0 eligible for repair).
+[12:05:09] Node 7: executing 9 DAX queries (mode=python)...
+[12:05:09] Recent-week gate: disabled - recent-week monitoring disabled by config.
+[12:05:16] Executed queries: 9/9 succeeded.
+[12:05:16] Node 8: normalizing raw Power BI results...
+[12:05:16] Daily anomaly gate: disabled - daily anomaly monitoring disabled by config.
+[12:05:16] Normalized 9 results (9 successful).
+[12:05:16] Summary period: grain=day data_as_of=2023-12-31 anchor=2023-12-31 freshness=stale.
+[12:05:16] Evidence catalog: 10 contracts (10 construction-time).
+[12:05:16] Insight branch: computing deterministic stat candidates...
+[12:05:16] Stat candidates: 78 business, 0 data-quality.
+[12:05:16]   [100.9] period_sustained_decline: revenue Growth declined for 5 consecutive periods (August to December), totalling -4.4M (95.9% of the total change); steepest: October (-1.7M, 37%), August (-1.3M, 28%); October's fall concentrated in LED TV (-151.8K), BLANKET DOUBLE (-146.3K)
+[12:05:16]   [51.7] change_contribution: CONSUMER GOODS: bills growth of -1.2M (from 24.0M to 22.7M)
+[12:05:16]   [37.4] period_change_contribution: October: revenue Growth of -1.7M (from 10.8M to 9.1M), 37.4% of the total change; concentrated in LED TV (-151.8K), BLANKET DOUBLE (-146.3K)
+[12:05:16]   [29.7] change_contribution: CONSUMER GOODS: QTY Growth of 486.5K (from 23.2M to 23.7M)
+[12:05:16]   [28.7] change_contribution: GREEN GROCERIES: QTY Growth of 394.4K (from 10.2M to 10.6M)
+[12:05:17] Focus universe: department -> 6 member(s), reconciled=True, pool_capped=False.
+[12:05:17] Focus universe: section -> 29 member(s), reconciled=True, pool_capped=False.
+[12:05:18] Focus universe: category -> 30 member(s), reconciled=True, pool_capped=True.
+[12:05:18] Coverage: department=6, section=29, category=30.
+[12:05:18] Novelty filter: detected=78 suppressed=0 unseen=78 eligible=50 cap_dropped=28 (status=ok, policy=never_repeat, levels={'period': 5, 'high': 45}).
+[12:05:18] Summary candidates: 123 perspective(s) from summary-owned evidence.
+[12:05:18] Insight branch: detecting notable signals in scan results...
+[12:05:19] Overall Performance: status=ok bridge=yes trend=yes contribution=no.
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[12:05:30] Detected 4 signals: august_to_december_revenue_decline[business], technology_revenue_decline[business], consumer_goods_revenue_transactions_divergence[business], fresh_food_and_green_groceries_mixed_volume_value[business]
+[12:05:30] Insight branch: assembling evidence briefs (deterministic reuse pass)...
+[12:05:30] Evidence briefs: 4 signals; 0 drill-dimensions answered by reuse, 12 gaps flagged for probing.
+[12:05:30] Coverage matrix: 24 dimensions, 0 with trusted (complete+comparable) coverage.
+[12:05:30] Summary portfolio: detected=123 selected=3 type=new_data reason=same_day_recovery.
+[12:05:30] Insight branch: targeted gap scan from metadata-compatible dimensions...
+[12:05:32]   gap scan 'technology_revenue_decline': 3 REST calls, filled ['CATEGORY_NAME', 'CATEGORY_NAME_2', 'SECTION'].
+[12:05:32] Focus deep dive: TECHNOLOGY enriched with 6 fact(s) over 4 fresh quer(y/ies); caveats: this deep dive repeats a recently delivered story (same contributors or driver).
+[12:05:34]   gap scan 'consumer_goods_revenue_transactions_divergence': 3 REST calls, filled ['CATEGORY_NAME', 'CATEGORY_NAME_2', 'SECTION'].
+[12:05:35] Focus deep dive: CONSUMER GOODS enriched with 7 fact(s) over 4 fresh quer(y/ies); caveats: this deep dive repeats a recently delivered story (same contributors or driver).
+[12:05:36]   gap scan 'fresh_food_and_green_groceries_mixed_volume_value': 2 REST calls, filled ['CATEGORY_NAME', 'CATEGORY_NAME_2'].
+[12:05:36] Gap scan complete: 8 REST calls; global budget remaining=22.
+[12:05:41] Focus deep dive: FRESH MUTTON OTHER enriched with 5 fact(s) over 3 fresh quer(y/ies); caveats: child dimension BRAND_NAME failed hierarchy validation.
+[12:05:41] Multi-focus evidence: 3 focus(es) deep-dived over 11/15 shared quer(y/ies), 0 replacement(s).
+[12:05:41] Insight branch: investigating 4 signals (tool-calling agent)...
+[12:05:41]   investigating signal 'august_to_december_revenue_decline': What changed from August to December, especially in October and August, to drive almost all of the year's revenue decline?
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[12:05:48]     probe 1/3 for 'august_to_december_revenue_decline': 15 rows.
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[12:05:54]     probe 2/3 for 'august_to_december_revenue_decline': 6 rows.
+[12:05:55]     probe 3/3 for 'august_to_december_revenue_decline': 15 rows.
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[12:06:00]   'august_to_december_revenue_decline': 3/3 investigator probes (+0 gap-scan), concluded=True.
+[12:06:00]   investigating signal 'technology_revenue_decline': Why did TECHNOLOGY lose -1991123.9726 in revenue, and how much of that decline came from LED TV within CONSUMER DEVICES?
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[12:06:08]   'technology_revenue_decline': 0/0 investigator probes (+3 gap-scan), concluded=True.
+[12:06:08]   investigating signal 'consumer_goods_revenue_transactions_divergence': Why did CONSUMER GOODS lose -1491253.2329 in revenue even though Units grew by 486524.24, and which categories within the department drove the -1224468.0 transactions decline?
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[12:06:13] ERROR: Balanced summary LLM draft failed validation; used deterministic fallback (LengthFinishReasonError: Could not parse response content as the length limit was reached - CompletionUsage(completion_tokens=808, prompt_tokens=30529, total_tokens=31337, completion_tokens_details=CompletionTokensDetails(accepted_prediction_tokens=0, audio_tokens=0, reasoning_tokens=0, rejected_prediction_tokens=0), prompt_tokens_details=PromptTokensDetails(audio_tokens=0, cache_write_tokens=None, cached_tokens=0), latency_checkpoint={'engine_tbt_ms': 33, 'engine_ttft_ms': 1744, 'engine_ttlt_ms': 28044, 'pre_inference_ms': 245, 'service_tbt_ms': 33, 'service_ttft_ms': 2054, 'service_ttlt_ms': 28348, 'total_duration_ms': 28112, 'user_visible_ttft_ms': 1809})).
+[12:06:13] Fresh summary (R4): Overall Performance + 3 focus block-group(s) (mode=deterministic_fallback).
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[12:06:16]   'consumer_goods_revenue_transactions_divergence': 0/0 investigator probes (+3 gap-scan), concluded=True.
+[12:06:16]   investigating signal 'fresh_food_and_green_groceries_mixed_volume_value': Why did FRESH FOOD, especially GREEN GROCERIES, lose revenue despite higher Units and transactions?
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[12:06:24]   'fresh_food_and_green_groceries_mixed_volume_value': 0/1 investigator probes (+2 gap-scan), concluded=True.
+[12:06:24] Investigations complete for 4 signals.
+[12:06:24] Thesis linker: disabled (insight_thesis_linking_enabled=false).
+[12:06:25] Dashboard entity levers resolved for 5 department(s).
+[12:06:25] Dashboard period scan: 12 month(s), 12 with a reconciled department breakdown, 3 measure family(ies).
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[12:07:18] ERROR: Dashboard authoring for view latest_period did not validate; using the deterministic draft.
+[12:07:18] Dashboard page built: status=ok views=['primary', 'latest_period'] entity_role=department levers=yes mode=llm.
+[12:07:18] Insight branch: synthesizing the insight report...
+[12:07:18] Dashboard HTML written (2 view(s), mode=llm, also published as report_summary.html).
+[12:07:18] Fresh flexible summary validated and rendered (4 narrative block(s), 7 interactive chart(s)).
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[12:07:53] Insight report clarity check requested a rewrite (25 issue(s)).
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[12:08:17] Insight report clarity check requested a rewrite (1 issue(s)).
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+[12:08:38] Insight report written (1348 words).
+[12:08:38] === insight branch finished ===
+[12:08:38] === summary branch finished ===
+[12:08:38] Insight memory: committed 4 new finding(s); watermark=2023-12-31.
+[12:08:38] Outputs saved.
+HTTP Request: POST https://test-agentpbi-resource.cognitiveservices.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-04-01-preview "HTTP/1.1 200 OK"
+Request URL: 'https://turnbtestblobstorage.blob.core.windows.net/insightgen?restype=REDACTED'
+Request method: 'PUT'
+Request headers:
+    'x-ms-version': 'REDACTED'
+    'Accept': 'application/xml'
+    'User-Agent': 'azsdk-python-storage-blob/12.30.0 Python/3.12.4 (Windows-11-10.0.26200-SP0)'
+    'x-ms-date': 'REDACTED'
+    'x-ms-client-request-id': '271bdf9e-8fcf-11f1-a7f8-8038fb2e9432'
+    'Authorization': 'REDACTED'
+No body was attached to the request
+Response status: 409
+Response headers:
+    'Content-Length': '230'
+    'Content-Type': 'application/xml'
+    'Server': 'Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0'
+    'x-ms-request-id': 'bac8ff50-601e-002b-69db-233bd8000000'
+    'x-ms-client-request-id': '271bdf9e-8fcf-11f1-a7f8-8038fb2e9432'
+    'x-ms-version': 'REDACTED'
+    'x-ms-error-code': 'ContainerAlreadyExists'
+    'Date': 'Tue, 04 Aug 2026 06:38:50 GMT'
+Request URL: 'https://turnbtestblobstorage.blob.core.windows.net/insightgen/scanb/report_summary.json'
+Request method: 'PUT'
+Request headers:
+    'Content-Length': '1882'
+    'x-ms-blob-type': 'REDACTED'
+    'x-ms-blob-content-type': 'REDACTED'
+    'x-ms-version': 'REDACTED'
+    'Content-Type': 'application/octet-stream'
+    'Accept': 'application/xml'
+    'User-Agent': 'azsdk-python-storage-blob/12.30.0 Python/3.12.4 (Windows-11-10.0.26200-SP0)'
+    'x-ms-date': 'REDACTED'
+    'x-ms-client-request-id': '27822768-8fcf-11f1-8b80-8038fb2e9432'
+    'Authorization': 'REDACTED'
+A body is sent with the request
+Response status: 201
+Response headers:
+    'Content-Length': '0'
+    'Content-MD5': 'REDACTED'
+    'Last-Modified': 'Tue, 04 Aug 2026 06:38:50 GMT'
+    'ETag': '"0x8DEF1F30BA10FCB"'
+    'Server': 'Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0'
+    'x-ms-request-id': 'bac8ff85-601e-002b-1adb-233bd8000000'
+    'x-ms-client-request-id': '27822768-8fcf-11f1-8b80-8038fb2e9432'
+    'x-ms-version': 'REDACTED'
+    'x-ms-content-crc64': 'REDACTED'
+    'x-ms-request-server-encrypted': 'REDACTED'
+    'Date': 'Tue, 04 Aug 2026 06:38:50 GMT'
+Request URL: 'https://turnbtestblobstorage.blob.core.windows.net/insightgen/scanb/kpi_insights.json'
+Request method: 'PUT'
+Request headers:
+    'Content-Length': '5009'
+    'x-ms-blob-type': 'REDACTED'
+    'x-ms-blob-content-type': 'REDACTED'
+    'x-ms-version': 'REDACTED'
+    'Content-Type': 'application/octet-stream'
+    'Accept': 'application/xml'
+    'User-Agent': 'azsdk-python-storage-blob/12.30.0 Python/3.12.4 (Windows-11-10.0.26200-SP0)'
+    'x-ms-date': 'REDACTED'
+    'x-ms-client-request-id': '2797a7da-8fcf-11f1-a7be-8038fb2e9432'
+    'Authorization': 'REDACTED'
+A body is sent with the request
+Response status: 201
+Response headers:
+    'Content-Length': '0'
+    'Content-MD5': 'REDACTED'
+    'Last-Modified': 'Tue, 04 Aug 2026 06:38:50 GMT'
+    'ETag': '"0x8DEF1F30BB864FA"'
+    'Server': 'Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0'
+    'x-ms-request-id': 'bac8ffc6-601e-002b-50db-233bd8000000'
+    'x-ms-client-request-id': '2797a7da-8fcf-11f1-a7be-8038fb2e9432'
+    'x-ms-version': 'REDACTED'
+    'x-ms-content-crc64': 'REDACTED'
+    'x-ms-request-server-encrypted': 'REDACTED'
+    'Date': 'Tue, 04 Aug 2026 06:38:50 GMT'
+Request URL: 'https://turnbtestblobstorage.blob.core.windows.net/insightgen?restype=REDACTED'
+Request method: 'PUT'
+Request headers:
+    'x-ms-version': 'REDACTED'
+    'Accept': 'application/xml'
+    'User-Agent': 'azsdk-python-storage-blob/12.30.0 Python/3.12.4 (Windows-11-10.0.26200-SP0)'
+    'x-ms-date': 'REDACTED'
+    'x-ms-client-request-id': '27ae38d0-8fcf-11f1-b674-8038fb2e9432'
+    'Authorization': 'REDACTED'
+No body was attached to the request
+Response status: 409
+Response headers:
+    'Content-Length': '230'
+    'Content-Type': 'application/xml'
+    'Server': 'Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0'
+    'x-ms-request-id': '248eb43a-501e-000f-55db-23cd78000000'
+    'x-ms-client-request-id': '27ae38d0-8fcf-11f1-b674-8038fb2e9432'
+    'x-ms-version': 'REDACTED'
+    'x-ms-error-code': 'ContainerAlreadyExists'
+    'Date': 'Tue, 04 Aug 2026 06:38:50 GMT'
+Request URL: 'https://turnbtestblobstorage.blob.core.windows.net/insightgen/scanb/history/643336e7-4360-4b56-82f8-7b72cefad3ed/2026/08/04/20260804T093850197786%2B0300.json'
+Request method: 'PUT'
+Request headers:
+    'Content-Length': '1955'
+    'x-ms-blob-type': 'REDACTED'
+    'x-ms-blob-content-type': 'REDACTED'
+    'If-None-Match': '*'
+    'x-ms-version': 'REDACTED'
+    'Content-Type': 'application/octet-stream'
+    'Accept': 'application/xml'
+    'User-Agent': 'azsdk-python-storage-blob/12.30.0 Python/3.12.4 (Windows-11-10.0.26200-SP0)'
+    'x-ms-date': 'REDACTED'
+    'x-ms-client-request-id': '27d0c6e6-8fcf-11f1-bcae-8038fb2e9432'
+    'Authorization': 'REDACTED'
+A body is sent with the request
+Response status: 201
+Response headers:
+    'Content-Length': '0'
+    'Content-MD5': 'REDACTED'
+    'Last-Modified': 'Tue, 04 Aug 2026 06:38:51 GMT'
+    'ETag': '"0x8DEF1F30BEEC63F"'
+    'Server': 'Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0'
+    'x-ms-request-id': '248eb45a-501e-000f-70db-23cd78000000'
+    'x-ms-client-request-id': '27d0c6e6-8fcf-11f1-bcae-8038fb2e9432'
+    'x-ms-version': 'REDACTED'
+    'x-ms-content-crc64': 'REDACTED'
+    'x-ms-request-server-encrypted': 'REDACTED'
+    'Date': 'Tue, 04 Aug 2026 06:38:50 GMT'
+Request URL: 'https://turnbtestblobstorage.blob.core.windows.net/insightgen/scanb/insight_history.json'
+Request method: 'GET'
+Request headers:
+    'x-ms-range': 'REDACTED'
+    'x-ms-version': 'REDACTED'
+    'Accept': 'application/xml'
+    'User-Agent': 'azsdk-python-storage-blob/12.30.0 Python/3.12.4 (Windows-11-10.0.26200-SP0)'
+    'x-ms-date': 'REDACTED'
+    'x-ms-client-request-id': '27d87137-8fcf-11f1-8a3f-8038fb2e9432'
+    'Authorization': 'REDACTED'
+No body was attached to the request
+Response status: 206
+Response headers:
+    'Content-Length': '1616'
+    'Content-Type': 'application/json'
+    'Content-Range': 'REDACTED'
+    'Last-Modified': 'Tue, 04 Aug 2026 06:31:50 GMT'
+    'Accept-Ranges': 'REDACTED'
+    'ETag': '"0x8DEF1F210FFDD44"'
+    'Server': 'Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0'
+    'x-ms-request-id': '248eb46e-501e-000f-03db-23cd78000000'
+    'x-ms-client-request-id': '27d87137-8fcf-11f1-8a3f-8038fb2e9432'
+    'x-ms-version': 'REDACTED'
+    'x-ms-creation-time': 'REDACTED'
+    'x-ms-blob-content-md5': 'REDACTED'
+    'x-ms-lease-status': 'REDACTED'
+    'x-ms-lease-state': 'REDACTED'
+    'x-ms-blob-type': 'REDACTED'
+    'x-ms-server-encrypted': 'REDACTED'
+    'x-ms-access-tier': 'REDACTED'
+    'x-ms-access-tier-inferred': 'REDACTED'
+    'Date': 'Tue, 04 Aug 2026 06:38:50 GMT'
+Request URL: 'https://turnbtestblobstorage.blob.core.windows.net/insightgen/scanb/insight_history.json'
+Request method: 'PUT'
+Request headers:
+    'Content-Length': '3488'
+    'x-ms-blob-type': 'REDACTED'
+    'x-ms-blob-content-type': 'REDACTED'
+    'If-Match': '"0x8DEF1F210FFDD44"'
+    'x-ms-version': 'REDACTED'
+    'Content-Type': 'application/octet-stream'
+    'Accept': 'application/xml'
+    'User-Agent': 'azsdk-python-storage-blob/12.30.0 Python/3.12.4 (Windows-11-10.0.26200-SP0)'
+    'x-ms-date': 'REDACTED'
+    'x-ms-client-request-id': '27dff210-8fcf-11f1-a066-8038fb2e9432'
+    'Authorization': 'REDACTED'
+A body is sent with the request
+Response status: 201
+Response headers:
+    'Content-Length': '0'
+    'Content-MD5': 'REDACTED'
+    'Last-Modified': 'Tue, 04 Aug 2026 06:38:51 GMT'
+    'ETag': '"0x8DEF1F30BFE0646"'
+    'Server': 'Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0'
+    'x-ms-request-id': '248eb481-501e-000f-15db-23cd78000000'
+    'x-ms-client-request-id': '27dff210-8fcf-11f1-a066-8038fb2e9432'
+    'x-ms-version': 'REDACTED'
+    'x-ms-content-crc64': 'REDACTED'
+    'x-ms-request-server-encrypted': 'REDACTED'
+    'Date': 'Tue, 04 Aug 2026 06:38:50 GMT'
+Request URL: 'https://turnbtestblobstorage.blob.core.windows.net/insightgen?restype=REDACTED'
+Request method: 'PUT'
+Request headers:
+    'x-ms-version': 'REDACTED'
+    'Accept': 'application/xml'
+    'User-Agent': 'azsdk-python-storage-blob/12.30.0 Python/3.12.4 (Windows-11-10.0.26200-SP0)'
+    'x-ms-date': 'REDACTED'
+    'x-ms-client-request-id': '27e7b392-8fcf-11f1-8b5f-8038fb2e9432'
+    'Authorization': 'REDACTED'
+No body was attached to the request
+Response status: 409
+Response headers:
+    'Content-Length': '230'
+    'Content-Type': 'application/xml'
+    'Server': 'Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0'
+    'x-ms-request-id': '56c13ad9-001e-005f-47db-230f28000000'
+    'x-ms-client-request-id': '27e7b392-8fcf-11f1-8b5f-8038fb2e9432'
+    'x-ms-version': 'REDACTED'
+    'x-ms-error-code': 'ContainerAlreadyExists'
+    'Date': 'Tue, 04 Aug 2026 06:38:51 GMT'
+Request URL: 'https://turnbtestblobstorage.blob.core.windows.net/insightgen/scanb/summary-history/643336e7-4360-4b56-82f8-7b72cefad3ed/2026/08/04/20260804T093850215212%2B0300.json'
+Request method: 'PUT'
+Request headers:
+    'Content-Length': '8540'
+    'x-ms-blob-type': 'REDACTED'
+    'x-ms-blob-content-type': 'REDACTED'
+    'If-None-Match': '*'
+    'x-ms-version': 'REDACTED'
+    'Content-Type': 'application/octet-stream'
+    'Accept': 'application/xml'
+    'User-Agent': 'azsdk-python-storage-blob/12.30.0 Python/3.12.4 (Windows-11-10.0.26200-SP0)'
+    'x-ms-date': 'REDACTED'
+    'x-ms-client-request-id': '2846496b-8fcf-11f1-ac74-8038fb2e9432'
+    'Authorization': 'REDACTED'
+A body is sent with the request
+Response status: 201
+Response headers:
+    'Content-Length': '0'
+    'Content-MD5': 'REDACTED'
+    'Last-Modified': 'Tue, 04 Aug 2026 06:38:52 GMT'
+    'ETag': '"0x8DEF1F30C64A858"'
+    'Server': 'Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0'
+    'x-ms-request-id': '56c13b3a-001e-005f-18db-230f28000000'
+    'x-ms-client-request-id': '2846496b-8fcf-11f1-ac74-8038fb2e9432'
+    'x-ms-version': 'REDACTED'
+    'x-ms-content-crc64': 'REDACTED'
+    'x-ms-request-server-encrypted': 'REDACTED'
+    'Date': 'Tue, 04 Aug 2026 06:38:51 GMT'
+Request URL: 'https://turnbtestblobstorage.blob.core.windows.net/insightgen/scanb/summary_history.json'
+Request method: 'GET'
+Request headers:
+    'x-ms-range': 'REDACTED'
+    'x-ms-version': 'REDACTED'
+    'Accept': 'application/xml'
+    'User-Agent': 'azsdk-python-storage-blob/12.30.0 Python/3.12.4 (Windows-11-10.0.26200-SP0)'
+    'x-ms-date': 'REDACTED'
+    'x-ms-client-request-id': '285be420-8fcf-11f1-be11-8038fb2e9432'
+    'Authorization': 'REDACTED'
+No body was attached to the request
+Response status: 206
+Response headers:
+    'Content-Length': '10647'
+    'Content-Type': 'application/json'
+    'Content-Range': 'REDACTED'
+    'Last-Modified': 'Tue, 04 Aug 2026 06:31:50 GMT'
+    'Accept-Ranges': 'REDACTED'
+    'ETag': '"0x8DEF1F2113DD3BE"'
+    'Server': 'Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0'
+    'x-ms-request-id': '56c13b9e-001e-005f-68db-230f28000000'
+    'x-ms-client-request-id': '285be420-8fcf-11f1-be11-8038fb2e9432'
+    'x-ms-version': 'REDACTED'
+    'x-ms-creation-time': 'REDACTED'
+    'x-ms-blob-content-md5': 'REDACTED'
+    'x-ms-lease-status': 'REDACTED'
+    'x-ms-lease-state': 'REDACTED'
+    'x-ms-blob-type': 'REDACTED'
+    'x-ms-server-encrypted': 'REDACTED'
+    'x-ms-access-tier': 'REDACTED'
+    'x-ms-access-tier-inferred': 'REDACTED'
+    'Date': 'Tue, 04 Aug 2026 06:38:51 GMT'
+Request URL: 'https://turnbtestblobstorage.blob.core.windows.net/insightgen/scanb/summary_history.json'
+Request method: 'PUT'
+Request headers:
+    'Content-Length': '20965'
+    'x-ms-blob-type': 'REDACTED'
+    'x-ms-blob-content-type': 'REDACTED'
+    'If-Match': '"0x8DEF1F2113DD3BE"'
+    'x-ms-version': 'REDACTED'
+    'Content-Type': 'application/octet-stream'
+    'Accept': 'application/xml'
+    'User-Agent': 'azsdk-python-storage-blob/12.30.0 Python/3.12.4 (Windows-11-10.0.26200-SP0)'
+    'x-ms-date': 'REDACTED'
+    'x-ms-client-request-id': '28741a9b-8fcf-11f1-a407-8038fb2e9432'
+    'Authorization': 'REDACTED'
+A body is sent with the request
+Response status: 201
+Response headers:
+    'Content-Length': '0'
+    'Content-MD5': 'REDACTED'
+    'Last-Modified': 'Tue, 04 Aug 2026 06:38:52 GMT'
+    'ETag': '"0x8DEF1F30C928F79"'
+    'Server': 'Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0'
+    'x-ms-request-id': '56c13c00-001e-005f-42db-230f28000000'
+    'x-ms-client-request-id': '28741a9b-8fcf-11f1-a407-8038fb2e9432'
+    'x-ms-version': 'REDACTED'
+    'x-ms-content-crc64': 'REDACTED'
+    'x-ms-request-server-encrypted': 'REDACTED'
+    'Date': 'Tue, 04 Aug 2026 06:38:51 GMT'
+Request URL: 'https://turnbtestblobstorage.blob.core.windows.net/scanb/ai-content/kpi/client/insights.json'
+Request method: 'PUT'
+Request headers:
+    'Content-Length': '5356'
+    'x-ms-blob-type': 'REDACTED'
+    'x-ms-blob-content-type': 'REDACTED'
+    'x-ms-version': 'REDACTED'
+    'Content-Type': 'application/octet-stream'
+    'Accept': 'application/xml'
+    'User-Agent': 'azsdk-python-storage-blob/12.30.0 Python/3.12.4 (Windows-11-10.0.26200-SP0)'
+    'x-ms-date': 'REDACTED'
+    'x-ms-client-request-id': '289077ed-8fcf-11f1-93a8-8038fb2e9432'
+    'Authorization': 'REDACTED'
+A body is sent with the request
+Response status: 201
+Response headers:
+    'Content-Length': '0'
+    'Content-MD5': 'REDACTED'
+    'Last-Modified': 'Tue, 04 Aug 2026 06:38:52 GMT'
+    'ETag': '"0x8DEF1F30CC57186"'
+    'Server': 'Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0'
+    'x-ms-request-id': '4dcb4fa9-801e-0023-2ddb-2321d7000000'
+    'x-ms-client-request-id': '289077ed-8fcf-11f1-93a8-8038fb2e9432'
+    'x-ms-version': 'REDACTED'
+    'x-ms-content-crc64': 'REDACTED'
+    'x-ms-request-server-encrypted': 'REDACTED'
+    'Date': 'Tue, 04 Aug 2026 06:38:52 GMT'
+Request URL: 'https://turnbtestblobstorage.blob.core.windows.net/scanb/ai-content/kpi/client/alerts.json'
+Request method: 'GET'
+Request headers:
+    'x-ms-range': 'REDACTED'
+    'x-ms-version': 'REDACTED'
+    'Accept': 'application/xml'
+    'User-Agent': 'azsdk-python-storage-blob/12.30.0 Python/3.12.4 (Windows-11-10.0.26200-SP0)'
+    'x-ms-date': 'REDACTED'
+    'x-ms-client-request-id': '28af38a7-8fcf-11f1-b948-8038fb2e9432'
+    'Authorization': 'REDACTED'
+No body was attached to the request
+Response status: 206
+Response headers:
+    'Content-Length': '4492'
+    'Content-Type': 'application/json'
+    'Content-Range': 'REDACTED'
+    'Last-Modified': 'Tue, 04 Aug 2026 06:31:51 GMT'
+    'Accept-Ranges': 'REDACTED'
+    'ETag': '"0x8DEF1F21191DAEE"'
+    'Server': 'Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0'
+    'x-ms-request-id': '4dcb4fb5-801e-0023-37db-2321d7000000'
+    'x-ms-client-request-id': '28af38a7-8fcf-11f1-b948-8038fb2e9432'
+    'x-ms-version': 'REDACTED'
+    'x-ms-creation-time': 'REDACTED'
+    'x-ms-blob-content-md5': 'REDACTED'
+    'x-ms-lease-status': 'REDACTED'
+    'x-ms-lease-state': 'REDACTED'
+    'x-ms-blob-type': 'REDACTED'
+    'x-ms-server-encrypted': 'REDACTED'
+    'x-ms-access-tier': 'REDACTED'
+    'x-ms-access-tier-inferred': 'REDACTED'
+    'Date': 'Tue, 04 Aug 2026 06:38:52 GMT'
+Request URL: 'https://turnbtestblobstorage.blob.core.windows.net/scanb/ai-content/kpi/client/alerts.json'
+Request method: 'PUT'
+Request headers:
+    'Content-Length': '5356'
+    'x-ms-blob-type': 'REDACTED'
+    'x-ms-blob-content-type': 'REDACTED'
+    'If-Match': '"0x8DEF1F21191DAEE"'
+    'x-ms-version': 'REDACTED'
+    'Content-Type': 'application/octet-stream'
+    'Accept': 'application/xml'
+    'User-Agent': 'azsdk-python-storage-blob/12.30.0 Python/3.12.4 (Windows-11-10.0.26200-SP0)'
+    'x-ms-date': 'REDACTED'
+    'x-ms-client-request-id': '28b62e69-8fcf-11f1-ad2a-8038fb2e9432'
+    'Authorization': 'REDACTED'
+A body is sent with the request
+Response status: 201
+Response headers:
+    'Content-Length': '0'
+    'Content-MD5': 'REDACTED'
+    'Last-Modified': 'Tue, 04 Aug 2026 06:38:52 GMT'
+    'ETag': '"0x8DEF1F30CD4FF9C"'
+    'Server': 'Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0'
+    'x-ms-request-id': '4dcb4fc3-801e-0023-41db-2321d7000000'
+    'x-ms-client-request-id': '28b62e69-8fcf-11f1-ad2a-8038fb2e9432'
+    'x-ms-version': 'REDACTED'
+    'x-ms-content-crc64': 'REDACTED'
+    'x-ms-request-server-encrypted': 'REDACTED'
+    'Date': 'Tue, 04 Aug 2026 06:38:52 GMT'
+Request URL: 'https://turnbtestblobstorage.blob.core.windows.net/scanb/ai-content/report-summaries/client/12f3b3b3-2db3-48b9-a483-4d7962aad92f.json'
+Request method: 'PUT'
+Request headers:
+    'Content-Length': '2169'
+    'x-ms-blob-type': 'REDACTED'
+    'x-ms-blob-content-type': 'REDACTED'
+    'x-ms-version': 'REDACTED'
+    'Content-Type': 'application/octet-stream'
+    'Accept': 'application/xml'
+    'User-Agent': 'azsdk-python-storage-blob/12.30.0 Python/3.12.4 (Windows-11-10.0.26200-SP0)'
+    'x-ms-date': 'REDACTED'
+    'x-ms-client-request-id': '28bed162-8fcf-11f1-a8d2-8038fb2e9432'
+    'Authorization': 'REDACTED'
+A body is sent with the request
+Response status: 201
+Response headers:
+    'Content-Length': '0'
+    'Content-MD5': 'REDACTED'
+    'Last-Modified': 'Tue, 04 Aug 2026 06:38:52 GMT'
+    'ETag': '"0x8DEF1F30CDD14C4"'
+    'Server': 'Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0'
+    'x-ms-request-id': '4dcb4fd6-801e-0023-50db-2321d7000000'
+    'x-ms-client-request-id': '28bed162-8fcf-11f1-a8d2-8038fb2e9432'
+    'x-ms-version': 'REDACTED'
+    'x-ms-content-crc64': 'REDACTED'
+    'x-ms-request-server-encrypted': 'REDACTED'
+    'Date': 'Tue, 04 Aug 2026 06:38:52 GMT'
+Request URL: 'https://turnbtestblobstorage.blob.core.windows.net/scanb/ai-content/report-summaries/client/12f3b3b3-2db3-48b9-a483-4d7962aad92f.html'
+Request method: 'PUT'
+Request headers:
+    'Content-Length': '125557'
+    'x-ms-meta-schemaversion': 'REDACTED'
+    'x-ms-meta-client': 'REDACTED'
+    'x-ms-meta-generatedfor': 'REDACTED'
+    'x-ms-meta-generatedat': 'REDACTED'
+    'x-ms-meta-expiresat': 'REDACTED'
+    'x-ms-meta-sourcedatasets': 'REDACTED'
+    'x-ms-meta-reportid': 'REDACTED'
+    'x-ms-blob-type': 'REDACTED'
+    'x-ms-blob-content-type': 'REDACTED'
+    'x-ms-version': 'REDACTED'
+    'Content-Type': 'application/octet-stream'
+    'Accept': 'application/xml'
+    'User-Agent': 'azsdk-python-storage-blob/12.30.0 Python/3.12.4 (Windows-11-10.0.26200-SP0)'
+    'x-ms-date': 'REDACTED'
+    'x-ms-client-request-id': '28c651e9-8fcf-11f1-b8d2-8038fb2e9432'
+    'Authorization': 'REDACTED'
+A body is sent with the request
+Response status: 201
+Response headers:
+    'Content-Length': '0'
+    'Content-MD5': 'REDACTED'
+    'Last-Modified': 'Tue, 04 Aug 2026 06:38:52 GMT'
+    'ETag': '"0x8DEF1F30CF1AB2E"'
+    'Server': 'Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0'
+    'x-ms-request-id': '4dcb4fe3-801e-0023-5bdb-2321d7000000'
+    'x-ms-client-request-id': '28c651e9-8fcf-11f1-b8d2-8038fb2e9432'
+    'x-ms-version': 'REDACTED'
+    'x-ms-content-crc64': 'REDACTED'
+    'x-ms-request-server-encrypted': 'REDACTED'
+    'Date': 'Tue, 04 Aug 2026 06:38:52 GMT'
+Request URL: 'https://turnbtestblobstorage.blob.core.windows.net/insightstate/summary-memory/643336e7-4360-4b56-82f8-7b72cefad3ed/memory.json'
+Request method: 'PUT'
+Request headers:
+    'Content-Length': '21829'
+    'x-ms-blob-type': 'REDACTED'
+    'x-ms-blob-content-type': 'REDACTED'
+    'If-Match': '"0x8DEF1F211EEB561"'
+    'x-ms-version': 'REDACTED'
+    'Content-Type': 'application/octet-stream'
+    'Accept': 'application/xml'
+    'User-Agent': 'azsdk-python-storage-blob/12.30.0 Python/3.12.4 (Windows-11-10.0.26200-SP0)'
+    'x-ms-date': 'REDACTED'
+    'x-ms-client-request-id': '28dd60bd-8fcf-11f1-be70-8038fb2e9432'
+    'Authorization': 'REDACTED'
+A body is sent with the request
+Response status: 201
+Response headers:
+    'Content-Length': '0'
+    'Content-MD5': 'REDACTED'
+    'Last-Modified': 'Tue, 04 Aug 2026 06:38:53 GMT'
+    'ETag': '"0x8DEF1F30D1ECF1E"'
+    'Server': 'Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0'
+    'x-ms-request-id': '7b672103-b01e-0007-28db-23d777000000'
+    'x-ms-client-request-id': '28dd60bd-8fcf-11f1-be70-8038fb2e9432'
+    'x-ms-version': 'REDACTED'
+    'x-ms-content-crc64': 'REDACTED'
+    'x-ms-request-server-encrypted': 'REDACTED'
+    'Date': 'Tue, 04 Aug 2026 06:38:52 GMT'
+Request URL: 'https://turnbtestblobstorage.blob.core.windows.net/insightstate/643336e7-4360-4b56-82f8-7b72cefad3ed/memory.json'
+Request method: 'PUT'
+Request headers:
+    'Content-Length': '67424'
+    'x-ms-blob-type': 'REDACTED'
+    'x-ms-blob-content-type': 'REDACTED'
+    'If-Match': '"0x8DEF1F2122EE961"'
+    'x-ms-version': 'REDACTED'
+    'Content-Type': 'application/octet-stream'
+    'Accept': 'application/xml'
+    'User-Agent': 'azsdk-python-storage-blob/12.30.0 Python/3.12.4 (Windows-11-10.0.26200-SP0)'
+    'x-ms-date': 'REDACTED'
+    'x-ms-client-request-id': '290b159b-8fcf-11f1-b444-8038fb2e9432'
+    'Authorization': 'REDACTED'
+A body is sent with the request
+Response status: 201
+Response headers:
+    'Content-Length': '0'
+    'Content-MD5': 'REDACTED'
+    'Last-Modified': 'Tue, 04 Aug 2026 06:38:53 GMT'
+    'ETag': '"0x8DEF1F30D5216A5"'
+    'Server': 'Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0'
+    'x-ms-request-id': 'df2d74f4-b01e-005a-27db-23ddf3000000'
+    'x-ms-client-request-id': '290b159b-8fcf-11f1-b444-8038fb2e9432'
+    'x-ms-version': 'REDACTED'
+    'x-ms-content-crc64': 'REDACTED'
+    'x-ms-request-server-encrypted': 'REDACTED'
+    'Date': 'Tue, 04 Aug 2026 06:38:53 GMT'
+Cloud insight memory: hydrated turnbtestblobstorage/insightstate/643336e7-4360-4b56-82f8-7b72cefad3ed/memory.json (auth=connection_string).
+Cloud summary memory: hydrated turnbtestblobstorage/insightstate/summary-memory/643336e7-4360-4b56-82f8-7b72cefad3ed/memory.json (auth=connection_string).
+
+======================================================================
+PIPELINE COMPLETE
+======================================================================
+Outputs: C:\Users\TURNRETAIL\OneDrive - turnb.com (1)\Auto-Insight-Generation\powerbi-summary-agent\outputs_scanb
+Errors (2): see run_log.txt
+API payloads: C:\Users\TURNRETAIL\OneDrive - turnb.com (1)\Auto-Insight-Generation\powerbi-summary-agent\outputs_scanb\api (summary=ok, insights=ok)
+Insight history: prepared C:\Users\TURNRETAIL\OneDrive - turnb.com (1)\Auto-Insight-Generation\powerbi-summary-agent\outputs_scanb\history\20260804T093850197786+0300.json (4 insight(s), date=2026-08-04).
+Summary history: prepared C:\Users\TURNRETAIL\OneDrive - turnb.com (1)\Auto-Insight-Generation\powerbi-summary-agent\outputs_scanb\summary-history\20260804T093850215212+0300.json and C:\Users\TURNRETAIL\OneDrive - turnb.com (1)\Auto-Insight-Generation\powerbi-summary-agent\outputs_scanb\summary_history.json (type=new_data, dataAsOf=2023-12-31).
+Azure upload: pushed 2 file(s) to turnbtestblobstorage/insightgen/scanb [scanb/report_summary.json, scanb/kpi_insights.json] (auth=connection_string).
+Azure insight history: created turnbtestblobstorage/insightgen/scanb/history/643336e7-4360-4b56-82f8-7b72cefad3ed/2026/08/04/20260804T093850197786+0300.json (auth=connection_string).
+Azure insight history feed: updated turnbtestblobstorage/insightgen/scanb/insight_history.json.
+Azure summary history: created turnbtestblobstorage/insightgen/scanb/summary-history/643336e7-4360-4b56-82f8-7b72cefad3ed/2026/08/04/20260804T093850215212+0300.json (auth=connection_string).
+Azure summary history feed: updated turnbtestblobstorage/insightgen/scanb/summary_history.json.
+AI content: published 4 blob(s) to turnbtestblobstorage/scanb/ai-content for 1 report(s) (auth=connection_string, report_ids=configured).
+Cloud summary memory: published turnbtestblobstorage/insightstate/summary-memory/643336e7-4360-4b56-82f8-7b72cefad3ed/memory.json (auth=connection_string).
+Cloud insight memory: published turnbtestblobstorage/insightstate/643336e7-4360-4b56-82f8-7b72cefad3ed/memory.json (auth=connection_string).
+
+----- report_summary.md -----
+
+# Revenue comparison was -4.6M.
+
+*Data through 2023-12-31 · day grain · stale*
+
+## Overall Performance
+
+- Overall — Revenue change: -4.6M
+- Overall — Quantity change: +957.8K
+- Overall — Quantity per transaction change: +0.05
+- Overall — Transactions change: -846.0K
+- Change in quantity added revenue by +2.2M versus the same period last year.
+- Average revenue per item and mix reduced revenue by -6.8M versus the same period last year.
+
+## Revenue: prior versus current
+
+- Prior: 109.6M Revenue
+- Current: 105.0M Revenue
+
+## Revenue change over time
+
+- January: +1.2M Revenue change
+- February: -792.2K Revenue change
+- March: +26.8K Revenue change
+- April: -530.4K Revenue change
+- May: +464.0K Revenue change
+- June: -784.0K Revenue change
+- July: +187.7K Revenue change
+- August: -1.3M Revenue change
+- September: -542.6K Revenue change
+- October: -1.7M Revenue change
+- November: -702.1K Revenue change
+- December: -161.0K Revenue change
+
+## TECHNOLOGY
+
+- Within TECHNOLOGY, CONSUMER DEVICES reduced revenue by -1.0M.
+- Within TECHNOLOGY, change in units sold reduced revenue by -678.1K.
+- Within TECHNOLOGY, average revenue per item and mix reduced revenue by -1.3M.
+- TECHNOLOGY revenue changed by -2.0M (-20.1%).
+
+## Revenue change by section
+
+- ENTERTAINMENTS: -989.4K Revenue change
+- CONSUMER DEVICES: -1.0M Revenue change
+
+## Revenue change over time
+
+- January: +169.6K Revenue change
+- February: -105.0K Revenue change
+- March: -113.7K Revenue change
+- April: -116.4K Revenue change
+- May: -130.0K Revenue change
+- June: -148.8K Revenue change
+- July: -198.8K Revenue change
+- August: -316.2K Revenue change
+- September: -217.8K Revenue change
+- October: -358.1K Revenue change
+- November: -303.6K Revenue change
+- December: -152.2K Revenue change
+
+## CONSUMER GOODS
+
+- Within CONSUMER GOODS, BEVERAGES added +95.5K.
+- Within CONSUMER GOODS, change in units sold added revenue by +986.3K.
+- Within CONSUMER GOODS, average revenue per item and mix reduced revenue by -2.5M.
+- CONSUMER GOODS revenue changed by -1.5M (-3.2%).
+
+## Revenue change by section
+
+- BEVERAGES: +95.5K Revenue change
+- REFRIDGERATED GOODS: -101.5K Revenue change
+- CLEANING ESSENSTIALS: -148.9K Revenue change
+- PROVISIONS: -394.6K Revenue change
+- PERSONAL CARE: -293.2K Revenue change
+- SPICE MARKET: -648.6K Revenue change
+
+## Revenue change over time
+
+- January: +526.5K Revenue change
+- February: -296.0K Revenue change
+- March: -6.7K Revenue change
+- April: -290.1K Revenue change
+- May: +292.3K Revenue change
+- June: -175.6K Revenue change
+- July: +13.6K Revenue change
+- August: -372.4K Revenue change
+- September: -218.7K Revenue change
+- October: -783.8K Revenue change
+- November: -83.1K Revenue change
+- December: -97.3K Revenue change
+
+## FRESH MUTTON OTHER
+
+- Within FRESH MUTTON OTHER, change in units sold reduced revenue by -597.5K.
+- Within FRESH MUTTON OTHER, average revenue per item and mix added revenue by +1.8K.
+- FRESH MUTTON OTHER revenue changed by -595.7K (-39.3%).
+- FRESH MUTTON OTHER quantity changed by -79.0K.
+
+## Revenue change over time
+
+- January: -12.8K Revenue change
+- February: -32.5K Revenue change
+- March: -32.2K Revenue change
+- April: -46.8K Revenue change
+- May: -65.7K Revenue change
+- June: -31.7K Revenue change
+- July: -84.0K Revenue change
+- August: -63.8K Revenue change
+- September: -65.9K Revenue change
+- October: -65.8K Revenue change
+- November: -74.7K Revenue change
+- December: -19.7K Revenue change
+
+
+----- insight_report.md -----
+
+# Key Insights
+These comparisons use the available current-versus-last-year records in this model, at monthly and merchandise levels, for the full year ending 2023-12-31.
+
+**Revenue fell by 4.4M in August-December compared with the stated comparison period.** This five-month stretch made up 95.9% of the full-year revenue decline of 4.6M. The remaining months reduced revenue by 192.1K. Our checks did not measure a business reason for this decline. Check the month-by-month category trend for August and October.
+
+**TECHNOLOGY revenue fell by 2.0M (20.1%), from 9.9M to 7.9M compared with the stated comparison period.** Our checks did not measure a business reason for this decline. Review the monthly path within TECHNOLOGY to see whether the drop was concentrated in a few months or spread through the year.
+
+**CONSUMER GOODS revenue fell by 1.5M (3.2%), from 47.0M to 45.6M compared with the stated comparison period.** Units rose by 486,524.24 in the same comparison. Our checks did not measure a business reason for the revenue decline. Review average revenue per item within CONSUMER GOODS to see whether lower average value per item explains revenue falling while units rose.
+
+**FRESH FOOD revenue fell by 1.5M (6.9%), from 21.0M to 19.6M compared with the stated comparison period.** Our checks did not measure a business reason for this decline. The investigation noted a similar pattern in GREEN GROCERIES, but the manager brief for that area was not supplied. Investigate item pricing and mix within GREEN GROCERIES to test whether lower average revenue per item may explain the value decline.
+
+# Data Quality Watch-outs
+- Some checked revenue decline sits in rows with no department, section, or category name. Check how unassigned sales are loaded and labelled before treating merchandise totals as complete.
+- Branch comparison scope could not be confirmed from the metadata used in this run. Check the branch population behind these results before reusing them as matched comparisons.
+- Several merchandise breakdowns were only partial in this run. Check whether the queries returned only selected movers rather than a complete ranking.
+
+# Evidence Trail
+- august_to_december_revenue_decline
+  - Signal summary: revenue down 4,440,787.8658 across August-December; share of full-year decline 95.8541%.
+  - Manager fact brief: `change_display = 4.4M`; `share_of_total_pct_display = 95.9%`; `total_change_display = 4.6M`; `other_change_display = 192.1K`; no percentage available for the August-December block itself.
+  - Probe 1 succeeded: `SUMMARIZECOLUMNS('MIS_DEEP_DIVE2'[CATEGORY_NAME], TREATAS({8,9,10,11,12}, 'MIS_DEEP_DIVE2'[DOC_MONTH]), "Revenue Growth", [revenue Growth], "Revenue Current", [net revenue CURRENT], "Revenue Past", [net revenue PAST], "Units Growth", [QTY Growth], "Units Current", [net qty CURRENT], "Units Past", [net qty PAST])`.
+  - Largest checked category declines in August-December from Probe 1: LED TV -582,105.2055; BLANKET DOUBLE -401,228.4932; TORCHES -355,660.2740; ROASTED NUTS ROASTERY -342,902.0082; FRESH MUTTON OTHER -289,931.2110.
+  - Probe 1 also showed unassigned category rows: `CATEGORY_NAME = blank`, revenue growth -111,551.7808; revenue current 3,297,309.5890; revenue past 3,408,861.3699; units growth +172,624.0.
+  - Probe 2 succeeded: `SUMMARIZECOLUMNS('MIS_DEEP_DIVE2'[DEPARTMENT], TREATAS({8,9,10,11,12}, 'MIS_DEEP_DIVE2'[DOC_MONTH]), "Revenue Growth", [revenue Growth], "Revenue Current", [net revenue CURRENT], "Revenue Past", [net revenue PAST], "Units Growth", [QTY Growth])`.
+  - Department changes from Probe 2: CONSUMER GOODS -1,555,187.9890; TECHNOLOGY -1,347,947.3973; LIFESTYLE -1,244,350.2356; HOME & LIVING -294,641.6712; blank department -111,551.7808; FRESH FOOD +112,891.2082.
+  - Probe 3 succeeded: `SUMMARIZECOLUMNS('MIS_DEEP_DIVE2'[SECTION], TREATAS({8,9,10,11,12}, 'MIS_DEEP_DIVE2'[DOC_MONTH]), "Revenue Growth", [revenue Growth], "Revenue Current", [net revenue CURRENT], "Revenue Past", [net revenue PAST], "Units Growth", [QTY Growth])`.
+  - Section changes from Probe 3 included: PERSONAL CARE -772,489.1781; CONSUMER DEVICES -722,413.9726; ENTERTAINMENTS -625,533.4247; HOME TEXTILES -543,405.2055; PROVISIONS -539,626.8466.
+  - Temporal context supplied separately: worst period drill was October, period change -1,730,714.71; top category segments LED TV -151,762.47, BLANKET DOUBLE -146,308.22, TORCHES -107,897.81.
+  - Investigation concluded and accepted after 3 probe executions.
+
+- technology_revenue_decline
+  - Signal summary: TECHNOLOGY revenue current 7,916,819.7260; prior 9,907,943.6986; change -1,991,123.9726.
+  - Manager fact brief: `current_display = 7.9M`; `prior_display = 9.9M`; `change_display = 2.0M`; `change_pct_display = 20.1%`.
+  - No new DAX probe was executed in this investigation; conclusion was accepted from previously available evidence.
+  - Investigation explanation states section split: CONSUMER DEVICES -1.00M and ENTERTAINMENTS -0.99M.
+  - Investigation explanation states LED TV contributed -916,983.0137, about 91.5% of the CONSUMER DEVICES decline and about 46.1% of the TECHNOLOGY decline.
+  - Investigation explanation also states LED TV and TORCHES together contributed 1.45M of the 1.99M department decline.
+  - Supporting August-December probe evidence on period-specific movement inside TECHNOLOGY: CONSUMER DEVICES -722,413.9726; ENTERTAINMENTS -625,533.4247; LED TV -582,105.2055.
+  - Investigation concluded and accepted with 0 additional probe executions.
+
+- consumer_goods_revenue_transactions_divergence
+  - Signal summary: CONSUMER GOODS revenue current 45,556,332.1507; prior 47,047,585.3836; change -1,491,253.2329; units change +486,524.24; transactions change -1,224,468.0.
+  - Manager fact brief: `current_display = 45.6M`; `prior_display = 47.0M`; `change_display = 1.5M`; `change_pct_display = 3.2%`.
+  - No new DAX probe was executed in this investigation; conclusion was accepted from previously available evidence.
+  - Investigation explanation states section split: SPICE MARKET -648.6K revenue and -46.5K transactions; PROVISIONS -394.6K revenue and -323.1K transactions; PERSONAL CARE -293.2K revenue and -637.4K transactions; BEVERAGES +95.5K revenue despite -100.7K transactions.
+  - Investigation explanation states largest category transaction declines: UNISEX -243.5K; ROASTED NUTS ROASTERY -170.4K; MEN`S NEEDS -151.5K; HOME CLEANERS -131.9K; BISCUITS -129.6K; ROASTERY group -127.7K.
+  - Investigation explanation also notes units growth in MINERAL WATER +789.7K with transactions -36.1K, and COFFEE AND TEA +361.0K with transactions -39.2K.
+  - Supporting August-December probe evidence on sections within this department: SPICE MARKET -174,102.0932; PROVISIONS -539,626.8466; PERSONAL CARE -772,489.1781 in that five-month window.
+  - Department-level transaction growth context is usable under business rules; branch-level transaction levels are not.
+  - Investigation concluded and accepted with 0 additional probe executions.
+
+- fresh_food_and_green_groceries_mixed_volume_value
+  - Signal summary: FRESH FOOD revenue current 19,592,778.3479; prior 21,046,633.1699; change -1,453,854.8219; units change +427,618.51; transactions change +348,278.0.
+  - Manager fact brief: `current_display = 19.6M`; `prior_display = 21.0M`; `change_display = 1.5M`; `change_pct_display = 6.9%`.
+  - No new DAX probe was executed in this investigation; conclusion was accepted from previously available evidence.
+  - Investigation explanation states concentrated `CATEGORY_NAME_2` declines: MUTTON -647.2K; FRUITS -298.0K; VEGETABLES -275.4K; SALADS -246.3K.
+  - Investigation explanation states units rose in those groups: FRUITS +64.3K; VEGETABLES +257.3K; SALADS +72.9K.
+  - Investigation explanation states GREEN GROCERIES revenue -819,637.3014 with units +394,409.0 and transactions +269,083.0.
+  - Supporting August-December department probe showed FRESH FOOD +112,891.2082 in that five-month period, so the full-year decline did not come from August-December alone.
+  - Investigation concluded and accepted with 0 additional probe executions.
+
+# Confidence & Caveats
+- August-December decline: moderate confidence. Three supporting probes were run and concluded cleanly across department, section, and category views.
+- TECHNOLOGY decline: moderate confidence. The investigation concluded, but it reused prior evidence and ran no fresh query in this run.
+- CONSUMER GOODS decline: moderate confidence. The investigation concluded, but the detailed supporting numbers came from reused evidence rather than a fresh probe here.
+- FRESH FOOD decline: moderate confidence. The finding is internally consistent, but the supporting drilldown was reused and not re-queried in this run.
+- Merchandise hierarchy caveat: unassigned rows exist with blank department, section, and category, so merchandise breakdowns do not fully add to the company total.
+- Scope caveat: the branch comparison population was not identified in this run, and metadata warned that no high-confidence entity or location dimension was confirmed.
+- Coverage caveat: several dimensions were marked partial in the coverage matrix, so some lists reflect checked movers rather than a full ranked population.
+- Time caveat: the model is monthly only, and the data ends at 2023-12-31.
+
+# Suggested Follow-ups
+- What changed in late 2023 to create almost all of the annual revenue decline? Review monthly category trends for LED TV, BLANKET DOUBLE, and TORCHES across August to December, especially October.
+- Was the TECHNOLOGY decline concentrated in a few months or sustained all year? Check month-by-month revenue and units within TECHNOLOGY.
+- Why did CONSUMER GOODS sell more units but record lower revenue? Compare average revenue per item over time within CONSUMER GOODS.
+- Did FRESH FOOD lose value because of lower prices or a shift toward cheaper items? Review item-level pricing and assortment mix within GREEN GROCERIES.
+- How much of the merchandise story is hidden in unassigned rows? Check why sales records are arriving without department, section, or category labels.
+- Which branches are in the comparison population for these findings? Confirm branch scope before using these results in branch-matched reporting.

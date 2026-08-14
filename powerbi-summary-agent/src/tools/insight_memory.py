@@ -36,6 +36,8 @@ from datetime import date, datetime
 from pathlib import Path
 from typing import Any, Iterable
 
+from ..kernel import report, scoping
+
 # .../powerbi-summary-agent/src/tools/insight_memory.py -> parents[2] == project root
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
@@ -50,10 +52,7 @@ _PHASE_TOKENS = re.compile(
 
 # --- paths --------------------------------------------------------------------
 
-def _dataset_dir(state: dict) -> Path:
-    ds = str(state.get("dataset_id") or "unknown_dataset")
-    # dataset ids are GUIDs, but sanitize defensively for a filesystem path.
-    safe = re.sub(r"[^A-Za-z0-9_.-]", "_", ds)
+def _memory_root(state: dict) -> Path:
     configured_root = state.get("insight_memory_root")
     if configured_root:
         root = Path(str(configured_root))
@@ -61,9 +60,27 @@ def _dataset_dir(state: dict) -> Path:
             root = PROJECT_ROOT / root
     else:
         root = PROJECT_ROOT / "insight_memory"
-    d = root / safe
-    d.mkdir(parents=True, exist_ok=True)
-    return d
+    return root
+
+
+def _dataset_segment(state: dict) -> str:
+    ds = str(state.get("dataset_id") or "unknown_dataset")
+    # dataset ids are GUIDs, but sanitize defensively for a filesystem path.
+    return re.sub(r"[^A-Za-z0-9_.-]", "_", ds)
+
+
+def _dataset_dir(state: dict) -> Path:
+    """This chain's memory directory, per dataset AND per chain (WP1).
+
+    Chain-scoped rather than report-scoped because WP8 pools evidence across a
+    chain's reports and runs the investigative branch **once** over all of it:
+    one memory with one consumer, which is what avoids cross-report suppression
+    entirely. A pre-WP1 store at the dataset root is copied in on first use.
+    """
+    _path, _status = scoping.scoped_store(
+        _memory_root(state), _dataset_segment(state),
+        chain_id=state.get("chain_id") or report.DEFAULT_CHAIN_ID)
+    return _path.parent
 
 
 def store_path(state: dict) -> Path:

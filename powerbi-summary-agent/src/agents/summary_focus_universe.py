@@ -17,6 +17,7 @@ resolved, and an empty universe simply yields Overall Performance only.
 from __future__ import annotations
 
 from ..tools import file_io
+from ..tools import summary_coverage
 from ..tools import summary_focus_queries as q
 from ..tools import summary_materiality as materiality
 from ..tools import summary_roles
@@ -30,8 +31,12 @@ from .summary_focus_evidence import (
 )
 
 
-def _resolve_role_columns(profile: dict, state: dict) -> dict:
+def _resolve_role_columns(profile: dict, state: dict, roles_filter: set[str] | None = None) -> dict:
     """Map each allowed canonical role to its group column + ancestry refs.
+
+    ``roles_filter`` overrides which canonical roles are resolved; it defaults to
+    the configured primary-focus roles so existing callers are unchanged. The
+    coverage pass reuses this with a wider role set.
 
     Ordering and roles come from the shared semantic hierarchy vocabulary, never
     model object names. Parents are the strictly-broader hierarchy columns in the
@@ -56,7 +61,7 @@ def _resolve_role_columns(profile: dict, state: dict) -> dict:
         if level is not None and role:
             leveled.append((level, role, dim))
     leveled.sort(key=lambda item: item[0])
-    allowed = set(summary_roles.allowed_roles(state))
+    allowed = set(roles_filter) if roles_filter is not None else set(summary_roles.allowed_roles(state))
     metadata = state.get("model_metadata") or {}
     out: dict = {}
     for level, role, dim in leveled:
@@ -104,12 +109,74 @@ def _resolve_role_columns(profile: dict, state: dict) -> dict:
     return out
 
 
+def _resolve_store_role(profile: dict, state: dict) -> dict | None:
+    """Resolve the store/location level from the profile's entity dimension.
+
+    Store is orthogonal to the merchandise hierarchy, so it is not carried in
+    ``HIERARCHY_LEVELS`` and is never resolved by ``_resolve_role_columns``. It
+    is coverage-only: every store gets a ranked line, but a store can never
+    consume a focus slot. It carries no parents - grouping a store under a
+    merchandise ancestor would be meaningless.
+    """
+    if "store" not in set(summary_roles.coverage_roles(state)):
+        return None
+    entity = profile.get("entity_dimension") or {}
+    reference = entity.get("reference")
+    if not reference:
+        return None
+    return {
+        "role": "store",
+        "group_ref": reference,
+        "parent_refs": [],
+        "column": entity.get("column"),
+        "level": None,
+        "coverage_only": True,
+    }
+
+
+def _coverage_only_roles(profile: dict, state: dict, focus_roles: dict) -> dict:
+    """Roles covered but not eligible for a focus slot, keyed by canonical role.
+
+    Anything in ``summary_coverage_roles`` that is not already a resolved focus
+    role: merchandise levels resolved the normal way, plus store.
+    """
+    coverage = set(summary_roles.coverage_roles(state))
+    extra = coverage - set(focus_roles)
+    out: dict = {}
+    merchandise = {role for role in extra if summary_roles.hierarchy_level(role) is not None}
+    if merchandise:
+        for role, info in _resolve_role_columns(profile, state, merchandise).items():
+            out[role] = {**info, "coverage_only": True}
+    store = _resolve_store_role(profile, state) if "store" in extra else None
+    if store:
+        out["store"] = store
+    return out
+
+
 def _primary_measures(families: list[dict]) -> tuple[str | None, str | None, str | None, str]:
     if not families:
         return None, None, None, "performance"
     family = families[0]
     phases = family.get("phases") or {}
     return phases.get("current"), phases.get("prior"), phases.get("change"), str(family.get("family") or "revenue")
+
+
+def _resolve_spine(state: dict):
+    """The comparison this report is built on (WP2).
+
+    Defaults to period-over-period, which is what every pre-WP2 config means,
+    so resolution cannot change behaviour for Sales YoY. An unknown spine name
+    falls back rather than failing the run - the caller is already on an error
+    path when it asks.
+    """
+    from ..domains.sales import spines as sales_spines
+    from ..kernel import spine as kernel_spine
+
+    kind = str(state.get("report_spine") or sales_spines.PeriodOverPeriodSpine.kind)
+    try:
+        return kernel_spine.get(kind)()
+    except (KeyError, TypeError):
+        return sales_spines.PeriodOverPeriodSpine()
 
 
 def run(state: dict) -> dict:
@@ -123,8 +190,12 @@ def run(state: dict) -> dict:
     families = _families(profile)
     current_m, prior_m, change_m, metric_family = _primary_measures(families)
     roles = _resolve_role_columns(profile, state)
+    # Coverage-only levels (store, plus any covered merchandise level that is not
+    # focus-eligible) are scanned under their own budget so full coverage can
+    # never starve the focus rotation of a scan.
+    coverage_extra = _coverage_only_roles(profile, state, roles)
 
-    if not roles:
+    if not roles and not coverage_extra:
         universe = {
             "status": "no_qualifying_hierarchy",
             "roles": {},
@@ -135,10 +206,22 @@ def run(state: dict) -> dict:
         return {"summary_focus_universe": universe, **log.updates()}
 
     if not (current_m and prior_m):
+        # WP2: this is a spine-resolution failure, not simply a missing measure.
+        # The report asked to be measured against a baseline and the model does
+        # not carry one - so the reason names the baseline that is missing,
+        # which is what tells a reader whether it is a config or a model problem.
+        # On both live inventory models this is the branch that fires, and
+        # "no last-year measure" is the correct, actionable answer there.
+        spine = _resolve_spine(state)
         universe = {
             "status": "no_metric",
             "roles": {},
             "reason": "no additive current/prior value family in metadata",
+            "spine": getattr(spine, "kind", None),
+            "baseline_expected": getattr(spine, "baseline_label", None),
+            "spine_reason": (
+                f"this report measures against {getattr(spine, 'baseline_label', 'a baseline')}, "
+                f"and the model exposes no such measure"),
         }
         file_io.write_json(state, "summary_focus_universe.json", universe)
         log.error("Focus universe: no additive current/prior family; universe scan skipped.")
@@ -156,7 +239,11 @@ def run(state: dict) -> dict:
     contract_hint = {"population_status": "comparable", "population_codes": codes} if codes else {}
 
     pool = max(1, int(state.get("summary_focus_candidate_pool_per_role", 30)))
-    budget = {"used": 0, "max": max(0, int(state.get("summary_focus_universe_max_queries", 3)))}
+    budget = {"used": 0, "max": max(0, int(state.get("summary_focus_universe_max_queries", 4)))}
+    coverage_budget = {
+        "used": 0,
+        "max": max(0, int(state.get("summary_coverage_max_queries", 3))),
+    }
     cache: dict = {}
     tol = float(state.get("summary_focus_reconciliation_tolerance_pct", 2))
 
@@ -166,13 +253,14 @@ def run(state: dict) -> dict:
         "value_aliases": {"current": current_m, "prior": prior_m, "change": change_m},
         "roles": {},
     }
-    for role, info in roles.items():
-        if budget["used"] >= budget["max"]:
+    for role, info in {**roles, **coverage_extra}.items():
+        role_budget = coverage_budget if info.get("coverage_only") else budget
+        if role_budget["used"] >= role_budget["max"]:
             universe["roles"][role] = {**info, "source": "skipped_budget", "status": "budget_exhausted", "members": []}
             continue
         scan = q.universe_scan(
             f"summary_universe_{role}",
-            f"{role} focus universe",
+            f"{role} coverage universe" if info.get("coverage_only") else f"{role} focus universe",
             group_col_ref=info["group_ref"],
             parent_col_refs=info["parent_refs"],
             filters=filters,
@@ -182,7 +270,7 @@ def run(state: dict) -> dict:
             pool_rows=pool,
             contract_hint=contract_hint,
         )
-        result = _run_query(state, scan, budget, cache)
+        result = _run_query(state, scan, role_budget, cache)
         if result.get("status") != "success":
             universe["roles"][role] = {
                 **info, "source": "universe_scan", "status": result.get("status"),
@@ -211,4 +299,21 @@ def run(state: dict) -> dict:
         )
 
     file_io.write_json(state, "summary_focus_universe.json", universe)
-    return {"summary_focus_universe": universe, **log.updates()}
+
+    # Full ranked coverage over every scanned level. This reuses the rows the
+    # scans above already returned, so it costs no additional query.
+    coverage = summary_coverage.build_coverage(
+        universe,
+        material_change_pct=float(state.get("summary_coverage_material_change_pct", 10)),
+        material_share_pct=float(state.get("summary_coverage_material_share_pct", 5)),
+    )
+    file_io.write_json(state, "summary_coverage.json", coverage)
+    covered = ", ".join(
+        f"{level['role']}={level['counts']['total']}" for level in coverage.get("levels") or []
+    )
+    log.info(f"Coverage: {covered or 'none'}.")
+    return {
+        "summary_focus_universe": universe,
+        "summary_coverage": coverage,
+        **log.updates(),
+    }

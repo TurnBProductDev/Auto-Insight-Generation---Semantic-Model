@@ -1,0 +1,562 @@
+[
+  {
+    "signal": {
+      "candidate_id": "cand_01_period_sustained_decline",
+      "related_candidate_ids": [
+        "cand_03_period_change_contribution",
+        "cand_08_period_change_contribution"
+      ],
+      "id": "august_to_december_revenue_decline",
+      "kind": "business",
+      "description": "Revenue fell for 5 consecutive months from August to December, totalling -4440787.8658 and accounting for 95.8541% of the full-year revenue decline, with the largest monthly drops in October (-1730714.7096) and August (-1304392.2521).",
+      "affected_segment": "DOC_MONTH:August..December",
+      "segment_members": [
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
+      ],
+      "impact_value": -4440787.8658,
+      "impact_share": 95.8541,
+      "question": "What changed from August to December, especially in October and August, to drive almost all of the year's revenue decline?",
+      "evidence_query": "meta_period_by_mis_deep_dive2_doc_month",
+      "decomposition": null,
+      "score": 100.85405802437124,
+      "candidate_type": "period_sustained_decline",
+      "evidence_segment": "DOC_MONTH:August..December",
+      "metric": "mis_deep_dive2::revenue",
+      "anchor": "august..december",
+      "period_label": "August-December",
+      "level": "period",
+      "story_key": "period:v1:fe360cba593dff5d2179170ef5a90a52e7ecd6192eff2ab8777011ca4b943202",
+      "segment": [
+        "doc_month:august..december"
+      ],
+      "analysis_type": "period_sustained_decline",
+      "period_anchor": "2023-12",
+      "direction": -1,
+      "covered_story_keys": [
+        "period:v1:fe360cba593dff5d2179170ef5a90a52e7ecd6192eff2ab8777011ca4b943202",
+        "period:v1:2d8e6f15d4cbb1e96cf7ea95d04ff31d23ceaedb7c847c36115b0e782c680ba6",
+        "period:v1:227f7105c87e1cdf9d33c049434bdcffe8697032416602330c1711e6837fd57a"
+      ]
+    },
+    "probes": [
+      {
+        "tool": "run_dax",
+        "dax": "EVALUATE\nTOPN(\n    15,\n    SUMMARIZECOLUMNS(\n        'MIS_DEEP_DIVE2'[CATEGORY_NAME],\n        TREATAS({8,9,10,11,12}, 'MIS_DEEP_DIVE2'[DOC_MONTH]),\n        \"Revenue Growth\", [revenue Growth],\n        \"Revenue Current\", [net revenue CURRENT],\n        \"Revenue Past\", [net revenue PAST],\n        \"Units Growth\", [QTY Growth],\n        \"Units Current\", [net qty CURRENT],\n        \"Units Past\", [net qty PAST]\n    ),\n    [Revenue Growth], ASC,\n    'MIS_DEEP_DIVE2'[CATEGORY_NAME], ASC\n)",
+        "status": "success",
+        "rows": [
+          {
+            "CATEGORY_NAME": "APPLES",
+            "Revenue Growth": -90138.50958904112,
+            "Revenue Current": 346634.8904109589,
+            "Revenue Past": 436773.4,
+            "Units Growth": -68498.55999999997,
+            "Units Current": 193832.91,
+            "Units Past": 262331.47
+          },
+          {
+            "CATEGORY_NAME": "DRY NUTS ROASTERY",
+            "Revenue Growth": -105500.98904109595,
+            "Revenue Current": 661165.5917808219,
+            "Revenue Past": 766666.5808219179,
+            "Units Growth": -2090.5099999999948,
+            "Units Current": 95741.63,
+            "Units Past": 97832.14
+          },
+          {
+            "CATEGORY_NAME": "BODY LOTION",
+            "Revenue Growth": -102169.65753424657,
+            "Revenue Current": 279075.6849315068,
+            "Revenue Past": 381245.3424657534,
+            "Units Growth": -18778.0,
+            "Units Current": 45559.0,
+            "Units Past": 64337.0
+          },
+          {
+            "CATEGORY_NAME": null,
+            "Revenue Growth": -111551.78082191851,
+            "Revenue Current": 3297309.589041095,
+            "Revenue Past": 3408861.3698630137,
+            "Units Growth": 172624.0,
+            "Units Current": 3885539.0,
+            "Units Past": 3712915.0
+          },
+          {
+            "CATEGORY_NAME": "CHOCOLATE BAGS",
+            "Revenue Growth": -185376.30136986304,
+            "Revenue Current": 255904.6575342465,
+            "Revenue Past": 441280.95890410955,
+            "Units Growth": -43049.0,
+            "Units Current": 54980.0,
+            "Units Past": 98029.0
+          },
+          {
+            "CATEGORY_NAME": "DISHWASH LIQUID",
+            "Revenue Growth": -105163.4931506849,
+            "Revenue Current": 67771.64383561644,
+            "Revenue Past": 172935.13698630134,
+            "Units Growth": -40251.0,
+            "Units Current": 23467.0,
+            "Units Past": 63718.0
+          },
+          {
+            "CATEGORY_NAME": "MENS SHIRT CASUAL LS",
+            "Revenue Growth": -106493.68493150688,
+            "Revenue Current": 120570.93150684932,
+            "Revenue Past": 227064.6164383562,
+            "Units Growth": -12451.0,
+            "Units Current": 12945.0,
+            "Units Past": 25396.0
+          },
+          {
+            "CATEGORY_NAME": "FRESH MUTTON OTHER",
+            "Revenue Growth": -289931.2109589041,
+            "Revenue Current": 269591.1890410959,
+            "Revenue Past": 559522.4,
+            "Units Growth": -40677.61,
+            "Units Current": 34261.81,
+            "Units Past": 74939.42
+          },
+          {
+            "CATEGORY_NAME": "BLANKET DOUBLE",
+            "Revenue Growth": -401228.49315068475,
+            "Revenue Current": 680377.2602739728,
+            "Revenue Past": 1081605.7534246575,
+            "Units Growth": -7264.0,
+            "Units Current": 28154.0,
+            "Units Past": 35418.0
+          },
+          {
+            "CATEGORY_NAME": "ROASTED NUTS ROASTERY",
+            "Revenue Growth": -342902.0082191782,
+            "Revenue Current": 283003.3205479452,
+            "Revenue Past": 625905.3287671234,
+            "Units Growth": -32167.760000000002,
+            "Units Current": 33165.72,
+            "Units Past": 65333.48
+          },
+          {
+            "CATEGORY_NAME": "LED TV",
+            "Revenue Growth": -582105.2054794517,
+            "Revenue Current": 955885.479452055,
+            "Revenue Past": 1537990.6849315066,
+            "Units Growth": -2138.0,
+            "Units Current": 4046.0,
+            "Units Past": 6184.0
+          },
+          {
+            "CATEGORY_NAME": "SUNFLOWER OIL",
+            "Revenue Growth": -203469.04109589045,
+            "Revenue Current": 484847.73972602736,
+            "Revenue Past": 688316.7808219178,
+            "Units Growth": 3114.0,
+            "Units Current": 100073.0,
+            "Units Past": 96959.0
+          },
+          {
+            "CATEGORY_NAME": "PERFUMES UNISEX",
+            "Revenue Growth": -111348.6301369865,
+            "Revenue Current": 397616.0273972602,
+            "Revenue Past": 508964.6575342467,
+            "Units Growth": -36361.0,
+            "Units Current": 73616.0,
+            "Units Past": 109977.0
+          },
+          {
+            "CATEGORY_NAME": "TORCHES",
+            "Revenue Growth": -355660.27397260256,
+            "Revenue Current": 675857.2602739728,
+            "Revenue Past": 1031517.5342465753,
+            "Units Growth": -1567.0,
+            "Units Current": 39205.0,
+            "Units Past": 40772.0
+          },
+          {
+            "CATEGORY_NAME": "EMERGENCY LAMPS",
+            "Revenue Growth": -154947.1232876713,
+            "Revenue Current": 374847.94520547945,
+            "Revenue Past": 529795.0684931508,
+            "Units Growth": -6644.0,
+            "Units Current": 28034.0,
+            "Units Past": 34678.0
+          }
+        ]
+      },
+      {
+        "tool": "run_dax",
+        "dax": "EVALUATE\nTOPN(\n    10,\n    SUMMARIZECOLUMNS(\n        'MIS_DEEP_DIVE2'[DEPARTMENT],\n        TREATAS({8,9,10,11,12}, 'MIS_DEEP_DIVE2'[DOC_MONTH]),\n        \"Revenue Growth\", [revenue Growth],\n        \"Revenue Current\", [net revenue CURRENT],\n        \"Revenue Past\", [net revenue PAST],\n        \"Units Growth\", [QTY Growth]\n    ),\n    [Revenue Growth], ASC,\n    'MIS_DEEP_DIVE2'[DEPARTMENT], ASC\n)",
+        "status": "success",
+        "rows": [
+          {
+            "DEPARTMENT": null,
+            "Revenue Growth": -111551.78082191851,
+            "Revenue Current": 3297309.589041095,
+            "Revenue Past": 3408861.3698630137,
+            "Units Growth": 172624.0
+          },
+          {
+            "DEPARTMENT": "FRESH FOOD",
+            "Revenue Growth": 112891.20821918733,
+            "Revenue Current": 8782759.695890412,
+            "Revenue Past": 8669868.487671224,
+            "Units Growth": 382451.56999999937
+          },
+          {
+            "DEPARTMENT": "LIFESTYLE",
+            "Revenue Growth": -1244350.23561644,
+            "Revenue Current": 5156791.994520546,
+            "Revenue Past": 6401142.230136986,
+            "Units Growth": -82552.42999999993
+          },
+          {
+            "DEPARTMENT": "TECHNOLOGY",
+            "Revenue Growth": -1347947.3972602733,
+            "Revenue Current": 2977243.287671232,
+            "Revenue Past": 4325190.6849315055,
+            "Units Growth": -29800.0
+          },
+          {
+            "DEPARTMENT": "HOME & LIVING",
+            "Revenue Growth": -294641.6712328717,
+            "Revenue Current": 3903017.3232876686,
+            "Revenue Past": 4197658.99452054,
+            "Units Growth": -70181.8600000001
+          },
+          {
+            "DEPARTMENT": "CONSUMER GOODS",
+            "Revenue Growth": -1555187.9890410937,
+            "Revenue Current": 18363301.52054792,
+            "Revenue Past": 19918489.509589013,
+            "Units Growth": -118985.0700000003
+          }
+        ]
+      },
+      {
+        "tool": "run_dax",
+        "dax": "EVALUATE\nTOPN(\n    15,\n    SUMMARIZECOLUMNS(\n        'MIS_DEEP_DIVE2'[SECTION],\n        TREATAS({8,9,10,11,12}, 'MIS_DEEP_DIVE2'[DOC_MONTH]),\n        \"Revenue Growth\", [revenue Growth],\n        \"Revenue Current\", [net revenue CURRENT],\n        \"Revenue Past\", [net revenue PAST],\n        \"Units Growth\", [QTY Growth]\n    ),\n    [Revenue Growth], ASC,\n    'MIS_DEEP_DIVE2'[SECTION], ASC\n)",
+        "status": "success",
+        "rows": [
+          {
+            "SECTION": "BABY CLOTHING",
+            "Revenue Growth": -77858.20547945186,
+            "Revenue Current": 189150.78082191793,
+            "Revenue Past": 267008.9863013698,
+            "Units Growth": -4693.5999999999985
+          },
+          {
+            "SECTION": null,
+            "Revenue Growth": -111551.78082191851,
+            "Revenue Current": 3297309.589041095,
+            "Revenue Past": 3408861.3698630137,
+            "Units Growth": 172624.0
+          },
+          {
+            "SECTION": "TOYS",
+            "Revenue Growth": -98249.33698630205,
+            "Revenue Current": 857181.9589041095,
+            "Revenue Past": 955431.2958904116,
+            "Units Growth": -10494.0
+          },
+          {
+            "SECTION": "KIDS FASHION",
+            "Revenue Growth": -120177.64383561636,
+            "Revenue Current": 216472.0273972602,
+            "Revenue Past": 336649.67123287654,
+            "Units Growth": -25291.980000000003
+          },
+          {
+            "SECTION": "SPICE MARKET",
+            "Revenue Growth": -174102.0931506853,
+            "Revenue Current": 2031594.3945205484,
+            "Revenue Past": 2205696.4876712337,
+            "Units Growth": 10524.930000000051
+          },
+          {
+            "SECTION": "OFFICE SUPPLIES",
+            "Revenue Growth": -156423.2575342469,
+            "Revenue Current": 631880.5013698626,
+            "Revenue Past": 788303.7589041095,
+            "Units Growth": -35583.34
+          },
+          {
+            "SECTION": "FOOTWEAR",
+            "Revenue Growth": -115444.71780821902,
+            "Revenue Current": 720480.9534246578,
+            "Revenue Past": 835925.6712328768,
+            "Units Growth": -5246.0
+          },
+          {
+            "SECTION": "MEAT SHOP",
+            "Revenue Growth": -210434.02191780857,
+            "Revenue Current": 1496181.290410959,
+            "Revenue Past": 1706615.3123287675,
+            "Units Growth": -21473.089999999997
+          },
+          {
+            "SECTION": "MENS APPAREL",
+            "Revenue Growth": -266392.84931506636,
+            "Revenue Current": 1116339.260273973,
+            "Revenue Past": 1382732.1095890393,
+            "Units Growth": -16592.0
+          },
+          {
+            "SECTION": "CLEANING ESSENSTIALS",
+            "Revenue Growth": -265836.446575343,
+            "Revenue Current": 949133.6301369857,
+            "Revenue Past": 1214970.0767123287,
+            "Units Growth": -46410.0
+          },
+          {
+            "SECTION": "HOME TEXTILES",
+            "Revenue Growth": -543405.2054794529,
+            "Revenue Current": 1114225.4794520547,
+            "Revenue Past": 1657630.6849315076,
+            "Units Growth": -23795.0
+          },
+          {
+            "SECTION": "PERSONAL CARE",
+            "Revenue Growth": -772489.1780821946,
+            "Revenue Current": 3983581.9178082184,
+            "Revenue Past": 4756071.095890413,
+            "Units Growth": -207938.0
+          },
+          {
+            "SECTION": "PROVISIONS",
+            "Revenue Growth": -539626.8465753384,
+            "Revenue Current": 8498402.810958903,
+            "Revenue Past": 9038029.657534242,
+            "Units Growth": -47677.0
+          },
+          {
+            "SECTION": "ENTERTAINMENTS",
+            "Revenue Growth": -625533.4246575341,
+            "Revenue Current": 1191741.6438356165,
+            "Revenue Past": 1817275.0684931506,
+            "Units Growth": -3929.0
+          },
+          {
+            "SECTION": "CONSUMER DEVICES",
+            "Revenue Growth": -722413.9726027397,
+            "Revenue Current": 1785501.6438356156,
+            "Revenue Past": 2507915.6164383553,
+            "Units Growth": -25871.0
+          }
+        ]
+      },
+      {
+        "tool": "conclude",
+        "status": "accepted"
+      }
+    ],
+    "probe_executions": 3,
+    "concluded": true,
+    "explanation": "From the rows checked, the August-December decline was -4.44M of Revenue, which matches 95.9% of the full-year decline in the scan evidence. The drop is concentrated in a few areas rather than being broad-based: by department, CONSUMER GOODS fell -1.56M, TECHNOLOGY -1.35M and LIFESTYLE -1.24M; by section, PERSONAL CARE fell -772K, CONSUMER DEVICES -722K, ENTERTAINMENTS -626K, HOME TEXTILES -543K and PROVISIONS -540K. At category level, the largest declines were LED TV -582K, BLANKET DOUBLE -401K, TORCHES -356K, ROASTED NUTS ROASTERY -343K and FRESH MUTTON OTHER -290K, with October already flagged as led by LED TV and BLANKET DOUBLE, so the period decline is likely associated with weakness in a small set of technology, home and consumer-goods categories rather than a uniform slowdown across all categories. Units also fell in most of those same categories and sections, which is consistent with softer demand or mix pressure rather than a pure pricing effect, although this model cannot prove cause. One important caveat: 111.6K of the decline sits in unassigned merchandise rows with blank department, section and category, so merchandise breakdowns do not cover the full business cleanly. Best follow-up check: review the month-by-month category trend for LED TV and BLANKET DOUBLE, especially October and August, to see whether the decline was a one-month step-down or a sustained loss across the period.",
+    "reuse_summary": {
+      "drill_dimensions": 3,
+      "answered_by_reuse": 0,
+      "facts_reusable": 0,
+      "gaps_needing_probe": 3
+    },
+    "gap_probes_used": 0,
+    "probe_budget": 3
+  },
+  {
+    "signal": {
+      "candidate_id": "cand_13_change_contribution",
+      "related_candidate_ids": [
+        "cand_36_change_contribution",
+        "cand_37_change_contribution",
+        "cand_18_change_contribution",
+        "cand_35_change_contribution"
+      ],
+      "id": "technology_revenue_decline",
+      "kind": "business",
+      "description": "TECHNOLOGY revenue fell by -1991123.9726, from 9907943.6986 to 7916819.726, with corroborating declines in CONSUMER DEVICES (-1001717.3973), GENERAL ELECTRONICS PRODUCTS (-1001717.3973), and LED TV (-916983.0137).",
+      "affected_segment": "TECHNOLOGY",
+      "segment_members": null,
+      "impact_value": -1991123.9726,
+      "impact_share": null,
+      "question": "Why did TECHNOLOGY lose -1991123.9726 in revenue, and how much of that decline came from LED TV within CONSUMER DEVICES?",
+      "evidence_query": "meta_movers_by_mis_deep_dive2_department",
+      "decomposition": null,
+      "score": 24.596841840425878,
+      "candidate_type": "change_contribution",
+      "evidence_segment": "TECHNOLOGY",
+      "metric": "mis_deep_dive2::revenue",
+      "bundle_id": "MIS_DEEP_DIVE2::revenue",
+      "metric_family": "revenue",
+      "dimension": [
+        "'mis_deep_dive2'[department]"
+      ],
+      "direction": -1,
+      "current": 7916819.726,
+      "prior": 9907943.6986,
+      "level": "high",
+      "story_key": "high:v1:0838876f3de5ec3d5482676ff9421192a4963412731199631860aac08c95be48",
+      "segment": [
+        "technology"
+      ],
+      "analysis_type": "change_contribution",
+      "period_anchor": "2023-12",
+      "covered_story_keys": [
+        "high:v1:0838876f3de5ec3d5482676ff9421192a4963412731199631860aac08c95be48",
+        "high:v1:c33deaa80877eee3d46251aaece609f27ef400e130ac6f74230f3010ef27faa3",
+        "high:v1:efb760ed639b2b53c36e2074b6874d215cac3e646c4aa94ac6844a54c2212248",
+        "high:v1:5134efdccb9332ae8bc26a8b44c753141990297e21fa1fbaf548ad7f7ef91e84",
+        "high:v1:108b5cb4f7f9c99860e05dd3e97f8a2e11847a86658ddd654970c6995849fd73"
+      ]
+    },
+    "probes": [
+      {
+        "tool": "conclude",
+        "status": "accepted"
+      }
+    ],
+    "probe_executions": 0,
+    "concluded": true,
+    "explanation": "TECHNOLOGY lost 1.99M of Revenue, falling from 9.91M to 7.92M, and the decline is fully accounted for in the available section breakdown: CONSUMER DEVICES was down 1.00M and ENTERTAINMENTS was down 0.99M. Within CONSUMER DEVICES, LED TV accounted for 916.98K of the decline, which is about 91.5% of the section's 1.00M drop and about 46.1% of TECHNOLOGY's total 1.99M decline; the rest of the section shortfall was associated with smaller declines in MENS TRIMMERS, MEDICAL EQUIPMENT, GENERAL ELECTRONICS PRODUCTS and SMART WATCHES partly offsetting. The category pattern is concentrated rather than broad-based: LED TV and TORCHES together contributed 1.45M of the 1.99M department decline, while most other categories were much smaller movers. Units also fell in the main declining categories, so the Revenue drop is associated with lower sold volume as well as lower category-level transaction counts, but transaction levels in this model should be treated cautiously outside category growth context. Best next follow-up check: review the monthly path for LED TV and TORCHES within TECHNOLOGY to see whether the decline was concentrated in a few months or sustained across the year.",
+    "reuse_summary": {
+      "drill_dimensions": 3,
+      "answered_by_reuse": 0,
+      "facts_reusable": 0,
+      "gaps_needing_probe": 3
+    },
+    "gap_probes_used": 3,
+    "probe_budget": 0
+  },
+  {
+    "signal": {
+      "candidate_id": "cand_23_change_contribution",
+      "related_candidate_ids": [
+        "cand_02_change_contribution",
+        "cand_04_change_contribution"
+      ],
+      "id": "consumer_goods_revenue_transactions_divergence",
+      "kind": "business",
+      "description": "CONSUMER GOODS revenue fell by -1491253.2329 from 47047585.3836 to 45556332.1507 while Units rose by 486524.24 and transactions fell by -1224468.0, making it the largest transactions decline among departments alongside a material revenue decline.",
+      "affected_segment": "CONSUMER GOODS",
+      "segment_members": null,
+      "impact_value": -1491253.2329,
+      "impact_share": null,
+      "question": "Why did CONSUMER GOODS lose -1491253.2329 in revenue even though Units grew by 486524.24, and which categories within the department drove the -1224468.0 transactions decline?",
+      "evidence_query": "meta_movers_by_mis_deep_dive2_department",
+      "decomposition": null,
+      "score": 18.421816229325746,
+      "candidate_type": "change_contribution",
+      "evidence_segment": "CONSUMER GOODS",
+      "metric": "mis_deep_dive2::revenue",
+      "bundle_id": "MIS_DEEP_DIVE2::revenue",
+      "metric_family": "revenue",
+      "dimension": [
+        "'mis_deep_dive2'[department]"
+      ],
+      "direction": -1,
+      "current": 45556332.1507,
+      "prior": 47047585.3836,
+      "level": "high",
+      "story_key": "high:v1:2c566184e9c656ae129f38b66046f023b94b22b1c58b3c3d3e7f02e2c9c9bdd3",
+      "segment": [
+        "consumer goods"
+      ],
+      "analysis_type": "change_contribution",
+      "period_anchor": "2023-12",
+      "covered_story_keys": [
+        "high:v1:2c566184e9c656ae129f38b66046f023b94b22b1c58b3c3d3e7f02e2c9c9bdd3",
+        "high:v1:605c78aaba4bab9ad8782dcef4645647719dc73e25a8bf1ad58091d54a7d6203",
+        "high:v1:2a5232a01b707fd56db20b108e2d6402668bd5ca68ba31c04774b7efc1273bdb"
+      ]
+    },
+    "probes": [
+      {
+        "tool": "conclude",
+        "status": "accepted"
+      }
+    ],
+    "probe_executions": 0,
+    "concluded": true,
+    "explanation": "CONSUMER GOODS involved Revenue 45.56M versus 47.05M last year, a decline of 1.49M, with Units up 486.5K and Transactions down 1.224M. The complete section split shows the decline was concentrated in SPICE MARKET (-648.6K revenue, -46.5K transactions), PROVISIONS (-394.6K, -323.1K) and PERSONAL CARE (-293.2K, -637.4K), while BEVERAGES partly offset the result with +95.5K revenue despite -100.7K transactions. The category cuts point to the largest transaction declines being concentrated in UNISEX (-243.5K), ROASTED NUTS ROASTERY (-170.4K), MEN`S NEEDS (-151.5K), HOME CLEANERS (-131.9K) and BISCUITS (-129.6K), with ROASTERY as a group also down -127.7K; this pattern is associated with fewer transactions in several sizeable categories, while units growth in areas such as MINERAL WATER (+789.7K units, -36.1K transactions) and COFFEE AND TEA (+361.0K units, -39.2K transactions) likely reflects lower average value per item or weaker mix rather than broader demand strength. Best next check for a human: review average value per item within the largest negative sections and categories, especially SPICE MARKET and PROVISIONS, to confirm whether lower-priced mix or pricing pressure explains Revenue falling while Units rose.",
+    "reuse_summary": {
+      "drill_dimensions": 3,
+      "answered_by_reuse": 0,
+      "facts_reusable": 0,
+      "gaps_needing_probe": 3
+    },
+    "gap_probes_used": 3,
+    "probe_budget": 0
+  },
+  {
+    "signal": {
+      "candidate_id": "cand_25_change_contribution",
+      "related_candidate_ids": [
+        "cand_12_change_contribution",
+        "cand_31_change_contribution",
+        "cand_05_change_contribution",
+        "cand_07_change_contribution",
+        "cand_16_change_contribution",
+        "cand_17_change_contribution"
+      ],
+      "id": "fresh_food_and_green_groceries_mixed_volume_value",
+      "kind": "business",
+      "description": "FRESH FOOD revenue fell by -1453854.8219 from 21046633.1699 to 19592778.3479 even as Units rose by 427618.51 and transactions rose by 348278.0, and within it GREEN GROCERIES revenue fell by -819637.3014 while Units rose by 394409.0 and transactions rose by 269083.0.",
+      "affected_segment": "FRESH FOOD",
+      "segment_members": [
+        "FRESH FOOD",
+        "GREEN GROCERIES",
+        "VEGETABLE AND FRUITS"
+      ],
+      "impact_value": -1453854.8219,
+      "impact_share": null,
+      "question": "Why did FRESH FOOD, especially GREEN GROCERIES, lose revenue despite higher Units and transactions?",
+      "evidence_query": "meta_movers_by_mis_deep_dive2_department",
+      "decomposition": null,
+      "score": 17.959824504000434,
+      "candidate_type": "change_contribution",
+      "evidence_segment": "FRESH FOOD",
+      "metric": "mis_deep_dive2::revenue",
+      "bundle_id": "MIS_DEEP_DIVE2::revenue",
+      "metric_family": "revenue",
+      "dimension": [
+        "'mis_deep_dive2'[department]"
+      ],
+      "direction": -1,
+      "current": 19592778.3479,
+      "prior": 21046633.1699,
+      "level": "high",
+      "story_key": "high:v1:3e64346b0f116abcd24686b17e1ebe863ea707dbc5fa2d66214ba86cc825e6aa",
+      "segment": [
+        "fresh food"
+      ],
+      "analysis_type": "change_contribution",
+      "period_anchor": "2023-12",
+      "covered_story_keys": [
+        "high:v1:3e64346b0f116abcd24686b17e1ebe863ea707dbc5fa2d66214ba86cc825e6aa",
+        "high:v1:6aafcbac16df670df8e56a5912e8c8c88843d0cf2e7551fb9e1f8c75ca71d3df",
+        "high:v1:d6422654f76abe2e75920b5895ff1454581a909fa1b29cf87395573e1986e9eb",
+        "high:v1:3b2a8db4e6e5bf67cc3c57fd176ba2f17c153469bfba7b8b135e4ca36001a732",
+        "high:v1:03c1d12f5f77f0f9e7805c65ab50b7ad759206e31d5bd939db8e1c8f2f4a96f0",
+        "high:v1:c50dd0a645e8266283c52a0d96cdf1db74716c90608c2b5d240c3df3aa65b90f",
+        "high:v1:bdf50f951a4fd2e3a8fc5840c331b0c673788e805cb1d5c2c3c326c2080e19c5"
+      ]
+    },
+    "probes": [
+      {
+        "tool": "conclude",
+        "status": "accepted"
+      }
+    ],
+    "probe_executions": 0,
+    "concluded": true,
+    "explanation": "FRESH FOOD’s stake is Revenue 19.59M in the current year versus 21.05M last year, a decline of 1.45M from the department rows already provided. The available drilldown shows that the decline is concentrated in a few CATEGORY_NAME_2 groups despite higher Units and higher transactions in parts of the department: MUTTON is down 647.2K, FRUITS down 298.0K, VEGETABLES down 275.4K and SALADS down 246.3K, while Units still rose in FRUITS by 64.3K, VEGETABLES by 257.3K and SALADS by 72.9K. That pattern is associated with lower average Revenue per Unit in major fresh categories rather than weaker volume, and GREEN GROCERIES fits the same shape with Revenue down 819.6K while Units rose 394.4K and transactions rose 269.1K. The single best follow-up check is a human review of item-level pricing and mix within GREEN GROCERIES, especially FRUITS, VEGETABLES and SALADS, to test whether lower selling prices, promotions, or a shift toward cheaper items explain the value decline.",
+    "reuse_summary": {
+      "drill_dimensions": 3,
+      "answered_by_reuse": 0,
+      "facts_reusable": 0,
+      "gaps_needing_probe": 3
+    },
+    "gap_probes_used": 2,
+    "probe_budget": 1
+  }
+]

@@ -210,3 +210,68 @@ def period_trend(
         "dax": dax,
         "contract_hint": dict(contract_hint or {}),
     }
+
+
+def period_breakdown(
+    name: str,
+    purpose: str,
+    time_col_ref: str,
+    group_col_ref: str,
+    filters: Sequence[str],
+    measures: Sequence[tuple[str, str]],
+    rows: int,
+    contract_hint: dict | None = None,
+) -> dict:
+    """One bounded scan of ``measures`` by time period AND by member.
+
+    This is the query that turns a single-period view from a top-line reading into
+    a real one: grouping by both axes at once yields, from a single REST call,
+    every measure per period *and* per member within it.
+
+    The per-period **overall** totals come back as diagnostics computed inside the
+    same ``SUMMARIZECOLUMNS`` - ``CALCULATE([m], REMOVEFILTERS(member))`` is
+    evaluated with the period still in filter context, so it is that period's true
+    total across *all* members, not the sum of the returned (bounded) rows and not
+    a global total. That makes the period's own measure set exact even if the row
+    cap truncates the member list, and lets the caller prove completeness by
+    comparing the returned rows against it.
+    """
+    cols = [f'"{_escape_member(alias)}", [{measure}]' for alias, measure in measures]
+    first_alias, first_measure = measures[0]
+    # Per-period totals across every member *within the population*, for the
+    # period's own measure set and for the completeness check.
+    #
+    # The population filters are re-applied inside the CALCULATE. Removing only
+    # the member filter is not enough when the population is itself filtered on
+    # the same column - which is exactly the case when the member level IS the
+    # entity level (a per-store breakdown inside a comparable-store population).
+    # There, a bare ``REMOVEFILTERS(store)`` strips the population too, and the
+    # "overall" total silently includes entities the comparison excludes. On the
+    # live model that put an excluded branch's prior-year revenue into the
+    # denominator and made per-member contributions sum to -38.13 points against
+    # a -51.98% move.
+    restore = ("".join(f", {fragment}" for fragment in filters)) if filters else ""
+    cols.extend(
+        f'"__overall_{_escape_member(alias)}", '
+        f'CALCULATE([{measure}], REMOVEFILTERS({group_col_ref}){restore})'
+        for alias, measure in measures
+    )
+    cols.append(
+        f'"__member_count", CALCULATE(DISTINCTCOUNT({group_col_ref}), '
+        f'REMOVEFILTERS({group_col_ref}){restore})'
+    )
+    filt = "".join(f"{fragment}, " for fragment in filters)
+    inner = f"SUMMARIZECOLUMNS({time_col_ref}, {group_col_ref}, {filt}{', '.join(cols)})"
+    filtered = f"FILTER({inner}, NOT ISBLANK([{first_alias}]))"
+    ranked = f'ADDCOLUMNS({filtered}, "__abs", ABS([{first_alias}]))'
+    dax = (
+        "EVALUATE\n"
+        f"TOPN({int(rows)}, {ranked}, [__abs], DESC)\n"
+        f"ORDER BY {time_col_ref} ASC, [{first_alias}] DESC"
+    )
+    return {
+        "name": name,
+        "purpose": purpose,
+        "dax": dax,
+        "contract_hint": dict(contract_hint or {}),
+    }

@@ -1,0 +1,49 @@
+{
+  "queries": [
+    {
+      "name": "latest_complete_month_totals",
+      "purpose": "Show the headline performance for the latest complete month with the core revenue, units, transactions, price, basket size and basket value measures.",
+      "intent": "Grand totals for [net revenue CURRENT], [net revenue PAST], [revenue Growth], [revenue growth %], [net qty CURRENT], [net qty PAST], [QTY Growth], [QTY GROWTH %], [net bills CURRENT], [bills growth], [bills growth %], [retail price current year], [retail price past year], [RETAIL PRICE GROWTH], [QUANTITY PER TRANSACTION CURRENT YEAR], [QUANTITY PER TRANSACTION PAST YEAR], [QUANTITY PER TRANSACTION GROWTH], [SPEND PER TRANSACTION CURRENT YEAR], [SPEND PER TRANSACTION PAST YEAR], and [SPEND PER TRANSACTION GROWTH], filtered to 'MIS_DEEP_DIVE2'[DOC_MONTH] = 12 and with matching month context propagated through the active KEY relationships to CAT_TRANSACTIONS, one row. This is the report headline period because the model is monthly and the latest complete month is month 12."
+    },
+    {
+      "name": "full_year_grand_totals_with_levers",
+      "purpose": "Provide the full-year background totals and three-lever summary for the whole business.",
+      "intent": "Grand totals for [net revenue CURRENT], [net revenue PAST], [revenue Growth], [revenue growth %], [net qty CURRENT], [net qty PAST], [QTY Growth], [QTY GROWTH %], [net bills CURRENT], [bills growth], [bills growth %], [retail price current year], [retail price past year], [RETAIL PRICE GROWTH], [QUANTITY PER TRANSACTION GROWTH], and [SPEND PER TRANSACTION GROWTH], no filters, one row. Use this as the full-year comparator behind the latest-month headline; do not duplicate the already-fetched baseline query structure beyond this explicit summary request."
+    },
+    {
+      "name": "monthly_trend_by_doc_month",
+      "purpose": "Show how the core measures moved across the 12 trading months, with the most recent month first.",
+      "intent": "Summarize by 'MIS_DEEP_DIVE2'[DOC_MONTH] and return [net revenue CURRENT], [net revenue PAST], [revenue Growth], [revenue growth %], [net qty CURRENT], [net qty PAST], [QTY Growth], [QTY GROWTH %], [net bills CURRENT], [bills growth], [bills growth %], [RETAIL PRICE GROWTH], [QUANTITY PER TRANSACTION GROWTH], and [SPEND PER TRANSACTION GROWTH]. Return up to 12 rows, sorted by 'MIS_DEEP_DIVE2'[DOC_MONTH] DESC."
+    },
+    {
+      "name": "branch_revenue_units_breakdown",
+      "purpose": "Compare branch performance using only measures that are reliable at branch level.",
+      "intent": "Summarize by 'MIS_DEEP_DIVE2'[LOC_CODE] and return [net revenue CURRENT], [net revenue PAST], [revenue Growth], [revenue growth %], [net qty CURRENT], [net qty PAST], [QTY Growth], and [QTY GROWTH %]. Return all available branch rows up to 15 rows, sorted by [net revenue CURRENT] DESC. Do not include [net bills CURRENT], [bills growth], [bills growth %], [SPEND PER TRANSACTION CURRENT YEAR], [SPEND PER TRANSACTION PAST YEAR], [SPEND PER TRANSACTION GROWTH], [QUANTITY PER TRANSACTION CURRENT YEAR], [QUANTITY PER TRANSACTION PAST YEAR], or [QUANTITY PER TRANSACTION GROWTH] here because branch-level transaction-based measures are not reliable for this model."
+    },
+    {
+      "name": "department_performance_breakdown",
+      "purpose": "Show which departments are largest and how each department changed on revenue, units and transaction growth.",
+      "intent": "Summarize by 'MIS_DEEP_DIVE2'[DEPARTMENT] and return [net revenue CURRENT], [net revenue PAST], [revenue Growth], [revenue growth %], [net qty CURRENT], [net qty PAST], [QTY Growth], [QTY GROWTH %], [net bills CURRENT], [bills growth], [bills growth %], [RETAIL PRICE GROWTH], [QUANTITY PER TRANSACTION GROWTH], and [SPEND PER TRANSACTION GROWTH]. Return up to 15 rows, sorted by [net revenue CURRENT] DESC."
+    },
+    {
+      "name": "section_performance_breakdown",
+      "purpose": "Show the main sections driving the business and their revenue, units and transaction-growth patterns.",
+      "intent": "Summarize by 'MIS_DEEP_DIVE2'[SECTION] and return [net revenue CURRENT], [net revenue PAST], [revenue Growth], [revenue growth %], [net qty CURRENT], [net qty PAST], [QTY Growth], [QTY GROWTH %], [net bills CURRENT], [bills growth], [bills growth %], [RETAIL PRICE GROWTH], [QUANTITY PER TRANSACTION GROWTH], and [SPEND PER TRANSACTION GROWTH]. Return up to 15 rows, sorted by [net revenue CURRENT] DESC."
+    },
+    {
+      "name": "category_top_current_revenue",
+      "purpose": "Identify the biggest current-revenue categories and their current versus prior performance.",
+      "intent": "Summarize by 'MIS_DEEP_DIVE2'[CATEGORY_NAME] and return [net revenue CURRENT], [net revenue PAST], [revenue Growth], [revenue growth %], [net qty CURRENT], [net qty PAST], [QTY Growth], [QTY GROWTH %], [net bills CURRENT], [bills growth], [bills growth %], [RETAIL PRICE GROWTH], [QUANTITY PER TRANSACTION GROWTH], and [SPEND PER TRANSACTION GROWTH]. Return the top 15 rows by [net revenue CURRENT] descending."
+    },
+    {
+      "name": "category_top_and_bottom_revenue_change",
+      "purpose": "Identify the categories with the largest revenue gains and losses for focused commentary.",
+      "intent": "Summarize by 'MIS_DEEP_DIVE2'[CATEGORY_NAME] and return [net revenue CURRENT], [net revenue PAST], [revenue Growth], [revenue growth %], [net qty CURRENT], [net qty PAST], [QTY Growth], [QTY GROWTH %], [net bills CURRENT], [bills growth], [bills growth %], [RETAIL PRICE GROWTH], [QUANTITY PER TRANSACTION GROWTH], and [SPEND PER TRANSACTION GROWTH]. Produce the paired tails by taking the top 7 rows by [revenue Growth] descending and the top 7 rows by [revenue Growth] ascending, for a maximum of 14 distinct rows, with final sort by [revenue Growth] DESC."
+    },
+    {
+      "name": "brand_top_revenue_breakdown",
+      "purpose": "Add a brand view from the brand table to show which brands are largest in current revenue.",
+      "intent": "Summarize by 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[BRAND_NAME] and return [REV_CURRENT], [REV_PREV], and [Percentage]. Return the top 15 rows by [REV_CURRENT] descending. Use the brand table’s own revenue measures because brand exists only on 'MIS_BASE_FILE_MONTHLY_BRAND_TB' and should not be crossed with 'MIS_DEEP_DIVE2' dimensions in the same breakdown."
+    }
+  ]
+}

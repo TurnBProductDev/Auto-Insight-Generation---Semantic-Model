@@ -1,0 +1,30 @@
+{
+  "status": "ok",
+  "mode": "portfolio",
+  "memory_status": "ok",
+  "detected": 123,
+  "eligible": 3,
+  "summary_type": "new_data",
+  "recovered_same_day": true,
+  "selected_areas": [
+    "area:v1:491bce071f6c55818ae3f8ab6d03be2b26c9fedecf28bd4b8454b562011135b8",
+    "area:v1:908455fa55d9fa8bf1da1043c50d0a317501c96de66d7525028cc5f73df525fb",
+    "area:v1:2dfff2c1fa39c337ae87f6b9224d2328750e52a93208a95e726025f31afcc50b"
+  ],
+  "selected_segments": [
+    "TECHNOLOGY",
+    "CONSUMER GOODS",
+    "FRESH MUTTON OTHER"
+  ],
+  "selected_roles": [
+    "department",
+    "department",
+    "category"
+  ],
+  "reason": "same_day_recovery",
+  "audit": {
+    "reason": "same_day_recovery",
+    "recovered": true,
+    "pinned": 3
+  }
+}

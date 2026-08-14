@@ -23,6 +23,7 @@ from . import summary_memory
 HIERARCHY_LEVELS: dict[str, int] = {
     "division": 10,
     "department": 20,
+    "section": 25,
     "category": 30,
     "subcategory": 35,
     "product_group": 40,
@@ -36,7 +37,15 @@ HIERARCHY_LEVELS: dict[str, int] = {
 # Default roles that may consume an individual focus slot. Everything below
 # Category (product group / product / sku) and orthogonal roles (store, region,
 # period) are supporting evidence only, never a primary focus.
-DEFAULT_ALLOWED_ROLES: tuple[str, ...] = ("division", "department", "category")
+DEFAULT_ALLOWED_ROLES: tuple[str, ...] = ("division", "department", "section", "category")
+
+# Roles that are reported as full ranked coverage (every member, one row) but
+# never consume a focus slot. ``store`` is deliberately here and not in
+# HIERARCHY_LEVELS: it is orthogonal to the merchandise hierarchy (a category
+# exists inside every store), so giving it a depth would let the parent/child
+# diversity rules treat it as an ancestor of Division. Coverage roles are
+# resolved separately from ``entity_dimension`` and the merchandise dimensions.
+DEFAULT_COVERAGE_ROLES: tuple[str, ...] = ("store", "division", "department", "section", "category")
 
 
 def _norm(value: Any) -> str:
@@ -54,6 +63,24 @@ def allowed_roles(state: dict) -> tuple[str, ...]:
         raw = [raw]
     roles = tuple(dict.fromkeys(_norm(role) for role in raw if _norm(role)))
     return roles or DEFAULT_ALLOWED_ROLES
+
+
+def coverage_roles(state: dict) -> tuple[str, ...]:
+    """Roles reported as full ranked coverage, normalized; falls back to default.
+
+    Coverage is the "every store / department / category gets a line" surface.
+    It is intentionally a superset of :func:`allowed_roles` - a role can be
+    covered without ever being eligible to consume a focus slot.
+    """
+    raw = (
+        state.get("summary_coverage_roles")
+        or (state.get("config", {}) or {}).get("summary_coverage_roles")
+        or DEFAULT_COVERAGE_ROLES
+    )
+    if isinstance(raw, str):
+        raw = [raw]
+    roles = tuple(dict.fromkeys(_norm(role) for role in raw if _norm(role)))
+    return roles or DEFAULT_COVERAGE_ROLES
 
 
 def role_aliases(state: dict) -> dict[str, str]:

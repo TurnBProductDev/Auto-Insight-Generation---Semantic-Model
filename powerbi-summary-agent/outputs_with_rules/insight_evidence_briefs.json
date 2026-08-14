@@ -1,0 +1,1229 @@
+{
+  "confectionery_chocolate_volume_drop": {
+    "signal_id": "confectionery_chocolate_volume_drop",
+    "segment": "CF-CONFECTIONERY",
+    "scope_type": "comparable",
+    "comparable_finding": true,
+    "known_facts": [
+      {
+        "fact": "CF-CONFECTIONERY: QTY Growth of -529.6K (from 4.4M to 3.9M), 222.1% of the total change",
+        "metric": "QTY Growth",
+        "impact_value": -529636.4292,
+        "impact_share": 222.0511,
+        "share_basis": "grand_total:QTY Growth",
+        "provenance": {
+          "source_query": "meta_movers_by_mis_deep_dive2_item_category_name",
+          "population_status": "comparable",
+          "completeness": "partial",
+          "truncated": true,
+          "topn": 14,
+          "dax_hash": "8bf4ea0ca14a5016",
+          "parse_confidence": "construction",
+          "coverage_kind": "paired_change_tails",
+          "contract_source": "metadata_template"
+        },
+        "safe_to_reuse": true,
+        "verification_required": false
+      }
+    ],
+    "supporting_queries": [
+      "meta_movers_by_mis_deep_dive2_item_category_name"
+    ],
+    "already_answered": [],
+    "unanswered_questions": [
+      "How does CF-CONFECTIONERY decompose by product_group_name?",
+      "How does CF-CONFECTIONERY decompose by special_product_group_name?",
+      "How does CF-CONFECTIONERY decompose by store_no?"
+    ],
+    "recommended_probes": [
+      {
+        "dimension": "product_group_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "product_group_name",
+          "reference": "'MIS_DEEP_DIVE2'[product_group_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "CF-CONFECTIONERY",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "special_product_group_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "special_product_group_name",
+          "reference": "'MIS_DEEP_DIVE2'[special_product_group_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "CF-CONFECTIONERY",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "store_no",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "store_no",
+          "reference": "'MIS_DEEP_DIVE2'[store_no]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 70
+        },
+        "segment": "CF-CONFECTIONERY",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      }
+    ],
+    "available_dimensions": [
+      "division_name",
+      "max_date",
+      "month",
+      "product_group_name",
+      "sec",
+      "special_product_group",
+      "special_product_group_name",
+      "store_no"
+    ],
+    "stop_condition": "Stop once CF-CONFECTIONERY's movement is decomposed across at least one drill dimension with complete + comparable coverage, or the shared probe budget is exhausted. Facts flagged verification_required may inform the explanation but must not, on their own, end the investigation.",
+    "reuse_summary": {
+      "drill_dimensions": 3,
+      "answered_by_reuse": 0,
+      "facts_reusable": 1,
+      "gaps_needing_probe": 3
+    }
+  },
+  "fmcg_food_large_but_unit_negative": {
+    "signal_id": "fmcg_food_large_but_unit_negative",
+    "segment": "FMCG FOOD",
+    "scope_type": "comparable",
+    "comparable_finding": true,
+    "known_facts": [
+      {
+        "fact": "FMCG FOOD: QTY Growth of -364.6K (from 10.4M to 10.0M), 152.9% of the total change",
+        "metric": "QTY Growth",
+        "impact_value": -364641.2883,
+        "impact_share": 152.8766,
+        "share_basis": "grand_total:QTY Growth",
+        "provenance": {
+          "source_query": "meta_movers_by_mis_deep_dive2_division_name",
+          "population_status": "comparable",
+          "completeness": "partial",
+          "truncated": false,
+          "topn": 14,
+          "dax_hash": "15e1924f181ce55d",
+          "parse_confidence": "construction",
+          "coverage_kind": "paired_change_tails",
+          "contract_source": "metadata_template"
+        },
+        "safe_to_reuse": true,
+        "verification_required": false
+      }
+    ],
+    "supporting_queries": [
+      "meta_movers_by_mis_deep_dive2_division_name"
+    ],
+    "already_answered": [],
+    "unanswered_questions": [
+      "How does FMCG FOOD decompose by product_group_name?",
+      "How does FMCG FOOD decompose by special_product_group_name?",
+      "How does FMCG FOOD decompose by store_no?"
+    ],
+    "recommended_probes": [
+      {
+        "dimension": "product_group_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "product_group_name",
+          "reference": "'MIS_DEEP_DIVE2'[product_group_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "FMCG FOOD",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "special_product_group_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "special_product_group_name",
+          "reference": "'MIS_DEEP_DIVE2'[special_product_group_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "FMCG FOOD",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "store_no",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "store_no",
+          "reference": "'MIS_DEEP_DIVE2'[store_no]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 70
+        },
+        "segment": "FMCG FOOD",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      }
+    ],
+    "available_dimensions": [
+      "item_category_name",
+      "max_date",
+      "month",
+      "product_group_name",
+      "sec",
+      "special_product_group",
+      "special_product_group_name",
+      "store_no"
+    ],
+    "stop_condition": "Stop once FMCG FOOD's movement is decomposed across at least one drill dimension with complete + comparable coverage, or the shared probe budget is exhausted. Facts flagged verification_required may inform the explanation but must not, on their own, end the investigation.",
+    "reuse_summary": {
+      "drill_dimensions": 3,
+      "answered_by_reuse": 0,
+      "facts_reusable": 1,
+      "gaps_needing_probe": 3
+    }
+  },
+  "cfh021_dominates_growth": {
+    "signal_id": "cfh021_dominates_growth",
+    "segment": "CFH021",
+    "scope_type": "comparable",
+    "comparable_finding": true,
+    "known_facts": [
+      {
+        "fact": "CFH021: revenue Growth of 4.3M (from 36.5M to 40.8M), 123.8% of the total change; split: volume 901.4K / rate 3.4M (per QTY Growth)",
+        "metric": "revenue Growth",
+        "impact_value": 4296708.76,
+        "impact_share": 123.8455,
+        "share_basis": "grand_total:revenue Growth",
+        "provenance": {
+          "source_query": "baseline_comparable_entities",
+          "population_status": "comparable",
+          "completeness": "complete",
+          "truncated": false,
+          "topn": null,
+          "dax_hash": "760a090e77329a75",
+          "parse_confidence": "construction",
+          "coverage_kind": "full_entity_breakdown",
+          "contract_source": "pre_fork_baseline_in_memory_filter"
+        },
+        "safe_to_reuse": true,
+        "verification_required": false
+      }
+    ],
+    "supporting_queries": [
+      "baseline_comparable_entities",
+      "meta_movers_by_mis_deep_dive2_item_category_name",
+      "meta_concentration_by_mis_deep_dive2_product_group_name",
+      "meta_cross_store_no_by_special_product_group_name"
+    ],
+    "already_answered": [],
+    "unanswered_questions": [
+      "How does CFH021 decompose by item_category_name? (a scan slice exists but is partial/comparable - verification required)",
+      "How does CFH021 decompose by product_group_name? (a scan slice exists but is partial/comparable - verification required)",
+      "How does CFH021 decompose by special_product_group_name? (a scan slice exists but is partial/comparable - verification required)"
+    ],
+    "recommended_probes": [
+      {
+        "dimension": "item_category_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "item_category_name",
+          "reference": "'MIS_DEEP_DIVE2'[item_category_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "CFH021",
+        "reason": "existing slice not reusable (partial/comparable)",
+        "verify_source": "meta_movers_by_mis_deep_dive2_item_category_name",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "product_group_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "product_group_name",
+          "reference": "'MIS_DEEP_DIVE2'[product_group_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "CFH021",
+        "reason": "existing slice not reusable (partial/comparable)",
+        "verify_source": "meta_concentration_by_mis_deep_dive2_product_group_name",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "special_product_group_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "special_product_group_name",
+          "reference": "'MIS_DEEP_DIVE2'[special_product_group_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "CFH021",
+        "reason": "existing slice not reusable (partial/comparable)",
+        "verify_source": "meta_cross_store_no_by_special_product_group_name",
+        "template": "segment_by_dimension_change"
+      }
+    ],
+    "available_dimensions": [
+      "division_name",
+      "item_category_name",
+      "max_date",
+      "month",
+      "product_group_name",
+      "sec",
+      "special_product_group",
+      "special_product_group_name"
+    ],
+    "stop_condition": "Stop once CFH021's movement is decomposed across at least one drill dimension with complete + comparable coverage, or the shared probe budget is exhausted. Facts flagged verification_required may inform the explanation but must not, on their own, end the investigation.",
+    "reuse_summary": {
+      "drill_dimensions": 3,
+      "answered_by_reuse": 0,
+      "facts_reusable": 1,
+      "gaps_needing_probe": 3
+    }
+  },
+  "march_april_month_shift": {
+    "signal_id": "march_april_month_shift",
+    "segment": "March",
+    "scope_type": "comparable",
+    "comparable_finding": true,
+    "known_facts": [
+      {
+        "fact": "March: revenue Growth of -2.0M (from 20.7M to 18.6M), -58.9% of the total change; concentrated in IMPORTED FRUITS (-326.1K), SUN FLOWER OIL (-138.6K)",
+        "metric": "revenue Growth",
+        "impact_value": -2043504.72,
+        "impact_share": -58.9006,
+        "share_basis": "grand_total:period_reconciled",
+        "provenance": {
+          "source_query": "meta_period_by_mis_deep_dive2_month",
+          "population_status": "comparable",
+          "completeness": "complete",
+          "truncated": false,
+          "topn": null,
+          "dax_hash": "233335a3f9ca9477",
+          "parse_confidence": "construction",
+          "coverage_kind": "period_series",
+          "contract_source": "metadata_template"
+        },
+        "safe_to_reuse": true,
+        "verification_required": false
+      }
+    ],
+    "supporting_queries": [
+      "meta_period_by_mis_deep_dive2_month"
+    ],
+    "already_answered": [],
+    "unanswered_questions": [
+      "How does March decompose by product_group_name?",
+      "How does March decompose by special_product_group_name?",
+      "How does March decompose by store_no?"
+    ],
+    "recommended_probes": [
+      {
+        "dimension": "product_group_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "product_group_name",
+          "reference": "'MIS_DEEP_DIVE2'[product_group_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "March",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "special_product_group_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "special_product_group_name",
+          "reference": "'MIS_DEEP_DIVE2'[special_product_group_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "March",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "store_no",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "store_no",
+          "reference": "'MIS_DEEP_DIVE2'[store_no]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 70
+        },
+        "segment": "March",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      }
+    ],
+    "available_dimensions": [
+      "division_name",
+      "item_category_name",
+      "max_date",
+      "product_group_name",
+      "special_product_group",
+      "special_product_group_name",
+      "store_no"
+    ],
+    "stop_condition": "Stop once March's movement is decomposed across at least one drill dimension with complete + comparable coverage, or the shared probe budget is exhausted. Facts flagged verification_required may inform the explanation but must not, on their own, end the investigation.",
+    "reuse_summary": {
+      "drill_dimensions": 3,
+      "answered_by_reuse": 0,
+      "facts_reusable": 1,
+      "gaps_needing_probe": 3
+    }
+  },
+  "cfh017_broad_branch_decline": {
+    "signal_id": "cfh017_broad_branch_decline",
+    "segment": "CFH017",
+    "scope_type": "comparable",
+    "comparable_finding": true,
+    "known_facts": [
+      {
+        "fact": "CFH017: revenue Growth of -1.2M (from 22.1M to 20.8M), -35.3% of the total change; split: volume -1.4M / rate 205.9K (per QTY Growth)",
+        "metric": "revenue Growth",
+        "impact_value": -1223427.93,
+        "impact_share": -35.2633,
+        "share_basis": "grand_total:revenue Growth",
+        "provenance": {
+          "source_query": "baseline_comparable_entities",
+          "population_status": "comparable",
+          "completeness": "complete",
+          "truncated": false,
+          "topn": null,
+          "dax_hash": "760a090e77329a75",
+          "parse_confidence": "construction",
+          "coverage_kind": "full_entity_breakdown",
+          "contract_source": "pre_fork_baseline_in_memory_filter"
+        },
+        "safe_to_reuse": true,
+        "verification_required": false
+      }
+    ],
+    "supporting_queries": [
+      "baseline_comparable_entities",
+      "meta_movers_by_mis_deep_dive2_item_category_name",
+      "meta_concentration_by_mis_deep_dive2_product_group_name",
+      "meta_cross_store_no_by_special_product_group_name"
+    ],
+    "already_answered": [],
+    "unanswered_questions": [
+      "How does CFH017 decompose by item_category_name? (a scan slice exists but is partial/comparable - verification required)",
+      "How does CFH017 decompose by product_group_name? (a scan slice exists but is partial/comparable - verification required)",
+      "How does CFH017 decompose by special_product_group_name? (a scan slice exists but is partial/comparable - verification required)"
+    ],
+    "recommended_probes": [
+      {
+        "dimension": "item_category_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "item_category_name",
+          "reference": "'MIS_DEEP_DIVE2'[item_category_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "CFH017",
+        "reason": "existing slice not reusable (partial/comparable)",
+        "verify_source": "meta_movers_by_mis_deep_dive2_item_category_name",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "product_group_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "product_group_name",
+          "reference": "'MIS_DEEP_DIVE2'[product_group_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "CFH017",
+        "reason": "existing slice not reusable (partial/comparable)",
+        "verify_source": "meta_concentration_by_mis_deep_dive2_product_group_name",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "special_product_group_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "special_product_group_name",
+          "reference": "'MIS_DEEP_DIVE2'[special_product_group_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "CFH017",
+        "reason": "existing slice not reusable (partial/comparable)",
+        "verify_source": "meta_cross_store_no_by_special_product_group_name",
+        "template": "segment_by_dimension_change"
+      }
+    ],
+    "available_dimensions": [
+      "division_name",
+      "item_category_name",
+      "max_date",
+      "month",
+      "product_group_name",
+      "sec",
+      "special_product_group",
+      "special_product_group_name"
+    ],
+    "stop_condition": "Stop once CFH017's movement is decomposed across at least one drill dimension with complete + comparable coverage, or the shared probe budget is exhausted. Facts flagged verification_required may inform the explanation but must not, on their own, end the investigation.",
+    "reuse_summary": {
+      "drill_dimensions": 3,
+      "answered_by_reuse": 0,
+      "facts_reusable": 1,
+      "gaps_needing_probe": 3
+    }
+  },
+  "fresh_chicken_and_parts_growth_cluster": {
+    "signal_id": "fresh_chicken_and_parts_growth_cluster",
+    "segment": "CF-FRESH CHICKEN & PARTS",
+    "scope_type": "comparable",
+    "comparable_finding": true,
+    "known_facts": [
+      {
+        "fact": "CF-FRESH CHICKEN & PARTS: revenue Growth of 1.1M (from 3.5M to 4.6M), 31.9% of the total change; split: volume 1.5M / rate -343.2K (per QTY Growth)",
+        "metric": "revenue Growth",
+        "impact_value": 1108089.71,
+        "impact_share": 31.9388,
+        "share_basis": "grand_total:revenue Growth",
+        "provenance": {
+          "source_query": "meta_movers_by_mis_deep_dive2_product_group_name",
+          "population_status": "comparable",
+          "completeness": "partial",
+          "truncated": true,
+          "topn": 14,
+          "dax_hash": "115a98e01bdbdb1e",
+          "parse_confidence": "construction",
+          "coverage_kind": "paired_change_tails",
+          "contract_source": "metadata_template"
+        },
+        "safe_to_reuse": true,
+        "verification_required": false
+      }
+    ],
+    "supporting_queries": [
+      "meta_movers_by_mis_deep_dive2_product_group_name"
+    ],
+    "already_answered": [],
+    "unanswered_questions": [
+      "How does CF-FRESH CHICKEN & PARTS decompose by item_category_name?",
+      "How does CF-FRESH CHICKEN & PARTS decompose by special_product_group_name?",
+      "How does CF-FRESH CHICKEN & PARTS decompose by store_no?"
+    ],
+    "recommended_probes": [
+      {
+        "dimension": "item_category_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "item_category_name",
+          "reference": "'MIS_DEEP_DIVE2'[item_category_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "CF-FRESH CHICKEN & PARTS",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "special_product_group_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "special_product_group_name",
+          "reference": "'MIS_DEEP_DIVE2'[special_product_group_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "CF-FRESH CHICKEN & PARTS",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "store_no",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "store_no",
+          "reference": "'MIS_DEEP_DIVE2'[store_no]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 70
+        },
+        "segment": "CF-FRESH CHICKEN & PARTS",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      }
+    ],
+    "available_dimensions": [
+      "division_name",
+      "item_category_name",
+      "max_date",
+      "month",
+      "sec",
+      "special_product_group",
+      "special_product_group_name",
+      "store_no"
+    ],
+    "stop_condition": "Stop once CF-FRESH CHICKEN & PARTS's movement is decomposed across at least one drill dimension with complete + comparable coverage, or the shared probe budget is exhausted. Facts flagged verification_required may inform the explanation but must not, on their own, end the investigation.",
+    "reuse_summary": {
+      "drill_dimensions": 3,
+      "answered_by_reuse": 0,
+      "facts_reusable": 1,
+      "gaps_needing_probe": 3
+    }
+  },
+  "meat_growth_with_lower_unit_value": {
+    "signal_id": "meat_growth_with_lower_unit_value",
+    "segment": "CF-MEAT",
+    "scope_type": "comparable",
+    "comparable_finding": true,
+    "known_facts": [
+      {
+        "fact": "CF-MEAT: revenue Growth of 742.0K (from 7.3M to 8.0M), 21.4% of the total change; split: volume 1.9M / rate -1.2M (per QTY Growth)",
+        "metric": "revenue Growth",
+        "impact_value": 742010.12,
+        "impact_share": 21.3872,
+        "share_basis": "grand_total:revenue Growth",
+        "provenance": {
+          "source_query": "meta_movers_by_mis_deep_dive2_item_category_name",
+          "population_status": "comparable",
+          "completeness": "partial",
+          "truncated": true,
+          "topn": 14,
+          "dax_hash": "8bf4ea0ca14a5016",
+          "parse_confidence": "construction",
+          "coverage_kind": "paired_change_tails",
+          "contract_source": "metadata_template"
+        },
+        "safe_to_reuse": true,
+        "verification_required": false
+      }
+    ],
+    "supporting_queries": [
+      "meta_movers_by_mis_deep_dive2_item_category_name"
+    ],
+    "already_answered": [],
+    "unanswered_questions": [
+      "How does CF-MEAT decompose by product_group_name?",
+      "How does CF-MEAT decompose by special_product_group_name?",
+      "How does CF-MEAT decompose by store_no?"
+    ],
+    "recommended_probes": [
+      {
+        "dimension": "product_group_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "product_group_name",
+          "reference": "'MIS_DEEP_DIVE2'[product_group_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "CF-MEAT",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "special_product_group_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "special_product_group_name",
+          "reference": "'MIS_DEEP_DIVE2'[special_product_group_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "CF-MEAT",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "store_no",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "store_no",
+          "reference": "'MIS_DEEP_DIVE2'[store_no]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 70
+        },
+        "segment": "CF-MEAT",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      }
+    ],
+    "available_dimensions": [
+      "division_name",
+      "max_date",
+      "month",
+      "product_group_name",
+      "sec",
+      "special_product_group",
+      "special_product_group_name",
+      "store_no"
+    ],
+    "stop_condition": "Stop once CF-MEAT's movement is decomposed across at least one drill dimension with complete + comparable coverage, or the shared probe budget is exhausted. Facts flagged verification_required may inform the explanation but must not, on their own, end the investigation.",
+    "reuse_summary": {
+      "drill_dimensions": 3,
+      "answered_by_reuse": 0,
+      "facts_reusable": 1,
+      "gaps_needing_probe": 3
+    }
+  },
+  "fashion_growth_volume_led": {
+    "signal_id": "fashion_growth_volume_led",
+    "segment": "FASHION",
+    "scope_type": "comparable",
+    "comparable_finding": true,
+    "known_facts": [
+      {
+        "fact": "FASHION: revenue Growth of 739.1K (from 7.8M to 8.5M), 21.3% of the total change; split: volume 1.1M / rate -391.2K (per QTY Growth)",
+        "metric": "revenue Growth",
+        "impact_value": 739115.34,
+        "impact_share": 21.3038,
+        "share_basis": "grand_total:revenue Growth",
+        "provenance": {
+          "source_query": "meta_movers_by_mis_deep_dive2_division_name",
+          "population_status": "comparable",
+          "completeness": "partial",
+          "truncated": false,
+          "topn": 14,
+          "dax_hash": "15e1924f181ce55d",
+          "parse_confidence": "construction",
+          "coverage_kind": "paired_change_tails",
+          "contract_source": "metadata_template"
+        },
+        "safe_to_reuse": true,
+        "verification_required": false
+      }
+    ],
+    "supporting_queries": [
+      "meta_movers_by_mis_deep_dive2_division_name"
+    ],
+    "already_answered": [],
+    "unanswered_questions": [
+      "How does FASHION decompose by product_group_name?",
+      "How does FASHION decompose by special_product_group_name?",
+      "How does FASHION decompose by store_no?"
+    ],
+    "recommended_probes": [
+      {
+        "dimension": "product_group_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "product_group_name",
+          "reference": "'MIS_DEEP_DIVE2'[product_group_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "FASHION",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "special_product_group_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "special_product_group_name",
+          "reference": "'MIS_DEEP_DIVE2'[special_product_group_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "FASHION",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "store_no",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "store_no",
+          "reference": "'MIS_DEEP_DIVE2'[store_no]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 70
+        },
+        "segment": "FASHION",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      }
+    ],
+    "available_dimensions": [
+      "item_category_name",
+      "max_date",
+      "month",
+      "product_group_name",
+      "sec",
+      "special_product_group",
+      "special_product_group_name",
+      "store_no"
+    ],
+    "stop_condition": "Stop once FASHION's movement is decomposed across at least one drill dimension with complete + comparable coverage, or the shared probe budget is exhausted. Facts flagged verification_required may inform the explanation but must not, on their own, end the investigation.",
+    "reuse_summary": {
+      "drill_dimensions": 3,
+      "answered_by_reuse": 0,
+      "facts_reusable": 1,
+      "gaps_needing_probe": 3
+    }
+  },
+  "fruit_vegetable_decline_cluster": {
+    "signal_id": "fruit_vegetable_decline_cluster",
+    "segment": "CF-FRUIT & VEGETABLES",
+    "scope_type": "comparable",
+    "comparable_finding": true,
+    "known_facts": [
+      {
+        "fact": "CF-FRUIT & VEGETABLES: revenue Growth of -677.7K (from 13.5M to 12.8M), -19.5% of the total change; split: volume -995.1K / rate 317.4K (per QTY Growth)",
+        "metric": "revenue Growth",
+        "impact_value": -677690.02,
+        "impact_share": -19.5333,
+        "share_basis": "grand_total:revenue Growth",
+        "provenance": {
+          "source_query": "meta_movers_by_mis_deep_dive2_item_category_name",
+          "population_status": "comparable",
+          "completeness": "partial",
+          "truncated": true,
+          "topn": 14,
+          "dax_hash": "8bf4ea0ca14a5016",
+          "parse_confidence": "construction",
+          "coverage_kind": "paired_change_tails",
+          "contract_source": "metadata_template"
+        },
+        "safe_to_reuse": true,
+        "verification_required": false
+      }
+    ],
+    "supporting_queries": [
+      "meta_movers_by_mis_deep_dive2_item_category_name"
+    ],
+    "already_answered": [],
+    "unanswered_questions": [
+      "How does CF-FRUIT & VEGETABLES decompose by product_group_name?",
+      "How does CF-FRUIT & VEGETABLES decompose by special_product_group_name?",
+      "How does CF-FRUIT & VEGETABLES decompose by store_no?"
+    ],
+    "recommended_probes": [
+      {
+        "dimension": "product_group_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "product_group_name",
+          "reference": "'MIS_DEEP_DIVE2'[product_group_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "CF-FRUIT & VEGETABLES",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "special_product_group_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "special_product_group_name",
+          "reference": "'MIS_DEEP_DIVE2'[special_product_group_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "CF-FRUIT & VEGETABLES",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "store_no",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "store_no",
+          "reference": "'MIS_DEEP_DIVE2'[store_no]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 70
+        },
+        "segment": "CF-FRUIT & VEGETABLES",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      }
+    ],
+    "available_dimensions": [
+      "division_name",
+      "max_date",
+      "month",
+      "product_group_name",
+      "sec",
+      "special_product_group",
+      "special_product_group_name",
+      "store_no"
+    ],
+    "stop_condition": "Stop once CF-FRUIT & VEGETABLES's movement is decomposed across at least one drill dimension with complete + comparable coverage, or the shared probe budget is exhausted. Facts flagged verification_required may inform the explanation but must not, on their own, end the investigation.",
+    "reuse_summary": {
+      "drill_dimensions": 3,
+      "answered_by_reuse": 0,
+      "facts_reusable": 1,
+      "gaps_needing_probe": 3
+    }
+  },
+  "vegetable_oil_growth_rate_and_volume": {
+    "signal_id": "vegetable_oil_growth_rate_and_volume",
+    "segment": "VEGETABLE OIL",
+    "scope_type": "comparable",
+    "comparable_finding": true,
+    "known_facts": [
+      {
+        "fact": "VEGETABLE OIL: revenue Growth of 675.3K (from 1.4M to 2.0M), 19.5% of the total change; split: volume 405.0K / rate 270.3K (per QTY Growth)",
+        "metric": "revenue Growth",
+        "impact_value": 675279.18,
+        "impact_share": 19.4638,
+        "share_basis": "grand_total:revenue Growth",
+        "provenance": {
+          "source_query": "meta_movers_by_mis_deep_dive2_special_product_group_name",
+          "population_status": "comparable",
+          "completeness": "partial",
+          "truncated": true,
+          "topn": 14,
+          "dax_hash": "4f7074117c7b8ed5",
+          "parse_confidence": "construction",
+          "coverage_kind": "paired_change_tails",
+          "contract_source": "metadata_template"
+        },
+        "safe_to_reuse": true,
+        "verification_required": false
+      }
+    ],
+    "supporting_queries": [
+      "meta_movers_by_mis_deep_dive2_special_product_group_name",
+      "meta_cross_store_no_by_special_product_group_name"
+    ],
+    "already_answered": [],
+    "unanswered_questions": [
+      "How does VEGETABLE OIL decompose by item_category_name?",
+      "How does VEGETABLE OIL decompose by product_group_name?",
+      "How does VEGETABLE OIL decompose by store_no? (a scan slice exists but is partial/comparable - verification required)"
+    ],
+    "recommended_probes": [
+      {
+        "dimension": "item_category_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "item_category_name",
+          "reference": "'MIS_DEEP_DIVE2'[item_category_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "VEGETABLE OIL",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "product_group_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "product_group_name",
+          "reference": "'MIS_DEEP_DIVE2'[product_group_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "VEGETABLE OIL",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "store_no",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "store_no",
+          "reference": "'MIS_DEEP_DIVE2'[store_no]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 70
+        },
+        "segment": "VEGETABLE OIL",
+        "reason": "existing slice not reusable (partial/comparable)",
+        "verify_source": "meta_cross_store_no_by_special_product_group_name",
+        "template": "segment_by_dimension_change"
+      }
+    ],
+    "available_dimensions": [
+      "division_name",
+      "item_category_name",
+      "max_date",
+      "month",
+      "product_group_name",
+      "sec",
+      "special_product_group",
+      "store_no"
+    ],
+    "stop_condition": "Stop once VEGETABLE OIL's movement is decomposed across at least one drill dimension with complete + comparable coverage, or the shared probe budget is exhausted. Facts flagged verification_required may inform the explanation but must not, on their own, end the investigation.",
+    "reuse_summary": {
+      "drill_dimensions": 3,
+      "answered_by_reuse": 0,
+      "facts_reusable": 1,
+      "gaps_needing_probe": 3
+    }
+  },
+  "sun_flower_oil_decline": {
+    "signal_id": "sun_flower_oil_decline",
+    "segment": "SUN FLOWER OIL",
+    "scope_type": "comparable",
+    "comparable_finding": true,
+    "known_facts": [
+      {
+        "fact": "SUN FLOWER OIL: revenue Growth of -558.9K (from 2.9M to 2.4M), -16.1% of the total change; split: volume -786.3K / rate 227.4K (per QTY Growth)",
+        "metric": "revenue Growth",
+        "impact_value": -558877.87,
+        "impact_share": -16.1087,
+        "share_basis": "grand_total:revenue Growth",
+        "provenance": {
+          "source_query": "meta_movers_by_mis_deep_dive2_special_product_group_name",
+          "population_status": "comparable",
+          "completeness": "partial",
+          "truncated": true,
+          "topn": 14,
+          "dax_hash": "4f7074117c7b8ed5",
+          "parse_confidence": "construction",
+          "coverage_kind": "paired_change_tails",
+          "contract_source": "metadata_template"
+        },
+        "safe_to_reuse": true,
+        "verification_required": false
+      }
+    ],
+    "supporting_queries": [
+      "meta_movers_by_mis_deep_dive2_special_product_group_name",
+      "meta_cross_store_no_by_special_product_group_name"
+    ],
+    "already_answered": [],
+    "unanswered_questions": [
+      "How does SUN FLOWER OIL decompose by item_category_name?",
+      "How does SUN FLOWER OIL decompose by product_group_name?",
+      "How does SUN FLOWER OIL decompose by store_no? (a scan slice exists but is partial/comparable - verification required)"
+    ],
+    "recommended_probes": [
+      {
+        "dimension": "item_category_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "item_category_name",
+          "reference": "'MIS_DEEP_DIVE2'[item_category_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "SUN FLOWER OIL",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "product_group_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "product_group_name",
+          "reference": "'MIS_DEEP_DIVE2'[product_group_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "SUN FLOWER OIL",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "store_no",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "store_no",
+          "reference": "'MIS_DEEP_DIVE2'[store_no]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 70
+        },
+        "segment": "SUN FLOWER OIL",
+        "reason": "existing slice not reusable (partial/comparable)",
+        "verify_source": "meta_cross_store_no_by_special_product_group_name",
+        "template": "segment_by_dimension_change"
+      }
+    ],
+    "available_dimensions": [
+      "division_name",
+      "item_category_name",
+      "max_date",
+      "month",
+      "product_group_name",
+      "sec",
+      "special_product_group",
+      "store_no"
+    ],
+    "stop_condition": "Stop once SUN FLOWER OIL's movement is decomposed across at least one drill dimension with complete + comparable coverage, or the shared probe budget is exhausted. Facts flagged verification_required may inform the explanation but must not, on their own, end the investigation.",
+    "reuse_summary": {
+      "drill_dimensions": 3,
+      "answered_by_reuse": 0,
+      "facts_reusable": 1,
+      "gaps_needing_probe": 3
+    }
+  },
+  "cfh022_new_branch_sales": {
+    "signal_id": "cfh022_new_branch_sales",
+    "segment": "CFH022",
+    "scope_type": "current_only",
+    "comparable_finding": false,
+    "known_facts": [
+      {
+        "fact": "CFH022: current-only net revenue CURRENT of 11.9M; excluded from comparable change",
+        "metric": "net revenue CURRENT",
+        "impact_value": 11906055.96,
+        "impact_share": null,
+        "share_basis": null,
+        "provenance": {
+          "source_query": "baseline_entity_scope",
+          "population_status": "unfiltered_discovery",
+          "completeness": "complete",
+          "truncated": false,
+          "topn": 500,
+          "dax_hash": "760a090e77329a75",
+          "parse_confidence": "construction",
+          "coverage_kind": "entity_scope_discovery",
+          "contract_source": "metadata_template"
+        },
+        "safe_to_reuse": true,
+        "verification_required": false
+      }
+    ],
+    "supporting_queries": [
+      "baseline_entity_scope"
+    ],
+    "already_answered": [],
+    "unanswered_questions": [
+      "How does CFH022 decompose by item_category_name?",
+      "How does CFH022 decompose by product_group_name?",
+      "How does CFH022 decompose by special_product_group_name?"
+    ],
+    "recommended_probes": [
+      {
+        "dimension": "item_category_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "item_category_name",
+          "reference": "'MIS_DEEP_DIVE2'[item_category_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "CFH022",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "product_group_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "product_group_name",
+          "reference": "'MIS_DEEP_DIVE2'[product_group_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "CFH022",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "special_product_group_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "special_product_group_name",
+          "reference": "'MIS_DEEP_DIVE2'[special_product_group_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "CFH022",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      }
+    ],
+    "available_dimensions": [
+      "division_name",
+      "item_category_name",
+      "max_date",
+      "month",
+      "product_group_name",
+      "sec",
+      "special_product_group",
+      "special_product_group_name"
+    ],
+    "stop_condition": "Stop once CFH022's movement is decomposed across at least one drill dimension with scope-correct complete coverage, or the shared probe budget is exhausted. Facts flagged verification_required may inform the explanation but must not, on their own, end the investigation.",
+    "reuse_summary": {
+      "drill_dimensions": 3,
+      "answered_by_reuse": 0,
+      "facts_reusable": 1,
+      "gaps_needing_probe": 3
+    }
+  }
+}

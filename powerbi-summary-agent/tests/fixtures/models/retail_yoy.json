@@ -1,0 +1,447 @@
+{
+  "tables": [
+    {
+      "name": "FACT_SALES_MONTHLY",
+      "description": "Comparable sales with current and prior-year columns.",
+      "is_hidden": false
+    },
+    {
+      "name": "DIM_STORE",
+      "description": "",
+      "is_hidden": false
+    },
+    {
+      "name": "DIM_PRODUCT",
+      "description": "",
+      "is_hidden": false
+    },
+    {
+      "name": "DIM_CALENDAR",
+      "description": "",
+      "is_hidden": false
+    }
+  ],
+  "columns": [
+    {
+      "table": "FACT_SALES_MONTHLY",
+      "column": "DOC_DATE",
+      "data_type": "DateTime",
+      "category": "date",
+      "is_hidden": false,
+      "description": "Business date of the sale.",
+      "data_category": "",
+      "source_column": "DOC_DATE",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": false
+    },
+    {
+      "table": "FACT_SALES_MONTHLY",
+      "column": "DOC_MONTH",
+      "data_type": "Integer",
+      "category": "numeric",
+      "is_hidden": false,
+      "description": "Month of year, 1-12.",
+      "data_category": "",
+      "source_column": "DOC_MONTH",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": false
+    },
+    {
+      "table": "FACT_SALES_MONTHLY",
+      "column": "STORE_CODE",
+      "data_type": "String",
+      "category": "categorical",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "STORE_CODE",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": true
+    },
+    {
+      "table": "FACT_SALES_MONTHLY",
+      "column": "PRODUCT_CODE",
+      "data_type": "String",
+      "category": "categorical",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "PRODUCT_CODE",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": true
+    },
+    {
+      "table": "FACT_SALES_MONTHLY",
+      "column": "NET_SALE_VAL_CURRENT",
+      "data_type": "Decimal",
+      "category": "numeric",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "NET_SALE_VAL_CURRENT",
+      "sort_by_column": "",
+      "summarize_by": "Sum",
+      "is_key": false
+    },
+    {
+      "table": "FACT_SALES_MONTHLY",
+      "column": "NET_SALE_VAL_PRIOR",
+      "data_type": "Decimal",
+      "category": "numeric",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "NET_SALE_VAL_PRIOR",
+      "sort_by_column": "",
+      "summarize_by": "Sum",
+      "is_key": false
+    },
+    {
+      "table": "FACT_SALES_MONTHLY",
+      "column": "QTY_CURRENT",
+      "data_type": "Decimal",
+      "category": "numeric",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "QTY_CURRENT",
+      "sort_by_column": "",
+      "summarize_by": "Sum",
+      "is_key": false
+    },
+    {
+      "table": "FACT_SALES_MONTHLY",
+      "column": "QTY_PRIOR",
+      "data_type": "Decimal",
+      "category": "numeric",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "QTY_PRIOR",
+      "sort_by_column": "",
+      "summarize_by": "Sum",
+      "is_key": false
+    },
+    {
+      "table": "FACT_SALES_MONTHLY",
+      "column": "BILL_COUNT_CURRENT",
+      "data_type": "Integer",
+      "category": "numeric",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "BILL_COUNT_CURRENT",
+      "sort_by_column": "",
+      "summarize_by": "Sum",
+      "is_key": false
+    },
+    {
+      "table": "DIM_STORE",
+      "column": "STORE_CODE",
+      "data_type": "String",
+      "category": "categorical",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "STORE_CODE",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": true
+    },
+    {
+      "table": "DIM_STORE",
+      "column": "STORE_NAME",
+      "data_type": "String",
+      "category": "categorical",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "STORE_NAME",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": false
+    },
+    {
+      "table": "DIM_STORE",
+      "column": "REGION_NAME",
+      "data_type": "String",
+      "category": "categorical",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "REGION_NAME",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": false
+    },
+    {
+      "table": "DIM_PRODUCT",
+      "column": "PRODUCT_CODE",
+      "data_type": "String",
+      "category": "categorical",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "PRODUCT_CODE",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": true
+    },
+    {
+      "table": "DIM_PRODUCT",
+      "column": "PRODUCT_NAME",
+      "data_type": "String",
+      "category": "categorical",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "PRODUCT_NAME",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": false
+    },
+    {
+      "table": "DIM_PRODUCT",
+      "column": "DIVISION_NAME",
+      "data_type": "String",
+      "category": "categorical",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "DIVISION_NAME",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": false
+    },
+    {
+      "table": "DIM_PRODUCT",
+      "column": "DEPARTMENT_NAME",
+      "data_type": "String",
+      "category": "categorical",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "DEPARTMENT_NAME",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": false
+    },
+    {
+      "table": "DIM_PRODUCT",
+      "column": "SECTION_NAME",
+      "data_type": "String",
+      "category": "categorical",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "SECTION_NAME",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": false
+    },
+    {
+      "table": "DIM_PRODUCT",
+      "column": "CATEGORY_NAME",
+      "data_type": "String",
+      "category": "categorical",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "CATEGORY_NAME",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": false
+    },
+    {
+      "table": "DIM_CALENDAR",
+      "column": "DATE",
+      "data_type": "DateTime",
+      "category": "date",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "DATE",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": true
+    },
+    {
+      "table": "DIM_CALENDAR",
+      "column": "MONTH_NAME",
+      "data_type": "String",
+      "category": "categorical",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "MONTH_NAME",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": false
+    },
+    {
+      "table": "DIM_CALENDAR",
+      "column": "YEAR_NUMBER",
+      "data_type": "Integer",
+      "category": "numeric",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "YEAR_NUMBER",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": false
+    }
+  ],
+  "measures": [
+    {
+      "name": "Revenue Current",
+      "table": "FACT_SALES_MONTHLY",
+      "expression": "SUM(FACT_SALES_MONTHLY[NET_SALE_VAL_CURRENT])",
+      "format_string": "#,0",
+      "description": "",
+      "display_folder": "",
+      "is_hidden": false
+    },
+    {
+      "name": "Revenue Prior",
+      "table": "FACT_SALES_MONTHLY",
+      "expression": "SUM(FACT_SALES_MONTHLY[NET_SALE_VAL_PRIOR])",
+      "format_string": "#,0",
+      "description": "",
+      "display_folder": "",
+      "is_hidden": false
+    },
+    {
+      "name": "Revenue Growth",
+      "table": "FACT_SALES_MONTHLY",
+      "expression": "SUM(FACT_SALES_MONTHLY[NET_SALE_VAL_CURRENT]) - SUM(FACT_SALES_MONTHLY[NET_SALE_VAL_PRIOR])",
+      "format_string": "#,0",
+      "description": "",
+      "display_folder": "",
+      "is_hidden": false
+    },
+    {
+      "name": "QTY Current",
+      "table": "FACT_SALES_MONTHLY",
+      "expression": "SUM(FACT_SALES_MONTHLY[QTY_CURRENT])",
+      "format_string": "",
+      "description": "",
+      "display_folder": "",
+      "is_hidden": false
+    },
+    {
+      "name": "QTY Prior",
+      "table": "FACT_SALES_MONTHLY",
+      "expression": "SUM(FACT_SALES_MONTHLY[QTY_PRIOR])",
+      "format_string": "",
+      "description": "",
+      "display_folder": "",
+      "is_hidden": false
+    },
+    {
+      "name": "QTY Growth",
+      "table": "FACT_SALES_MONTHLY",
+      "expression": "SUM(FACT_SALES_MONTHLY[QTY_CURRENT]) - SUM(FACT_SALES_MONTHLY[QTY_PRIOR])",
+      "format_string": "",
+      "description": "",
+      "display_folder": "",
+      "is_hidden": false
+    },
+    {
+      "name": "Net Bills Current",
+      "table": "FACT_SALES_MONTHLY",
+      "expression": "SUM(FACT_SALES_MONTHLY[BILL_COUNT_CURRENT])",
+      "format_string": "",
+      "description": "",
+      "display_folder": "",
+      "is_hidden": false
+    },
+    {
+      "name": "Bills Growth",
+      "table": "FACT_SALES_MONTHLY",
+      "expression": "SUM(FACT_SALES_MONTHLY[BILL_COUNT_CURRENT]) - CALCULATE(SUM(FACT_SALES_MONTHLY[BILL_COUNT_CURRENT]), SAMEPERIODLASTYEAR(DIM_CALENDAR[DATE]))",
+      "format_string": "",
+      "description": "",
+      "display_folder": "",
+      "is_hidden": false
+    },
+    {
+      "name": "Average Basket Value",
+      "table": "FACT_SALES_MONTHLY",
+      "expression": "DIVIDE([Revenue Current], [Net Bills Current])",
+      "format_string": "0.00",
+      "description": "",
+      "display_folder": "",
+      "is_hidden": false
+    }
+  ],
+  "relationships": [
+    {
+      "from_table": "FACT_SALES_MONTHLY",
+      "from_column": "STORE_CODE",
+      "to_table": "DIM_STORE",
+      "to_column": "STORE_CODE",
+      "is_active": true,
+      "cross_filtering_behavior": "OneDirection",
+      "from_cardinality": "Many",
+      "to_cardinality": "One"
+    },
+    {
+      "from_table": "FACT_SALES_MONTHLY",
+      "from_column": "PRODUCT_CODE",
+      "to_table": "DIM_PRODUCT",
+      "to_column": "PRODUCT_CODE",
+      "is_active": true,
+      "cross_filtering_behavior": "OneDirection",
+      "from_cardinality": "Many",
+      "to_cardinality": "One"
+    },
+    {
+      "from_table": "FACT_SALES_MONTHLY",
+      "from_column": "DOC_DATE",
+      "to_table": "DIM_CALENDAR",
+      "to_column": "DATE",
+      "is_active": true,
+      "cross_filtering_behavior": "OneDirection",
+      "from_cardinality": "Many",
+      "to_cardinality": "One"
+    }
+  ],
+  "date_fields": [
+    "FACT_SALES_MONTHLY[DOC_DATE]",
+    "DIM_CALENDAR[DATE]"
+  ],
+  "numeric_fields": [
+    "FACT_SALES_MONTHLY[DOC_MONTH]",
+    "FACT_SALES_MONTHLY[NET_SALE_VAL_CURRENT]",
+    "FACT_SALES_MONTHLY[NET_SALE_VAL_PRIOR]",
+    "FACT_SALES_MONTHLY[QTY_CURRENT]",
+    "FACT_SALES_MONTHLY[QTY_PRIOR]",
+    "FACT_SALES_MONTHLY[BILL_COUNT_CURRENT]",
+    "DIM_CALENDAR[YEAR_NUMBER]"
+  ],
+  "categorical_fields": [
+    "FACT_SALES_MONTHLY[STORE_CODE]",
+    "FACT_SALES_MONTHLY[PRODUCT_CODE]",
+    "DIM_STORE[STORE_CODE]",
+    "DIM_STORE[STORE_NAME]",
+    "DIM_STORE[REGION_NAME]",
+    "DIM_PRODUCT[PRODUCT_CODE]",
+    "DIM_PRODUCT[PRODUCT_NAME]",
+    "DIM_PRODUCT[DIVISION_NAME]",
+    "DIM_PRODUCT[DEPARTMENT_NAME]",
+    "DIM_PRODUCT[SECTION_NAME]",
+    "DIM_PRODUCT[CATEGORY_NAME]",
+    "DIM_CALENDAR[MONTH_NAME]"
+  ],
+  "counts": {
+    "tables": 4,
+    "columns": 21,
+    "measures": 9,
+    "relationships": 3
+  }
+}

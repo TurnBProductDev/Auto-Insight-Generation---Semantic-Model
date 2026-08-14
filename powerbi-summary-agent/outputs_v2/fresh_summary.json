@@ -1,0 +1,87 @@
+{
+  "summary_type": "new_data",
+  "heading": "In June, comparable branch revenue increased by +3.4M, but the result was accompanied by lower quantity sold across the same branch group.",
+  "paragraphs": [
+    "Comparable branch revenue increased by +3.4M in June.",
+    "Transactions (bills) increased by +240.1K across the comparable branches.",
+    "Quantity sold declined by -249.9K, so revenue growth did not come with higher item sales.",
+    "Basket Size declined by -0.10, which means transactions rose while each transaction contained fewer items on average.",
+    "Compare the +240.1K change in transactions with the -249.9K change in quantity across CFH014, CFH017, CFH018 and CFH021.",
+    "Review the -0.10 change in Basket Size by branch and category to see where item sales weakened within the comparable group.",
+    "Monitor whether revenue change stays positive at +3.4M if quantity remains at -249.9K and Basket Size remains at -0.10."
+  ],
+  "sections": [
+    {
+      "heading": "What's working",
+      "tone": "positive",
+      "points": [
+        "Comparable branch revenue increased by +3.4M in June.",
+        "Transactions (bills) increased by +240.1K across the comparable branches."
+      ]
+    },
+    {
+      "heading": "Risks",
+      "tone": "warning",
+      "points": [
+        "Quantity sold declined by -249.9K, so revenue growth did not come with higher item sales.",
+        "Basket Size declined by -0.10, which means transactions rose while each transaction contained fewer items on average."
+      ]
+    },
+    {
+      "heading": "Recommended actions",
+      "tone": "info",
+      "points": [
+        "Compare the +240.1K change in transactions with the -249.9K change in quantity across CFH014, CFH017, CFH018 and CFH021.",
+        "Review the -0.10 change in Basket Size by branch and category to see where item sales weakened within the comparable group.",
+        "Monitor whether revenue change stays positive at +3.4M if quantity remains at -249.9K and Basket Size remains at -0.10."
+      ]
+    }
+  ],
+  "covered_candidate_ids": [
+    "summary_7783fd0e315c"
+  ],
+  "covered_summary_keys": [
+    "summary:v1:7783fd0e315ccf0f7b582812f99c61cc1ae0ef493db0ff562afd0b8ee3b17436"
+  ],
+  "metrics": [
+    {
+      "label": "Revenue change",
+      "value": "+3.4M",
+      "tone": "positive"
+    },
+    {
+      "label": "Transactions change",
+      "value": "+240.1K",
+      "tone": "positive"
+    },
+    {
+      "label": "Quantity change",
+      "value": "-249.9K",
+      "tone": "warning"
+    },
+    {
+      "label": "Basket Size change",
+      "value": "-0.10",
+      "tone": "warning"
+    }
+  ],
+  "visual": {
+    "type": "bar",
+    "title": "Revenue: prior versus current",
+    "labels": [
+      "Prior",
+      "Current"
+    ],
+    "values": [
+      122395957.62000006,
+      125810225.6
+    ],
+    "value_label": "Revenue"
+  },
+  "data_as_of": "2026-07-28",
+  "grain": "month",
+  "freshness_status": "current",
+  "period_anchor": "2026-06",
+  "validation_status": "validated",
+  "authoring_mode": "llm"
+}

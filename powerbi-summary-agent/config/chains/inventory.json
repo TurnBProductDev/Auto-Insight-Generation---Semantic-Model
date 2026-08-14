@@ -1,0 +1,19 @@
+{
+  "chain_id": "inventory",
+  "title": "Inventory: what changed and why",
+  "shared_insight": true,
+  "_comment": "One investigative pass over both reports' evidence; a separate descriptive summary per report. Reports run SEQUENTIALLY in one process - get_powerbi_token() does an unlocked read-modify-write of the token cache, and insight_memory.commit_run takes a best-effort lock, so parallel jobs would race (Non-negotiable 2).",
+  "reports": [
+    {
+      "report_id": "inventory_ageing",
+      "report_name": "Stock Age Analysis",
+      "dataset_id": "84212fd9-6504-4b22-a46b-e64109a1ab89"
+    },
+    {
+      "report_id": "inventory_stock_health",
+      "report_name": "Inventory Management",
+      "dataset_id": "64eefa4b-d82f-41bd-a841-fc1cfbd7a88a"
+    }
+  ],
+  "_datasets_differ": "These two reports are in DIFFERENT semantic models. Chain memory is therefore stored at <root>/chains/inventory/memory.json with no dataset segment, or the one chain would resolve to two separate stores and share nothing. Story identities stay distinct per model because insight_memory.story_key includes the dataset."
+}

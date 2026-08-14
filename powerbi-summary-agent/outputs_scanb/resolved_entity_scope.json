@@ -1,0 +1,12 @@
+{
+  "entity_dimension": null,
+  "active_comparable_population": [],
+  "excluded_from_comparison": [],
+  "new_entities": [],
+  "prior_only_entities": [],
+  "source": "unresolved",
+  "truncated": false,
+  "warnings": [
+    "Metadata could not identify an entity/current/prior scope query."
+  ]
+}

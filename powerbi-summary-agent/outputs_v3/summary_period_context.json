@@ -1,0 +1,37 @@
+{
+  "grain": "day",
+  "axis": "TY_DATE",
+  "data_as_of": "2026-07-28",
+  "period_anchor": "2026-07-28",
+  "freshness_status": "current",
+  "age_in_grain_periods": 1,
+  "today": "2026-07-29",
+  "reason": "validated day axis from summary evidence",
+  "checks": [
+    {
+      "query": "monthly_trend_comparable",
+      "column": "max_date",
+      "grain": "day",
+      "periods": 15,
+      "max_bucket_share": 0.9748492043325516,
+      "verdict": "batch_date"
+    },
+    {
+      "query": "daily_transactions_recent_true_branch_counts",
+      "column": "TY_DATE",
+      "grain": "day",
+      "periods": 4,
+      "max_bucket_share": 0.25939172064207267,
+      "verdict": "ok"
+    },
+    {
+      "query": "meta_trend_by_mis_deep_dive2_max_date",
+      "column": "max_date",
+      "grain": "day",
+      "periods": 24,
+      "max_bucket_share": 0.9742800722428662,
+      "verdict": "batch_date"
+    }
+  ],
+  "data_signature": "df4f0b2b5cc7dd13328fc22c62983ae18284544083f6aecbd16f4963129feff3"
+}

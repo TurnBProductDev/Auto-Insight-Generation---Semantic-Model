@@ -534,7 +534,7 @@ def _test_memory_migration_backfill(root: Path) -> None:
     path.write_text(json.dumps(v1), encoding="utf-8")
     store, status = summary_memory.load_store(state)
     assert status == "ok"
-    assert store["schema_version"] == 3
+    assert store["schema_version"] == 5  # v5 (WP4): adds state_records
     assert store["records"], "v1 records must be preserved"
     assert store["focus_records"], "focus_records must be backfilled from v1 records"
     assert "area_records" in store and "weekly_coverage" in store, "v3 channels must be present"

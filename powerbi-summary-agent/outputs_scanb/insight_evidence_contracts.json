@@ -1,0 +1,1476 @@
+{
+  "meta_comparable_totals": {
+    "query_name": "meta_comparable_totals",
+    "purpose": "Metadata-selected comparable totals for the primary value and compatible volume families.",
+    "metrics": [
+      "net revenue CURRENT",
+      "net revenue PAST",
+      "revenue Growth",
+      "net qty CURRENT",
+      "net qty PAST",
+      "QTY Growth",
+      "net bills CURRENT",
+      "transactions_prior_derived",
+      "bills growth"
+    ],
+    "metric_roles": {
+      "net revenue CURRENT": {
+        "alias": "net revenue CURRENT",
+        "expression": "[net revenue CURRENT]",
+        "source": "measure",
+        "phase": "current",
+        "family": "revenue",
+        "bundle_id": "MIS_DEEP_DIVE2::revenue",
+        "semantic_role": "value",
+        "additive_candidate": true
+      },
+      "net revenue PAST": {
+        "alias": "net revenue PAST",
+        "expression": "[net revenue PAST]",
+        "source": "measure",
+        "phase": "prior",
+        "family": "revenue",
+        "bundle_id": "MIS_DEEP_DIVE2::revenue",
+        "semantic_role": "value",
+        "additive_candidate": true
+      },
+      "revenue Growth": {
+        "alias": "revenue Growth",
+        "expression": "[revenue Growth]",
+        "source": "measure",
+        "phase": "change",
+        "family": "revenue",
+        "bundle_id": "MIS_DEEP_DIVE2::revenue",
+        "semantic_role": "value",
+        "additive_candidate": true
+      },
+      "net qty CURRENT": {
+        "alias": "net qty CURRENT",
+        "expression": "[net qty CURRENT]",
+        "source": "measure",
+        "phase": "current",
+        "family": "quantity",
+        "bundle_id": "MIS_DEEP_DIVE2::quantity",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "net qty PAST": {
+        "alias": "net qty PAST",
+        "expression": "[net qty PAST]",
+        "source": "measure",
+        "phase": "prior",
+        "family": "quantity",
+        "bundle_id": "MIS_DEEP_DIVE2::quantity",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "QTY Growth": {
+        "alias": "QTY Growth",
+        "expression": "[QTY Growth]",
+        "source": "measure",
+        "phase": "change",
+        "family": "quantity",
+        "bundle_id": "MIS_DEEP_DIVE2::quantity",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "net bills CURRENT": {
+        "alias": "net bills CURRENT",
+        "expression": "[net bills CURRENT]",
+        "source": "measure",
+        "phase": "current",
+        "family": "transactions",
+        "bundle_id": "CAT_TRANSACTIONS::transactions",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "transactions_prior_derived": {
+        "alias": "transactions_prior_derived",
+        "expression": "[net bills CURRENT] - [bills growth]",
+        "source": "metadata_identity",
+        "phase": "prior",
+        "family": "transactions",
+        "bundle_id": "CAT_TRANSACTIONS::transactions",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "bills growth": {
+        "alias": "bills growth",
+        "expression": "[bills growth]",
+        "source": "measure",
+        "phase": "change",
+        "family": "transactions",
+        "bundle_id": "CAT_TRANSACTIONS::transactions",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      }
+    },
+    "grouping_columns": [],
+    "grouping_references": [],
+    "grouping_dimensions": [],
+    "filters": {
+      "store": {
+        "detected": false,
+        "codes": [],
+        "column": null
+      },
+      "period": {
+        "detected": false
+      },
+      "parse_confidence": "construction"
+    },
+    "population_status": "unfiltered",
+    "population": {
+      "status": "unfiltered",
+      "codes": [],
+      "store_column": null,
+      "reason": "metadata template contract"
+    },
+    "time_window": "all_available",
+    "sort": {
+      "detected": false,
+      "raw": null
+    },
+    "topn": null,
+    "row_count": 1,
+    "truncated": false,
+    "coverage_kind": "grand_total",
+    "completeness": "complete",
+    "completeness_reason": "single scoped grand total by construction",
+    "segment_filter": null,
+    "contract_source": "metadata_template",
+    "dax_hash": "567f16604aa7cb26"
+  },
+  "meta_movers_by_mis_deep_dive2_category_name": {
+    "query_name": "meta_movers_by_mis_deep_dive2_category_name",
+    "purpose": "Largest positive and negative comparable movements by 'MIS_DEEP_DIVE2'[CATEGORY_NAME].",
+    "metrics": [
+      "net revenue CURRENT",
+      "net revenue PAST",
+      "revenue Growth",
+      "net qty CURRENT",
+      "net qty PAST",
+      "QTY Growth",
+      "net bills CURRENT",
+      "transactions_prior_derived",
+      "bills growth"
+    ],
+    "metric_roles": {
+      "net revenue CURRENT": {
+        "alias": "net revenue CURRENT",
+        "expression": "[net revenue CURRENT]",
+        "source": "measure",
+        "phase": "current",
+        "family": "revenue",
+        "bundle_id": "MIS_DEEP_DIVE2::revenue",
+        "semantic_role": "value",
+        "additive_candidate": true
+      },
+      "net revenue PAST": {
+        "alias": "net revenue PAST",
+        "expression": "[net revenue PAST]",
+        "source": "measure",
+        "phase": "prior",
+        "family": "revenue",
+        "bundle_id": "MIS_DEEP_DIVE2::revenue",
+        "semantic_role": "value",
+        "additive_candidate": true
+      },
+      "revenue Growth": {
+        "alias": "revenue Growth",
+        "expression": "[revenue Growth]",
+        "source": "measure",
+        "phase": "change",
+        "family": "revenue",
+        "bundle_id": "MIS_DEEP_DIVE2::revenue",
+        "semantic_role": "value",
+        "additive_candidate": true
+      },
+      "net qty CURRENT": {
+        "alias": "net qty CURRENT",
+        "expression": "[net qty CURRENT]",
+        "source": "measure",
+        "phase": "current",
+        "family": "quantity",
+        "bundle_id": "MIS_DEEP_DIVE2::quantity",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "net qty PAST": {
+        "alias": "net qty PAST",
+        "expression": "[net qty PAST]",
+        "source": "measure",
+        "phase": "prior",
+        "family": "quantity",
+        "bundle_id": "MIS_DEEP_DIVE2::quantity",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "QTY Growth": {
+        "alias": "QTY Growth",
+        "expression": "[QTY Growth]",
+        "source": "measure",
+        "phase": "change",
+        "family": "quantity",
+        "bundle_id": "MIS_DEEP_DIVE2::quantity",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "net bills CURRENT": {
+        "alias": "net bills CURRENT",
+        "expression": "[net bills CURRENT]",
+        "source": "measure",
+        "phase": "current",
+        "family": "transactions",
+        "bundle_id": "CAT_TRANSACTIONS::transactions",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "transactions_prior_derived": {
+        "alias": "transactions_prior_derived",
+        "expression": "[net bills CURRENT] - [bills growth]",
+        "source": "metadata_identity",
+        "phase": "prior",
+        "family": "transactions",
+        "bundle_id": "CAT_TRANSACTIONS::transactions",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "bills growth": {
+        "alias": "bills growth",
+        "expression": "[bills growth]",
+        "source": "measure",
+        "phase": "change",
+        "family": "transactions",
+        "bundle_id": "CAT_TRANSACTIONS::transactions",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      }
+    },
+    "grouping_columns": [
+      "CATEGORY_NAME"
+    ],
+    "grouping_references": [
+      "'MIS_DEEP_DIVE2'[CATEGORY_NAME]"
+    ],
+    "grouping_dimensions": [
+      "CATEGORY_NAME"
+    ],
+    "filters": {
+      "store": {
+        "detected": false,
+        "codes": [],
+        "column": null
+      },
+      "period": {
+        "detected": false
+      },
+      "parse_confidence": "construction"
+    },
+    "population_status": "unfiltered",
+    "population": {
+      "status": "unfiltered",
+      "codes": [],
+      "store_column": null,
+      "reason": "metadata template contract"
+    },
+    "time_window": "all_available",
+    "sort": {
+      "alias": "revenue Growth",
+      "direction": "DESC"
+    },
+    "topn": 14,
+    "row_count": 14,
+    "truncated": true,
+    "coverage_kind": "paired_change_tails",
+    "completeness": "partial",
+    "completeness_reason": "query reached its row limit",
+    "segment_filter": null,
+    "contract_source": "metadata_template",
+    "dax_hash": "d8f5721593be2646"
+  },
+  "meta_movers_by_mis_deep_dive2_section": {
+    "query_name": "meta_movers_by_mis_deep_dive2_section",
+    "purpose": "Largest positive and negative comparable movements by 'MIS_DEEP_DIVE2'[SECTION].",
+    "metrics": [
+      "net revenue CURRENT",
+      "net revenue PAST",
+      "revenue Growth",
+      "net qty CURRENT",
+      "net qty PAST",
+      "QTY Growth",
+      "net bills CURRENT",
+      "transactions_prior_derived",
+      "bills growth"
+    ],
+    "metric_roles": {
+      "net revenue CURRENT": {
+        "alias": "net revenue CURRENT",
+        "expression": "[net revenue CURRENT]",
+        "source": "measure",
+        "phase": "current",
+        "family": "revenue",
+        "bundle_id": "MIS_DEEP_DIVE2::revenue",
+        "semantic_role": "value",
+        "additive_candidate": true
+      },
+      "net revenue PAST": {
+        "alias": "net revenue PAST",
+        "expression": "[net revenue PAST]",
+        "source": "measure",
+        "phase": "prior",
+        "family": "revenue",
+        "bundle_id": "MIS_DEEP_DIVE2::revenue",
+        "semantic_role": "value",
+        "additive_candidate": true
+      },
+      "revenue Growth": {
+        "alias": "revenue Growth",
+        "expression": "[revenue Growth]",
+        "source": "measure",
+        "phase": "change",
+        "family": "revenue",
+        "bundle_id": "MIS_DEEP_DIVE2::revenue",
+        "semantic_role": "value",
+        "additive_candidate": true
+      },
+      "net qty CURRENT": {
+        "alias": "net qty CURRENT",
+        "expression": "[net qty CURRENT]",
+        "source": "measure",
+        "phase": "current",
+        "family": "quantity",
+        "bundle_id": "MIS_DEEP_DIVE2::quantity",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "net qty PAST": {
+        "alias": "net qty PAST",
+        "expression": "[net qty PAST]",
+        "source": "measure",
+        "phase": "prior",
+        "family": "quantity",
+        "bundle_id": "MIS_DEEP_DIVE2::quantity",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "QTY Growth": {
+        "alias": "QTY Growth",
+        "expression": "[QTY Growth]",
+        "source": "measure",
+        "phase": "change",
+        "family": "quantity",
+        "bundle_id": "MIS_DEEP_DIVE2::quantity",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "net bills CURRENT": {
+        "alias": "net bills CURRENT",
+        "expression": "[net bills CURRENT]",
+        "source": "measure",
+        "phase": "current",
+        "family": "transactions",
+        "bundle_id": "CAT_TRANSACTIONS::transactions",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "transactions_prior_derived": {
+        "alias": "transactions_prior_derived",
+        "expression": "[net bills CURRENT] - [bills growth]",
+        "source": "metadata_identity",
+        "phase": "prior",
+        "family": "transactions",
+        "bundle_id": "CAT_TRANSACTIONS::transactions",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "bills growth": {
+        "alias": "bills growth",
+        "expression": "[bills growth]",
+        "source": "measure",
+        "phase": "change",
+        "family": "transactions",
+        "bundle_id": "CAT_TRANSACTIONS::transactions",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      }
+    },
+    "grouping_columns": [
+      "SECTION"
+    ],
+    "grouping_references": [
+      "'MIS_DEEP_DIVE2'[SECTION]"
+    ],
+    "grouping_dimensions": [
+      "SECTION"
+    ],
+    "filters": {
+      "store": {
+        "detected": false,
+        "codes": [],
+        "column": null
+      },
+      "period": {
+        "detected": false
+      },
+      "parse_confidence": "construction"
+    },
+    "population_status": "unfiltered",
+    "population": {
+      "status": "unfiltered",
+      "codes": [],
+      "store_column": null,
+      "reason": "metadata template contract"
+    },
+    "time_window": "all_available",
+    "sort": {
+      "alias": "revenue Growth",
+      "direction": "DESC"
+    },
+    "topn": 14,
+    "row_count": 14,
+    "truncated": true,
+    "coverage_kind": "paired_change_tails",
+    "completeness": "partial",
+    "completeness_reason": "query reached its row limit",
+    "segment_filter": null,
+    "contract_source": "metadata_template",
+    "dax_hash": "aa917f38ed3ab723"
+  },
+  "meta_movers_by_mis_deep_dive2_department": {
+    "query_name": "meta_movers_by_mis_deep_dive2_department",
+    "purpose": "Largest positive and negative comparable movements by 'MIS_DEEP_DIVE2'[DEPARTMENT].",
+    "metrics": [
+      "net revenue CURRENT",
+      "net revenue PAST",
+      "revenue Growth",
+      "net qty CURRENT",
+      "net qty PAST",
+      "QTY Growth",
+      "net bills CURRENT",
+      "transactions_prior_derived",
+      "bills growth"
+    ],
+    "metric_roles": {
+      "net revenue CURRENT": {
+        "alias": "net revenue CURRENT",
+        "expression": "[net revenue CURRENT]",
+        "source": "measure",
+        "phase": "current",
+        "family": "revenue",
+        "bundle_id": "MIS_DEEP_DIVE2::revenue",
+        "semantic_role": "value",
+        "additive_candidate": true
+      },
+      "net revenue PAST": {
+        "alias": "net revenue PAST",
+        "expression": "[net revenue PAST]",
+        "source": "measure",
+        "phase": "prior",
+        "family": "revenue",
+        "bundle_id": "MIS_DEEP_DIVE2::revenue",
+        "semantic_role": "value",
+        "additive_candidate": true
+      },
+      "revenue Growth": {
+        "alias": "revenue Growth",
+        "expression": "[revenue Growth]",
+        "source": "measure",
+        "phase": "change",
+        "family": "revenue",
+        "bundle_id": "MIS_DEEP_DIVE2::revenue",
+        "semantic_role": "value",
+        "additive_candidate": true
+      },
+      "net qty CURRENT": {
+        "alias": "net qty CURRENT",
+        "expression": "[net qty CURRENT]",
+        "source": "measure",
+        "phase": "current",
+        "family": "quantity",
+        "bundle_id": "MIS_DEEP_DIVE2::quantity",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "net qty PAST": {
+        "alias": "net qty PAST",
+        "expression": "[net qty PAST]",
+        "source": "measure",
+        "phase": "prior",
+        "family": "quantity",
+        "bundle_id": "MIS_DEEP_DIVE2::quantity",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "QTY Growth": {
+        "alias": "QTY Growth",
+        "expression": "[QTY Growth]",
+        "source": "measure",
+        "phase": "change",
+        "family": "quantity",
+        "bundle_id": "MIS_DEEP_DIVE2::quantity",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "net bills CURRENT": {
+        "alias": "net bills CURRENT",
+        "expression": "[net bills CURRENT]",
+        "source": "measure",
+        "phase": "current",
+        "family": "transactions",
+        "bundle_id": "CAT_TRANSACTIONS::transactions",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "transactions_prior_derived": {
+        "alias": "transactions_prior_derived",
+        "expression": "[net bills CURRENT] - [bills growth]",
+        "source": "metadata_identity",
+        "phase": "prior",
+        "family": "transactions",
+        "bundle_id": "CAT_TRANSACTIONS::transactions",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "bills growth": {
+        "alias": "bills growth",
+        "expression": "[bills growth]",
+        "source": "measure",
+        "phase": "change",
+        "family": "transactions",
+        "bundle_id": "CAT_TRANSACTIONS::transactions",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      }
+    },
+    "grouping_columns": [
+      "DEPARTMENT"
+    ],
+    "grouping_references": [
+      "'MIS_DEEP_DIVE2'[DEPARTMENT]"
+    ],
+    "grouping_dimensions": [
+      "DEPARTMENT"
+    ],
+    "filters": {
+      "store": {
+        "detected": false,
+        "codes": [],
+        "column": null
+      },
+      "period": {
+        "detected": false
+      },
+      "parse_confidence": "construction"
+    },
+    "population_status": "unfiltered",
+    "population": {
+      "status": "unfiltered",
+      "codes": [],
+      "store_column": null,
+      "reason": "metadata template contract"
+    },
+    "time_window": "all_available",
+    "sort": {
+      "alias": "revenue Growth",
+      "direction": "DESC"
+    },
+    "topn": 14,
+    "row_count": 6,
+    "truncated": false,
+    "coverage_kind": "paired_change_tails",
+    "completeness": "partial",
+    "completeness_reason": "paired_change_tails intentionally covers only a ranked/windowed slice",
+    "segment_filter": null,
+    "contract_source": "metadata_template",
+    "dax_hash": "6247e2d7dc22a447"
+  },
+  "meta_movers_by_mis_deep_dive2_category_name_2": {
+    "query_name": "meta_movers_by_mis_deep_dive2_category_name_2",
+    "purpose": "Largest positive and negative comparable movements by 'MIS_DEEP_DIVE2'[CATEGORY_NAME_2].",
+    "metrics": [
+      "net revenue CURRENT",
+      "net revenue PAST",
+      "revenue Growth",
+      "net qty CURRENT",
+      "net qty PAST",
+      "QTY Growth",
+      "net bills CURRENT",
+      "transactions_prior_derived",
+      "bills growth"
+    ],
+    "metric_roles": {
+      "net revenue CURRENT": {
+        "alias": "net revenue CURRENT",
+        "expression": "[net revenue CURRENT]",
+        "source": "measure",
+        "phase": "current",
+        "family": "revenue",
+        "bundle_id": "MIS_DEEP_DIVE2::revenue",
+        "semantic_role": "value",
+        "additive_candidate": true
+      },
+      "net revenue PAST": {
+        "alias": "net revenue PAST",
+        "expression": "[net revenue PAST]",
+        "source": "measure",
+        "phase": "prior",
+        "family": "revenue",
+        "bundle_id": "MIS_DEEP_DIVE2::revenue",
+        "semantic_role": "value",
+        "additive_candidate": true
+      },
+      "revenue Growth": {
+        "alias": "revenue Growth",
+        "expression": "[revenue Growth]",
+        "source": "measure",
+        "phase": "change",
+        "family": "revenue",
+        "bundle_id": "MIS_DEEP_DIVE2::revenue",
+        "semantic_role": "value",
+        "additive_candidate": true
+      },
+      "net qty CURRENT": {
+        "alias": "net qty CURRENT",
+        "expression": "[net qty CURRENT]",
+        "source": "measure",
+        "phase": "current",
+        "family": "quantity",
+        "bundle_id": "MIS_DEEP_DIVE2::quantity",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "net qty PAST": {
+        "alias": "net qty PAST",
+        "expression": "[net qty PAST]",
+        "source": "measure",
+        "phase": "prior",
+        "family": "quantity",
+        "bundle_id": "MIS_DEEP_DIVE2::quantity",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "QTY Growth": {
+        "alias": "QTY Growth",
+        "expression": "[QTY Growth]",
+        "source": "measure",
+        "phase": "change",
+        "family": "quantity",
+        "bundle_id": "MIS_DEEP_DIVE2::quantity",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "net bills CURRENT": {
+        "alias": "net bills CURRENT",
+        "expression": "[net bills CURRENT]",
+        "source": "measure",
+        "phase": "current",
+        "family": "transactions",
+        "bundle_id": "CAT_TRANSACTIONS::transactions",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "transactions_prior_derived": {
+        "alias": "transactions_prior_derived",
+        "expression": "[net bills CURRENT] - [bills growth]",
+        "source": "metadata_identity",
+        "phase": "prior",
+        "family": "transactions",
+        "bundle_id": "CAT_TRANSACTIONS::transactions",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "bills growth": {
+        "alias": "bills growth",
+        "expression": "[bills growth]",
+        "source": "measure",
+        "phase": "change",
+        "family": "transactions",
+        "bundle_id": "CAT_TRANSACTIONS::transactions",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      }
+    },
+    "grouping_columns": [
+      "CATEGORY_NAME_2"
+    ],
+    "grouping_references": [
+      "'MIS_DEEP_DIVE2'[CATEGORY_NAME_2]"
+    ],
+    "grouping_dimensions": [
+      "CATEGORY_NAME_2"
+    ],
+    "filters": {
+      "store": {
+        "detected": false,
+        "codes": [],
+        "column": null
+      },
+      "period": {
+        "detected": false
+      },
+      "parse_confidence": "construction"
+    },
+    "population_status": "unfiltered",
+    "population": {
+      "status": "unfiltered",
+      "codes": [],
+      "store_column": null,
+      "reason": "metadata template contract"
+    },
+    "time_window": "all_available",
+    "sort": {
+      "alias": "revenue Growth",
+      "direction": "DESC"
+    },
+    "topn": 14,
+    "row_count": 14,
+    "truncated": true,
+    "coverage_kind": "paired_change_tails",
+    "completeness": "partial",
+    "completeness_reason": "query reached its row limit",
+    "segment_filter": null,
+    "contract_source": "metadata_template",
+    "dax_hash": "6ce0c478a40c36de"
+  },
+  "meta_movers_by_mis_deep_dive2_category_name_1": {
+    "query_name": "meta_movers_by_mis_deep_dive2_category_name_1",
+    "purpose": "Largest positive and negative comparable movements by 'MIS_DEEP_DIVE2'[CATEGORY_NAME_1].",
+    "metrics": [
+      "net revenue CURRENT",
+      "net revenue PAST",
+      "revenue Growth",
+      "net qty CURRENT",
+      "net qty PAST",
+      "QTY Growth",
+      "net bills CURRENT",
+      "transactions_prior_derived",
+      "bills growth"
+    ],
+    "metric_roles": {
+      "net revenue CURRENT": {
+        "alias": "net revenue CURRENT",
+        "expression": "[net revenue CURRENT]",
+        "source": "measure",
+        "phase": "current",
+        "family": "revenue",
+        "bundle_id": "MIS_DEEP_DIVE2::revenue",
+        "semantic_role": "value",
+        "additive_candidate": true
+      },
+      "net revenue PAST": {
+        "alias": "net revenue PAST",
+        "expression": "[net revenue PAST]",
+        "source": "measure",
+        "phase": "prior",
+        "family": "revenue",
+        "bundle_id": "MIS_DEEP_DIVE2::revenue",
+        "semantic_role": "value",
+        "additive_candidate": true
+      },
+      "revenue Growth": {
+        "alias": "revenue Growth",
+        "expression": "[revenue Growth]",
+        "source": "measure",
+        "phase": "change",
+        "family": "revenue",
+        "bundle_id": "MIS_DEEP_DIVE2::revenue",
+        "semantic_role": "value",
+        "additive_candidate": true
+      },
+      "net qty CURRENT": {
+        "alias": "net qty CURRENT",
+        "expression": "[net qty CURRENT]",
+        "source": "measure",
+        "phase": "current",
+        "family": "quantity",
+        "bundle_id": "MIS_DEEP_DIVE2::quantity",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "net qty PAST": {
+        "alias": "net qty PAST",
+        "expression": "[net qty PAST]",
+        "source": "measure",
+        "phase": "prior",
+        "family": "quantity",
+        "bundle_id": "MIS_DEEP_DIVE2::quantity",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "QTY Growth": {
+        "alias": "QTY Growth",
+        "expression": "[QTY Growth]",
+        "source": "measure",
+        "phase": "change",
+        "family": "quantity",
+        "bundle_id": "MIS_DEEP_DIVE2::quantity",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "net bills CURRENT": {
+        "alias": "net bills CURRENT",
+        "expression": "[net bills CURRENT]",
+        "source": "measure",
+        "phase": "current",
+        "family": "transactions",
+        "bundle_id": "CAT_TRANSACTIONS::transactions",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "transactions_prior_derived": {
+        "alias": "transactions_prior_derived",
+        "expression": "[net bills CURRENT] - [bills growth]",
+        "source": "metadata_identity",
+        "phase": "prior",
+        "family": "transactions",
+        "bundle_id": "CAT_TRANSACTIONS::transactions",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "bills growth": {
+        "alias": "bills growth",
+        "expression": "[bills growth]",
+        "source": "measure",
+        "phase": "change",
+        "family": "transactions",
+        "bundle_id": "CAT_TRANSACTIONS::transactions",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      }
+    },
+    "grouping_columns": [
+      "CATEGORY_NAME_1"
+    ],
+    "grouping_references": [
+      "'MIS_DEEP_DIVE2'[CATEGORY_NAME_1]"
+    ],
+    "grouping_dimensions": [
+      "CATEGORY_NAME_1"
+    ],
+    "filters": {
+      "store": {
+        "detected": false,
+        "codes": [],
+        "column": null
+      },
+      "period": {
+        "detected": false
+      },
+      "parse_confidence": "construction"
+    },
+    "population_status": "unfiltered",
+    "population": {
+      "status": "unfiltered",
+      "codes": [],
+      "store_column": null,
+      "reason": "metadata template contract"
+    },
+    "time_window": "all_available",
+    "sort": {
+      "alias": "revenue Growth",
+      "direction": "DESC"
+    },
+    "topn": 14,
+    "row_count": 14,
+    "truncated": true,
+    "coverage_kind": "paired_change_tails",
+    "completeness": "partial",
+    "completeness_reason": "query reached its row limit",
+    "segment_filter": null,
+    "contract_source": "metadata_template",
+    "dax_hash": "246df4999af36830"
+  },
+  "meta_concentration_by_mis_deep_dive2_category_name": {
+    "query_name": "meta_concentration_by_mis_deep_dive2_category_name",
+    "purpose": "Top contributors to the primary current value by 'MIS_DEEP_DIVE2'[CATEGORY_NAME].",
+    "metrics": [
+      "net revenue CURRENT",
+      "net revenue PAST",
+      "revenue Growth",
+      "net qty CURRENT",
+      "net qty PAST",
+      "QTY Growth",
+      "net bills CURRENT",
+      "transactions_prior_derived",
+      "bills growth"
+    ],
+    "metric_roles": {
+      "net revenue CURRENT": {
+        "alias": "net revenue CURRENT",
+        "expression": "[net revenue CURRENT]",
+        "source": "measure",
+        "phase": "current",
+        "family": "revenue",
+        "bundle_id": "MIS_DEEP_DIVE2::revenue",
+        "semantic_role": "value",
+        "additive_candidate": true
+      },
+      "net revenue PAST": {
+        "alias": "net revenue PAST",
+        "expression": "[net revenue PAST]",
+        "source": "measure",
+        "phase": "prior",
+        "family": "revenue",
+        "bundle_id": "MIS_DEEP_DIVE2::revenue",
+        "semantic_role": "value",
+        "additive_candidate": true
+      },
+      "revenue Growth": {
+        "alias": "revenue Growth",
+        "expression": "[revenue Growth]",
+        "source": "measure",
+        "phase": "change",
+        "family": "revenue",
+        "bundle_id": "MIS_DEEP_DIVE2::revenue",
+        "semantic_role": "value",
+        "additive_candidate": true
+      },
+      "net qty CURRENT": {
+        "alias": "net qty CURRENT",
+        "expression": "[net qty CURRENT]",
+        "source": "measure",
+        "phase": "current",
+        "family": "quantity",
+        "bundle_id": "MIS_DEEP_DIVE2::quantity",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "net qty PAST": {
+        "alias": "net qty PAST",
+        "expression": "[net qty PAST]",
+        "source": "measure",
+        "phase": "prior",
+        "family": "quantity",
+        "bundle_id": "MIS_DEEP_DIVE2::quantity",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "QTY Growth": {
+        "alias": "QTY Growth",
+        "expression": "[QTY Growth]",
+        "source": "measure",
+        "phase": "change",
+        "family": "quantity",
+        "bundle_id": "MIS_DEEP_DIVE2::quantity",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "net bills CURRENT": {
+        "alias": "net bills CURRENT",
+        "expression": "[net bills CURRENT]",
+        "source": "measure",
+        "phase": "current",
+        "family": "transactions",
+        "bundle_id": "CAT_TRANSACTIONS::transactions",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "transactions_prior_derived": {
+        "alias": "transactions_prior_derived",
+        "expression": "[net bills CURRENT] - [bills growth]",
+        "source": "metadata_identity",
+        "phase": "prior",
+        "family": "transactions",
+        "bundle_id": "CAT_TRANSACTIONS::transactions",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "bills growth": {
+        "alias": "bills growth",
+        "expression": "[bills growth]",
+        "source": "measure",
+        "phase": "change",
+        "family": "transactions",
+        "bundle_id": "CAT_TRANSACTIONS::transactions",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      }
+    },
+    "grouping_columns": [
+      "CATEGORY_NAME"
+    ],
+    "grouping_references": [
+      "'MIS_DEEP_DIVE2'[CATEGORY_NAME]"
+    ],
+    "grouping_dimensions": [
+      "CATEGORY_NAME"
+    ],
+    "filters": {
+      "store": {
+        "detected": false,
+        "codes": [],
+        "column": null
+      },
+      "period": {
+        "detected": false
+      },
+      "parse_confidence": "construction"
+    },
+    "population_status": "unfiltered",
+    "population": {
+      "status": "unfiltered",
+      "codes": [],
+      "store_column": null,
+      "reason": "metadata template contract"
+    },
+    "time_window": "all_available",
+    "sort": {
+      "alias": "net revenue CURRENT",
+      "direction": "DESC"
+    },
+    "topn": 15,
+    "row_count": 15,
+    "truncated": true,
+    "coverage_kind": "top_concentration",
+    "completeness": "partial",
+    "completeness_reason": "query reached its row limit",
+    "segment_filter": null,
+    "contract_source": "metadata_template",
+    "dax_hash": "8cbc5520b82a7275"
+  },
+  "meta_concentration_by_mis_deep_dive2_section": {
+    "query_name": "meta_concentration_by_mis_deep_dive2_section",
+    "purpose": "Top contributors to the primary current value by 'MIS_DEEP_DIVE2'[SECTION].",
+    "metrics": [
+      "net revenue CURRENT",
+      "net revenue PAST",
+      "revenue Growth",
+      "net qty CURRENT",
+      "net qty PAST",
+      "QTY Growth",
+      "net bills CURRENT",
+      "transactions_prior_derived",
+      "bills growth"
+    ],
+    "metric_roles": {
+      "net revenue CURRENT": {
+        "alias": "net revenue CURRENT",
+        "expression": "[net revenue CURRENT]",
+        "source": "measure",
+        "phase": "current",
+        "family": "revenue",
+        "bundle_id": "MIS_DEEP_DIVE2::revenue",
+        "semantic_role": "value",
+        "additive_candidate": true
+      },
+      "net revenue PAST": {
+        "alias": "net revenue PAST",
+        "expression": "[net revenue PAST]",
+        "source": "measure",
+        "phase": "prior",
+        "family": "revenue",
+        "bundle_id": "MIS_DEEP_DIVE2::revenue",
+        "semantic_role": "value",
+        "additive_candidate": true
+      },
+      "revenue Growth": {
+        "alias": "revenue Growth",
+        "expression": "[revenue Growth]",
+        "source": "measure",
+        "phase": "change",
+        "family": "revenue",
+        "bundle_id": "MIS_DEEP_DIVE2::revenue",
+        "semantic_role": "value",
+        "additive_candidate": true
+      },
+      "net qty CURRENT": {
+        "alias": "net qty CURRENT",
+        "expression": "[net qty CURRENT]",
+        "source": "measure",
+        "phase": "current",
+        "family": "quantity",
+        "bundle_id": "MIS_DEEP_DIVE2::quantity",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "net qty PAST": {
+        "alias": "net qty PAST",
+        "expression": "[net qty PAST]",
+        "source": "measure",
+        "phase": "prior",
+        "family": "quantity",
+        "bundle_id": "MIS_DEEP_DIVE2::quantity",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "QTY Growth": {
+        "alias": "QTY Growth",
+        "expression": "[QTY Growth]",
+        "source": "measure",
+        "phase": "change",
+        "family": "quantity",
+        "bundle_id": "MIS_DEEP_DIVE2::quantity",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "net bills CURRENT": {
+        "alias": "net bills CURRENT",
+        "expression": "[net bills CURRENT]",
+        "source": "measure",
+        "phase": "current",
+        "family": "transactions",
+        "bundle_id": "CAT_TRANSACTIONS::transactions",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "transactions_prior_derived": {
+        "alias": "transactions_prior_derived",
+        "expression": "[net bills CURRENT] - [bills growth]",
+        "source": "metadata_identity",
+        "phase": "prior",
+        "family": "transactions",
+        "bundle_id": "CAT_TRANSACTIONS::transactions",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "bills growth": {
+        "alias": "bills growth",
+        "expression": "[bills growth]",
+        "source": "measure",
+        "phase": "change",
+        "family": "transactions",
+        "bundle_id": "CAT_TRANSACTIONS::transactions",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      }
+    },
+    "grouping_columns": [
+      "SECTION"
+    ],
+    "grouping_references": [
+      "'MIS_DEEP_DIVE2'[SECTION]"
+    ],
+    "grouping_dimensions": [
+      "SECTION"
+    ],
+    "filters": {
+      "store": {
+        "detected": false,
+        "codes": [],
+        "column": null
+      },
+      "period": {
+        "detected": false
+      },
+      "parse_confidence": "construction"
+    },
+    "population_status": "unfiltered",
+    "population": {
+      "status": "unfiltered",
+      "codes": [],
+      "store_column": null,
+      "reason": "metadata template contract"
+    },
+    "time_window": "all_available",
+    "sort": {
+      "alias": "net revenue CURRENT",
+      "direction": "DESC"
+    },
+    "topn": 15,
+    "row_count": 15,
+    "truncated": true,
+    "coverage_kind": "top_concentration",
+    "completeness": "partial",
+    "completeness_reason": "query reached its row limit",
+    "segment_filter": null,
+    "contract_source": "metadata_template",
+    "dax_hash": "d17d8b9147c377ca"
+  },
+  "meta_trend_by_mis_deep_dive2_updated_date": {
+    "query_name": "meta_trend_by_mis_deep_dive2_updated_date",
+    "purpose": "Recent primary value and volume movement over 'MIS_DEEP_DIVE2'[UPDATED_DATE].",
+    "metrics": [
+      "net revenue CURRENT",
+      "net revenue PAST",
+      "revenue Growth",
+      "net qty CURRENT",
+      "net qty PAST",
+      "QTY Growth",
+      "net bills CURRENT",
+      "transactions_prior_derived",
+      "bills growth"
+    ],
+    "metric_roles": {
+      "net revenue CURRENT": {
+        "alias": "net revenue CURRENT",
+        "expression": "[net revenue CURRENT]",
+        "source": "measure",
+        "phase": "current",
+        "family": "revenue",
+        "bundle_id": "MIS_DEEP_DIVE2::revenue",
+        "semantic_role": "value",
+        "additive_candidate": true
+      },
+      "net revenue PAST": {
+        "alias": "net revenue PAST",
+        "expression": "[net revenue PAST]",
+        "source": "measure",
+        "phase": "prior",
+        "family": "revenue",
+        "bundle_id": "MIS_DEEP_DIVE2::revenue",
+        "semantic_role": "value",
+        "additive_candidate": true
+      },
+      "revenue Growth": {
+        "alias": "revenue Growth",
+        "expression": "[revenue Growth]",
+        "source": "measure",
+        "phase": "change",
+        "family": "revenue",
+        "bundle_id": "MIS_DEEP_DIVE2::revenue",
+        "semantic_role": "value",
+        "additive_candidate": true
+      },
+      "net qty CURRENT": {
+        "alias": "net qty CURRENT",
+        "expression": "[net qty CURRENT]",
+        "source": "measure",
+        "phase": "current",
+        "family": "quantity",
+        "bundle_id": "MIS_DEEP_DIVE2::quantity",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "net qty PAST": {
+        "alias": "net qty PAST",
+        "expression": "[net qty PAST]",
+        "source": "measure",
+        "phase": "prior",
+        "family": "quantity",
+        "bundle_id": "MIS_DEEP_DIVE2::quantity",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "QTY Growth": {
+        "alias": "QTY Growth",
+        "expression": "[QTY Growth]",
+        "source": "measure",
+        "phase": "change",
+        "family": "quantity",
+        "bundle_id": "MIS_DEEP_DIVE2::quantity",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "net bills CURRENT": {
+        "alias": "net bills CURRENT",
+        "expression": "[net bills CURRENT]",
+        "source": "measure",
+        "phase": "current",
+        "family": "transactions",
+        "bundle_id": "CAT_TRANSACTIONS::transactions",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "transactions_prior_derived": {
+        "alias": "transactions_prior_derived",
+        "expression": "[net bills CURRENT] - [bills growth]",
+        "source": "metadata_identity",
+        "phase": "prior",
+        "family": "transactions",
+        "bundle_id": "CAT_TRANSACTIONS::transactions",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "bills growth": {
+        "alias": "bills growth",
+        "expression": "[bills growth]",
+        "source": "measure",
+        "phase": "change",
+        "family": "transactions",
+        "bundle_id": "CAT_TRANSACTIONS::transactions",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      }
+    },
+    "grouping_columns": [
+      "UPDATED_DATE"
+    ],
+    "grouping_references": [
+      "'MIS_DEEP_DIVE2'[UPDATED_DATE]"
+    ],
+    "grouping_dimensions": [
+      "UPDATED_DATE"
+    ],
+    "filters": {
+      "store": {
+        "detected": false,
+        "codes": [],
+        "column": null
+      },
+      "period": {
+        "detected": true
+      },
+      "parse_confidence": "construction"
+    },
+    "population_status": "unfiltered",
+    "population": {
+      "status": "unfiltered",
+      "codes": [],
+      "store_column": null,
+      "reason": "metadata template contract"
+    },
+    "time_window": "recent_window",
+    "sort": {
+      "alias": "'MIS_DEEP_DIVE2'[UPDATED_DATE]",
+      "direction": "DESC"
+    },
+    "topn": 24,
+    "row_count": 24,
+    "truncated": true,
+    "coverage_kind": "recent_time_window",
+    "completeness": "partial",
+    "completeness_reason": "query reached its row limit",
+    "segment_filter": null,
+    "contract_source": "metadata_template",
+    "dax_hash": "262e68c99d470295"
+  },
+  "meta_period_by_mis_deep_dive2_doc_month": {
+    "query_name": "meta_period_by_mis_deep_dive2_doc_month",
+    "purpose": "Comparable primary/volume series by 'MIS_DEEP_DIVE2'[DOC_MONTH] (temporal level).",
+    "metrics": [
+      "net revenue CURRENT",
+      "net revenue PAST",
+      "revenue Growth",
+      "net qty CURRENT",
+      "net qty PAST",
+      "QTY Growth",
+      "net bills CURRENT",
+      "transactions_prior_derived",
+      "bills growth"
+    ],
+    "metric_roles": {
+      "net revenue CURRENT": {
+        "alias": "net revenue CURRENT",
+        "expression": "[net revenue CURRENT]",
+        "source": "measure",
+        "phase": "current",
+        "family": "revenue",
+        "bundle_id": "MIS_DEEP_DIVE2::revenue",
+        "semantic_role": "value",
+        "additive_candidate": true
+      },
+      "net revenue PAST": {
+        "alias": "net revenue PAST",
+        "expression": "[net revenue PAST]",
+        "source": "measure",
+        "phase": "prior",
+        "family": "revenue",
+        "bundle_id": "MIS_DEEP_DIVE2::revenue",
+        "semantic_role": "value",
+        "additive_candidate": true
+      },
+      "revenue Growth": {
+        "alias": "revenue Growth",
+        "expression": "[revenue Growth]",
+        "source": "measure",
+        "phase": "change",
+        "family": "revenue",
+        "bundle_id": "MIS_DEEP_DIVE2::revenue",
+        "semantic_role": "value",
+        "additive_candidate": true
+      },
+      "net qty CURRENT": {
+        "alias": "net qty CURRENT",
+        "expression": "[net qty CURRENT]",
+        "source": "measure",
+        "phase": "current",
+        "family": "quantity",
+        "bundle_id": "MIS_DEEP_DIVE2::quantity",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "net qty PAST": {
+        "alias": "net qty PAST",
+        "expression": "[net qty PAST]",
+        "source": "measure",
+        "phase": "prior",
+        "family": "quantity",
+        "bundle_id": "MIS_DEEP_DIVE2::quantity",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "QTY Growth": {
+        "alias": "QTY Growth",
+        "expression": "[QTY Growth]",
+        "source": "measure",
+        "phase": "change",
+        "family": "quantity",
+        "bundle_id": "MIS_DEEP_DIVE2::quantity",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "net bills CURRENT": {
+        "alias": "net bills CURRENT",
+        "expression": "[net bills CURRENT]",
+        "source": "measure",
+        "phase": "current",
+        "family": "transactions",
+        "bundle_id": "CAT_TRANSACTIONS::transactions",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "transactions_prior_derived": {
+        "alias": "transactions_prior_derived",
+        "expression": "[net bills CURRENT] - [bills growth]",
+        "source": "metadata_identity",
+        "phase": "prior",
+        "family": "transactions",
+        "bundle_id": "CAT_TRANSACTIONS::transactions",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      },
+      "bills growth": {
+        "alias": "bills growth",
+        "expression": "[bills growth]",
+        "source": "measure",
+        "phase": "change",
+        "family": "transactions",
+        "bundle_id": "CAT_TRANSACTIONS::transactions",
+        "semantic_role": "volume",
+        "additive_candidate": true
+      }
+    },
+    "grouping_columns": [
+      "DOC_MONTH"
+    ],
+    "grouping_references": [
+      "'MIS_DEEP_DIVE2'[DOC_MONTH]"
+    ],
+    "grouping_dimensions": [
+      "DOC_MONTH"
+    ],
+    "filters": {
+      "store": {
+        "detected": false,
+        "codes": [],
+        "column": null
+      },
+      "period": {
+        "detected": false
+      },
+      "parse_confidence": "construction"
+    },
+    "population_status": "unfiltered",
+    "population": {
+      "status": "unfiltered",
+      "codes": [],
+      "store_column": null,
+      "reason": "metadata template contract"
+    },
+    "time_window": "period_series",
+    "sort": {
+      "detected": false,
+      "raw": null
+    },
+    "topn": null,
+    "row_count": 12,
+    "truncated": false,
+    "coverage_kind": "period_series",
+    "completeness": "complete",
+    "completeness_reason": "construction-time contract and returned count indicate full coverage",
+    "segment_filter": null,
+    "contract_source": "metadata_template",
+    "dax_hash": "57f3b8e9eb3dba73"
+  }
+}

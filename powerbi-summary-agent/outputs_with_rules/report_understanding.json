@@ -1,0 +1,73 @@
+{
+  "domain": "Sales / Retail",
+  "fact_tables": [
+    "MIS_DEEP_DIVE2",
+    "MIS_BASE_FILE_MONTHLY_BRAND_TB",
+    "CAT_TRANSACTIONS",
+    "CAT_TABLE",
+    "rep_dept_wise_perf_eval_rpt"
+  ],
+  "dimension_tables": [
+    "ODS",
+    "Users",
+    "UserOdsMapping",
+    "DateTableTemplate_beb824db-e219-457a-a3c7-0438b18c6029",
+    "LocalDateTable_891c032f-df1d-44a5-90f3-5f9e51b43c02",
+    "LocalDateTable_b2807d9a-3c36-4140-af7f-b2c842ae93d7",
+    "LocalDateTable_272af53a-27ad-42ac-a38a-974a19509a88",
+    "LocalDateTable_5609ff79-8128-423b-a2c5-212d1fbf7a0a",
+    "LocalDateTable_adc94df5-0ffe-484d-b34c-e54321d3786a",
+    "LocalDateTable_bf4c13b7-8b00-4ec1-9574-b6741eda36cb",
+    "LocalDateTable_d91d74de-cd11-4b0a-a6d3-91c7a81a47eb",
+    "RefreshTimeStamp",
+    "Latest_Refresh_Table",
+    "AA_MEASURE_TABLE"
+  ],
+  "important_measures": [
+    "net revenue CURRENT",
+    "net revenue PAST",
+    "revenue Growth",
+    "revenue growth %",
+    "net qty CURRENT",
+    "net qty PAST",
+    "QTY Growth",
+    "QTY GROWTH %",
+    "net bills CURRENT",
+    "bills growth",
+    "bills growth %",
+    "retail price current year",
+    "retail price past year",
+    "RETAIL PRICE GROWTH",
+    "SPEND PER TRANSACTION CURRENT YEAR",
+    "SPEND PER TRANSACTION PAST YEAR",
+    "SPEND PER TRANSACTION GROWTH",
+    "QUANTITY PER TRANSACTION CURRENT YEAR",
+    "QUANTITY PER TRANSACTION PAST YEAR",
+    "QUANTITY PER TRANSACTION GROWTH",
+    "COUNT %",
+    "contribution cur",
+    "contribution past"
+  ],
+  "important_dimensions": [
+    "MIS_DEEP_DIVE2[store_no]",
+    "MIS_DEEP_DIVE2[division_name]",
+    "MIS_DEEP_DIVE2[item_category_name]",
+    "MIS_DEEP_DIVE2[product_group_name]",
+    "MIS_DEEP_DIVE2[special_product_group_name]",
+    "CAT_TABLE[dep]",
+    "CAT_TABLE[sec]",
+    "rep_dept_wise_perf_eval_rpt[SECTION]",
+    "rep_dept_wise_perf_eval_rpt[DEPARTMENT]"
+  ],
+  "date_fields": [
+    "MIS_DEEP_DIVE2[max_date]",
+    "MIS_BASE_FILE_MONTHLY_BRAND_TB[max_date]",
+    "rep_dept_wise_perf_eval_rpt[TY_DATE]",
+    "rep_dept_wise_perf_eval_rpt[max_date]",
+    "Latest_Refresh_Table[MaxRefreshDate]",
+    "Users[createdDate]",
+    "Users[updatedDate]"
+  ],
+  "time_summary_possible": true,
+  "notes": "The model is mainly a retail performance model with revenue, quantity and bill measures by store and product hierarchy, plus separate user/ODS access tables and refresh metadata."
+}

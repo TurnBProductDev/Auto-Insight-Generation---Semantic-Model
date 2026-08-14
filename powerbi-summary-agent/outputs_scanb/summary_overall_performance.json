@@ -1,0 +1,156 @@
+{
+  "status": "ok",
+  "families": {
+    "revenue": {
+      "current": 104970368.03835607,
+      "prior": 109603231.74520545,
+      "change": -4632863.706849381,
+      "change_pct": -4.2269407873112685,
+      "comparison": "the same period last year"
+    },
+    "quantity": {
+      "current": 49053547.01,
+      "prior": 48095725.13,
+      "change": 957821.8799999952,
+      "change_pct": 1.9914906728426638,
+      "comparison": "the same period last year"
+    },
+    "rate": {
+      "current": 2.139913919312643,
+      "prior": 2.2788559991341053,
+      "change": -0.13894207982146245,
+      "change_pct": -6.097010073223412,
+      "comparison": "the same period last year"
+    }
+  },
+  "primary_family": "revenue",
+  "bridge": {
+    "volume_effect": 2182738.137339896,
+    "rate_mix_effect": -6815601.844189281,
+    "total": -4632863.706849385,
+    "revenue_change": -4632863.706849381,
+    "reconciles": true,
+    "note": "Rate/mix reflects price and mix together, not pure price."
+  },
+  "comparison": "the same period last year",
+  "data_as_of": "2023-12-31",
+  "grain": "day",
+  "freshness_status": "stale",
+  "reconciled": true,
+  "coverage": "complete",
+  "visual": {
+    "type": "bar",
+    "title": "Revenue: prior versus current",
+    "labels": [
+      "Prior",
+      "Current"
+    ],
+    "values": [
+      109603231.74520545,
+      104970368.03835607
+    ],
+    "value_label": "Revenue"
+  },
+  "metrics": [
+    {
+      "label": "Revenue change",
+      "value": "-4.6M",
+      "tone": "teal"
+    },
+    {
+      "label": "Quantity change",
+      "value": "+957.8K",
+      "tone": "teal"
+    },
+    {
+      "label": "Quantity per transaction change",
+      "value": "+0.05",
+      "tone": "teal"
+    }
+  ],
+  "trend": {
+    "dimension": "DOC_MONTH",
+    "grain": "month",
+    "rows": [
+      {
+        "DOC_MONTH": 1.0,
+        "revenue_current": 8751799.44657535,
+        "revenue_prior": 7515790.134246576,
+        "revenue_change": 1236009.3123287736
+      },
+      {
+        "DOC_MONTH": 2.0,
+        "revenue_current": 7941502.506849318,
+        "revenue_prior": 8733719.060273966,
+        "revenue_change": -792216.553424648
+      },
+      {
+        "DOC_MONTH": 3.0,
+        "revenue_current": 9401227.104109593,
+        "revenue_prior": 9374437.473972598,
+        "revenue_change": 26789.630136994645
+      },
+      {
+        "DOC_MONTH": 4.0,
+        "revenue_current": 8936778.093150683,
+        "revenue_prior": 9467176.060273964,
+        "revenue_change": -530397.9671232812
+      },
+      {
+        "DOC_MONTH": 5.0,
+        "revenue_current": 9424154.134246588,
+        "revenue_prior": 8960155.383561645,
+        "revenue_change": 463998.75068494305
+      },
+      {
+        "DOC_MONTH": 6.0,
+        "revenue_current": 9414198.715068495,
+        "revenue_prior": 10198176.978082195,
+        "revenue_change": -783978.2630137
+      },
+      {
+        "DOC_MONTH": 7.0,
+        "revenue_current": 8620284.627397256,
+        "revenue_prior": 8432565.3780822,
+        "revenue_change": 187719.2493150551
+      },
+      {
+        "DOC_MONTH": 8.0,
+        "revenue_current": 7710216.010958903,
+        "revenue_prior": 9014608.263013693,
+        "revenue_change": -1304392.25205479
+      },
+      {
+        "DOC_MONTH": 9.0,
+        "revenue_current": 7799281.01917808,
+        "revenue_prior": 8341926.454794524,
+        "revenue_change": -542645.4356164439
+      },
+      {
+        "DOC_MONTH": 10.0,
+        "revenue_current": 9089885.213698624,
+        "revenue_prior": 10820599.923287677,
+        "revenue_change": -1730714.709589053
+      },
+      {
+        "DOC_MONTH": 11.0,
+        "revenue_current": 8025911.156164381,
+        "revenue_prior": 8727977.684931505,
+        "revenue_change": -702066.5287671247
+      },
+      {
+        "DOC_MONTH": 12.0,
+        "revenue_current": 9855130.010958893,
+        "revenue_prior": 10016098.950684924,
+        "revenue_change": -160968.93972603045
+      }
+    ],
+    "completeness": "complete",
+    "direction": "accelerating",
+    "value_aliases": {
+      "current": "revenue_current",
+      "prior": "revenue_prior",
+      "change": "revenue_change"
+    }
+  }
+}

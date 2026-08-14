@@ -1,0 +1,44 @@
+{
+  "queries": [
+    {
+      "name": "grand_totals_all_entities",
+      "purpose": "Show overall totals across all available stores, including the comparable stores and the newly added store excluded from comparison.",
+      "intent": "Grand totals for [net revenue CURRENT], [net revenue PAST], [revenue Growth], [revenue growth %], [net qty CURRENT], [net qty PAST], [QTY Growth], [QTY GROWTH %], [net bills CURRENT], [bills growth], [bills growth %], [SPEND PER TRANSACTION CURRENT YEAR], [SPEND PER TRANSACTION PAST YEAR], [SPEND PER TRANSACTION GROWTH], [retail price current year], [retail price past year], and [RETAIL PRICE GROWTH], with no filters, one row."
+    },
+    {
+      "name": "grand_totals_comparable_population",
+      "purpose": "Show the same core KPIs restricted to the automatically comparable store population for like-for-like reporting.",
+      "intent": "Grand totals for [net revenue CURRENT], [net revenue PAST], [revenue Growth], [revenue growth %], [net qty CURRENT], [net qty PAST], [QTY Growth], [QTY GROWTH %], [net bills CURRENT], [bills growth], [bills growth %], [SPEND PER TRANSACTION CURRENT YEAR], [SPEND PER TRANSACTION PAST YEAR], [SPEND PER TRANSACTION GROWTH], [retail price current year], [retail price past year], and [RETAIL PRICE GROWTH], filtered to 'MIS_DEEP_DIVE2'[store_no] in {\"CFH014\",\"CFH017\",\"CFH018\",\"CFH021\"}, one row."
+    },
+    {
+      "name": "new_entity_totals_cfh022",
+      "purpose": "Quantify the contribution of the store currently excluded from comparison because it is a new entity.",
+      "intent": "Totals for [net revenue CURRENT], [net revenue PAST], [revenue Growth], [revenue growth %], [net qty CURRENT], [net qty PAST], [QTY Growth], [QTY GROWTH %], [net bills CURRENT], [bills growth], [bills growth %], [SPEND PER TRANSACTION CURRENT YEAR], [SPEND PER TRANSACTION PAST YEAR], [SPEND PER TRANSACTION GROWTH], [retail price current year], [retail price past year], and [RETAIL PRICE GROWTH], filtered to 'MIS_DEEP_DIVE2'[store_no] = \"CFH022\", one row."
+    },
+    {
+      "name": "store_kpi_comparison",
+      "purpose": "Compare core sales, quantity, transaction, and ratio KPIs across stores.",
+      "intent": "Summarize by 'MIS_DEEP_DIVE2'[store_no] with [net revenue CURRENT], [net revenue PAST], [revenue Growth], [revenue growth %], [net qty CURRENT], [net qty PAST], [QTY Growth], [QTY GROWTH %], [net bills CURRENT], [bills growth], [bills growth %], [SPEND PER TRANSACTION CURRENT YEAR], [SPEND PER TRANSACTION PAST YEAR], [SPEND PER TRANSACTION GROWTH], [retail price current year], [retail price past year], and [RETAIL PRICE GROWTH], top 15 rows sorted by [net revenue CURRENT] descending."
+    },
+    {
+      "name": "division_kpi_summary",
+      "purpose": "Show how performance differs by division using the model's primary merchandising hierarchy.",
+      "intent": "Summarize by 'MIS_DEEP_DIVE2'[division_name] with [net revenue CURRENT], [net revenue PAST], [revenue Growth], [revenue growth %], [net qty CURRENT], [net qty PAST], [QTY Growth], [QTY GROWTH %], [net bills CURRENT], [bills growth], [bills growth %], [SPEND PER TRANSACTION CURRENT YEAR], [SPEND PER TRANSACTION PAST YEAR], [SPEND PER TRANSACTION GROWTH], [retail price current year], [retail price past year], and [RETAIL PRICE GROWTH], top 15 rows sorted by [net revenue CURRENT] descending."
+    },
+    {
+      "name": "category_kpi_summary",
+      "purpose": "Show performance by item category to identify the largest categories in the retail mix.",
+      "intent": "Summarize by 'MIS_DEEP_DIVE2'[item_category_name] with [net revenue CURRENT], [net revenue PAST], [revenue Growth], [revenue growth %], [net qty CURRENT], [net qty PAST], [QTY Growth], [QTY GROWTH %], [net bills CURRENT], [bills growth], [bills growth %], [SPEND PER TRANSACTION CURRENT YEAR], [SPEND PER TRANSACTION PAST YEAR], [SPEND PER TRANSACTION GROWTH], [retail price current year], [retail price past year], and [RETAIL PRICE GROWTH], top 15 rows sorted by [net revenue CURRENT] descending."
+    },
+    {
+      "name": "store_by_product_group_cross",
+      "purpose": "Highlight the largest store and product-group combinations in the comparable merchandising view.",
+      "intent": "Summarize by 'MIS_DEEP_DIVE2'[store_no] and 'MIS_DEEP_DIVE2'[product_group_name] with [net revenue CURRENT], [net revenue PAST], [revenue Growth], [revenue growth %], [net qty CURRENT], [net qty PAST], [QTY Growth], [QTY GROWTH %], [net bills CURRENT], [bills growth], [bills growth %], [SPEND PER TRANSACTION CURRENT YEAR], [SPEND PER TRANSACTION PAST YEAR], [SPEND PER TRANSACTION GROWTH], [retail price current year], [retail price past year], and [RETAIL PRICE GROWTH], top 15 combinations sorted by [net revenue CURRENT] descending."
+    },
+    {
+      "name": "recent_daily_trend_all_entities",
+      "purpose": "Show the most recent day-level trend for the primary revenue, quantity, transaction, and ratio KPIs.",
+      "intent": "Summarize by 'MIS_DEEP_DIVE2'[max_date] with [net revenue CURRENT], [net revenue PAST], [revenue Growth], [revenue growth %], [net qty CURRENT], [net qty PAST], [QTY Growth], [QTY GROWTH %], [net bills CURRENT], [bills growth], [bills growth %], [SPEND PER TRANSACTION CURRENT YEAR], [SPEND PER TRANSACTION PAST YEAR], [SPEND PER TRANSACTION GROWTH], [retail price current year], [retail price past year], and [RETAIL PRICE GROWTH], top 15 rows sorted by 'MIS_DEEP_DIVE2'[max_date] descending."
+    }
+  ]
+}

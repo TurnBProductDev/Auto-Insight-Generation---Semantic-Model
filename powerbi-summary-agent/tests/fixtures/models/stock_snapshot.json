@@ -1,0 +1,455 @@
+{
+  "tables": [
+    {
+      "name": "FACT_STOCK",
+      "description": "Stock position captured once per day per store and product.",
+      "is_hidden": false
+    },
+    {
+      "name": "FACT_SALES",
+      "description": "Sales transactions - present so a transaction date exists to contrast.",
+      "is_hidden": false
+    },
+    {
+      "name": "DIM_STORE",
+      "description": "",
+      "is_hidden": false
+    },
+    {
+      "name": "DIM_PRODUCT",
+      "description": "",
+      "is_hidden": false
+    },
+    {
+      "name": "DIM_CALENDAR",
+      "description": "",
+      "is_hidden": false
+    }
+  ],
+  "columns": [
+    {
+      "table": "FACT_STOCK",
+      "column": "SNAPSHOT_DATE",
+      "data_type": "DateTime",
+      "category": "date",
+      "is_hidden": false,
+      "description": "As-at date of the stock position. One row per product per store per day.",
+      "data_category": "",
+      "source_column": "SNAPSHOT_DATE",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": false
+    },
+    {
+      "table": "FACT_STOCK",
+      "column": "STORE_CODE",
+      "data_type": "String",
+      "category": "categorical",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "STORE_CODE",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": true
+    },
+    {
+      "table": "FACT_STOCK",
+      "column": "PRODUCT_CODE",
+      "data_type": "String",
+      "category": "categorical",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "PRODUCT_CODE",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": true
+    },
+    {
+      "table": "FACT_STOCK",
+      "column": "STOCK_UNITS",
+      "data_type": "Decimal",
+      "category": "numeric",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "STOCK_UNITS",
+      "sort_by_column": "",
+      "summarize_by": "Sum",
+      "is_key": false
+    },
+    {
+      "table": "FACT_STOCK",
+      "column": "STOCK_VALUE",
+      "data_type": "Decimal",
+      "category": "numeric",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "STOCK_VALUE",
+      "sort_by_column": "",
+      "summarize_by": "Sum",
+      "is_key": false
+    },
+    {
+      "table": "FACT_STOCK",
+      "column": "UNIT_COST",
+      "data_type": "Decimal",
+      "category": "numeric",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "UNIT_COST",
+      "sort_by_column": "",
+      "summarize_by": "None",
+      "is_key": false
+    },
+    {
+      "table": "FACT_SALES",
+      "column": "TRANSACTION_DATE",
+      "data_type": "DateTime",
+      "category": "date",
+      "is_hidden": false,
+      "description": "Date the sale occurred. An event, not an as-at stamp.",
+      "data_category": "",
+      "source_column": "TRANSACTION_DATE",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": false
+    },
+    {
+      "table": "FACT_SALES",
+      "column": "STORE_CODE",
+      "data_type": "String",
+      "category": "categorical",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "STORE_CODE",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": true
+    },
+    {
+      "table": "FACT_SALES",
+      "column": "PRODUCT_CODE",
+      "data_type": "String",
+      "category": "categorical",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "PRODUCT_CODE",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": true
+    },
+    {
+      "table": "FACT_SALES",
+      "column": "SOLD_UNITS",
+      "data_type": "Decimal",
+      "category": "numeric",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "SOLD_UNITS",
+      "sort_by_column": "",
+      "summarize_by": "Sum",
+      "is_key": false
+    },
+    {
+      "table": "DIM_STORE",
+      "column": "STORE_CODE",
+      "data_type": "String",
+      "category": "categorical",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "STORE_CODE",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": true
+    },
+    {
+      "table": "DIM_STORE",
+      "column": "STORE_NAME",
+      "data_type": "String",
+      "category": "categorical",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "STORE_NAME",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": false
+    },
+    {
+      "table": "DIM_STORE",
+      "column": "REGION_NAME",
+      "data_type": "String",
+      "category": "categorical",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "REGION_NAME",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": false
+    },
+    {
+      "table": "DIM_PRODUCT",
+      "column": "PRODUCT_CODE",
+      "data_type": "String",
+      "category": "categorical",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "PRODUCT_CODE",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": true
+    },
+    {
+      "table": "DIM_PRODUCT",
+      "column": "PRODUCT_NAME",
+      "data_type": "String",
+      "category": "categorical",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "PRODUCT_NAME",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": false
+    },
+    {
+      "table": "DIM_PRODUCT",
+      "column": "DIVISION_NAME",
+      "data_type": "String",
+      "category": "categorical",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "DIVISION_NAME",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": false
+    },
+    {
+      "table": "DIM_PRODUCT",
+      "column": "DEPARTMENT_NAME",
+      "data_type": "String",
+      "category": "categorical",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "DEPARTMENT_NAME",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": false
+    },
+    {
+      "table": "DIM_PRODUCT",
+      "column": "CATEGORY_NAME",
+      "data_type": "String",
+      "category": "categorical",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "CATEGORY_NAME",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": false
+    },
+    {
+      "table": "DIM_CALENDAR",
+      "column": "DATE",
+      "data_type": "DateTime",
+      "category": "date",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "DATE",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": true
+    },
+    {
+      "table": "DIM_CALENDAR",
+      "column": "MONTH_NAME",
+      "data_type": "String",
+      "category": "categorical",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "MONTH_NAME",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": false
+    },
+    {
+      "table": "DIM_CALENDAR",
+      "column": "YEAR_NUMBER",
+      "data_type": "Integer",
+      "category": "numeric",
+      "is_hidden": false,
+      "description": "",
+      "data_category": "",
+      "source_column": "YEAR_NUMBER",
+      "sort_by_column": "",
+      "summarize_by": "Default",
+      "is_key": false
+    }
+  ],
+  "measures": [
+    {
+      "name": "Stock Units on Hand",
+      "table": "FACT_STOCK",
+      "expression": "CALCULATE(SUM(FACT_STOCK[STOCK_UNITS]), LASTNONBLANK(FACT_STOCK[SNAPSHOT_DATE], 1))",
+      "format_string": "",
+      "description": "Units held as at the latest snapshot in context.",
+      "display_folder": "",
+      "is_hidden": false
+    },
+    {
+      "name": "Stock Value on Hand",
+      "table": "FACT_STOCK",
+      "expression": "CALCULATE(SUM(FACT_STOCK[STOCK_VALUE]), LASTNONBLANK(FACT_STOCK[SNAPSHOT_DATE], 1))",
+      "format_string": "#,0",
+      "description": "Stock value as at the latest snapshot in context.",
+      "display_folder": "",
+      "is_hidden": false
+    },
+    {
+      "name": "Stock Units Naive Sum",
+      "table": "FACT_STOCK",
+      "expression": "SUM(FACT_STOCK[STOCK_UNITS])",
+      "format_string": "",
+      "description": "Incorrect across more than one snapshot. Present as a test control.",
+      "display_folder": "",
+      "is_hidden": false
+    },
+    {
+      "name": "Stock Value Current Snapshot",
+      "table": "FACT_STOCK",
+      "expression": "CALCULATE(SUM(FACT_STOCK[STOCK_VALUE]), LASTNONBLANK(FACT_STOCK[SNAPSHOT_DATE], 1))",
+      "format_string": "#,0",
+      "description": "",
+      "display_folder": "",
+      "is_hidden": false
+    },
+    {
+      "name": "Average Daily Units Sold",
+      "table": "FACT_SALES",
+      "expression": "AVERAGEX(VALUES(FACT_SALES[TRANSACTION_DATE]), SUM(FACT_SALES[SOLD_UNITS]))",
+      "format_string": "",
+      "description": "",
+      "display_folder": "",
+      "is_hidden": false
+    },
+    {
+      "name": "Days Cover",
+      "table": "FACT_STOCK",
+      "expression": "DIVIDE([Stock Units on Hand], [Average Daily Units Sold])",
+      "format_string": "0.0",
+      "description": "Days of cover at the current rate of sale.",
+      "display_folder": "",
+      "is_hidden": false
+    }
+  ],
+  "relationships": [
+    {
+      "from_table": "FACT_STOCK",
+      "from_column": "STORE_CODE",
+      "to_table": "DIM_STORE",
+      "to_column": "STORE_CODE",
+      "is_active": true,
+      "cross_filtering_behavior": "OneDirection",
+      "from_cardinality": "Many",
+      "to_cardinality": "One"
+    },
+    {
+      "from_table": "FACT_STOCK",
+      "from_column": "PRODUCT_CODE",
+      "to_table": "DIM_PRODUCT",
+      "to_column": "PRODUCT_CODE",
+      "is_active": true,
+      "cross_filtering_behavior": "OneDirection",
+      "from_cardinality": "Many",
+      "to_cardinality": "One"
+    },
+    {
+      "from_table": "FACT_STOCK",
+      "from_column": "SNAPSHOT_DATE",
+      "to_table": "DIM_CALENDAR",
+      "to_column": "DATE",
+      "is_active": true,
+      "cross_filtering_behavior": "OneDirection",
+      "from_cardinality": "Many",
+      "to_cardinality": "One"
+    },
+    {
+      "from_table": "FACT_SALES",
+      "from_column": "STORE_CODE",
+      "to_table": "DIM_STORE",
+      "to_column": "STORE_CODE",
+      "is_active": true,
+      "cross_filtering_behavior": "OneDirection",
+      "from_cardinality": "Many",
+      "to_cardinality": "One"
+    },
+    {
+      "from_table": "FACT_SALES",
+      "from_column": "PRODUCT_CODE",
+      "to_table": "DIM_PRODUCT",
+      "to_column": "PRODUCT_CODE",
+      "is_active": true,
+      "cross_filtering_behavior": "OneDirection",
+      "from_cardinality": "Many",
+      "to_cardinality": "One"
+    },
+    {
+      "from_table": "FACT_SALES",
+      "from_column": "TRANSACTION_DATE",
+      "to_table": "DIM_CALENDAR",
+      "to_column": "DATE",
+      "is_active": false,
+      "cross_filtering_behavior": "OneDirection",
+      "from_cardinality": "Many",
+      "to_cardinality": "One"
+    }
+  ],
+  "date_fields": [
+    "FACT_STOCK[SNAPSHOT_DATE]",
+    "FACT_SALES[TRANSACTION_DATE]",
+    "DIM_CALENDAR[DATE]"
+  ],
+  "numeric_fields": [
+    "FACT_STOCK[STOCK_UNITS]",
+    "FACT_STOCK[STOCK_VALUE]",
+    "FACT_STOCK[UNIT_COST]",
+    "FACT_SALES[SOLD_UNITS]",
+    "DIM_CALENDAR[YEAR_NUMBER]"
+  ],
+  "categorical_fields": [
+    "FACT_STOCK[STORE_CODE]",
+    "FACT_STOCK[PRODUCT_CODE]",
+    "FACT_SALES[STORE_CODE]",
+    "FACT_SALES[PRODUCT_CODE]",
+    "DIM_STORE[STORE_CODE]",
+    "DIM_STORE[STORE_NAME]",
+    "DIM_STORE[REGION_NAME]",
+    "DIM_PRODUCT[PRODUCT_CODE]",
+    "DIM_PRODUCT[PRODUCT_NAME]",
+    "DIM_PRODUCT[DIVISION_NAME]",
+    "DIM_PRODUCT[DEPARTMENT_NAME]",
+    "DIM_PRODUCT[CATEGORY_NAME]",
+    "DIM_CALENDAR[MONTH_NAME]"
+  ],
+  "counts": {
+    "tables": 5,
+    "columns": 21,
+    "measures": 6,
+    "relationships": 6
+  }
+}

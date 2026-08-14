@@ -1,0 +1,398 @@
+[
+  {
+    "id": 1,
+    "severity": "critical",
+    "category": "Quantity",
+    "metric": "CF-CONFECTIONERY",
+    "value": "-529.6K",
+    "delta": "222.1%",
+    "deltaDirection": "down",
+    "description": "CF-CONFECTIONERY sold 529.6K fewer units, equivalent to about 222.1% of the net decline in unit sales because movements elsewhere offset part of it. The decline was concentrated in CF-CHOCOLATE, especially CHOCOLATE COATED BARS.",
+    "displayTime": "7:03 PM",
+    "isoDate": "2026-07-28",
+    "comparisonLabel": "of the total decline in unit sales",
+    "insight": {
+      "title": "Chocolate volume decline focus",
+      "summary": "Most of the lost units within CF-CONFECTIONERY came from CF-CHOCOLATE, with CHOCOLATE COATED BARS making up the largest share. This suggests the decline was concentrated in a narrow part of the department rather than spread evenly across confectionery.",
+      "stats": [
+        {
+          "label": "Unit sales change",
+          "value": "-529.6K"
+        },
+        {
+          "label": "Share of unit sales decline",
+          "value": "222.1%"
+        }
+      ],
+      "action": "Investigate CF-CHOCOLATE, especially CHOCOLATE COATED BARS, to identify which items or subgroups drove the unit decline."
+    }
+  },
+  {
+    "id": 2,
+    "severity": "critical",
+    "category": "Quantity",
+    "metric": "FMCG FOOD",
+    "value": "-364.6K",
+    "delta": "152.9%",
+    "deltaDirection": "down",
+    "description": "FMCG FOOD sold 364.6K fewer units, equivalent to about 152.9% of the net decline in unit sales because movements elsewhere offset part of it. Revenue still increased because average revenue per item rose enough to offset fewer units sold, while transactions also increased.",
+    "displayTime": "7:03 PM",
+    "isoDate": "2026-07-28",
+    "comparisonLabel": "of the total decline in unit sales",
+    "insight": {
+      "title": "FMCG FOOD revenue held up",
+      "summary": "FMCG FOOD sold fewer units but still added revenue and transactions. Our checks show the gain was associated more with higher average revenue per item than with unit growth, which may suggest a different mix of products sold or stronger revenue per transaction.",
+      "stats": [
+        {
+          "label": "Unit sales change",
+          "value": "-364.6K"
+        },
+        {
+          "label": "Share of unit sales decline",
+          "value": "152.9%"
+        }
+      ],
+      "action": "Review FMCG FOOD product groups and transaction patterns to see where higher average revenue per item offset lower unit sales."
+    }
+  },
+  {
+    "id": 3,
+    "severity": "positive",
+    "category": "Revenue",
+    "metric": "CFH021",
+    "value": "+4.30M",
+    "delta": "123.8%",
+    "deltaDirection": "up",
+    "description": "CFH021 revenue increased by 4.30M, equivalent to about 123.8% of the net increase in revenue because movements elsewhere offset part of it. The increase was supported by both more transactions and more units sold, with the larger contribution coming from higher average revenue per item.",
+    "displayTime": "7:03 PM",
+    "isoDate": "2026-07-28",
+    "comparisonLabel": "of the total increase in revenue",
+    "insight": {
+      "title": "CFH021 growth driver",
+      "summary": "CFH021 contributed a large share of the comparable revenue increase while also growing transactions and units. The uplift was concentrated more in average revenue per item than in unit expansion, which may point to category or product-group mix within the store.",
+      "stats": [
+        {
+          "label": "Revenue change",
+          "value": "+4.30M"
+        },
+        {
+          "label": "Share of revenue increase",
+          "value": "123.8%"
+        },
+        {
+          "label": "Change from revenue per item",
+          "value": "+3.40M"
+        }
+      ],
+      "action": "Check CFH021 departments and product groups to identify where higher average revenue per item and transaction growth were most concentrated."
+    }
+  },
+  {
+    "id": 4,
+    "severity": "positive",
+    "category": "Revenue",
+    "metric": "month=4",
+    "value": "+2.11M",
+    "delta": "60.9%",
+    "deltaDirection": "up",
+    "description": "month=4 revenue increased by 2.11M, accounting for about 60.9% of the total increase in revenue. The month-to-month swing centered on April's gain after March's decline, with January and February also contributing positively.",
+    "displayTime": "7:03 PM",
+    "isoDate": "2026-07-28",
+    "comparisonLabel": "of the total increase in revenue",
+    "insight": {
+      "title": "April and March swing",
+      "summary": "The revenue pattern was concentrated in a sharp contrast between March and April. This suggests the overall period result was shaped mainly by month-specific category or product-group performance rather than a steady trend across all months.",
+      "stats": [
+        {
+          "label": "Revenue change",
+          "value": "+2.11M"
+        },
+        {
+          "label": "Share of revenue increase",
+          "value": "60.9%"
+        }
+      ],
+      "action": "Compare March and April product groups to see which areas explain the shift from decline to growth."
+    }
+  },
+  {
+    "id": 5,
+    "severity": "info",
+    "category": "Quantity",
+    "metric": "FARM FRESH, FMCG FOOD",
+    "value": "+13.60M",
+    "delta": "73.3%",
+    "deltaDirection": "up",
+    "description": "FARM FRESH, FMCG FOOD recorded 13.60M in unit sales, representing about 73.3% of current unit sales. Current unit sales are heavily concentrated in FARM FRESH and FMCG FOOD, which also account for most transactions and over half of revenue.",
+    "displayTime": "7:03 PM",
+    "isoDate": "2026-07-28",
+    "comparisonLabel": "of current unit sales",
+    "insight": {
+      "title": "Base concentrated in two groups",
+      "summary": "FARM FRESH and FMCG FOOD make up most of the comparable unit base and a large share of transactions, with a smaller share of revenue than units. This may mean performance in these two groups will strongly influence overall unit trends.",
+      "stats": [
+        {
+          "label": "Unit sales change",
+          "value": "+13.60M"
+        },
+        {
+          "label": "Share of current unit sales",
+          "value": "73.3%"
+        },
+        {
+          "label": "Segments",
+          "value": "FARM FRESH, FMCG FOOD"
+        }
+      ],
+      "action": "Compare FARM FRESH and FMCG FOOD to determine which of the two is carrying more of the current unit and transaction concentration."
+    }
+  },
+  {
+    "id": 6,
+    "severity": "info",
+    "category": "Revenue",
+    "metric": "CFH014, CFH021",
+    "value": "+79.77M",
+    "delta": "63.6%",
+    "deltaDirection": "up",
+    "description": "CFH014, CFH021 recorded 79.77M in revenue, representing about 63.6% of current revenue. Current revenue is concentrated in CFH014 and CFH021, and those stores also account for a similar share of transactions and units.",
+    "displayTime": "7:03 PM",
+    "isoDate": "2026-07-28",
+    "comparisonLabel": "of current revenue",
+    "insight": {
+      "title": "Revenue centered in two stores",
+      "summary": "CFH014 and CFH021 together make up a large share of the comparable store base across revenue, transactions, and units. This suggests overall store performance is highly influenced by what is happening inside these two locations' major categories and product groups.",
+      "stats": [
+        {
+          "label": "Revenue change",
+          "value": "+79.77M"
+        },
+        {
+          "label": "Share of current revenue",
+          "value": "63.6%"
+        },
+        {
+          "label": "Segments",
+          "value": "CFH014, CFH021"
+        }
+      ],
+      "action": "Examine CFH014 and CFH021 categories and product groups to see which areas account for most of their current revenue base."
+    }
+  },
+  {
+    "id": 7,
+    "severity": "warning",
+    "category": "Revenue",
+    "metric": "CFH017",
+    "value": "-1.22M",
+    "delta": "35.3%",
+    "deltaDirection": "down",
+    "description": "CFH017 revenue decreased by 1.22M, offsetting about 35.3% of the total increase in revenue. The decline was mainly associated with fewer units sold and fewer transactions, while average revenue per item improved slightly.",
+    "displayTime": "7:03 PM",
+    "isoDate": "2026-07-28",
+    "comparisonLabel": "offsetting the total increase in revenue",
+    "insight": {
+      "title": "CFH017 broad-based decline",
+      "summary": "CFH017 fell across revenue, units, and transactions. Our checks show the shortfall was concentrated in lower sales activity rather than weaker average revenue per item, which may mean customers purchased less often or bought fewer items per transaction.",
+      "stats": [
+        {
+          "label": "Revenue change",
+          "value": "-1.22M"
+        },
+        {
+          "label": "Offset to revenue increase",
+          "value": "35.3%"
+        },
+        {
+          "label": "Change from units sold",
+          "value": "-1.43M"
+        }
+      ],
+      "action": "Review CFH017 sales activity by department to see where lower units and transactions were most pronounced."
+    }
+  },
+  {
+    "id": 8,
+    "severity": "positive",
+    "category": "Revenue",
+    "metric": "CF-FRESH CHICKEN & PARTS",
+    "value": "+1.11M",
+    "delta": "31.9%",
+    "deltaDirection": "up",
+    "description": "CF-FRESH CHICKEN & PARTS revenue increased by 1.11M, accounting for about 31.9% of the total increase in revenue. Revenue growth came from more units sold and more transactions, even though average revenue per item moved lower.",
+    "displayTime": "7:03 PM",
+    "isoDate": "2026-07-28",
+    "comparisonLabel": "of the total increase in revenue",
+    "insight": {
+      "title": "Chicken growth on volume",
+      "summary": "CF-FRESH CHICKEN & PARTS added revenue through stronger sales activity, with more units and transactions offsetting lower average revenue per item. This may suggest a shift toward lower-priced items or a different mix of products sold within the group.",
+      "stats": [
+        {
+          "label": "Revenue change",
+          "value": "+1.11M"
+        },
+        {
+          "label": "Share of revenue increase",
+          "value": "31.9%"
+        },
+        {
+          "label": "Change from units sold",
+          "value": "+1.45M"
+        }
+      ],
+      "action": "Check CF-FRESH CHICKEN & PARTS item mix to see where unit growth was strongest and average revenue per item came under pressure."
+    }
+  },
+  {
+    "id": 9,
+    "severity": "positive",
+    "category": "Revenue",
+    "metric": "CF-MEAT",
+    "value": "+742.0K",
+    "delta": "21.4%",
+    "deltaDirection": "up",
+    "description": "CF-MEAT revenue increased by 742.0K, accounting for about 21.4% of the total increase in revenue. The increase came from more units sold and more transactions, while average revenue per item moved lower.",
+    "displayTime": "7:03 PM",
+    "isoDate": "2026-07-28",
+    "comparisonLabel": "of the total increase in revenue",
+    "insight": {
+      "title": "Meat growth despite rate pressure",
+      "summary": "CF-MEAT grew revenue because sales activity increased, not because average revenue per item improved. This suggests the gain was concentrated in higher unit throughput, while the mix of products sold may have shifted toward lower-revenue items.",
+      "stats": [
+        {
+          "label": "Revenue change",
+          "value": "+742.0K"
+        },
+        {
+          "label": "Share of revenue increase",
+          "value": "21.4%"
+        },
+        {
+          "label": "Change from units sold",
+          "value": "+1.91M"
+        }
+      ],
+      "action": "Review CF-MEAT categories or item groups to identify where unit growth was strongest and average revenue per item declined."
+    }
+  },
+  {
+    "id": 10,
+    "severity": "warning",
+    "category": "Revenue",
+    "metric": "CF-FRUIT & VEGETABLES",
+    "value": "-677.7K",
+    "delta": "19.5%",
+    "deltaDirection": "down",
+    "description": "CF-FRUIT & VEGETABLES revenue decreased by 677.7K, offsetting about 19.5% of the total increase in revenue. The decline was mainly linked to fewer units sold, despite an improvement in average revenue per item.",
+    "displayTime": "7:03 PM",
+    "isoDate": "2026-07-28",
+    "comparisonLabel": "offsetting the total increase in revenue",
+    "insight": {
+      "title": "Fruit and vegetables drag",
+      "summary": "CF-FRUIT & VEGETABLES lost revenue alongside lower unit sales. Our checks show the weakness was concentrated in volume rather than average revenue per item, which may suggest reduced item throughput across the group.",
+      "stats": [
+        {
+          "label": "Revenue change",
+          "value": "-677.7K"
+        },
+        {
+          "label": "Offset to revenue increase",
+          "value": "19.5%"
+        },
+        {
+          "label": "Change from units sold",
+          "value": "-995.1K"
+        }
+      ],
+      "action": "Investigate CF-FRUIT & VEGETABLES product groups to find where unit declines were largest."
+    }
+  },
+  {
+    "id": 11,
+    "severity": "warning",
+    "category": "Revenue",
+    "metric": "SUN FLOWER OIL",
+    "value": "-558.9K",
+    "delta": "16.1%",
+    "deltaDirection": "down",
+    "description": "SUN FLOWER OIL revenue decreased by 558.9K, offsetting about 16.1% of the total increase in revenue. Revenue fell because both units sold and transactions were lower, even though average revenue per item improved.",
+    "displayTime": "7:03 PM",
+    "isoDate": "2026-07-28",
+    "comparisonLabel": "offsetting the total increase in revenue",
+    "insight": {
+      "title": "Sun flower oil slowdown",
+      "summary": "SUN FLOWER OIL declined across sales activity measures, with fewer units and fewer transactions outweighing the improvement in average revenue per item. This suggests the pressure was concentrated in lower purchasing activity rather than weaker revenue per item.",
+      "stats": [
+        {
+          "label": "Revenue change",
+          "value": "-558.9K"
+        },
+        {
+          "label": "Offset to revenue increase",
+          "value": "16.1%"
+        },
+        {
+          "label": "Change from units sold",
+          "value": "-786.3K"
+        }
+      ],
+      "action": "Check SUN FLOWER OIL transaction and unit trends by item to see where the sales slowdown was concentrated."
+    }
+  },
+  {
+    "id": 12,
+    "severity": "positive",
+    "category": "Revenue",
+    "metric": "CF-EDIBLE OILS",
+    "value": "+448.7K",
+    "delta": "12.9%",
+    "deltaDirection": "up",
+    "description": "CF-EDIBLE OILS revenue increased by 448.7K, accounting for about 12.9% of the total increase in revenue. The increase came almost entirely from higher average revenue per item, with units broadly flat and transactions slightly lower.",
+    "displayTime": "7:03 PM",
+    "isoDate": "2026-07-28",
+    "comparisonLabel": "of the total increase in revenue",
+    "insight": {
+      "title": "Edible oils rate-led growth",
+      "summary": "CF-EDIBLE OILS added revenue without meaningful unit growth and despite lower transactions. This suggests the gain was concentrated in average revenue per item, which may reflect a different mix of products sold or stronger revenue per transaction.",
+      "stats": [
+        {
+          "label": "Revenue change",
+          "value": "+448.7K"
+        },
+        {
+          "label": "Share of revenue increase",
+          "value": "12.9%"
+        },
+        {
+          "label": "Change from revenue per item",
+          "value": "+446.6K"
+        }
+      ],
+      "action": "Review CF-EDIBLE OILS item mix and transaction patterns to identify where higher average revenue per item drove the increase."
+    }
+  },
+  {
+    "id": 13,
+    "severity": "info",
+    "category": "Revenue",
+    "metric": "CFH022",
+    "value": "+11.91M",
+    "delta": "",
+    "deltaDirection": "up",
+    "description": "CFH022 recorded 11.91M in current revenue but is not part of the year-over-year comparison. CFH022 is a current-only store with revenue in the current period but no prior-period value in the comparison scope.",
+    "displayTime": "7:03 PM",
+    "isoDate": "2026-07-28",
+    "comparisonLabel": "current period",
+    "insight": {
+      "title": "CFH022 outside comp base",
+      "summary": "CFH022 appears in current revenue but is excluded from year-over-year comparable change analysis because there is no prior-period value in scope. This means its sales should be viewed separately from comparable-store performance.",
+      "stats": [
+        {
+          "label": "Revenue change",
+          "value": "+11.91M"
+        }
+      ],
+      "action": "Confirm CFH022 store status and comparison treatment so current-only sales are handled separately from comparable results."
+    }
+  }
+]

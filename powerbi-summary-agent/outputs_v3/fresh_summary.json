@@ -1,0 +1,91 @@
+{
+  "summary_type": "new_data",
+  "heading": "Like-for-like revenue increased by +3.4M across CFH014, CFH017, CFH018 and CFH021, as transactions +240.1K offset lower units -249.9K and Basket Size -0.10.",
+  "paragraphs": [
+    "Like-for-like revenue rose by +3.4M across the four comparable branches.",
+    "Transactions increased by +240.1K across CFH014, CFH017, CFH018 and CFH021, showing more transactions (bills) than last year.",
+    "The overall result remained positive in revenue terms even with weaker item sales per transaction.",
+    "Units fell by -249.9K across the same like-for-like branch group, so item demand was lower than last year.",
+    "Basket Size declined by -0.10, meaning each transaction contained fewer items on average.",
+    "The revenue gain was not supported by units growth, with more transactions offset by smaller baskets.",
+    "Review branch-level performance for CFH014, CFH017, CFH018 and CFH021 to see where the +240.1K transactions increase and the -249.9K units decline were concentrated.",
+    "Compare category performance within the like-for-like branches to identify which areas contributed most to the -0.10 Basket Size change.",
+    "Monitor whether the current pattern holds, with revenue +3.4M supported by transactions +240.1K while units remain -249.9K."
+  ],
+  "sections": [
+    {
+      "heading": "What's working",
+      "tone": "positive",
+      "points": [
+        "Like-for-like revenue rose by +3.4M across the four comparable branches.",
+        "Transactions increased by +240.1K across CFH014, CFH017, CFH018 and CFH021, showing more transactions (bills) than last year.",
+        "The overall result remained positive in revenue terms even with weaker item sales per transaction."
+      ]
+    },
+    {
+      "heading": "Risks",
+      "tone": "warning",
+      "points": [
+        "Units fell by -249.9K across the same like-for-like branch group, so item demand was lower than last year.",
+        "Basket Size declined by -0.10, meaning each transaction contained fewer items on average.",
+        "The revenue gain was not supported by units growth, with more transactions offset by smaller baskets."
+      ]
+    },
+    {
+      "heading": "Recommended actions",
+      "tone": "info",
+      "points": [
+        "Review branch-level performance for CFH014, CFH017, CFH018 and CFH021 to see where the +240.1K transactions increase and the -249.9K units decline were concentrated.",
+        "Compare category performance within the like-for-like branches to identify which areas contributed most to the -0.10 Basket Size change.",
+        "Monitor whether the current pattern holds, with revenue +3.4M supported by transactions +240.1K while units remain -249.9K."
+      ]
+    }
+  ],
+  "covered_candidate_ids": [
+    "summary_2e225a20fa6f"
+  ],
+  "covered_summary_keys": [
+    "summary:v1:2e225a20fa6ff11479914944424f2732b2911806d0178e3e86d54080619a17da"
+  ],
+  "metrics": [
+    {
+      "label": "Revenue change",
+      "value": "+3.4M",
+      "tone": "positive"
+    },
+    {
+      "label": "Transactions change",
+      "value": "+240.1K",
+      "tone": "positive"
+    },
+    {
+      "label": "Units change",
+      "value": "-249.9K",
+      "tone": "warning"
+    },
+    {
+      "label": "Basket Size change",
+      "value": "-0.10",
+      "tone": "warning"
+    }
+  ],
+  "visual": {
+    "type": "bar",
+    "title": "Revenue: prior versus current",
+    "labels": [
+      "Prior",
+      "Current"
+    ],
+    "values": [
+      122395957.62000005,
+      125810225.6
+    ],
+    "value_label": "Revenue"
+  },
+  "data_as_of": "2026-07-28",
+  "grain": "day",
+  "freshness_status": "current",
+  "period_anchor": "2026-07-28",
+  "validation_status": "validated",
+  "authoring_mode": "llm"
+}

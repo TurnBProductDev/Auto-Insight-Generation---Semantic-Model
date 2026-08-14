@@ -1,0 +1,123 @@
+[18:45:27] Node 1: config loaded.
+[18:45:27]   workspace=6d383900-b84d-4bce-afb4-b95453bee00a dataset=b3458a38-ad83-4e9a-b2f2-39d15c6aa22c provider=azure_openai model=claude-sonnet-5 exec_mode=python
+[18:45:27]   business rules loaded and snapshotted (468 lines).
+[18:45:27] Node 2: reading semantic model metadata via INFO.VIEW DAX...
+[18:45:29]   tables: 19 rows
+[18:45:30]   columns: 173 rows
+[18:45:31]   measures: 56 rows
+[18:45:32]   relationships: 15 rows
+[18:45:43]   Fabric TMSL getDefinition: enriched 56/56 measure expressions.
+[18:45:43] Metadata assembled: 19 tables, 56 measures, 7 date fields.
+[18:45:43] Metadata profile: deriving measures, dimensions and relationships...
+[18:45:43] Metadata profile: primary=revenue; fact=MIS_DEEP_DIVE2; entity='MIS_DEEP_DIVE2'[store_no]; 24 drill dimensions; 7 time dimensions.
+[18:45:43] Baseline: discovering entity comparison scope from metadata-selected objects...
+[18:45:44] Baseline scope: 4 comparable, 1 current-only, 0 prior-only; source=business_rule_config_validated_by_data.
+[18:45:44] Shared baseline: executing metadata-driven diagnostic coverage pre-fork...
+[18:45:53] Shared metadata coverage: 10/10 queries succeeded pre-fork.
+[18:45:53] Node 3: understanding the report/model...
+[18:46:08] Domain: 'Sales / Retail'; 23 key measures; time summary possible: True.
+[18:46:08] Insight branch: normalizing raw scan results...
+[18:46:08] Insight scan normalized 12 results (12 successful).
+[18:46:08] Node 4: planning DAX queries automatically...
+[18:46:39] Planned 8 queries: grand_totals_with_kpi_ratios, new_branch_cfh022_current_only, comparable_monthly_trend, branch_scorecard, division_breakdown, category_risk_summary, top_product_groups_by_current_sales, store_by_special_product_group_cross
+[18:46:39] Node 5: generating DAX for each planned query (LLM)...
+[18:46:46]   grand_totals_with_kpi_ratios: generated.
+[18:46:54]   new_branch_cfh022_current_only: generated.
+[18:47:01]   comparable_monthly_trend: generated.
+[18:47:08]   branch_scorecard: generated.
+[18:47:14]   division_breakdown: generated.
+[18:47:20]   category_risk_summary: generated.
+[18:47:29]   top_product_groups_by_current_sales: generated.
+[18:47:35]   store_by_special_product_group_cross: generated.
+[18:47:35] Generated 8 DAX statements.
+[18:46:40] Temporal gate: using 'MIS_DEEP_DIVE2'[month] (month, 7 periods, reconciled); gated 1 load-date table(s); worst period March concentrated in IMPORTED FRUITS.
+[18:47:35] Business-day source: disabled - both recent-week and daily monitoring disabled by config.
+[18:47:35] Node 6: validating generated DAX against metadata...
+[18:47:35]   held for repair new_branch_cfh022_current_only: comparison query includes excluded/current-only entities: ['CFH022']
+[18:47:35] 7 of 8 queries passed validation (1 eligible for repair).
+[18:47:35] Node 7: executing 7 DAX queries (mode=python)...
+[18:47:42]   summary: attempting repair for skipped query 'new_branch_cfh022_current_only'...
+[18:47:49]   summary: repair for 'new_branch_cfh022_current_only': failed
+[18:47:49] Executed queries: 7/8 succeeded.
+[18:47:49] ERROR:   query 'new_branch_cfh022_current_only' failed: still invalid after repair attempt: comparison query includes excluded/current-only entities: ['CFH022'] (original: comparison query includes excluded/current-only entities: ['CFH022'])
+[18:47:35] Recent-week gate: disabled - recent-week monitoring disabled by config.
+[18:47:49] Daily anomaly gate: disabled - daily anomaly monitoring disabled by config.
+[18:47:49] Node 8: normalizing raw Power BI results...
+[18:47:49] Normalized 8 results (7 successful).
+[18:47:49] Evidence catalog: 13 contracts (12 construction-time).
+[18:47:49] Summary period: grain=month data_as_of=2026-07-27 anchor=2026-06 freshness=current.
+[18:47:49] Insight branch: computing deterministic stat candidates...
+[18:47:49] Stat candidates: 101 business, 0 data-quality.
+[18:47:49]   [222.1] change_contribution: CF-CONFECTIONERY: QTY Growth of -529.6K (from 4.4M to 3.9M), 222.1% of the total change
+[18:47:49]   [221.9] change_contribution: CF-CHOCOLATE: QTY Growth of -529.2K (from 4.4M to 3.9M), 221.9% of the total change
+[18:47:49]   [192.3] change_contribution: CHOCOLATE COATED BARS: QTY Growth of -458.7K (from 3.4M to 2.9M), 192.3% of the total change
+[18:47:49]   [152.9] change_contribution: FMCG FOOD: QTY Growth of -364.6K (from 10.4M to 10.0M), 152.9% of the total change
+[18:47:49]   [123.8] change_contribution: CFH021: revenue Growth of 4.3M (from 36.5M to 40.8M), 123.8% of the total change; split: volume 901.4K / rate 3.4M (per QTY Growth)
+[18:47:49] Summary candidates: 8 perspective(s) from summary-owned evidence.
+[18:47:49] Novelty filter: memory disabled - passing all candidates through.
+[18:47:57] Fresh summary: authored new_data perspective summary_7783fd0e315c (mode=llm).
+[18:47:49] Insight branch: detecting notable signals in scan results...
+[18:48:21] Detected 12 signals: confectionery_chocolate_volume_drop[business], fmcg_food_large_but_unit_negative[business], cfh021_dominates_growth[business], march_april_month_shift[business], cfh017_broad_branch_decline[business], fresh_chicken_and_parts_growth_cluster[business], meat_growth_with_lower_unit_value[business], fashion_growth_volume_led[business], fruit_vegetable_decline_cluster[business], vegetable_oil_growth_rate_and_volume[business], sun_flower_oil_decline[business], cfh022_new_branch_sales[business]
+[18:48:21] Fresh structured summary validated and rendered (4 metric tile(s), 3 section(s), one supporting chart).
+[18:48:21] Insight branch: assembling evidence briefs (deterministic reuse pass)...
+[18:48:21] Evidence briefs: 12 signals; 0 drill-dimensions answered by reuse, 36 gaps flagged for probing.
+[18:48:21] Coverage matrix: 27 dimensions, 3 with trusted (complete+comparable) coverage.
+[18:48:21] Insight branch: targeted gap scan from metadata-compatible dimensions...
+[18:48:23]   gap scan 'confectionery_chocolate_volume_drop': 3 REST calls, filled ['product_group_name', 'special_product_group_name', 'store_no'].
+[18:48:26]   gap scan 'fmcg_food_large_but_unit_negative': 3 REST calls, filled ['product_group_name', 'special_product_group_name', 'store_no'].
+[18:48:27]   gap scan 'fresh_chicken_and_parts_growth_cluster': 3 REST calls, filled ['item_category_name', 'special_product_group_name', 'store_no'].
+[18:48:29]   gap scan 'meat_growth_with_lower_unit_value': 3 REST calls, filled ['product_group_name', 'special_product_group_name', 'store_no'].
+[18:48:32]   gap scan 'fashion_growth_volume_led': 3 REST calls, filled ['product_group_name', 'special_product_group_name', 'store_no'].
+[18:48:34]   gap scan 'fruit_vegetable_decline_cluster': 3 REST calls, filled ['product_group_name', 'special_product_group_name', 'store_no'].
+[18:48:35]   gap scan 'vegetable_oil_growth_rate_and_volume': 2 REST calls, filled ['item_category_name', 'product_group_name'].
+[18:48:37]   gap scan 'sun_flower_oil_decline': 2 REST calls, filled ['item_category_name', 'product_group_name'].
+[18:48:39]   gap scan 'cfh022_new_branch_sales': 3 REST calls, filled ['item_category_name', 'product_group_name', 'special_product_group_name'].
+[18:48:39] Gap scan complete: 25 REST calls; global budget remaining=5.
+[18:48:21] === summary branch finished ===
+[18:48:39] Insight branch: investigating 12 signals (tool-calling agent)...
+[18:48:39]   investigating signal 'confectionery_chocolate_volume_drop': What changed in CF-CONFECTIONERY, particularly CF-CHOCOLATE and CHOCOLATE COATED BARS, to reduce comparable units so sharply across the four like-for-like branches?
+[18:48:49]   'confectionery_chocolate_volume_drop': 0/0 investigator probes (+3 gap-scan), concluded=True.
+[18:48:49]   investigating signal 'fmcg_food_large_but_unit_negative': Which FMCG FOOD categories or product groups are most associated with the unit decline, and how much of the revenue growth came from changes in average value per unit rather than more units?
+[18:48:59]   'fmcg_food_large_but_unit_negative': 0/0 investigator probes (+3 gap-scan), concluded=True.
+[18:48:59]   investigating signal 'cfh021_dominates_growth': What factors in CFH021 drove most of the comparable revenue increase, and which categories or product groups account for its gains in bills and units?
+[18:49:07]     probe 1/3 for 'cfh021_dominates_growth': 20 rows.
+[18:49:11]     probe 2/3 for 'cfh021_dominates_growth': 20 rows.
+[18:49:16]     probe 3/3 for 'cfh021_dominates_growth': 20 rows.
+[18:49:23]   'cfh021_dominates_growth': 3/3 investigator probes (+0 gap-scan), concluded=True.
+[18:49:23]   investigating signal 'march_april_month_shift': What period-specific factors explain the sharp swing from March weakness to April strength, especially in IMPORTED FRUITS, SUN FLOWER OIL, and IMPORTED VEGETABLES?
+[18:49:35]     probe 1/3 for 'march_april_month_shift': 10 rows.
+[18:49:36]     probe 2/3 for 'march_april_month_shift': 4 rows.
+[18:49:37]     probe 3/3 for 'march_april_month_shift': 10 rows.
+[18:49:43]   'march_april_month_shift': 3/3 investigator probes (+0 gap-scan), concluded=True.
+[18:49:43]   investigating signal 'cfh017_broad_branch_decline': Which categories or product groups within CFH017 were most associated with the declines in revenue, units, and bills?
+[18:49:55]     probe 1/3 for 'cfh017_broad_branch_decline': 20 rows.
+[18:49:56]     probe 2/3 for 'cfh017_broad_branch_decline': 20 rows.
+[18:49:56]     probe 3/3 for 'cfh017_broad_branch_decline': 20 rows.
+[18:50:04]   'cfh017_broad_branch_decline': 3/3 investigator probes (+0 gap-scan), concluded=True.
+[18:50:04]   investigating signal 'fresh_chicken_and_parts_growth_cluster': What changed in CF-FRESH CHICKEN & PARTS, especially in CFH014 and CFH018, that lifted both revenue and volume materially?
+[18:50:13]   'fresh_chicken_and_parts_growth_cluster': 0/0 investigator probes (+3 gap-scan), concluded=True.
+[18:50:13]   investigating signal 'meat_growth_with_lower_unit_value': What within CF-MEAT lifted units and bills strongly while pulling down average revenue per unit at the same time?
+[18:50:21]   'meat_growth_with_lower_unit_value': 0/0 investigator probes (+3 gap-scan), concluded=True.
+[18:50:21]   investigating signal 'fashion_growth_volume_led': Which parts of FASHION, especially CF-MENS FASHION, drove the higher bills and units, and why did average revenue per unit move against that growth?
+[18:50:32]   'fashion_growth_volume_led': 0/0 investigator probes (+3 gap-scan), concluded=True.
+[18:50:32]   investigating signal 'fruit_vegetable_decline_cluster': Which branches and subgroups within CF-FRUIT & VEGETABLES, especially imported and local produce lines, are most associated with the revenue and unit decline?
+[18:50:41]   'fruit_vegetable_decline_cluster': 0/0 investigator probes (+3 gap-scan), concluded=True.
+[18:50:41]   investigating signal 'vegetable_oil_growth_rate_and_volume': What changed in VEGETABLE OIL, especially in CFH014, to lift both units and average value per unit materially?
+[18:50:48]     probe 1/1 for 'vegetable_oil_growth_rate_and_volume': 4 rows.
+[18:50:54]   'vegetable_oil_growth_rate_and_volume': 1/1 investigator probes (+2 gap-scan), concluded=True.
+[18:50:54]   investigating signal 'sun_flower_oil_decline': Why did SUN FLOWER OIL, especially in CFH014, lose both revenue and bills so materially versus last year?
+[18:51:02]     probe 1/1 for 'sun_flower_oil_decline': 4 rows.
+[18:51:06]   'sun_flower_oil_decline': 1/1 investigator probes (+2 gap-scan), concluded=True.
+[18:51:06]   investigating signal 'cfh022_new_branch_sales': How should CFH022's current-only sales, units, and bills be tracked separately from like-for-like performance, given it has no prior-year base?
+[18:51:14]   'cfh022_new_branch_sales': 0/0 investigator probes (+3 gap-scan), concluded=True.
+[18:51:14] Investigations complete for 12 signals.
+[18:51:14] Insight branch: synthesizing the insight report...
+[18:52:21] Insight report clarity check requested a rewrite (7 issue(s)).
+[18:53:09] Insight report clarity check requested a rewrite (1 issue(s)).
+[18:53:58] Insight board disabled (insight_tiles_enabled=false).
+[18:53:58] Insight report written (3696 words).
+[18:53:58] === insight branch finished ===
+[save] wrote outputs to /outputs_with_rules
+
+ERRORS:
+-   query 'new_branch_cfh022_current_only' failed: still invalid after repair attempt: comparison query includes excluded/current-only entities: ['CFH022'] (original: comparison query includes excluded/current-only entities: ['CFH022'])

@@ -5,7 +5,7 @@ from __future__ import annotations
 import math
 import re
 
-from ..tools import file_io, summary_visual
+from ..tools import file_io, summary_dashboard_html, summary_visual
 from ..tools.summary_validation import validate_draft
 from ..utils.logger import RunLogger
 
@@ -187,8 +187,44 @@ def run(state: dict) -> dict:
     markdown = _markdown(summary)
     title = (state.get("config") or {}).get("api_summary_title", "AI Summary")
     file_io.write_text(state, "report_summary.md", markdown)
-    file_io.write_text(state, "report_summary.html", summary_visual.render(summary, title=title))
+    file_io.write_text(
+        state,
+        "report_summary.html",
+        summary_visual.render(
+            summary,
+            title=title,
+            # Coverage is a deterministic, code-owned surface: it is rendered
+            # straight from the scanned rows and never passes through the LLM
+            # or the draft-validation contract.
+            coverage=state.get("summary_coverage") or {},
+            coverage_display_rows=int(state.get("summary_coverage_display_rows", 8)),
+        ),
+    )
     file_io.write_json(state, "fresh_summary.json", summary)
+
+    # R6 dashboard, written from the code-owned page model. It never passes
+    # through validate_draft: its figures are already reconciled and its prose was
+    # validated per view by dashboard_rules inside the builder. Off by default, and
+    # written to its own file so the existing report_summary.html contract is
+    # untouched until a deployment explicitly opts in.
+    dashboard = state.get("summary_dashboard") or {}
+    if state.get("summary_r6_enabled") and dashboard.get("status") == "ok":
+        dashboard_html = summary_dashboard_html.render(
+            dashboard,
+            coverage=state.get("summary_coverage") or {},
+            display_rows=int(state.get("summary_coverage_display_rows", 8)),
+            eyebrow=str(state.get("summary_dashboard_eyebrow") or "AI Insights"),
+        )
+        file_io.write_text(state, "report_dashboard.html", dashboard_html)
+        if state.get("summary_dashboard_replaces_summary_html", False):
+            file_io.write_text(state, "report_summary.html", dashboard_html)
+        log.info(
+            "Dashboard HTML written (%d view(s), mode=%s%s)."
+            % (len(dashboard.get("views") or []), dashboard.get("authoring_mode"),
+               ", also published as report_summary.html"
+               if state.get("summary_dashboard_replaces_summary_html", False) else "")
+        )
+
     charts = [
         block.get("chart")
         for block in summary.get("content_blocks") or []

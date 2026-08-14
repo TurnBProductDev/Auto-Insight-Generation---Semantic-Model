@@ -7,6 +7,7 @@ import math
 import re
 from typing import Any
 
+from ..domains.sales import families as sales_families
 from ..tools import file_io, summary_memory, summary_roles
 from ..utils.logger import RunLogger
 
@@ -54,18 +55,14 @@ def _columns(rows: list[dict]) -> tuple[list[str], list[str]]:
 
 
 def _family(name: str) -> str:
-    toks = _tokens(name)
-    if toks & {"revenue", "sales", "turnover", "amount", "value"}:
-        return "revenue"
-    if toks & {"qty", "quantity", "units", "volume"}:
-        return "quantity"
-    if toks & {"bills", "transactions", "orders", "visits"}:
-        return "transactions"
-    if toks & {"margin", "price", "rate", "spend", "average", "avg"}:
-        return "rate"
-    if toks & {"profit", "earnings"}:
-        return "profit"
-    return "performance"
+    """Label a returned column for keying and presentation.
+
+    The vocabulary now has one owner (WP3): src/domains/sales/families.py, where
+    it sits beside the profiler's - which is a *different* classifier, not a
+    copy (37 of 56 real measure names classify differently). Re-sourced, not
+    merged: merging would change candidate and memory keys on the live model.
+    """
+    return sales_families.candidate_family(_tokens(name))
 
 
 def _metric_priority(name: str) -> tuple[int, int]:
@@ -814,6 +811,13 @@ def _universe_member_candidates(state: dict, dataset: str, anchor: str) -> list[
     candidates: list[dict] = []
     for role, info in (universe.get("roles") or {}).items():
         if str(info.get("status")) != "ok":
+            continue
+        # Coverage-only levels (store, and any covered level that is not
+        # focus-eligible) are reported as ranked coverage rows, never rotated as
+        # a daily focus. Skipping them here keeps them out of the candidate pool
+        # and out of focus memory entirely, rather than relying on the
+        # portfolio's downstream role filter.
+        if info.get("coverage_only"):
             continue
         group_col = info.get("column") or role
         metric_family = info.get("metric_family") or universe.get("metric_family") or "revenue"

@@ -1,0 +1,329 @@
+[
+  {
+    "candidate_id": "cand_01_change_contribution",
+    "related_candidate_ids": [
+      "cand_02_change_contribution",
+      "cand_03_change_contribution"
+    ],
+    "id": "confectionery_units_decline_centered_on_chocolate_bars",
+    "kind": "business",
+    "description": "CF-CONFECTIONERY had QTY Growth of -533734.5959, with the same decline concentrated in CF-CHOCOLATE at -533309.5959 and especially CHOCOLATE COATED BARS at -461381.2012, which alone equals 184.6508% of the total comparable QTY decline.",
+    "affected_segment": "CF-CONFECTIONERY",
+    "segment_members": null,
+    "impact_value": -533734.5959,
+    "impact_share": 213.6075,
+    "question": "Why did QTY fall so sharply in CF-CONFECTIONERY, and is the drop mainly coming from CHOCOLATE COATED BARS within CF-CHOCOLATE?",
+    "evidence_query": "meta_movers_by_mis_deep_dive2_item_category_name",
+    "decomposition": null,
+    "score": 213.60752025719813
+  },
+  {
+    "candidate_id": "cand_04_change_contribution",
+    "related_candidate_ids": [
+      "cand_49_change_contribution"
+    ],
+    "id": "fmcg_food_units_down_despite_revenue_growth",
+    "kind": "business",
+    "description": "FMCG FOOD had QTY Growth of -370120.72, equal to 148.1271% of the total comparable QTY decline, while revenue Growth was still 692876.41, with the candidate decomposition showing volume effect -1664478.0615 and rate effect 2357354.4715.",
+    "affected_segment": "FMCG FOOD",
+    "segment_members": null,
+    "impact_value": -370120.72,
+    "impact_share": 148.1271,
+    "question": "Which FMCG FOOD categories are behind the 370120.72 unit decline, and how much of the revenue gain is associated with higher average value per item rather than more units?",
+    "evidence_query": "meta_movers_by_mis_deep_dive2_division_name",
+    "decomposition": null,
+    "score": 148.12712124607944
+  },
+  {
+    "candidate_id": "cand_05_change_contribution",
+    "related_candidate_ids": [
+      "cand_08_change_contribution",
+      "cand_13_change_contribution"
+    ],
+    "id": "cfh021_drove_group_revenue_growth",
+    "kind": "business",
+    "description": "CFH021 delivered revenue Growth of 4292580.82, equal to 125.7248% of the comparable total change, alongside bills growth of 200213 and QTY Growth of 148226.4116.",
+    "affected_segment": "CFH021",
+    "segment_members": null,
+    "impact_value": 4292580.82,
+    "impact_share": 125.7248,
+    "question": "What categories and product groups in CFH021 contributed most to its 4292580.82 revenue increase and 200213 bills increase?",
+    "evidence_query": "baseline_comparable_entities",
+    "decomposition": [
+      {
+        "driver": "QTY Growth",
+        "rate_of": "net revenue CURRENT / net qty CURRENT",
+        "revenue_change": 4292580.82,
+        "volume_effect": 883660.2728,
+        "rate_effect": 3408920.5472,
+        "rate_current": 6.5032,
+        "rate_prior": 5.9616,
+        "reconciled": true,
+        "basis": "exact price/volume split; rate = revenue per unit of driver (blends price and mix at this grain); decomposition, not cause"
+      },
+      {
+        "driver": "bills growth",
+        "rate_of": "net revenue CURRENT / net bills CURRENT",
+        "revenue_change": 4292580.82,
+        "volume_effect": 2926287.4994,
+        "rate_effect": 1366293.3206,
+        "rate_current": 15.1206,
+        "rate_prior": 14.6159,
+        "reconciled": true,
+        "basis": "exact price/volume split; rate = revenue per unit of driver (blends price and mix at this grain); decomposition, not cause"
+      }
+    ],
+    "score": 125.72477746752722
+  },
+  {
+    "candidate_id": "cand_06_change_contribution",
+    "related_candidate_ids": [
+      "cand_14_change_contribution",
+      "cand_24_change_contribution",
+      "cand_33_change_contribution",
+      "cand_35_change_contribution",
+      "cand_37_change_contribution",
+      "cand_50_change_contribution",
+      "cand_71_change_contribution"
+    ],
+    "id": "fruit_vegetables_complex_drove_decline",
+    "kind": "business",
+    "description": "CF-FRUIT & VEGETABLES recorded QTY Growth of -216203.1651 and revenue Growth of -683753.3, with notable negative contributions from CF-VEGETABLES (-140303.5223 QTY Growth), IMPORTED FRUITS (-94903.06), LOCAL VEGETABLES (-77709.7719) and IMPORTED VEGETABLES (-75877.1175).",
+    "affected_segment": "CF-FRUIT & VEGETABLES",
+    "segment_members": null,
+    "impact_value": -216203.1651,
+    "impact_share": 86.5273,
+    "question": "Which branches and product groups within CF-FRUIT & VEGETABLES account for the combined unit and revenue decline?",
+    "evidence_query": "meta_movers_by_mis_deep_dive2_item_category_name",
+    "decomposition": null,
+    "score": 86.52731588659593
+  },
+  {
+    "candidate_id": "cand_07_change_contribution",
+    "related_candidate_ids": [
+      "cand_27_change_contribution",
+      "cand_28_change_contribution"
+    ],
+    "id": "cfh017_largest_branch_drag",
+    "kind": "business",
+    "description": "CFH017 was the largest branch drag, with revenue Growth of -1235046.25, QTY Growth of -208538.0729 and bills growth of -87223; its revenue decline equals -36.1731% of the comparable total change.",
+    "affected_segment": "CFH017",
+    "segment_members": null,
+    "impact_value": -208538.0729,
+    "impact_share": 83.4596,
+    "question": "Which categories in CFH017 were most associated with the 1235046.25 revenue decline and the 87223 drop in bills?",
+    "evidence_query": "baseline_comparable_entities",
+    "decomposition": null,
+    "score": 83.4596463571171
+  },
+  {
+    "candidate_id": "cand_11_period_change_contribution",
+    "related_candidate_ids": [
+      "cand_12_period_change_contribution"
+    ],
+    "id": "march_april_period_swing_dominated_year_change",
+    "kind": "business",
+    "description": "April added 2112426.17 of revenue Growth, or 61.8705% of the reconciled period change, while March subtracted -2043504.72, or -59.8519%, making these two months the dominant swing in the comparable period series.",
+    "affected_segment": "month=4",
+    "segment_members": [
+      "month=3",
+      "month=4"
+    ],
+    "impact_value": 2112426.17,
+    "impact_share": 61.8705,
+    "question": "What changed between March and April, especially in the segments named for March such as IMPORTED FRUITS and SUN FLOWER OIL?",
+    "evidence_query": "meta_period_by_mis_deep_dive2_month",
+    "decomposition": null,
+    "score": 61.870543916709245
+  },
+  {
+    "candidate_id": "cand_20_concentration",
+    "related_candidate_ids": [
+      "cand_21_concentration",
+      "cand_29_concentration"
+    ],
+    "id": "farm_fresh_and_fmcg_food_dominate_mix",
+    "kind": "business",
+    "description": "FARM FRESH and FMCG FOOD together hold 13644163.0367 of net qty CURRENT, or 73.3331% of the comparable total, and 70216044.13 of net revenue CURRENT, or 55.8111%.",
+    "affected_segment": "FARM FRESH, FMCG FOOD",
+    "segment_members": [
+      "FARM FRESH",
+      "FMCG FOOD"
+    ],
+    "impact_value": 13644163.0367,
+    "impact_share": 73.3331,
+    "question": "How much of the overall comparable movement is being set by FARM FRESH and FMCG FOOD, given their dominant share of current units and revenue?",
+    "evidence_query": "meta_movers_by_mis_deep_dive2_division_name",
+    "decomposition": null,
+    "score": 43.99986257909387
+  },
+  {
+    "candidate_id": "cand_22_concentration",
+    "related_candidate_ids": [
+      "cand_23_concentration",
+      "cand_26_concentration"
+    ],
+    "id": "cfh014_and_cfh021_dominate_comparable_base",
+    "kind": "business",
+    "description": "CFH014 and CFH021 together account for 80014173.18 of net revenue CURRENT, or 63.5991% of the comparable total, and 5298461 of net bills CURRENT, or 63.5624%.",
+    "affected_segment": "CFH014, CFH021",
+    "segment_members": [
+      "CFH014",
+      "CFH021"
+    ],
+    "impact_value": 80014173.18,
+    "impact_share": 63.5991,
+    "question": "Given that CFH014 and CFH021 make up 63.5991% of comparable revenue, which of the two is setting the current group trend most strongly by category?",
+    "evidence_query": "baseline_comparable_entities",
+    "decomposition": null,
+    "score": 38.15946094925371
+  },
+  {
+    "candidate_id": "cand_31_change_contribution",
+    "related_candidate_ids": [
+      "cand_09_change_contribution",
+      "cand_18_change_contribution",
+      "cand_30_change_contribution",
+      "cand_60_change_contribution",
+      "cand_66_change_contribution",
+      "cand_73_change_contribution",
+      "cand_56_change_contribution"
+    ],
+    "id": "fresh_chicken_parts_and_chicken_supported_growth",
+    "kind": "business",
+    "description": "CF-FRESH CHICKEN & PARTS contributed 1110054.25 of revenue Growth, or 32.5122% of the total comparable revenue change, with QTY Growth of 188331.0 and bills growth of 80035, supported by FRESH CHICKEN PARTS revenue Growth of 479197.76 and FRESH CHICKEN revenue Growth of 630856.49.",
+    "affected_segment": "CF-FRESH CHICKEN & PARTS",
+    "segment_members": null,
+    "impact_value": 1110054.25,
+    "impact_share": 32.5122,
+    "question": "What changed in CF-FRESH CHICKEN & PARTS that lifted both units and bills so strongly across the comparable branches?",
+    "evidence_query": "meta_movers_by_mis_deep_dive2_product_group_name",
+    "decomposition": [
+      {
+        "driver": "QTY Growth",
+        "rate_of": "net revenue CURRENT / net qty CURRENT",
+        "revenue_change": 1110054.25,
+        "volume_effect": 1452312.3763,
+        "rate_effect": -342258.1263,
+        "rate_current": 7.1769,
+        "rate_prior": 7.7115,
+        "reconciled": true,
+        "basis": "exact price/volume split; rate = revenue per unit of driver (blends price and mix at this grain); decomposition, not cause"
+      },
+      {
+        "driver": "bills growth",
+        "rate_of": "net revenue CURRENT / net bills CURRENT",
+        "revenue_change": 1110054.25,
+        "volume_effect": 1138184.6491,
+        "rate_effect": -28130.3991,
+        "rate_current": 14.1345,
+        "rate_prior": 14.2211,
+        "reconciled": true,
+        "basis": "exact price/volume split; rate = revenue per unit of driver (blends price and mix at this grain); decomposition, not cause"
+      }
+    ],
+    "score": 32.51221803626632
+  },
+  {
+    "candidate_id": "cand_46_change_contribution",
+    "related_candidate_ids": [
+      "cand_10_change_contribution",
+      "cand_38_change_contribution"
+    ],
+    "id": "meat_growth_came_with_lower_average_value_per_item",
+    "kind": "business",
+    "description": "CF-MEAT added 742310.17 of revenue Growth and 160856.3733 of QTY Growth, but the candidate decomposition shows volume effect 1914104.9225 offset by rate effect -1171794.7525, indicating revenue grew alongside a lower average value per item at this grain.",
+    "affected_segment": "CF-MEAT",
+    "segment_members": null,
+    "impact_value": 742310.17,
+    "impact_share": 21.7414,
+    "question": "Which products within CF-MEAT drove the unit increase, and what mix shift is associated with the negative rate effect of -1171794.7525?",
+    "evidence_query": "meta_movers_by_mis_deep_dive2_item_category_name",
+    "decomposition": [
+      {
+        "driver": "QTY Growth",
+        "rate_of": "net revenue CURRENT / net qty CURRENT",
+        "revenue_change": 742310.17,
+        "volume_effect": 1914104.9225,
+        "rate_effect": -1171794.7525,
+        "rate_current": 10.3846,
+        "rate_prior": 11.8995,
+        "reconciled": true,
+        "basis": "exact price/volume split; rate = revenue per unit of driver (blends price and mix at this grain); decomposition, not cause"
+      },
+      {
+        "driver": "bills growth",
+        "rate_of": "net revenue CURRENT / net bills CURRENT",
+        "revenue_change": 742310.17,
+        "volume_effect": 1448084.2244,
+        "rate_effect": -705774.0544,
+        "rate_current": 19.1996,
+        "rate_prior": 20.8865,
+        "reconciled": true,
+        "basis": "exact price/volume split; rate = revenue per unit of driver (blends price and mix at this grain); decomposition, not cause"
+      }
+    ],
+    "score": 21.741414978211967
+  },
+  {
+    "candidate_id": "cand_52_change_contribution",
+    "related_candidate_ids": [
+      "cand_77_change_contribution",
+      "cand_84_change_contribution",
+      "cand_64_change_contribution",
+      "cand_75_change_contribution"
+    ],
+    "id": "edible_oils_split_between_vegetable_oil_gain_and_sun_flower_oil_loss",
+    "kind": "business",
+    "description": "Within oils, VEGETABLE OIL added 670411.93 of revenue Growth and 22520 bills growth, while SUN FLOWER OIL lost -560076.04 of revenue Growth and -33409 bills growth; at product-group level CF-EDIBLE OILS still added 444434.3 of revenue Growth mainly through rate effect 450273.0507 with QTY Growth of -374.0.",
+    "affected_segment": "CF-EDIBLE OILS",
+    "segment_members": [
+      "VEGETABLE OIL",
+      "SUN FLOWER OIL"
+    ],
+    "impact_value": 670411.93,
+    "impact_share": 19.6356,
+    "question": "What shifted demand within CF-EDIBLE OILS from SUN FLOWER OIL toward VEGETABLE OIL, and did the change vary by branch?",
+    "evidence_query": "meta_movers_by_mis_deep_dive2_special_product_group_name",
+    "decomposition": [
+      {
+        "driver": "QTY Growth",
+        "rate_of": "net revenue CURRENT / net qty CURRENT",
+        "revenue_change": 670411.93,
+        "volume_effect": 398239.8529,
+        "rate_effect": 272172.0771,
+        "rate_current": 15.1583,
+        "rate_prior": 13.1307,
+        "reconciled": true,
+        "basis": "exact price/volume split; rate = revenue per unit of driver (blends price and mix at this grain); decomposition, not cause"
+      },
+      {
+        "driver": "bills growth",
+        "rate_of": "net revenue CURRENT / net bills CURRENT",
+        "revenue_change": 670411.93,
+        "volume_effect": 340079.3277,
+        "rate_effect": 330332.6023,
+        "rate_current": 18.0281,
+        "rate_prior": 15.1012,
+        "reconciled": true,
+        "basis": "exact price/volume split; rate = revenue per unit of driver (blends price and mix at this grain); decomposition, not cause"
+      }
+    ],
+    "score": 19.63559784782956
+  },
+  {
+    "candidate_id": "cand_80_new_entity_current_only",
+    "related_candidate_ids": null,
+    "id": "cfh022_new_branch_revenue_is_material",
+    "kind": "business",
+    "description": "CFH022 generated current-only net revenue CURRENT of 11906055.96 and is excluded from comparable change because net revenue PAST is 0.0.",
+    "affected_segment": "CFH022",
+    "segment_members": null,
+    "impact_value": 11906055.96,
+    "impact_share": null,
+    "question": "Which categories and product groups make up CFH022's 11906055.96 of current revenue?",
+    "evidence_query": "baseline_entity_scope",
+    "decomposition": null,
+    "score": 12.0
+  }
+]

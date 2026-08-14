@@ -30,11 +30,14 @@ def _decode_env(name: str) -> bytes | None:
 def main() -> int:
     config_bytes = _decode_env("AGENT_CONFIG_B64")
     rules_bytes = _decode_env("AGENT_RULES_B64")
+    summary_rules_bytes = _decode_env("AGENT_SUMMARY_RULES_B64")
 
-    if not config_bytes and not rules_bytes:
+    if not config_bytes and not rules_bytes and not summary_rules_bytes:
         return agent_main()
     if not config_bytes:
-        raise SystemExit("AGENT_RULES_B64 requires AGENT_CONFIG_B64.")
+        raise SystemExit(
+            "AGENT_RULES_B64 / AGENT_SUMMARY_RULES_B64 require AGENT_CONFIG_B64."
+        )
 
     runtime_dir = PROJECT_ROOT / "outputs" / "runtime-config"
     runtime_dir.mkdir(parents=True, exist_ok=True)
@@ -47,7 +50,24 @@ def main() -> int:
     else:
         rules_path.unlink(missing_ok=True)
 
-    return agent_main(["--config", str(config_path)])
+    # The summary branch reads its own rulebook as a sibling of the active
+    # config.  Without this the file simply never exists in the container and
+    # summary_business_rules_block() silently degrades to "".
+    summary_rules_path = runtime_dir / "summary_business_rules.md"
+    if summary_rules_bytes is not None:
+        summary_rules_path.write_bytes(summary_rules_bytes)
+    else:
+        summary_rules_path.unlink(missing_ok=True)
+
+    # AGENT_REPORT_ID names which report this job produces (WP1). Passed
+    # explicitly rather than left to main's env-var default, so the container
+    # path keeps working if that default is ever changed. Absent means "the
+    # report named in the config", which is every pre-WP1 job.
+    argv = ["--config", str(config_path)]
+    report_id = os.environ.get("AGENT_REPORT_ID")
+    if report_id:
+        argv += ["--report", report_id]
+    return agent_main(argv)
 
 
 if __name__ == "__main__":

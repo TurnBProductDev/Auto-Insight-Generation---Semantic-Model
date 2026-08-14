@@ -1,0 +1,205 @@
+{
+  "focus_key": "focus:v2:5c18a1cea2161ebe029968f9ebca9aeef5ad929ed97149d3e38dd5a5ae02cbf7",
+  "candidate_id": "summary_5c18a1cea216",
+  "segment": "FRESH MUTTON OTHER",
+  "dimension_role": "category",
+  "sections": {
+    "scorecard": {
+      "source": "targeted_dax",
+      "metrics": {
+        "revenue": {
+          "current": 921154.1726027395,
+          "prior": 1516863.1808219182,
+          "change": -595709.0082191786,
+          "change_pct": -39.27242850580574
+        },
+        "quantity": {
+          "current": 121487.38,
+          "prior": 200444.94,
+          "change": -78957.56,
+          "change_pct": -39.39114651634509
+        },
+        "transactions": {
+          "current": 77147.0,
+          "prior": 111035.0,
+          "change": -33888.0,
+          "change_pct": -30.520106272796866
+        }
+      }
+    },
+    "internal_contributors": [],
+    "location": null,
+    "driver_bridge": {
+      "volume_effect": -597509.7980100543,
+      "rate_mix_effect": 1800.7897908755942,
+      "total_change": -595709.0082191786,
+      "reconciles": true,
+      "driver_class": "volume"
+    },
+    "period_trend": {
+      "dimension": "DOC_MONTH",
+      "reference": "'MIS_DEEP_DIVE2'[DOC_MONTH]",
+      "grain": "month",
+      "rows": [
+        {
+          "DOC_MONTH": 1.0,
+          "revenue_current": 91258.21095890412,
+          "revenue_prior": 104046.701369863,
+          "revenue_change": -12788.490410958882
+        },
+        {
+          "DOC_MONTH": 2.0,
+          "revenue_current": 90376.56164383562,
+          "revenue_prior": 122840.47945205479,
+          "revenue_change": -32463.917808219165
+        },
+        {
+          "DOC_MONTH": 3.0,
+          "revenue_current": 120850.87671232877,
+          "revenue_prior": 153067.25479452056,
+          "revenue_change": -32216.37808219179
+        },
+        {
+          "DOC_MONTH": 4.0,
+          "revenue_current": 113929.70410958905,
+          "revenue_prior": 160733.18356164385,
+          "revenue_change": -46803.4794520548
+        },
+        {
+          "DOC_MONTH": 5.0,
+          "revenue_current": 74026.14520547946,
+          "revenue_prior": 139751.74520547944,
+          "revenue_change": -65725.59999999998
+        },
+        {
+          "DOC_MONTH": 6.0,
+          "revenue_current": 107318.75890410958,
+          "revenue_prior": 139067.02465753426,
+          "revenue_change": -31748.265753424683
+        },
+        {
+          "DOC_MONTH": 7.0,
+          "revenue_current": 53802.72602739726,
+          "revenue_prior": 137834.39178082193,
+          "revenue_change": -84031.66575342466
+        },
+        {
+          "DOC_MONTH": 8.0,
+          "revenue_current": 39419.13698630137,
+          "revenue_prior": 103182.79178082192,
+          "revenue_change": -63763.65479452055
+        },
+        {
+          "DOC_MONTH": 9.0,
+          "revenue_current": 60820.964383561644,
+          "revenue_prior": 126753.80547945204,
+          "revenue_change": -65932.8410958904
+        },
+        {
+          "DOC_MONTH": 10.0,
+          "revenue_current": 49037.85205479452,
+          "revenue_prior": 114857.66301369862,
+          "revenue_change": -65819.8109589041
+        },
+        {
+          "DOC_MONTH": 11.0,
+          "revenue_current": 35087.942465753425,
+          "revenue_prior": 109818.68767123287,
+          "revenue_change": -74730.74520547944
+        },
+        {
+          "DOC_MONTH": 12.0,
+          "revenue_current": 85225.29315068493,
+          "revenue_prior": 104909.45205479451,
+          "revenue_change": -19684.158904109587
+        }
+      ],
+      "completeness": "complete",
+      "direction": "weakening_decline"
+    },
+    "daily_trend": {
+      "status": "disabled",
+      "reason": "summary_focus_daily_trend_enabled is false"
+    },
+    "caveats": [
+      "child dimension BRAND_NAME failed hierarchy validation"
+    ]
+  },
+  "caveats": [
+    "child dimension BRAND_NAME failed hierarchy validation"
+  ],
+  "queries_attempted": 3,
+  "query_budget": 5,
+  "signature_fields": {
+    "top_pos_contributor": null,
+    "top_neg_contributor": null,
+    "leading_location": null,
+    "driver_class": "volume"
+  },
+  "deep_dive_signature": "657efa9fb82bb22b",
+  "signature_duplicate": false,
+  "signature_duplicate_of": null,
+  "signature_overlap": 0.0,
+  "facts": [
+    {
+      "fact_id": "D1",
+      "fact_kind": "deep_dive",
+      "subject": "FRESH MUTTON OTHER",
+      "metric": "Revenue change",
+      "display_value": "-595.7K",
+      "raw_value": -595709.0082191786,
+      "statement": "FRESH MUTTON OTHER revenue changed by -595.7K (-39.3%).",
+      "subject_role": "focus",
+      "detail_role": "focus_metric",
+      "coverage": "complete"
+    },
+    {
+      "fact_id": "D2",
+      "fact_kind": "deep_dive",
+      "subject": "FRESH MUTTON OTHER",
+      "metric": "Quantity change",
+      "display_value": "-79.0K",
+      "raw_value": -78957.56,
+      "statement": "FRESH MUTTON OTHER quantity changed by -79.0K.",
+      "subject_role": "focus",
+      "detail_role": "focus_metric",
+      "coverage": "complete"
+    },
+    {
+      "fact_id": "D3",
+      "fact_kind": "deep_dive",
+      "subject": "FRESH MUTTON OTHER",
+      "metric": "Transactions change",
+      "display_value": "-33.9K",
+      "raw_value": -33888.0,
+      "statement": "FRESH MUTTON OTHER transactions changed by -33.9K.",
+      "subject_role": "focus",
+      "detail_role": "focus_metric",
+      "coverage": "complete"
+    },
+    {
+      "fact_id": "D4",
+      "fact_kind": "deep_dive",
+      "subject": "FRESH MUTTON OTHER",
+      "metric": "Volume effect on revenue",
+      "display_value": "-597.5K",
+      "raw_value": -597509.7980100543,
+      "statement": "Within FRESH MUTTON OTHER, change in units sold reduced revenue by -597.5K.",
+      "subject_role": "focus",
+      "detail_role": "driver",
+      "coverage": "complete"
+    },
+    {
+      "fact_id": "D5",
+      "fact_kind": "deep_dive",
+      "subject": "FRESH MUTTON OTHER",
+      "metric": "Rate and mix effect on revenue",
+      "display_value": "+1.8K",
+      "raw_value": 1800.7897908755942,
+      "statement": "Within FRESH MUTTON OTHER, average revenue per item and mix added revenue by +1.8K.",
+      "subject_role": "focus",
+      "detail_role": "driver",
+      "coverage": "complete"
+    }
+  ]
+}

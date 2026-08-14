@@ -1,0 +1,392 @@
+{
+  "(grand total)": {
+    "queries": [
+      "meta_comparable_totals"
+    ],
+    "metrics": [
+      "CAT_TRANSACTIONS::transactions:change:bills growth",
+      "CAT_TRANSACTIONS::transactions:current:net bills CURRENT",
+      "CAT_TRANSACTIONS::transactions:prior:transactions_prior_derived",
+      "MIS_DEEP_DIVE2::quantity:change:QTY Growth",
+      "MIS_DEEP_DIVE2::quantity:current:net qty CURRENT",
+      "MIS_DEEP_DIVE2::quantity:prior:net qty PAST",
+      "MIS_DEEP_DIVE2::revenue:change:revenue Growth",
+      "MIS_DEEP_DIVE2::revenue:current:net revenue CURRENT",
+      "MIS_DEEP_DIVE2::revenue:prior:net revenue PAST"
+    ],
+    "completeness_seen": [
+      "complete"
+    ],
+    "population_seen": [
+      "comparable"
+    ],
+    "coverage_kinds": [
+      "grand_total"
+    ],
+    "trusted_coverage": true
+  },
+  "'MIS_DEEP_DIVE2'[special_product_group_name]": {
+    "queries": [
+      "meta_movers_by_mis_deep_dive2_special_product_group_name",
+      "meta_concentration_by_mis_deep_dive2_special_product_group_name",
+      "meta_cross_store_no_by_special_product_group_name"
+    ],
+    "metrics": [
+      "CAT_TRANSACTIONS::transactions:change:bills growth",
+      "CAT_TRANSACTIONS::transactions:current:net bills CURRENT",
+      "CAT_TRANSACTIONS::transactions:prior:transactions_prior_derived",
+      "MIS_DEEP_DIVE2::quantity:change:QTY Growth",
+      "MIS_DEEP_DIVE2::quantity:current:net qty CURRENT",
+      "MIS_DEEP_DIVE2::quantity:prior:net qty PAST",
+      "MIS_DEEP_DIVE2::revenue:change:revenue Growth",
+      "MIS_DEEP_DIVE2::revenue:current:net revenue CURRENT",
+      "MIS_DEEP_DIVE2::revenue:prior:net revenue PAST"
+    ],
+    "completeness_seen": [
+      "partial"
+    ],
+    "population_seen": [
+      "comparable"
+    ],
+    "coverage_kinds": [
+      "paired_change_tails",
+      "top_concentration",
+      "top_cross_dimension"
+    ],
+    "trusted_coverage": false
+  },
+  "'MIS_DEEP_DIVE2'[product_group_name]": {
+    "queries": [
+      "meta_movers_by_mis_deep_dive2_product_group_name",
+      "meta_concentration_by_mis_deep_dive2_product_group_name"
+    ],
+    "metrics": [
+      "CAT_TRANSACTIONS::transactions:change:bills growth",
+      "CAT_TRANSACTIONS::transactions:current:net bills CURRENT",
+      "CAT_TRANSACTIONS::transactions:prior:transactions_prior_derived",
+      "MIS_DEEP_DIVE2::quantity:change:QTY Growth",
+      "MIS_DEEP_DIVE2::quantity:current:net qty CURRENT",
+      "MIS_DEEP_DIVE2::quantity:prior:net qty PAST",
+      "MIS_DEEP_DIVE2::revenue:change:revenue Growth",
+      "MIS_DEEP_DIVE2::revenue:current:net revenue CURRENT",
+      "MIS_DEEP_DIVE2::revenue:prior:net revenue PAST"
+    ],
+    "completeness_seen": [
+      "partial"
+    ],
+    "population_seen": [
+      "comparable"
+    ],
+    "coverage_kinds": [
+      "paired_change_tails",
+      "top_concentration"
+    ],
+    "trusted_coverage": false
+  },
+  "'MIS_DEEP_DIVE2'[item_category_name]": {
+    "queries": [
+      "meta_movers_by_mis_deep_dive2_item_category_name"
+    ],
+    "metrics": [
+      "CAT_TRANSACTIONS::transactions:change:bills growth",
+      "CAT_TRANSACTIONS::transactions:current:net bills CURRENT",
+      "CAT_TRANSACTIONS::transactions:prior:transactions_prior_derived",
+      "MIS_DEEP_DIVE2::quantity:change:QTY Growth",
+      "MIS_DEEP_DIVE2::quantity:current:net qty CURRENT",
+      "MIS_DEEP_DIVE2::quantity:prior:net qty PAST",
+      "MIS_DEEP_DIVE2::revenue:change:revenue Growth",
+      "MIS_DEEP_DIVE2::revenue:current:net revenue CURRENT",
+      "MIS_DEEP_DIVE2::revenue:prior:net revenue PAST"
+    ],
+    "completeness_seen": [
+      "partial"
+    ],
+    "population_seen": [
+      "comparable"
+    ],
+    "coverage_kinds": [
+      "paired_change_tails"
+    ],
+    "trusted_coverage": false
+  },
+  "'MIS_DEEP_DIVE2'[division_name]": {
+    "queries": [
+      "meta_movers_by_mis_deep_dive2_division_name"
+    ],
+    "metrics": [
+      "CAT_TRANSACTIONS::transactions:change:bills growth",
+      "CAT_TRANSACTIONS::transactions:current:net bills CURRENT",
+      "CAT_TRANSACTIONS::transactions:prior:transactions_prior_derived",
+      "MIS_DEEP_DIVE2::quantity:change:QTY Growth",
+      "MIS_DEEP_DIVE2::quantity:current:net qty CURRENT",
+      "MIS_DEEP_DIVE2::quantity:prior:net qty PAST",
+      "MIS_DEEP_DIVE2::revenue:change:revenue Growth",
+      "MIS_DEEP_DIVE2::revenue:current:net revenue CURRENT",
+      "MIS_DEEP_DIVE2::revenue:prior:net revenue PAST"
+    ],
+    "completeness_seen": [
+      "partial"
+    ],
+    "population_seen": [
+      "comparable"
+    ],
+    "coverage_kinds": [
+      "paired_change_tails"
+    ],
+    "trusted_coverage": false
+  },
+  "'MIS_DEEP_DIVE2'[special_product_group]": {
+    "queries": [
+      "meta_movers_by_mis_deep_dive2_special_product_group"
+    ],
+    "metrics": [
+      "CAT_TRANSACTIONS::transactions:change:bills growth",
+      "CAT_TRANSACTIONS::transactions:current:net bills CURRENT",
+      "CAT_TRANSACTIONS::transactions:prior:transactions_prior_derived",
+      "MIS_DEEP_DIVE2::quantity:change:QTY Growth",
+      "MIS_DEEP_DIVE2::quantity:current:net qty CURRENT",
+      "MIS_DEEP_DIVE2::quantity:prior:net qty PAST",
+      "MIS_DEEP_DIVE2::revenue:change:revenue Growth",
+      "MIS_DEEP_DIVE2::revenue:current:net revenue CURRENT",
+      "MIS_DEEP_DIVE2::revenue:prior:net revenue PAST"
+    ],
+    "completeness_seen": [
+      "partial"
+    ],
+    "population_seen": [
+      "comparable"
+    ],
+    "coverage_kinds": [
+      "paired_change_tails"
+    ],
+    "trusted_coverage": false
+  },
+  "'MIS_DEEP_DIVE2'[max_date]": {
+    "queries": [
+      "meta_trend_by_mis_deep_dive2_max_date"
+    ],
+    "metrics": [
+      "CAT_TRANSACTIONS::transactions:change:bills growth",
+      "CAT_TRANSACTIONS::transactions:current:net bills CURRENT",
+      "CAT_TRANSACTIONS::transactions:prior:transactions_prior_derived",
+      "MIS_DEEP_DIVE2::quantity:change:QTY Growth",
+      "MIS_DEEP_DIVE2::quantity:current:net qty CURRENT",
+      "MIS_DEEP_DIVE2::quantity:prior:net qty PAST",
+      "MIS_DEEP_DIVE2::revenue:change:revenue Growth",
+      "MIS_DEEP_DIVE2::revenue:current:net revenue CURRENT",
+      "MIS_DEEP_DIVE2::revenue:prior:net revenue PAST"
+    ],
+    "completeness_seen": [
+      "partial"
+    ],
+    "population_seen": [
+      "comparable"
+    ],
+    "coverage_kinds": [
+      "recent_time_window"
+    ],
+    "trusted_coverage": false
+  },
+  "'MIS_DEEP_DIVE2'[store_no]": {
+    "queries": [
+      "meta_cross_store_no_by_special_product_group_name",
+      "baseline_entity_scope",
+      "baseline_comparable_entities"
+    ],
+    "metrics": [
+      "CAT_TRANSACTIONS::transactions:change:bills growth",
+      "CAT_TRANSACTIONS::transactions:current:net bills CURRENT",
+      "CAT_TRANSACTIONS::transactions:prior:transactions_prior_derived",
+      "MIS_DEEP_DIVE2::quantity:change:QTY Growth",
+      "MIS_DEEP_DIVE2::quantity:current:net qty CURRENT",
+      "MIS_DEEP_DIVE2::quantity:prior:net qty PAST",
+      "MIS_DEEP_DIVE2::revenue:change:revenue Growth",
+      "MIS_DEEP_DIVE2::revenue:current:net revenue CURRENT",
+      "MIS_DEEP_DIVE2::revenue:prior:net revenue PAST"
+    ],
+    "completeness_seen": [
+      "complete",
+      "partial"
+    ],
+    "population_seen": [
+      "comparable",
+      "unfiltered_discovery"
+    ],
+    "coverage_kinds": [
+      "entity_scope_discovery",
+      "full_entity_breakdown",
+      "top_cross_dimension"
+    ],
+    "trusted_coverage": true
+  },
+  "'MIS_DEEP_DIVE2'[month]": {
+    "queries": [
+      "meta_period_by_mis_deep_dive2_month"
+    ],
+    "metrics": [
+      "CAT_TRANSACTIONS::transactions:change:bills growth",
+      "CAT_TRANSACTIONS::transactions:current:net bills CURRENT",
+      "CAT_TRANSACTIONS::transactions:prior:transactions_prior_derived",
+      "MIS_DEEP_DIVE2::quantity:change:QTY Growth",
+      "MIS_DEEP_DIVE2::quantity:current:net qty CURRENT",
+      "MIS_DEEP_DIVE2::quantity:prior:net qty PAST",
+      "MIS_DEEP_DIVE2::revenue:change:revenue Growth",
+      "MIS_DEEP_DIVE2::revenue:current:net revenue CURRENT",
+      "MIS_DEEP_DIVE2::revenue:prior:net revenue PAST"
+    ],
+    "completeness_seen": [
+      "complete"
+    ],
+    "population_seen": [
+      "comparable"
+    ],
+    "coverage_kinds": [
+      "period_series"
+    ],
+    "trusted_coverage": true
+  },
+  "'CAT_TABLE'[special_product_group_name]": {
+    "queries": [],
+    "metrics": [],
+    "completeness_seen": [],
+    "population_seen": [],
+    "coverage_kinds": [],
+    "trusted_coverage": false
+  },
+  "'MIS_BASE_FILE_MONTHLY_BRAND_TB'[special_product_group_name]": {
+    "queries": [],
+    "metrics": [],
+    "completeness_seen": [],
+    "population_seen": [],
+    "coverage_kinds": [],
+    "trusted_coverage": false
+  },
+  "'MIS_BASE_FILE_MONTHLY_BRAND_TB'[product_group_name]": {
+    "queries": [],
+    "metrics": [],
+    "completeness_seen": [],
+    "population_seen": [],
+    "coverage_kinds": [],
+    "trusted_coverage": false
+  },
+  "'MIS_BASE_FILE_MONTHLY_BRAND_TB'[item_category_name]": {
+    "queries": [],
+    "metrics": [],
+    "completeness_seen": [],
+    "population_seen": [],
+    "coverage_kinds": [],
+    "trusted_coverage": false
+  },
+  "'MIS_BASE_FILE_MONTHLY_BRAND_TB'[division_name]": {
+    "queries": [],
+    "metrics": [],
+    "completeness_seen": [],
+    "population_seen": [],
+    "coverage_kinds": [],
+    "trusted_coverage": false
+  },
+  "'CAT_TRANSACTIONS'[special_product_group_name]": {
+    "queries": [],
+    "metrics": [],
+    "completeness_seen": [],
+    "population_seen": [],
+    "coverage_kinds": [],
+    "trusted_coverage": false
+  },
+  "'CAT_TRANSACTIONS'[product_group_name]": {
+    "queries": [],
+    "metrics": [],
+    "completeness_seen": [],
+    "population_seen": [],
+    "coverage_kinds": [],
+    "trusted_coverage": false
+  },
+  "'CAT_TABLE'[store_no]": {
+    "queries": [],
+    "metrics": [],
+    "completeness_seen": [],
+    "population_seen": [],
+    "coverage_kinds": [],
+    "trusted_coverage": false
+  },
+  "'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no]": {
+    "queries": [],
+    "metrics": [],
+    "completeness_seen": [],
+    "population_seen": [],
+    "coverage_kinds": [],
+    "trusted_coverage": false
+  },
+  "'CAT_TRANSACTIONS'[store_no]": {
+    "queries": [],
+    "metrics": [],
+    "completeness_seen": [],
+    "population_seen": [],
+    "coverage_kinds": [],
+    "trusted_coverage": false
+  },
+  "'CAT_TABLE'[sec]": {
+    "queries": [],
+    "metrics": [],
+    "completeness_seen": [],
+    "population_seen": [],
+    "coverage_kinds": [],
+    "trusted_coverage": false
+  },
+  "'CAT_TABLE'[keyyy]": {
+    "queries": [],
+    "metrics": [],
+    "completeness_seen": [],
+    "population_seen": [],
+    "coverage_kinds": [],
+    "trusted_coverage": false
+  },
+  "'CAT_TABLE'[dep]": {
+    "queries": [],
+    "metrics": [],
+    "completeness_seen": [],
+    "population_seen": [],
+    "coverage_kinds": [],
+    "trusted_coverage": false
+  },
+  "'CAT_TABLE'[COUNT_CAT_TABLE]": {
+    "queries": [],
+    "metrics": [],
+    "completeness_seen": [],
+    "population_seen": [],
+    "coverage_kinds": [],
+    "trusted_coverage": false
+  },
+  "'ODS'[odsKey]": {
+    "queries": [],
+    "metrics": [],
+    "completeness_seen": [],
+    "population_seen": [],
+    "coverage_kinds": [],
+    "trusted_coverage": false
+  },
+  "'MIS_BASE_FILE_MONTHLY_BRAND_TB'[special_product_group]": {
+    "queries": [],
+    "metrics": [],
+    "completeness_seen": [],
+    "population_seen": [],
+    "coverage_kinds": [],
+    "trusted_coverage": false
+  },
+  "'MIS_BASE_FILE_MONTHLY_BRAND_TB'[item_family]": {
+    "queries": [],
+    "metrics": [],
+    "completeness_seen": [],
+    "population_seen": [],
+    "coverage_kinds": [],
+    "trusted_coverage": false
+  },
+  "'CAT_TRANSACTIONS'[special_product_group]": {
+    "queries": [],
+    "metrics": [],
+    "completeness_seen": [],
+    "population_seen": [],
+    "coverage_kinds": [],
+    "trusted_coverage": false
+  }
+}

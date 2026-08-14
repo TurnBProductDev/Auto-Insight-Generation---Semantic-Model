@@ -1,0 +1,87 @@
+{
+  "summary_type": "new_data",
+  "heading": "Like-for-like revenue across the four comparable branches increased by +2.8%, up +3.5M to 125.4M.",
+  "paragraphs": [
+    "Like-for-like revenue is ahead by +2.8%, with sales up +3.5M versus the prior period.",
+    "The four comparable branches delivered 125.4M in revenue versus 122.0M last year.",
+    "This summary shows revenue only, so basket, pricing and transactions evidence is not available here to show what supported the increase.",
+    "The figures cover the comparable branch population only: CFH014, CFH017, CFH018 and CFH021.",
+    "Review the same comparable branch group alongside transactions, quantity, average price per item and quantity per transaction to confirm what supported the +2.8% revenue increase.",
+    "Compare the +3.5M uplift by branch within the comparable population to see which stores contributed most to the overall result.",
+    "Monitor the current period coverage because the reporting month is June 2026 and the final month can be incomplete."
+  ],
+  "sections": [
+    {
+      "heading": "What's working",
+      "tone": "positive",
+      "points": [
+        "Like-for-like revenue is ahead by +2.8%, with sales up +3.5M versus the prior period.",
+        "The four comparable branches delivered 125.4M in revenue versus 122.0M last year."
+      ]
+    },
+    {
+      "heading": "Risks",
+      "tone": "warning",
+      "points": [
+        "This summary shows revenue only, so basket, pricing and transactions evidence is not available here to show what supported the increase.",
+        "The figures cover the comparable branch population only: CFH014, CFH017, CFH018 and CFH021."
+      ]
+    },
+    {
+      "heading": "Recommended actions",
+      "tone": "info",
+      "points": [
+        "Review the same comparable branch group alongside transactions, quantity, average price per item and quantity per transaction to confirm what supported the +2.8% revenue increase.",
+        "Compare the +3.5M uplift by branch within the comparable population to see which stores contributed most to the overall result.",
+        "Monitor the current period coverage because the reporting month is June 2026 and the final month can be incomplete."
+      ]
+    }
+  ],
+  "covered_candidate_ids": [
+    "summary_7783fd0e315c"
+  ],
+  "covered_summary_keys": [
+    "summary:v1:7783fd0e315ccf0f7b582812f99c61cc1ae0ef493db0ff562afd0b8ee3b17436"
+  ],
+  "metrics": [
+    {
+      "label": "Like-for-like revenue growth",
+      "value": "+2.8%",
+      "tone": "positive"
+    },
+    {
+      "label": "Revenue increase",
+      "value": "+3.5M",
+      "tone": "positive"
+    },
+    {
+      "label": "Current revenue",
+      "value": "125.4M",
+      "tone": "teal"
+    },
+    {
+      "label": "Prior revenue",
+      "value": "122.0M",
+      "tone": "teal"
+    }
+  ],
+  "visual": {
+    "type": "bar",
+    "title": "Revenue: prior versus current",
+    "labels": [
+      "Prior",
+      "Current"
+    ],
+    "values": [
+      121970066.77999997,
+      125439478.41999994
+    ],
+    "value_label": "Revenue"
+  },
+  "data_as_of": "2026-07-27",
+  "grain": "month",
+  "freshness_status": "current",
+  "period_anchor": "2026-06",
+  "validation_status": "validated",
+  "authoring_mode": "llm"
+}

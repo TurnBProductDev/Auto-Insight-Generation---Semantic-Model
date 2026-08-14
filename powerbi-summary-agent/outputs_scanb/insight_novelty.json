@@ -1,0 +1,23 @@
+{
+  "detected": 78,
+  "suppressed": 0,
+  "eligible": 50,
+  "selected": 4,
+  "policy": "never_repeat",
+  "reason": "ok",
+  "memory_status": "ok",
+  "level_breakdown": {
+    "period": 5,
+    "high": 45
+  },
+  "watermark": "2023-12-31",
+  "period_anchor": "2023-12",
+  "resurfaced": 0,
+  "rolling_unavailable": false,
+  "unseen": 78,
+  "cap_dropped": 28,
+  "rate_detected": 0,
+  "rate_reserved": false,
+  "rate_resurfaced": 0,
+  "reserved_relative_id": null
+}

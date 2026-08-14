@@ -1,0 +1,110 @@
+[
+  {
+    "id": 1,
+    "severity": "warning",
+    "category": "Revenue",
+    "metric": "DOC_MONTH:August..December",
+    "value": "-4.44M",
+    "delta": "95.9%",
+    "deltaDirection": "down",
+    "description": "DOC_MONTH:August..December revenue decreased by 4.44M, accounting for about 95.9% of the total decline in revenue. The decline was concentrated in a sustained late-year downturn, with the biggest pressure in October and August.",
+    "displayTime": "12:08 PM",
+    "isoDate": "2026-08-04",
+    "comparisonLabel": "of the total decline in revenue",
+    "insight": {
+      "title": "Late-year revenue weakness",
+      "summary": "Most of the annual shortfall sat in the run from August to December, rather than being spread evenly across the year. This pattern suggests the main pressure was concentrated in the closing months, with October and August the key periods to examine first.",
+      "stats": [
+        {
+          "label": "Revenue change",
+          "value": "-4.44M"
+        },
+        {
+          "label": "Share of revenue decline",
+          "value": "95.9%"
+        },
+        {
+          "label": "Segments",
+          "value": "August, September, October, November, December"
+        }
+      ],
+      "action": "Review August to December trading drivers, especially October and August, across the affected months."
+    }
+  },
+  {
+    "id": 2,
+    "severity": "info",
+    "category": "Revenue",
+    "metric": "TECHNOLOGY",
+    "value": "-1.99M",
+    "delta": "20.1%",
+    "deltaDirection": "down",
+    "description": "TECHNOLOGY revenue decreased by 1.99M (20.1%), from 9.91M to 7.92M versus the prior period. The decline was concentrated in CONSUMER DEVICES, with LED TV making up much of the pressure within that area.",
+    "displayTime": "12:08 PM",
+    "isoDate": "2026-08-04",
+    "comparisonLabel": "vs the prior period",
+    "insight": {
+      "title": "Technology decline concentration",
+      "summary": "The weakness within TECHNOLOGY was not broad-based across every area to the same extent, but was centered in CONSUMER DEVICES and especially LED TV. This suggests the department result may be tied to a narrower set of products rather than a uniform decline across all technology lines.",
+      "stats": [
+        {
+          "label": "Revenue change",
+          "value": "-1.99M"
+        }
+      ],
+      "action": "Investigate CONSUMER DEVICES and LED TV within TECHNOLOGY to confirm where the revenue shortfall was concentrated."
+    }
+  },
+  {
+    "id": 3,
+    "severity": "info",
+    "category": "Revenue",
+    "metric": "CONSUMER GOODS",
+    "value": "-1.49M",
+    "delta": "3.2%",
+    "deltaDirection": "down",
+    "description": "CONSUMER GOODS revenue decreased by 1.49M (3.2%), from 47.05M to 45.56M versus the prior period. The shortfall appears to be linked to fewer transactions, even though more units were sold overall.",
+    "displayTime": "12:08 PM",
+    "isoDate": "2026-08-04",
+    "comparisonLabel": "vs the prior period",
+    "insight": {
+      "title": "Consumer Goods divergence",
+      "summary": "Within CONSUMER GOODS, the revenue decline sat alongside rising units and a large drop in transactions, pointing to pressure in how often purchases were made rather than in item volume alone. This may mean customers bought more items when they did purchase, but across fewer transactions overall.",
+      "stats": [
+        {
+          "label": "Revenue change",
+          "value": "-1.49M"
+        }
+      ],
+      "action": "Compare category performance within CONSUMER GOODS to identify which areas contributed most to the transactions decline."
+    }
+  },
+  {
+    "id": 4,
+    "severity": "info",
+    "category": "Revenue",
+    "metric": "FRESH FOOD",
+    "value": "-1.45M",
+    "delta": "6.9%",
+    "deltaDirection": "down",
+    "description": "FRESH FOOD revenue decreased by 1.45M (6.9%), from 21.05M to 19.59M versus the prior period. The decline came despite higher unit and transaction activity, with GREEN GROCERIES contributing a large part of the pressure.",
+    "displayTime": "12:08 PM",
+    "isoDate": "2026-08-04",
+    "comparisonLabel": "vs the prior period",
+    "insight": {
+      "title": "Fresh Food value pressure",
+      "summary": "FRESH FOOD weakened even as sales activity increased, and GREEN GROCERIES accounted for a notable share of that decline. This suggests the average revenue per item could have come under pressure, or the mix of products sold may have shifted toward lower-value lines.",
+      "stats": [
+        {
+          "label": "Revenue change",
+          "value": "-1.45M"
+        },
+        {
+          "label": "Segments",
+          "value": "FRESH FOOD, GREEN GROCERIES, VEGETABLE AND FRUITS"
+        }
+      ],
+      "action": "Examine GREEN GROCERIES within FRESH FOOD to validate whether the decline was concentrated in lower-value items or a changed mix of products sold."
+    }
+  }
+]

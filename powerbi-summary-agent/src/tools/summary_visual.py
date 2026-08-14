@@ -761,6 +761,258 @@ def _content_layout(blocks: list[dict]) -> str:
     return "".join(rendered)
 
 
+# --- full-coverage tables -----------------------------------------------------
+# Plain-language level names. The pipeline's canonical role vocabulary is
+# internal; a manager reads "Stores", not "store".
+_ROLE_TITLES = {
+    "store": "Stores",
+    "division": "Divisions",
+    "department": "Departments",
+    "section": "Sections",
+    "category": "Categories",
+    "subcategory": "Sub-categories",
+    "product_group": "Product groups",
+    "special_product_group": "Special product groups",
+    "brand": "Brands",
+    "product": "Products",
+    "item": "Items",
+    "sku": "SKUs",
+}
+# Singular forms for the TL;DR row label. Never derive these by stripping a
+# trailing "s" - that turns "Categories" into "Categorie".
+_ROLE_SINGULARS = {
+    "store": "Store",
+    "division": "Division",
+    "department": "Department",
+    "section": "Section",
+    "category": "Category",
+    "subcategory": "Sub-category",
+    "product_group": "Product group",
+    "special_product_group": "Special product group",
+    "brand": "Brand",
+    "product": "Product",
+    "item": "Item",
+    "sku": "SKU",
+}
+_SEVERITY_LABELS = {
+    "critical": "Needs attention",
+    "watch": "Watch",
+    "steady": "No material change",
+}
+_DIRECTION_ARROWS = {"up": "▲", "down": "▼", "flat": "–"}
+
+
+def _role_title(role) -> str:
+    key = str(role or "").strip().casefold()
+    return _ROLE_TITLES.get(key, key.replace("_", " ").title() or "Level")
+
+
+def _role_singular(role) -> str:
+    key = str(role or "").strip().casefold()
+    return _ROLE_SINGULARS.get(key, key.replace("_", " ").title() or "Level")
+
+
+def _signed_pct(value) -> str:
+    if not _finite_number(value):
+        return "n/a"
+    return f"{float(value):+.1f}%"
+
+
+def _signed_compact(value) -> str:
+    if not _finite_number(value):
+        return "n/a"
+    number = float(value)
+    return ("+" if number > 0 else "") + _compact(number)
+
+
+def _coverage_row_html(row: dict) -> str:
+    """One coverage line: name, both sides of the comparison, and its band.
+
+    A member with no prior year is rendered as explicitly not comparable rather
+    than as a movement of zero - the spec forbids inventing a number to fill a
+    gap, and a new store has no growth figure at all.
+    """
+    comparable = bool(row.get("comparable"))
+    band = str(row.get("severity") or "steady")
+    direction = str(row.get("direction") or "flat")
+    arrow = _DIRECTION_ARROWS.get(direction, "–")
+    if comparable:
+        change_cell = (
+            f'<span class="delta delta-{_safe(direction)}">{_safe(arrow)} '
+            f'{_safe(_signed_compact(row.get("change")))}</span>'
+        )
+        pct_cell = _safe(_signed_pct(row.get("change_pct")))
+    else:
+        change_cell = '<span class="delta delta-flat">not comparable</span>'
+        pct_cell = '<span class="muted-cell">no prior year</span>'
+    share = row.get("business_share_pct")
+    share_cell = f"{float(share):.1f}%" if _finite_number(share) else "n/a"
+    path = " › ".join(str(part) for part in (row.get("hierarchy_path") or [])[:-1])
+    name = _safe(row.get("member"))
+    if path:
+        name = f'{name}<span class="row-path">{_safe(path)}</span>'
+    return (
+        f'<tr data-search="{_safe(str(row.get("member") or "") + " " + path)}" '
+        f'data-severity="{_safe(band)}">'
+        f'<td class="rank-cell">{_safe(row.get("rank"))}</td>'
+        f'<th scope="row">{name}</th>'
+        f'<td class="num">{_safe(_compact(row["current"]) if _finite_number(row.get("current")) else "n/a")}</td>'
+        f'<td class="num">{change_cell}</td>'
+        f'<td class="num">{pct_cell}</td>'
+        f'<td class="num">{_safe(share_cell)}</td>'
+        f'<td><span class="badge badge-{_safe(band)}">{_safe(_SEVERITY_LABELS.get(band, band))}</span></td>'
+        "</tr>"
+    )
+
+
+def _coverage_table(rows: list[dict]) -> str:
+    head = (
+        "<thead><tr><th scope=\"col\">#</th><th scope=\"col\">Name</th>"
+        "<th scope=\"col\" class=\"num\">This year</th>"
+        "<th scope=\"col\" class=\"num\">Change</th>"
+        "<th scope=\"col\" class=\"num\">Change %</th>"
+        "<th scope=\"col\" class=\"num\">Share of business</th>"
+        "<th scope=\"col\">Status</th></tr></thead>"
+    )
+    body = "".join(_coverage_row_html(row) for row in rows)
+    return f'<table class="coverage-table">{head}<tbody>{body}</tbody></table>'
+
+
+def _coverage_level_html(level: dict, display_rows: int) -> str:
+    """One business level: a headline count line, ranked rows, and the rest.
+
+    Every member is present in the document. Only the *display* is truncated -
+    the remainder sits in a native ``<details>`` so coverage stays complete
+    without the page becoming a dump.
+    """
+    rows = list(level.get("rows") or [])
+    if not rows:
+        return ""
+    counts = level.get("counts") or {}
+    role = str(level.get("role") or "")
+    title = _role_title(role)
+    summary_bits = [f'{counts.get("total", len(rows))} covered']
+    if counts.get("up"):
+        summary_bits.append(f'{counts["up"]} up')
+    if counts.get("down"):
+        summary_bits.append(f'{counts["down"]} down')
+    if counts.get("critical"):
+        summary_bits.append(f'{counts["critical"]} need attention')
+    if counts.get("current_only"):
+        summary_bits.append(f'{counts["current_only"]} not comparable')
+    quiet = int(counts.get("no_material_change") or 0)
+    # The spec's "say so briefly rather than padding" line, stated once per
+    # level instead of repeated per member.
+    quiet_note = (
+        f'<p class="level-note">{quiet} of {counts.get("comparable", 0)} showed no material change.</p>'
+        if quiet else ""
+    )
+    limit = max(1, int(display_rows))
+    shown, rest = rows[:limit], rows[limit:]
+    more = ""
+    if rest:
+        more = (
+            f'<details class="coverage-more"><summary>Show the remaining '
+            f'{len(rest)} of {len(rows)}</summary>{_coverage_table(rest)}</details>'
+        )
+    caveat = ""
+    if level.get("pool_capped"):
+        caveat = (
+            '<p class="level-note">More members exist than the scan pool returned; '
+            'the largest movements are shown.</p>'
+        )
+    return (
+        f'<details class="coverage-level" id="cov-{_safe(role)}" open>'
+        f'<summary><span class="level-title">{_safe(title)}</span>'
+        f'<span class="level-counts">{_safe(" · ".join(summary_bits))}</span></summary>'
+        f"{quiet_note}{caveat}{_coverage_table(shown)}{more}</details>"
+    )
+
+
+def _tldr_html(movers: list[dict]) -> str:
+    """The sticky ranked headline block: the few things that matter most."""
+    if not movers:
+        return ""
+    items = []
+    for mover in movers:
+        band = str(mover.get("severity") or "watch")
+        direction = str(mover.get("direction") or "flat")
+        arrow = _DIRECTION_ARROWS.get(direction, "–")
+        pct = _signed_pct(mover.get("change_pct"))
+        role = _role_singular(mover.get("role"))
+        items.append(
+            f'<li><a href="#cov-{_safe(mover.get("role"))}">'
+            f'<span class="tldr-badge badge-{_safe(band)}"></span>'
+            f'<span class="tldr-name">{_safe(mover.get("member"))}</span>'
+            f'<span class="tldr-role">{_safe(role)}</span>'
+            f'<span class="tldr-delta delta-{_safe(direction)}">{_safe(arrow)} {_safe(pct)}</span>'
+            f'<span class="tldr-abs">{_safe(_signed_compact(mover.get("change")))}</span>'
+            "</a></li>"
+        )
+    return (
+        '<section class="tldr" id="tldr" aria-labelledby="tldr-title">'
+        '<h2 id="tldr-title">What matters most</h2>'
+        f'<ol>{"".join(items)}</ol></section>'
+    )
+
+
+def _nav_html(levels: list[dict], has_narrative: bool) -> str:
+    links = []
+    if has_narrative:
+        links.append('<a href="#narrative">Analysis</a>')
+    if levels:
+        links.append('<a href="#tldr">What matters most</a>')
+    for level in levels:
+        role = _safe(level.get("role"))
+        links.append(f'<a href="#cov-{role}">{_safe(_role_title(level.get("role")))}</a>')
+    if not links:
+        return ""
+    return (
+        '<nav class="jump" aria-label="Jump to a section">'
+        f'{"".join(links)}'
+        '<input type="search" class="report-search" placeholder="Search stores, departments, categories…" '
+        'aria-label="Search the report">'
+        "</nav>"
+    )
+
+
+def _coverage_html(coverage: dict, display_rows: int) -> tuple[str, str, list[dict]]:
+    """Return (tldr, levels html, level list) for the coverage surface."""
+    levels = [level for level in (coverage or {}).get("levels") or [] if level.get("rows")]
+    if not levels:
+        return "", "", []
+    from . import summary_coverage
+
+    tldr = _tldr_html(summary_coverage.top_movers(coverage, limit=5))
+    body = "".join(_coverage_level_html(level, display_rows) for level in levels)
+    if body:
+        names = [_role_title(level.get("role")).lower() for level in levels]
+        covered = (
+            ", ".join(names[:-1]) + " and " + names[-1] if len(names) > 1 else names[0]
+        )
+        # State a collapsed level rather than quietly omitting it, so a reader
+        # who expects that level knows why it is absent.
+        mirrored = (coverage or {}).get("mirrored_roles") or {}
+        mirror_note = ""
+        if mirrored:
+            pairs = "; ".join(
+                f"{_role_title(role).lower()} duplicates {_role_title(parent).lower()}"
+                for role, parent in mirrored.items()
+            )
+            mirror_note = (
+                f'<p class="coverage-intro coverage-caveat">Not shown separately: {_safe(pairs)} '
+                "in this model - the same members with the same values, so it is reported once.</p>"
+            )
+        body = (
+            '<section class="coverage" id="coverage" aria-labelledby="coverage-title">'
+            '<h2 id="coverage-title">Full coverage by level</h2>'
+            f'<p class="coverage-intro">All {_safe(covered)} are accounted for below, '
+            "ranked by how much each movement matters to the business.</p>"
+            f"{mirror_note}{body}</section>"
+        )
+    return tldr, body, levels
+
+
 def _interaction_script() -> str:
     return """<script>
 document.querySelectorAll('.interactive-chart .data-point').forEach(function(point){
@@ -781,15 +1033,50 @@ document.querySelectorAll('.interactive-chart .data-point').forEach(function(poi
   point.addEventListener('focus', show);
   point.addEventListener('blur', hide);
 });
+(function(){
+  const box = document.querySelector('.report-search');
+  if(!box) return;
+  const rows = Array.prototype.slice.call(document.querySelectorAll('[data-search]'));
+  box.addEventListener('input', function(){
+    const term = box.value.trim().toLowerCase();
+    rows.forEach(function(row){
+      row.hidden = term !== '' && row.dataset.search.toLowerCase().indexOf(term) === -1;
+    });
+    document.querySelectorAll('.coverage-level').forEach(function(level){
+      const visible = level.querySelectorAll('tbody [data-search]:not([hidden])').length;
+      level.hidden = term !== '' && visible === 0;
+      if(term !== '' && visible > 0) level.open = true;
+    });
+  });
+})();
 </script>"""
 
 
-def render(summary: dict, title: str = "AI Summary") -> str:
-    freshness = str(summary.get("freshness_status") or "unknown").replace("_", " ").title()
-    grain = str(summary.get("grain") or "snapshot").replace("_", " ").title()
-    data_as_of = summary.get("data_as_of") or "Unknown"
+def render(
+    summary: dict,
+    title: str = "AI Summary",
+    coverage: dict | None = None,
+    coverage_display_rows: int = 8,
+) -> str:
+    # Only state context the run actually resolved. Three "Unknown" chips read
+    # as a broken report; an absent chip reads as "not applicable here".
+    context_bits: list[str] = []
+    if summary.get("data_as_of"):
+        context_bits.append(f'Data through {_safe(summary["data_as_of"])}')
+    if summary.get("grain"):
+        context_bits.append(f'{_safe(str(summary["grain"]).replace("_", " ").title())} view')
+    if summary.get("freshness_status"):
+        context_bits.append(
+            f'{_safe(str(summary["freshness_status"]).replace("_", " ").title())} data'
+        )
+    context = (
+        '<div class="context" aria-label="Report context">'
+        + "".join(f"<span>{bit}</span>" for bit in context_bits)
+        + "</div>"
+    ) if context_bits else ""
     generated = datetime.now(timezone.utc).date().isoformat()
     dynamic = summary.get("content_blocks") is not None
+    tldr, coverage_body, coverage_levels = _coverage_html(coverage or {}, coverage_display_rows)
     if dynamic:
         content = _content_layout(list(summary.get("content_blocks") or []))
     else:
@@ -825,10 +1112,32 @@ ul{margin:0;padding:0;list-style:none}.summary-section li{position:relative;padd
 .axis-label{fill:__MUTED__;font-size:13px;font-weight:700}.heat-value{fill:__INK__;font-size:10.5px;font-weight:720;pointer-events:none}.series-legend{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:14px;margin:2px 8px -18px;color:__MUTED__;font-size:12px}.series-legend span{display:inline-flex;align-items:center;gap:6px}.series-legend i{width:9px;height:9px;border-radius:2px;display:inline-block}
 .donut-layout{display:grid;grid-template-columns:minmax(260px,420px) minmax(260px,1fr);align-items:center;gap:24px}.donut-layout svg{min-width:260px;max-width:400px;margin:auto}.donut-total{fill:__INK__;font-size:27px;font-weight:760}.chart-legend{display:grid;gap:9px;margin:0;padding:0;list-style:none}.chart-legend li{display:grid;grid-template-columns:10px minmax(0,1fr) auto;gap:10px;align-items:center;color:__MUTED__;font-size:13px}.chart-legend i{width:9px;height:9px;border-radius:50%}.chart-legend strong{color:__INK__;font-weight:700}.chart-data{margin:2px 0 7px;border-top:1px solid __GRID__;padding-top:12px}.chart-data summary{cursor:pointer;color:__TEAL_DARK__;font-size:13px;font-weight:700;list-style-position:inside}.chart-data table{width:100%;margin-top:10px;border-collapse:collapse;font-size:13px}.chart-data th,.chart-data td{padding:7px 8px;border-bottom:1px solid __GRID__;text-align:left}.chart-data th{color:__MUTED__;font-weight:550}.chart-data td{color:__INK__;font-weight:700;text-align:right}
 .summary-footer{display:flex;justify-content:space-between;gap:20px;align-items:center;margin-top:28px;padding-top:16px;border-top:1px solid __GRID__;color:#8498a8;font-size:12px}.summary-footer strong{color:__TEAL_DARK__;font-weight:650}
+.jump{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 26px;padding:11px 0;background:rgba(255,255,255,.94);backdrop-filter:blur(7px);border-bottom:1px solid __GRID__}
+.jump a{color:__MUTED__;font-size:13px;font-weight:650;text-decoration:none;padding:5px 11px;border:1px solid __GRID__;border-radius:99px;white-space:nowrap}.jump a:hover,.jump a:focus{color:__TEAL_DARK__;border-color:__TEAL__;background:__SOFT__}
+.report-search{flex:1 1 200px;min-width:170px;margin-left:auto;padding:7px 13px;border:1px solid __GRID__;border-radius:99px;font:inherit;font-size:13px;color:__INK__;background:#fff}.report-search:focus{outline:none;border-color:__TEAL__;box-shadow:0 0 0 3px rgba(15,159,149,.14)}
+.tldr{margin:0 0 34px;padding:23px 26px 19px;border:1px solid __GRID__;border-left:3px solid __TEAL__;border-radius:3px;background:__SOFT__}.tldr h2{margin:0 0 14px;font-size:14px;letter-spacing:.07em;text-transform:uppercase;color:#526a7b;font-weight:750}
+.tldr ol{margin:0;padding:0;list-style:none;display:grid;gap:2px;counter-reset:tldr}.tldr a{display:grid;grid-template-columns:10px minmax(0,1fr) auto auto auto;gap:13px;align-items:baseline;padding:9px 4px;border-bottom:1px solid __GRID__;text-decoration:none;color:__INK__}
+.tldr li:last-child a{border-bottom:0}.tldr a:hover,.tldr a:focus{background:#fff}.tldr-badge{width:9px;height:9px;border-radius:50%;align-self:center}.tldr-name{font-weight:700;font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tldr-role{color:#8496a5;font-size:12px;text-transform:uppercase;letter-spacing:.06em}.tldr-delta{font-weight:750;font-size:15px;font-variant-numeric:tabular-nums}.tldr-abs{color:__MUTED__;font-size:13px;font-variant-numeric:tabular-nums;min-width:64px;text-align:right}
+.coverage{margin:38px 0 0}.coverage>h2{font-size:22px;margin:0 0 6px;letter-spacing:-.012em}.coverage-intro{margin:0 0 20px;color:__MUTED__;font-size:15px;max-width:760px}
+.coverage-level{border:1px solid __GRID__;border-radius:3px;margin:0 0 14px;background:#fff}.coverage-level>summary{display:flex;flex-wrap:wrap;gap:12px;align-items:baseline;justify-content:space-between;padding:14px 18px;cursor:pointer;list-style:none}.coverage-level>summary::-webkit-details-marker{display:none}
+.coverage-level>summary:hover{background:__SOFT__}.level-title{font-size:16px;font-weight:750;color:__INK__}.level-counts{color:__MUTED__;font-size:13px;font-variant-numeric:tabular-nums}
+.level-note{margin:0 18px 10px;color:#8496a5;font-size:13px}
+.coverage-table{width:100%;border-collapse:collapse;font-size:14px}.coverage-table th,.coverage-table td{padding:9px 12px;border-top:1px solid __GRID__;text-align:left;vertical-align:baseline}
+.coverage-table thead th{color:#8496a5;font-size:11px;font-weight:750;letter-spacing:.06em;text-transform:uppercase;border-top:1px solid __GRID__;background:__SOFT__}
+.coverage-table tbody th{font-weight:700;color:__INK__}.coverage-table .num{text-align:right;font-variant-numeric:tabular-nums}.coverage-table .rank-cell{color:#a4b4c0;font-size:12px;width:34px}
+.row-path{display:block;color:#8496a5;font-size:11.5px;font-weight:500;margin-top:2px}.muted-cell{color:#a4b4c0}
+.delta{font-weight:700}.delta-up{color:__TEAL_DARK__}.delta-down{color:#dc3b42}.delta-flat{color:#8496a5;font-weight:600}
+.badge{display:inline-block;padding:3px 9px;border-radius:99px;font-size:11px;font-weight:750;letter-spacing:.03em;white-space:nowrap}
+.badge-critical{background:#fdecec;color:#b5262d}.badge-watch{background:#fdf3e3;color:#9a5a04}.badge-steady{background:#eef3f6;color:#6b8394}
+.tldr-badge.badge-critical{background:#dc3b42}.tldr-badge.badge-watch{background:#d47b08}.tldr-badge.badge-steady{background:#9fb2bf}
+.coverage-more{border-top:1px solid __GRID__}.coverage-more>summary{cursor:pointer;padding:11px 18px;color:__TEAL_DARK__;font-size:13px;font-weight:700}.coverage-more>summary:hover{background:__SOFT__}
+.narrative{scroll-margin-top:64px}.coverage-level{scroll-margin-top:64px}
 @media(max-width:800px){.page{padding:34px 22px 48px}.metrics-3,.metrics-4{grid-template-columns:repeat(2,minmax(0,1fr))}.metric{border-bottom:1px solid __GRID__}.metric:nth-child(2n){border-right:0}.metric:last-child{border-bottom:0}.metrics-2 .metric{border-bottom:0}.metrics-4 .metric:nth-child(3),.metrics-4 .metric:nth-child(4),.metrics-3 .metric:nth-child(3){border-bottom:0}.section-grid{grid-template-columns:1fr;gap:24px}.summary-section{padding-right:0}}
 @media(max-width:700px){.donut-layout{grid-template-columns:1fr}.interactive-chart svg{min-width:560px}.donut-layout svg{min-width:260px}}
 @media(max-width:500px){.topline{align-items:flex-start;flex-direction:column;gap:7px}.hero{padding-bottom:24px}.metrics-2,.metrics-3,.metrics-4{grid-template-columns:1fr}.metrics-2 .metric,.metrics-3 .metric,.metrics-4 .metric,.metric:nth-child(2n){border-right:0;border-bottom:1px solid __GRID__}.metric:last-child,.metrics-2 .metric:last-child,.metrics-3 .metric:last-child,.metrics-4 .metric:last-child{border-bottom:0}.actions{padding:22px 20px}.chart{padding:20px 12px 12px}.chart-head,.summary-footer{align-items:flex-start;flex-direction:column;gap:5px}.content-block h2{font-size:19px}.prose-block p,.bullet-block li{font-size:16px}}
-@media print{body{border-top:0}.page{max-width:none;padding:24px}.actions,.chart,.metrics,.summary-section{break-inside:avoid}}
+@media print{body{border-top:0}.page{max-width:none;padding:24px}.actions,.chart,.metrics,.summary-section,.coverage-level,.tldr{break-inside:avoid}.jump,.report-search{display:none}.coverage-more,.coverage-level{border-color:#ccc}.coverage-more[open]>summary{display:none}}
+@media(max-width:640px){.tldr a{grid-template-columns:9px minmax(0,1fr) auto;row-gap:2px}.tldr-role{grid-column:2}.tldr-abs{grid-column:3;text-align:right}.coverage-table{font-size:13px}.coverage-table th,.coverage-table td{padding:8px 7px}.coverage-table thead th:nth-child(6),.coverage-table tbody td:nth-child(6){display:none}.jump{gap:5px}.report-search{flex-basis:100%;margin-left:0}}
 """
     for token, value in {
         "__INK__": INK,
@@ -839,13 +1148,17 @@ ul{margin:0;padding:0;list-style:none}.summary-section li{position:relative;padd
         "__SOFT__": SOFT,
     }.items():
         style = style.replace(token, value)
-    script = _interaction_script() if dynamic else ""
+    # The search box and the coverage tables both need the script, so it is
+    # emitted whenever either surface is present - not only for chart tooltips.
+    script = _interaction_script() if (dynamic or coverage_body) else ""
+    nav = _nav_html(coverage_levels, bool(content))
+    narrative = f'<div class="narrative" id="narrative">{content}</div>' if content else ""
     return f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{_safe(title)}</title><style>{style}</style></head><body><main class="page">
 <header class="hero"><div class="topline"><div class="eyebrow">{_safe(title)}</div><div class="generated">Generated {_safe(generated)}</div></div>
 <h1>{_safe(summary.get("heading"))}</h1>
-<div class="context" aria-label="Report context"><span>Data through {_safe(data_as_of)}</span><span>{_safe(grain)} view</span><span>{_safe(freshness)} data</span></div></header>
-{content}
+{context}</header>
+{nav}{tldr}{narrative}{coverage_body}
 <footer class="summary-footer"><span>Figures are shown from the validated report evidence.</span><strong>AI-assisted analysis</strong></footer>
 </main>{script}</body></html>"""

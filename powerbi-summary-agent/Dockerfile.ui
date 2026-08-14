@@ -1,0 +1,50 @@
+# The client-onboarding UI, built FROM the agent image.
+#
+# Building on the agent image rather than beside it is the point: the probe runs
+# the pipeline's own nodes in-process, so it cannot drift from the pipeline it
+# is meant to predict, and the config schema the form renders from is the same
+# module main.py reads its defaults from.
+#
+#   docker build -f Dockerfile -t insightgenacr.azurecr.io/insightgen-agent:TAG .
+#   docker build -f Dockerfile.ui \
+#       --build-arg AGENT_IMAGE=insightgenacr.azurecr.io/insightgen-agent:TAG \
+#       -t insightgenacr.azurecr.io/insightgen-config-ui:TAG .
+#
+# Deploy it to the existing insightgen-container-env with INTERNAL ingress and
+# Entra ID authentication in front. Do not expose the deployment endpoints
+# without it: CONFIG_UI_ALLOW_DEPLOY grants ARM writes against the resource
+# group, and an unauthenticated page holding that could create arbitrary jobs.
+#
+# BEFORE HOSTING THIS, READ: client records are still files on disk, and
+# .dockerignore excludes config/*/ so the image ships with none. A hosted
+# instance therefore starts empty and loses every client it creates when the
+# replica restarts. The versioned config-record store in the agent-config blob
+# container (execution plan 2.5) is the missing piece; until it exists this
+# image is for local-equivalent use with a mounted volume, not a shared service.
+
+ARG AGENT_IMAGE=insightgen-agent:latest
+FROM ${AGENT_IMAGE}
+
+USER root
+COPY requirements-ui.txt /tmp/requirements-ui.txt
+RUN pip install --no-cache-dir --requirement /tmp/requirements-ui.txt \
+    && rm /tmp/requirements-ui.txt
+
+# The UI writes config/<client>/ directories, so that tree must be writable by
+# the non-root user the agent image runs as. /app itself stays root-owned.
+RUN mkdir -p /app/config && chown -R agent:agent /app/config
+
+USER agent
+
+ENV CONFIG_UI_HOST=0.0.0.0 \
+    CONFIG_UI_PORT=8080 \
+    CONFIG_UI_ALLOW_DEPLOY=0 \
+    POWERBI_AUTH_MODE=managed_identity \
+    POWERBI_QUERY_API=arrow
+
+EXPOSE 8080
+
+# Managed identity, never the interactive MSAL cache: get_powerbi_token() does an
+# unlocked read-modify-write of that file, so two concurrent probes would corrupt
+# it. POWERBI_AUTH_MODE above is what keeps the interactive path unreachable here.
+CMD ["sh", "-c", "python -m uvicorn src.api.app:app --host ${CONFIG_UI_HOST} --port ${CONFIG_UI_PORT}"]

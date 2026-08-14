@@ -19,11 +19,22 @@ python pbi_agent.py
 cd powerbi-summary-agent
 python -m src.main                       # uses config/config.json
 python -m src.main --config path/to.json
+python -m src.main --report sales_yoy     # which report this run produces (WP1)
 
 pip install -r powerbi-summary-agent/requirements.txt
+
+# The commit gate — both halves, offline, ~30s
+python scripts/replay_all.py --with-golden
+python scripts/golden_master.py           # byte-compare only
+python scripts/golden_master.py --update  # re-record (deliberate act)
+
+# Client onboarding UI (configure a client, probe the model, deploy the job)
+pip install -r powerbi-summary-agent/requirements-ui.txt
+python -m src.api.app                    # http://127.0.0.1:8020
+python -m src.api.app --allow-deploy     # also expose the ARM endpoints
 ```
 
-There is no suite for the LLM pipeline as a whole; the end-to-end run against a live model is the acceptance test and writes roughly 30 artifacts into `powerbi-summary-agent/outputs/`. Deterministic components are offline-testable: `python scripts/replay_metadata_scanner.py`, `python scripts/replay_stat_detector.py` (incl. the Phase-2 period, Phase-3 recent-week/rolling-week, and Phase-3b daily-anomaly fixtures), `python scripts/replay_novelty_filter.py` (memory/novelty + recent-week/rolling-week suppression/reserved-slot + daily recency + `commit_run` observed-vs-reported), and `python scripts/replay_evidence_assembler.py` (from the project directory). They require no auth or LLM and write replay artifacts to `outputs_replay/`.
+There is no suite for the LLM pipeline as a whole; the end-to-end run against a live model is the acceptance test and writes roughly 30 artifacts into `powerbi-summary-agent/outputs/`. Deterministic components are offline-testable: `python scripts/replay_metadata_scanner.py`, `python scripts/replay_stat_detector.py` (incl. the Phase-2 period, Phase-3 recent-week/rolling-week, and Phase-3b daily-anomaly fixtures), `python scripts/replay_novelty_filter.py` (memory/novelty + recent-week/rolling-week suppression/reserved-slot + daily recency + `commit_run` observed-vs-reported), `python scripts/replay_evidence_assembler.py`, `python scripts/replay_summary_coverage.py` (full-coverage tables + report shell; also replays the committed universe fixture), `python scripts/replay_config_schema.py` (the config catalogue cannot drift from the code), `python scripts/replay_config_ui.py` (onboarding services + API), and `python scripts/replay_summary_dashboard.py` (R6: three-lever spine, RAG bands, calendar comparator, contributions, mover ranking, entity stories + prose validation, two views, R6-off isolation, rendered shell; also replays the committed universe/overall fixtures) (from the project directory). They require no auth or LLM and write replay artifacts to `outputs_replay/`. **`python scripts/replay_all.py` is the one gate over all of them** - it discovers `scripts/replay_*.py` by glob (so a new replay joins automatically), runs them sequentially because they share `outputs_replay/`, and exits non-zero on any failure; `MIN_EXPECTED` guards the opposite failure mode, a replay deleted or renamed silently shrinking the gate. A replay proves the *code* is right; `python scripts/audit_summary_dashboard.py [output_dir]` proves a *produced* R6 artifact is right - it re-derives every arithmetic guarantee from the written `summary_dashboard.json`, re-runs prose grounding, and inspects `report_dashboard.html` as a document. Run it after every live run with `summary_r6_enabled`.
 
 ## Authentication — the load-bearing detail
 
@@ -48,7 +59,7 @@ load_config → read_metadata → semantic_profile → baseline_scope
     │       → summary_focus_universe → summary_candidate_builder
     │       → summary_overall_performance → summary_novelty_filter
     │       → summary_focus_evidence | summary_multi_focus_evidence
-    │       → fresh_summary_generator
+    │       → fresh_summary_generator → summary_dashboard_build
     │       → fresh_summary_validator → summary_branch_done ─┐
     │       (legacy: normalize_results → generate_summary when fresh_summary_enabled=false)
     └─→ insight_normalize → insight_temporal → insight_business_day_source
@@ -94,6 +105,551 @@ R4 changes the Summary product from one narrow daily story into a balanced page:
 - **Overall and depth:** `summary_overall_performance` builds company-level revenue/quantity/transaction comparisons, an exact volume vs rate/mix bridge and an optional reconciled Summary-owned trend (never imports Insight temporal state). **Both sides of every bridge are first-class supported facts** — `summary_overall.bridge_facts()` promotes the overall volume AND rate/mix effects (the node attaches them to the overall candidate) and the focus deep dive emits both driver facts (volume AND rate/mix) — so an offsetting effect is never dropped (e.g. "units added +1.9M while rate/mix removed −1.2M for a net +0.7M"). `summary_multi_focus_evidence` reuses the R1 deterministic deep dive under one **shared** budget (`summary_focus_total_deep_dive_queries`, default 15) plus per-focus caps (`summary_focus_max_queries_per_focus`, default 5), and persists the complete per-focus audit to `summary_focus_evidence_by_key.json` (the reused single-focus node overwrites `summary_focus_evidence.json`, so only that keyed file keeps all focuses). Division/Department/Category are the focus floor only: Product Group/Product/SKU may still explain a selected focus. A monthly **change/YoY** trend chart source (`:trend:change`, the movement not the level) is advertised alongside the level trend and the deterministic fallback prefers it. Emergent duplicate signatures are replaced from reserves when possible, otherwise the page honestly publishes fewer focuses.
 - **Presentation and compatibility:** the LLM authors the page from Overall plus the selected portfolio (active by default, gated by `summary_llm_authoring_enabled`), freely choosing professional paragraphs, bullets and evidence-compatible interactive charts; a grounded deterministic **Overall-first** draft is the non-fatal fallback. Deterministic validation (`validate_draft(..., mode="balanced_multi_focus")`) requires Overall Performance as the first block, every selected area covered, and every primary focus a Division/Department/Category. Memory schema v3 stores `area_records`, `weekly_coverage` and ordered same-day portfolios (non-destructive v2→v3 migration + leaf-only area backfill); history/API additions are plural and additive (`focuses`, `dailyFocuses`) while singular aliases remain for compatibility. Summary memory advances after configured required local delivery/history channels (`summary_required_delivery_channels`); optional API/blob/app publishing failures remain visible but do not freeze rotation unless explicitly configured as required.
 - **Verification:** `replay_summary_portfolio.py` (materiality, aliases/related-table ancestry, path-scoped identity, diversity, overlap expiry, budgets/replacements, both-sides bridge, Overall-first generator + `dailyFocuses`, delivery gate), `replay_summary_r4_isolation.py` (R4-off isolation) and `replay_summary_rotation.py` (seven-date coverage, same-day pinning) — all offline, no auth/LLM. The live universe probe (`scripts/probe_summary_universe.py`) must reconcile all resolved role scans before relying on R4.
+
+### Full coverage by level (summary R5)
+
+R4 answers "which few areas earn narrative"; **R5 adds the complementary surface — every member of every level gets a ranked line.** This resolves the standing tension between "each store/department/section/category gets its own story" and "rank, prioritise, don't dump": *coverage* is complete and compact, *focus* is selective and deep. It runs inside `summary_focus_universe` and is rendered by `summary_visual`; it costs **zero additional REST calls** because it reuses the rows the universe scans already returned.
+
+- **`src/tools/summary_coverage.py`** — pure functions, no state/IO/LLM. `build_coverage(universe)` turns every scanned role into a ranked level; `build_role_coverage` ranks one level; `top_movers` feeds the headline. Every figure is copied or derived arithmetically from the scanned members.
+- **Ranking is the spec's three-part blend**, and the weighting matters: `WEIGHT_IMPACT 0.40` on share-of-total-business change, plus `WEIGHT_MAGNITUDE 0.35` and `WEIGHT_UNEXPECTEDNESS 0.25` (deviation from the level's own **peer median** percent change — "moved against the rest of the estate"). The two ratio components are winsorized at `MAGNITUDE_CEILING_PCT` (100%) **and then scaled by normalized business share**. Clamping alone is provably insufficient: a member worth a rounding error maxes magnitude *and* unexpectedness simultaneously (a freak percentage is by construction also far from the median), scoring 0.60 on relevance it never earned. On the working model this is the difference between headlining `FASHION +710.6K` and headlining `COMMUNICATION −85.7%` — a ₹312 movement.
+- **Severity bands** (`critical`/`watch`/`steady`) are deterministic: `critical` needs a material move **and** a material share (or a move large enough to shift the whole business on its own), so a big percentage on a trivial area is only `watch`. A current-only member can never be `critical` — its movement is unmeasurable, and it is ranked last and labelled "not comparable / no prior year" rather than shown as a zero.
+- **`top_movers` applies a headline relevance floor** (`HEADLINE_MIN_IMPACT_PCT`) that exists nowhere else: a trivial absolute move stays ranked inside its own level but cannot lead the report. If the floor would empty the headline the floor is dropped, so a quiet period still lists its biggest movements instead of rendering blank.
+- **Mirrored levels are collapsed** (`level_signature`, broad wins). On the working model `CAT_TABLE[dep]` is byte-identical to `division_name` — same 13 members, same values — so Department would otherwise state every Division finding a second time. The collapse is recorded in `mirrored_roles` and surfaced as a visible caveat, never a silent omission.
+- **Roles.** `summary_roles.HIERARCHY_LEVELS` gains **`section` at depth 25** (between Department and Category; `_HIERARCHY_PATTERNS` matches `section`/`sec`, and `sector` does not false-match), and `section` joins `DEFAULT_ALLOWED_ROLES`. **Store is deliberately NOT in `HIERARCHY_LEVELS`** — it is orthogonal to merchandise (a category exists inside every store), so giving it a depth would let parent/child diversity rules treat it as a Division ancestor. It lives in `DEFAULT_COVERAGE_ROLES` and is resolved from `profile["entity_dimension"]` by `_resolve_store_role`. **Coverage-only roles are skipped in `summary_candidate_builder._universe_member_candidates`**, so a store can never enter the focus rotation or focus memory — not merely filtered downstream by the portfolio.
+- **Budgets are separate.** Coverage-only scans draw on `summary_coverage_max_queries`, never on `summary_focus_universe_max_queries`, so full coverage can never starve the focus rotation of a scan. `summary_focus_universe_max_queries` default rose 3 → 4 alongside Section joining the default focus roles.
+- **Rendering** (`summary_visual.render(summary, title, coverage, coverage_display_rows)`): a sticky jump nav with client-side search, a sticky **"What matters most"** TL;DR linking into each level, and one collapsible `<details>` per level showing `summary_coverage_display_rows` (8) with the remainder behind "Show the remaining N" — **every member is always in the document**, only the display is truncated. Coverage is passed straight from state by `fresh_summary_validator`; it is code-owned and never passes through the LLM or `validate_draft`. Still one self-contained dependency-free file (light/dark-safe, print rules hide the nav).
+- **Verification:** `scripts/replay_summary_coverage.py` (bands, peer-median unexpectedness, ranking/counts, mirror collapse + opt-out, magnitude ceiling, headline floor and its fallback, role vocabulary, coverage-only isolation, rendered shell, HTML escaping) — offline, no auth/LLM; it also replays the real committed `outputs_r4_acceptance/summary_focus_universe.json`. `scripts/preview_summary_coverage.py` renders a browsable `outputs_preview/report_summary_preview.html` from any saved universe scan without a live run.
+
+### Interactive four-layer dashboard (summary R6)
+
+R4 answers "which few areas earn narrative" and R5 "every member gets a ranked line". **R6 adds the third thing a leader actually asks for: a briefing they can navigate.** It is a *fixed* four-layer page - **Overview -> Entities -> Areas -> Detail** - in **two time views**, rendered to its own `report_dashboard.html`. Gated by `summary_r6_enabled`; the **code default is false** and the committed `config.json` leaves it off, so a config missing the key reproduces R1-R5 byte-for-byte (regression-tested by the R6-off isolation checks plus every pre-existing summary replay).
+
+- **Structure is code-owned, prose is not.** This is the deliberate inversion of R1-R5: there, the LLM chooses the page plan (right for one deep story); here, every layer must be *covered* whether or not it has a headline, and a prompt that decides layout will silently drop a layer on a quiet day. So `summary_dashboard.py` builds the page model and guarantees coverage, and the LLM fills only the prose slots code has already created - `hero.headline`/`narrative`, one `story` per entity, `headline`/`connect` per spotlight area. Every slot has a grounded deterministic fallback, so the page ships when authoring fails.
+- **The three-lever spine** (`src/tools/summary_levers.py`). `Revenue = Transactions x Basket Size x Price`, where Basket Size = units/bills and Price = revenue/units. The existing two-way `summary_overall._bridge` (volume vs rate/mix) cannot separate *more trips* from *fuller baskets*, and those have opposite management responses. Decomposition is sequential and therefore **exact** - `(T1-T0)*S0*P0 + T1*(S1-S0)*P0 + T1*S1*(P1-P0)` sums to the revenue change, the same construction the two-way bridge already uses - and growth **factors multiply** back to the revenue percentage regardless of order (`reconciles` is the honest check; `note` says attribution order matters). `lever_state()` names the sign pattern deterministically ("Thinner baskets, higher prices"), so the same pattern always reads the same way; `growth_quality()` flags a result carried by one lever as fragile, measured against **gross** lever movement so offsetting levers do not cancel into a tidy 100%. `lever_facts()` promotes **all three** effects, so an offsetting lever is never dropped. On the working model the price effect equals the existing rate/mix effect exactly (verified in the replay), which is the proof the new split is consistent with the old one.
+- **Per-entity levers cost one query.** `summary_dashboard_builder._lever_scan` spends a single bounded `breakdown` call to read revenue/units/bills per entity. A family with **no prior measure is reconstructed from its change measure** (`prior = current - change`) - the working model publishes `net bills CURRENT` and `bills growth` but no bills-prior, and requiring a named prior would disable the flagship feature on exactly that model. Non-fatal, budgeted (`summary_dashboard_max_queries`), `TREATAS`-scoped, validator- and scope-gated, never LLM-repaired; without it the cards degrade to their revenue story with the reason logged.
+- **Measure-aware RAG** (`src/tools/summary_rag.py`) is *not* `summary_coverage.severity`: that bands a member's movement inside a level, this bands a **named measure** against the standard the business holds it to. Units and Basket Size use the tougher band (any decline is off track, flat-to-small growth only a watch) because standing still on real demand while revenue rises on price is already a problem. Band sets declare a direction, so "higher is worse" measures (share of revenue in declining areas) use the same machinery. An **unmeasurable** movement returns `status=None` labelled "Not comparable" - a missing comparison is never passed as green. Bands are config-owned and merged **per set**, so overriding `standard` alone keeps the others.
+- **Calendar / comparator awareness** (`src/tools/summary_calendar.py`) implements the rule that stops the most likely confident-but-wrong reading: *if every area moves the same way at once, suspect the comparator before calling the period bad.* The **signature** (broad, clustered, same-direction, share-weighted) is always computable from the scanned rows; the **cause** is not inferable from POS totals and comes from configured `summary_calendar_events`. With no calendar configured the signature still fires and says "check the calendar" rather than guessing. Crucially the caveat is never a blanket excuse: `exceptions()` names the areas it does **not** explain, via two routes - deviation from the estate median, and **persistence** (also negative in the wider view, so the weakness predates the shift). A scattered same-direction move does not fire, and two members are too few to call an estate pattern.
+- **Layers.** *Overview*: hero verdict + lever chips + a waterfall that closes on the current total, six KPI cards (value, deviation badge, RAG dot, sparkline, caution), and the signals a headline hides (calendar flag, new-entity revenue labelled *not growth*, declining-area count paired with the revenue exposed to it, growth quality). *Entities*: diverging contribution bars in **points that sum to the group percentage** (`member change / overall prior`), a share donut, and one card per entity with lever mini-bars. *Areas*: the R4 rotating spotlight and its deep-dive evidence, with the rotation stated so an unmentioned area is not read as unimportant. *Detail*: top growth/de-growth with **share-of-level shift**, plus the full R5 coverage tables. Movers are ranked by the **blended coverage score, not raw percentage** - sorting on percentage reproduces exactly the failure the R5 ranking exists to prevent (on the working model, `CF-FRESH BAKES +2166.79%` on a near-zero base would otherwise lead).
+- **Two time views, zero extra queries.** The primary view covers the **whole span the scanned measures cover** (on the working model Jan-Jul 2026, seven months summing exactly to the 125.8M headline). The narrower view is one **latest complete period** (June 2026), derived from the already-scanned overall trend and selected by `period_anchor` rather than "the last row", so a still-loading current month is never reported as finished.
+  - **Labels name the span, never the grain.** `span_label()` reads the months present in the trend ("Jan-Aug 2026") and `period_name(period, month)` names the month actually selected ("July 2026"). The period context's `grain` is the granularity of the time axis, *not* the length of the reporting period: labelling the eight-month view "Month to date" - grain mistaken for span - told the reader the headline covered one month when it covered eight.
+  - **A month is reportable only when `month_is_complete()` passes BOTH tests**, because each signal alone has been observed wrong on this model. It must have *elapsed* against `data_as_of` (at day grain `period_anchor` is a date, and reading its month component selected the in-progress month - which shipped "August 2026" holding two days of trade against a full prior August as a **-51.98% headline**), and it must *not contain `today`* (a resolved axis can be a padded calendar whose maximum runs to a month end - `data_as_of` came back as **2026-08-31 while real trade stopped around 2026-08-02**, so the elapsed test alone said August was finished). With both applied, the selection agrees with the resolver's own `period_anchor` on every live shape seen so far. If no month has finished, no period view is offered at all.
+  - **The single-period view is real, on one extra query.** `summary_focus_queries.period_breakdown` groups every lever measure by **period AND member** in one bounded call, so a single scan yields each period's own measures *and* the member movements inside it. The per-period **overall** totals ride along as `__overall_*` diagnostics - `CALCULATE([m], REMOVEFILTERS(member), <population filters re-applied>)` evaluated with the period still in filter context - so a period's headline is that period's true total across all members *within the population*, never the sum of the bounded rows. **Re-applying the filters is load-bearing**: when the member level IS the entity level (a per-store breakdown inside a comparable-store population) a bare `REMOVEFILTERS(store)` strips the population too, and the live run put an excluded branch's prior-year revenue into the denominator, making per-store contributions sum to **-38.13 points against a -51.98% move**. Reconciliation checks **both** current and prior for the same reason: the one-sided check passed while prior was contaminated. `read_period_scan` groups the result, measures each member's share and impact against **that period's** total, and marks the period `reconciled` only when the returned rows add up to it; `period_coverage` then ranks the period through the *existing* `summary_coverage.build_role_coverage`, so severity bands, the impact/magnitude/unexpectedness blend and current-only handling behave identically at both scopes. `build_view(coverage_override=...)` hands that to the view, which then owns its layers like any other: six KPI cards, its own reconciling three-lever split, contributions summing to **its own** percentage, and - the reason this scan matters most - **the estate-wide comparator check running on that period's member movements**, with the wider view supplying the reference that separates a persistent weakness from a calendar artefact. Gated by `summary_dashboard_period_scan`; an unreconciled period drops back to top-line only rather than publishing points that do not add up.
+  - **Without that scan the narrower view defers, and says so.** `owns_breakdowns: false` means it holds *no* entity, area or mover rows: each breakdown layer carries one `pointer` sentence naming the view that does own them. Showing the wider period's rows there was worse than showing nothing - it broke the arithmetic (a period-to-date member movement over one period's revenue gave +18.25 points against a -6.17% move) *and* printed the same 13 rows twice under a note saying they did not describe the period in the toggle.
+  - **A revenue-only view stays honest and still says something.** It carries the revenue KPI, the dual-line trend and one caveat; `_verdict_tag` returns "Top line only for this period" rather than claiming a "Broad-based read" that no lever check supports; and `period_context()` places the period in its own scanned series ("Across the 7 periods scanned, 3 came in below last year"). Those counts are stored **on the view**, because a figure quoted in prose that is not in the model is rejected by the grounding check - which is exactly what happened when the sentence first shipped as a string alone.
+  - **Every caveat appears once.** A limitation is printed at the top of the view it belongs to, and the page footer lists only caveats no view already showed. Emitting them per view, per breakdown layer *and* per page made one caution read as a broken page. Both views are rendered into the page and the toggle switches visibility - one source of truth in Python, every number inside reach of the validators, and print rules force hidden views open.
+- **Prose validation** (`summary_validation.dashboard_rules`) checks the *prose*, since the structure is code-owned: hero and every material entity story must quote a real figure; figures are matched against the whole reconciled view model and rejected beyond `MAX_QUOTED_DECIMALS` (2) decimal places - the model holds raw floats, so "copy the figure exactly" let a live draft through with `+2.7147647284841927%`, and the authoring context now also supplies ready-rounded `quote_these_display_values`; stated causes, internal vocabulary, emojis, placeholders and unknown members/areas are rejected. The **repeated-generic-sentence** ban is enforced proportionately by `_duplicate_story_errors` - it fires on *breadth* (near-duplicates are at least 40% of material stories, i.e. the page really is running one template) or *prominence* (two top-ranked areas share wording), while two of thirteen areas legitimately sharing a situation does not fail a correct page. A `steady` area may use the honest one-line `NO_MATERIAL_CHANGE` and is exempt. The deterministic fallback leads each story with what is *distinctive* about that entity (carrier, drag, moving against peers, weight rather than rate, sharp move on a small base), and falls back last to the movement's **rank spelled as a word** ("the second largest movement in the level") - on a small level whose members genuinely moved alike, rank is the distinguishing fact, and digits are stripped before the distinctness check so a numeric rank would be invisible to it. The fallback is verified to pass strict validation, so validation cannot dead-end.
+- **Output and rollout.** `report_dashboard.html` is written by `fresh_summary_validator` (the single point where every summary artifact is written) and never passes through `validate_draft`. It is one self-contained file - inline CSS, inline SVG, a small amount of JS for nav/toggle/tooltips/search, no external requests, no browser storage APIs, everything escaped. `summary_dashboard_replaces_summary_html` (default false) additionally overwrites `report_summary.html`, so the existing publish/API path picks the dashboard up with no change to `ai_content_publisher.py` - flip it only after a live acceptance run.
+- **Per-client configuration.** `python -m src.main --config config/<client>/config.json`, with
+`business_rules.md` and `summary_business_rules.md` as **siblings of that config** (`file_io.read_business_rules`
+resolves them from the config's parent). `config/scanb/` is the worked example. What must differ per client:
+`workspace_id`/`dataset_id`, `output_folder`, `ai_content_client` (this names the **blob container**),
+`ai_content_report_ids`, and **`azure_blob_prefix`** - that last one is not dataset-scoped, so two clients
+sharing the `insightgen` container with an empty prefix overwrite each other's `api/*.json`. Memory and
+history already key on `dataset_id` and cannot collide. A **report id is not a dataset id**: resolve the
+semantic model with `GET /v1.0/myorg/groups/{ws}/reports/{id}` before writing a config. Run
+`scripts/probe_summary_universe.py --config <path>` first - it exercises metadata/profile/scope/universe into a
+temporary location with no LLM, no writes and no published output, which is where a model's shape problems
+surface cheaply, or onboard the whole client through the UI below.
+- **A model can be missing what a feature needs, and the config must say so.** On the second live model the
+entity dimension did not resolve (`LOC_CODE` matched no entity pattern) and its transaction table joined on a
+surrogate key only, so per-branch bill counts differed by up to 2.73M depending on which table was sliced.
+The fix is configuration, not code: `summary_dashboard_entity_role` was pinned to `department` (where bills
+filter correctly and add to the company total) and the rulebook records why a branch three-lever split is
+forbidden. Check `entity=unresolved` in the profile log before trusting a branch-level lever.
+- **An unnamed scanned member is named, never dropped and never printed raw.** `summary_dashboard.member_name`
+turns a blank/None member into `Unassigned`. Dropping it made `read_period_scan`'s rows fall short of each
+period's own total by exactly the unclassified amount, so **0 of 12 months reconciled** and the whole
+breakdown was withheld; keeping it unnamed put a contribution bar labelled `None` on the page. A view whose
+entity level contains one states its share as a limitation, because the named areas alone no longer add to
+the company total.
+- **A lever-state name must never assert an outcome the revenue contradicts.** `lever_state` uses the
+rulebook's own state-matrix vocabulary, and for the six patterns the rulebook marks *Depends* it appends the
+computed revenue direction - a live department at **-12.88%** was labelled "Successful promotion" with nothing
+to contradict it. Per-entity levers for a period view come from **that period's** rows
+(`read_period_scan` computes them from the families already in the scan), not from the span-wide lever scan,
+which had put a department at -4.01% beside a state reading "revenue up".
+- **`_OFF_VOCABULARY` enforces the naming rule on prose.** The transaction count is bills, not people, so
+`traffic`/`footfall`/`visits`/`shoppers` are rejected with the approved word - caught on a live draft that
+wrote "higher traffic". Kept separate from `_TECHNICAL_MANAGER_PHRASES` so the shared R1-R5 validator is
+untouched.
+- **Verification.** Three tools, three different jobs. `scripts/replay_summary_dashboard.py` tests the logic (170 offline checks, no auth/LLM, also replaying the committed `outputs_r4_acceptance/summary_focus_universe.json` and `outputs_r4_acceptance_20260730_fix/summary_overall_performance.json`). `scripts/audit_summary_dashboard.py` tests a *delivered artifact* - lever effects summing, factors multiplying, the waterfall closing, ratio definitions, each KPI percentage against its own values, contributions against the correct period's prior, prose grounding, every covered member present in the HTML, self-containment and escaping. `scripts/preview_summary_dashboard.py` renders a browsable `outputs_preview/report_dashboard_preview.html` from any saved run without a live call. The artifact auditor is what caught the derived-period contribution bug above, and on the first live R6 run it caught the contaminated-denominator bug too - **keep running it after every live run**. R6 was accepted against the live model on 2026-08-03: `Dashboard period scan: 8 month(s), 8 with a reconciled store breakdown`, entity_role=store, both views owning their layers, and the audit clean.
+
+### Domain verticals: the kernel, and report identity (WP0-WP1)
+
+`docs/domain-verticals-implementation-brief.md` is the plan of record for turning this
+one-report pipeline into domain verticals (inventory first, then the sales additions) over one
+shared kernel. **WP0 (safety net), WP1 (report identity), WP2 (kernel-lite), WP3 (domain
+packages + assembled graph), WP4 (snapshot foundations), WP5 (Stock Age Analysis), WP7
+(Inventory Management) and WP8 (the inventory chain) are done - WP6's contents were pulled
+forward into WP4 per findings §8. **WP9-WP11 (the sales additions) are next**, and WP9 needs Q8
+answered first: do target/budget measures exist? The brief's own ordering is
+load-bearing - each work package's exit criterion is "`golden_master.py` byte-identical" - so do
+not start a package before the previous one's exit criterion is met.
+
+**`docs/domain-verticals-findings.md` supersedes the brief on two points**, from the live probe
+and spike of 2026-08-13. Read it before WP3. The short version: the three reports are in **three
+different datasets**; **neither inventory model holds a prior snapshot** (one `UPDATED_ON` value
+each), so `SnapshotVsSnapshotSpine` has no baseline and the brief's §1.6 claim that Ageing "has a
+comparison" is false for this model; and the policy baseline for Inventory Management is real,
+verified and already materialised on the fact row. The agreed revision is: **snapshot-vs-policy
+is the first inventory spine, and the change-free ranking blend plus state-based novelty move
+earlier** (out of WP6, into WP4/WP5). Neither report is blocked and the 1.10 fallback does not
+apply.
+
+- **`scripts/golden_master.py` recomputes; it does not self-compare.** Byte-comparing a
+committed artifact against itself always passes and detects nothing. Each of the 13 cases
+re-derives an artifact from committed *inputs* through the production code path
+(`semantic_profiler.build_profile`, `summary_coverage.build_coverage`/`top_movers`,
+`summary_dashboard.build_view`/`build`, `summary_dashboard_html.render`) and byte-compares
+against a snapshot in `tests/golden/`. Sources are `outputs_r4_acceptance/`,
+`outputs_r4_acceptance_20260730_fix/` and `outputs_scanb/`; a source contributes only the cases
+its inputs support (`outputs_r4_acceptance` has an `unavailable` overall package, so no
+dashboard). Snapshots are full canonical JSON rather than bare hashes because a failure must be
+*diagnosable* - the tool prints a leaf-level JSON-path diff and writes the actual to
+`outputs_golden/` (gitignored).
+- **Two tiers, because the recompute tier alone is defeatable.** Every input file is hashed as
+well, and input drift is reported first and separately: the cheapest way to "fix" a failure is
+to edit the input until the output matches, which silently destroys the net. Verified by
+mutation - changing `summary_coverage.WEIGHT_IMPACT` from 0.40 to 0.41 produces 116 diffs and
+flips the rank-20 member from `MEDICATED OIL` to `ROOT VEGETABLES`, while `semantic_profile`
+still passes.
+- **Normalisation is deliberately absent.** The brief permits normalising timestamps and
+absolute paths; measured against these artifacts there are none (every time-ish key is business
+data - a model column named `UPDATED_DATE`, a trend's `run_length`). So a tripwire *asserts* the
+recomputed blob carries no absolute path and no datetime-with-time, rather than normalising,
+which could only blind the net. `--update` refuses to combine with `--source`, since recording a
+narrowed set would drop every other source's case from the manifest.
+- **The recompute is byte-stable across processes** - verified before relying on hashing, because
+Python randomises string hashing per process and `semantic_profiler` iterates sets.
+- **`tests/fixtures/models/`** holds four hand-authored `model_metadata` fixtures
+(`stock_snapshot`, `ageing_bucket`, `retail_yoy`, `target_attainment`) so WP4-WP7 need no live
+inventory connection. They are built to make known defects **executable**, pinned by
+`scripts/replay_fixture_models.py` as `BLOCKER` checks - one failing means the defect was fixed
+and the pin must move, not that something regressed. What they establish: a snapshot model does
+not degrade but **collapses** (no current+prior value family -> no primary bundle -> no fact
+table -> the dimension walk has no origin -> *zero* dimensions); `_additive()` returns `True`
+for both a `LASTNONBLANK` semi-additive measure and a plain `SUM` across snapshots, so metadata
+cannot tell the safe measure from the 30x-too-big one; `_FAMILY_TOKENS` has no stock vocabulary
+and `"value"` is a *revenue* token; a **ratio can occupy a value slot** (`Days Cover` earns
+`phase=current` from the word "current" in its *description*, and the bundle filter only excludes
+the `margin` family - remove the one non-ratio candidate and a days-count becomes the primary
+revenue measure, which the replay proves by rebuilding the profile without it); and a target has
+nowhere to go but a period phase - `Revenue Target` lands on `current` **because its description
+contains the word "this"** while `Quantity Target` gets no phase at all, and the derived
+`prior = [Revenue Actual] - [Revenue Variance vs Target]` is arithmetically *the target*, so
+attainment silently reads as year-on-year.
+- **`src/kernel/` is domain-agnostic and must never import from `src/domains/`** - the dependency
+runs one way. `report.py` holds `ReportSpec`, **frozen** because WP3 resolves it pre-fork and
+hands the same object to both concurrent branches; a mutable spec shared across the fork is a
+race waiting to be written. Its `spine`/`kpis`/`axes`/`thresholds`/`layout`/`rules`/`knowledge`
+sections are declared and empty, to be filled by WP2/WP3/WP5+.
+- **`src/kernel/scoping.py` is the single authority for every previously dataset-scoped path.**
+The defect it closes: both stores were filed at `<root>/<dataset_id>/memory.json`, so two reports
+over one semantic model shared one rotation history and one reported-findings set - each
+suppressing the other's findings and overwriting the other's daily plan, undetectably. Now
+summary memory is **per report** (`<dataset>/reports/<report_id>/memory.json`, because a
+descriptive summary rotates through one report's own focus areas) and insight memory is **per
+chain** (`<dataset>/chains/<chain_id>/memory.json`, because WP8 pools a chain's evidence and runs
+the investigative branch once over all of it - one memory, one consumer, so cross-report
+suppression never arises).
+- **The dataset segment is passed in already sanitised, on purpose.** The two memory modules
+historically sanitised the dataset id with different rules (`str.isalnum()` admits non-ASCII
+letters; the regex does not). Re-sanitising in `scoping` would relocate - and orphan - an
+existing store for any id where they disagree, so each module keeps its own dataset-segment rule
+and `scoping` owns only the segments it introduced. `replay_report_scoping.py` pins the
+divergence (`dataseté-01` -> `dataseté-01` for summary, `dataset_-01` for insight).
+- **`migrate_store` copies, never moves.** "Non-destructive" has to mean the legacy file
+survives: a rollback to pre-WP1 code must still find its memory, and losing a reported-findings
+set would re-announce every finding a user already read. It is idempotent - once the scoped store
+exists it returns `already_scoped` after one stat call, and critically does **not** re-copy over
+a scoped store that has since moved on. Summary memory `SCHEMA_VERSION` is **4**: the shape is
+unchanged from v3, and v4 adds only a `scope` stamp recording which report claimed the store
+(`migrated_from: dataset_root` when it came from the legacy path).
+- **Report identity is config, CLI and env.** Five catalogued keys - `report_id` (`sales_yoy`),
+`report_name`, `report_domain` (`sales`), `report_cadence` (`daily`), `chain_id` (`sales`) -
+whose defaults *are* today's single report, so a config that predates WP1 resolves to exactly
+today's identity and its memory keeps its meaning after migration. `--report` overrides the
+config (mirroring `POWERBI_TENANT_ID` over `tenant_id`) and defaults from `AGENT_REPORT_ID`;
+`container_entrypoint.py` also passes it explicitly so the container path survives a change to
+that default.
+- **Verification:** `scripts/replay_report_scoping.py` (report separation, chain sharing,
+migration non-destructiveness/idempotence/statuses, the v4 scope stamp, dataset-segment
+divergence, path-traversal safety, `ReportSpec` immutability and validation, the config surface)
+- offline, no auth/LLM. Plus `golden_master.py` byte-identical, which is WP1's real exit
+criterion and what proves the refactor changed no arithmetic.
+
+#### WP2 - the measurement spine, aggregation classes and ranking registry
+
+- **`kernel/spine.py` names the comparison instead of assuming it.** The `(current, prior,
+change)` triple *was* the type system, which is why a snapshot model returned
+`primary=unresolved, 0 drill dimensions`. Two things the live data forced into the protocol
+beyond the brief's draft: `delta_kind` includes **`distance`** (the inventory policy is a band in
+*days of cover*, so the movement is "9 days past the limit", not a quantity), and a spine
+declares **`delta_unit` and `exposure_unit` separately** - a policy finding is measured in days
+but ranked by SAR at risk, and collapsing them prints "SAR 9". `classify()` returns one of four
+states, not a bool, because `baseline_missing` (nobody set a policy) is distinct from
+`current_only` (new store) and neither is a zero.
+- **`domains/sales/spines.py::PeriodOverPeriodSpine` delegates rather than restates.** Its
+`classify` calls `summary_coverage.is_comparable` and its `pct` calls `summary_materiality`, so
+it cannot drift from the ranking that consumes it - the two-copies-of-the-family-vocabulary
+defect (brief §1.3) not repeated.
+- **`kernel/aggregation.py` proves the claim rather than trusting it**, because the failure is
+invisible downstream: parts and whole get summed the same wrong way, so every existing
+reconciliation check passes on a number that is Nx too big. Split into a pure `judge()`
+(observations in, verdict out - every branch testable offline) and a thin `verify()` that gathers
+observations through an **injected** executor, so the kernel neither opens a connection nor
+imports one. `classify_from_metadata()` is explicitly a *first guess*: it separates
+`LASTNONBLANK` from a plain `SUM` where `semantic_profiler._additive()` cannot, and still hands
+the answer to arithmetic.
+- **`UNVERIFIABLE` is a first-class verdict.** Both live inventory facts hold exactly one
+snapshot, so semi-additivity there can be neither confirmed nor refuted; returning "additive,
+confirmed" would be the lie Non-negotiable 13 forbids. Only an `ADDITIVE` claim that was actually
+`CONFIRMED` sets `safe_to_sum_over_time`; only `REFUTED` sets `blocks_report`.
+- **`kernel/ranking.py` is an indirection layer, not a reimplementation.**
+`impact_magnitude_unexpectedness` is registered as a *reference* to the existing
+`summary_coverage.rank_scores` (lazy import, so no cycle), which is what makes byte-identity
+structural rather than something to re-verify. Two new blends serve reports with no signed
+change: `severity_exposure_persistence` weights severity by exposure for the same reason the
+year-on-year blend weights magnitude by business share (otherwise a trivial item with an extreme
+severity leads - the `CF-FRESH BAKES +2166.79%` failure in a new costume), and `tier_then_value`
+gives each risk tier its own score band so no amount of value in a safer tier can overtake a
+riskier one, which is Ageing BR-28's instruction and not a scoring preference.
+- **Seams, all defaulting to today's behaviour**: `summary_coverage.is_comparable(member, spine)`,
+`rank_scores(members, peer_median, blend)`, `summary_materiality.compute_facts(..., spine)`, and
+`summary_focus_universe`'s `no_metric` stop now carries the spine's own reason (which baseline was
+expected and missing) - on both live inventory models that is the branch that fires. Omitting
+every new argument reproduces the previous code path exactly.
+- **Verification:** `scripts/replay_kernel_spine.py` - offline, no auth/LLM. Its central test is
+the brief's stated point of the whole package: **a semi-additive measure must fail additive
+verification**, exercised against the *real measured* series (`204,766,305.10` summed vs
+`50,833,557.23` latest = **4.03x**), so the judgement cannot drift away from observed data. It
+also pins that routing the existing blend through the registry is byte-identical to calling it
+directly.
+
+#### WP3 - domain packages and the assembled graph
+
+- **`build_graph(report=None)` assembles; without a report it is today's fixed graph**, node for
+node and edge for edge (39 nodes, 46 edges - asserted, not assumed). `NODE_FACTORIES` is the
+registry a report may name nodes from, and **only the linear stretches are data**
+(`SUMMARY_PRE_NOVELTY`, `SUMMARY_POST_EVIDENCE`, `INSIGHT_CHAIN`). The fan-out, the four
+conditional routers and the joined-edge barrier stay explicit code, because they are the
+concurrency contract rather than a configurable detail - an ad-hoc edge into `save_outputs` can
+fire it twice (Non-negotiables 4 and 5). `_chain` re-links **across** an omitted node rather than
+leaving a dangling edge, and `REQUIRED_NODES` refuses a spec that drops the topology itself, so
+"shorter report" can never become "broken graph".
+- **`kernel/report.py::ResolvedReport` is frozen and its `profile` is a `MappingProxyType`**,
+because it is resolved pre-fork and then read by both concurrent branches - a torn read there
+would be silent. `resolve()` is deliberately forgiving about an absent domain or spine (the
+inventory domain has no spine until WP4) but strict about nothing else.
+- **`domains/sales/families.py` is now the single owner of the retail vocabulary** - and the two
+copies are **not merged**, which is a deliberate departure from the brief's WP3 item 2. They are
+not a copy and its drifted twin but two different classifiers: **37 of the 56 real measure names
+in the committed models classify differently**. `margin` vs `rate`, `other` vs `performance`,
+`spend` is cost to one and rate to the other, one scores name-3x-over-lineage while the other
+short-circuits, and the builder's revenue set has `revenue` but not `rev` - so **`REV_CURRENT` is
+revenue to the profiler and performance to the builder**. Merging them would change candidate and
+memory keys on the live model. What is fixed is the drift *risk*: both now live in one file, side
+by side, and `replay_domain_assembly.py` pins the divergence so it cannot widen unnoticed or be
+"tidied" into a behaviour change.
+- **`domains/inventory/families.py` is built from the live models, not guessed.** Every name was
+observed on 2026-08-13. It exists because the sales vocabulary has no stock words and `"value"` is
+a *revenue* token there, so `Stock Value on Hand` classifies as revenue - and the sales families
+carry `ADDITIVE` semantics, which is the 4.03x failure. `family()` is **ordered, not scored**, and
+tests `policy`/`cover` before `stock_value` so `EXCESS_THRESHOLD_DAYS` is not mistaken for the
+value it governs. `HIGHER_IS_WORSE` records that six of the eleven families are inverted (more
+excess, more non-moving, more aged is worse), so a RAG band cannot read a rising number as good
+news. `COVER_SENTINEL = 1000` records that the live BD sentinel is a flag, not a number of days.
+- **Verification:** `scripts/replay_domain_assembly.py` - offline, no auth/LLM. Assembled-equals-
+fixed on nodes and edges, the fork/join topology under three variations, bounded omission, two
+specs not sharing mutable state, both domain registries, the pinned family divergence, and the
+inventory aggregation classes.
+
+#### WP4 - snapshot foundations (the highest-risk package)
+
+- **`kernel/snapshot.py` decides how a date column must be FILTERED**, because filtering a
+snapshot with a range overstates it by roughly the number of days in the range, and the column
+name does not say which it is. The discriminator is cardinality against the fact: `UPDATED_ON`
+has **1** distinct value on both live models while `doc_date1purch`/`DOC_DATE2`/`DOC_DATE3` have
+180/165/1,443. Ratios survive renaming, which name-matching does not.
+- **Only `distinct == 1` is decisive, and getting this wrong once is recorded in the code.** A
+first cut used a distinct/rows *ratio*, and against real data it classified the ageing report's
+own age axis (`REP_SSR_SAG[sortdate]`, 14 purchase periods over 158,446 rows = 0.00009) as an
+as-of stamp - it would have filtered the report to its newest batch. The ratio is tiny for any
+low-cardinality column in a large table. Anything between 2 and `SNAPSHOT_MAX_DISTINCT` is now
+reported **UNKNOWN** with the evidence that would settle it named (does each date repeat the full
+member set, or partition it?). On the live model that correctly leaves both `SSR TREND[dates]`
+and `DAMAGE DATA[month_date]` - four distinct values each, but a snapshot history and a monthly
+flow respectively - as ambiguous rather than guessed.
+- **`latest_snapshot_var`/`latest_snapshot_filter`** emit `REMOVEFILTERS` on the **date column
+only**, never the table (Non-negotiable 10 - a bare table-wide `REMOVEFILTERS` strips the
+population too), and filter via `TREATAS` rather than a bare equality (Non-negotiable 6).
+`guard_semi_additive` returns a *refusal reason*, and a `SEMI_ADDITIVE_LAST` claim that verified
+CONFIRMED still refuses - confirming semi-additivity is not permission to sum.
+- **`period_label` enforces "as at &lt;date&gt;"** for a snapshot and ignores any span label passed
+alongside it (Non-negotiable 18).
+- **`domains/inventory/spines.py::SnapshotVsPolicySpine` is the first inventory spine**, replacing
+the brief's `SnapshotVsSnapshotSpine` per findings §8 - neither live model has a prior snapshot,
+but the policy band is real, verified, and already on the fact row (`EXCESS_THRESHOLD_DAYS`,
+`Reorder_Level`). The band is in **days** while the exposure is in **SAR**, declared separately
+because collapsing them prints "SAR 9". `classify` returns `baseline_missing` for an item with no
+policy - nobody said what its level should be, so it is excluded from the queue rather than
+reported as compliant. The **BR-11 sentinel** is handled in `cover_of`: a cover of 1000 means "no
+velocity", so it is read as unmeasurable rather than as the best-stocked line in the business,
+while a genuine 63,044-day cover is untouched.
+- **`kernel/state_novelty.py` anchors novelty on a STATE, not a period.** A stock exception has no
+period. Duration is deliberately excluded from the key - if it were included, every day would
+mint a new identity and nothing would ever suppress. A state is re-reported when it **changes**
+(a clearance is news too - a report that only announces problems never closes one), when it
+**materially worsens** (a threshold on distance or exposure, so drift stays quiet), or when it
+**crosses a duration milestone** (7/14/30/60/90 days - time is the finding when nothing else
+moved). Durations are counted from observation dates, so a weekend without a run does not reset
+the clock. Summary memory is **schema v5**, purely additive (`state_records`).
+- **`services/probe.py` no longer refuses a snapshot model outright.** It detects the as-of stamp
+live (one bounded `EVALUATE ROW` per table, ≤3 queries, non-fatal) and, when one is found,
+downgrades the blocking refusal to a warning that says what the model *can* support. Verified
+live on both inventory models: **FAILED (1 blocking) → DEGRADED (0 blocking)**, with
+`UPDATED_ON` identified as the as-at stamp at 2026-08-12 on each.
+- **Verification:** `scripts/replay_snapshot_foundations.py` - offline, no auth/LLM. Its central
+test is the brief's stated point of the package: a semi-additive measure summed across snapshots
+is **detected and refused**, using the live 4.03x series. Also the as-of/transaction/batch/age-axis
+classification (including the trap above), the "as at" labelling, the DAX safety rules, the
+sentinel, the policy band's two units, change-free ranking, and every state-novelty branch.
+
+#### WP5 - Stock Age Analysis (the first inventory report)
+
+- **`domains/inventory/buckets.py` models an ORDINAL axis**, where the order is the meaning.
+`0-03 MONTHS` and `03-06 MONTHS` are adjacent, `24+ MONTHS` is the far end. The merchandise
+hierarchy's parent/child diversity rules do **not** apply and must not be reused - two adjacent
+bands are not a parent and a child. An unrecognised band sorts **last**, never as freshest.
+- **`migration()` exists and refuses.** The brief makes bucket migration between snapshots WP5's
+centrepiece; it is not buildable here (one `UPDATED_ON` value) and the rulebook does not ask for
+it (BR-04, BR-28 are pure distribution). It is present and stating why, rather than silently
+absent, so a reader knows it was checked - and it becomes computable the day a prior snapshot is
+retained, which is a Power BI change, not a code change.
+- **`CANNOT BE DETERMINED` is separated, never added to a numbered band** (BR-12), and carries its
+own caveat. No live rows have it today, so it is handled without being assumed present.
+- **Aged and non-moving are kept as four cells, never summed** (BR-19): adding the two totals
+double-counts the overlap. On the live data the overlap - aged **and** non-moving, the write-off
+candidate - is **SAR 2.76M**, and both the replay and the auditor assert the naive sum exceeds the
+true union by exactly that.
+- **The order is the rulebook's, not a scoring choice.** BR-28 says lead with 24+ months, then
+12-24, then aged-and-non-moving, then non-moving in fresh bands. Total stock value and fresh share
+are context, so they sit in the header. A weighted blend could outvote that instruction, so it is
+an explicit sequence.
+- **Prose is deterministic**, because BR-25 requires a figure on every comparison and BR-33/BR-03
+ban the vocabulary a free-form generator reaches for (`velocity`, `days of cover`, `dead stock`,
+`materiality`, ...). Every figure is copied or derived from the scan.
+- **Accepted against the live model on 2026-08-13**, as at 2026-08-12: SAR 50.83M held, SAR 7.13M
+aged (14.0%), SAR 3.86M high-risk (7.6%), SAR 2.76M aged and non-moving; all four reconciliation
+checks pass and the **division-sensitive threshold is visible in the data** - `06-09 MONTHS` is
+*partially* aged (SAR 547K of SAR 4.72M), which is the fingerprint of FMCG FOOD ageing at six
+months while everything else ages at nine.
+- **The inventory dashboard reuses the R6 visual system rather than copying it.**
+`domains/inventory/dashboard_html.py` **imports** `_style`, `_script`, `_layer`, `_kpi_cards`,
+`_tldr`, `_badge`, `_sparkline`, `_donut` and friends from `summary_dashboard_html`, so the two
+pages cannot drift apart and a styling fix lands on both. What is *not* reused is `_view_html`:
+it hard-codes year-on-year language into the layer titles ("Which areas moved the group",
+"Core measures versus the comparison period"), which is wrong on a stock position that has no
+comparison period - so the layers are composed separately from the same primitives. The replay
+asserts no year-on-year phrasing reaches a stock page. Importing underscore-prefixed helpers is
+deliberate: duplicating them to respect a naming convention would recreate exactly the drift risk
+§1.3 warns about. Promoting them to a shared public page module is a later tidy-up.
+- **Same four layers, different content, and the two views are not two time periods.**
+Overview -> Locations -> Divisions -> Detail. The sales dashboard toggles a wide span against one
+complete month; a single snapshot has no such pair, so the toggle is **all stock** against
+**high-risk only** (over a year old) - everything, or just the problem. Each view ranks by **its
+own** measure: the high-risk view sorts locations by high-risk stock, not by aged stock, which is
+a bug the replay now pins after it put a location holding more high-risk stock below one holding
+less.
+- **Verification is two tools, and they do different jobs.** `scripts/replay_ageing.py` proves the
+code (offline, self-contained - it renders from a committed synthetic scan carrying the live
+figures, and treats the gitignored live scan as an optional extra, so it runs on a clean
+checkout). `scripts/audit_ageing.py` proves a **produced artifact**: it re-derives every share and
+total from the written `report_ageing.json`, checks each figure quoted in prose exists in the
+model and is rounded, and inspects `report_ageing.html` for self-containment, escaping, banned
+vocabulary and the stated limitations. Run it after every live run.
+
+#### WP7 - Inventory Management (the exception queue)
+
+- **The layout is a prioritised work queue, not a verdict.** BR-31 makes
+`RECOMMENDED_ACTION` "the operational output of the model", one of 15 states on every
+location-SKU row, so `ACTION_PRIORITY` orders the page by *what to do next* rather than by what
+is largest. The two **double-warning** states lead regardless of value - `NON MOVING - ORDER
+PLACED` (already stagnant, more arriving) and `STOCK OUT - PLACE ORDER` (zero stock, nothing in
+flight). `OVERSTOCK` holds by far the most value and still sorts eighth. Every exception row
+carries the buying team's actual next step, because "out of stock" alone is not enough to act on.
+- **The Opportunity Loss scope is the trap this report exists around.** BR-16 restricts it to
+critical SKUs at stores (SEG_A/B, LOCAL, `loc_type = SH`). Measured live: **SAR 292,771 unscoped
+against SAR 45,944 scoped - 6.4x**. Both numbers are in the model, so publishing the wrong one is
+one filter away. The scan computes the scoped figure for publication and keeps the unscoped one
+*only* so a caveat can explain the difference; the auditor asserts the published figure is the
+smaller one and that the caveat is present.
+- **Excess is the surplus, never the whole overstocked value** (BR-20). Live: SAR 21.13M above
+cover against SAR 26.89M of stock sitting on overstocked lines. Both the replay and the auditor
+assert excess is the smaller of the two, and the prose says which it is.
+- **The queue is complete**: the 15 states account for all 140,113 location-SKU rows exactly, and
+both the replay and the auditor check that total rather than trusting it.
+- **Same four layers, same shell**, with Detail renamed "Action queue". The second view is
+**Needs action only** (mirroring Ageing's high-risk view), and it states that its totals will not
+match the all-stock view.
+- **Verification:** `scripts/replay_stock_health.py` (queue ordering incl. double-warnings leading,
+the scoping trap, excess meaning, completeness, band and damage ordering, banned vocabulary,
+dashboard structure) and `scripts/audit_stock_health.py` (the same guarantees re-derived from a
+**produced** artifact, plus prose grounding and document inspection). Both offline; the auditor
+runs after every live run.
+
+#### WP8 - the inventory chain
+
+- **Chain memory is NOT nested under a dataset**, and this was the blocker WP0 flagged. The two
+inventory reports are in different semantic models, so `<dataset>/chains/inventory/memory.json`
+gave the one chain **two** stores and shared nothing. `kernel.scoping.chain_dir(root, chain_id)`
+now drops the dataset segment entirely: one store per chain however many models it spans. Story
+identities stay distinct per model regardless, because `insight_memory.story_key` includes the
+dataset - which is correct, since a finding in the ageing model is genuinely a different finding.
+Migration copies from the WP1 dataset-nested path first, then the pre-WP1 dataset root.
+- **`kernel/chain.py` runs reports sequentially in one process.** Non-negotiable 2 and brief §1.8:
+`get_powerbi_token()` does an unlocked read-modify-write and `commit_run` takes a best-effort
+lock, so parallel jobs would race. A report that raises is recorded and the chain continues - one
+report failing must not cost the others their output.
+- **`fair_share` guarantees representation without granting priority, and the slot must be
+RESERVED before the list is filled.** The first implementation appended the quiet report's
+candidate and then truncated by score - which discards it every time, because an injected
+candidate is by definition the weakest thing in the list. Reserving first is what makes the
+guarantee survive the cap. Each uncovered report gets its **single best** candidate, which then
+competes on the same score for its *position*; when the limit cannot fit everyone the weakest
+claim is dropped, not whichever report was listed last. Verified against the real shape: six
+loud stock-health findings and one quiet ageing finding, cap of three - without the guarantee
+ageing vanishes entirely.
+- **Provenance survives pooling.** `tag_evidence` stamps `report_id` and `dataset_id` onto every
+item without mutating the source, and `attribution` turns that into "From Stock Age Analysis."
+The `dataset_id` matters because the two models are different: figures from one are never added
+to figures from the other, and the combined report says so.
+- **Verification:** `scripts/replay_inventory_chain.py` (spec validation, sequential order,
+pooling with provenance, partial failure, the starvation guarantee and its non-priority,
+chain-of-one equivalence, cross-dataset memory sharing, migration from the WP1 path).
+`scripts/run_inventory_chain.py` produces the combined artifact from both reports' saved scans.
+
+#### Two test failures worth remembering
+
+**A rendering failure.**
+
+The first inventory dashboard shipped unreadable: the title wrapped one word per line and no
+content showed. Two causes, both in code that "reused" the sales dashboard. `.app` is
+`display:flex` - a **row** - whose only children may be `nav.rail` and `main`; giving it four
+children laid the header, rail, views and footer out as four columns. And `_script()` already
+carries its own `<script>` tags, so wrapping it again nested them and **no JavaScript ran**, which
+killed the nav and the view toggle.
+
+Neither was caught, because the tests asserted the right *strings were present* - the toggles, the
+layer buttons, the KPI labels all passed - and never asserted how the elements were **arranged**,
+nor that there was exactly one script tag. Presence is not layout. `replay_ageing.py` and
+`replay_stock_health.py` now pin the skeleton explicitly: rail first inside `.app`, content inside
+`main > .page`, header inside the page, `.rail-nav` present, no invented layout classes, and
+exactly one `<script`.
+
+**A time bomb in the golden master.** The recorded `dashboard_html` snapshot embedded
+`Generated 2026-08-13`, and the net went red the moment the date rolled over - on a day when
+nothing in the renderer had changed. The WP0 tripwire was supposed to prevent exactly this, but it
+only matched dates carrying a *time* (`\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}`), so a bare generation
+date passed straight through. A test that fails on the calendar rather than on a code change is
+worse than no test: it trains you to re-record rather than investigate. `_normalise` now replaces
+the literal `Generated <date>` stamp with a placeholder - deliberately narrow, because business
+dates (`data_as_of`, `window_start`, an "as at" label) are the numbers under test - and the
+tripwire runs *after* normalisation so a newly introduced stamp is still caught.
+- **Still blocked, and not startable without them:** the semi-additive read spike (brief 1.7) and
+the WP0 findings document answering Q1-Q7 both need the **live inventory model** (no inventory
+config exists in `config/`) and the **two business documents** (Inventory Management, Ageing).
+Q2 (do policy measures exist?) decides whether WP6/WP7 proceed as specified or take the 1.10
+fallback; Q4 (are ageing buckets pre-computed or derived?) decides WP5's DAX. Do not guess at
+either - a fabricated policy band or bucket definition produces a report that looks right and is
+wrong.
+
+### Client onboarding UI and the config schema
+
+Onboarding a client used to mean hand-writing ~135 of 200 keys with no schema and no validation, where a
+missing key does not error - it silently changes behaviour. `src/config_schema.py` is now the **single source
+of truth** for every key (type, default, wizard group, help text, per-client flag, destructive-default trap),
+and `src/api/` is a local-first wizard over it. Full detail in `docs/config-ui.md`; the design brief is
+`docs/config-ui-execution-plan.md`.
+
+- **The app's language is a deliverable, and it is tested.** Two hundred settings is not a form anyone
+can fill in, and this repo's names mean nothing to the person onboarding a client. Every key therefore
+carries a plain `label`, a plain `help` (what happens, and what happens if it is wrong), a `detail`
+holding the engineering note behind a "More detail" link, and a **`tier`** - `essential` (31 keys),
+`standard` (118) or `expert` (53). The wizard opens on essentials only, so setting up a client is 31
+questions across eight steps rather than 202. Validation findings carry the setting's label as a
+`title`, a consequence, and a `fix`. `replay_config_schema.py` asserts every key has a label, a tier
+and jargon-free help; `replay_config_ui.py::test_plain_language` asserts every actionable error carries
+a fix, that the collision error names the other client and the consequence rather than a key name, and
+that `reconcile`/`coverage_kind`/`TREATAS` never reach a message.
+- **One catalogue, both directions.** `main.build_initial_state` builds the graph state from
+`config_schema.state_defaults(cfg)`, so there is no second copy of a default to drift - adding a key to the
+schema is the only edit needed for it to reach the pipeline. The UI renders its whole form from
+`GET /api/schema` for the same reason. `scripts/replay_config_schema.py` asserts the pair cannot separate:
+every config key any module reads is catalogued, every key any committed config sets is catalogued, every
+schema default matches the literal fallback in `src/`, `build_initial_state` emits exactly the `in_state` keys,
+and no key is offered as configurable while being unreachable from a config. That last check found
+`summary_llm_authoring_enabled` (read from state by two modules but never copied out of the config, so setting
+it did nothing - now `in_state`, same `True` default) and two stale fallback literals that disagreed with
+`main.py`. `insight_now_override` is deliberately **absent**: it is a state-only test hook, so offering it in
+the UI would be a lie.
+- **The order is the product.** Several keys are unanswerable before the model is inspected - which hierarchy
+levels exist, whether the entity dimension resolves, whether a genuine business date axis exists, which
+entities classify as comparable - and a wrong value degrades output silently. So it is a wizard
+(Connect -> Probe -> Configure -> Author -> Deploy), not a settings page.
+- **`src/services/probe.py::run_probe`** is the pre-fork nodes plus the focus-universe scan run **in process**,
+into a temporary output/memory location: no LLM, no production memory/history write, no published output.
+`scripts/probe_summary_universe.py` is a thin CLI over the same call, so the two can never disagree about what
+a model supports; nothing shells out. It reports the primary metric, entity resolution, measure families (incl.
+a prior reconstructed as `current - change`), resolved roles with `reconciled`/`pool_capped`, mirrored levels,
+entity classification and candidate time axes - then translates them into appliable **config recommendations**
+and **blocking errors**, phrased for the reader ("The parts do not add up to the whole for: department",
+not "diagnostics_reconciled=false"). An unreconciled level is a hard stop. `--deep` also runs `baseline_coverage`, which is
+what gives the period resolver real trend evidence, so `data_as_of` and the per-axis verdicts are measured
+rather than guessed from metadata - guessing is how a load/posting date gets treated as business activity.
+- **`src/services/validate.py` refuses the destructive defaults** rather than warning about them: an
+`azure_blob_prefix` collision, an `ai_content_client` container that does not exist, `output_folder` other than
+`outputs` in a container, an absent `summary_r4_enabled`/`summary_r6_enabled`, an unsupported IANA timezone,
+`insight_business_timezone: "auto"`, a role or entity the probe did not find, and a container deploy with no
+probe or a failed one. **Env wins over config**, so checks run against the resolved value (`validate.effective`,
+mirroring `main._apply_environment_overrides`) and every disagreement is named - including that presence is
+what counts, not truthiness: `AZURE_BLOB_PREFIX=""` overrides a configured prefix back to the container root,
+where another client's payloads already live.
+- **Storage is three destinations, not one, and the UI now says so.** `src/services/storage.py::plan`
+resolves a config into the paths the next run will write, mirroring `azure_blob.py`,
+`insight_history.py` and `ai_content_publisher.py`: (1) the **agent's own store** (`azure_blob_*`),
+where every client shares one container and is kept apart only by `azure_blob_prefix` -
+`insightgen/report_summary.json` for cityflower versus `insightgen/scanb/report_summary.json` for
+scanb, with dated records under the dataset id where they cannot clash; (2) **the app's store**
+(`ai_content_*`), a container per client named by `ai_content_client`, holding
+`ai-content/report-summaries/client/{report-id}.{json,html}` and `ai-content/kpi/client/*.json` -
+**this is what the web app actually reads, and it is not what the `azure_blob_*` settings control**;
+and (3) **private memory** (`insightstate/{dataset-id}/memory.json`), filed under the dataset id and
+read by no app. The "Where it goes" step renders these as three cards with real paths, because a
+column of sixteen storage fields is what made them get conflated.
+`replay_config_ui.py::test_storage_plan` pins the preview against the layout observed in the live
+account on 2026-08-13, so a drift in either the rules or the preview fails a test.
+- **`src/services/clients.py` preserves key order and line endings**, so re-saving a hand-authored client
+produces a byte-identical file and the diff shows only what changed (verified against `config/scanb/`,
+`config/experiment/` and `config/config.json`). Cloning copies both rulebooks and every shared key and
+deliberately **clears** the per-client ones. A new client is written with every key explicit.
+- **`src/services/deploy.py`** turns the three files into the three job secrets. Two details break the obvious
+implementation: a 45 KB rulebook base64s past the 32,767-character command line, so `az containerapp job
+secret set` fails and this talks to ARM with the payload in the request body; and ARM replaces the whole secret
+array while never returning a stored value, so `merge_secrets` re-sends unrelated secrets **by name only**
+(which tells ARM to keep them) and preserves Key Vault references. `/api/deploy/preview` renders the exact body
+with values redacted and makes no call. Deployment endpoints are **off** unless `--allow-deploy` /
+`CONFIG_UI_ALLOW_DEPLOY=1`, because they need Contributor on the resource group.
+- **Long operations are jobs, not requests** (`src/services/jobs.py`): a probe is 30-120s, a full run 4-5 min.
+In-memory on purpose for the local-first tool; the submit/status/cancel interface is what a hosted version
+re-points at a queue.
+- **Verification.** `scripts/replay_config_schema.py` and `scripts/replay_config_ui.py` (byte-identical round
+trip, every guard, env-vs-config, the ARM secret merge, probe finding translation, job runner, API surface incl.
+deployment staying shut) - both offline, no credentials. The rendered page has an optional jsdom smoke test,
+`scripts/smoke_config_ui.js` (needs `npm install jsdom` and a running server) - the only JavaScript dependency
+in the repo. The probe was accepted against the live scanb model on 2026-08-12: three roles resolved and
+reconciled, `entity=unresolved`, `UPDATED_DATE` verdict `batch_date`, `data_as_of=2023-12-31 (stale)`, and it
+independently recommended the `summary_dashboard_entity_role=department` pin that config already carries by hand.
 
 ### Shared metadata scanner and insight branch
 
@@ -175,12 +731,12 @@ Both are config-driven and documented in `powerbi-summary-agent/README.md`:
 - Output files are written **per node**, so partial progress survives an early stop; `save_outputs` writes stub `.md`/`.html` for *both* reports on early stops. `save_outputs` is also the single, gated call site for `insight_memory.commit_run` (see "Cross-run insight memory") — passing `reported = signals if state.get("insight_report") else []`, since observed and reported are different things.
 - **Azure Blob upload is post-run and best-effort** (`src/tools/azure_blob.py`, called from `main.py` after `write_api_payloads`): when `azure_blob_upload: true` it pushes `outputs/api/*.json` to the `azure_blob_container` (default `insightgen`), overwriting each run. Auth resolves `AZURE_STORAGE_CONNECTION_STRING` → `AZURE_STORAGE_KEY` → `DefaultAzureCredential` (AAD needs the *data-plane* 'Storage Blob Data Contributor' role — control-plane Contributor is not enough). Any failure prints a note and never fails the run.
 - Windows console is cp1252: non-ASCII prints as `�` but files are UTF-8 and correct. Verify file bytes, not terminal echo.
-- Prompts are external `.md` files in `prompts/` (each LLM node loads `_global_rules.md` plus its task prompt). `dax_planner_prompt.md`, `dax_generator_prompt.md`, `insight_signal_detector_prompt.md`, `insight_investigator_prompt.md`, and `insight_synthesizer_prompt.md` are loaded. Metadata reader/validator and insight scan planner/generator prompt files only narrate deterministic or compatibility components; edit their `.py` implementation instead.
+- Prompts are external `.md` files in `prompts/` (each LLM node loads `_global_rules.md` plus its task prompt). `dax_planner_prompt.md`, `dax_generator_prompt.md`, `insight_signal_detector_prompt.md`, `insight_investigator_prompt.md`, and `insight_synthesizer_prompt.md` and `summary_dashboard_prompt.md` are loaded. Metadata reader/validator and insight scan planner/generator prompt files only narrate deterministic or compatibility components; edit their `.py` implementation instead.
 - **LLM model context is structurally complete and shared.** `src/utils/model_context.py` supplies report understanding, summary planning, DAX generation/repair, and investigation with the full schema. The semantic profile, resolved scope, and shared baseline are also passed where relevant. Measure expressions remain on-demand through `get_measure_definition`.
 - **Result-key normalization is collision-safe.** `clean_rows` uses a bare field name only when it is unique across the result table; same-named columns from different tables retain their table-qualified keys consistently on every row, preventing silent dictionary overwrites.
 - **`config/business_rules.md` is company calculation/reporting logic, distinct from `_global_rules.md`** (permanent guardrails). Node 1 reads and snapshots it, and `business_rules_block(state)` injects it into every LLM prompt as authoritative guidance. Comparable-scope policy is additionally machine-enforced by `baseline_scope` plus `scope_validator`; other prose business rules remain prompt-level. If you add an LLM node, inject `business_rules_block` there too.
 - Scope is branch-specific and enforced in `_global_rules.md`: the summary branch only describes; the insight branch may investigate but must use hedged contribution/correlation language, never asserted root cause. No forecasting/alerting anywhere, and **no emojis** (also stripped defensively in `html_report.py`).
 - `html_report.render(md, title, eyebrow)` is a dependency-free markdown→styled-HTML renderer: corporate navy theme, `Key Metrics`-section `name: value` bullets become a two-column table, one nesting level of bullets supported, print + dark-mode styles. Both reports and the early-stop stubs go through it.
-- `config/agent_settings.json` is **not read by any code**. Real values come from `config/config.json`, including metadata/scope controls (`metadata_scope_max_entities`, `insight_metadata_max_dimensions`), scan/gap/cache budgets (`insight_max_scan_queries`, `insight_max_gap_dimensions_per_signal`, `insight_total_gap_scan_budget`, `insight_max_investigation_rounds`, `insight_probe_max_rows`), signal caps, all `insight_stat_*` knobs, the cross-run memory knobs (`insight_memory_enabled`, `insight_memory_policy`, `insight_memory_cooldown_days`, `insight_max_new_per_run`, `insight_reporting_grain`, `insight_candidates_{high,period,daily}`), the temporal-level knobs (`insight_temporal_enabled`, `insight_temporal_batch_share`, `insight_temporal_min_periods`, `insight_temporal_recon_tolerance_pct`, `insight_temporal_max_probes`, `insight_temporal_grain_column`, `insight_period_top_movers`, `insight_period_recent_window`, `insight_period_drill`, `insight_period_drill_top`), the recent-week-level knobs (`insight_recent_week_enabled`, `insight_business_date_override`, `insight_week_max_date_probes`, `insight_week_start`, `insight_business_timezone`, `insight_week_max_data_lag_days`, `insight_week_history_weeks`, `insight_week_materiality_pct`, `insight_week_z_cutoff`, `insight_week_driver_rows`, `insight_week_mode`; `insight_candidates_weekly` doubles as both the `recent_week` and `recent_week_rolling` cap), the Phase 3b daily-anomaly knobs (`insight_daily_enabled`, `insight_daily_rolling_window`, `insight_daily_recent_days`, `insight_daily_exclude_today`, `insight_daily_z_cutoff`, `insight_daily_materiality_pct`, `insight_daily_min_weekday_occurrences`; `insight_candidates_daily` already listed above), the rolling-week resurface knobs (`insight_re_alert_growth_pct`, `insight_rolling_report_delta_pct` — the general `insight_re_alert_enabled` switch for high/period/daily is deferred, not yet read by any code), and the Azure-blob-upload knobs (`azure_blob_upload`, `azure_blob_account`, `azure_blob_container`, `azure_blob_prefix`). `max_rows_per_query` remains the broad-scan truncation heuristic.
+- `config/agent_settings.json` is **not read by any code**. Real values come from `config/config.json`, and `src/config_schema.py` is the authoritative catalogue of every one of them - add a key there and `main.build_initial_state` picks it up automatically, and `scripts/replay_config_schema.py` fails if the two ever separate. The full surface includes metadata/scope controls (`metadata_scope_max_entities`, `insight_metadata_max_dimensions`), scan/gap/cache budgets (`insight_max_scan_queries`, `insight_max_gap_dimensions_per_signal`, `insight_total_gap_scan_budget`, `insight_max_investigation_rounds`, `insight_probe_max_rows`), signal caps, all `insight_stat_*` knobs, the cross-run memory knobs (`insight_memory_enabled`, `insight_memory_policy`, `insight_memory_cooldown_days`, `insight_max_new_per_run`, `insight_reporting_grain`, `insight_candidates_{high,period,daily}`), the full-coverage knobs (`summary_coverage_roles`, `summary_coverage_max_queries`, `summary_coverage_material_change_pct`, `summary_coverage_material_share_pct`, `summary_coverage_display_rows`), the R6 dashboard knobs (`summary_r6_enabled`, `summary_dashboard_entity_role`, `summary_dashboard_exposure_role`, `summary_dashboard_entity_levers`, `summary_dashboard_entity_rows`, `summary_dashboard_max_queries` (default 2), `summary_dashboard_period_view`, `summary_dashboard_period_scan`, `summary_dashboard_period_scan_rows`, `summary_dashboard_tldr`, `summary_dashboard_movers`, `summary_dashboard_eyebrow`, `summary_dashboard_replaces_summary_html`, `summary_rag_bands`, `summary_rag_measure_bands`, `summary_rag_cautions`, `summary_calendar_events`, `summary_calendar_min_members`, `summary_calendar_uniform_count_share_pct`, `summary_calendar_uniform_business_share_pct`, `summary_calendar_cluster_spread_pct`, `summary_calendar_exception_deviation_pct`), the temporal-level knobs (`insight_temporal_enabled`, `insight_temporal_batch_share`, `insight_temporal_min_periods`, `insight_temporal_recon_tolerance_pct`, `insight_temporal_max_probes`, `insight_temporal_grain_column`, `insight_period_top_movers`, `insight_period_recent_window`, `insight_period_drill`, `insight_period_drill_top`), the recent-week-level knobs (`insight_recent_week_enabled`, `insight_business_date_override`, `insight_week_max_date_probes`, `insight_week_start`, `insight_business_timezone`, `insight_week_max_data_lag_days`, `insight_week_history_weeks`, `insight_week_materiality_pct`, `insight_week_z_cutoff`, `insight_week_driver_rows`, `insight_week_mode`; `insight_candidates_weekly` doubles as both the `recent_week` and `recent_week_rolling` cap), the Phase 3b daily-anomaly knobs (`insight_daily_enabled`, `insight_daily_rolling_window`, `insight_daily_recent_days`, `insight_daily_exclude_today`, `insight_daily_z_cutoff`, `insight_daily_materiality_pct`, `insight_daily_min_weekday_occurrences`; `insight_candidates_daily` already listed above), the rolling-week resurface knobs (`insight_re_alert_growth_pct`, `insight_rolling_report_delta_pct` — the general `insight_re_alert_enabled` switch for high/period/daily is deferred, not yet read by any code), and the Azure-blob-upload knobs (`azure_blob_upload`, `azure_blob_account`, `azure_blob_container`, `azure_blob_prefix`). `max_rows_per_query` remains the broad-scan truncation heuristic.
 - `main.py` hard-requires `tenant_id`/`workspace_id`/`dataset_id` and rejects `PASTE_`-prefixed values, exiting before the graph builds. `POWERBI_TENANT_ID` overrides the configured tenant. The committed `config.json` holds real GUIDs for the working model.
 - `AGENTS.md` at repo root is a mirror of this file for other tools — keep the two in sync when updating either.

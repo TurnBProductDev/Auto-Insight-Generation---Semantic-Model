@@ -1,0 +1,56 @@
+{
+  "enabled": true,
+  "grain": "month",
+  "level": "period",
+  "column": "'MIS_DEEP_DIVE2'[DOC_MONTH]",
+  "table": "meta_period_by_mis_deep_dive2_doc_month",
+  "primary_metric": "net revenue CURRENT",
+  "gated_date_tables": [
+    "meta_trend_by_mis_deep_dive2_updated_date"
+  ],
+  "drill": {
+    "grain_column": "'MIS_DEEP_DIVE2'[DOC_MONTH]",
+    "dimension": "'MIS_DEEP_DIVE2'[CATEGORY_NAME]",
+    "period_raw": "10.0",
+    "period_label": "October",
+    "period_change": -1730714.71,
+    "top_segments": [
+      {
+        "segment": "LED TV",
+        "change": -151762.47,
+        "share_pct": 18.48
+      },
+      {
+        "segment": "BLANKET DOUBLE",
+        "change": -146308.22,
+        "share_pct": 17.82
+      },
+      {
+        "segment": "TORCHES",
+        "change": -107897.81,
+        "share_pct": 13.14
+      }
+    ]
+  },
+  "checks": [
+    {
+      "column": "'MIS_DEEP_DIVE2'[UPDATED_DATE]",
+      "grain": "date",
+      "metric": "net revenue CURRENT",
+      "max_bucket_share": 0.5483245803688239,
+      "verdict": "batch_load_date"
+    },
+    {
+      "column": "'MIS_DEEP_DIVE2'[DOC_MONTH]",
+      "grain": "month",
+      "metric": "net revenue CURRENT",
+      "rows": 12,
+      "null_members": 1,
+      "max_bucket_share": 0.09388487622866894,
+      "reconciled": true,
+      "verdict": "ok"
+    }
+  ],
+  "probes_used": 1,
+  "reason": "validated business month grain 'MIS_DEEP_DIVE2'[DOC_MONTH]"
+}

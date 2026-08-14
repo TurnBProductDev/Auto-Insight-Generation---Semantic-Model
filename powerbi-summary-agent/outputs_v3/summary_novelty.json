@@ -1,0 +1,9 @@
+{
+  "status": "disabled",
+  "memory_status": "disabled",
+  "detected": 9,
+  "suppressed": 0,
+  "eligible": 9,
+  "reason": "summary memory disabled",
+  "summary_type": "new_data"
+}

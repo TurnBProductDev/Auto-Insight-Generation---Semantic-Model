@@ -1,0 +1,1372 @@
+{
+  "latest_complete_month_totals": {
+    "status": "success",
+    "purpose": "Show the headline performance for the latest complete month with the core revenue, units, transactions, price, basket size and basket value measures.",
+    "query": "EVALUATE\nCALCULATETABLE(\n    ROW(\n        \"net revenue CURRENT\", [net revenue CURRENT],\n        \"net revenue PAST\", [net revenue PAST],\n        \"revenue Growth\", [revenue Growth],\n        \"revenue growth %\", [revenue growth %],\n        \"net qty CURRENT\", [net qty CURRENT],\n        \"net qty PAST\", [net qty PAST],\n        \"QTY Growth\", [QTY Growth],\n        \"QTY GROWTH %\", [QTY GROWTH %],\n        \"net bills CURRENT\", [net bills CURRENT],\n        \"bills growth\", [bills growth],\n        \"bills growth %\", [bills growth %],\n        \"retail price current year\", [retail price current year],\n        \"retail price past year\", [retail price past year],\n        \"RETAIL PRICE GROWTH\", [RETAIL PRICE GROWTH],\n        \"QUANTITY PER TRANSACTION CURRENT YEAR\", [QUANTITY PER TRANSACTION CURRENT YEAR],\n        \"QUANTITY PER TRANSACTION PAST YEAR\", [QUANTITY PER TRANSACTION PAST YEAR],\n        \"QUANTITY PER TRANSACTION GROWTH\", [QUANTITY PER TRANSACTION GROWTH],\n        \"SPEND PER TRANSACTION CURRENT YEAR\", [SPEND PER TRANSACTION CURRENT YEAR],\n        \"SPEND PER TRANSACTION PAST YEAR\", [SPEND PER TRANSACTION PAST YEAR],\n        \"SPEND PER TRANSACTION GROWTH\", [SPEND PER TRANSACTION GROWTH]\n    ),\n    TREATAS ( { 12 }, 'MIS_DEEP_DIVE2'[DOC_MONTH] ),\n    TREATAS ( { 12 }, 'CAT_TABLE'[DOC_MONTH] ),\n    TREATAS ( { 12 }, 'CAT_TRANSACTIONS'[DOC_MONTH] )\n)",
+    "result": {
+      "results": [
+        {
+          "tables": [
+            {
+              "rows": [
+                {
+                  "[net revenue CURRENT]": 9073824.326027382,
+                  "[net revenue PAST]": 9221638.882191777,
+                  "[revenue Growth]": -147814.55616439506,
+                  "[revenue growth %]": -0.016029098303756484,
+                  "[net qty CURRENT]": 3615889.43,
+                  "[net qty PAST]": 3449434.82,
+                  "[QTY Growth]": 166454.61000000034,
+                  "[QTY GROWTH %]": 0.048255618292854234,
+                  "[net bills CURRENT]": 3342660.0,
+                  "[bills growth]": 173266.0,
+                  "[bills growth %]": 0.05466849498673879,
+                  "[retail price current year]": 2.5094308058051933,
+                  "[retail price past year]": 2.6733767597880798,
+                  "[RETAIL PRICE GROWTH]": -0.16394595398288647,
+                  "[QUANTITY PER TRANSACTION CURRENT YEAR]": 1.0817401201438377,
+                  "[QUANTITY PER TRANSACTION PAST YEAR]": 1.0883578438023167,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.006617723658479013,
+                  "[SPEND PER TRANSACTION CURRENT YEAR]": 2.714551981364357,
+                  "[SPEND PER TRANSACTION PAST YEAR]": 2.9095905659541783,
+                  "[SPEND PER TRANSACTION GROWTH]": -0.19503858458982126
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "full_year_grand_totals_with_levers": {
+    "status": "success",
+    "purpose": "Provide the full-year background totals and three-lever summary for the whole business.",
+    "query": "EVALUATE\nROW(\n    \"net revenue CURRENT\", [net revenue CURRENT],\n    \"net revenue PAST\", [net revenue PAST],\n    \"revenue Growth\", [revenue Growth],\n    \"revenue growth %\", [revenue growth %],\n    \"net qty CURRENT\", [net qty CURRENT],\n    \"net qty PAST\", [net qty PAST],\n    \"QTY Growth\", [QTY Growth],\n    \"QTY GROWTH %\", [QTY GROWTH %],\n    \"net bills CURRENT\", [net bills CURRENT],\n    \"bills growth\", [bills growth],\n    \"bills growth %\", [bills growth %],\n    \"retail price current year\", [retail price current year],\n    \"retail price past year\", [retail price past year],\n    \"RETAIL PRICE GROWTH\", [RETAIL PRICE GROWTH],\n    \"QUANTITY PER TRANSACTION GROWTH\", [QUANTITY PER TRANSACTION GROWTH],\n    \"SPEND PER TRANSACTION GROWTH\", [SPEND PER TRANSACTION GROWTH]\n)",
+    "result": {
+      "results": [
+        {
+          "tables": [
+            {
+              "rows": [
+                {
+                  "[net revenue CURRENT]": 104970368.03835607,
+                  "[net revenue PAST]": 109603231.74520545,
+                  "[revenue Growth]": -4632863.706849381,
+                  "[revenue growth %]": -0.04226940787311269,
+                  "[net qty CURRENT]": 49053547.01,
+                  "[net qty PAST]": 48095725.13,
+                  "[QTY Growth]": 957821.8799999952,
+                  "[QTY GROWTH %]": 0.019914906728426638,
+                  "[net bills CURRENT]": 40684328.0,
+                  "[bills growth]": -846021.0,
+                  "[bills growth %]": -0.020371150745687207,
+                  "[retail price current year]": 2.139913919312643,
+                  "[retail price past year]": 2.2788559991341053,
+                  "[RETAIL PRICE GROWTH]": -0.13894207982146245,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.04762490231733363,
+                  "[SPEND PER TRANSACTION GROWTH]": -0.0589937174519215
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "monthly_trend_by_doc_month": {
+    "status": "success",
+    "purpose": "Show how the core measures moved across the 12 trading months, with the most recent month first.",
+    "query": "EVALUATE\nTOPN(\n    12,\n    SUMMARIZECOLUMNS(\n        'MIS_DEEP_DIVE2'[DOC_MONTH],\n        \"net revenue CURRENT\", [net revenue CURRENT],\n        \"net revenue PAST\", [net revenue PAST],\n        \"revenue Growth\", [revenue Growth],\n        \"revenue growth %\", [revenue growth %],\n        \"net qty CURRENT\", [net qty CURRENT],\n        \"net qty PAST\", [net qty PAST],\n        \"QTY Growth\", [QTY Growth],\n        \"QTY GROWTH %\", [QTY GROWTH %],\n        \"net bills CURRENT\", [net bills CURRENT],\n        \"bills growth\", [bills growth],\n        \"bills growth %\", [bills growth %],\n        \"RETAIL PRICE GROWTH\", [RETAIL PRICE GROWTH],\n        \"QUANTITY PER TRANSACTION GROWTH\", [QUANTITY PER TRANSACTION GROWTH],\n        \"SPEND PER TRANSACTION GROWTH\", [SPEND PER TRANSACTION GROWTH]\n    ),\n    'MIS_DEEP_DIVE2'[DOC_MONTH], DESC\n)",
+    "result": {
+      "results": [
+        {
+          "tables": [
+            {
+              "rows": [
+                {
+                  "MIS_DEEP_DIVE2[DOC_MONTH]": 1.0,
+                  "[net revenue CURRENT]": 8751799.44657535,
+                  "[net revenue PAST]": 7515790.134246576,
+                  "[revenue Growth]": 1236009.3123287736,
+                  "[revenue growth %]": 0.1644550060940037,
+                  "[net qty CURRENT]": 3681773.24,
+                  "[net qty PAST]": 3466367.51,
+                  "[QTY Growth]": 215405.73000000045,
+                  "[QTY GROWTH %]": 0.062141630793210514,
+                  "[net bills CURRENT]": 2771523.0,
+                  "[bills growth]": 146379.0,
+                  "[bills growth %]": 0.05576036971686125,
+                  "[RETAIL PRICE GROWTH]": 0.20885747344047978,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.00798109778193612,
+                  "[SPEND PER TRANSACTION GROWTH]": 0.29475709771445
+                },
+                {
+                  "MIS_DEEP_DIVE2[DOC_MONTH]": 2.0,
+                  "[net revenue CURRENT]": 7941502.506849318,
+                  "[net revenue PAST]": 8733719.060273966,
+                  "[revenue Growth]": -792216.553424648,
+                  "[revenue growth %]": -0.09070781278368681,
+                  "[net qty CURRENT]": 3603192.47,
+                  "[net qty PAST]": 3844761.2,
+                  "[QTY Growth]": -241568.72999999998,
+                  "[QTY GROWTH %]": -0.06283062001353945,
+                  "[net bills CURRENT]": 2633868.0,
+                  "[bills growth]": -326067.0,
+                  "[bills growth %]": -0.11016018932848187,
+                  "[RETAIL PRICE GROWTH]": -0.0675710697862244,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.06908884261276604,
+                  "[SPEND PER TRANSACTION GROWTH]": 0.06450269785611962
+                },
+                {
+                  "MIS_DEEP_DIVE2[DOC_MONTH]": 3.0,
+                  "[net revenue CURRENT]": 9401227.104109593,
+                  "[net revenue PAST]": 9374437.473972598,
+                  "[revenue Growth]": 26789.630136994645,
+                  "[revenue growth %]": 0.0028577320198010796,
+                  "[net qty CURRENT]": 4301371.81,
+                  "[net qty PAST]": 4175591.4,
+                  "[QTY Growth]": 125780.40999999968,
+                  "[QTY GROWTH %]": 0.03012277733879797,
+                  "[net bills CURRENT]": 3213763.0,
+                  "[bills growth]": 17291.0,
+                  "[bills growth %]": 0.005409401365004918,
+                  "[RETAIL PRICE GROWTH]": -0.05942161567473647,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.03210969825128274,
+                  "[SPEND PER TRANSACTION GROWTH]": -0.007443132779506811
+                },
+                {
+                  "MIS_DEEP_DIVE2[DOC_MONTH]": 4.0,
+                  "[net revenue CURRENT]": 8936778.093150683,
+                  "[net revenue PAST]": 9467176.060273964,
+                  "[revenue Growth]": -530397.9671232812,
+                  "[revenue growth %]": -0.0560249396173089,
+                  "[net qty CURRENT]": 4048470.29,
+                  "[net qty PAST]": 4328559.48,
+                  "[QTY Growth]": -280089.1900000004,
+                  "[QTY GROWTH %]": -0.06470725221500258,
+                  "[net bills CURRENT]": 3063106.0,
+                  "[bills growth]": -249118.0,
+                  "[bills growth %]": -0.07521170065792651,
+                  "[RETAIL PRICE GROWTH]": 0.02030321975580085,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.014844125501954464,
+                  "[SPEND PER TRANSACTION GROWTH]": 0.05930073748604592
+                },
+                {
+                  "MIS_DEEP_DIVE2[DOC_MONTH]": 5.0,
+                  "[net revenue CURRENT]": 9424154.134246588,
+                  "[net revenue PAST]": 8960155.383561645,
+                  "[revenue Growth]": 463998.75068494305,
+                  "[revenue growth %]": 0.051784676807747995,
+                  "[net qty CURRENT]": 4425088.51,
+                  "[net qty PAST]": 4017653.76,
+                  "[QTY Growth]": 407434.75,
+                  "[QTY GROWTH %]": 0.10141111562585224,
+                  "[net bills CURRENT]": 3256644.0,
+                  "[bills growth]": 97678.0,
+                  "[bills growth %]": 0.03092087727439928,
+                  "[RETAIL PRICE GROWTH]": -0.1004862618992064,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.08696233642854767,
+                  "[SPEND PER TRANSACTION GROWTH]": 0.057403537417748396
+                },
+                {
+                  "MIS_DEEP_DIVE2[DOC_MONTH]": 6.0,
+                  "[net revenue CURRENT]": 9414198.715068495,
+                  "[net revenue PAST]": 10198176.978082195,
+                  "[revenue Growth]": -783978.2630137,
+                  "[revenue growth %]": -0.0768743535926683,
+                  "[net qty CURRENT]": 4432431.93,
+                  "[net qty PAST]": 4313086.89,
+                  "[QTY Growth]": 119345.04000000004,
+                  "[QTY GROWTH %]": 0.02767044649081949,
+                  "[net bills CURRENT]": 3231162.0,
+                  "[bills growth]": -138793.0,
+                  "[bills growth %]": -0.04118541642247448,
+                  "[RETAIL PRICE GROWTH]": -0.2405375627256685,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.09191161558317562,
+                  "[SPEND PER TRANSACTION GROWTH]": -0.11264124095953498
+                },
+                {
+                  "MIS_DEEP_DIVE2[DOC_MONTH]": 7.0,
+                  "[net revenue CURRENT]": 8620284.627397256,
+                  "[net revenue PAST]": 8432565.3780822,
+                  "[revenue Growth]": 187719.2493150551,
+                  "[revenue growth %]": 0.0222612266728429,
+                  "[net qty CURRENT]": 4143167.87,
+                  "[net qty PAST]": 3785210.21,
+                  "[QTY Growth]": 357957.66000000015,
+                  "[QTY GROWTH %]": 0.09456744543653763,
+                  "[net bills CURRENT]": 3089141.0,
+                  "[bills growth]": 187522.0,
+                  "[bills growth %]": 0.06462667910569926,
+                  "[RETAIL PRICE GROWTH]": -0.14716442492753012,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.03668725202595602,
+                  "[SPEND PER TRANSACTION GROWTH]": -0.1156468569780702
+                },
+                {
+                  "MIS_DEEP_DIVE2[DOC_MONTH]": 8.0,
+                  "[net revenue CURRENT]": 7710216.010958903,
+                  "[net revenue PAST]": 9014608.263013693,
+                  "[revenue Growth]": -1304392.25205479,
+                  "[revenue growth %]": -0.14469760792674932,
+                  "[net qty CURRENT]": 3875495.25,
+                  "[net qty PAST]": 4070361.31,
+                  "[QTY Growth]": -194866.06000000006,
+                  "[QTY GROWTH %]": -0.04787438882176286,
+                  "[net bills CURRENT]": 2925615.0,
+                  "[bills growth]": -242425.0,
+                  "[bills growth %]": -0.07652207674145528,
+                  "[RETAIL PRICE GROWTH]": -0.22521596201037708,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.03985706954922996,
+                  "[SPEND PER TRANSACTION GROWTH]": -0.2100671847656983
+                },
+                {
+                  "MIS_DEEP_DIVE2[DOC_MONTH]": 9.0,
+                  "[net revenue CURRENT]": 7799281.01917808,
+                  "[net revenue PAST]": 8341926.454794524,
+                  "[revenue Growth]": -542645.4356164439,
+                  "[revenue growth %]": -0.06505037398220627,
+                  "[net qty CURRENT]": 3886370.26,
+                  "[net qty PAST]": 3657403.19,
+                  "[QTY Growth]": 228967.06999999983,
+                  "[QTY GROWTH %]": 0.06260372677150747,
+                  "[net bills CURRENT]": 2856636.0,
+                  "[bills growth]": -125084.0,
+                  "[bills growth %]": -0.04195028372885449,
+                  "[RETAIL PRICE GROWTH]": -0.27400403175697674,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.13386240722700316,
+                  "[SPEND PER TRANSACTION GROWTH]": -0.06745670571699591
+                },
+                {
+                  "MIS_DEEP_DIVE2[DOC_MONTH]": 10.0,
+                  "[net revenue CURRENT]": 9089885.213698624,
+                  "[net revenue PAST]": 10820599.923287677,
+                  "[revenue Growth]": -1730714.709589053,
+                  "[revenue growth %]": -0.15994628041503278,
+                  "[net qty CURRENT]": 4369027.77,
+                  "[net qty PAST]": 4480371.18,
+                  "[QTY Growth]": -111343.41000000015,
+                  "[QTY GROWTH %]": -0.02485138072868332,
+                  "[net bills CURRENT]": 3139718.0,
+                  "[bills growth]": -292713.0,
+                  "[bills growth %]": -0.0852786261398991,
+                  "[RETAIL PRICE GROWTH]": -0.334584245772068,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.08622955591145387,
+                  "[SPEND PER TRANSACTION GROWTH]": -0.2573316502060319
+                },
+                {
+                  "MIS_DEEP_DIVE2[DOC_MONTH]": 12.0,
+                  "[net revenue CURRENT]": 9855130.010958893,
+                  "[net revenue PAST]": 10016098.950684924,
+                  "[revenue Growth]": -160968.93972603045,
+                  "[revenue growth %]": -0.016071021314642966,
+                  "[net qty CURRENT]": 4442202.43,
+                  "[net qty PAST]": 4253655.82,
+                  "[QTY Growth]": 188546.6099999994,
+                  "[QTY GROWTH %]": 0.044325779512645054,
+                  "[net bills CURRENT]": 3342660.0,
+                  "[bills growth]": 173266.0,
+                  "[bills growth %]": 0.05466849498673879,
+                  "[RETAIL PRICE GROWTH]": -0.1361802715935494,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.013161479740979809,
+                  "[SPEND PER TRANSACTION GROWTH]": -0.21196711451306127
+                },
+                {
+                  "MIS_DEEP_DIVE2[DOC_MONTH]": 11.0,
+                  "[net revenue CURRENT]": 8025911.156164381,
+                  "[net revenue PAST]": 8727977.684931505,
+                  "[revenue Growth]": -702066.5287671247,
+                  "[revenue growth %]": -0.08043862554543577,
+                  "[net qty CURRENT]": 3844955.18,
+                  "[net qty PAST]": 3702703.18,
+                  "[QTY Growth]": 142252.0,
+                  "[QTY GROWTH %]": 0.038418418405333804,
+                  "[net bills CURRENT]": 2874803.0,
+                  "[bills growth]": 20602.0,
+                  "[bills growth %]": 0.007218132149768008,
+                  "[RETAIL PRICE GROWTH]": -0.2698033081621616,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.0401855011057779,
+                  "[SPEND PER TRANSACTION GROWTH]": -0.26612822690709104
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "branch_revenue_units_breakdown": {
+    "status": "success",
+    "purpose": "Compare branch performance using only measures that are reliable at branch level.",
+    "query": "EVALUATE\nTOPN(\n    15,\n    SUMMARIZECOLUMNS(\n        'MIS_DEEP_DIVE2'[LOC_CODE],\n        \"net revenue CURRENT\", [net revenue CURRENT],\n        \"net revenue PAST\", [net revenue PAST],\n        \"revenue Growth\", [revenue Growth],\n        \"revenue growth %\", [revenue growth %],\n        \"net qty CURRENT\", [net qty CURRENT],\n        \"net qty PAST\", [net qty PAST],\n        \"QTY Growth\", [QTY Growth],\n        \"QTY GROWTH %\", [QTY GROWTH %]\n    ),\n    [net revenue CURRENT], DESC\n)",
+    "result": {
+      "results": [
+        {
+          "tables": [
+            {
+              "rows": [
+                {
+                  "MIS_DEEP_DIVE2[LOC_CODE]": "ST1",
+                  "[net revenue CURRENT]": 69000220.10684936,
+                  "[net revenue PAST]": 73618702.00821917,
+                  "[revenue Growth]": -4618481.90136981,
+                  "[revenue growth %]": -0.06273517157167725,
+                  "[net qty CURRENT]": 30502974.81,
+                  "[net qty PAST]": 30713829.51,
+                  "[QTY Growth]": -210854.70000000298,
+                  "[QTY GROWTH %]": -0.0068651387132090316
+                },
+                {
+                  "MIS_DEEP_DIVE2[LOC_CODE]": "ST4",
+                  "[net revenue CURRENT]": 15867384.139726045,
+                  "[net revenue PAST]": 13978898.287671242,
+                  "[revenue Growth]": 1888485.8520548027,
+                  "[revenue growth %]": 0.1350954712733236,
+                  "[net qty CURRENT]": 8152929.35,
+                  "[net qty PAST]": 6997278.81,
+                  "[QTY Growth]": 1155650.54,
+                  "[QTY GROWTH %]": 0.16515713770736543
+                },
+                {
+                  "MIS_DEEP_DIVE2[LOC_CODE]": "ST3",
+                  "[net revenue CURRENT]": 20102763.79178084,
+                  "[net revenue PAST]": 22005631.449315097,
+                  "[revenue Growth]": -1902867.6575342566,
+                  "[revenue growth %]": -0.08647184980431367,
+                  "[net qty CURRENT]": 10397642.85,
+                  "[net qty PAST]": 10384616.81,
+                  "[QTY Growth]": 13026.039999999106,
+                  "[QTY GROWTH %]": 0.0012543592352349017
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "department_performance_breakdown": {
+    "status": "success",
+    "purpose": "Show which departments are largest and how each department changed on revenue, units and transaction growth.",
+    "query": "EVALUATE\nTOPN(\n    15,\n    SUMMARIZECOLUMNS(\n        'MIS_DEEP_DIVE2'[DEPARTMENT],\n        \"net revenue CURRENT\", [net revenue CURRENT],\n        \"net revenue PAST\", [net revenue PAST],\n        \"revenue Growth\", [revenue Growth],\n        \"revenue growth %\", [revenue growth %],\n        \"net qty CURRENT\", [net qty CURRENT],\n        \"net qty PAST\", [net qty PAST],\n        \"QTY Growth\", [QTY Growth],\n        \"QTY GROWTH %\", [QTY GROWTH %],\n        \"net bills CURRENT\", [net bills CURRENT],\n        \"bills growth\", [bills growth],\n        \"bills growth %\", [bills growth %],\n        \"RETAIL PRICE GROWTH\", [RETAIL PRICE GROWTH],\n        \"QUANTITY PER TRANSACTION GROWTH\", [QUANTITY PER TRANSACTION GROWTH],\n        \"SPEND PER TRANSACTION GROWTH\", [SPEND PER TRANSACTION GROWTH]\n    ),\n    [net revenue CURRENT], DESC\n)",
+    "result": {
+      "results": [
+        {
+          "tables": [
+            {
+              "rows": [
+                {
+                  "MIS_DEEP_DIVE2[DEPARTMENT]": null,
+                  "[net revenue CURRENT]": 7973207.054794517,
+                  "[net revenue PAST]": 7790510.1369863,
+                  "[revenue Growth]": 182696.917808217,
+                  "[revenue growth %]": 0.023451213668389103,
+                  "[net qty CURRENT]": 9149485.0,
+                  "[net qty PAST]": 9299237.0,
+                  "[QTY Growth]": -149752.0,
+                  "[QTY GROWTH %]": -0.01610368678634602,
+                  "[net bills CURRENT]": 4285689.0,
+                  "[bills growth]": -114559.0,
+                  "[bills growth %]": -0.026034668955022534,
+                  "[RETAIL PRICE GROWTH]": 0.033679803066522074,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.021548590396852862,
+                  "[SPEND PER TRANSACTION GROWTH]": 0.08995526045296409
+                },
+                {
+                  "MIS_DEEP_DIVE2[DEPARTMENT]": "FRESH FOOD",
+                  "[net revenue CURRENT]": 19592778.34794523,
+                  "[net revenue PAST]": 21046633.16986306,
+                  "[revenue Growth]": -1453854.821917832,
+                  "[revenue growth %]": -0.06907778598999982,
+                  "[net qty CURRENT]": 12033962.93,
+                  "[net qty PAST]": 11606344.42,
+                  "[QTY Growth]": 427618.5099999998,
+                  "[QTY GROWTH %]": 0.03684351373057045,
+                  "[net bills CURRENT]": 10157679.0,
+                  "[bills growth]": 348278.0,
+                  "[bills growth %]": 0.03550451245697877,
+                  "[RETAIL PRICE GROWTH]": -0.18524959342665692,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.0015299666351067387,
+                  "[SPEND PER TRANSACTION GROWTH]": -0.21669372220511196
+                },
+                {
+                  "MIS_DEEP_DIVE2[DEPARTMENT]": "LIFESTYLE",
+                  "[net revenue CURRENT]": 13910767.542465761,
+                  "[net revenue PAST]": 14528983.021917814,
+                  "[revenue Growth]": -618215.4794520531,
+                  "[revenue growth %]": -0.042550499131249524,
+                  "[net qty CURRENT]": 1741946.66,
+                  "[net qty PAST]": 1692193.81,
+                  "[QTY Growth]": 49752.84999999986,
+                  "[QTY GROWTH %]": 0.029401389903441297,
+                  "[net bills CURRENT]": 1378953.0,
+                  "[bills growth]": 10960.0,
+                  "[bills growth %]": 0.008011736902162512,
+                  "[RETAIL PRICE GROWTH]": -0.600126168145664,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.026248493173307574,
+                  "[SPEND PER TRANSACTION GROWTH]": -0.5327359735100803
+                },
+                {
+                  "MIS_DEEP_DIVE2[DEPARTMENT]": "TECHNOLOGY",
+                  "[net revenue CURRENT]": 7916819.726027396,
+                  "[net revenue PAST]": 9907943.69863014,
+                  "[revenue Growth]": -1991123.9726027437,
+                  "[revenue growth %]": -0.20096238262617844,
+                  "[net qty CURRENT]": 369829.0,
+                  "[net qty PAST]": 397000.0,
+                  "[QTY Growth]": -27171.0,
+                  "[QTY GROWTH %]": -0.06844080604534004,
+                  "[net bills CURRENT]": 350572.0,
+                  "[bills growth]": -31828.0,
+                  "[bills growth %]": -0.08323221757322176,
+                  "[RETAIL PRICE GROWTH]": -3.550333585566978,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.016750311994594647,
+                  "[SPEND PER TRANSACTION GROWTH]": -3.327316063391052
+                },
+                {
+                  "MIS_DEEP_DIVE2[DEPARTMENT]": "HOME & LIVING",
+                  "[net revenue CURRENT]": 10020463.216438334,
+                  "[net revenue PAST]": 9281576.334246581,
+                  "[revenue Growth]": 738886.882191753,
+                  "[revenue growth %]": 0.07960790878435749,
+                  "[net qty CURRENT]": 2064279.16,
+                  "[net qty PAST]": 1893429.88,
+                  "[QTY Growth]": 170849.28000000003,
+                  "[QTY GROWTH %]": 0.09023269454266775,
+                  "[net bills CURRENT]": 1767036.0,
+                  "[bills growth]": 165596.0,
+                  "[bills growth %]": 0.10340443600759316,
+                  "[RETAIL PRICE GROWTH]": -0.04777200776021662,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.014113899694927046,
+                  "[SPEND PER TRANSACTION GROWTH]": -0.12499421851758452
+                },
+                {
+                  "MIS_DEEP_DIVE2[DEPARTMENT]": "CONSUMER GOODS",
+                  "[net revenue CURRENT]": 45556332.15068483,
+                  "[net revenue PAST]": 47047585.38356157,
+                  "[revenue Growth]": -1491253.232876733,
+                  "[revenue growth %]": -0.03169670070672271,
+                  "[net qty CURRENT]": 23694044.26,
+                  "[net qty PAST]": 23207520.02,
+                  "[QTY Growth]": 486524.2400000021,
+                  "[QTY GROWTH %]": 0.020964077143129492,
+                  "[net bills CURRENT]": 22744399.0,
+                  "[bills growth]": -1224468.0,
+                  "[bills growth %]": -0.05108576888511251,
+                  "[RETAIL PRICE GROWTH]": -0.10456477649272733,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.07351692362318929,
+                  "[SPEND PER TRANSACTION GROWTH]": 0.0401069661427631
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "section_performance_breakdown": {
+    "status": "success",
+    "purpose": "Show the main sections driving the business and their revenue, units and transaction-growth patterns.",
+    "query": "EVALUATE\nTOPN(\n    15,\n    SUMMARIZECOLUMNS(\n        'MIS_DEEP_DIVE2'[SECTION],\n        \"net revenue CURRENT\", [net revenue CURRENT],\n        \"net revenue PAST\", [net revenue PAST],\n        \"revenue Growth\", [revenue Growth],\n        \"revenue growth %\", [revenue growth %],\n        \"net qty CURRENT\", [net qty CURRENT],\n        \"net qty PAST\", [net qty PAST],\n        \"QTY Growth\", [QTY Growth],\n        \"QTY GROWTH %\", [QTY GROWTH %],\n        \"net bills CURRENT\", [net bills CURRENT],\n        \"bills growth\", [bills growth],\n        \"bills growth %\", [bills growth %],\n        \"RETAIL PRICE GROWTH\", [RETAIL PRICE GROWTH],\n        \"QUANTITY PER TRANSACTION GROWTH\", [QUANTITY PER TRANSACTION GROWTH],\n        \"SPEND PER TRANSACTION GROWTH\", [SPEND PER TRANSACTION GROWTH]\n    ),\n    [net revenue CURRENT], DESC\n)",
+    "result": {
+      "results": [
+        {
+          "tables": [
+            {
+              "rows": [
+                {
+                  "MIS_DEEP_DIVE2[SECTION]": "CULINARY SUPPLIES",
+                  "[net revenue CURRENT]": 2338021.435616438,
+                  "[net revenue PAST]": 2078976.663013699,
+                  "[revenue Growth]": 259044.7726027388,
+                  "[revenue growth %]": 0.12460205889335271,
+                  "[net qty CURRENT]": 269001.7,
+                  "[net qty PAST]": 265685.75,
+                  "[QTY Growth]": 3315.9500000000116,
+                  "[QTY GROWTH %]": 0.01248072205603805,
+                  "[net bills CURRENT]": 264970.0,
+                  "[bills growth]": 40601.0,
+                  "[bills growth %]": 0.18095637097816544,
+                  "[RETAIL PRICE GROWTH]": 0.8665285115695385,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.16893074363366467,
+                  "[SPEND PER TRANSACTION GROWTH]": -0.44216062076656293
+                },
+                {
+                  "MIS_DEEP_DIVE2[SECTION]": "MENS APPAREL",
+                  "[net revenue CURRENT]": 2912736.6575342477,
+                  "[net revenue PAST]": 3224563.9452054785,
+                  "[revenue Growth]": -311827.28767123073,
+                  "[revenue growth %]": -0.09670370722059296,
+                  "[net qty CURRENT]": 513052.0,
+                  "[net qty PAST]": 508398.3,
+                  "[QTY Growth]": 4653.700000000012,
+                  "[QTY GROWTH %]": 0.00915364980567404,
+                  "[net bills CURRENT]": 410657.0,
+                  "[bills growth]": -17044.0,
+                  "[bills growth %]": -0.03985026923013975,
+                  "[RETAIL PRICE GROWTH]": -0.665320117262274,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.06066744054319151,
+                  "[SPEND PER TRANSACTION GROWTH]": -0.4464249880191762
+                },
+                {
+                  "MIS_DEEP_DIVE2[SECTION]": "CLEANING ESSENSTIALS",
+                  "[net revenue CURRENT]": 2563345.126027398,
+                  "[net revenue PAST]": 2712222.6684931493,
+                  "[revenue Growth]": -148877.54246575153,
+                  "[revenue growth %]": -0.054891342143550695,
+                  "[net qty CURRENT]": 990316.0,
+                  "[net qty PAST]": 1037103.0,
+                  "[QTY Growth]": -46787.0,
+                  "[QTY GROWTH %]": -0.04511316619467883,
+                  "[net bills CURRENT]": 1318818.0,
+                  "[bills growth]": -105987.0,
+                  "[bills growth %]": -0.07438702138187331,
+                  "[RETAIL PRICE GROWTH]": -0.02677992728083245,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.02302061621558471,
+                  "[SPEND PER TRANSACTION GROWTH]": 0.04009395016435158
+                },
+                {
+                  "MIS_DEEP_DIVE2[SECTION]": "MEAT SHOP",
+                  "[net revenue CURRENT]": 3778457.706849315,
+                  "[net revenue PAST]": 4397851.356164382,
+                  "[revenue Growth]": -619393.6493150666,
+                  "[revenue growth %]": -0.14084006010045672,
+                  "[net qty CURRENT]": 572256.47,
+                  "[net qty PAST]": 649949.92,
+                  "[QTY Growth]": -77693.45000000007,
+                  "[QTY GROWTH %]": -0.11953759452728306,
+                  "[net bills CURRENT]": 493114.0,
+                  "[bills growth]": -49150.0,
+                  "[bills growth %]": -0.09063850818051723,
+                  "[RETAIL PRICE GROWTH]": -0.1637116957552731,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.03809050008548431,
+                  "[SPEND PER TRANSACTION GROWTH]": -0.4477239810523779
+                },
+                {
+                  "MIS_DEEP_DIVE2[SECTION]": "HOME TEXTILES",
+                  "[net revenue CURRENT]": 3003176.164383562,
+                  "[net revenue PAST]": 3494135.616438357,
+                  "[revenue Growth]": -490959.45205479534,
+                  "[revenue growth %]": -0.1405095582853307,
+                  "[net qty CURRENT]": 218918.0,
+                  "[net qty PAST]": 221127.0,
+                  "[QTY Growth]": -2209.0,
+                  "[QTY GROWTH %]": -0.00998973440602007,
+                  "[net bills CURRENT]": 174589.0,
+                  "[bills growth]": 774.0,
+                  "[bills growth %]": 0.004453010384604321,
+                  "[RETAIL PRICE GROWTH]": -2.083218215349861,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.01829256612568031,
+                  "[SPEND PER TRANSACTION GROWTH]": -2.9012072595639538
+                },
+                {
+                  "MIS_DEEP_DIVE2[SECTION]": "SEA FOOD",
+                  "[net revenue CURRENT]": 3096664.4849315067,
+                  "[net revenue PAST]": 3122445.2219178076,
+                  "[revenue Growth]": -25780.736986300908,
+                  "[revenue growth %]": -0.00825658583386336,
+                  "[net qty CURRENT]": 819061.98,
+                  "[net qty PAST]": 712972.83,
+                  "[QTY Growth]": 106089.15000000002,
+                  "[QTY GROWTH %]": 0.14879830694249602,
+                  "[net bills CURRENT]": 529462.0,
+                  "[bills growth]": 124839.0,
+                  "[bills growth %]": 0.30853164550705225,
+                  "[RETAIL PRICE GROWTH]": -0.5987279491698012,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.21509670276945236,
+                  "[SPEND PER TRANSACTION GROWTH]": -1.8682245360577996
+                },
+                {
+                  "MIS_DEEP_DIVE2[SECTION]": "TRAVEL",
+                  "[net revenue CURRENT]": 2718052.953424659,
+                  "[net revenue PAST]": 2461325.7205479457,
+                  "[revenue Growth]": 256727.2328767134,
+                  "[revenue growth %]": 0.10430445297567532,
+                  "[net qty CURRENT]": 147039.0,
+                  "[net qty PAST]": 133150.0,
+                  "[QTY Growth]": 13889.0,
+                  "[QTY GROWTH %]": 0.10431092752534735,
+                  "[net bills CURRENT]": 137349.0,
+                  "[bills growth]": 16169.0,
+                  "[bills growth %]": 0.13342960884634428,
+                  "[RETAIL PRICE GROWTH]": -0.00010837924385143083,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.02822847212495727,
+                  "[SPEND PER TRANSACTION GROWTH]": -0.5219295026497868
+                },
+                {
+                  "MIS_DEEP_DIVE2[SECTION]": null,
+                  "[net revenue CURRENT]": 7973207.054794517,
+                  "[net revenue PAST]": 7790510.1369863,
+                  "[revenue Growth]": 182696.917808217,
+                  "[revenue growth %]": 0.023451213668389103,
+                  "[net qty CURRENT]": 9149485.0,
+                  "[net qty PAST]": 9299237.0,
+                  "[QTY Growth]": -149752.0,
+                  "[QTY GROWTH %]": -0.01610368678634602,
+                  "[net bills CURRENT]": 4285689.0,
+                  "[bills growth]": -114559.0,
+                  "[bills growth %]": -0.026034668955022534,
+                  "[RETAIL PRICE GROWTH]": 0.033679803066522074,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.021548590396852862,
+                  "[SPEND PER TRANSACTION GROWTH]": 0.08995526045296409
+                },
+                {
+                  "MIS_DEEP_DIVE2[SECTION]": "REFRIDGERATED GOODS",
+                  "[net revenue CURRENT]": 5100214.7260273965,
+                  "[net revenue PAST]": 5201731.849315068,
+                  "[revenue Growth]": -101517.12328767125,
+                  "[revenue growth %]": -0.019516023937496584,
+                  "[net qty CURRENT]": 2587662.0,
+                  "[net qty PAST]": 3001742.0,
+                  "[QTY Growth]": -414080.0,
+                  "[QTY GROWTH %]": -0.1379465656941869,
+                  "[net bills CURRENT]": 3224460.0,
+                  "[bills growth]": -10825.0,
+                  "[bills growth %]": -0.00334591852031583,
+                  "[RETAIL PRICE GROWTH]": 0.23806970191138355,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.12530359063191676,
+                  "[SPEND PER TRANSACTION GROWTH]": -0.026085779434488643
+                },
+                {
+                  "MIS_DEEP_DIVE2[SECTION]": "GREEN GROCERIES",
+                  "[net revenue CURRENT]": 12220232.712328766,
+                  "[net revenue PAST]": 13039870.013698617,
+                  "[revenue Growth]": -819637.3013698515,
+                  "[revenue growth %]": -0.0628562478390358,
+                  "[net qty CURRENT]": 10553742.45,
+                  "[net qty PAST]": 10159333.45,
+                  "[QTY Growth]": 394409.0,
+                  "[QTY GROWTH %]": 0.03882233041578136,
+                  "[net bills CURRENT]": 8995613.0,
+                  "[bills growth]": 269083.0,
+                  "[bills growth %]": 0.03083505127467619,
+                  "[RETAIL PRICE GROWTH]": -0.12563083189703006,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.009020556148059855,
+                  "[SPEND PER TRANSACTION GROWTH]": -0.13581313045118337
+                },
+                {
+                  "MIS_DEEP_DIVE2[SECTION]": "PROVISIONS",
+                  "[net revenue CURRENT]": 21047473.66027394,
+                  "[net revenue PAST]": 21442041.767123308,
+                  "[revenue Growth]": -394568.10684936866,
+                  "[revenue growth %]": -0.018401610776374512,
+                  "[net qty CURRENT]": 11408878.0,
+                  "[net qty PAST]": 11153569.0,
+                  "[QTY Growth]": 255309.0,
+                  "[QTY GROWTH %]": 0.0228903411993058,
+                  "[net bills CURRENT]": 10625869.0,
+                  "[bills growth]": -323094.0,
+                  "[bills growth %]": -0.02950909597557321,
+                  "[RETAIL PRICE GROWTH]": -0.07760480556533156,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.055001688623413036,
+                  "[SPEND PER TRANSACTION GROWTH]": 0.022413899660246317
+                },
+                {
+                  "MIS_DEEP_DIVE2[SECTION]": "PERSONAL CARE",
+                  "[net revenue CURRENT]": 10498227.260273982,
+                  "[net revenue PAST]": 10791399.863013698,
+                  "[revenue Growth]": -293172.60273971595,
+                  "[revenue growth %]": -0.027167244885858772,
+                  "[net qty CURRENT]": 3099162.0,
+                  "[net qty PAST]": 3148966.0,
+                  "[QTY Growth]": -49804.0,
+                  "[QTY GROWTH %]": -0.015815985310733745,
+                  "[net bills CURRENT]": 5026287.0,
+                  "[bills growth]": -637376.0,
+                  "[bills growth %]": -0.11253776928464847,
+                  "[RETAIL PRICE GROWTH]": -0.0395255172282174,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.060596143672894565,
+                  "[SPEND PER TRANSACTION GROWTH]": 0.1832898649246466
+                },
+                {
+                  "MIS_DEEP_DIVE2[SECTION]": "SPICE MARKET",
+                  "[net revenue CURRENT]": 4903958.706849314,
+                  "[net revenue PAST]": 5552570.947945206,
+                  "[revenue Growth]": -648612.2410958922,
+                  "[revenue growth %]": -0.11681295874948139,
+                  "[net qty CURRENT]": 686019.26,
+                  "[net qty PAST]": 658195.02,
+                  "[QTY Growth]": 27824.23999999999,
+                  "[QTY GROWTH %]": 0.042273549866724894,
+                  "[net bills CURRENT]": 976441.0,
+                  "[bills growth]": -46501.0,
+                  "[bills growth %]": -0.045458100263749066,
+                  "[RETAIL PRICE GROWTH]": -1.2876302131114823,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.0591377617411194,
+                  "[SPEND PER TRANSACTION GROWTH]": -0.405762267482233
+                },
+                {
+                  "MIS_DEEP_DIVE2[SECTION]": "ENTERTAINMENTS",
+                  "[net revenue CURRENT]": 3234034.246575342,
+                  "[net revenue PAST]": 4223440.8219178105,
+                  "[revenue Growth]": -989406.5753424685,
+                  "[revenue growth %]": -0.23426552355318467,
+                  "[net qty CURRENT]": 33169.0,
+                  "[net qty PAST]": 37957.0,
+                  "[QTY Growth]": -4788.0,
+                  "[QTY GROWTH %]": -0.12614274046947863,
+                  "[net bills CURRENT]": 33328.0,
+                  "[bills growth]": -11694.0,
+                  "[bills growth %]": -0.2597396828217316,
+                  "[RETAIL PRICE GROWTH]": -13.767378451418153,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.15215251862891455,
+                  "[SPEND PER TRANSACTION GROWTH]": 3.228174632705745
+                },
+                {
+                  "MIS_DEEP_DIVE2[SECTION]": "CONSUMER DEVICES",
+                  "[net revenue CURRENT]": 4682785.479452054,
+                  "[net revenue PAST]": 5684502.876712329,
+                  "[revenue Growth]": -1001717.3972602747,
+                  "[revenue growth %]": -0.17621899733114832,
+                  "[net qty CURRENT]": 336660.0,
+                  "[net qty PAST]": 359043.0,
+                  "[QTY Growth]": -22383.0,
+                  "[QTY GROWTH %]": -0.06234072242043432,
+                  "[net bills CURRENT]": 317244.0,
+                  "[bills growth]": -20134.0,
+                  "[bills growth %]": -0.05967786874070034,
+                  "[RETAIL PRICE GROWTH]": -1.9228342580793427,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.0030137023040079924,
+                  "[SPEND PER TRANSACTION GROWTH]": -2.0882298190909943
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "category_top_current_revenue": {
+    "status": "success",
+    "purpose": "Identify the biggest current-revenue categories and their current versus prior performance.",
+    "query": "EVALUATE\nTOPN(\n    15,\n    SUMMARIZECOLUMNS(\n        'MIS_DEEP_DIVE2'[CATEGORY_NAME],\n        \"net revenue CURRENT\", [net revenue CURRENT],\n        \"net revenue PAST\", [net revenue PAST],\n        \"revenue Growth\", [revenue Growth],\n        \"revenue growth %\", [revenue growth %],\n        \"net qty CURRENT\", [net qty CURRENT],\n        \"net qty PAST\", [net qty PAST],\n        \"QTY Growth\", [QTY Growth],\n        \"QTY GROWTH %\", [QTY GROWTH %],\n        \"net bills CURRENT\", [net bills CURRENT],\n        \"bills growth\", [bills growth],\n        \"bills growth %\", [bills growth %],\n        \"RETAIL PRICE GROWTH\", [RETAIL PRICE GROWTH],\n        \"QUANTITY PER TRANSACTION GROWTH\", [QUANTITY PER TRANSACTION GROWTH],\n        \"SPEND PER TRANSACTION GROWTH\", [SPEND PER TRANSACTION GROWTH]\n    ),\n    [net revenue CURRENT], DESC\n)",
+    "result": {
+      "results": [
+        {
+          "tables": [
+            {
+              "rows": [
+                {
+                  "MIS_DEEP_DIVE2[CATEGORY_NAME]": "SUNFLOWER OIL",
+                  "[net revenue CURRENT]": 1214697.8082191779,
+                  "[net revenue PAST]": 1634640.616438356,
+                  "[revenue Growth]": -419942.8082191781,
+                  "[revenue growth %]": -0.2569022230306331,
+                  "[net qty CURRENT]": 221680.0,
+                  "[net qty PAST]": 232619.0,
+                  "[QTY Growth]": -10939.0,
+                  "[QTY GROWTH %]": -0.04702539345453295,
+                  "[net bills CURRENT]": 395788.0,
+                  "[bills growth]": -4582.0,
+                  "[bills growth %]": -0.011444413917126658,
+                  "[RETAIL PRICE GROWTH]": -1.5476055127860162,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.02091223553774213,
+                  "[SPEND PER TRANSACTION GROWTH]": -1.013763187360179
+                },
+                {
+                  "MIS_DEEP_DIVE2[CATEGORY_NAME]": "WHITE EGGS",
+                  "[net revenue CURRENT]": 1504930.4109589034,
+                  "[net revenue PAST]": 1599549.7945205476,
+                  "[revenue Growth]": -94619.38356164424,
+                  "[revenue growth %]": -0.05915375931763703,
+                  "[net qty CURRENT]": 422011.0,
+                  "[net qty PAST]": 447385.0,
+                  "[QTY Growth]": -25374.0,
+                  "[QTY GROWTH %]": -0.056716251103635575,
+                  "[net bills CURRENT]": 506138.0,
+                  "[bills growth]": -16082.0,
+                  "[bills growth %]": -0.03079545019340508,
+                  "[RETAIL PRICE GROWTH]": -0.00923889605448247,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.022911888684950532,
+                  "[SPEND PER TRANSACTION GROWTH]": -0.08962086927402302
+                },
+                {
+                  "MIS_DEEP_DIVE2[CATEGORY_NAME]": "BOXED CHOCOLATE",
+                  "[net revenue CURRENT]": 1229202.9452054792,
+                  "[net revenue PAST]": 1142861.02739726,
+                  "[revenue Growth]": 86341.91780821909,
+                  "[revenue growth %]": 0.07554892129347808,
+                  "[net qty CURRENT]": 899076.0,
+                  "[net qty PAST]": 709832.0,
+                  "[QTY Growth]": 189244.0,
+                  "[QTY GROWTH %]": 0.2666039288169595,
+                  "[net bills CURRENT]": 427151.0,
+                  "[bills growth]": 23296.0,
+                  "[bills growth %]": 0.05768406977751916,
+                  "[RETAIL PRICE GROWTH]": -0.24285969393875195,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.34717933794298506,
+                  "[SPEND PER TRANSACTION GROWTH]": 0.04779818508637046
+                },
+                {
+                  "MIS_DEEP_DIVE2[CATEGORY_NAME]": "DRY NUTS ROASTERY",
+                  "[net revenue CURRENT]": 1610870.3917808216,
+                  "[net revenue PAST]": 1655360.556164383,
+                  "[revenue Growth]": -44490.16438356135,
+                  "[revenue growth %]": -0.026876419289975716,
+                  "[net qty CURRENT]": 240369.73,
+                  "[net qty PAST]": 179846.21,
+                  "[QTY Growth]": 60523.52000000002,
+                  "[QTY GROWTH %]": 0.33652930467647896,
+                  "[net bills CURRENT]": 334935.0,
+                  "[bills growth]": 48158.0,
+                  "[bills growth %]": 0.16792839035208543,
+                  "[RETAIL PRICE GROWTH]": -2.502675779260687,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.09053170150559631,
+                  "[SPEND PER TRANSACTION GROWTH]": -0.9627903862916058
+                },
+                {
+                  "MIS_DEEP_DIVE2[CATEGORY_NAME]": "POWDERED MILK",
+                  "[net revenue CURRENT]": 1871846.7808219185,
+                  "[net revenue PAST]": 1865531.5753424657,
+                  "[revenue Growth]": 6315.205479452852,
+                  "[revenue growth %]": 0.003385204283285066,
+                  "[net qty CURRENT]": 105001.0,
+                  "[net qty PAST]": 112447.0,
+                  "[QTY Growth]": -7446.0,
+                  "[QTY GROWTH %]": -0.06621786263750923,
+                  "[net bills CURRENT]": 227237.0,
+                  "[bills growth]": -42196.0,
+                  "[bills growth %]": -0.1566103632442945,
+                  "[RETAIL PRICE GROWTH]": 1.2366236424549903,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.04473023986292368,
+                  "[SPEND PER TRANSACTION GROWTH]": 1.3135043286856334
+                },
+                {
+                  "MIS_DEEP_DIVE2[CATEGORY_NAME]": "BANANAS",
+                  "[net revenue CURRENT]": 1374671.7561643838,
+                  "[net revenue PAST]": 1320268.7698630136,
+                  "[revenue Growth]": 54402.9863013702,
+                  "[revenue growth %]": 0.041205993463751214,
+                  "[net qty CURRENT]": 1083320.71,
+                  "[net qty PAST]": 929706.52,
+                  "[QTY Growth]": 153614.18999999994,
+                  "[QTY GROWTH %]": 0.16522868958690312,
+                  "[net bills CURRENT]": 773417.0,
+                  "[bills growth]": 114320.0,
+                  "[bills growth %]": 0.1734494315707703,
+                  "[RETAIL PRICE GROWTH]": -0.1511494158046771,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.009881962022607604,
+                  "[SPEND PER TRANSACTION GROWTH]": -0.22574740580050556
+                },
+                {
+                  "MIS_DEEP_DIVE2[CATEGORY_NAME]": "DRY FRUITS ROASTERY",
+                  "[net revenue CURRENT]": 1317323.6,
+                  "[net revenue PAST]": 1078764.479452055,
+                  "[revenue Growth]": 238559.12054794515,
+                  "[revenue growth %]": 0.22114106006634396,
+                  "[net qty CURRENT]": 176999.02,
+                  "[net qty PAST]": 137614.01,
+                  "[QTY Growth]": 39385.00999999998,
+                  "[QTY GROWTH %]": 0.2861991304519066,
+                  "[net bills CURRENT]": 252503.0,
+                  "[bills growth]": 33002.0,
+                  "[bills growth %]": 0.15035011230017176,
+                  "[RETAIL PRICE GROWTH]": -0.39651256506186616,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.07403764764150533,
+                  "[SPEND PER TRANSACTION GROWTH]": 0.3024390201973537
+                },
+                {
+                  "MIS_DEEP_DIVE2[CATEGORY_NAME]": null,
+                  "[net revenue CURRENT]": 7973207.054794517,
+                  "[net revenue PAST]": 7790510.1369863,
+                  "[revenue Growth]": 182696.917808217,
+                  "[revenue growth %]": 0.023451213668389103,
+                  "[net qty CURRENT]": 9149485.0,
+                  "[net qty PAST]": 9299237.0,
+                  "[QTY Growth]": -149752.0,
+                  "[QTY GROWTH %]": -0.01610368678634602,
+                  "[net bills CURRENT]": 4285689.0,
+                  "[bills growth]": -114559.0,
+                  "[bills growth %]": -0.026034668955022534,
+                  "[RETAIL PRICE GROWTH]": 0.033679803066522074,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.021548590396852862,
+                  "[SPEND PER TRANSACTION GROWTH]": 0.08995526045296409
+                },
+                {
+                  "MIS_DEEP_DIVE2[CATEGORY_NAME]": "TORCHES",
+                  "[net revenue CURRENT]": 1773007.6712328766,
+                  "[net revenue PAST]": 2302343.8356164386,
+                  "[revenue Growth]": -529336.164383562,
+                  "[revenue growth %]": -0.22991186468107858,
+                  "[net qty CURRENT]": 86097.0,
+                  "[net qty PAST]": 86676.0,
+                  "[QTY Growth]": -579.0,
+                  "[QTY GROWTH %]": -0.006680049840786377,
+                  "[net bills CURRENT]": 73629.0,
+                  "[bills growth]": -956.0,
+                  "[bills growth %]": -0.012817590668364952,
+                  "[RETAIL PRICE GROWTH]": -5.969504080409504,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.007225108160795468,
+                  "[SPEND PER TRANSACTION GROWTH]": -6.788434767833287
+                },
+                {
+                  "MIS_DEEP_DIVE2[CATEGORY_NAME]": "FRESH FISH",
+                  "[net revenue CURRENT]": 3096465.6904109586,
+                  "[net revenue PAST]": 3121797.523287671,
+                  "[revenue Growth]": -25331.83287671255,
+                  "[revenue growth %]": -0.008114502201934843,
+                  "[net qty CURRENT]": 819025.51,
+                  "[net qty PAST]": 712853.09,
+                  "[QTY Growth]": 106172.42000000004,
+                  "[QTY GROWTH %]": 0.14894011331282866,
+                  "[net bills CURRENT]": 529326.0,
+                  "[bills growth]": 125192.0,
+                  "[bills growth %]": 0.30977843982441466,
+                  "[RETAIL PRICE GROWTH]": -0.5986293512822161,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.21660394169984665,
+                  "[SPEND PER TRANSACTION GROWTH]": -1.874832143307695
+                },
+                {
+                  "MIS_DEEP_DIVE2[CATEGORY_NAME]": "FLAVOURING VEGETABLES",
+                  "[net revenue CURRENT]": 2254873.936986301,
+                  "[net revenue PAST]": 2235131.2219178076,
+                  "[revenue Growth]": 19742.715068493504,
+                  "[revenue growth %]": 0.0088329109606163,
+                  "[net qty CURRENT]": 2591354.04,
+                  "[net qty PAST]": 2437059.49,
+                  "[QTY Growth]": 154294.5499999998,
+                  "[QTY GROWTH %]": 0.0633117700380797,
+                  "[net bills CURRENT]": 1885329.0,
+                  "[bills growth]": 51787.0,
+                  "[bills growth %]": 0.02824423983742941,
+                  "[RETAIL PRICE GROWTH]": -0.04698987362548834,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.04532983753305464,
+                  "[SPEND PER TRANSACTION GROWTH]": -0.023012889119872204
+                },
+                {
+                  "MIS_DEEP_DIVE2[CATEGORY_NAME]": "LED TV",
+                  "[net revenue CURRENT]": 2681505.4794520545,
+                  "[net revenue PAST]": 3598488.4931506854,
+                  "[revenue Growth]": -916983.013698631,
+                  "[revenue growth %]": -0.2548244951856881,
+                  "[net qty CURRENT]": 10969.0,
+                  "[net qty PAST]": 14047.0,
+                  "[QTY Growth]": -3078.0,
+                  "[QTY GROWTH %]": -0.21912152060938278,
+                  "[net bills CURRENT]": 11649.0,
+                  "[bills growth]": -2484.0,
+                  "[bills growth %]": -0.1757588622373169,
+                  "[RETAIL PRICE GROWTH]": -11.712712479176417,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.05228906018992274,
+                  "[SPEND PER TRANSACTION GROWTH]": -24.42413686740403
+                },
+                {
+                  "MIS_DEEP_DIVE2[CATEGORY_NAME]": "BLANKET DOUBLE",
+                  "[net revenue CURRENT]": 1907735.068493151,
+                  "[net revenue PAST]": 2297425.7534246584,
+                  "[revenue Growth]": -389690.68493150733,
+                  "[revenue growth %]": -0.1696205783149313,
+                  "[net qty CURRENT]": 84773.0,
+                  "[net qty PAST]": 76806.0,
+                  "[QTY Growth]": 7967.0,
+                  "[QTY GROWTH %]": 0.10372887534828008,
+                  "[net bills CURRENT]": 69973.0,
+                  "[bills growth]": 6636.0,
+                  "[bills growth %]": 0.10477288157001437,
+                  "[RETAIL PRICE GROWTH]": -7.40801994184967,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.0011459554666302108,
+                  "[SPEND PER TRANSACTION GROWTH]": -9.009169269732187
+                },
+                {
+                  "MIS_DEEP_DIVE2[CATEGORY_NAME]": "GREEN VEGETABLES",
+                  "[net revenue CURRENT]": 2589299.665753425,
+                  "[net revenue PAST]": 2660782.471232876,
+                  "[revenue Growth]": -71482.80547945108,
+                  "[revenue growth %]": -0.026865332379587367,
+                  "[net qty CURRENT]": 1134435.06,
+                  "[net qty PAST]": 1052920.63,
+                  "[QTY Growth]": 81514.43000000017,
+                  "[QTY GROWTH %]": 0.07741744978441555,
+                  "[net bills CURRENT]": 1717091.0,
+                  "[bills growth]": 105093.0,
+                  "[bills growth %]": 0.06519424962065709,
+                  "[RETAIL PRICE GROWTH]": -0.24459205168903653,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.007495269392851389,
+                  "[SPEND PER TRANSACTION GROWTH]": -0.1426543625790806
+                },
+                {
+                  "MIS_DEEP_DIVE2[CATEGORY_NAME]": "TOMATO",
+                  "[net revenue CURRENT]": 1360286.0301369866,
+                  "[net revenue PAST]": 1611619.326027397,
+                  "[revenue Growth]": -251333.29589041043,
+                  "[revenue growth %]": -0.15595078306112212,
+                  "[net qty CURRENT]": 1392546.27,
+                  "[net qty PAST]": 1391617.32,
+                  "[QTY Growth]": 928.9499999999534,
+                  "[QTY GROWTH %]": 0.0006675326518643455,
+                  "[net bills CURRENT]": 1050201.0,
+                  "[bills growth]": -50292.0,
+                  "[bills growth %]": -0.04569951830679523,
+                  "[RETAIL PRICE GROWTH]": -0.18125724785640995,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.06144080151456088,
+                  "[SPEND PER TRANSACTION GROWTH]": -0.16918958275324103
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "category_top_and_bottom_revenue_change": {
+    "status": "success",
+    "purpose": "Identify the categories with the largest revenue gains and losses for focused commentary.",
+    "query": "EVALUATE\nTOPN(\n    14,\n    DISTINCT(\n        UNION(\n            TOPN(\n                7,\n                SUMMARIZECOLUMNS(\n                    'MIS_DEEP_DIVE2'[CATEGORY_NAME],\n                    \"net revenue CURRENT\", [net revenue CURRENT],\n                    \"net revenue PAST\", [net revenue PAST],\n                    \"revenue Growth\", [revenue Growth],\n                    \"revenue growth %\", [revenue growth %],\n                    \"net qty CURRENT\", [net qty CURRENT],\n                    \"net qty PAST\", [net qty PAST],\n                    \"QTY Growth\", [QTY Growth],\n                    \"QTY GROWTH %\", [QTY GROWTH %],\n                    \"net bills CURRENT\", [net bills CURRENT],\n                    \"bills growth\", [bills growth],\n                    \"bills growth %\", [bills growth %],\n                    \"RETAIL PRICE GROWTH\", [RETAIL PRICE GROWTH],\n                    \"QUANTITY PER TRANSACTION GROWTH\", [QUANTITY PER TRANSACTION GROWTH],\n                    \"SPEND PER TRANSACTION GROWTH\", [SPEND PER TRANSACTION GROWTH]\n                ),\n                [revenue Growth], DESC\n            ),\n            TOPN(\n                7,\n                SUMMARIZECOLUMNS(\n                    'MIS_DEEP_DIVE2'[CATEGORY_NAME],\n                    \"net revenue CURRENT\", [net revenue CURRENT],\n                    \"net revenue PAST\", [net revenue PAST],\n                    \"revenue Growth\", [revenue Growth],\n                    \"revenue growth %\", [revenue growth %],\n                    \"net qty CURRENT\", [net qty CURRENT],\n                    \"net qty PAST\", [net qty PAST],\n                    \"QTY Growth\", [QTY Growth],\n                    \"QTY GROWTH %\", [QTY GROWTH %],\n                    \"net bills CURRENT\", [net bills CURRENT],\n                    \"bills growth\", [bills growth],\n                    \"bills growth %\", [bills growth %],\n                    \"RETAIL PRICE GROWTH\", [RETAIL PRICE GROWTH],\n                    \"QUANTITY PER TRANSACTION GROWTH\", [QUANTITY PER TRANSACTION GROWTH],\n                    \"SPEND PER TRANSACTION GROWTH\", [SPEND PER TRANSACTION GROWTH]\n                ),\n                [revenue Growth], ASC\n            )\n        )\n    ),\n    [revenue Growth], DESC\n)",
+    "result": {
+      "results": [
+        {
+          "tables": [
+            {
+              "rows": [
+                {
+                  "MIS_DEEP_DIVE2[CATEGORY_NAME]": "FRESH WHOLE  CHICKEN",
+                  "[net revenue CURRENT]": 600628.1506849315,
+                  "[net revenue PAST]": 439661.36986301374,
+                  "[revenue Growth]": 160966.7808219178,
+                  "[revenue growth %]": 0.3661153602648115,
+                  "[net qty CURRENT]": 105939.0,
+                  "[net qty PAST]": 83097.0,
+                  "[QTY Growth]": 22842.0,
+                  "[QTY GROWTH %]": 0.27488356980396406,
+                  "[net bills CURRENT]": 102191.0,
+                  "[bills growth]": 26104.0,
+                  "[bills growth %]": 0.3430809468108875,
+                  "[RETAIL PRICE GROWTH]": 0.37862443452431727,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.05545495627936248,
+                  "[SPEND PER TRANSACTION GROWTH]": 0.09910209091938871
+                },
+                {
+                  "MIS_DEEP_DIVE2[CATEGORY_NAME]": null,
+                  "[net revenue CURRENT]": 7973207.054794517,
+                  "[net revenue PAST]": 7790510.1369863,
+                  "[revenue Growth]": 182696.917808217,
+                  "[revenue growth %]": 0.023451213668389103,
+                  "[net qty CURRENT]": 9149485.0,
+                  "[net qty PAST]": 9299237.0,
+                  "[QTY Growth]": -149752.0,
+                  "[QTY GROWTH %]": -0.01610368678634602,
+                  "[net bills CURRENT]": 4285689.0,
+                  "[bills growth]": -114559.0,
+                  "[bills growth %]": -0.026034668955022534,
+                  "[RETAIL PRICE GROWTH]": 0.033679803066522074,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.021548590396852862,
+                  "[SPEND PER TRANSACTION GROWTH]": 0.08995526045296409
+                },
+                {
+                  "MIS_DEEP_DIVE2[CATEGORY_NAME]": "FLOUR",
+                  "[net revenue CURRENT]": 1101831.3013698629,
+                  "[net revenue PAST]": 913235.4794520546,
+                  "[revenue Growth]": 188595.82191780827,
+                  "[revenue growth %]": 0.20651390157439636,
+                  "[net qty CURRENT]": 305438.0,
+                  "[net qty PAST]": 279070.0,
+                  "[QTY Growth]": 26368.0,
+                  "[QTY GROWTH %]": 0.09448525459562117,
+                  "[net bills CURRENT]": 480734.0,
+                  "[bills growth]": 55372.0,
+                  "[bills growth %]": 0.13017617934841383,
+                  "[RETAIL PRICE GROWTH]": 0.33495680018866913,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.020718872330148908,
+                  "[SPEND PER TRANSACTION GROWTH]": 0.14501640482537725
+                },
+                {
+                  "MIS_DEEP_DIVE2[CATEGORY_NAME]": "CHOCOLATES AND CANDY ROASTERY",
+                  "[net revenue CURRENT]": 1178063.610958904,
+                  "[net revenue PAST]": 979212.3095890412,
+                  "[revenue Growth]": 198851.30136986286,
+                  "[revenue growth %]": 0.2030727140810938,
+                  "[net qty CURRENT]": 174470.45,
+                  "[net qty PAST]": 144641.81,
+                  "[QTY Growth]": 29828.640000000014,
+                  "[QTY GROWTH %]": 0.2062241892575875,
+                  "[net bills CURRENT]": 227491.0,
+                  "[bills growth]": 42726.0,
+                  "[bills growth %]": 0.23124509512082916,
+                  "[RETAIL PRICE GROWTH]": -0.017687598594415377,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.01590862544847438,
+                  "[SPEND PER TRANSACTION GROWTH]": -0.1212652030389858
+                },
+                {
+                  "MIS_DEEP_DIVE2[CATEGORY_NAME]": "DRY FRUITS ROASTERY",
+                  "[net revenue CURRENT]": 1317323.6,
+                  "[net revenue PAST]": 1078764.479452055,
+                  "[revenue Growth]": 238559.12054794515,
+                  "[revenue growth %]": 0.22114106006634396,
+                  "[net qty CURRENT]": 176999.02,
+                  "[net qty PAST]": 137614.01,
+                  "[QTY Growth]": 39385.00999999998,
+                  "[QTY GROWTH %]": 0.2861991304519066,
+                  "[net bills CURRENT]": 252503.0,
+                  "[bills growth]": 33002.0,
+                  "[bills growth %]": 0.15035011230017176,
+                  "[RETAIL PRICE GROWTH]": -0.39651256506186616,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.07403764764150533,
+                  "[SPEND PER TRANSACTION GROWTH]": 0.3024390201973537
+                },
+                {
+                  "MIS_DEEP_DIVE2[CATEGORY_NAME]": "PRESSURE WASHER",
+                  "[net revenue CURRENT]": 439440.82191780815,
+                  "[net revenue PAST]": 203919.99999999994,
+                  "[revenue Growth]": 235520.8219178082,
+                  "[revenue growth %]": 1.1549667610720296,
+                  "[net qty CURRENT]": 5071.0,
+                  "[net qty PAST]": 2488.0,
+                  "[QTY Growth]": 2583.0,
+                  "[QTY GROWTH %]": 1.0381832797427653,
+                  "[net bills CURRENT]": 8362.0,
+                  "[bills growth]": 5679.0,
+                  "[bills growth %]": 2.1166604547148715,
+                  "[RETAIL PRICE GROWTH]": 4.696211302043693,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.320886296499713,
+                  "[SPEND PER TRANSACTION GROWTH]": -23.45235326568384
+                },
+                {
+                  "MIS_DEEP_DIVE2[CATEGORY_NAME]": "HARD TROLLEY",
+                  "[net revenue CURRENT]": 1059877.1561643835,
+                  "[net revenue PAST]": 722375.315068493,
+                  "[revenue Growth]": 337501.8410958905,
+                  "[revenue growth %]": 0.46721120455768866,
+                  "[net qty CURRENT]": 43761.0,
+                  "[net qty PAST]": 22707.0,
+                  "[QTY Growth]": 21054.0,
+                  "[QTY GROWTH %]": 0.9272030651340997,
+                  "[net bills CURRENT]": 42239.0,
+                  "[bills growth]": 19230.0,
+                  "[bills growth %]": 0.8357599200312921,
+                  "[RETAIL PRICE GROWTH]": -7.593216910327165,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.04915834882098169,
+                  "[SPEND PER TRANSACTION GROWTH]": -6.302954484204946
+                },
+                {
+                  "MIS_DEEP_DIVE2[CATEGORY_NAME]": "TOMATO",
+                  "[net revenue CURRENT]": 1360286.0301369866,
+                  "[net revenue PAST]": 1611619.326027397,
+                  "[revenue Growth]": -251333.29589041043,
+                  "[revenue growth %]": -0.15595078306112212,
+                  "[net qty CURRENT]": 1392546.27,
+                  "[net qty PAST]": 1391617.32,
+                  "[QTY Growth]": 928.9499999999534,
+                  "[QTY GROWTH %]": 0.0006675326518643455,
+                  "[net bills CURRENT]": 1050201.0,
+                  "[bills growth]": -50292.0,
+                  "[bills growth %]": -0.04569951830679523,
+                  "[RETAIL PRICE GROWTH]": -0.18125724785640995,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.06144080151456088,
+                  "[SPEND PER TRANSACTION GROWTH]": -0.16918958275324103
+                },
+                {
+                  "MIS_DEEP_DIVE2[CATEGORY_NAME]": "BLANKET DOUBLE",
+                  "[net revenue CURRENT]": 1907735.068493151,
+                  "[net revenue PAST]": 2297425.7534246584,
+                  "[revenue Growth]": -389690.68493150733,
+                  "[revenue growth %]": -0.1696205783149313,
+                  "[net qty CURRENT]": 84773.0,
+                  "[net qty PAST]": 76806.0,
+                  "[QTY Growth]": 7967.0,
+                  "[QTY GROWTH %]": 0.10372887534828008,
+                  "[net bills CURRENT]": 69973.0,
+                  "[bills growth]": 6636.0,
+                  "[bills growth %]": 0.10477288157001437,
+                  "[RETAIL PRICE GROWTH]": -7.40801994184967,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.0011459554666302108,
+                  "[SPEND PER TRANSACTION GROWTH]": -9.009169269732187
+                },
+                {
+                  "MIS_DEEP_DIVE2[CATEGORY_NAME]": "TORCHES",
+                  "[net revenue CURRENT]": 1773007.6712328766,
+                  "[net revenue PAST]": 2302343.8356164386,
+                  "[revenue Growth]": -529336.164383562,
+                  "[revenue growth %]": -0.22991186468107858,
+                  "[net qty CURRENT]": 86097.0,
+                  "[net qty PAST]": 86676.0,
+                  "[QTY Growth]": -579.0,
+                  "[QTY GROWTH %]": -0.006680049840786377,
+                  "[net bills CURRENT]": 73629.0,
+                  "[bills growth]": -956.0,
+                  "[bills growth %]": -0.012817590668364952,
+                  "[RETAIL PRICE GROWTH]": -5.969504080409504,
+                  "[QUANTITY PER TRANSACTION GROWTH]": 0.007225108160795468,
+                  "[SPEND PER TRANSACTION GROWTH]": -6.788434767833287
+                },
+                {
+                  "MIS_DEEP_DIVE2[CATEGORY_NAME]": "SUNFLOWER OIL",
+                  "[net revenue CURRENT]": 1214697.8082191779,
+                  "[net revenue PAST]": 1634640.616438356,
+                  "[revenue Growth]": -419942.8082191781,
+                  "[revenue growth %]": -0.2569022230306331,
+                  "[net qty CURRENT]": 221680.0,
+                  "[net qty PAST]": 232619.0,
+                  "[QTY Growth]": -10939.0,
+                  "[QTY GROWTH %]": -0.04702539345453295,
+                  "[net bills CURRENT]": 395788.0,
+                  "[bills growth]": -4582.0,
+                  "[bills growth %]": -0.011444413917126658,
+                  "[RETAIL PRICE GROWTH]": -1.5476055127860162,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.02091223553774213,
+                  "[SPEND PER TRANSACTION GROWTH]": -1.013763187360179
+                },
+                {
+                  "MIS_DEEP_DIVE2[CATEGORY_NAME]": "ROASTED NUTS ROASTERY",
+                  "[net revenue CURRENT]": 797701.104109589,
+                  "[net revenue PAST]": 1839233.6027397264,
+                  "[revenue Growth]": -1041532.4986301374,
+                  "[revenue growth %]": -0.5662861406395948,
+                  "[net qty CURRENT]": 94180.06,
+                  "[net qty PAST]": 196092.99,
+                  "[QTY Growth]": -101912.93,
+                  "[QTY GROWTH %]": -0.5197173545061453,
+                  "[net bills CURRENT]": 161512.0,
+                  "[bills growth]": -170387.0,
+                  "[bills growth %]": -0.5133700312444448,
+                  "[RETAIL PRICE GROWTH]": -0.9094374785431256,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.007706335113696783,
+                  "[SPEND PER TRANSACTION GROWTH]": -0.6025873404193574
+                },
+                {
+                  "MIS_DEEP_DIVE2[CATEGORY_NAME]": "FRESH MUTTON OTHER",
+                  "[net revenue CURRENT]": 921154.1726027395,
+                  "[net revenue PAST]": 1516863.1808219182,
+                  "[revenue Growth]": -595709.0082191786,
+                  "[revenue growth %]": -0.3927242850580574,
+                  "[net qty CURRENT]": 121487.38,
+                  "[net qty PAST]": 200444.94,
+                  "[QTY Growth]": -78957.56,
+                  "[QTY GROWTH %]": -0.3939114651634509,
+                  "[net bills CURRENT]": 77147.0,
+                  "[bills growth]": -33888.0,
+                  "[bills growth %]": -0.30520106272796865,
+                  "[RETAIL PRICE GROWTH]": 0.014822854776155303,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.23048921271800693,
+                  "[SPEND PER TRANSACTION GROWTH]": -1.7208803118643932
+                },
+                {
+                  "MIS_DEEP_DIVE2[CATEGORY_NAME]": "LED TV",
+                  "[net revenue CURRENT]": 2681505.4794520545,
+                  "[net revenue PAST]": 3598488.4931506854,
+                  "[revenue Growth]": -916983.013698631,
+                  "[revenue growth %]": -0.2548244951856881,
+                  "[net qty CURRENT]": 10969.0,
+                  "[net qty PAST]": 14047.0,
+                  "[QTY Growth]": -3078.0,
+                  "[QTY GROWTH %]": -0.21912152060938278,
+                  "[net bills CURRENT]": 11649.0,
+                  "[bills growth]": -2484.0,
+                  "[bills growth %]": -0.1757588622373169,
+                  "[RETAIL PRICE GROWTH]": -11.712712479176417,
+                  "[QUANTITY PER TRANSACTION GROWTH]": -0.05228906018992274,
+                  "[SPEND PER TRANSACTION GROWTH]": -24.42413686740403
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "brand_top_revenue_breakdown": {
+    "status": "success",
+    "purpose": "Add a brand view from the brand table to show which brands are largest in current revenue.",
+    "query": "EVALUATE\nTOPN(\n    15,\n    SUMMARIZECOLUMNS(\n        'MIS_BASE_FILE_MONTHLY_BRAND_TB'[BRAND_NAME],\n        \"REV_CURRENT\", [REV_CURRENT],\n        \"REV_PREV\", [REV_PREV],\n        \"Percentage\", [Percentage]\n    ),\n    [REV_CURRENT], DESC\n)",
+    "result": {
+      "results": [
+        {
+          "tables": [
+            {
+              "rows": [
+                {
+                  "MIS_BASE_FILE_MONTHLY_BRAND_TB[BRAND_NAME]": "AWAFI",
+                  "[REV_CURRENT]": 667285.383561644,
+                  "[REV_PREV]": 521768.29589041066,
+                  "[Percentage]": 0.2788921611707066
+                },
+                {
+                  "MIS_BASE_FILE_MONTHLY_BRAND_TB[BRAND_NAME]": "DOVE",
+                  "[REV_CURRENT]": 695272.0547945203,
+                  "[REV_PREV]": 774802.397260274,
+                  "[Percentage]": -0.10264596850367992
+                },
+                {
+                  "MIS_BASE_FILE_MONTHLY_BRAND_TB[BRAND_NAME]": "OLSENMARK",
+                  "[REV_CURRENT]": 683107.671232877,
+                  "[REV_PREV]": 936739.7260273974,
+                  "[Percentage]": -0.27076043403234756
+                },
+                {
+                  "MIS_BASE_FILE_MONTHLY_BRAND_TB[BRAND_NAME]": "SALWA",
+                  "[REV_CURRENT]": 1620381.6438356163,
+                  "[REV_PREV]": 523753.5616438352,
+                  "[Percentage]": 2.093786395933884
+                },
+                {
+                  "MIS_BASE_FILE_MONTHLY_BRAND_TB[BRAND_NAME]": "QFM",
+                  "[REV_CURRENT]": 790448.9041095888,
+                  "[REV_PREV]": 604790.9589041097,
+                  "[Percentage]": 0.30697870474435357
+                },
+                {
+                  "MIS_BASE_FILE_MONTHLY_BRAND_TB[BRAND_NAME]": "GEEPAS",
+                  "[REV_CURRENT]": 805975.342465754,
+                  "[REV_PREV]": 1319187.9452054792,
+                  "[Percentage]": -0.38903675901903895
+                },
+                {
+                  "MIS_BASE_FILE_MONTHLY_BRAND_TB[BRAND_NAME]": "BALADNA",
+                  "[REV_CURRENT]": 2000014.5890410966,
+                  "[REV_PREV]": 2105565.547945206,
+                  "[Percentage]": -0.050129505114250766
+                },
+                {
+                  "MIS_BASE_FILE_MONTHLY_BRAND_TB[BRAND_NAME]": "FRESH MEAT",
+                  "[REV_CURRENT]": 2862030.035616439,
+                  "[REV_PREV]": 3529624.369863012,
+                  "[Percentage]": -0.18914033457687257
+                },
+                {
+                  "MIS_BASE_FILE_MONTHLY_BRAND_TB[BRAND_NAME]": "VEGETABLE",
+                  "[REV_CURRENT]": 12220232.712328762,
+                  "[REV_PREV]": 13039870.013698636,
+                  "[Percentage]": -0.06285624783903743
+                },
+                {
+                  "MIS_BASE_FILE_MONTHLY_BRAND_TB[BRAND_NAME]": "GALAXY",
+                  "[REV_CURRENT]": 820917.1232876716,
+                  "[REV_PREV]": 858850.4109589041,
+                  "[Percentage]": -0.04416751414123453
+                },
+                {
+                  "MIS_BASE_FILE_MONTHLY_BRAND_TB[BRAND_NAME]": "ANCHOR",
+                  "[REV_CURRENT]": 1375564.315068493,
+                  "[REV_PREV]": 1448164.6575342468,
+                  "[Percentage]": -0.05013265728316327
+                },
+                {
+                  "MIS_BASE_FILE_MONTHLY_BRAND_TB[BRAND_NAME]": "ENCHANTEUR",
+                  "[REV_CURRENT]": 1064620.2054794517,
+                  "[REV_PREV]": 1138124.3150684936,
+                  "[Percentage]": -0.06458355086159313
+                },
+                {
+                  "MIS_BASE_FILE_MONTHLY_BRAND_TB[BRAND_NAME]": "FRESH FISH",
+                  "[REV_CURRENT]": 3096664.4849315067,
+                  "[REV_PREV]": 3122445.2219178085,
+                  "[Percentage]": -0.008256585833863657
+                },
+                {
+                  "MIS_BASE_FILE_MONTHLY_BRAND_TB[BRAND_NAME]": "ROASTERY",
+                  "[REV_CURRENT]": 3013768.536986301,
+                  "[REV_PREV]": 4230980.62465753,
+                  "[Percentage]": -0.28769030058362755
+                },
+                {
+                  "MIS_BASE_FILE_MONTHLY_BRAND_TB[BRAND_NAME]": "HONG KONG INTERNATIONAL",
+                  "[REV_CURRENT]": 3143603.52054795,
+                  "[REV_PREV]": 2094813.8876712325,
+                  "[Percentage]": 0.5006600534058129
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

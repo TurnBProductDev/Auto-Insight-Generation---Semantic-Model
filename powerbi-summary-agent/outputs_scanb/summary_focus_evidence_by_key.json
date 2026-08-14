@@ -1,0 +1,934 @@
+{
+  "focus:v2:b12271dbe9de319b845c3527fb9a744657e3420551674f6fbcdcfa7e01fa7e3b": {
+    "focus_key": "focus:v2:b12271dbe9de319b845c3527fb9a744657e3420551674f6fbcdcfa7e01fa7e3b",
+    "candidate_id": "summary_b12271dbe9de",
+    "segment": "TECHNOLOGY",
+    "dimension_role": "department",
+    "sections": {
+      "scorecard": {
+        "source": "targeted_dax",
+        "metrics": {
+          "revenue": {
+            "current": 7916819.726027396,
+            "prior": 9907943.69863014,
+            "change": -1991123.9726027437,
+            "change_pct": -20.096238262617845
+          },
+          "quantity": {
+            "current": 369829.0,
+            "prior": 397000.0,
+            "change": -27171.0,
+            "change_pct": -6.844080604534004
+          },
+          "transactions": {
+            "current": 350572.0,
+            "prior": 382400.0,
+            "change": -31828.0,
+            "change_pct": -8.323221757322177
+          }
+        }
+      },
+      "internal_contributors": [
+        {
+          "dimension": "SECTION",
+          "reference": "'MIS_DEEP_DIVE2'[SECTION]",
+          "hierarchy_role": "section",
+          "discovery_source": "metadata",
+          "hierarchy_checks": {
+            "semantic_order": true,
+            "relationship_path": true,
+            "parent_filters_child": true,
+            "filter_effect_observed": true,
+            "nestedness": true,
+            "reconciles_to_parent": true,
+            "focus_total": 7916819.726027396,
+            "unfiltered_total": 104970368.03835607
+          },
+          "rows": [
+            {
+              "SECTION": "ENTERTAINMENTS",
+              "revenue_current": 3234034.246575342,
+              "revenue_prior": 4223440.8219178105,
+              "revenue_change": -989406.5753424685
+            },
+            {
+              "SECTION": "CONSUMER DEVICES",
+              "revenue_current": 4682785.479452054,
+              "revenue_prior": 5684502.876712329,
+              "revenue_change": -1001717.3972602747
+            }
+          ],
+          "completeness": "complete",
+          "top_positive": null,
+          "top_negative": {
+            "member": "CONSUMER DEVICES",
+            "change": -1001717.3972602747
+          }
+        },
+        {
+          "dimension": "CATEGORY_NAME",
+          "reference": "'MIS_DEEP_DIVE2'[CATEGORY_NAME]",
+          "hierarchy_role": "category",
+          "discovery_source": "metadata",
+          "hierarchy_checks": {
+            "semantic_order": true,
+            "relationship_path": true,
+            "parent_filters_child": true,
+            "filter_effect_observed": true,
+            "nestedness": true,
+            "reconciles_to_parent": true,
+            "focus_total": 7916819.726027397,
+            "unfiltered_total": 104970368.03835607
+          },
+          "rows": [
+            {
+              "CATEGORY_NAME": "SMART WATCHES",
+              "revenue_current": 516903.5616438357,
+              "revenue_prior": 497664.6575342467,
+              "revenue_change": 19238.904109589
+            },
+            {
+              "CATEGORY_NAME": "SPEAKER",
+              "revenue_current": 552528.7671232875,
+              "revenue_prior": 624952.328767123,
+              "revenue_change": -72423.5616438355
+            },
+            {
+              "CATEGORY_NAME": "MEDICAL EQUIPMENT",
+              "revenue_current": 481008.49315068487,
+              "revenue_prior": 570929.0410958903,
+              "revenue_change": -89920.54794520547
+            },
+            {
+              "CATEGORY_NAME": "GENERAL ELECTRONICS PRODUCTS",
+              "revenue_current": 271292.87671232875,
+              "revenue_prior": 354731.2328767124,
+              "revenue_change": -83438.35616438364
+            },
+            {
+              "CATEGORY_NAME": "MENS TRIMMERS",
+              "revenue_current": 630942.7397260275,
+              "revenue_prior": 722503.5616438356,
+              "revenue_change": -91560.82191780815
+            },
+            {
+              "CATEGORY_NAME": "TORCHES",
+              "revenue_current": 1773007.6712328766,
+              "revenue_prior": 2302343.8356164386,
+              "revenue_change": -529336.164383562
+            },
+            {
+              "CATEGORY_NAME": "EMERGENCY LAMPS",
+              "revenue_current": 1009630.1369863014,
+              "revenue_prior": 1236330.5479452054,
+              "revenue_change": -226700.41095890396
+            },
+            {
+              "CATEGORY_NAME": "LED TV",
+              "revenue_current": 2681505.4794520545,
+              "revenue_prior": 3598488.4931506854,
+              "revenue_change": -916983.013698631
+            }
+          ],
+          "completeness": "complete",
+          "top_positive": {
+            "member": "SMART WATCHES",
+            "change": 19238.904109589
+          },
+          "top_negative": {
+            "member": "LED TV",
+            "change": -916983.013698631
+          }
+        }
+      ],
+      "location": null,
+      "driver_bridge": {
+        "volume_effect": -678107.6529860945,
+        "rate_mix_effect": -1313016.31961665,
+        "total_change": -1991123.9726027437,
+        "reconciles": true,
+        "driver_class": "rate/mix"
+      },
+      "period_trend": {
+        "dimension": "DOC_MONTH",
+        "reference": "'MIS_DEEP_DIVE2'[DOC_MONTH]",
+        "grain": "month",
+        "rows": [
+          {
+            "DOC_MONTH": 1.0,
+            "revenue_current": 796219.1780821917,
+            "revenue_prior": 626589.7945205478,
+            "revenue_change": 169629.3835616439
+          },
+          {
+            "DOC_MONTH": 2.0,
+            "revenue_current": 667378.3561643837,
+            "revenue_prior": 772418.2191780822,
+            "revenue_change": -105039.86301369849
+          },
+          {
+            "DOC_MONTH": 3.0,
+            "revenue_current": 739717.8082191781,
+            "revenue_prior": 853428.9041095889,
+            "revenue_change": -113711.09589041083
+          },
+          {
+            "DOC_MONTH": 4.0,
+            "revenue_current": 698033.1506849314,
+            "revenue_prior": 814446.506849315,
+            "revenue_change": -116413.35616438359
+          },
+          {
+            "DOC_MONTH": 5.0,
+            "revenue_current": 683202.1917808218,
+            "revenue_prior": 813218.6301369861,
+            "revenue_change": -130016.43835616438
+          },
+          {
+            "DOC_MONTH": 6.0,
+            "revenue_current": 767155.3424657534,
+            "revenue_prior": 915978.904109589,
+            "revenue_change": -148823.56164383562
+          },
+          {
+            "DOC_MONTH": 7.0,
+            "revenue_current": 587870.410958904,
+            "revenue_prior": 786672.0547945205,
+            "revenue_change": -198801.64383561653
+          },
+          {
+            "DOC_MONTH": 8.0,
+            "revenue_current": 481049.8630136987,
+            "revenue_prior": 797272.602739726,
+            "revenue_change": -316222.73972602724
+          },
+          {
+            "DOC_MONTH": 9.0,
+            "revenue_current": 547105.205479452,
+            "revenue_prior": 764873.1506849315,
+            "revenue_change": -217767.9452054795
+          },
+          {
+            "DOC_MONTH": 10.0,
+            "revenue_current": 697452.0547945206,
+            "revenue_prior": 1055575.3424657532,
+            "revenue_change": -358123.2876712326
+          },
+          {
+            "DOC_MONTH": 11.0,
+            "revenue_current": 547524.6575342466,
+            "revenue_prior": 851124.3835616438,
+            "revenue_change": -303599.7260273972
+          },
+          {
+            "DOC_MONTH": 12.0,
+            "revenue_current": 704111.5068493151,
+            "revenue_prior": 856345.2054794519,
+            "revenue_change": -152233.6986301368
+          }
+        ],
+        "completeness": "complete",
+        "direction": "weakening_decline"
+      },
+      "daily_trend": {
+        "status": "disabled",
+        "reason": "summary_focus_daily_trend_enabled is false"
+      },
+      "caveats": [
+        "this deep dive repeats a recently delivered story (same contributors or driver)"
+      ]
+    },
+    "caveats": [
+      "this deep dive repeats a recently delivered story (same contributors or driver)"
+    ],
+    "queries_attempted": 4,
+    "query_budget": 5,
+    "signature_fields": {
+      "top_pos_contributor": null,
+      "top_neg_contributor": "CONSUMER DEVICES",
+      "leading_location": null,
+      "driver_class": "rate/mix"
+    },
+    "deep_dive_signature": "b0614ecd62b4968f",
+    "signature_duplicate": true,
+    "signature_duplicate_of": "focus:v2:b12271dbe9de319b845c3527fb9a744657e3420551674f6fbcdcfa7e01fa7e3b",
+    "signature_overlap": 1.0,
+    "facts": [
+      {
+        "fact_id": "D1",
+        "fact_kind": "deep_dive",
+        "subject": "TECHNOLOGY",
+        "metric": "Revenue change",
+        "display_value": "-2.0M",
+        "raw_value": -1991123.9726027437,
+        "statement": "TECHNOLOGY revenue changed by -2.0M (-20.1%).",
+        "subject_role": "focus",
+        "detail_role": "focus_metric",
+        "coverage": "complete"
+      },
+      {
+        "fact_id": "D2",
+        "fact_kind": "deep_dive",
+        "subject": "TECHNOLOGY",
+        "metric": "Quantity change",
+        "display_value": "-27.2K",
+        "raw_value": -27171.0,
+        "statement": "TECHNOLOGY quantity changed by -27.2K.",
+        "subject_role": "focus",
+        "detail_role": "focus_metric",
+        "coverage": "complete"
+      },
+      {
+        "fact_id": "D3",
+        "fact_kind": "deep_dive",
+        "subject": "TECHNOLOGY",
+        "metric": "Transactions change",
+        "display_value": "-31.8K",
+        "raw_value": -31828.0,
+        "statement": "TECHNOLOGY transactions changed by -31.8K.",
+        "subject_role": "focus",
+        "detail_role": "focus_metric",
+        "coverage": "complete"
+      },
+      {
+        "fact_id": "D4",
+        "fact_kind": "deep_dive",
+        "subject": "CONSUMER DEVICES",
+        "metric": "Revenue change in SECTION",
+        "display_value": "-1.0M",
+        "raw_value": -1001717.3972602747,
+        "statement": "Within TECHNOLOGY, CONSUMER DEVICES reduced revenue by -1.0M.",
+        "subject_role": "peer",
+        "detail_role": "contributor",
+        "coverage": "complete"
+      },
+      {
+        "fact_id": "D5",
+        "fact_kind": "deep_dive",
+        "subject": "TECHNOLOGY",
+        "metric": "Volume effect on revenue",
+        "display_value": "-678.1K",
+        "raw_value": -678107.6529860945,
+        "statement": "Within TECHNOLOGY, change in units sold reduced revenue by -678.1K.",
+        "subject_role": "focus",
+        "detail_role": "driver",
+        "coverage": "complete"
+      },
+      {
+        "fact_id": "D6",
+        "fact_kind": "deep_dive",
+        "subject": "TECHNOLOGY",
+        "metric": "Rate and mix effect on revenue",
+        "display_value": "-1.3M",
+        "raw_value": -1313016.31961665,
+        "statement": "Within TECHNOLOGY, average revenue per item and mix reduced revenue by -1.3M.",
+        "subject_role": "focus",
+        "detail_role": "driver",
+        "coverage": "complete"
+      }
+    ],
+    "selection": null,
+    "materiality_facts": null
+  },
+  "focus:v2:a6888756060ad8bbb8a1eb96198c19d42f2290bf88516e897a49b663188183eb": {
+    "focus_key": "focus:v2:a6888756060ad8bbb8a1eb96198c19d42f2290bf88516e897a49b663188183eb",
+    "candidate_id": "summary_a6888756060a",
+    "segment": "CONSUMER GOODS",
+    "dimension_role": "department",
+    "sections": {
+      "scorecard": {
+        "source": "targeted_dax",
+        "metrics": {
+          "revenue": {
+            "current": 45556332.15068483,
+            "prior": 47047585.38356157,
+            "change": -1491253.232876733,
+            "change_pct": -3.169670070672271
+          },
+          "quantity": {
+            "current": 23694044.26,
+            "prior": 23207520.02,
+            "change": 486524.2400000021,
+            "change_pct": 2.0964077143129494
+          },
+          "transactions": {
+            "current": 22744399.0,
+            "prior": 23968867.0,
+            "change": -1224468.0,
+            "change_pct": -5.108576888511251
+          }
+        }
+      },
+      "internal_contributors": [
+        {
+          "dimension": "SECTION",
+          "reference": "'MIS_DEEP_DIVE2'[SECTION]",
+          "hierarchy_role": "section",
+          "discovery_source": "metadata",
+          "hierarchy_checks": {
+            "semantic_order": true,
+            "relationship_path": true,
+            "parent_filters_child": true,
+            "filter_effect_observed": true,
+            "nestedness": true,
+            "reconciles_to_parent": true,
+            "focus_total": 45556332.150684915,
+            "unfiltered_total": 104970368.03835607
+          },
+          "rows": [
+            {
+              "SECTION": "BEVERAGES",
+              "revenue_current": 1443112.6712328773,
+              "revenue_prior": 1347618.2876712326,
+              "revenue_change": 95494.3835616447
+            },
+            {
+              "SECTION": "REFRIDGERATED GOODS",
+              "revenue_current": 5100214.7260273965,
+              "revenue_prior": 5201731.849315068,
+              "revenue_change": -101517.12328767125
+            },
+            {
+              "SECTION": "CLEANING ESSENSTIALS",
+              "revenue_current": 2563345.126027398,
+              "revenue_prior": 2712222.6684931493,
+              "revenue_change": -148877.54246575153
+            },
+            {
+              "SECTION": "PROVISIONS",
+              "revenue_current": 21047473.66027394,
+              "revenue_prior": 21442041.767123308,
+              "revenue_change": -394568.10684936866
+            },
+            {
+              "SECTION": "PERSONAL CARE",
+              "revenue_current": 10498227.260273982,
+              "revenue_prior": 10791399.863013698,
+              "revenue_change": -293172.60273971595
+            },
+            {
+              "SECTION": "SPICE MARKET",
+              "revenue_current": 4903958.706849314,
+              "revenue_prior": 5552570.947945206,
+              "revenue_change": -648612.2410958922
+            }
+          ],
+          "completeness": "complete",
+          "top_positive": {
+            "member": "BEVERAGES",
+            "change": 95494.3835616447
+          },
+          "top_negative": {
+            "member": "SPICE MARKET",
+            "change": -648612.2410958922
+          }
+        },
+        {
+          "dimension": "CATEGORY_NAME",
+          "reference": "'MIS_DEEP_DIVE2'[CATEGORY_NAME]",
+          "hierarchy_role": "category",
+          "discovery_source": "metadata",
+          "hierarchy_checks": {
+            "semantic_order": true,
+            "relationship_path": true,
+            "parent_filters_child": true,
+            "filter_effect_observed": true,
+            "nestedness": true,
+            "reconciles_to_parent": true,
+            "focus_total": 45556332.15068492,
+            "unfiltered_total": 104970368.03835607
+          },
+          "rows": [
+            {
+              "CATEGORY_NAME": "PERFUMES WOMEN",
+              "revenue_current": 216590.61643835617,
+              "revenue_prior": 319026.5753424657,
+              "revenue_change": -102435.95890410955
+            },
+            {
+              "CATEGORY_NAME": "PULSES",
+              "revenue_current": 842369.315068493,
+              "revenue_prior": 955422.191780822,
+              "revenue_change": -113052.87671232899
+            },
+            {
+              "CATEGORY_NAME": "HEALTH AND ISOTONIC DRINKS",
+              "revenue_current": 287763.21917808213,
+              "revenue_prior": 176057.2602739726,
+              "revenue_change": 111705.95890410952
+            },
+            {
+              "CATEGORY_NAME": "DISHWASH LIQUID",
+              "revenue_current": 266748.35616438364,
+              "revenue_prior": 396006.50684931513,
+              "revenue_change": -129258.15068493149
+            },
+            {
+              "CATEGORY_NAME": "MEDICATED OIL",
+              "revenue_current": 594804.4520547946,
+              "revenue_prior": 474499.2465753425,
+              "revenue_change": 120305.20547945215
+            },
+            {
+              "CATEGORY_NAME": "OTHER RICE",
+              "revenue_current": 725811.7123287672,
+              "revenue_prior": 589982.1917808219,
+              "revenue_change": 135829.52054794529
+            },
+            {
+              "CATEGORY_NAME": "CHOCOLATES AND CANDY ROASTERY",
+              "revenue_current": 1178063.610958904,
+              "revenue_prior": 979212.3095890412,
+              "revenue_change": 198851.30136986286
+            },
+            {
+              "CATEGORY_NAME": "SUNFLOWER OIL",
+              "revenue_current": 1214697.8082191779,
+              "revenue_prior": 1634640.616438356,
+              "revenue_change": -419942.8082191781
+            },
+            {
+              "CATEGORY_NAME": "ROASTED NUTS ROASTERY",
+              "revenue_current": 797701.104109589,
+              "revenue_prior": 1839233.6027397264,
+              "revenue_change": -1041532.4986301374
+            },
+            {
+              "CATEGORY_NAME": "DRY FRUITS ROASTERY",
+              "revenue_current": 1317323.6,
+              "revenue_prior": 1078764.479452055,
+              "revenue_change": 238559.12054794515
+            },
+            {
+              "CATEGORY_NAME": "CHOCOLATE BAGS",
+              "revenue_current": 859533.4246575342,
+              "revenue_prior": 1051303.9726027395,
+              "revenue_change": -191770.54794520524
+            },
+            {
+              "CATEGORY_NAME": "FLOUR",
+              "revenue_current": 1101831.3013698629,
+              "revenue_prior": 913235.4794520546,
+              "revenue_change": 188595.82191780827
+            }
+          ],
+          "completeness": "partial",
+          "top_positive": {
+            "member": "DRY FRUITS ROASTERY",
+            "change": 238559.12054794515
+          },
+          "top_negative": {
+            "member": "ROASTED NUTS ROASTERY",
+            "change": -1041532.4986301374
+          }
+        }
+      ],
+      "location": null,
+      "driver_bridge": {
+        "volume_effect": 986309.2093789561,
+        "rate_mix_effect": -2477562.4422556893,
+        "total_change": -1491253.232876733,
+        "reconciles": true,
+        "driver_class": "rate/mix"
+      },
+      "period_trend": {
+        "dimension": "DOC_MONTH",
+        "reference": "'MIS_DEEP_DIVE2'[DOC_MONTH]",
+        "grain": "month",
+        "rows": [
+          {
+            "DOC_MONTH": 1.0,
+            "revenue_current": 3835581.753424655,
+            "revenue_prior": 3309113.4931506845,
+            "revenue_change": 526468.2602739707
+          },
+          {
+            "DOC_MONTH": 2.0,
+            "revenue_current": 3383321.6465753433,
+            "revenue_prior": 3679355.4246575353,
+            "revenue_change": -296033.77808219194
+          },
+          {
+            "DOC_MONTH": 3.0,
+            "revenue_current": 4185730.2767123287,
+            "revenue_prior": 4192476.613698628,
+            "revenue_change": -6746.3369862991385
+          },
+          {
+            "DOC_MONTH": 4.0,
+            "revenue_current": 3886701.6657534246,
+            "revenue_prior": 4176788.1835616436,
+            "revenue_change": -290086.51780821895
+          },
+          {
+            "DOC_MONTH": 5.0,
+            "revenue_current": 4185761.221917808,
+            "revenue_prior": 3893463.495890414,
+            "revenue_change": 292297.7260273942
+          },
+          {
+            "DOC_MONTH": 6.0,
+            "revenue_current": 4093488.1315068468,
+            "revenue_prior": 4269089.435616445,
+            "revenue_change": -175601.30410959804
+          },
+          {
+            "DOC_MONTH": 7.0,
+            "revenue_current": 3622445.934246574,
+            "revenue_prior": 3608809.227397262,
+            "revenue_change": 13636.706849311944
+          },
+          {
+            "DOC_MONTH": 8.0,
+            "revenue_current": 3446921.9342465773,
+            "revenue_prior": 3819274.4575342443,
+            "revenue_change": -372352.52328766696
+          },
+          {
+            "DOC_MONTH": 9.0,
+            "revenue_current": 3415997.8027397273,
+            "revenue_prior": 3634666.704109589,
+            "revenue_change": -218668.9013698618
+          },
+          {
+            "DOC_MONTH": 10.0,
+            "revenue_current": 3710763.4465753394,
+            "revenue_prior": 4494520.936986304,
+            "revenue_change": -783757.4904109645
+          },
+          {
+            "DOC_MONTH": 11.0,
+            "revenue_current": 3631887.3589041107,
+            "revenue_prior": 3714986.3315068483,
+            "revenue_change": -83098.9726027376
+          },
+          {
+            "DOC_MONTH": 12.0,
+            "revenue_current": 4157730.9780821884,
+            "revenue_prior": 4255041.079452054,
+            "revenue_change": -97310.10136986524
+          }
+        ],
+        "completeness": "complete",
+        "direction": "deepening_decline"
+      },
+      "daily_trend": {
+        "status": "disabled",
+        "reason": "summary_focus_daily_trend_enabled is false"
+      },
+      "caveats": [
+        "this deep dive repeats a recently delivered story (same contributors or driver)"
+      ]
+    },
+    "caveats": [
+      "this deep dive repeats a recently delivered story (same contributors or driver)"
+    ],
+    "queries_attempted": 4,
+    "query_budget": 5,
+    "signature_fields": {
+      "top_pos_contributor": "BEVERAGES",
+      "top_neg_contributor": "SPICE MARKET",
+      "leading_location": null,
+      "driver_class": "rate/mix"
+    },
+    "deep_dive_signature": "ed9dae5941affa42",
+    "signature_duplicate": true,
+    "signature_duplicate_of": "focus:v2:a6888756060ad8bbb8a1eb96198c19d42f2290bf88516e897a49b663188183eb",
+    "signature_overlap": 1.0,
+    "facts": [
+      {
+        "fact_id": "D1",
+        "fact_kind": "deep_dive",
+        "subject": "CONSUMER GOODS",
+        "metric": "Revenue change",
+        "display_value": "-1.5M",
+        "raw_value": -1491253.232876733,
+        "statement": "CONSUMER GOODS revenue changed by -1.5M (-3.2%).",
+        "subject_role": "focus",
+        "detail_role": "focus_metric",
+        "coverage": "complete"
+      },
+      {
+        "fact_id": "D2",
+        "fact_kind": "deep_dive",
+        "subject": "CONSUMER GOODS",
+        "metric": "Quantity change",
+        "display_value": "+486.5K",
+        "raw_value": 486524.2400000021,
+        "statement": "CONSUMER GOODS quantity changed by +486.5K.",
+        "subject_role": "focus",
+        "detail_role": "focus_metric",
+        "coverage": "complete"
+      },
+      {
+        "fact_id": "D3",
+        "fact_kind": "deep_dive",
+        "subject": "CONSUMER GOODS",
+        "metric": "Transactions change",
+        "display_value": "-1.2M",
+        "raw_value": -1224468.0,
+        "statement": "CONSUMER GOODS transactions changed by -1.2M.",
+        "subject_role": "focus",
+        "detail_role": "focus_metric",
+        "coverage": "complete"
+      },
+      {
+        "fact_id": "D4",
+        "fact_kind": "deep_dive",
+        "subject": "BEVERAGES",
+        "metric": "Revenue change in SECTION",
+        "display_value": "+95.5K",
+        "raw_value": 95494.3835616447,
+        "statement": "Within CONSUMER GOODS, BEVERAGES added +95.5K.",
+        "subject_role": "peer",
+        "detail_role": "contributor",
+        "coverage": "complete"
+      },
+      {
+        "fact_id": "D5",
+        "fact_kind": "deep_dive",
+        "subject": "SPICE MARKET",
+        "metric": "Revenue change in SECTION",
+        "display_value": "-648.6K",
+        "raw_value": -648612.2410958922,
+        "statement": "Within CONSUMER GOODS, SPICE MARKET reduced revenue by -648.6K.",
+        "subject_role": "peer",
+        "detail_role": "contributor",
+        "coverage": "complete"
+      },
+      {
+        "fact_id": "D6",
+        "fact_kind": "deep_dive",
+        "subject": "CONSUMER GOODS",
+        "metric": "Volume effect on revenue",
+        "display_value": "+986.3K",
+        "raw_value": 986309.2093789561,
+        "statement": "Within CONSUMER GOODS, change in units sold added revenue by +986.3K.",
+        "subject_role": "focus",
+        "detail_role": "driver",
+        "coverage": "complete"
+      },
+      {
+        "fact_id": "D7",
+        "fact_kind": "deep_dive",
+        "subject": "CONSUMER GOODS",
+        "metric": "Rate and mix effect on revenue",
+        "display_value": "-2.5M",
+        "raw_value": -2477562.4422556893,
+        "statement": "Within CONSUMER GOODS, average revenue per item and mix reduced revenue by -2.5M.",
+        "subject_role": "focus",
+        "detail_role": "driver",
+        "coverage": "complete"
+      }
+    ],
+    "selection": null,
+    "materiality_facts": null
+  },
+  "focus:v2:5c18a1cea2161ebe029968f9ebca9aeef5ad929ed97149d3e38dd5a5ae02cbf7": {
+    "focus_key": "focus:v2:5c18a1cea2161ebe029968f9ebca9aeef5ad929ed97149d3e38dd5a5ae02cbf7",
+    "candidate_id": "summary_5c18a1cea216",
+    "segment": "FRESH MUTTON OTHER",
+    "dimension_role": "category",
+    "sections": {
+      "scorecard": {
+        "source": "targeted_dax",
+        "metrics": {
+          "revenue": {
+            "current": 921154.1726027395,
+            "prior": 1516863.1808219182,
+            "change": -595709.0082191786,
+            "change_pct": -39.27242850580574
+          },
+          "quantity": {
+            "current": 121487.38,
+            "prior": 200444.94,
+            "change": -78957.56,
+            "change_pct": -39.39114651634509
+          },
+          "transactions": {
+            "current": 77147.0,
+            "prior": 111035.0,
+            "change": -33888.0,
+            "change_pct": -30.520106272796866
+          }
+        }
+      },
+      "internal_contributors": [],
+      "location": null,
+      "driver_bridge": {
+        "volume_effect": -597509.7980100543,
+        "rate_mix_effect": 1800.7897908755942,
+        "total_change": -595709.0082191786,
+        "reconciles": true,
+        "driver_class": "volume"
+      },
+      "period_trend": {
+        "dimension": "DOC_MONTH",
+        "reference": "'MIS_DEEP_DIVE2'[DOC_MONTH]",
+        "grain": "month",
+        "rows": [
+          {
+            "DOC_MONTH": 1.0,
+            "revenue_current": 91258.21095890412,
+            "revenue_prior": 104046.701369863,
+            "revenue_change": -12788.490410958882
+          },
+          {
+            "DOC_MONTH": 2.0,
+            "revenue_current": 90376.56164383562,
+            "revenue_prior": 122840.47945205479,
+            "revenue_change": -32463.917808219165
+          },
+          {
+            "DOC_MONTH": 3.0,
+            "revenue_current": 120850.87671232877,
+            "revenue_prior": 153067.25479452056,
+            "revenue_change": -32216.37808219179
+          },
+          {
+            "DOC_MONTH": 4.0,
+            "revenue_current": 113929.70410958905,
+            "revenue_prior": 160733.18356164385,
+            "revenue_change": -46803.4794520548
+          },
+          {
+            "DOC_MONTH": 5.0,
+            "revenue_current": 74026.14520547946,
+            "revenue_prior": 139751.74520547944,
+            "revenue_change": -65725.59999999998
+          },
+          {
+            "DOC_MONTH": 6.0,
+            "revenue_current": 107318.75890410958,
+            "revenue_prior": 139067.02465753426,
+            "revenue_change": -31748.265753424683
+          },
+          {
+            "DOC_MONTH": 7.0,
+            "revenue_current": 53802.72602739726,
+            "revenue_prior": 137834.39178082193,
+            "revenue_change": -84031.66575342466
+          },
+          {
+            "DOC_MONTH": 8.0,
+            "revenue_current": 39419.13698630137,
+            "revenue_prior": 103182.79178082192,
+            "revenue_change": -63763.65479452055
+          },
+          {
+            "DOC_MONTH": 9.0,
+            "revenue_current": 60820.964383561644,
+            "revenue_prior": 126753.80547945204,
+            "revenue_change": -65932.8410958904
+          },
+          {
+            "DOC_MONTH": 10.0,
+            "revenue_current": 49037.85205479452,
+            "revenue_prior": 114857.66301369862,
+            "revenue_change": -65819.8109589041
+          },
+          {
+            "DOC_MONTH": 11.0,
+            "revenue_current": 35087.942465753425,
+            "revenue_prior": 109818.68767123287,
+            "revenue_change": -74730.74520547944
+          },
+          {
+            "DOC_MONTH": 12.0,
+            "revenue_current": 85225.29315068493,
+            "revenue_prior": 104909.45205479451,
+            "revenue_change": -19684.158904109587
+          }
+        ],
+        "completeness": "complete",
+        "direction": "weakening_decline"
+      },
+      "daily_trend": {
+        "status": "disabled",
+        "reason": "summary_focus_daily_trend_enabled is false"
+      },
+      "caveats": [
+        "child dimension BRAND_NAME failed hierarchy validation"
+      ]
+    },
+    "caveats": [
+      "child dimension BRAND_NAME failed hierarchy validation"
+    ],
+    "queries_attempted": 3,
+    "query_budget": 5,
+    "signature_fields": {
+      "top_pos_contributor": null,
+      "top_neg_contributor": null,
+      "leading_location": null,
+      "driver_class": "volume"
+    },
+    "deep_dive_signature": "657efa9fb82bb22b",
+    "signature_duplicate": false,
+    "signature_duplicate_of": null,
+    "signature_overlap": 0.0,
+    "facts": [
+      {
+        "fact_id": "D1",
+        "fact_kind": "deep_dive",
+        "subject": "FRESH MUTTON OTHER",
+        "metric": "Revenue change",
+        "display_value": "-595.7K",
+        "raw_value": -595709.0082191786,
+        "statement": "FRESH MUTTON OTHER revenue changed by -595.7K (-39.3%).",
+        "subject_role": "focus",
+        "detail_role": "focus_metric",
+        "coverage": "complete"
+      },
+      {
+        "fact_id": "D2",
+        "fact_kind": "deep_dive",
+        "subject": "FRESH MUTTON OTHER",
+        "metric": "Quantity change",
+        "display_value": "-79.0K",
+        "raw_value": -78957.56,
+        "statement": "FRESH MUTTON OTHER quantity changed by -79.0K.",
+        "subject_role": "focus",
+        "detail_role": "focus_metric",
+        "coverage": "complete"
+      },
+      {
+        "fact_id": "D3",
+        "fact_kind": "deep_dive",
+        "subject": "FRESH MUTTON OTHER",
+        "metric": "Transactions change",
+        "display_value": "-33.9K",
+        "raw_value": -33888.0,
+        "statement": "FRESH MUTTON OTHER transactions changed by -33.9K.",
+        "subject_role": "focus",
+        "detail_role": "focus_metric",
+        "coverage": "complete"
+      },
+      {
+        "fact_id": "D4",
+        "fact_kind": "deep_dive",
+        "subject": "FRESH MUTTON OTHER",
+        "metric": "Volume effect on revenue",
+        "display_value": "-597.5K",
+        "raw_value": -597509.7980100543,
+        "statement": "Within FRESH MUTTON OTHER, change in units sold reduced revenue by -597.5K.",
+        "subject_role": "focus",
+        "detail_role": "driver",
+        "coverage": "complete"
+      },
+      {
+        "fact_id": "D5",
+        "fact_kind": "deep_dive",
+        "subject": "FRESH MUTTON OTHER",
+        "metric": "Rate and mix effect on revenue",
+        "display_value": "+1.8K",
+        "raw_value": 1800.7897908755942,
+        "statement": "Within FRESH MUTTON OTHER, average revenue per item and mix added revenue by +1.8K.",
+        "subject_role": "focus",
+        "detail_role": "driver",
+        "coverage": "complete"
+      }
+    ],
+    "selection": null,
+    "materiality_facts": null
+  }
+}

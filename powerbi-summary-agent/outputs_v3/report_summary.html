@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AI Summary</title><script>
+(function(){
+  var root=document.documentElement;
+  function apply(t){ if(t==='dark'||t==='light'){ root.setAttribute('data-theme',t); } }
+  try{
+    var hash=(location.hash.match(/theme=(dark|light)/)||[])[1];
+    var query=new URLSearchParams(location.search).get('theme');
+    apply(hash||query||localStorage.getItem('sb-theme'));
+  }catch(e){/* opaque origin or storage blocked: fall back to CSS */}
+  window.addEventListener('message',function(e){
+    var d=e&&e.data; if(d&&d.type==='sb-theme'){ apply(d.theme); }
+  });
+})();
+</script><style>
+/* ScanB design tokens - mirrors wwwroot/css/theme.css. Keep in sync. */
+:root{
+  --sb-teal:#2dbdad; --sb-teal-strong:#148D8B; --sb-teal-soft:#f0fdfa;
+  --sb-page-bg:#f0f2f4; --sb-surface:#ffffff; --sb-surface-alt:#f8fafc;
+  --sb-text:#1a2a2e; --sb-text-muted:#506675; --sb-text-faint:#8a9ba8;
+  --sb-critical:#dc2626; --sb-critical-bg:#fef2f2;
+  --sb-warning:#d97706;  --sb-warning-bg:#fffbeb;
+  --sb-positive:#0f8a7e; --sb-positive-bg:#f0fdfa;
+  --sb-info:#2563eb;     --sb-info-bg:#eff6ff;
+  --sb-border:#e8edf0; --sb-border-strong:#d7e0e5;
+  --sb-radius-sm:6px; --sb-radius:10px; --sb-radius-lg:14px;
+  --sb-shadow-sm:0 3px 10px rgba(26,42,46,.08);
+  --sb-shadow-md:0 10px 24px rgba(26,42,46,.14);
+  --sb-font-sans:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+}
+/* Dark: honour the app's attribute AND the OS preference when standalone. */
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --sb-teal:#3ccbb9; --sb-teal-strong:#2dbdad; --sb-teal-soft:rgba(45,189,173,.10);
+  --sb-page-bg:#0b1415; --sb-surface:#121d1f; --sb-surface-alt:#182527;
+  --sb-text:#edf5f3; --sb-text-muted:#b4c6c2; --sb-text-faint:#7f948f;
+  --sb-critical:#f97066; --sb-critical-bg:rgba(249,112,102,.10);
+  --sb-warning:#e39a3b;  --sb-warning-bg:rgba(227,154,59,.10);
+  --sb-positive:#3ccbb9; --sb-positive-bg:rgba(60,203,185,.10);
+  --sb-info:#7cabf8;     --sb-info-bg:rgba(124,171,248,.10);
+  --sb-border:#233335; --sb-border-strong:#2e4144;
+  --sb-shadow-sm:0 3px 10px rgba(0,0,0,.40); --sb-shadow-md:0 10px 24px rgba(0,0,0,.50);
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --sb-teal:#3ccbb9; --sb-teal-strong:#2dbdad; --sb-teal-soft:rgba(45,189,173,.10);
+  --sb-page-bg:#0b1415; --sb-surface:#121d1f; --sb-surface-alt:#182527;
+  --sb-text:#edf5f3; --sb-text-muted:#b4c6c2; --sb-text-faint:#7f948f;
+  --sb-critical:#f97066; --sb-critical-bg:rgba(249,112,102,.10);
+  --sb-warning:#e39a3b;  --sb-warning-bg:rgba(227,154,59,.10);
+  --sb-positive:#3ccbb9; --sb-positive-bg:rgba(60,203,185,.10);
+  --sb-info:#7cabf8;     --sb-info-bg:rgba(124,171,248,.10);
+  --sb-border:#233335; --sb-border-strong:#2e4144;
+  --sb-shadow-sm:0 3px 10px rgba(0,0,0,.40); --sb-shadow-md:0 10px 24px rgba(0,0,0,.50);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--sb-page-bg);color:var(--sb-text);
+  font-family:var(--sb-font-sans);font-size:14px;line-height:1.6;
+  -webkit-font-smoothing:antialiased}
+.page{max-width:1120px;margin:0 auto;padding:36px 28px 64px}
+
+/* ---------- Header ---------- */
+.head{background:var(--sb-surface);border:1px solid var(--sb-border);
+  border-radius:16px;padding:26px 28px;box-shadow:var(--sb-shadow-sm);margin-bottom:16px}
+.eyebrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.eyebrow b{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--sb-teal-strong)}
+h1{font-size:clamp(21px,2.6vw,29px);line-height:1.28;letter-spacing:-.022em;
+  font-weight:700;margin:0 0 16px;max-width:64ch;color:var(--sb-text)}
+.meta{display:flex;gap:8px;flex-wrap:wrap;padding-top:14px;
+  border-top:1px solid var(--sb-border)}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:550;
+  color:var(--sb-text-muted);background:var(--sb-surface-alt);
+  border:1px solid var(--sb-border);border-radius:999px;padding:5px 11px}
+.chip b{color:var(--sb-text);font-weight:650}
+
+/* ---------- Stat tiles ---------- */
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:16px}
+.stat{background:var(--sb-surface);border:1px solid var(--sb-border);
+  border-radius:12px;padding:16px 18px;box-shadow:var(--sb-shadow-sm);
+  display:flex;flex-direction:column;gap:10px;min-height:104px;
+  border-top:3px solid var(--tone,var(--sb-teal))}
+.stat--positive{--tone:var(--sb-positive)} .stat--critical{--tone:var(--sb-critical)}
+.stat--warning{--tone:var(--sb-warning)}   .stat--info{--tone:var(--sb-info)}
+.stat__label{display:flex;align-items:center;gap:7px;font-size:10.5px;font-weight:700;
+  letter-spacing:.07em;text-transform:uppercase;color:var(--sb-text-muted);line-height:1.35}
+.stat__dot{width:7px;height:7px;border-radius:50%;background:var(--tone);flex:0 0 auto}
+.stat__value{display:flex;align-items:center;gap:6px;margin-top:auto;
+  font-size:clamp(22px,2.4vw,29px);font-weight:700;letter-spacing:-.03em;
+  line-height:1;color:var(--tone);font-variant-numeric:tabular-nums}
+.stat__arrow{display:inline-flex}.stat__arrow svg{width:15px;height:15px}
+
+/* ---------- Panels ---------- */
+.panels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:16px}
+.panel,.actions{background:var(--sb-surface);border:1px solid var(--sb-border);
+  border-radius:14px;padding:18px 20px 8px;box-shadow:var(--sb-shadow-sm)}
+.actions{padding-bottom:16px}
+.panel__head{margin-bottom:14px}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:4px 11px 4px 9px;
+  border-radius:999px;font-size:10.5px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.07em}
+.pill__dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+.pill--positive{background:var(--sb-positive-bg);color:var(--sb-positive)}
+.pill--critical{background:var(--sb-critical-bg);color:var(--sb-critical)}
+.pill--warning{background:var(--sb-warning-bg);color:var(--sb-warning)}
+.pill--info{background:var(--sb-info-bg);color:var(--sb-info)}
+.pts{margin:0;padding:0;list-style:none}
+.pts li{display:grid;grid-template-columns:14px 1fr;gap:10px;align-items:start;
+  padding:0 0 14px}
+.pt__mark{width:6px;height:6px;border-radius:50%;margin-top:.55em;
+  background:var(--sb-border-strong)}
+.panel--positive .pt__mark{background:var(--sb-positive)}
+.panel--critical .pt__mark{background:var(--sb-critical)}
+.panel--warning .pt__mark{background:var(--sb-warning)}
+.panel--info .pt__mark{background:var(--sb-info)}
+.pts p,.steps p{margin:0;color:var(--sb-text-muted);font-size:13px;line-height:1.6}
+
+/* ---------- Actions ---------- */
+.steps{margin:0;padding:0;list-style:none;counter-reset:step}
+.steps li{display:grid;grid-template-columns:26px 1fr;gap:12px;align-items:start;
+  padding:7px 0;border-bottom:1px solid var(--sb-border)}
+.steps li:last-child{border-bottom:0}
+.step{display:grid;place-items:center;width:24px;height:24px;border-radius:7px;
+  background:var(--sb-teal-soft);color:var(--sb-teal-strong);
+  font-size:11.5px;font-weight:700;font-variant-numeric:tabular-nums}
+
+/* ---------- Chart ---------- */
+.chart{background:var(--sb-surface);border:1px solid var(--sb-border);
+  border-radius:14px;padding:20px 22px 12px;box-shadow:var(--sb-shadow-sm);margin-bottom:16px}
+.chart__head{display:flex;justify-content:space-between;align-items:baseline;
+  gap:16px;flex-wrap:wrap;margin-bottom:6px}
+.chart__head h2{margin:0;font-size:15px;font-weight:700;letter-spacing:-.012em;
+  color:var(--sb-text)}
+.chart__head span{font-size:11px;font-weight:700;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--sb-text-faint)}
+svg{display:block;width:100%;height:auto;overflow:visible}
+.grid{stroke:var(--sb-border);stroke-width:1}
+.zero{stroke:var(--sb-border-strong);stroke-width:1.5}
+.bar{fill:var(--sb-teal)} .bar--neg{fill:var(--sb-critical)}
+.line{fill:none;stroke:var(--sb-teal);stroke-width:3;
+  stroke-linejoin:round;stroke-linecap:round}
+.area{fill:var(--sb-teal);opacity:.10}
+.dot{fill:var(--sb-surface);stroke:var(--sb-teal);stroke-width:3}
+.val{fill:var(--sb-text);font-size:11px;font-weight:650;
+  font-variant-numeric:tabular-nums}
+.tick{fill:var(--sb-text-faint);font-size:10.5px;font-variant-numeric:tabular-nums}
+.lbl{fill:var(--sb-text-muted);font-size:11px}
+
+/* Donut + categorical key. Ordered so adjacent slices stay distinguishable. */
+.donut-wrap{display:grid;grid-template-columns:minmax(0,260px) 1fr;gap:24px;
+  align-items:center}
+.donut-wrap svg{max-width:260px;margin:0 auto}
+.arc--0{stroke:var(--sb-teal-strong)} .arc--1{stroke:var(--sb-info)}
+.arc--2{stroke:var(--sb-warning)}     .arc--3{stroke:var(--sb-teal)}
+.arc--4{stroke:var(--sb-critical)}    .arc--5{stroke:var(--sb-text-faint)}
+.donut-val{fill:var(--sb-text);font-size:26px;font-weight:700;
+  letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.donut-cap{fill:var(--sb-text-faint);font-size:10.5px;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase}
+.legend{margin:0;padding:0;list-style:none}
+.legend li{display:grid;grid-template-columns:12px 1fr auto auto;gap:10px;
+  align-items:center;padding:7px 0;border-bottom:1px solid var(--sb-border);
+  font-size:12.5px}
+.legend li:last-child{border-bottom:0}
+.legend span{color:var(--sb-text-muted);overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap}
+.legend b{color:var(--sb-text);font-weight:650;font-variant-numeric:tabular-nums}
+.legend em{color:var(--sb-text-faint);font-style:normal;font-size:11.5px;
+  min-width:34px;text-align:right;font-variant-numeric:tabular-nums}
+.key{width:10px;height:10px;border-radius:3px}
+.key--0{background:var(--sb-teal-strong)} .key--1{background:var(--sb-info)}
+.key--2{background:var(--sb-warning)}     .key--3{background:var(--sb-teal)}
+.key--4{background:var(--sb-critical)}    .key--5{background:var(--sb-text-faint)}
+
+/* Horizontal ranked bars */
+.bullets{margin:6px 0 4px;padding:0;list-style:none}
+.blt{display:grid;grid-template-columns:minmax(90px,26%) 1fr auto;gap:14px;
+  align-items:center;padding:7px 0}
+.blt__lbl{font-size:12.5px;color:var(--sb-text-muted);overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.blt__track{height:10px;border-radius:999px;background:var(--sb-surface-alt);
+  border:1px solid var(--sb-border);overflow:hidden}
+.blt__fill{display:block;height:100%;border-radius:999px}
+.blt__fill--pos{background:var(--sb-teal)}
+.blt__fill--neg{background:var(--sb-critical)}
+.blt__val{font-size:12.5px;font-weight:650;color:var(--sb-text);
+  font-variant-numeric:tabular-nums;min-width:56px;text-align:right}
+@media (max-width:620px){
+  .donut-wrap{grid-template-columns:1fr}
+  .blt{grid-template-columns:1fr auto;gap:6px}
+  .blt__track{grid-column:1/-1}
+}
+
+/* ---------- Narrative + footer ---------- */
+.notes{background:var(--sb-surface);border:1px solid var(--sb-border);
+  border-radius:14px;padding:18px 20px;box-shadow:var(--sb-shadow-sm);margin-bottom:16px}
+.notes h2{margin:0 0 10px;font-size:11px;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--sb-text-faint)}
+.notes p{margin:0 0 10px;color:var(--sb-text-muted);font-size:13px;max-width:78ch}
+.notes p:last-child{margin-bottom:0}
+footer{color:var(--sb-text-faint);font-size:11.5px;line-height:1.6;
+  padding:6px 4px 0;max-width:88ch}
+
+@media (max-width:900px){
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .panels{grid-template-columns:1fr}
+}
+@media (max-width:560px){
+  .page{padding:20px 14px 44px}
+  .stats{grid-template-columns:1fr}
+  .head,.panel,.actions,.chart,.notes{padding-left:16px;padding-right:16px}
+}
+@media print{
+  body{background:#fff}
+  .page{max-width:none;padding:0}
+  .head,.stat,.panel,.actions,.chart,.notes{box-shadow:none;break-inside:avoid}
+  .stats,.panels{break-inside:avoid}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head><body><main class="page"><header class="head"><div class="eyebrow"><b>AI Summary</b><span class="pill pill--positive"><i class="pill__dot"></i>Current</span></div><h1>Like-for-like revenue increased by +3.4M across CFH014, CFH017, CFH018 and CFH021, as transactions +240.1K offset lower units -249.9K and Basket Size -0.10.</h1><div class="meta"><span class="chip">Data through&nbsp;<b>2026-07-28</b></span><span class="chip">Grain&nbsp;<b>Day</b></span><span class="chip">Generated&nbsp;<b>29 Jul 2026, 09:34 UTC</b></span><span class="chip"><b>Validated</b></span></div></header><section class="stats" aria-label="Key metrics"><article class="stat stat--positive"><div class="stat__label"><i class="stat__dot"></i><span>Revenue change</span></div><div class="stat__value"><span class="stat__arrow"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 3.5 13 10H3z" fill="currentColor"/></svg></span><span>+3.4M</span></div></article><article class="stat stat--positive"><div class="stat__label"><i class="stat__dot"></i><span>Transactions change</span></div><div class="stat__value"><span class="stat__arrow"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 3.5 13 10H3z" fill="currentColor"/></svg></span><span>+240.1K</span></div></article><article class="stat stat--warning"><div class="stat__label"><i class="stat__dot"></i><span>Units change</span></div><div class="stat__value"><span class="stat__arrow"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 12.5 3 6h10z" fill="currentColor"/></svg></span><span>-249.9K</span></div></article><article class="stat stat--warning"><div class="stat__label"><i class="stat__dot"></i><span>Basket Size change</span></div><div class="stat__value"><span class="stat__arrow"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 12.5 3 6h10z" fill="currentColor"/></svg></span><span>-0.10</span></div></article></section><section class="chart"><div class="chart__head"><h2>Revenue: prior versus current</h2><span>Revenue</span></div><svg viewBox="0 0 780 340" role="img" preserveAspectRatio="xMidYMid meet" aria-label="Revenue: prior versus current"><line class="grid" x1="74" y1="26.0" x2="756" y2="26.0"/><text class="tick" x="64" y="30.0" text-anchor="end">125.8M</text><line class="grid" x1="74" y1="88.5" x2="756" y2="88.5"/><text class="tick" x="64" y="92.5" text-anchor="end">94.4M</text><line class="grid" x1="74" y1="151.0" x2="756" y2="151.0"/><text class="tick" x="64" y="155.0" text-anchor="end">62.9M</text><line class="grid" x1="74" y1="213.5" x2="756" y2="213.5"/><text class="tick" x="64" y="217.5" text-anchor="end">31.5M</text><line class="grid" x1="74" y1="276.0" x2="756" y2="276.0"/><text class="tick" x="64" y="280.0" text-anchor="end">0</text><line class="zero" x1="74" y1="276.0" x2="756" y2="276.0"/><rect class="bar" x="206.5" y="32.8" width="76.0" height="243.2" rx="5"/><text class="val" x="244.5" y="23.8" text-anchor="middle">122.4M</text><text class="lbl" x="244.5" y="314" text-anchor="middle">Prior</text><rect class="bar" x="547.5" y="26.0" width="76.0" height="250.0" rx="5"/><text class="val" x="585.5" y="17.0" text-anchor="middle">125.8M</text><text class="lbl" x="585.5" y="314" text-anchor="middle">Current</text></svg></section><div class="panels"><section class="panel panel--positive"><header class="panel__head"><span class="pill pill--positive"><i class="pill__dot"></i>What&#x27;s working</span></header><ul class="pts"><li><span class="pt__mark"></span><p>Like-for-like revenue rose by +3.4M across the four comparable branches.</p></li><li><span class="pt__mark"></span><p>Transactions increased by +240.1K across CFH014, CFH017, CFH018 and CFH021, showing more transactions (bills) than last year.</p></li><li><span class="pt__mark"></span><p>The overall result remained positive in revenue terms even with weaker item sales per transaction.</p></li></ul></section><section class="panel panel--warning"><header class="panel__head"><span class="pill pill--warning"><i class="pill__dot"></i>Risks</span></header><ul class="pts"><li><span class="pt__mark"></span><p>Units fell by -249.9K across the same like-for-like branch group, so item demand was lower than last year.</p></li><li><span class="pt__mark"></span><p>Basket Size declined by -0.10, meaning each transaction contained fewer items on average.</p></li><li><span class="pt__mark"></span><p>The revenue gain was not supported by units growth, with more transactions offset by smaller baskets.</p></li></ul></section></div><section class="actions"><header class="panel__head"><span class="pill pill--info"><i class="pill__dot"></i>Recommended actions</span></header><ol class="steps"><li><span class="step">1</span><p>Review branch-level performance for CFH014, CFH017, CFH018 and CFH021 to see where the +240.1K transactions increase and the -249.9K units decline were concentrated.</p></li><li><span class="step">2</span><p>Compare category performance within the like-for-like branches to identify which areas contributed most to the -0.10 Basket Size change.</p></li><li><span class="step">3</span><p>Monitor whether the current pattern holds, with revenue +3.4M supported by transactions +240.1K while units remain -249.9K.</p></li></ol></section><section class="notes"><h2>Detail</h2><p>Like-for-like revenue rose by +3.4M across the four comparable branches.</p><p>Transactions increased by +240.1K across CFH014, CFH017, CFH018 and CFH021, showing more transactions (bills) than last year.</p><p>The overall result remained positive in revenue terms even with weaker item sales per transaction.</p><p>Units fell by -249.9K across the same like-for-like branch group, so item demand was lower than last year.</p><p>Basket Size declined by -0.10, meaning each transaction contained fewer items on average.</p><p>The revenue gain was not supported by units growth, with more transactions offset by smaller baskets.</p><p>Review branch-level performance for CFH014, CFH017, CFH018 and CFH021 to see where the +240.1K transactions increase and the -249.9K units decline were concentrated.</p><p>Compare category performance within the like-for-like branches to identify which areas contributed most to the -0.10 Basket Size change.</p><p>Monitor whether the current pattern holds, with revenue +3.4M supported by transactions +240.1K while units remain -249.9K.</p></section><footer>Generated automatically from the connected Power BI semantic model. Figures reflect only the queries executed in this run and the business rules in force at the time; see the accompanying insight report for coverage gaps.</footer></main></body></html>

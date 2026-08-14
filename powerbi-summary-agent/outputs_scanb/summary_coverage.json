@@ -1,0 +1,1349 @@
+{
+  "status": "ok",
+  "metric_family": "revenue",
+  "value_aliases": {
+    "current": "net revenue CURRENT",
+    "prior": "net revenue PAST",
+    "change": "revenue Growth"
+  },
+  "thresholds": {
+    "material_change_pct": 10.0,
+    "material_share_pct": 5.0,
+    "headline_min_impact_pct": 0.05,
+    "magnitude_ceiling_pct": 100.0
+  },
+  "weights": {
+    "impact": 0.4,
+    "magnitude": 0.35,
+    "unexpectedness": 0.25
+  },
+  "levels": [
+    {
+      "role": "department",
+      "group_ref": "'MIS_DEEP_DIVE2'[DEPARTMENT]",
+      "column": "DEPARTMENT",
+      "level": 20,
+      "coverage_only": false,
+      "metric_family": "revenue",
+      "peer_median_change_pct": -3.7123599918986114,
+      "pool_capped": false,
+      "diagnostics_reconciled": true,
+      "counts": {
+        "total": 6,
+        "comparable": 6,
+        "current_only": 0,
+        "up": 2,
+        "down": 4,
+        "flat": 0,
+        "critical": 1,
+        "watch": 5,
+        "steady": 0,
+        "no_material_change": 0
+      },
+      "rows": [
+        {
+          "member": "TECHNOLOGY",
+          "hierarchy_path": [
+            "TECHNOLOGY"
+          ],
+          "current": 7916819.726027396,
+          "prior": 9907943.69863014,
+          "change": -1991123.9726027437,
+          "change_pct": -20.096238262617845,
+          "business_share_pct": 7.541956719761711,
+          "global_impact_pct": 1.8968438520432631,
+          "direction": "down",
+          "comparable": true,
+          "severity": "critical",
+          "vs_peer_median_pts": 16.383878270719233,
+          "rank_score": 0.5042685310991402,
+          "rank": 1
+        },
+        {
+          "member": "FRESH FOOD",
+          "hierarchy_path": [
+            "FRESH FOOD"
+          ],
+          "current": 19592778.34794523,
+          "prior": 21046633.16986306,
+          "change": -1453854.821917832,
+          "change_pct": -6.9077785989999825,
+          "business_share_pct": 18.665056352651867,
+          "global_impact_pct": 1.3850145036993626,
+          "direction": "down",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 3.195418607101371,
+          "rank_score": 0.3647786507801527,
+          "rank": 2
+        },
+        {
+          "member": "CONSUMER GOODS",
+          "hierarchy_path": [
+            "CONSUMER GOODS"
+          ],
+          "current": 45556332.15068483,
+          "prior": 47047585.38356157,
+          "change": -1491253.232876733,
+          "change_pct": -3.169670070672271,
+          "business_share_pct": 43.3992306610172,
+          "global_impact_pct": 1.4206420923777558,
+          "direction": "down",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 0.5426899212263403,
+          "rank_score": 0.3630646314613415,
+          "rank": 3
+        },
+        {
+          "member": "HOME & LIVING",
+          "hierarchy_path": [
+            "HOME & LIVING"
+          ],
+          "current": 10020463.216438334,
+          "prior": 9281576.334246581,
+          "change": 738886.882191753,
+          "change_pct": 7.960790878435748,
+          "business_share_pct": 9.545992267814919,
+          "global_impact_pct": 0.7039004397143435,
+          "direction": "up",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 11.67315087033436,
+          "rank_score": 0.21811127326090185,
+          "rank": 4
+        },
+        {
+          "member": "LIFESTYLE",
+          "hierarchy_path": [
+            "LIFESTYLE"
+          ],
+          "current": 13910767.542465761,
+          "prior": 14528983.021917814,
+          "change": -618215.4794520531,
+          "change_pct": -4.255049913124952,
+          "business_share_pct": 13.252089901583252,
+          "global_impact_pct": 0.5889428521639152,
+          "direction": "down",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 0.5426899212263407,
+          "rank_score": 0.14935159072818935,
+          "rank": 5
+        },
+        {
+          "member": null,
+          "hierarchy_path": [],
+          "current": 7973207.054794517,
+          "prior": 7790510.1369863,
+          "change": 182696.917808217,
+          "change_pct": 2.34512136683891,
+          "business_share_pct": 7.595674097171036,
+          "global_impact_pct": 0.17404618200582064,
+          "direction": "up",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 6.057481358737522,
+          "rank_score": 0.06002763356861953,
+          "rank": 6
+        }
+      ]
+    },
+    {
+      "role": "section",
+      "group_ref": "'MIS_DEEP_DIVE2'[SECTION]",
+      "column": "SECTION",
+      "level": 25,
+      "coverage_only": false,
+      "metric_family": "revenue",
+      "peer_median_change_pct": -1.9516023937496585,
+      "pool_capped": false,
+      "diagnostics_reconciled": true,
+      "counts": {
+        "total": 29,
+        "comparable": 29,
+        "current_only": 0,
+        "up": 11,
+        "down": 18,
+        "flat": 0,
+        "critical": 0,
+        "watch": 15,
+        "steady": 14,
+        "no_material_change": 14
+      },
+      "rows": [
+        {
+          "member": "CONSUMER DEVICES",
+          "hierarchy_path": [
+            "TECHNOLOGY",
+            "CONSUMER DEVICES"
+          ],
+          "current": 4682785.479452054,
+          "prior": 5684502.876712329,
+          "change": -1001717.3972602747,
+          "change_pct": -17.62189973311483,
+          "business_share_pct": 4.461054645193742,
+          "global_impact_pct": 0.9542858770336476,
+          "direction": "down",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 15.670297339365172,
+          "rank_score": 0.45205045329408805,
+          "rank": 1
+        },
+        {
+          "member": "ENTERTAINMENTS",
+          "hierarchy_path": [
+            "TECHNOLOGY",
+            "ENTERTAINMENTS"
+          ],
+          "current": 3234034.246575342,
+          "prior": 4223440.8219178105,
+          "change": -989406.5753424685,
+          "change_pct": -23.426552355318467,
+          "business_share_pct": 3.0809020745679643,
+          "global_impact_pct": 0.9425579750096136,
+          "direction": "down",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 21.474949961568807,
+          "rank_score": 0.4434294437161225,
+          "rank": 2
+        },
+        {
+          "member": "GREEN GROCERIES",
+          "hierarchy_path": [
+            "FRESH FOOD",
+            "GREEN GROCERIES"
+          ],
+          "current": 12220232.712328766,
+          "prior": 13039870.013698617,
+          "change": -819637.3013698515,
+          "change_pct": -6.285624783903581,
+          "business_share_pct": 11.641602235655203,
+          "global_impact_pct": 0.7808273103037574,
+          "direction": "down",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 4.3340223901539225,
+          "rank_score": 0.3716315321852491,
+          "rank": 3
+        },
+        {
+          "member": "SPICE MARKET",
+          "hierarchy_path": [
+            "CONSUMER GOODS",
+            "SPICE MARKET"
+          ],
+          "current": 4903958.706849314,
+          "prior": 5552570.947945206,
+          "change": -648612.2410958922,
+          "change_pct": -11.68129587494814,
+          "business_share_pct": 4.671755275791172,
+          "global_impact_pct": 0.6179003210304925,
+          "direction": "down",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 9.729693481198481,
+          "rank_score": 0.2942685798486924,
+          "rank": 4
+        },
+        {
+          "member": "MEAT SHOP",
+          "hierarchy_path": [
+            "FRESH FOOD",
+            "MEAT SHOP"
+          ],
+          "current": 3778457.706849315,
+          "prior": 4397851.356164382,
+          "change": -619393.6493150666,
+          "change_pct": -14.084006010045671,
+          "business_share_pct": 3.599546974503002,
+          "global_impact_pct": 0.59006523544696,
+          "direction": "down",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 12.132403616296013,
+          "rank_score": 0.2805026220999096,
+          "rank": 5
+        },
+        {
+          "member": "HOME TEXTILES",
+          "hierarchy_path": [
+            "LIFESTYLE",
+            "HOME TEXTILES"
+          ],
+          "current": 3003176.164383562,
+          "prior": 3494135.616438357,
+          "change": -490959.45205479534,
+          "change_pct": -14.050955828533072,
+          "business_share_pct": 2.860975168998361,
+          "global_impact_pct": 0.46771242325777007,
+          "direction": "down",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 12.099353434783414,
+          "rank_score": 0.22234550741564282,
+          "rank": 6
+        },
+        {
+          "member": "PROVISIONS",
+          "hierarchy_path": [
+            "CONSUMER GOODS",
+            "PROVISIONS"
+          ],
+          "current": 21047473.66027394,
+          "prior": 21442041.767123308,
+          "change": -394568.10684936866,
+          "change_pct": -1.8401610776374513,
+          "business_share_pct": 20.0508715493721,
+          "global_impact_pct": 0.3758852276341391,
+          "direction": "down",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 0.1114413161122072,
+          "rank_score": 0.17338546229224502,
+          "rank": 7
+        },
+        {
+          "member": "MENS APPAREL",
+          "hierarchy_path": [
+            "LIFESTYLE",
+            "MENS APPAREL"
+          ],
+          "current": 2912736.6575342477,
+          "prior": 3224563.9452054785,
+          "change": -311827.28767123073,
+          "change_pct": -9.670370722059296,
+          "business_share_pct": 2.7748179909876414,
+          "global_impact_pct": 0.2970622028849981,
+          "direction": "down",
+          "comparable": true,
+          "severity": "steady",
+          "vs_peer_median_pts": 7.718768328309638,
+          "rank_score": 0.1415965927501434,
+          "rank": 8
+        },
+        {
+          "member": "PERSONAL CARE",
+          "hierarchy_path": [
+            "CONSUMER GOODS",
+            "PERSONAL CARE"
+          ],
+          "current": 10498227.260273982,
+          "prior": 10791399.863013698,
+          "change": -293172.60273971595,
+          "change_pct": -2.7167244885858772,
+          "business_share_pct": 10.001134088086584,
+          "global_impact_pct": 0.27929082103683844,
+          "direction": "down",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 0.7651220948362187,
+          "rank_score": 0.13041380116778833,
+          "rank": 9
+        },
+        {
+          "member": "CULINARY SUPPLIES",
+          "hierarchy_path": [
+            "HOME & LIVING",
+            "CULINARY SUPPLIES"
+          ],
+          "current": 2338021.435616438,
+          "prior": 2078976.663013699,
+          "change": 259044.7726027388,
+          "change_pct": 12.46020588933527,
+          "business_share_pct": 2.2273156504149108,
+          "global_impact_pct": 0.24677895052066876,
+          "direction": "up",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 14.411808283084929,
+          "rank_score": 0.12390324729030819,
+          "rank": 10
+        },
+        {
+          "member": "TRAVEL",
+          "hierarchy_path": [
+            "LIFESTYLE",
+            "TRAVEL"
+          ],
+          "current": 2718052.953424659,
+          "prior": 2461325.7205479457,
+          "change": 256727.2328767134,
+          "change_pct": 10.430445297567532,
+          "business_share_pct": 2.589352599422613,
+          "global_impact_pct": 0.2445711467667764,
+          "direction": "up",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 12.38204769131719,
+          "rank_score": 0.12266029105940125,
+          "rank": 11
+        },
+        {
+          "member": "AUTOMOTIVE CARE",
+          "hierarchy_path": [
+            "HOME & LIVING",
+            "AUTOMOTIVE CARE"
+          ],
+          "current": 654613.5424657533,
+          "prior": 459792.6082191781,
+          "change": 194820.93424657517,
+          "change_pct": 42.37148026392503,
+          "business_share_pct": 0.6236174595735032,
+          "global_impact_pct": 0.18559612382742874,
+          "direction": "up",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 44.32308265767469,
+          "rank_score": 0.09645582711587174,
+          "rank": 12
+        },
+        {
+          "member": null,
+          "hierarchy_path": [],
+          "current": 7973207.054794517,
+          "prior": 7790510.1369863,
+          "change": 182696.917808217,
+          "change_pct": 2.34512136683891,
+          "business_share_pct": 7.59567409717103,
+          "global_impact_pct": 0.1740461820058205,
+          "direction": "up",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 4.296723760588568,
+          "rank_score": 0.0894725325586557,
+          "rank": 13
+        },
+        {
+          "member": "CLEANING ESSENSTIALS",
+          "hierarchy_path": [
+            "CONSUMER GOODS",
+            "CLEANING ESSENSTIALS"
+          ],
+          "current": 2563345.126027398,
+          "prior": 2712222.6684931493,
+          "change": -148877.54246575153,
+          "change_pct": -5.48913421435507,
+          "business_share_pct": 2.4419702187675973,
+          "global_impact_pct": 0.14182816088760564,
+          "direction": "down",
+          "comparable": true,
+          "severity": "steady",
+          "vs_peer_median_pts": 3.537531820605411,
+          "rank_score": 0.06740109644405293,
+          "rank": 14
+        },
+        {
+          "member": "TOYS",
+          "hierarchy_path": [
+            "HOME & LIVING",
+            "TOYS"
+          ],
+          "current": 2190029.6438356168,
+          "prior": 2050386.5780821922,
+          "change": 139643.06575342454,
+          "change_pct": 6.810572564517966,
+          "business_share_pct": 2.086331299739161,
+          "global_impact_pct": 0.13303093850485403,
+          "direction": "up",
+          "comparable": true,
+          "severity": "steady",
+          "vs_peer_median_pts": 8.762174958267625,
+          "rank_score": 0.0667576018805182,
+          "rank": 15
+        },
+        {
+          "member": "OFFICE SUPPLIES",
+          "hierarchy_path": [
+            "HOME & LIVING",
+            "OFFICE SUPPLIES"
+          ],
+          "current": 1714581.7041095882,
+          "prior": 1595529.1698630136,
+          "change": 119052.53424657462,
+          "change_pct": 7.461633199523144,
+          "business_share_pct": 1.6333959155817004,
+          "global_impact_pct": 0.1134153728060407,
+          "direction": "up",
+          "comparable": true,
+          "severity": "steady",
+          "vs_peer_median_pts": 9.413235593272802,
+          "rank_score": 0.0568855367703241,
+          "rank": 16
+        },
+        {
+          "member": "SPORTING GOODS",
+          "hierarchy_path": [
+            "HOME & LIVING",
+            "SPORTING GOODS"
+          ],
+          "current": 665921.3753424663,
+          "prior": 566203.2520547946,
+          "change": 99718.12328767171,
+          "change_pct": 17.611718570281447,
+          "business_share_pct": 0.6343898642892618,
+          "global_impact_pct": 0.09499645009459691,
+          "direction": "up",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 19.563320964031107,
+          "rank_score": 0.04791284003338829,
+          "rank": 17
+        },
+        {
+          "member": "BEVERAGES",
+          "hierarchy_path": [
+            "CONSUMER GOODS",
+            "BEVERAGES"
+          ],
+          "current": 1443112.6712328773,
+          "prior": 1347618.2876712326,
+          "change": 95494.3835616447,
+          "change_pct": 7.086159666671256,
+          "business_share_pct": 1.3747809960098112,
+          "global_impact_pct": 0.09097270529407983,
+          "direction": "up",
+          "comparable": true,
+          "severity": "steady",
+          "vs_peer_median_pts": 9.037762060420915,
+          "rank_score": 0.04564079543628341,
+          "rank": 18
+        },
+        {
+          "member": "REFRIDGERATED GOODS",
+          "hierarchy_path": [
+            "CONSUMER GOODS",
+            "REFRIDGERATED GOODS"
+          ],
+          "current": 5100214.7260273965,
+          "prior": 5201731.849315068,
+          "change": -101517.12328767125,
+          "change_pct": -1.9516023937496585,
+          "business_share_pct": 4.858718532989976,
+          "global_impact_pct": 0.09671026708277988,
+          "direction": "down",
+          "comparable": true,
+          "severity": "steady",
+          "vs_peer_median_pts": 0.0,
+          "rank_score": 0.0444436085226926,
+          "rank": 19
+        },
+        {
+          "member": "KIDS FASHION GIRLS",
+          "hierarchy_path": [
+            "LIFESTYLE",
+            "KIDS FASHION GIRLS"
+          ],
+          "current": 475954.7315068491,
+          "prior": 537669.2328767126,
+          "change": -61714.50136986346,
+          "change_pct": -11.478153778610311,
+          "business_share_pct": 0.4534181792455327,
+          "global_impact_pct": 0.058792307317921365,
+          "direction": "down",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 9.526551384860653,
+          "rank_score": 0.02800261251241987,
+          "rank": 20
+        },
+        {
+          "member": "LADIES APPAREL",
+          "hierarchy_path": [
+            "LIFESTYLE",
+            "LADIES APPAREL"
+          ],
+          "current": 1768675.3287671239,
+          "prior": 1712423.630136984,
+          "change": 56251.69863013993,
+          "change_pct": 3.2849172155864332,
+          "business_share_pct": 1.6849281962323406,
+          "global_impact_pct": 0.05358816938660782,
+          "direction": "up",
+          "comparable": true,
+          "severity": "steady",
+          "vs_peer_median_pts": 5.236519609336092,
+          "rank_score": 0.02722426694847378,
+          "rank": 21
+        },
+        {
+          "member": "DIY",
+          "hierarchy_path": [
+            "HOME & LIVING",
+            "DIY"
+          ],
+          "current": 702115.3999999991,
+          "prior": 758471.0849315069,
+          "change": -56355.6849315078,
+          "change_pct": -7.430169198420657,
+          "business_share_pct": 0.6688700945998839,
+          "global_impact_pct": 0.053687231915692094,
+          "direction": "down",
+          "comparable": true,
+          "severity": "steady",
+          "vs_peer_median_pts": 5.478566804670999,
+          "rank_score": 0.025581847703014228,
+          "rank": 22
+        },
+        {
+          "member": "LAUNDARY SUPPLIES",
+          "hierarchy_path": [
+            "HOME & LIVING",
+            "LAUNDARY SUPPLIES"
+          ],
+          "current": 1668735.3013698626,
+          "prior": 1707959.9205479426,
+          "change": -39224.61917808,
+          "change_pct": -2.296577261924043,
+          "business_share_pct": 1.5897203492323728,
+          "global_impact_pct": 0.037367325571105295,
+          "direction": "down",
+          "comparable": true,
+          "severity": "steady",
+          "vs_peer_median_pts": 0.3449748681743845,
+          "rank_score": 0.01732127174400711,
+          "rank": 23
+        },
+        {
+          "member": "BABY CLOTHING",
+          "hierarchy_path": [
+            "LIFESTYLE",
+            "BABY CLOTHING"
+          ],
+          "current": 469308.0410958907,
+          "prior": 506930.90410958894,
+          "change": -37622.863013698254,
+          "change_pct": -7.421694496961444,
+          "business_share_pct": 0.4470862109623218,
+          "global_impact_pct": 0.035841412883253744,
+          "direction": "down",
+          "comparable": true,
+          "severity": "steady",
+          "vs_peer_median_pts": 5.470092103211785,
+          "rank_score": 0.017078262440683202,
+          "rank": 24
+        },
+        {
+          "member": "SEA FOOD",
+          "hierarchy_path": [
+            "FRESH FOOD",
+            "SEA FOOD"
+          ],
+          "current": 3096664.4849315067,
+          "prior": 3122445.2219178076,
+          "change": -25780.736986300908,
+          "change_pct": -0.825658583386336,
+          "business_share_pct": 2.9500367987659013,
+          "global_impact_pct": 0.02456001390495328,
+          "direction": "down",
+          "comparable": true,
+          "severity": "steady",
+          "vs_peer_median_pts": 1.1259438103633226,
+          "rank_score": 0.012232423919237314,
+          "rank": 25
+        },
+        {
+          "member": "GLASS ITEMS",
+          "hierarchy_path": [
+            "HOME & LIVING",
+            "GLASS ITEMS"
+          ],
+          "current": 86444.81369863014,
+          "prior": 64257.05753424657,
+          "change": 22187.756164383572,
+          "change_pct": 34.52967972048571,
+          "business_share_pct": 0.08235163438413706,
+          "global_impact_pct": 0.021137161447577442,
+          "direction": "up",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 36.48128211423537,
+          "rank_score": 0.010876463796931995,
+          "rank": 26
+        },
+        {
+          "member": "KIDS FASHION",
+          "hierarchy_path": [
+            "LIFESTYLE",
+            "KIDS FASHION"
+          ],
+          "current": 664868.1917808222,
+          "prior": 684374.3287671239,
+          "change": -19506.13698630163,
+          "change_pct": -2.8502145925667968,
+          "business_share_pct": 0.633386549181079,
+          "global_impact_pct": 0.01858251747690747,
+          "direction": "down",
+          "comparable": true,
+          "severity": "steady",
+          "vs_peer_median_pts": 0.8986121988171383,
+          "rank_score": 0.008692904389299703,
+          "rank": 27
+        },
+        {
+          "member": "DELI",
+          "hierarchy_path": [
+            "FRESH FOOD",
+            "DELI"
+          ],
+          "current": 497423.44383561646,
+          "prior": 486466.57808219176,
+          "change": 10956.865753424703,
+          "change_pct": 2.2523367990911534,
+          "business_share_pct": 0.47387034372772513,
+          "global_impact_pct": 0.010438055956344809,
+          "direction": "up",
+          "comparable": true,
+          "severity": "steady",
+          "vs_peer_median_pts": 4.203939192840812,
+          "rank_score": 0.005375322873329532,
+          "rank": 28
+        },
+        {
+          "member": "FOOTWEAR",
+          "hierarchy_path": [
+            "LIFESTYLE",
+            "FOOTWEAR"
+          ],
+          "current": 1897995.4739726018,
+          "prior": 1907559.6438356163,
+          "change": -9564.169863014482,
+          "change_pct": -0.5013824806957738,
+          "business_share_pct": 1.8081250065533492,
+          "global_impact_pct": 0.009111304496445831,
+          "direction": "down",
+          "comparable": true,
+          "severity": "steady",
+          "vs_peer_median_pts": 1.4502199130538846,
+          "rank_score": 0.004930212550278495,
+          "rank": 29
+        }
+      ]
+    },
+    {
+      "role": "category",
+      "group_ref": "'MIS_DEEP_DIVE2'[CATEGORY_NAME]",
+      "column": "CATEGORY_NAME",
+      "level": 30,
+      "coverage_only": false,
+      "metric_family": "revenue",
+      "peer_median_change_pct": -13.713922385771712,
+      "pool_capped": true,
+      "diagnostics_reconciled": true,
+      "counts": {
+        "total": 30,
+        "comparable": 30,
+        "current_only": 0,
+        "up": 11,
+        "down": 19,
+        "flat": 0,
+        "critical": 0,
+        "watch": 28,
+        "steady": 2,
+        "no_material_change": 2
+      },
+      "rows": [
+        {
+          "member": "ROASTED NUTS ROASTERY",
+          "hierarchy_path": [
+            "CONSUMER GOODS",
+            "SPICE MARKET",
+            "ROASTED NUTS ROASTERY"
+          ],
+          "current": 797701.104109589,
+          "prior": 1839233.6027397264,
+          "change": -1041532.4986301374,
+          "change_pct": -56.62861406395948,
+          "business_share_pct": 0.7599297963955972,
+          "global_impact_pct": 0.9922157253459964,
+          "direction": "down",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 42.91469167818777,
+          "rank_score": 0.430563262502954,
+          "rank": 1
+        },
+        {
+          "member": "LED TV",
+          "hierarchy_path": [
+            "TECHNOLOGY",
+            "ENTERTAINMENTS",
+            "LED TV"
+          ],
+          "current": 2681505.4794520545,
+          "prior": 3598488.4931506854,
+          "change": -916983.013698631,
+          "change_pct": -25.48244951856881,
+          "business_share_pct": 2.554535655693074,
+          "global_impact_pct": 0.8735636835755073,
+          "direction": "down",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 11.768527132797098,
+          "rank_score": 0.3920570680378938,
+          "rank": 2
+        },
+        {
+          "member": "FRESH MUTTON OTHER",
+          "hierarchy_path": [
+            "FRESH FOOD",
+            "MEAT SHOP",
+            "FRESH MUTTON OTHER"
+          ],
+          "current": 921154.1726027395,
+          "prior": 1516863.1808219182,
+          "change": -595709.0082191786,
+          "change_pct": -39.27242850580574,
+          "business_share_pct": 0.8775373372665988,
+          "global_impact_pct": 0.5675020668704398,
+          "direction": "down",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 25.558506120034032,
+          "rank_score": 0.25204390636296325,
+          "rank": 3
+        },
+        {
+          "member": "TORCHES",
+          "hierarchy_path": [
+            "TECHNOLOGY",
+            "CONSUMER DEVICES",
+            "TORCHES"
+          ],
+          "current": 1773007.6712328766,
+          "prior": 2302343.8356164386,
+          "change": -529336.164383562,
+          "change_pct": -22.99118646810786,
+          "business_share_pct": 1.6890554014110153,
+          "global_impact_pct": 0.5042719905394089,
+          "direction": "down",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 9.277264082336147,
+          "rank_score": 0.2263427328609839,
+          "rank": 4
+        },
+        {
+          "member": "SUNFLOWER OIL",
+          "hierarchy_path": [
+            "CONSUMER GOODS",
+            "PROVISIONS",
+            "SUNFLOWER OIL"
+          ],
+          "current": 1214697.8082191779,
+          "prior": 1634640.616438356,
+          "change": -419942.8082191781,
+          "change_pct": -25.690222303063308,
+          "business_share_pct": 1.1571816226988245,
+          "global_impact_pct": 0.40005843179070405,
+          "direction": "down",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 11.976299917291596,
+          "rank_score": 0.17953864834150315,
+          "rank": 5
+        },
+        {
+          "member": "HARD TROLLEY",
+          "hierarchy_path": [
+            "LIFESTYLE",
+            "TRAVEL",
+            "HARD TROLLEY"
+          ],
+          "current": 1059877.1561643835,
+          "prior": 722375.315068493,
+          "change": 337501.8410958905,
+          "change_pct": 46.72112045576887,
+          "business_share_pct": 1.009691759656501,
+          "global_impact_pct": 0.3215210610413096,
+          "direction": "up",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 60.43504284154058,
+          "rank_score": 0.17143866275831438,
+          "rank": 6
+        },
+        {
+          "member": "BLANKET DOUBLE",
+          "hierarchy_path": [
+            "LIFESTYLE",
+            "HOME TEXTILES",
+            "BLANKET DOUBLE"
+          ],
+          "current": 1907735.068493151,
+          "prior": 2297425.7534246584,
+          "change": -389690.68493150733,
+          "change_pct": -16.96205783149313,
+          "business_share_pct": 1.8174034293145138,
+          "global_impact_pct": 0.3712387526250403,
+          "direction": "down",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 3.2481354457214184,
+          "rank_score": 0.16580812337045653,
+          "rank": 7
+        },
+        {
+          "member": "PRESSURE WASHER",
+          "hierarchy_path": [
+            "HOME & LIVING",
+            "AUTOMOTIVE CARE",
+            "PRESSURE WASHER"
+          ],
+          "current": 439440.82191780815,
+          "prior": 203919.99999999994,
+          "change": 235520.8219178082,
+          "change_pct": 115.49667610720296,
+          "business_share_pct": 0.41863321061924497,
+          "global_impact_pct": 0.22436886363182887,
+          "direction": "up",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 129.21059849297467,
+          "rank_score": 0.12352045891307589,
+          "rank": 8
+        },
+        {
+          "member": "DRY FRUITS ROASTERY",
+          "hierarchy_path": [
+            "CONSUMER GOODS",
+            "SPICE MARKET",
+            "DRY FRUITS ROASTERY"
+          ],
+          "current": 1317323.6,
+          "prior": 1078764.479452055,
+          "change": 238559.12054794515,
+          "change_pct": 22.114106006634398,
+          "business_share_pct": 1.254948062598628,
+          "global_impact_pct": 0.22726329821076333,
+          "direction": "up",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 35.82802839240611,
+          "rank_score": 0.11920499158800758,
+          "rank": 9
+        },
+        {
+          "member": null,
+          "hierarchy_path": [],
+          "current": 7973207.054794517,
+          "prior": 7790510.1369863,
+          "change": 182696.917808217,
+          "change_pct": 2.34512136683891,
+          "business_share_pct": 7.59567409717103,
+          "global_impact_pct": 0.1740461820058205,
+          "direction": "up",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 16.05904375261062,
+          "rank_score": 0.11852018790349081,
+          "rank": 10
+        },
+        {
+          "member": "TOMATO",
+          "hierarchy_path": [
+            "FRESH FOOD",
+            "GREEN GROCERIES",
+            "TOMATO"
+          ],
+          "current": 1360286.0301369866,
+          "prior": 1611619.326027397,
+          "change": -251333.29589041043,
+          "change_pct": -15.595078306112212,
+          "business_share_pct": 1.2958762130279835,
+          "global_impact_pct": 0.23943261378160863,
+          "direction": "down",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 1.8811559203405004,
+          "rank_score": 0.10663897548575278,
+          "rank": 11
+        },
+        {
+          "member": "CHOCOLATES AND CANDY ROASTERY",
+          "hierarchy_path": [
+            "CONSUMER GOODS",
+            "SPICE MARKET",
+            "CHOCOLATES AND CANDY ROASTERY"
+          ],
+          "current": 1178063.610958904,
+          "prior": 979212.3095890412,
+          "change": 198851.30136986286,
+          "change_pct": 20.307271408109383,
+          "business_share_pct": 1.122282062046729,
+          "global_impact_pct": 0.1894356522568375,
+          "direction": "up",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 34.021193793881096,
+          "rank_score": 0.09943714836006645,
+          "rank": 12
+        },
+        {
+          "member": "EMERGENCY LAMPS",
+          "hierarchy_path": [
+            "TECHNOLOGY",
+            "CONSUMER DEVICES",
+            "EMERGENCY LAMPS"
+          ],
+          "current": 1009630.1369863014,
+          "prior": 1236330.5479452054,
+          "change": -226700.41095890396,
+          "change_pct": -18.336553386607044,
+          "business_share_pct": 0.9618239469422292,
+          "global_impact_pct": 0.21596610090579815,
+          "direction": "down",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 4.622631000835332,
+          "rank_score": 0.09665427117685126,
+          "rank": 13
+        },
+        {
+          "member": "FLOUR",
+          "hierarchy_path": [
+            "CONSUMER GOODS",
+            "PROVISIONS",
+            "FLOUR"
+          ],
+          "current": 1101831.3013698629,
+          "prior": 913235.4794520546,
+          "change": 188595.82191780827,
+          "change_pct": 20.651390157439636,
+          "business_share_pct": 1.0496593676486432,
+          "global_impact_pct": 0.17966577181942944,
+          "direction": "up",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 34.365312543211346,
+          "rank_score": 0.09429110984969556,
+          "rank": 14
+        },
+        {
+          "member": "APPLES",
+          "hierarchy_path": [
+            "FRESH FOOD",
+            "GREEN GROCERIES",
+            "APPLES"
+          ],
+          "current": 792853.9753424657,
+          "prior": 993847.1698630136,
+          "change": -200993.19452054787,
+          "change_pct": -20.22375276756603,
+          "business_share_pct": 0.7553121801504563,
+          "global_impact_pct": 0.19147612633605798,
+          "direction": "down",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 6.509830381794318,
+          "rank_score": 0.08584832885151802,
+          "rank": 15
+        },
+        {
+          "member": "CHOCOLATE BAGS",
+          "hierarchy_path": [
+            "CONSUMER GOODS",
+            "PROVISIONS",
+            "CHOCOLATE BAGS"
+          ],
+          "current": 859533.4246575342,
+          "prior": 1051303.9726027395,
+          "change": -191770.54794520524,
+          "change_pct": -18.24120834152601,
+          "business_share_pct": 0.8188343441298223,
+          "global_impact_pct": 0.18269017393092526,
+          "direction": "down",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 4.5272859557543,
+          "rank_score": 0.08175209262220964,
+          "rank": 16
+        },
+        {
+          "member": "FRESH WHOLE  CHICKEN",
+          "hierarchy_path": [
+            "FRESH FOOD",
+            "MEAT SHOP",
+            "FRESH WHOLE  CHICKEN"
+          ],
+          "current": 600628.1506849315,
+          "prior": 439661.36986301374,
+          "change": 160966.7808219178,
+          "change_pct": 36.61153602648115,
+          "business_share_pct": 0.5721882869510966,
+          "global_impact_pct": 0.15334497137620837,
+          "direction": "up",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 50.32545841225286,
+          "rank_score": 0.08094976857763037,
+          "rank": 17
+        },
+        {
+          "member": "MENS SHIRT CASUAL LS",
+          "hierarchy_path": [
+            "LIFESTYLE",
+            "MENS APPAREL",
+            "MENS SHIRT CASUAL LS"
+          ],
+          "current": 407994.49315068487,
+          "prior": 583630.4246575343,
+          "change": -175635.93150684948,
+          "change_pct": -30.093690131029415,
+          "business_share_pct": 0.38867587184376046,
+          "global_impact_pct": 0.167319534825935,
+          "direction": "down",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 16.379767745257702,
+          "rank_score": 0.07493799762817478,
+          "rank": 18
+        },
+        {
+          "member": "OTHER RICE",
+          "hierarchy_path": [
+            "CONSUMER GOODS",
+            "PROVISIONS",
+            "OTHER RICE"
+          ],
+          "current": 725811.7123287672,
+          "prior": 589982.1917808219,
+          "change": 135829.52054794529,
+          "change_pct": 23.022647537538877,
+          "business_share_pct": 0.69144438177406,
+          "global_impact_pct": 0.12939796543183804,
+          "direction": "up",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 36.73656992331059,
+          "rank_score": 0.06786094119102838,
+          "rank": 19
+        },
+        {
+          "member": "MEDICATED OIL",
+          "hierarchy_path": [
+            "CONSUMER GOODS",
+            "PERSONAL CARE",
+            "MEDICATED OIL"
+          ],
+          "current": 594804.4520547946,
+          "prior": 474499.2465753425,
+          "change": 120305.20547945215,
+          "change_pct": 25.354140464446388,
+          "business_share_pct": 0.5666403416223645,
+          "global_impact_pct": 0.11460872980410305,
+          "direction": "up",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 39.0680628502181,
+          "rank_score": 0.060109384676667946,
+          "rank": 20
+        },
+        {
+          "member": "ROOT VEGETABLES",
+          "hierarchy_path": [
+            "FRESH FOOD",
+            "GREEN GROCERIES",
+            "ROOT VEGETABLES"
+          ],
+          "current": 1062120.5369863014,
+          "prior": 1202248.9013698627,
+          "change": -140128.3643835613,
+          "change_pct": -11.655520269047173,
+          "business_share_pct": 1.01182891594531,
+          "global_impact_pct": 0.1334932581472501,
+          "direction": "down",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 2.0584021167245385,
+          "rank_score": 0.05993598984015116,
+          "rank": 21
+        },
+        {
+          "member": "HEALTH AND ISOTONIC DRINKS",
+          "hierarchy_path": [
+            "CONSUMER GOODS",
+            "BEVERAGES",
+            "HEALTH AND ISOTONIC DRINKS"
+          ],
+          "current": 287763.21917808213,
+          "prior": 176057.2602739726,
+          "change": 111705.95890410952,
+          "change_pct": 63.448652290895346,
+          "business_share_pct": 0.27413757287478835,
+          "global_impact_pct": 0.10641665928359152,
+          "direction": "up",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 77.16257467666706,
+          "rank_score": 0.057877653342845406,
+          "rank": 22
+        },
+        {
+          "member": "COOKWARE SET NON STICK CERAMIC",
+          "hierarchy_path": [
+            "HOME & LIVING",
+            "CULINARY SUPPLIES",
+            "COOKWARE SET NON STICK CERAMIC"
+          ],
+          "current": 339389.04109589034,
+          "prior": 226266.02739726024,
+          "change": 113123.0136986301,
+          "change_pct": 49.99558042357704,
+          "business_share_pct": 0.32331890174175404,
+          "global_impact_pct": 0.10776661624859213,
+          "direction": "up",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 63.70950280934875,
+          "rank_score": 0.05767293460699673,
+          "rank": 23
+        },
+        {
+          "member": "CITRUS",
+          "hierarchy_path": [
+            "FRESH FOOD",
+            "GREEN GROCERIES",
+            "CITRUS"
+          ],
+          "current": 1212983.4109589043,
+          "prior": 1345267.4630136986,
+          "change": -132284.05205479427,
+          "change_pct": -9.833290084816928,
+          "business_share_pct": 1.155548402493626,
+          "global_impact_pct": 0.12602037558490572,
+          "direction": "down",
+          "comparable": true,
+          "severity": "steady",
+          "vs_peer_median_pts": 3.880632300954783,
+          "rank_score": 0.05751541298006413,
+          "rank": 24
+        },
+        {
+          "member": "DISHWASH LIQUID",
+          "hierarchy_path": [
+            "CONSUMER GOODS",
+            "CLEANING ESSENSTIALS",
+            "DISHWASH LIQUID"
+          ],
+          "current": 266748.35616438364,
+          "prior": 396006.50684931513,
+          "change": -129258.15068493149,
+          "change_pct": -32.64041081378384,
+          "business_share_pct": 0.2541177678513177,
+          "global_impact_pct": 0.12313775125347812,
+          "direction": "down",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 18.926488428012128,
+          "rank_score": 0.05504653075638018,
+          "rank": 25
+        },
+        {
+          "member": "PULSES",
+          "hierarchy_path": [
+            "CONSUMER GOODS",
+            "PROVISIONS",
+            "PULSES"
+          ],
+          "current": 842369.315068493,
+          "prior": 955422.191780822,
+          "change": -113052.87671232899,
+          "change_pct": -11.832766465431211,
+          "business_share_pct": 0.8024829585818842,
+          "global_impact_pct": 0.10769980026269842,
+          "direction": "down",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 1.8811559203405004,
+          "rank_score": 0.04829021840756688,
+          "rank": 26
+        },
+        {
+          "member": "FRESH CHICKEN PORTIONS",
+          "hierarchy_path": [
+            "FRESH FOOD",
+            "MEAT SHOP",
+            "FRESH CHICKEN PORTIONS"
+          ],
+          "current": 315799.5205479452,
+          "prior": 428565.6164383562,
+          "change": -112766.095890411,
+          "change_pct": -26.31244588111538,
+          "business_share_pct": 0.3008463497361009,
+          "global_impact_pct": 0.10742659857037587,
+          "direction": "down",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 12.598523495343668,
+          "rank_score": 0.048202855860808164,
+          "rank": 27
+        },
+        {
+          "member": "WHITE EGGS",
+          "hierarchy_path": [
+            "CONSUMER GOODS",
+            "REFRIDGERATED GOODS",
+            "WHITE EGGS"
+          ],
+          "current": 1504930.4109589034,
+          "prior": 1599549.7945205476,
+          "change": -94619.38356164424,
+          "change_pct": -5.915375931763703,
+          "business_share_pct": 1.4336716533269676,
+          "global_impact_pct": 0.0901391367200602,
+          "direction": "down",
+          "comparable": true,
+          "severity": "steady",
+          "vs_peer_median_pts": 7.798546454008009,
+          "rank_score": 0.04392624544652258,
+          "rank": 28
+        },
+        {
+          "member": "PERFUMES WOMEN",
+          "hierarchy_path": [
+            "CONSUMER GOODS",
+            "PERSONAL CARE",
+            "PERFUMES WOMEN"
+          ],
+          "current": 216590.61643835617,
+          "prior": 319026.5753424657,
+          "change": -102435.95890410955,
+          "change_pct": -32.10891092510006,
+          "business_share_pct": 0.20633500718908976,
+          "global_impact_pct": 0.09758559564798273,
+          "direction": "down",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 18.394988539328352,
+          "rank_score": 0.04364252911109396,
+          "rank": 29
+        },
+        {
+          "member": "MENS TROUSERS CASUAL",
+          "hierarchy_path": [
+            "LIFESTYLE",
+            "MENS APPAREL",
+            "MENS TROUSERS CASUAL"
+          ],
+          "current": 195633.4383561644,
+          "prior": 297984.02739726024,
+          "change": -102350.58904109584,
+          "change_pct": -34.34767626140115,
+          "business_share_pct": 0.18637015570401733,
+          "global_impact_pct": 0.09750426806515239,
+          "direction": "down",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 20.633753875629438,
+          "rank_score": 0.04352306556338628,
+          "rank": 30
+        }
+      ]
+    }
+  ],
+  "skipped_roles": {},
+  "mirrored_roles": {}
+}

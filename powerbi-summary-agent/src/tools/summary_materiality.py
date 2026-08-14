@@ -69,7 +69,7 @@ def reconciled(signed_sibling_change: Any, parent_change: Any, tolerance_pct: fl
     return abs(signed - parent) <= denom * tol / 100.0
 
 
-def compute_facts(member: dict, tolerance_pct: float = 2.0) -> dict:
+def compute_facts(member: dict, tolerance_pct: float = 2.0, spine: Any = None) -> dict:
     """Compute the four materiality metrics + reconciliation for one member.
 
     ``member`` carries current/prior/change plus the broadcast diagnostics
@@ -77,9 +77,16 @@ def compute_facts(member: dict, tolerance_pct: float = 2.0) -> dict:
     full_member_count. Sibling movement impact is produced ONLY when the sibling
     breakdown is complete and reconciles - otherwise it is None and the member
     can qualify only through the business-share route.
+
+    ``spine`` generalises what "the baseline" means (WP2): with none, the
+    baseline is the prior period, which is the existing behaviour exactly. A
+    spine supplies its own baseline slot and its own percentage, so a policy
+    band or a target can be measured against with the same arithmetic.
     """
     current = member.get("current")
     prior = member.get("prior")
+    if spine is not None and prior is None:
+        prior = member.get("baseline")
     change = member.get("change")
     if change is None:
         change = area_change(current, prior)

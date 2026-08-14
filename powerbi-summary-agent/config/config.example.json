@@ -1,7 +1,7 @@
 {
-  "tenant_id":    "PASTE_YOUR_TENANT_ID",
+  "tenant_id": "PASTE_YOUR_TENANT_ID",
   "workspace_id": "PASTE_YOUR_WORKSPACE_ID",
-  "dataset_id":   "PASTE_YOUR_DATASET_ID",
+  "dataset_id": "PASTE_YOUR_DATASET_ID",
   "output_folder": "outputs",
   "summary_word_limit": 800,
   "fresh_summary_enabled": true,
@@ -40,9 +40,12 @@
   "summary_focus_fact_overlap_threshold": 0.6,
   "summary_focus_overlap_window_days": 7,
   "summary_focus_public_metadata": false,
-
   "summary_r4_enabled": false,
-  "summary_focus_allowed_roles": ["division", "department", "category"],
+  "summary_focus_allowed_roles": [
+    "division",
+    "department",
+    "category"
+  ],
   "summary_focus_role_aliases": {},
   "summary_focus_candidate_pool_per_role": 30,
   "summary_focus_target_count": 3,
@@ -51,32 +54,93 @@
   "summary_focus_min_change_pct": 3,
   "summary_focus_rotation_window_days": 7,
   "summary_focus_min_repeat_gap_days": 2,
-  "summary_focus_universe_max_queries": 3,
+  "summary_focus_universe_max_queries": 4,
+  "summary_coverage_roles": [
+    "store",
+    "division",
+    "department",
+    "section",
+    "category"
+  ],
+  "summary_coverage_max_queries": 3,
+  "summary_coverage_material_change_pct": 10,
+  "summary_coverage_material_share_pct": 5,
+  "summary_coverage_display_rows": 8,
   "summary_overall_trend_enabled": true,
   "summary_overall_trend_max_queries": 1,
   "summary_focus_total_deep_dive_queries": 15,
   "summary_focus_max_queries_per_focus": 5,
+  "summary_r6_enabled": true,
+  "summary_dashboard_entity_role": "",
+  "summary_dashboard_exposure_role": "",
+  "summary_dashboard_entity_levers": true,
+  "summary_dashboard_entity_rows": 40,
+  "summary_dashboard_max_queries": 2,
+  "summary_dashboard_period_scan": true,
+  "summary_dashboard_period_scan_rows": 400,
+  "summary_dashboard_period_view": true,
+  "summary_dashboard_tldr": 5,
+  "summary_dashboard_movers": 5,
+  "summary_dashboard_eyebrow": "AI Insights",
+  "summary_dashboard_replaces_summary_html": false,
+  "summary_rag_bands": {
+    "standard": {
+      "direction": "higher_is_better",
+      "off_track": -3,
+      "watch": 0
+    },
+    "tough": {
+      "direction": "higher_is_better",
+      "off_track": 0,
+      "watch": 2
+    },
+    "exposure": {
+      "direction": "higher_is_worse",
+      "off_track": 55,
+      "watch": 40
+    },
+    "drift": {
+      "direction": "higher_is_worse",
+      "off_track": 3,
+      "watch": -3
+    }
+  },
+  "summary_rag_measure_bands": {
+    "units": "tough",
+    "basket_size": "tough"
+  },
+  "summary_calendar_events": [
+    {
+      "name": "Eid al-Fitr",
+      "current": "2026-03-20",
+      "prior": "2025-03-31"
+    }
+  ],
+  "summary_calendar_min_members": 3,
+  "summary_calendar_uniform_count_share_pct": 80,
+  "summary_calendar_uniform_business_share_pct": 80,
+  "summary_calendar_cluster_spread_pct": 8,
+  "summary_calendar_exception_deviation_pct": 3,
   "summary_focus_max_replacements_per_slot": 1,
-  "summary_required_delivery_channels": ["local_report", "history"],
-
+  "summary_required_delivery_channels": [
+    "local_report",
+    "history"
+  ],
   "summary_history_enabled": true,
   "summary_history_timezone": "Asia/Kolkata",
   "max_rows_per_query": 15,
-
   "ai_provider": "azure_openai",
   "model": "claude-sonnet-5",
   "azure_openai_api_key_env": "AZURE_OPENAI_API_KEY",
   "openai_api_key_env": "OPENAI_API_KEY",
   "anthropic_api_key_env": "ANTHROPIC_API_KEY",
   "max_tokens": 8192,
-
   "execution_mode": "python",
   "fabric_definitions": true,
   "powerbi_auth_mode": "auto",
   "powerbi_query_api": "auto",
   "powerbi_effective_username": "",
   "powerbi_rls_roles": [],
-
   "insight_max_signals": 15,
   "insight_max_investigation_rounds": 9,
   "insight_max_scan_queries": 20,
@@ -87,22 +151,18 @@
   "insight_history_timezone": "Asia/Kolkata",
   "insight_memory_storage": "local",
   "insight_memory_runtime_folder": "outputs/.runtime/insight_memory",
-
   "metadata_scope_max_entities": 500,
   "insight_metadata_max_dimensions": 5,
   "insight_cross_dimensions": 4,
   "insight_total_gap_scan_budget": 30,
   "insight_max_gap_dimensions_per_signal": 3,
-
   "insight_comparable_population": [],
   "insight_excluded_entities": [],
-
   "insight_stat_z_cutoff": 3.0,
   "insight_stat_concentration_pct": 50.0,
   "insight_stat_recon_tolerance_pct": 2.0,
   "insight_stat_trend_window": 3,
   "insight_stat_max_candidates": 20,
-
   "insight_rate_outlier_mode": "off",
   "insight_peer_max_dimensions": 5,
   "insight_peer_max_rows": 200,
@@ -113,13 +173,11 @@
   "insight_rate_min_abs_impact_pct": 1.0,
   "insight_rate_flat_min_pct": 10.0,
   "insight_rate_min_ordinal_peers": 3,
-
   "insight_thesis_linking_enabled": false,
   "insight_thesis_max_links": 2,
   "insight_thesis_min_shared": 2,
   "insight_thesis_interaction_tol": 0.15,
   "insight_thesis_min_impact": 0.0,
-
   "azure_blob_upload": false,
   "azure_blob_account": "PASTE_YOUR_STORAGE_ACCOUNT",
   "azure_blob_container": "insightgen",
@@ -131,7 +189,6 @@
   "azure_blob_summary_memory_prefix": "summary-memory",
   "azure_blob_summary_history_prefix": "summary-history",
   "azure_blob_summary_history_feed": "summary_history.json",
-
   "ai_content_publish_enabled": false,
   "ai_content_client": "",
   "ai_content_report_ids": [],

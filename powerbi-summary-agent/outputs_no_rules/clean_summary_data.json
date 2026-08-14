@@ -1,0 +1,75 @@
+{
+  "query_count": 8,
+  "successful": 1,
+  "failed": 7,
+  "queries": [
+    {
+      "query_name": "grand_totals_comparable_population",
+      "purpose": "Show the same core KPIs restricted to the automatically comparable store population for like-for-like reporting.",
+      "status": "success",
+      "rows": [
+        {
+          "net revenue CURRENT": 125439478.41999994,
+          "net revenue PAST": 121970066.77999996,
+          "revenue Growth": 3469411.639999971,
+          "revenue growth %": 0.028444779375728497,
+          "net qty CURRENT": 18548550.32939,
+          "net qty PAST": 18787070.40271,
+          "QTY Growth": -238520.07331999764,
+          "QTY GROWTH %": -0.012695969526232871,
+          "net bills CURRENT": 8309340,
+          "bills growth": 243979,
+          "bills growth %": 0.03025022686523269,
+          "SPEND PER TRANSACTION CURRENT YEAR": 15.096202396339534,
+          "SPEND PER TRANSACTION PAST YEAR": 15.122703965761726,
+          "SPEND PER TRANSACTION GROWTH": -0.026501569422194393,
+          "retail price current year": 6.762764539137179,
+          "retail price past year": 6.4922345083885995,
+          "RETAIL PRICE GROWTH": 0.27053003074857873
+        }
+      ]
+    },
+    {
+      "query_name": "grand_totals_all_entities",
+      "purpose": "Show overall totals across all available stores, including the comparable stores and the newly added store excluded from comparison.",
+      "status": "failed",
+      "error": "still invalid after repair attempt: comparison query is not provably filtered to the resolved comparable population on 'MIS_DEEP_DIVE2'[store_no] (original: comparison query is not provably filtered to the resolved comparable population on 'MIS_DEEP_DIVE2'[store_no])"
+    },
+    {
+      "query_name": "new_entity_totals_cfh022",
+      "purpose": "Quantify the contribution of the store currently excluded from comparison because it is a new entity.",
+      "status": "failed",
+      "error": "still invalid after repair attempt: comparison query includes excluded/current-only entities: ['CFH022'] (original: comparison query includes excluded/current-only entities: ['CFH022'])"
+    },
+    {
+      "query_name": "store_kpi_comparison",
+      "purpose": "Compare core sales, quantity, transaction, and ratio KPIs across stores.",
+      "status": "failed",
+      "error": "still invalid after repair attempt: comparison query is not provably filtered to the resolved comparable population on 'MIS_DEEP_DIVE2'[store_no] (original: comparison query is not provably filtered to the resolved comparable population on 'MIS_DEEP_DIVE2'[store_no])"
+    },
+    {
+      "query_name": "division_kpi_summary",
+      "purpose": "Show how performance differs by division using the model's primary merchandising hierarchy.",
+      "status": "failed",
+      "error": "still invalid after repair attempt: comparison query is not provably filtered to the resolved comparable population on 'MIS_DEEP_DIVE2'[store_no] (original: comparison query is not provably filtered to the resolved comparable population on 'MIS_DEEP_DIVE2'[store_no])"
+    },
+    {
+      "query_name": "category_kpi_summary",
+      "purpose": "Show performance by item category to identify the largest categories in the retail mix.",
+      "status": "failed",
+      "error": "still invalid after repair attempt: comparison query is not provably filtered to the resolved comparable population on 'MIS_DEEP_DIVE2'[store_no] (original: comparison query is not provably filtered to the resolved comparable population on 'MIS_DEEP_DIVE2'[store_no])"
+    },
+    {
+      "query_name": "store_by_product_group_cross",
+      "purpose": "Highlight the largest store and product-group combinations in the comparable merchandising view.",
+      "status": "failed",
+      "error": "still invalid after repair attempt: comparison query is not provably filtered to the resolved comparable population on 'MIS_DEEP_DIVE2'[store_no] (original: comparison query is not provably filtered to the resolved comparable population on 'MIS_DEEP_DIVE2'[store_no])"
+    },
+    {
+      "query_name": "recent_daily_trend_all_entities",
+      "purpose": "Show the most recent day-level trend for the primary revenue, quantity, transaction, and ratio KPIs.",
+      "status": "failed",
+      "error": "still invalid after repair attempt: comparison query is not provably filtered to the resolved comparable population on 'MIS_DEEP_DIVE2'[store_no] (original: comparison query is not provably filtered to the resolved comparable population on 'MIS_DEEP_DIVE2'[store_no])"
+    }
+  ]
+}
