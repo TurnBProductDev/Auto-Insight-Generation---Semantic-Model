@@ -379,6 +379,43 @@ def test_dashboard() -> None:
     check("the high-risk view is labelled by the measure it ranks on",
           "Which divisions hold the high-risk stock" in html)
 
+    print("\n--- the charts ---")
+    import re
+    import xml.etree.ElementTree as ET
+
+    svgs = re.findall(r"<svg.*?</svg>", html, re.S)
+    check("the page draws charts, not only tables", len(svgs) >= 2, f"{len(svgs)} svg")
+    well_formed = True
+    for svg in svgs:
+        try:
+            ET.fromstring(svg)
+        except Exception as exc:            # noqa: BLE001 - report, do not raise
+            well_formed = False
+            check("every chart is well-formed XML", False, str(exc))
+            break
+    if well_formed:
+        check("every chart is well-formed XML", True)
+
+    check("two series means a legend - identity is never colour alone",
+          "chart-legend" in html and "Not yet aged" in html and "Aged" in html)
+
+    # The oldest band is 1.5% of stock and computes to under 2px. It is the one
+    # band BR-28 says to LEAD with, so a chart that renders it as nothing is
+    # worse than no chart. Every drawn bar must be visible.
+    heights = [float(h) for h in
+               re.findall(r'<rect class="data-point"[^>]*height="([\d.]+)"', html)]
+    check("every drawn band is visible, including the oldest",
+          bool(heights) and min(heights) >= 3.0, f"min height {min(heights) if heights else '-'}")
+
+    check("the aged/not-aged split is drawn inside each band",
+          "not yet aged" in html.lower() and "- aged" in html.lower())
+    check("the cumulative 'older than this' reading is drawn",
+          "How much is older than this?" in html)
+    check("the four-way risk split is drawn as a matrix, not a sum",
+          "risk-matrix" in html and html.count("rm-cell") >= 4)
+    check("the matrix says the two measures are never added",
+          "never added together" in html)
+
     escaped = dashboard_html.render(
         {**page, "title": '<img src=x onerror=alert(1)>'})
     check("content is escaped", "<img src=x" not in escaped and "&lt;img" in escaped)

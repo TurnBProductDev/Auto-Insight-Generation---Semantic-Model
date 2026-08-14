@@ -28,7 +28,7 @@ HIGH_RISK_BANDS = buckets.HIGH_RISK_BANDS
 
 LAYERS = ("overview", "entities", "areas", "detail")
 LAYER_TITLES = {
-    "overview": "Overview",
+    "overview": "Summary",
     "entities": "Locations",
     "areas": "Divisions",
     "detail": "Full detail",
@@ -135,6 +135,11 @@ def _entity_cards(rows: Sequence[dict], total_aged: float) -> list[dict]:
         own_share = _share(aged, held)                 # BR-23: severity vs ITS OWN stock
         cards.append({
             "member": row.get("name"),
+            # Raw numbers as well as display strings: the charts plot values,
+            # and re-parsing "SAR 1.49M" back into a float would lose precision
+            # and break the moment the formatter changes.
+            "value": aged,
+            "held": held,
             "value_display": _sar(aged),
             "change_display": _pct(own_share),
             "note": (f"{_sar(aged)} aged of {_sar(held)} held here - "
@@ -236,6 +241,8 @@ def _all_stock_view(report, header, bands, split, total, aged, high_risk,
     return {
         "key": "all",
         "label": "All stock",
+        "kind": "ageing",
+        "total_value": total,
         "labels": dict(AGEING_LABELS),
         "owns_breakdowns": True,
         "period": {"data_as_of": report.get("as_at"), "grain": "snapshot"},
@@ -254,12 +261,16 @@ def _all_stock_view(report, header, bands, split, total, aged, high_risk,
                 "cards": _entity_cards(locations, aged or 1.0),
                 "caption": "Each location's aged stock, and what share of its "
                            "own stock that is.",
+                "rate_unit": "aged",
+                "average_rate": _share(aged, total),
             },
             "areas": {
                 "available": bool(divisions),
                 "role": "division",
                 "rows": [_area_row(d, aged) for d in divisions],
                 "caption": "Divisions ranked by the aged stock they hold.",
+                "rate_unit": "aged",
+                "average_rate": _share(aged, total),
             },
             "detail": {
                 "bands": bands,
@@ -297,6 +308,8 @@ def _high_risk_view(report, header, bands, total, high_risk, oldest) -> dict | N
     return {
         "key": "high_risk",
         "label": "High-risk only",
+        "kind": "ageing",
+        "total_value": total,
         "labels": dict(AGEING_HIGH_RISK_LABELS),
         "owns_breakdowns": True,
         "period": {"data_as_of": report.get("as_at"), "grain": "snapshot"},
@@ -315,6 +328,8 @@ def _high_risk_view(report, header, bands, total, high_risk, oldest) -> dict | N
                 "role": "location",
                 "cards": _high_risk_cards(locations),
                 "caption": "High-risk stock by location.",
+                "rate_unit": "high-risk",
+                "average_rate": _share(high_risk, total),
             },
             "areas": {
                 "available": bool(divisions),
@@ -323,6 +338,8 @@ def _high_risk_view(report, header, bands, total, high_risk, oldest) -> dict | N
                     divisions, key=lambda r: _num(r.get("high_risk")) or 0.0,
                     reverse=True)],
                 "caption": "Divisions ranked by high-risk stock held.",
+                "rate_unit": "high-risk",
+                "average_rate": _share(high_risk, total),
             },
             "detail": {
                 "bands": [b for b in bands if b.get("high_risk")],
@@ -350,6 +367,8 @@ def _high_risk_cards(rows: Sequence[dict]) -> list[dict]:
         own = _share(value, held)
         cards.append({
             "member": row.get("name"),
+            "value": value,
+            "held": held,
             "value_display": _sar(value),
             "change_display": _pct(own),
             "note": f"{_sar(value)} over a year old, {_pct(own)} of this "
@@ -366,6 +385,8 @@ def _area_row(row: dict, total_aged: float) -> dict:
     held = _num(row.get("total")) or 0.0
     return {
         "name": row.get("name"),
+        "value": aged,
+        "held": held,
         "value_display": _sar(aged),
         "held_display": _sar(held),
         "own_share": _share(aged, held),
@@ -379,6 +400,8 @@ def _high_risk_area(row: dict) -> dict:
     held = _num(row.get("total")) or 0.0
     return {
         "name": row.get("name"),
+        "value": value,
+        "held": held,
         "value_display": _sar(value),
         "held_display": _sar(held),
         "own_share": _share(value, held),
@@ -394,7 +417,7 @@ def _high_risk_area(row: dict) -> dict:
 # Detail layer leads with the queue, ordered by urgency rather than by value.
 
 STOCK_HEALTH_LAYER_TITLES = {
-    "overview": "Overview",
+    "overview": "Summary",
     "entities": "Locations",
     "areas": "Divisions",
     "detail": "Action queue",
@@ -514,6 +537,8 @@ def _stock_health_view(report, header, stock, excess, queue, key) -> dict:
     return {
         "key": key,
         "label": "All stock" if not scoped else "Needs action only",
+        "kind": "stock_health",
+        "total_value": stock,
         "labels": dict(STOCK_HEALTH_LABELS),
         "owns_breakdowns": True,
         "period": {"data_as_of": report.get("as_at"), "grain": "snapshot"},
@@ -533,12 +558,16 @@ def _stock_health_view(report, header, stock, excess, queue, key) -> dict:
                 "role": "location",
                 "cards": _stock_health_cards(locations),
                 "caption": "Each location's stock held above the agreed cover.",
+                "rate_unit": "above-cover",
+                "average_rate": excess_share,
             },
             "areas": {
                 "available": bool(divisions),
                 "role": "division",
                 "rows": [_stock_health_area(d) for d in divisions],
                 "caption": "Divisions ranked by stock held above the agreed cover.",
+                "rate_unit": "above-cover",
+                "average_rate": excess_share,
             },
             "detail": {
                 "queue": queue,
@@ -564,6 +593,8 @@ def _stock_health_cards(rows: Sequence[dict]) -> list[dict]:
         kind = "warehouse" if str(row.get("loc_type") or "").upper() == "WH" else "store"
         cards.append({
             "member": row.get("name"),
+            "value": excess,
+            "held": held,
             "value_display": _sar(excess),
             "change_display": _pct(own),
             "note": f"{_sar(excess)} above cover, {_pct(own)} of the "
@@ -580,6 +611,8 @@ def _stock_health_area(row: dict) -> dict:
     held = _num(row.get("stock_value")) or 0.0
     return {
         "name": row.get("name"),
+        "value": excess,
+        "held": held,
         "value_display": _sar(excess),
         "held_display": _sar(held),
         "own_share": _share(excess, held),

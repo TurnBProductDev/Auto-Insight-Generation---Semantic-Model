@@ -260,6 +260,54 @@ def test_dashboard() -> None:
           bool(signals) and all(s.get("value") for s in signals),
           f"missing 'value': {[s.get('label') for s in signals if not s.get('value')]}")
     check("a signal's number reaches the page", "17,717 lines" in html)
+
+    print("\n--- the charts ---")
+    import re
+    import xml.etree.ElementTree as ET
+
+    svgs = re.findall(r"<svg.*?</svg>", html, re.S)
+    check("the page draws charts, not only tables", len(svgs) >= 3, f"{len(svgs)} svg")
+    parsed = True
+    for svg in svgs:
+        try:
+            ET.fromstring(svg)
+        except Exception as exc:            # noqa: BLE001 - report, do not raise
+            parsed = False
+            check("every chart is well-formed XML", False, str(exc))
+            break
+    if parsed:
+        check("every chart is well-formed XML", True)
+
+    check("the action queue is drawn, not just tabulated", "queue-ladder" in html)
+    # The whole argument of this report: urgency beats size. OVERSTOCK holds the
+    # most value and must NOT lead. Sorting by value is what every chart tool
+    # would do by default, and it would destroy the judgement BR-31 asks for.
+    # One ladder per view, so bound the slice to the first or the two views'
+    # rows concatenate and every ordering assertion becomes meaningless.
+    _start = html.find('<div class="queue-ladder">')
+    _end = html.find("Ordered by how urgent", _start)
+    ladder = html[_start:_end if _end > _start else len(html)]
+    order = re.findall(r'<div class="ql-lab">([A-Z][^<]*)', ladder)
+    widths = [float(w) for w in re.findall(r'class="ql-fill" style="width:([\d.]+)%', ladder)]
+    # Assert the PROPERTY, not a particular state name. The fixture carries
+    # NON MOVING - ORDER PLACED and the live model does not, so pinning the
+    # literal first row would pass here and mean nothing about production.
+    drawn = [state.strip() for state in order]
+    expected = [state for state in stock_health.ACTION_PRIORITY if state in drawn]
+    check("the ladder is drawn in urgency order, whichever states exist",
+          drawn == expected, f"drawn={drawn[:3]} expected={expected[:3]}")
+    doubles_present = [state for state in stock_health.DOUBLE_WARNING if state in drawn]
+    check("a double-warning state leads the ladder when one is present",
+          not doubles_present or drawn[0] in doubles_present,
+          f"first={drawn[:1]} doubles={doubles_present}")
+    check("the largest bar is deliberately not at the top",
+          bool(widths) and widths[0] < max(widths) or len(set(widths)) == 1,
+          f"first={widths[:1]} max={max(widths) if widths else '-'}")
+    check("every queue bar carries its urgency in words, not colour alone",
+          ladder.count("ql-flag") >= len(order), "a flag per row")
+
+    check("the estate composition is drawn as a donut", "donut-wrap" in html)
+    check("days-without-a-sale is drawn as columns", "dz-axis" in html)
     check("content is escaped",
           "&lt;img" in dashboard_html.render({**page, "title": "<img src=x>"}))
 
