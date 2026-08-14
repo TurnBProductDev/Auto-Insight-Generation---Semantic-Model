@@ -457,7 +457,14 @@ printed three times in the first 120px; a fifteen-row urgency ladder swallowed t
 summary; a 1280px page ran one narrow column; and five identical grey caveat boxes stacked
 at the end. **Render and look at the page before calling a dashboard change done** -
 `chrome --headless=new --screenshot=out.png --window-size=1500,2400 file:///<path>` is
-enough, and it is the only way these surface. Both are **working pages** - four layers per view,
+enough, and it is the only way these surface. `reference_inventory_management.html` is also the **storytelling** reference: it opens
+on an **Inventory Health Score** (five weighted drivers against stated tolerance bands,
+computing to exactly 40.0 on the real figures), its twelve-week trend, a waterfall of what
+moved it, and four focus sub-stories each answering *what changed / why / what it is doing
+to inventory health / do this* - with the queue and estate splits demoted to "the evidence
+underneath". Its history is **illustrative and labelled as such on the page**, because the
+live model retains one snapshot (gap 4); that banner is not optional. Both are **working
+pages** - four layers per view,
 two views, and `#<view>/<layer>` in the URL so a tab is linkable and a screenshot tool
 can reach it without a click. Never wire the reference files into the pipeline or publish
 them to a client container.

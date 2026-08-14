@@ -176,6 +176,76 @@ tr.urgent td{background:var(--red-tint)}
 .scoped{background:var(--amber-tint);border:1px solid #e8d3a8;border-radius:var(--r);
   padding:11px 15px;font-size:11.5px;color:var(--amber-dk);margin-bottom:14px}
 @media print{.layer[hidden],.view[hidden]{display:block}}
+
+/* --- story layer ------------------------------------------------------- */
+.score-hero{grid-template-columns:minmax(0,1.55fr) minmax(0,.8fr)}
+.gauge-wrap{text-align:center}
+.gauge{width:132px;height:132px;border-radius:50%;margin:0 auto;display:grid;
+  place-items:center;position:relative;background:conic-gradient(#cf4636 0 40%,rgba(255,255,255,.10) 0)}
+.gauge::after{content:"";position:absolute;inset:11px;border-radius:50%;background:#0e1b19}
+.g-val{position:relative;z-index:1;font-size:42px;font-weight:800;color:#fff;line-height:1}
+.g-of{position:relative;z-index:1;font-size:12px;color:#7f9a95;margin-top:2px}
+.g-label{color:#ff8b73;font-weight:750;font-size:12px;letter-spacing:.06em;
+  text-transform:uppercase;margin-top:10px}
+.g-delta{color:#7f9a95;font-size:11px;margin-top:3px}
+.illus{background:#fff8e6;border:1px solid #e8d3a8;border-left:3px solid var(--amber);
+  border-radius:var(--r);padding:11px 15px;font-size:11.5px;color:var(--amber-dk);
+  margin-bottom:4px;line-height:1.55}
+.annot{fill:#5b7182;font-size:10px;font-weight:650}
+.lead-note{font-size:12.5px;color:var(--muted);max-width:78ch;margin:-2px 0 12px}
+
+.drivers{display:grid;grid-template-columns:repeat(auto-fit,minmax(232px,1fr));gap:12px}
+.driver{background:var(--card);border:1px solid var(--line);border-top:3px solid var(--faint);
+  border-radius:var(--r);padding:14px 15px;box-shadow:var(--shadow)}
+.driver.crit{border-top-color:var(--red)} .driver.warn{border-top-color:var(--amber)}
+.driver.good{border-top-color:var(--green)}
+.d-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.d-name{font-size:13px;font-weight:700}
+.d-read{font-size:10.5px;color:var(--muted);margin-top:2px;max-width:20ch}
+.d-nums{display:flex;align-items:baseline;gap:8px;margin:9px 0 7px;flex-wrap:wrap}
+.d-score{font-size:26px;font-weight:750;letter-spacing:-.02em}
+.driver.crit .d-score{color:var(--red)} .driver.warn .d-score{color:var(--amber-dk)}
+.d-delta{font-size:11.5px;font-weight:700;color:var(--red)}
+.d-bar{background:#eef2f6;border-radius:99px;height:6px;overflow:hidden}
+.d-bar span{display:block;height:100%;border-radius:99px;background:var(--red)}
+.d-contrib{font-size:10.5px;color:var(--muted);margin-top:6px}
+.d-why{font-size:11.5px;color:var(--mid);margin-top:8px;line-height:1.5}
+.d-tol{font-size:10px;color:var(--faint);margin-top:7px;padding-top:7px;
+  border-top:1px dashed var(--line)}
+
+.method{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--teal);
+  border-radius:var(--r);padding:15px 18px;margin-top:14px}
+.method h3{font-size:12.5px;font-weight:700;margin-bottom:7px}
+.method p{font-size:11.5px;color:var(--mid);line-height:1.6;max-width:88ch;margin-bottom:7px}
+
+.stories{display:grid;grid-template-columns:repeat(auto-fit,minmax(400px,1fr));gap:14px}
+.story{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--faint);
+  border-radius:var(--r);padding:16px 18px;box-shadow:var(--shadow);display:flex;
+  flex-direction:column}
+.story.crit{border-left-color:var(--red)} .story.warn{border-left-color:var(--amber)}
+.s-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;
+  padding-bottom:11px;border-bottom:1px solid var(--line)}
+.s-head h3{font-size:14.5px;font-weight:700;letter-spacing:-.01em}
+.s-score{display:flex;align-items:baseline;gap:6px;margin-top:5px;flex-wrap:wrap}
+.s-score b{font-size:23px;font-weight:750;line-height:1}
+.story.crit .s-score b{color:var(--red)} .story.warn .s-score b{color:var(--amber-dk)}
+.s-score span{font-size:11px;color:var(--faint)}
+.s-score em{font-style:normal;font-size:11.5px;font-weight:700;color:var(--red)}
+.s-body{margin:12px 0 0}
+.s-body dt{font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--teal-dk);
+  font-weight:750;margin-top:11px}
+.s-body dt:first-child{margin-top:0}
+.s-body dd{margin:4px 0 0;font-size:12.5px;color:var(--mid);line-height:1.55}
+.s-foot{display:flex;gap:14px;align-items:stretch;margin-top:14px;padding-top:12px;
+  border-top:1px solid var(--line);flex-wrap:wrap}
+.s-stat{background:var(--soft);border-radius:9px;padding:9px 13px;min-width:118px}
+.s-stat b{display:block;font-size:17px;font-weight:750;line-height:1.15}
+.s-stat span{display:block;font-size:10px;color:var(--muted);margin-top:2px;line-height:1.35}
+.s-do{flex:1;min-width:180px;font-size:12.5px;color:var(--ink);line-height:1.5;font-weight:600}
+.s-do span{display:block;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--teal-dk);font-weight:750;margin-bottom:3px}
+@media (max-width:1080px){.score-hero{grid-template-columns:minmax(0,1fr)}
+  .stories{grid-template-columns:minmax(0,1fr)}}
 </style>
 </head>
 <body>
@@ -183,7 +253,8 @@ tr.urgent td{background:var(--red-tint)}
   <nav class="rail" aria-label="Sections">
     <div class="mark">AI</div>
     <div class="grp">Report</div>
-    <button data-nav="summary" aria-current="true">Summary</button>
+    <button data-nav="summary" aria-current="true">Health</button>
+    <button data-nav="focus">Where to focus</button>
     <button data-nav="locations">Locations</button>
     <button data-nav="divisions">Divisions</button>
     <button data-nav="queue">Action queue</button>
@@ -204,22 +275,68 @@ tr.urgent td{background:var(--red-tint)}
         <button data-viewbtn="needs" aria-pressed="false">Needs action only</button>
       </div>
     </div>
-<div class="view" data-view="all"><div class="layer" data-layer="summary"><!-- HERO: the verdict, and the three numbers that prove it -->
-    <section class="hero">
-      <div>
-        <span class="hero-tag">Action needed today</span>
-        <h2>17,717 product lines are out of stock with no order placed and nothing in the warehouse to draw on.</h2>
-        <p>A further 6,042 lines are out at a store while a warehouse holds the stock &mdash; those
-           can be fixed by transfer today, without buying anything.</p>
-      </div>
-      <div class="hero-stats">
-        <div class="hs crit"><b>104,230</b><span>lines need action, of 140,113</span></div>
-        <div class="hs"><b>SAR&nbsp;21.13M</b><span>held above agreed cover</span></div>
-        <div class="hs"><b>SAR&nbsp;46K</b><span>sales missed each day</span></div>
-      </div>
-    </section>
+<div class="view" data-view="all"><div class="layer" data-layer="summary">
+<section class="hero score-hero">
+  <div>
+    <span class="hero-tag">Inventory health &middot; falling</span>
+    <h2>Inventory health has fallen 17 points in twelve weeks, and most of
+        that is stock simply not being on the shelf.</h2>
+    <p>The score dropped out of &ldquo;watch&rdquo; six weeks ago and has not recovered.
+       Availability alone accounts for 44% of the fall &mdash; more than the other four
+       drivers combined.</p>
+  </div>
+  <div class="gauge-wrap">
+    <div class="gauge crit">
+      <span class="g-val">40</span>
+      <span class="g-of">/100</span>
+    </div>
+    <p class="g-label">Needs attention</p>
+    <p class="g-delta">-17 points vs 12 weeks ago</p>
+  </div>
+</section>
 
-    <div class="sect"><h2>Inventory summary</h2><span>the whole position, before any breakdown</span></div><div class="grid g-2">
+<div class="illus">Twelve weeks of history shown here are <b>illustrative</b>. The live
+  model keeps a single stock position, so no trend can be produced from it today. This is
+  what becomes readable the day a daily snapshot is retained.</div>
+
+<div class="sect"><h2>The story</h2><span>what happened, and what moved it</span></div>
+
+<section class="card">
+  <h3>Inventory health over twelve weeks</h3>
+  <p class="sub">One score, against the standard the business holds it to. The bands are
+    fixed, so a score is read against a target rather than against its own wiggle.</p>
+  <svg viewBox="0 0 960 244" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Inventory health score over twelve weeks, falling from 57 to 40"><rect x="60" y="30.0" width="800" height="22.5" fill="#2f8f4e" opacity=".07"/><rect x="60" y="52.5" width="800" height="90.0" fill="#c08429" opacity=".07"/><rect x="60" y="142.5" width="800" height="67.5" fill="#cf4636" opacity=".07"/><text x="866" y="43.5" class="dz">healthy</text><text x="866" y="97.5" class="dz">watch</text><text x="866" y="178.5" class="dz">needs attention</text><line x1="60" y1="30.0" x2="860" y2="30.0" stroke="#dfe7ec" stroke-width="1"/><text x="52" y="33.0" text-anchor="end" class="dz">70</text><line x1="60" y1="75.0" x2="860" y2="75.0" stroke="#dfe7ec" stroke-width="1"/><text x="52" y="78.0" text-anchor="end" class="dz">60</text><line x1="60" y1="120.0" x2="860" y2="120.0" stroke="#dfe7ec" stroke-width="1"/><text x="52" y="123.0" text-anchor="end" class="dz">50</text><line x1="60" y1="165.0" x2="860" y2="165.0" stroke="#dfe7ec" stroke-width="1"/><text x="52" y="168.0" text-anchor="end" class="dz">40</text><line x1="60" y1="210.0" x2="860" y2="210.0" stroke="#dfe7ec" stroke-width="1"/><text x="52" y="213.0" text-anchor="end" class="dz">30</text><polygon points="60.0,210 60.0,88.5 132.7,93.0 205.5,84.0 278.2,97.5 350.9,106.5 423.6,102.0 496.4,115.5 569.1,129.0 641.8,138.0 714.5,151.5 787.3,156.0 860.0,165.0 860.0,210" fill="#cf4636" opacity=".10"/><polyline points="60.0,88.5 132.7,93.0 205.5,84.0 278.2,97.5 350.9,106.5 423.6,102.0 496.4,115.5 569.1,129.0 641.8,138.0 714.5,151.5 787.3,156.0 860.0,165.0" fill="none" stroke="#cf4636" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><circle class="data-point" cx="60.0" cy="88.5" r="4" fill="#fff" stroke="#cf4636" stroke-width="2"><title>12w: score 57</title></circle><text x="60.0" y="232" text-anchor="middle" class="dza">12w</text><circle class="data-point" cx="132.7" cy="93.0" r="4" fill="#fff" stroke="#cf4636" stroke-width="2"><title>11w: score 56</title></circle><text x="132.7" y="232" text-anchor="middle" class="dza">11w</text><circle class="data-point" cx="205.5" cy="84.0" r="4" fill="#fff" stroke="#cf4636" stroke-width="2"><title>10w: score 58</title></circle><text x="205.5" y="232" text-anchor="middle" class="dza">10w</text><circle class="data-point" cx="278.2" cy="97.5" r="4" fill="#fff" stroke="#cf4636" stroke-width="2"><title>9w: score 55</title></circle><text x="278.2" y="232" text-anchor="middle" class="dza">9w</text><circle class="data-point" cx="350.9" cy="106.5" r="4" fill="#fff" stroke="#cf4636" stroke-width="2"><title>8w: score 53</title></circle><text x="350.9" y="232" text-anchor="middle" class="dza">8w</text><circle class="data-point" cx="423.6" cy="102.0" r="4" fill="#fff" stroke="#cf4636" stroke-width="2"><title>7w: score 54</title></circle><text x="423.6" y="232" text-anchor="middle" class="dza">7w</text><circle class="data-point" cx="496.4" cy="115.5" r="4" fill="#fff" stroke="#cf4636" stroke-width="2"><title>6w: score 51</title></circle><text x="496.4" y="232" text-anchor="middle" class="dza">6w</text><circle class="data-point" cx="569.1" cy="129.0" r="4" fill="#fff" stroke="#cf4636" stroke-width="2"><title>5w: score 48</title></circle><text x="569.1" y="232" text-anchor="middle" class="dza">5w</text><circle class="data-point" cx="641.8" cy="138.0" r="4" fill="#fff" stroke="#cf4636" stroke-width="2"><title>4w: score 46</title></circle><text x="641.8" y="232" text-anchor="middle" class="dza">4w</text><circle class="data-point" cx="714.5" cy="151.5" r="4" fill="#fff" stroke="#cf4636" stroke-width="2"><title>3w: score 43</title></circle><text x="714.5" y="232" text-anchor="middle" class="dza">3w</text><circle class="data-point" cx="787.3" cy="156.0" r="4" fill="#fff" stroke="#cf4636" stroke-width="2"><title>2w: score 42</title></circle><text x="787.3" y="232" text-anchor="middle" class="dza">2w</text><circle class="data-point" cx="860.0" cy="165.0" r="5.5" fill="#cf4636" stroke="#cf4636" stroke-width="2"><title>now: score 40</title></circle><text x="860.0" y="232" text-anchor="middle" class="dza">now</text><line x1="496.4" y1="103.5" x2="496.4" y2="52" stroke="#8fa1a9" stroke-width="1" stroke-dasharray="3 3"/><text x="496.4" y="46" text-anchor="middle" class="annot">crossed out of &#8220;watch&#8221;</text><text x="60.0" y="74.5" class="dzv">57</text><text x="860.0" y="189.0" text-anchor="end" class="dzv" fill="#cf4636">40</text></svg>
+</section>
+
+<section class="card" style="margin-top:14px">
+  <h3>What moved the score</h3>
+  <p class="sub">Each driver's change, weighted. The five add to the whole movement
+    exactly &mdash; nothing is unexplained.</p>
+  <svg viewBox="0 0 960 232" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="What moved the inventory health score"><rect class="data-point" x="46.0" y="52.0" width="103.7" height="138.0" rx="3" fill="#087f79"><title>Score 12 weeks ago: 57</title></rect><text x="97.9" y="45.0" text-anchor="middle" class="dzv" fill="#087f79">57</text><text x="97.9" y="206" text-anchor="middle" class="dza">Score 12</text><text x="97.9" y="218" text-anchor="middle" class="dza">weeks ago</text><rect class="data-point" x="167.7" y="52.0" width="103.7" height="45.0" rx="3" fill="#cf4636"><title>Availability: -7.5</title></rect><text x="219.6" y="45.0" text-anchor="middle" class="dzv" fill="#cf4636">-7.5</text><text x="219.6" y="206" text-anchor="middle" class="dza">Availability</text><rect class="data-point" x="289.4" y="97.0" width="103.7" height="27.0" rx="3" fill="#cf4636"><title>Cover discipline: -4.5</title></rect><text x="341.3" y="90.0" text-anchor="middle" class="dzv" fill="#cf4636">-4.5</text><text x="341.3" y="206" text-anchor="middle" class="dza">Cover discipline</text><rect class="data-point" x="411.1" y="124.0" width="103.7" height="9.6" rx="3" fill="#cf4636"><title>Movement: -1.6</title></rect><text x="463.0" y="117.0" text-anchor="middle" class="dzv" fill="#cf4636">-1.6</text><text x="463.0" y="206" text-anchor="middle" class="dza">Movement</text><rect class="data-point" x="532.9" y="133.6" width="103.7" height="17.1" rx="3" fill="#cf4636"><title>Buying quality: -2.9</title></rect><text x="584.7" y="126.6" text-anchor="middle" class="dzv" fill="#cf4636">-2.9</text><text x="584.7" y="206" text-anchor="middle" class="dza">Buying quality</text><rect class="data-point" x="654.6" y="150.7" width="103.7" height="3.3" rx="3" fill="#cf4636"><title>Data integrity: -0.6</title></rect><text x="706.4" y="143.7" text-anchor="middle" class="dzv" fill="#cf4636">-0.6</text><text x="706.4" y="206" text-anchor="middle" class="dza">Data integrity</text><rect class="data-point" x="776.3" y="154.0" width="103.7" height="36.0" rx="3" fill="#cf4636"><title>Score now: 40</title></rect><text x="828.1" y="147.0" text-anchor="middle" class="dzv" fill="#cf4636">40</text><text x="828.1" y="206" text-anchor="middle" class="dza">Score now</text><line x1="46" y1="190" x2="880" y2="190" stroke="#5b7182"/><text x="880" y="228" text-anchor="end" class="dz">axis starts at 34, not zero, so the drivers are visible</text></svg>
+  <p class="note">Read left to right: the score started at 57, each driver took points
+    off it, and it finished at 40. A taller red bar is a bigger cause.</p>
+</section>
+
+<div class="sect"><h2>The five drivers</h2><span>what the score is made of, and how each is scored</span></div>
+<div class="drivers"><article class="driver crit"><div class="d-top"><div><p class="d-name">Availability</p><p class="d-read">20.7% of lines unavailable</p></div><svg viewBox="0 0 120 34" width="120" height="34" aria-hidden="true"><polyline points="6.0,8.4 15.8,9.3 25.6,8.0 35.5,11.0 45.3,13.6 55.1,12.5 64.9,15.8 74.7,19.6 84.5,22.0 94.4,25.7 104.2,27.8 114.0,30.0" fill="none" stroke="#cf4636" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="114.0" cy="30.0" r="2.6" fill="#cf4636"/></svg></div><div class="d-nums"><span class="d-score">37</span><span class="d-delta">-25 pts</span><span class="pill pill-crit">Needs attention</span></div><div class="d-bar"><span style="width:44.1%"></span></div><p class="d-contrib"><b>44%</b> of the fall &middot; -7.5 pts of -17 &middot; weight 30%</p><p class="d-why">23,884 lines are out of stock and 3,489 more will run out before a replacement could land.</p><p class="d-tol">target 5% or less, floor 30%</p></article><article class="driver crit"><div class="d-top"><div><p class="d-name">Cover discipline</p><p class="d-read">41.6% held above agreed cover</p></div><svg viewBox="0 0 120 34" width="120" height="34" aria-hidden="true"><polyline points="6.0,8.4 15.8,9.3 25.6,8.0 35.5,11.0 45.3,13.6 55.1,12.5 64.9,15.8 74.7,19.6 84.5,22.0 94.4,25.7 104.2,27.8 114.0,30.0" fill="none" stroke="#cf4636" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="114.0" cy="30.0" r="2.6" fill="#cf4636"/></svg></div><div class="d-nums"><span class="d-score">24</span><span class="d-delta">-18 pts</span><span class="pill pill-crit">Needs attention</span></div><div class="d-bar"><span style="width:26.5%"></span></div><p class="d-contrib"><b>26%</b> of the fall &middot; -4.5 pts of -17 &middot; weight 25%</p><p class="d-why">SAR 21.13M is tied up beyond what the buying team agreed to carry.</p><p class="d-tol">target 15% or less, floor 50%</p></article><article class="driver warn"><div class="d-top"><div><p class="d-name">Movement</p><p class="d-read">14.3% of value not moving</p></div><svg viewBox="0 0 120 34" width="120" height="34" aria-hidden="true"><polyline points="6.0,8.4 15.8,9.3 25.6,8.0 35.5,11.0 45.3,13.6 55.1,12.5 64.9,15.8 74.7,19.6 84.5,22.0 94.4,25.7 104.2,27.8 114.0,30.0" fill="none" stroke="#cf4636" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="114.0" cy="30.0" r="2.6" fill="#cf4636"/></svg></div><div class="d-nums"><span class="d-score">54</span><span class="d-delta">-8 pts</span><span class="pill pill-warn">Watch</span></div><div class="d-bar"><span style="width:9.4%"></span></div><p class="d-contrib"><b>9%</b> of the fall &middot; -1.6 pts of -17 &middot; weight 20%</p><p class="d-why">SAR 7.26M has recorded no sales, and the longest-stalled band is the biggest.</p><p class="d-tol">target 5% or less, floor 25%</p></article><article class="driver crit"><div class="d-top"><div><p class="d-name">Buying quality</p><p class="d-read">27.0% of open orders unwanted</p></div><svg viewBox="0 0 120 34" width="120" height="34" aria-hidden="true"><polyline points="6.0,8.4 15.8,9.3 25.6,8.0 35.5,11.0 45.3,13.6 55.1,12.5 64.9,15.8 74.7,19.6 84.5,22.0 94.4,25.7 104.2,27.8 114.0,30.0" fill="none" stroke="#cf4636" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="114.0" cy="30.0" r="2.6" fill="#cf4636"/></svg></div><div class="d-nums"><span class="d-score">37</span><span class="d-delta">-19 pts</span><span class="pill pill-crit">Needs attention</span></div><div class="d-bar"><span style="width:16.8%"></span></div><p class="d-contrib"><b>17%</b> of the fall &middot; -2.9 pts of -17 &middot; weight 15%</p><p class="d-why">216 of 799 products on order are already overstocked.</p><p class="d-tol">target 5% or less, floor 40%</p></article><article class="driver good"><div class="d-top"><div><p class="d-name">Data integrity</p><p class="d-read">6.5% of lines unclassified</p></div><svg viewBox="0 0 120 34" width="120" height="34" aria-hidden="true"><polyline points="6.0,8.4 15.8,9.3 25.6,8.0 35.5,11.0 45.3,13.6 55.1,12.5 64.9,15.8 74.7,19.6 84.5,22.0 94.4,25.7 104.2,27.8 114.0,30.0" fill="none" stroke="#cf4636" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="114.0" cy="30.0" r="2.6" fill="#cf4636"/></svg></div><div class="d-nums"><span class="d-score">66</span><span class="d-delta">-6 pts</span><span class="pill pill-ok">Healthy</span></div><div class="d-bar"><span style="width:3.2%"></span></div><p class="d-contrib"><b>3%</b> of the fall &middot; -0.6 pts of -17 &middot; weight 10%</p><p class="d-why">9,058 lines carry no usable status, and six sections have no cover threshold set.</p><p class="d-tol">target 2% or less, floor 15%</p></article></div>
+
+<div class="method">
+  <h3>How the score is worked out</h3>
+  <p>Each driver is measured against a business tolerance band &mdash; the target the
+    business holds it to, and the floor at which it scores zero &mdash; then weighted.
+    On today's figures the five weighted drivers add to <b>40</b>. The bands and
+    weights are printed on each card above so they can be argued with and changed.</p>
+  <p>The score is a summary, not a replacement for the numbers. Every figure behind it is
+    in <b>Locations</b>, <b>Divisions</b> and <b>Action queue</b>.</p>
+</div>
+</div><div class="layer" data-layer="focus" hidden>
+<div class="sect"><h2>Where to focus</h2>
+  <span>four areas, each with what changed and what to do</span></div>
+<p class="lead-note">These four areas explain the whole of the 17-point fall.
+  They are ordered by how much they are costing inventory health, not by how much money
+  they hold.</p>
+<div class="stories"><article class="story crit"><header class="s-head"><div><h3>Getting stock on the shelf</h3><p class="s-score"><b>37</b><span>/100</span><em class="down">-25 pts in 12 weeks</em><span class="pill pill-crit">Needs attention</span></p></div><svg viewBox="0 0 120 34" width="120" height="34" aria-hidden="true"><polyline points="6.0,8.4 15.8,9.3 25.6,8.0 35.5,11.0 45.3,13.6 55.1,12.5 64.9,15.8 74.7,19.6 84.5,22.0 94.4,25.7 104.2,27.8 114.0,30.0" fill="none" stroke="#cf4636" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="114.0" cy="30.0" r="2.6" fill="#cf4636"/></svg></header><dl class="s-body"><dt>What changed</dt><dd>23,884 lines are out of stock, up from about 9,400 twelve weeks ago.</dd><dt>Why</dt><dd>Two different problems are hiding inside one number. 6,042 lines are out at a store while a warehouse holds the stock &mdash; that is a movement problem and costs nothing to fix. The other 17,717 have no stock anywhere and no order placed, which is a buying problem.</dd><dt>What it is doing to inventory health</dt><dd>Availability is doing 44% of the damage to the score &mdash; more than the other four drivers put together.</dd></dl><div class="s-foot"><div class="s-stat"><b>SAR 46K</b><span>estimated sales missed each day</span></div><p class="s-do"><span>Do this</span>Run the 6,042 transfers today. Raise purchase orders against the 17,717.</p></div></article><article class="story crit"><header class="s-head"><div><h3>Buying beyond the agreed cover</h3><p class="s-score"><b>24</b><span>/100</span><em class="down">-18 pts in 12 weeks</em><span class="pill pill-crit">Needs attention</span></p></div><svg viewBox="0 0 120 34" width="120" height="34" aria-hidden="true"><polyline points="6.0,8.4 15.8,9.3 25.6,8.0 35.5,11.0 45.3,13.6 55.1,12.5 64.9,15.8 74.7,19.6 84.5,22.0 94.4,25.7 104.2,27.8 114.0,30.0" fill="none" stroke="#cf4636" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="114.0" cy="30.0" r="2.6" fill="#cf4636"/></svg></header><dl class="s-body"><dt>What changed</dt><dd>SAR 21.13M is held above agreed cover, up SAR 5.3M over twelve weeks.</dd><dt>Why</dt><dd>The rise is concentrated: FMCG FOOD added SAR 1.9M and GM FASHION SAR 1.1M. CFW001 now carries the worst rate in the estate at 52.9% of what it holds, against 42.0% at CDC.</dd><dt>What it is doing to inventory health</dt><dd>This is the second largest drag on the score, and unlike availability it is money already spent rather than money not yet earned.</dd></dl><div class="s-foot"><div class="s-stat"><b>SAR 21.13M</b><span>the surplus only, not the whole overstocked value</span></div><p class="s-do"><span>Do this</span>Review the 29,932 overstocked lines for markdown, promotion or transfer.</p></div></article><article class="story crit"><header class="s-head"><div><h3>Ordering more of what is not selling</h3><p class="s-score"><b>37</b><span>/100</span><em class="down">-19 pts in 12 weeks</em><span class="pill pill-crit">Needs attention</span></p></div><svg viewBox="0 0 120 34" width="120" height="34" aria-hidden="true"><polyline points="6.0,8.4 15.8,9.3 25.6,8.0 35.5,11.0 45.3,13.6 55.1,12.5 64.9,15.8 74.7,19.6 84.5,22.0 94.4,25.7 104.2,27.8 114.0,30.0" fill="none" stroke="#cf4636" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="114.0" cy="30.0" r="2.6" fill="#cf4636"/></svg></header><dl class="s-body"><dt>What changed</dt><dd>216 products already flagged as overstocked have more stock on order, up from 96.</dd><dt>Why</dt><dd>These are orders raised against lines that were already above cover when the order went in. The open value is SAR 875K, so the money has not left yet.</dd><dt>What it is doing to inventory health</dt><dd>It is the fastest-moving driver on the page: it more than doubled in twelve weeks while every other driver moved gradually.</dd></dl><div class="s-foot"><div class="s-stat"><b>SAR 875K</b><span>of open orders still cancellable</span></div><p class="s-do"><span>Do this</span>Review those SAR 875K of open orders before the stock lands. Cancelling or deferring is still possible.</p></div></article><article class="story warn"><header class="s-head"><div><h3>Stock that has stopped moving</h3><p class="s-score"><b>54</b><span>/100</span><em class="down">-8 pts in 12 weeks</em><span class="pill pill-warn">Watch</span></p></div><svg viewBox="0 0 120 34" width="120" height="34" aria-hidden="true"><polyline points="6.0,8.4 15.8,9.3 25.6,8.0 35.5,11.0 45.3,13.6 55.1,12.5 64.9,15.8 74.7,19.6 84.5,22.0 94.4,25.7 104.2,27.8 114.0,30.0" fill="none" stroke="#cf4636" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="114.0" cy="30.0" r="2.6" fill="#cf4636"/></svg></header><dl class="s-body"><dt>What changed</dt><dd>36,377 lines have recorded no sales, holding SAR 6.41M.</dd><dt>Why</dt><dd>The tail is where it is growing. 14,772 lines have not sold in more than six months &mdash; more than the four shorter bands combined &mdash; and they hold SAR 1.82M.</dd><dt>What it is doing to inventory health</dt><dd>It is the slowest driver to move, but it is the hardest to reverse: the longer a line sits, the less likely it is to clear at full price.</dd></dl><div class="s-foot"><div class="s-stat"><b>14,772</b><span>lines stalled over six months</span></div><p class="s-do"><span>Do this</span>Put the 14,772 longest-stalled lines into a clearance or transfer plan.</p></div></article></div>
+<div class="sect"><h2>The evidence underneath</h2><span>the queue and the estate split those stories are built from</span></div><div class="grid g-2">
       <section class="card">
         <h3>What needs doing, most urgent first</h3>
         <p class="sub">Ordered by urgency, not by value. The largest bar is deliberately not at the top.</p>
@@ -510,7 +627,7 @@ tr.urgent td{background:var(--red-tint)}
   </div></div></main></div>
 <script>
 (function(){
-  var LAYERS = ['summary','locations','divisions','queue'];
+  var LAYERS = ['summary','focus','locations','divisions','queue'];
 
   function setLayer(name){
     document.querySelectorAll('.layer').forEach(function(el){

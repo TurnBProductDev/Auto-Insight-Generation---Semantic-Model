@@ -35,6 +35,76 @@ failure on a page whose every *number* was right:
 
 ---
 
+## The Inventory Health Score — the story spine
+
+`reference_inventory_management.html` opens on a **score, its trend, and what moved it**,
+not on a table. The page answers three questions in order: *what is happening*, *why*, and
+*where to look* — the queue and the estate splits are demoted to "the evidence underneath".
+
+### The score is computed, not decorative
+
+Five drivers, each measured against a stated business tolerance band, then weighted. On
+the real 2026-08-12 figures the weighted drivers add to **exactly 40.0**:
+
+| Driver | Weight | Reading | Target → floor | Score |
+|---|---|---|---|---|
+| Availability | 30% | 20.7% of lines unavailable | 5% → 30% | 37.3 |
+| Cover discipline | 25% | 41.6% above agreed cover | 15% → 50% | 24.1 |
+| Movement | 20% | 14.3% of value not moving | 5% → 25% | 53.6 |
+| Buying quality | 15% | 27.0% of open orders unwanted | 5% → 40% | 37.0 |
+| Data integrity | 10% | 6.5% of lines unclassified | 2% → 15% | 65.7 |
+
+```
+score(driver) = clamp( (1 - (actual - target) / (floor - target)) * 100, 0, 100 )
+total         = Σ score(driver) × weight            → 40.0
+```
+
+Bands: **≥65 healthy · 45–64 watch · <45 needs attention.**
+
+Three rules this must keep:
+
+- **Both directions count.** Availability and Movement are positive contributors that are
+  currently weak; Cover discipline, Buying quality and Data integrity are drags. A score
+  that only aggregated bad news would never rise when the business fixed something.
+- **The weights and bands are printed on the page**, on every driver card and in a "How
+  the score is worked out" panel. A composite a manager cannot argue with is a composite
+  they cannot act on.
+- **The drivers reconcile to the movement exactly.** The waterfall's five deltas sum to
+  the full −17, so nothing about the fall is unexplained. Its axis floats and *says so*,
+  for the reason `summary_dashboard_html._waterfall` already documents: against a base of
+  57, movements of 0.6–7.5 points render as invisible slivers on a zero-anchored axis.
+
+### The focus sub-stories
+
+Four areas, ordered by **what they are costing inventory health** — not by how much money
+they hold. Each carries the same four slots:
+
+```
+What changed          → the movement, with both endpoints
+Why                   → the mechanism, not a restatement of the number
+What it is doing      → its share of the score movement, in context
+   to inventory health
+Do this               → one concrete next step, with the count to act on
+```
+
+That structure is what turns "216 unwanted SKUs" into "216 products already flagged as
+overstocked have more on order, up from 96 — orders raised against lines that were
+already above cover; SAR 875K is still cancellable; review it before the stock lands."
+
+### Honesty rule for the history
+
+**The twelve-week history is illustrative and the page says so, in a banner directly under
+the hero.** The live model retains one snapshot (gap 4), so no trend can be produced from
+it today. That banner is not optional decoration — without it the page reads as though the
+history exists.
+
+This is also the clearest argument for fixing gap 4: the score, the trend, the waterfall
+and every "up from…" in the focus stories become real the day a daily snapshot is
+retained, and none of them can exist before that.
+
+`reference_stock_age_analysis.html` has **not** yet been converted to this shape. It is
+still the structural reference; the same score-and-sub-story spine applies to it.
+
 ## The interaction model
 
 Both references are **working pages**, not flat mockups. The first cut had no JavaScript
@@ -147,6 +217,13 @@ drift the shared renderer exists to prevent.
 | 8 | Unmeasurable states say so (`FOOTWEAR — not set`) | Prints `SAR 0` | `stock_health.build` (gap 2) |
 | 9 | Scoped view states it does not own breakdowns | Shows the wider view's unfiltered rows | `_stock_health_view` |
 | 10 | `#view/layer` in the URL | No routing | `_script` |
+| 11 | Opens on a health score, its trend and what moved it | Opens on the work queue | new `inventory_health.py` + `dashboard.py` |
+| 12 | Four focus sub-stories (changed / why / effect / do this) | KPI cards and tables only | `dashboard.py` |
+| 13 | Queue and estate split demoted to "the evidence underneath" | They are the summary | layer composition |
+
+Items 11–13 need **retained history** (gap 4) before they can carry real figures. The
+score itself is computable from a single snapshot; its *trend*, the waterfall and every
+"up from…" in the focus stories are not.
 
 Items 1–7, 9 and 10 are presentation and can be done without touching any figure. Item 8
 needs the threshold scan and is tracked separately.
