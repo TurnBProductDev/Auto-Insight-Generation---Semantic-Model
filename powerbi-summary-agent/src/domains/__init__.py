@@ -18,6 +18,18 @@ from typing import Any, Mapping
 _EMPTY: Mapping[str, Any] = MappingProxyType({})
 
 
+def _empty_mapping() -> Mapping[str, Any]:
+    """Default factory for the immutable-mapping fields.
+
+    Not a plain `= _EMPTY` default: Python 3.11's dataclasses reject any default
+    whose class has `__hash__ = None`, and mappingproxy is one there. 3.12 gave
+    it a real `__hash__`, so the same code imports fine in development and
+    crashes the container - which runs 3.11 - at import time. Returning the
+    shared `_EMPTY` keeps the field genuinely immutable.
+    """
+    return _EMPTY
+
+
 @dataclass(frozen=True)
 class Domain:
     """What a business domain supplies to the reports built on it.
@@ -34,13 +46,13 @@ class Domain:
     #: Ranking blends its reports default to.
     blends: tuple[str, ...] = ()
     #: Decomposition helpers (three-lever, volume/rate) - WP4+.
-    decompositions: Mapping[str, Any] = _EMPTY
+    decompositions: Mapping[str, Any] = field(default_factory=_empty_mapping)
     #: Default layout name per report kind - WP5+.
-    layouts: Mapping[str, str] = _EMPTY
+    layouts: Mapping[str, str] = field(default_factory=_empty_mapping)
     #: Default rule packs - WP5+.
     rules: tuple[str, ...] = ()
     #: Default thresholds, overridable per report.
-    thresholds: Mapping[str, Any] = _EMPTY
+    thresholds: Mapping[str, Any] = field(default_factory=_empty_mapping)
 
     def supports_spine(self, kind: str) -> bool:
         return kind in self.spines
