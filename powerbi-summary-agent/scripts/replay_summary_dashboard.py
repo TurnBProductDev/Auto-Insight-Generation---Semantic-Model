@@ -30,6 +30,7 @@ from __future__ import annotations
 
 import html as html_lib
 import json
+import re
 import sys
 from html.parser import HTMLParser
 from pathlib import Path
@@ -1012,6 +1013,86 @@ def test_real_fixture() -> None:
     print(f"       wrote {OUT / 'report_dashboard_real.html'}")
 
 
+def test_page_vocabulary() -> None:
+    """BR-26 on the CODE-owned strings, not only on the LLM's.
+
+    ``test_stories_and_validation`` proves ``dashboard_rules`` rejects "footfall"
+    when the *LLM* writes it. That is a different claim from "the page does not
+    say it", and the gap between them shipped: the tl;dr sentence in
+    ``summary_dashboard`` hardcoded "the growth is price and footfall rather than
+    real demand", and no validator inspects a code-owned string. It reached the
+    live cityflower page.
+
+    The same sentence carried a second fault - ``_pct`` always signs, so it read
+    "we sold -1.65% fewer items", literally 1.65% *more*.
+
+    So this walks every string in the built page model and the rendered markup.
+    A future hardcoded caption is caught by construction, not by being noticed.
+    """
+    print("\n[11] page vocabulary and signed-number wording")
+    from src.tools.summary_validation import _OFF_VOCABULARY
+
+    members = [
+        _member("S1", 500_000.0, 430_000.0, overall=1_100_000.0),
+        _member("S2", 300_000.0, 300_500.0, overall=1_100_000.0),
+        _member("S3", 300_000.0, 270_000.0, overall=1_100_000.0),
+    ]
+    coverage = summary_coverage.build_coverage(_universe(members, "store"))
+    # Revenue up while units fall - the branch that emits the tl;dr sentence.
+    package = {"status": "ok",
+               "families": _families((1_100_000.0, 1_000_000.0), (95_000.0, 100_000.0),
+                                     (50_000.0, 48_000.0)),
+               "primary_family": "revenue"}
+    view = summary_dashboard.build_view("primary", "Period to date", package, coverage,
+                                        {"data_as_of": "2026-07-29", "grain": "month",
+                                         "period_anchor": "2026-06"}, {},
+                                        entity_role="store")
+    page = summary_dashboard.build([view], "Sales vs Previous Year")
+    markup = summary_dashboard_html.render(page, coverage, 8)
+
+    def strings(node, trail="page"):
+        if isinstance(node, str):
+            yield trail, node
+        elif isinstance(node, dict):
+            for key, value in node.items():
+                yield from strings(value, f"{trail}.{key}")
+        elif isinstance(node, (list, tuple)):
+            for index, value in enumerate(node):
+                yield from strings(value, f"{trail}[{index}]")
+
+    model_strings = list(strings(page))
+    # Guard the guard: if the branch stops firing this test must fail, not pass
+    # silently on a page that no longer contains the sentence under test.
+    check("the units-down tl;dr sentence is actually on the page",
+          any("fewer" in text and "real demand" in text for _, text in model_strings))
+
+    offenders = [
+        (trail, phrase, text)
+        for trail, text in model_strings
+        for phrase in _OFF_VOCABULARY
+        if re.search(r"\b" + re.escape(phrase) + r"\b", text, re.I)
+    ]
+    check("no code-owned page string uses banned vocabulary",
+          not offenders,
+          "; ".join(f"{t} says {p!r}" for t, p, _ in offenders[:3]))
+
+    markup_hits = [phrase for phrase in _OFF_VOCABULARY
+                   if re.search(r"\b" + re.escape(phrase) + r"\b", markup, re.I)]
+    check("the rendered page uses banned vocabulary nowhere",
+          not markup_hits, str(markup_hits))
+
+    # A signed number immediately before a direction word contradicts itself.
+    double = [
+        (trail, match.group(0))
+        for trail, text in model_strings
+        for match in re.finditer(
+            r"[+-][\d.,]+[KMB]?%?\s+(?:fewer|more|higher|lower|better|worse)\b",
+            text, re.I)
+    ]
+    check("no signed number sits next to a direction word",
+          not double, "; ".join(f"{t}: {m!r}" for t, m in double[:3]))
+
+
 def main() -> int:
     print("=" * 72)
     print("REPLAY: R6 interactive summary dashboard")
@@ -1026,6 +1107,7 @@ def main() -> int:
     test_r6_isolation()
     test_render()
     test_real_fixture()
+    test_page_vocabulary()
     print("\n" + "=" * 72)
     if FAILURES:
         print(f"FAILED ({len(FAILURES)}):")

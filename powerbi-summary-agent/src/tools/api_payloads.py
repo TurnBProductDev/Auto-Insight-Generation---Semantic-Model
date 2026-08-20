@@ -28,6 +28,7 @@ the ``/kpi/alerts`` feed is a separate stream the agent does not generate.
 
 from __future__ import annotations
 
+import hashlib
 import re
 from datetime import datetime
 from typing import Any, Dict, List, Literal, Optional, Sequence
@@ -64,6 +65,10 @@ class InsightBack(BaseModel):
 class KpiCard(BaseModel):
     model_config = ConfigDict(extra="forbid")
     id: int
+    # Which report this finding came from. Absent (and dropped from the dumped
+    # payload) unless ai_content_multi_report_feed is on, so the single-report
+    # feed the app renders today is unchanged byte-for-byte.
+    reportId: Optional[str] = None
     severity: Severity
     category: str
     metric: str
@@ -446,6 +451,12 @@ def _signal_family(sig: Dict[str, Any]) -> str:
 
 
 def _signal_severity(sig: Dict[str, Any]) -> Severity:
+    # A detector that graded its own finding wins. The heuristics below all read
+    # a year-on-year share, which a target-vs-actual or stock-vs-policy signal
+    # does not have; guessing from an absent share would grade it "info".
+    declared = str(sig.get("severity") or "").strip().lower()
+    if declared in ("critical", "warning", "positive", "info"):
+        return declared  # type: ignore[return-value]
     cid = sig.get("candidate_id") or ""
     share = sig.get("impact_share")
     val = sig.get("impact_value") or 0
@@ -651,14 +662,70 @@ def _author_kpi_texts(facts: List[Dict[str, Any]], state: dict) -> Dict[str, _Kp
     return out
 
 
-def _assemble_kpi_card(idx: int, sig: Dict[str, Any], text: _KpiCardText, when: datetime) -> Dict[str, Any]:
+def multi_report_feed(state: dict) -> bool:
+    """True when several reports share one client feed (see docs/phase5-app-contract-change.md)."""
+    cfg = (state or {}).get("config") or {}
+    return bool(
+        (state or {}).get("ai_content_multi_report_feed")
+        or cfg.get("ai_content_multi_report_feed")
+    )
+
+
+def feed_report_id(state: dict) -> str:
+    """The short report slug stamped on this run's cards (WP1 identity)."""
+    cfg = (state or {}).get("config") or {}
+    return str(
+        (state or {}).get("report_id") or cfg.get("report_id") or "sales_yoy"
+    ).strip()
+
+
+def stable_card_id(report_id: str, story_key: Any, fallback: int) -> int:
+    """A collision-free, run-stable integer id for a card in a shared feed.
+
+    The per-run ``enumerate(..., start=1)`` sequence is safe for one report and
+    unsafe the moment two share a feed: both emit ``id: 1, 2, 3`` and a consumer
+    keying on id sees two different cards claiming to be card 1. Hashing the
+    report id together with the finding's own stable ``story_key`` fixes both
+    problems at once - unique across reports, and unchanged when the same
+    finding is republished tomorrow.
+
+    Bounded below 2^31 so the value still fits a signed 32-bit integer column.
+    Falls back to the run sequence for a legacy signal carrying no story_key,
+    which is still unique within its own report's cards.
+    """
+    key = str(story_key or "").strip()
+    if not key:
+        key = f"__seq__:{int(fallback)}"
+    digest = hashlib.sha256(f"{report_id}|{key}".encode("utf-8")).hexdigest()
+    return 1 + (int(digest[:12], 16) % 2_000_000_000)
+
+
+def _assemble_kpi_card(
+    idx: int,
+    sig: Dict[str, Any],
+    text: _KpiCardText,
+    when: datetime,
+    report_id: Optional[str] = None,
+) -> Dict[str, Any]:
     family = _signal_family(sig)
     val = sig.get("impact_value")
     share = sig.get("impact_share")
     category = text.category.strip() or ("Data Quality" if sig.get("kind") == "data_quality" else family)
     rw = sig.get("recent_week") or {}
     wow = rw.get("change_pct")
-    if isinstance(wow, (int, float)):
+    declared_comparison = str(sig.get("comparison_label") or "").strip()
+    if declared_comparison:
+        # A spine that is not year-on-year must name its own baseline. Without
+        # this, a Target Tracker signal falls through to the share branch and is
+        # published against "the prior period" - a comparison this dataset does
+        # not contain at all (Non-negotiable 2).
+        target_value = sig.get("target")
+        if isinstance(val, (int, float)) and isinstance(target_value, (int, float)) and target_value:
+            delta = f"{abs(val / abs(target_value) * 100.0):.1f}%"
+        else:
+            delta = ""
+        comparison = declared_comparison
+    elif isinstance(wow, (int, float)):
         if rw.get("window_mode") == "rolling":
             delta = f"{abs(wow):.1f}%"
             comparison = f"vs the prior 7 days (ending {rw.get('week_end')})"
@@ -686,7 +753,8 @@ def _assemble_kpi_card(idx: int, sig: Dict[str, Any], text: _KpiCardText, when: 
     else:
         delta, comparison = "", "current period"
     card = {
-        "id": idx,
+        "id": stable_card_id(report_id, sig.get("story_key"), idx) if report_id else idx,
+        "reportId": report_id or None,
         "severity": _signal_severity(sig),
         "category": category,
         "metric": sig.get("affected_segment") or "Segment",
@@ -709,7 +777,12 @@ def _assemble_kpi_card(idx: int, sig: Dict[str, Any], text: _KpiCardText, when: 
             "action": _sentence(_plain_business_text(text.insight_action)),
         },
     }
-    return KpiCard(**card).model_dump()  # strict validation
+    dumped = KpiCard(**card).model_dump()  # strict validation
+    if dumped.get("reportId") is None:
+        # Single-report mode must emit the exact key set the app renders today,
+        # so the field is removed rather than published as an explicit null.
+        dumped.pop("reportId", None)
+    return dumped
 
 
 def generate_kpi_insights_payload(
@@ -724,12 +797,13 @@ def generate_kpi_insights_payload(
         return []
     when = _now(generated_at)
     texts = _author_kpi_texts([_signal_facts(s) for s in signals], state)
+    report_id = feed_report_id(state) if multi_report_feed(state) else None
     cards: List[Dict[str, Any]] = []
     for idx, sig in enumerate(signals, start=1):
         text = texts.get(sig.get("id"))
         if text is None:
             raise RuntimeError(f"LLM returned no card text for signal id {sig.get('id')!r}")
-        cards.append(_assemble_kpi_card(idx, sig, text, when))
+        cards.append(_assemble_kpi_card(idx, sig, text, when, report_id=report_id))
     return cards
 
 

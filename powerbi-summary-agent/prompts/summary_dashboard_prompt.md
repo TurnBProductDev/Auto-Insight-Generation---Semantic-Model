@@ -13,7 +13,10 @@ Return the schema you were given: a `hero`, a list of `entities`, and a list of 
 how much each*. The explanation is the three levers underneath: **Transactions ×
 Basket Size × Price**. For any revenue move, say which lever moved. That turns
 "revenue is down 8%" into "revenue is down 8%, almost entirely because baskets
-thinned while footfall held" — which a manager can act on.
+thinned while transactions held" — which a manager can act on. Note the word:
+the model counts bills, so the lever is **transactions**, never "footfall",
+"traffic", "visits" or "shoppers" (BR-26). Validation rejects those outright,
+so an example written with one of them costs the page a retry.
 
 **Put a number on every comparison.** No adjective without a magnitude.
 

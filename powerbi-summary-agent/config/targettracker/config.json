@@ -1,0 +1,49 @@
+{
+  "report_id": "target_tracker",
+  "report_name": "Target Tracker",
+  "report_domain": "sales",
+  "report_cadence": "daily",
+  "chain_id": "sales",
+  "tenant_id": "315642c5-e14a-4c12-bf77-41ee070def79",
+  "workspace_id": "6d383900-b84d-4bce-afb4-b95453bee00a",
+  "dataset_id": "f34c5654-bf75-4fb3-b289-2676d8e38241",
+  "output_folder": "outputs_targettracker",
+  "target_tracker_population": [
+    "CFH014",
+    "CFH017",
+    "CFH018",
+    "CFH021"
+  ],
+  "target_tracker_excluded_entities": [
+    "CFH022"
+  ],
+  "target_tracker_week_start": "monday",
+  "target_tracker_anchor_override": "",
+  "target_tracker_material_pct": 5.0,
+  "target_tracker_display_rows": 12,
+  "target_tracker_currency": "SAR",
+  "ai_provider": "azure_openai",
+  "model": "claude-sonnet-5",
+  "azure_openai_api_key_env": "AZURE_OPENAI_API_KEY",
+  "openai_api_key_env": "OPENAI_API_KEY",
+  "anthropic_api_key_env": "ANTHROPIC_API_KEY",
+  "max_tokens": 8192,
+  "execution_mode": "python",
+  "powerbi_auth_mode": "auto",
+  "powerbi_query_api": "auto",
+  "azure_blob_upload": true,
+  "azure_blob_account": "turnbtestblobstorage",
+  "azure_blob_container": "insightgen",
+  "azure_blob_prefix": "targettracker",
+  "ai_content_publish_enabled": true,
+  "ai_content_client": "cityflower",
+  "ai_content_report_ids": [
+    "4e9b98f8-5e85-4119-9f14-a187d090333e"
+  ],
+  "ai_content_ttl_hours": 24,
+  "api_summary_title": "Target Tracker",
+  "target_tracker_llm_authoring_enabled": true,
+  "ai_content_multi_report_feed": true,
+  "ai_content_feed_max_cards": 10,
+  "insight_max_new_per_run": 3
+}

@@ -1,0 +1,976 @@
+{
+  "anchor": "2026-07-31",
+  "sold_through": "2026-08-19",
+  "anchor_forced": false,
+  "week_start": "2026-07-27",
+  "month_start": "2026-07-01",
+  "month_end": "2026-07-31",
+  "population": [
+    "CFH014",
+    "CFH017",
+    "CFH018",
+    "CFH021"
+  ],
+  "totals": [
+    {
+      "[day_sales]": 1358215.17,
+      "[day_target]": 1086638.819171638,
+      "[wtd_sales]": 3319061.490000001,
+      "[wtd_target]": 2831225.947682229,
+      "[week_full_target]": 2831225.947682229,
+      "[mtd_sales]": 17663580.730000008,
+      "[mtd_target]": 16805350.486057665,
+      "[month_full_target]": 16805350.486057665,
+      "[ytd_sales]": 128378807.45000002,
+      "[ytd_target]": 124789767.77979597,
+      "[prev_week_sales]": 3204428.0599999987,
+      "[prev_week_target]": 3320825.9972524517
+    }
+  ],
+  "days": [
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[TY_DATE]": "2026-07-01T00:00:00",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DAY_OF_WEEK]": "Wed",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DOC_DAY]": 1,
+      "[sales]": 548926.52,
+      "[target]": 454347.8096095215
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[TY_DATE]": "2026-07-02T00:00:00",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DAY_OF_WEEK]": "Thu",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DOC_DAY]": 2,
+      "[sales]": 874022.5699999997,
+      "[target]": 648474.9994328407
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[TY_DATE]": "2026-07-03T00:00:00",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DAY_OF_WEEK]": "Fri",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DOC_DAY]": 3,
+      "[sales]": 1423202.9600000004,
+      "[target]": 1163831.9991014122
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[TY_DATE]": "2026-07-04T00:00:00",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DAY_OF_WEEK]": "Sat",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DOC_DAY]": 4,
+      "[sales]": 532904.0800000002,
+      "[target]": 513024.9995790565
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[TY_DATE]": "2026-07-05T00:00:00",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DAY_OF_WEEK]": "Sun",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DOC_DAY]": 5,
+      "[sales]": 495771.50999999995,
+      "[target]": 439024.99962225056
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[TY_DATE]": "2026-07-06T00:00:00",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DAY_OF_WEEK]": "Mon",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DOC_DAY]": 6,
+      "[sales]": 455209.4199999999,
+      "[target]": 441024.999620351
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[TY_DATE]": "2026-07-07T00:00:00",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DAY_OF_WEEK]": "Tue",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DOC_DAY]": 7,
+      "[sales]": 431450.77999999985,
+      "[target]": 441024.999620351
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[TY_DATE]": "2026-07-08T00:00:00",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DAY_OF_WEEK]": "Wed",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DOC_DAY]": 8,
+      "[sales]": 439371.9499999999,
+      "[target]": 441024.99962035107
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[TY_DATE]": "2026-07-09T00:00:00",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DAY_OF_WEEK]": "Thu",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DOC_DAY]": 9,
+      "[sales]": 609818.11,
+      "[target]": 580336.9995002396
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[TY_DATE]": "2026-07-10T00:00:00",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DAY_OF_WEEK]": "Fri",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DOC_DAY]": 10,
+      "[sales]": 1192610.759999999,
+      "[target]": 1023761.9991929247
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[TY_DATE]": "2026-07-11T00:00:00",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DAY_OF_WEEK]": "Sat",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DOC_DAY]": 11,
+      "[sales]": 426132.1400000001,
+      "[target]": 485567.73959812976
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[TY_DATE]": "2026-07-12T00:00:00",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DAY_OF_WEEK]": "Sun",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DOC_DAY]": 12,
+      "[sales]": 401410.9799999999,
+      "[target]": 423024.9996336085
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[TY_DATE]": "2026-07-13T00:00:00",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DAY_OF_WEEK]": "Mon",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DOC_DAY]": 13,
+      "[sales]": 375439.24999999994,
+      "[target]": 426024.99963075895
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[TY_DATE]": "2026-07-14T00:00:00",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DAY_OF_WEEK]": "Tue",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DOC_DAY]": 14,
+      "[sales]": 365292.9499999997,
+      "[target]": 421024.99963807187
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[TY_DATE]": "2026-07-15T00:00:00",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DAY_OF_WEEK]": "Wed",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DOC_DAY]": 15,
+      "[sales]": 359154.0299999999,
+      "[target]": 423024.9996361721
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[TY_DATE]": "2026-07-16T00:00:00",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DAY_OF_WEEK]": "Thu",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DOC_DAY]": 16,
+      "[sales]": 526059.9499999997,
+      "[target]": 553336.9995234706
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[TY_DATE]": "2026-07-17T00:00:00",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DAY_OF_WEEK]": "Fri",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DOC_DAY]": 17,
+      "[sales]": 949971.9400000002,
+      "[target]": 959364.999239011
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[TY_DATE]": "2026-07-18T00:00:00",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DAY_OF_WEEK]": "Sat",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DOC_DAY]": 18,
+      "[sales]": 391459.7399999998,
+      "[target]": 443024.99964185205
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[TY_DATE]": "2026-07-19T00:00:00",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DAY_OF_WEEK]": "Sun",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DOC_DAY]": 19,
+      "[sales]": 341881.5399999999,
+      "[target]": 373024.999682606
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[TY_DATE]": "2026-07-20T00:00:00",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DAY_OF_WEEK]": "Mon",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DOC_DAY]": 20,
+      "[sales]": 358139.8099999999,
+      "[target]": 375024.9996807066
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[TY_DATE]": "2026-07-21T00:00:00",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DAY_OF_WEEK]": "Tue",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DOC_DAY]": 21,
+      "[sales]": 340467.23000000004,
+      "[target]": 375024.9996807066
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[TY_DATE]": "2026-07-22T00:00:00",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DAY_OF_WEEK]": "Wed",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DOC_DAY]": 22,
+      "[sales]": 338516.5700000002,
+      "[target]": 375024.9996807066
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[TY_DATE]": "2026-07-23T00:00:00",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DAY_OF_WEEK]": "Thu",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DOC_DAY]": 23,
+      "[sales]": 523015.82,
+      "[target]": 515336.9995597135
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[TY_DATE]": "2026-07-24T00:00:00",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DAY_OF_WEEK]": "Fri",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DOC_DAY]": 24,
+      "[sales]": 901687.2199999997,
+      "[target]": 884148.999305573
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[TY_DATE]": "2026-07-25T00:00:00",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DAY_OF_WEEK]": "Sat",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DOC_DAY]": 25,
+      "[sales]": 370602.58999999985,
+      "[target]": 418024.9996621827
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[TY_DATE]": "2026-07-26T00:00:00",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DAY_OF_WEEK]": "Sun",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DOC_DAY]": 26,
+      "[sales]": 371998.8199999998,
+      "[target]": 378239.99968286336
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[TY_DATE]": "2026-07-27T00:00:00",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DAY_OF_WEEK]": "Mon",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DOC_DAY]": 27,
+      "[sales]": 380547.34,
+      "[target]": 381239.9996800139
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[TY_DATE]": "2026-07-28T00:00:00",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DAY_OF_WEEK]": "Tue",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DOC_DAY]": 28,
+      "[sales]": 370747.18000000017,
+      "[target]": 381239.9996800139
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[TY_DATE]": "2026-07-29T00:00:00",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DAY_OF_WEEK]": "Wed",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DOC_DAY]": 29,
+      "[sales]": 431327.9699999999,
+      "[target]": 384645.1296765718
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[TY_DATE]": "2026-07-30T00:00:00",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DAY_OF_WEEK]": "Thu",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DOC_DAY]": 30,
+      "[sales]": 778223.8299999995,
+      "[target]": 597461.99947399
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[TY_DATE]": "2026-07-31T00:00:00",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DAY_OF_WEEK]": "Fri",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DOC_DAY]": 31,
+      "[sales]": 1358215.1699999997,
+      "[target]": 1086638.819171638
+    }
+  ],
+  "remaining_week_days": [],
+  "weeks": [
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[week number]": 1,
+      "[sales]": 5072538.42,
+      "[target]": 3560901.6428287886,
+      "[first_day]": "2026-01-01T00:00:00",
+      "[last_day]": "2026-01-04T00:00:00",
+      "[days]": 4
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[week number]": 2,
+      "[sales]": 4235881.010000002,
+      "[target]": 4440957.998862246,
+      "[first_day]": "2026-01-05T00:00:00",
+      "[last_day]": "2026-01-11T00:00:00",
+      "[days]": 7
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[week number]": 3,
+      "[sales]": 3682577.98,
+      "[target]": 3907273.9989811545,
+      "[first_day]": "2026-01-12T00:00:00",
+      "[last_day]": "2026-01-18T00:00:00",
+      "[days]": 7
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[week number]": 4,
+      "[sales]": 3441116.9900000016,
+      "[target]": 3664318.9990361924,
+      "[first_day]": "2026-01-19T00:00:00",
+      "[last_day]": "2026-01-25T00:00:00",
+      "[days]": 7
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[week number]": 5,
+      "[sales]": 4591933.480000001,
+      "[target]": 4134736.569114823,
+      "[first_day]": "2026-01-26T00:00:00",
+      "[last_day]": "2026-02-01T00:00:00",
+      "[days]": 7
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[week number]": 6,
+      "[sales]": 5160609.689999995,
+      "[target]": 4955938.320162031,
+      "[first_day]": "2026-02-02T00:00:00",
+      "[last_day]": "2026-02-08T00:00:00",
+      "[days]": 7
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[week number]": 7,
+      "[sales]": 4535956.399999999,
+      "[target]": 4490457.241985447,
+      "[first_day]": "2026-02-09T00:00:00",
+      "[last_day]": "2026-02-15T00:00:00",
+      "[days]": 7
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[week number]": 8,
+      "[sales]": 4842018.699999988,
+      "[target]": 4114570.741084804,
+      "[first_day]": "2026-02-16T00:00:00",
+      "[last_day]": "2026-02-22T00:00:00",
+      "[days]": 7
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[week number]": 9,
+      "[sales]": 4399286.710000008,
+      "[target]": 4241934.39473236,
+      "[first_day]": "2026-02-23T00:00:00",
+      "[last_day]": "2026-03-01T00:00:00",
+      "[days]": 7
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[week number]": 10,
+      "[sales]": 4711403.560000004,
+      "[target]": 5090489.999601995,
+      "[first_day]": "2026-03-02T00:00:00",
+      "[last_day]": "2026-03-08T00:00:00",
+      "[days]": 7
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[week number]": 11,
+      "[sales]": 4228395.219999995,
+      "[target]": 4561343.999644495,
+      "[first_day]": "2026-03-09T00:00:00",
+      "[last_day]": "2026-03-15T00:00:00",
+      "[days]": 7
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[week number]": 12,
+      "[sales]": 5038834.209999996,
+      "[target]": 4513698.869809812,
+      "[first_day]": "2026-03-16T00:00:00",
+      "[last_day]": "2026-03-22T00:00:00",
+      "[days]": 7
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[week number]": 13,
+      "[sales]": 3211254.739999999,
+      "[target]": 3681629.9999220055,
+      "[first_day]": "2026-03-23T00:00:00",
+      "[last_day]": "2026-03-29T00:00:00",
+      "[days]": 7
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[week number]": 14,
+      "[sales]": 4606236.590000012,
+      "[target]": 4141876.7816537954,
+      "[first_day]": "2026-03-30T00:00:00",
+      "[last_day]": "2026-04-05T00:00:00",
+      "[days]": 7
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[week number]": 15,
+      "[sales]": 4049489.5200000014,
+      "[target]": 3906650.062034075,
+      "[first_day]": "2026-04-06T00:00:00",
+      "[last_day]": "2026-04-12T00:00:00",
+      "[days]": 7
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[week number]": 16,
+      "[sales]": 3787113.659999999,
+      "[target]": 3549920.0018612677,
+      "[first_day]": "2026-04-13T00:00:00",
+      "[last_day]": "2026-04-19T00:00:00",
+      "[days]": 7
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[week number]": 17,
+      "[sales]": 3512130.949999997,
+      "[target]": 3367533.001788692,
+      "[first_day]": "2026-04-20T00:00:00",
+      "[last_day]": "2026-04-26T00:00:00",
+      "[days]": 7
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[week number]": 18,
+      "[sales]": 4847582.809999998,
+      "[target]": 4262918.569862942,
+      "[first_day]": "2026-04-27T00:00:00",
+      "[last_day]": "2026-05-03T00:00:00",
+      "[days]": 7
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[week number]": 19,
+      "[sales]": 4551866.420000011,
+      "[target]": 4599033.986147754,
+      "[first_day]": "2026-05-04T00:00:00",
+      "[last_day]": "2026-05-10T00:00:00",
+      "[days]": 7
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[week number]": 20,
+      "[sales]": 3922909.12,
+      "[target]": 4063756.9869408207,
+      "[first_day]": "2026-05-11T00:00:00",
+      "[last_day]": "2026-05-17T00:00:00",
+      "[days]": 7
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[week number]": 21,
+      "[sales]": 3868081.4899999984,
+      "[target]": 3884812.987925378,
+      "[first_day]": "2026-05-18T00:00:00",
+      "[last_day]": "2026-05-24T00:00:00",
+      "[days]": 7
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[week number]": 22,
+      "[sales]": 4867610.899999996,
+      "[target]": 4079751.897610384,
+      "[first_day]": "2026-05-25T00:00:00",
+      "[last_day]": "2026-05-31T00:00:00",
+      "[days]": 7
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[week number]": 23,
+      "[sales]": 3905807.2800000007,
+      "[target]": 4303855.680557685,
+      "[first_day]": "2026-06-01T00:00:00",
+      "[last_day]": "2026-06-07T00:00:00",
+      "[days]": 7
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[week number]": 24,
+      "[sales]": 3597989.9999999995,
+      "[target]": 4033227.0005078167,
+      "[first_day]": "2026-06-08T00:00:00",
+      "[last_day]": "2026-06-14T00:00:00",
+      "[days]": 7
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[week number]": 25,
+      "[sales]": 3806551.4500000007,
+      "[target]": 3823033.000472934,
+      "[first_day]": "2026-06-15T00:00:00",
+      "[last_day]": "2026-06-21T00:00:00",
+      "[days]": 7
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[week number]": 26,
+      "[sales]": 3331368.530000009,
+      "[target]": 3695220.0004728464,
+      "[first_day]": "2026-06-22T00:00:00",
+      "[last_day]": "2026-06-28T00:00:00",
+      "[days]": 7
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[week number]": 27,
+      "[sales]": 4783508.5299999975,
+      "[target]": 4133279.3674809076,
+      "[first_day]": "2026-06-29T00:00:00",
+      "[last_day]": "2026-07-05T00:00:00",
+      "[days]": 7
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[week number]": 28,
+      "[sales]": 3956004.140000001,
+      "[target]": 3835766.7367859576,
+      "[first_day]": "2026-07-06T00:00:00",
+      "[last_day]": "2026-07-12T00:00:00",
+      "[days]": 7
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[week number]": 29,
+      "[sales]": 3309259.399999999,
+      "[target]": 3598826.996991949,
+      "[first_day]": "2026-07-13T00:00:00",
+      "[last_day]": "2026-07-19T00:00:00",
+      "[days]": 7
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[week number]": 30,
+      "[sales]": 3204428.06,
+      "[target]": 3320825.997252453,
+      "[first_day]": "2026-07-20T00:00:00",
+      "[last_day]": "2026-07-26T00:00:00",
+      "[days]": 7
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[week number]": 31,
+      "[sales]": 3319061.4900000016,
+      "[target]": 2831225.9476822307,
+      "[first_day]": "2026-07-27T00:00:00",
+      "[last_day]": "2026-07-31T00:00:00",
+      "[days]": 5
+    }
+  ],
+  "months": [
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DOC_MONTH]": 1,
+      "REP_DEPT_WISE_PERF_EVAL_RPT[MONTH_NAME]": "JAN",
+      "[sales]": 20454233.350000016,
+      "[target]": 19138881.208843242
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DOC_MONTH]": 2,
+      "REP_DEPT_WISE_PERF_EVAL_RPT[MONTH_NAME]": "FEB",
+      "[sales]": 18942694.14,
+      "[target]": 17769310.697959732
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DOC_MONTH]": 3,
+      "REP_DEPT_WISE_PERF_EVAL_RPT[MONTH_NAME]": "MAR",
+      "[sales]": 18618361.019999966,
+      "[target]": 19393702.329033814
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DOC_MONTH]": 4,
+      "REP_DEPT_WISE_PERF_EVAL_RPT[MONTH_NAME]": "APR",
+      "[sales]": 17197835.640000023,
+      "[target]": 15691369.653319636
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DOC_MONTH]": 5,
+      "REP_DEPT_WISE_PERF_EVAL_RPT[MONTH_NAME]": "MAY",
+      "[sales]": 19951704.419999976,
+      "[target]": 19221243.162434626
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DOC_MONTH]": 6,
+      "REP_DEPT_WISE_PERF_EVAL_RPT[MONTH_NAME]": "JUN",
+      "[sales]": 15550398.14999995,
+      "[target]": 16769910.242147086
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DOC_MONTH]": 7,
+      "REP_DEPT_WISE_PERF_EVAL_RPT[MONTH_NAME]": "JUL",
+      "[sales]": 17663580.73000006,
+      "[target]": 16805350.48605765
+    }
+  ],
+  "branches": [
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[LOC_CODE]": "CFH014",
+      "[day_sales]": 340681.19,
+      "[day_target]": 276638.8198040136,
+      "[wtd_sales]": 989992.9,
+      "[wtd_target]": 911820.8193540153,
+      "[mtd_sales]": 5533118.549999998,
+      "[mtd_target]": 5363778.816200001,
+      "[ytd_sales]": 39799372.360000014,
+      "[ytd_target]": 39128478.89380833,
+      "[month_full_target]": 5363778.816200001
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[LOC_CODE]": "CFH018",
+      "[day_sales]": 392438.7800000001,
+      "[day_target]": 299999.999928943,
+      "[wtd_sales]": 747021.31,
+      "[wtd_target]": 579999.9998626232,
+      "[mtd_sales]": 3661945.6299999994,
+      "[mtd_target]": 3180542.7392466664,
+      "[ytd_sales]": 25523889.599999998,
+      "[ytd_target]": 24175485.739923958,
+      "[month_full_target]": 3180542.7392466664
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[LOC_CODE]": "CFH017",
+      "[day_sales]": 136937.41999999995,
+      "[day_target]": 149999.9997806145,
+      "[wtd_sales]": 483213.5299999999,
+      "[wtd_target]": 511405.1292520344,
+      "[mtd_sales]": 2673571.21,
+      "[mtd_target]": 3008405.125599997,
+      "[ytd_sales]": 21247266.56,
+      "[ytd_target]": 22895758.643620495,
+      "[month_full_target]": 3008405.125599997
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[LOC_CODE]": "CFH021",
+      "[day_sales]": 488157.78,
+      "[day_target]": 359999.9996580674,
+      "[wtd_sales]": 1098833.7500000002,
+      "[wtd_target]": 827999.999213555,
+      "[mtd_sales]": 5794945.340000001,
+      "[mtd_target]": 5252623.805010993,
+      "[ytd_sales]": 41808278.93000002,
+      "[ytd_target]": 38590044.502443165,
+      "[month_full_target]": 5252623.805010993
+    }
+  ],
+  "departments": [
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "FASHION",
+      "[day_sales]": 75750.13,
+      "[day_target]": 66747.39088280326,
+      "[wtd_sales]": 185244.03,
+      "[wtd_target]": 178173.37212680661,
+      "[mtd_sales]": 1022382.1499999999,
+      "[mtd_target]": 1064562.4388102354
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "FOOTWEAR",
+      "[day_sales]": 19673.69,
+      "[day_target]": 16224.717178238401,
+      "[wtd_sales]": 48394.35999999999,
+      "[wtd_target]": 42080.69045145814,
+      "[mtd_sales]": 271356.27,
+      "[mtd_target]": 247901.41723226983
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "FARM FRESH",
+      "[day_sales]": 220515.76000000004,
+      "[day_target]": 191769.0317666088,
+      "[wtd_sales]": 602508.3999999999,
+      "[wtd_target]": 507980.670337903,
+      "[mtd_sales]": 3332056.3800000004,
+      "[mtd_target]": 3002853.771308806
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "FMCG FOOD",
+      "[day_sales]": 518608.3,
+      "[day_target]": 411458.2795636311,
+      "[wtd_sales]": 1300875.5500000003,
+      "[wtd_target]": 1080788.9635281577,
+      "[mtd_sales]": 6642623.7700000005,
+      "[mtd_target]": 6380117.858081462
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "FMCG NON-FOOD",
+      "[day_sales]": 256534.04999999996,
+      "[day_target]": 172113.83210129474,
+      "[wtd_sales]": 545027.5999999999,
+      "[wtd_target]": 435812.3549788568,
+      "[mtd_sales]": 2802008.0599999996,
+      "[mtd_target]": 2591025.619365949
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "HOME FASHION",
+      "[day_sales]": 17558.9,
+      "[day_target]": 13927.951380905954,
+      "[wtd_sales]": 42126.939999999995,
+      "[wtd_target]": 35570.6001120671,
+      "[mtd_sales]": 233202.04,
+      "[mtd_target]": 213511.60763782647
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "GM HOME WARE",
+      "[day_sales]": 43912.22000000001,
+      "[day_target]": 37172.188078238556,
+      "[wtd_sales]": 100031.56999999998,
+      "[wtd_target]": 96472.5044182645,
+      "[mtd_sales]": 579881.17,
+      "[mtd_target]": 574233.4337917989
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "GM FASHION",
+      "[day_sales]": 109071.58,
+      "[day_target]": 96357.91272172109,
+      "[wtd_sales]": 274969.34,
+      "[wtd_target]": 248103.22936397622,
+      "[mtd_sales]": 1504527.19,
+      "[mtd_target]": 1491808.973640371
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "ELECTRONICS",
+      "[day_sales]": 70343.08,
+      "[day_target]": 55913.88272029241,
+      "[wtd_sales]": 150700.44,
+      "[wtd_target]": 144595.28138333544,
+      "[mtd_sales]": 868585.6200000001,
+      "[mtd_target]": 867945.080157847
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "GM OTHERS",
+      "[day_sales]": 22922.78,
+      "[day_target]": 21222.632775572394,
+      "[wtd_sales]": 59317.94,
+      "[wtd_target]": 53066.980976039595,
+      "[mtd_sales]": 336769.98999999993,
+      "[mtd_target]": 316952.6764550994
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "LIVE KITCHEN",
+      "[day_sales]": 3324.68,
+      "[day_target]": 3731.000002331912,
+      "[wtd_sales]": 9761.0,
+      "[wtd_target]": 8581.300005363402,
+      "[mtd_sales]": 60856.55999999999,
+      "[mtd_target]": 54437.609575996285
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "OTHER NON TRADE",
+      "[day_sales]": null,
+      "[day_target]": null,
+      "[wtd_sales]": 104.32,
+      "[wtd_target]": null,
+      "[mtd_sales]": 9331.529999999999,
+      "[mtd_target]": null
+    }
+  ],
+  "sections": [
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-LADIES FOOTWEAR",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "FOOTWEAR",
+      "[mtd_sales]": 20728.540000000008,
+      "[mtd_target]": 19034.595571913556
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-EGGS",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "FARM FRESH",
+      "[mtd_sales]": 251725.21000000002,
+      "[mtd_target]": 213858.16161136836
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-DELICATESSEN",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "FARM FRESH",
+      "[mtd_sales]": 26019.720000000005,
+      "[mtd_target]": 25835.675258242394
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-GROCERY FOOD",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "FMCG FOOD",
+      "[mtd_sales]": 2308487.87,
+      "[mtd_target]": 2299929.591420537
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-PERSONAL GROOMING",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "FMCG NON-FOOD",
+      "[mtd_sales]": 109898.59000000001,
+      "[mtd_target]": 102577.09730248054
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-ROASTERY",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "FMCG FOOD",
+      "[mtd_sales]": 861174.69,
+      "[mtd_target]": 811351.3060122062
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-KIDS FOOTWEAR",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "FOOTWEAR",
+      "[mtd_sales]": 33769.38,
+      "[mtd_target]": 25878.73599780189
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-HOME DECORE",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "HOME FASHION",
+      "[mtd_sales]": 8398.179999999998,
+      "[mtd_target]": 8551.688219020003
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-STAPLES",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "FMCG FOOD",
+      "[mtd_sales]": 1657835.84,
+      "[mtd_target]": 1391955.1174123317
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-CHILLED & DAIRY",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "FMCG FOOD",
+      "[mtd_sales]": 706948.0500000002,
+      "[mtd_target]": 757972.5898498228
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-HOME ACCESSORIES",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "GM HOME WARE",
+      "[mtd_sales]": 52112.18000000001,
+      "[mtd_target]": 54179.57903431047
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-SMART WATCHES",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "GM FASHION",
+      "[mtd_sales]": 121802.7,
+      "[mtd_target]": 137005.9917946991
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-WATCHES & SUNGLASSES",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "GM FASHION",
+      "[mtd_sales]": 326871.93000000005,
+      "[mtd_target]": 308328.88018391596
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-HOME CARE",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "FMCG NON-FOOD",
+      "[mtd_sales]": 376036.86,
+      "[mtd_target]": 318204.83275263547
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-ELECTRICALS",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "ELECTRONICS",
+      "[mtd_sales]": 13883.810000000003,
+      "[mtd_target]": 12600.489163988965
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-PERSONAL ACCESSORIES",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "GM OTHERS",
+      "[mtd_sales]": 190405.19999999995,
+      "[mtd_target]": 172619.52016129784
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-PLASTICS",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "GM HOME WARE",
+      "[mtd_sales]": 207889.74000000002,
+      "[mtd_target]": 227522.70551738006
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-CROCKERY",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "GM HOME WARE",
+      "[mtd_sales]": 22028.6,
+      "[mtd_target]": 19622.55219017712
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-PERFUMES",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "GM FASHION",
+      "[mtd_sales]": 271460.0,
+      "[mtd_target]": 279855.2900745946
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-LADIES HAND BAGS",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "GM FASHION",
+      "[mtd_sales]": 64674.46,
+      "[mtd_target]": 61718.32235596896
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-MENS FOOTWEAR",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "FOOTWEAR",
+      "[mtd_sales]": 216858.34999999998,
+      "[mtd_target]": 202972.8955091051
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-BEAUTY PRODUCTS",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "FMCG NON-FOOD",
+      "[mtd_sales]": 129670.87000000001,
+      "[mtd_target]": 126703.0116021965
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-STATIONARY",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "GM OTHERS",
+      "[mtd_sales]": 146364.78999999998,
+      "[mtd_target]": 143740.8009974964
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-FRUIT & VEGETABLES",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "FARM FRESH",
+      "[mtd_sales]": 1890419.51,
+      "[mtd_target]": 1668659.0861242982
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-KIDS FASHION",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "FASHION",
+      "[mtd_sales]": 90853.98000000001,
+      "[mtd_target]": 89958.47605129224
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-HOME LINEN",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "HOME FASHION",
+      "[mtd_sales]": 224803.86000000002,
+      "[mtd_target]": 204959.9194188065
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-MEAT",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "FARM FRESH",
+      "[mtd_sales]": 1163891.94,
+      "[mtd_target]": 1094500.8483148967
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-INFANT UTILITIES",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "FASHION",
+      "[mtd_sales]": 511.55000000000007,
+      "[mtd_target]": 153.6917113739946
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-SPORTS",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "GM FASHION",
+      "[mtd_sales]": 36860.899999999994,
+      "[mtd_target]": 37539.48657620953
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-CONFECTIONERY",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "FMCG FOOD",
+      "[mtd_sales]": 551864.78,
+      "[mtd_target]": 593214.3817214934
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-PERSONAL CARE",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "FMCG NON-FOOD",
+      "[mtd_sales]": 2186401.7399999998,
+      "[mtd_target]": 2043540.677708637
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-FROZEN FOOD",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "FMCG FOOD",
+      "[mtd_sales]": 473530.44,
+      "[mtd_target]": 451014.49585928576
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-LADIES FASHION",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "FASHION",
+      "[mtd_sales]": 135892.47,
+      "[mtd_target]": 139887.52533739217
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-MENS FASHION",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "FASHION",
+      "[mtd_sales]": 795124.15,
+      "[mtd_target]": 834562.7457101769
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-FASHION JWELRY&HAIR ACCS",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "GM FASHION",
+      "[mtd_sales]": 107787.59,
+      "[mtd_target]": 91687.26945703049
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-LUGGAGE",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "GM FASHION",
+      "[mtd_sales]": 277712.25,
+      "[mtd_target]": 290877.18720547203
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-UTENSILS",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "GM HOME WARE",
+      "[mtd_sales]": 297850.64999999997,
+      "[mtd_target]": 272908.59704993124
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-TOYS",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "GM FASHION",
+      "[mtd_sales]": 297357.36,
+      "[mtd_target]": 284796.5459924802
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-ELECTRONICS",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "ELECTRONICS",
+      "[mtd_sales]": 854701.81,
+      "[mtd_target]": 855344.5909938581
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-BAKERY",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "FMCG FOOD",
+      "[mtd_sales]": 82782.1,
+      "[mtd_target]": 74680.37580578338
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-FRESH BAKES",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "LIVE KITCHEN",
+      "[mtd_sales]": 10471.08,
+      "[mtd_target]": 11566.090841126004
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-HOT FOOD",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "LIVE KITCHEN",
+      "[mtd_sales]": 50385.479999999996,
+      "[mtd_target]": 42871.51873487031
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-NON TRADING MERCHENDISE",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "OTHER NON TRADE",
+      "[mtd_sales]": 9331.529999999999,
+      "[mtd_target]": null
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-FOOTWEAR ACC",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "FOOTWEAR",
+      "[mtd_sales]": null,
+      "[mtd_target]": 15.190153449243502
+    },
+    {
+      "REP_DEPT_WISE_PERF_EVAL_RPT[SECTION]": "CF-INFANT UTILITIES",
+      "REP_DEPT_WISE_PERF_EVAL_RPT[DEPARTMENT]": "GM OTHERS",
+      "[mtd_sales]": null,
+      "[mtd_target]": 592.3552963051947
+    }
+  ]
+}

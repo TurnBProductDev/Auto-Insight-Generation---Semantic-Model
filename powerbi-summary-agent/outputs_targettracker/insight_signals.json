@@ -1,0 +1,93 @@
+[
+  {
+    "candidate_id": "target_branch_below_every_period:CFH017",
+    "story_key": "tt:v1:242c6b46c652e4dd1b1724bf1a9ab192",
+    "kind": "business",
+    "analysis_type": "target_branch_below_every_period",
+    "spine": "target_vs_actual",
+    "report_id": "target_tracker",
+    "affected_segment": "CFH017",
+    "segment_members": [
+      "CFH017"
+    ],
+    "dimension": "branch",
+    "metric": "Sales against target",
+    "metric_family": "revenue",
+    "direction": "decrease",
+    "impact_value": -334833.91559999716,
+    "impact_share": 11.12994765069142,
+    "score": 11.12994765069142,
+    "severity": "critical",
+    "current": 2673571.21,
+    "target": 3008405.125599997,
+    "comparison_label": "against its target for this month so far",
+    "description": "CFH017 is below target in every period reported - today 91.3%, this week 94.5%, this month 88.9%, this year 92.8%. This month so far it is 334,834 short.",
+    "question": "Which departments in CFH017 are furthest below target?",
+    "attainment_by_scope": {
+      "day": 91.29161346685368,
+      "wtd": 94.48742344581747,
+      "mtd": 88.87005234930858,
+      "ytd": 92.80001108816799
+    },
+    "worst_scope": "mtd",
+    "id": "T1"
+  },
+  {
+    "candidate_id": "target_section_below_department_above:CF-CHILLED & DAIRY",
+    "story_key": "tt:v1:ed7a7dfd3839c5ee786c42fe78ca65c1",
+    "kind": "business",
+    "analysis_type": "target_section_below_department_above",
+    "spine": "target_vs_actual",
+    "report_id": "target_tracker",
+    "affected_segment": "CF-CHILLED & DAIRY",
+    "segment_members": [
+      "CF-CHILLED & DAIRY"
+    ],
+    "dimension": "section",
+    "metric": "Sales against target",
+    "metric_family": "revenue",
+    "direction": "decrease",
+    "impact_value": -51024.53984982264,
+    "impact_share": 0.3036208015545672,
+    "score": 0.3036208015545672,
+    "severity": "info",
+    "current": 706948.0500000002,
+    "target": 757972.5898498228,
+    "comparison_label": "against its target for this month so far",
+    "description": "CF-CHILLED & DAIRY is at 93.3% of its target for this month so far, 51,025 short, while FMCG FOOD overall is at 104.1%.",
+    "question": "Which branches drive the shortfall in CF-CHILLED & DAIRY?",
+    "attainment_pct": 93.2682869363479,
+    "parent": "FMCG FOOD",
+    "parent_attainment_pct": 104.11443671978617,
+    "id": "T2"
+  },
+  {
+    "candidate_id": "target_department_below_company_above:FASHION",
+    "story_key": "tt:v1:3a2b4dbd4cdbdb48e3e254847321ab13",
+    "kind": "business",
+    "analysis_type": "target_department_below_company_above",
+    "spine": "target_vs_actual",
+    "report_id": "target_tracker",
+    "affected_segment": "FASHION",
+    "segment_members": [
+      "FASHION"
+    ],
+    "dimension": "department",
+    "metric": "Sales against target",
+    "metric_family": "revenue",
+    "direction": "decrease",
+    "impact_value": -42180.28881023545,
+    "impact_share": 0.25099321103258015,
+    "score": 0.25099321103258015,
+    "severity": "info",
+    "current": 1022382.1499999999,
+    "target": 1064562.4388102354,
+    "comparison_label": "against its target for this month so far",
+    "description": "FASHION is at 96.0% of its target for this month so far, 42,180 short, while the business as a whole is at 105.1%.",
+    "question": "Which sections inside FASHION are furthest below target?",
+    "attainment_pct": 96.03778160185921,
+    "parent": "company",
+    "parent_attainment_pct": 105.10688690875185,
+    "id": "T3"
+  }
+]

@@ -75,3 +75,7 @@ desktop.ini
 
 outputs_inventory_chain/
 powerbi-summary-agent/outputs_inventory_chain/
+
+# Operational rollback snapshots of the published KPI feed (not fixtures)
+outputs_feed_backup/
+powerbi-summary-agent/outputs_feed_backup/

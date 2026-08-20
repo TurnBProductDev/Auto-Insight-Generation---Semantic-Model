@@ -95,6 +95,19 @@ def _pct(value: Any, decimals: int = 2) -> str:
     return f"{number:+.{decimals}f}%"
 
 
+def _mag(value: Any, decimals: int = 2) -> str:
+    """Unsigned size, for a sentence that states the direction in words.
+
+    ``_pct`` always carries a sign, which reads as a double negative next to a
+    direction word: a live page said "we sold -1.65% fewer items", literally
+    1.65% *more*. Where the prose owns the direction, the number must not.
+    """
+    number = _num(value)
+    if number is None:
+        return "n/a"
+    return f"{abs(number):.{decimals}f}%"
+
+
 def _pts(value: Any, decimals: int = 2) -> str:
     number = _num(value)
     if number is None:
@@ -926,8 +939,8 @@ def build_tldr(coverage: dict | None, bridge: dict | None, measures: dict | None
             "tone": "critical",
             "layer": "overview",
             "text": (
-                f"Revenue rose {_pct(revenue_pct)} but we sold {_pct(units_pct)} fewer "
-                "items, so the growth is price and footfall rather than real demand."
+                f"Revenue rose {_pct(revenue_pct)} but we sold {_mag(units_pct)} fewer "
+                "items, so the growth is price and transactions rather than real demand."
             ),
             "to": "Overview",
         })

@@ -34,7 +34,7 @@ python -m src.api.app                    # http://127.0.0.1:8020
 python -m src.api.app --allow-deploy     # also expose the ARM endpoints
 ```
 
-There is no suite for the LLM pipeline as a whole; the end-to-end run against a live model is the acceptance test and writes roughly 30 artifacts into `powerbi-summary-agent/outputs/`. Deterministic components are offline-testable: `python scripts/replay_metadata_scanner.py`, `python scripts/replay_stat_detector.py` (incl. the Phase-2 period, Phase-3 recent-week/rolling-week, and Phase-3b daily-anomaly fixtures), `python scripts/replay_novelty_filter.py` (memory/novelty + recent-week/rolling-week suppression/reserved-slot + daily recency + `commit_run` observed-vs-reported), `python scripts/replay_evidence_assembler.py`, `python scripts/replay_summary_coverage.py` (full-coverage tables + report shell; also replays the committed universe fixture), `python scripts/replay_config_schema.py` (the config catalogue cannot drift from the code), `python scripts/replay_config_ui.py` (onboarding services + API), and `python scripts/replay_summary_dashboard.py` (R6: three-lever spine, RAG bands, calendar comparator, contributions, mover ranking, entity stories + prose validation, two views, R6-off isolation, rendered shell; also replays the committed universe/overall fixtures) (from the project directory). They require no auth or LLM and write replay artifacts to `outputs_replay/`. **`python scripts/replay_all.py` is the one gate over all of them** - it discovers `scripts/replay_*.py` by glob (so a new replay joins automatically), runs them sequentially because they share `outputs_replay/`, and exits non-zero on any failure; `MIN_EXPECTED` guards the opposite failure mode, a replay deleted or renamed silently shrinking the gate. A replay proves the *code* is right; `python scripts/audit_summary_dashboard.py [output_dir]` proves a *produced* R6 artifact is right - it re-derives every arithmetic guarantee from the written `summary_dashboard.json`, re-runs prose grounding, and inspects `report_dashboard.html` as a document. Run it after every live run with `summary_r6_enabled`.
+There is no suite for the LLM pipeline as a whole; the end-to-end run against a live model is the acceptance test and writes roughly 30 artifacts into `powerbi-summary-agent/outputs/`. Deterministic components are offline-testable: `python scripts/replay_metadata_scanner.py`, `python scripts/replay_stat_detector.py` (incl. the Phase-2 period, Phase-3 recent-week/rolling-week, and Phase-3b daily-anomaly fixtures), `python scripts/replay_novelty_filter.py` (memory/novelty + recent-week/rolling-week suppression/reserved-slot + daily recency + `commit_run` observed-vs-reported), `python scripts/replay_evidence_assembler.py`, `python scripts/replay_summary_coverage.py` (full-coverage tables + report shell; also replays the committed universe fixture), `python scripts/replay_multi_report_feed.py` (multi-report KPI feed) and `python scripts/replay_target_tracker_signals.py` (target-vs-actual spine + detectors), `python scripts/replay_config_schema.py` (the config catalogue cannot drift from the code), `python scripts/replay_config_ui.py` (onboarding services + API), and `python scripts/replay_summary_dashboard.py` (R6: three-lever spine, RAG bands, calendar comparator, contributions, mover ranking, entity stories + prose validation, two views, R6-off isolation, rendered shell; also replays the committed universe/overall fixtures) (from the project directory). They require no auth or LLM and write replay artifacts to `outputs_replay/`. **`python scripts/replay_all.py` is the one gate over all of them** - it discovers `scripts/replay_*.py` by glob (so a new replay joins automatically), runs them sequentially because they share `outputs_replay/`, and exits non-zero on any failure; `MIN_EXPECTED` guards the opposite failure mode, a replay deleted or renamed silently shrinking the gate. A replay proves the *code* is right; `python scripts/audit_summary_dashboard.py [output_dir]` proves a *produced* R6 artifact is right - it re-derives every arithmetic guarantee from the written `summary_dashboard.json`, re-runs prose grounding, and inspects `report_dashboard.html` as a document. Run it after every live run with `summary_r6_enabled`.
 
 ## Authentication — the load-bearing detail
 
@@ -552,6 +552,185 @@ to figures from the other, and the combined report says so.
 pooling with provenance, partial failure, the starvation guarantee and its non-priority,
 chain-of-one equivalence, cross-dataset memory sharing, migration from the WP1 path).
 `scripts/run_inventory_chain.py` produces the combined artifact from both reports' saved scans.
+
+#### WP9 - Target Tracker (the second sales report)
+
+Actual-versus-target, prioritised **Daily -> WTD -> MTD -> YTD**. Report
+`4e9b98f8-5e85-4119-9f14-a187d090333e`, dataset `f34c5654-bf75-4fb3-b289-2676d8e38241` -
+a **different semantic model** from Sales YoY. Governed by
+`config/targettracker/summary_business_rules.md`; the approved design is
+`docs/dashboard-reference/reference_target_tracker.html`.
+
+- **Deliberately not in the LangGraph.** The summary branch is built around a year-on-year
+  spine with focus rotation and coverage. This model has **no prior year at all**, so that
+  machinery has nothing to rotate over. Target Tracker follows the inventory reports'
+  pattern instead - `target_tracker.py` (scan + pure model), `target_tracker_html.py`
+  (page), `target_tracker_doc.py` (business document), `target_tracker_publish.py` - and
+  publishes through the same blob layout, so the app sees it like any other report. The
+  three existing reports are untouched.
+- **The anchor is the latest date that carries a TARGET, not the latest date with sales.**
+  On the live model sales run to 2026-08-17 while targets stop at 2026-07-31, so reading
+  `MAX(TY_DATE)` produces a page of blank comparisons. `resolve_anchor` returns both dates
+  and the page states the gap ("sales have been recorded for a further 17 days ... but no
+  target has been set for them"). A forced `--anchor` is reported as such rather than
+  claimed to be the newest targeted day.
+- **Five model defects, each verified by query, none assumed.** (1) No target exists for
+  August - `ACTUAL_SALES_TARGET` is NULL on all 2,682 August rows. (2) No prior year:
+  `DOC_YR` holds 2026 alone and the `LY_SALES` / `LY_SAME_DAY_SALES` / `LYLY_SALES` columns
+  do not exist, so ~30 measures **fail at query time**. (3) `MTD_TARGET` and `WTD_TARGET`
+  are the same broken expression - both filter `MTD_CHECK = "Y"`, true on all 44,127 rows,
+  so both return the full year target of SAR 136.7M. (4) `CURRENT MTD REVENUE 1`,
+  `CURRENT YTD REVENUE 1` and `CURRENT week REVENUE 1` are identical and differentiate only
+  through report-page filter context, which a headless query does not have. (5) The model's
+  own `Metrics description` table says **QAR** on four rows; the group is Saudi and every
+  other City Flower dashboard uses SAR, so that table is stale. Scope targets are therefore
+  summed from `ACTUAL_SALES_TARGET` over an explicit date range, and no model measure is
+  used for a headline figure.
+- **Attainment is always against the ELAPSED target**, never the whole period - otherwise a
+  month reads "36% of target" on day 11. Whole-period targets appear only in the catch-up
+  arithmetic, which says so.
+- **Three period states, all produced by the live model.** Mid-period shows catch-up
+  arithmetic; a completed period reports the outcome instead of printing a negative "still
+  needed"; and a week whose remaining days carry no target says it *cannot be tracked
+  further* rather than that it is *complete*. With no run of consecutive misses the surplus
+  waterfall degenerates to `+X / 0 / +X`, so it is replaced by the three best and three
+  worst days - which is also the more useful reading when 13 of 31 days hit target yet the
+  month finished at 105.1%.
+- **`azure_blob_prefix` is load-bearing.** Sales YoY uses an empty prefix in the same
+  `insightgen` container, so Target Tracker sets `targettracker` or it would overwrite the
+  other report's `api/*.json`. The app container (`cityflower`) *is* shared, which is
+  correct: those blobs are keyed by report id and cannot collide.
+- **Verification is three tools.** `scripts/replay_target_tracker.py` proves the code (56
+  offline checks, no auth or LLM, from synthetic scans carrying the live figures plus the
+  committed live scan). `scripts/audit_target_tracker.py` proves a *produced artifact* -
+  re-deriving every arithmetic guarantee from the written `report_target_tracker.json`,
+  checking prose grounding and rounding, and inspecting the HTML as a document; it is
+  mutation-tested (two corruptions produce five precise failures). And **render the page and
+  look at it** - that is what caught the degenerate surplus chart. Accepted live on
+  2026-08-18 at anchor 2026-07-31, and the mid-July anchor reproduces every figure of the
+  approved reference exactly, including the derived burn rate and 28-July exhaustion date.
+- **A regex that is not what it looks like.** The auditor's SVG/script strippers were
+  written through a shell heredoc that turned `` into a literal **backspace byte**
+  (0x08), so `<svg.*?</svg>` matched nothing and two checks failed against a page that
+  was correct. The patterns now use `<svg[^>]*>` - a boundary no quoting layer can mangle.
+  If an auditor disagrees with the same expression run in isolation, look at the bytes.
+
+##### Target Tracker prose - LLM-authored, deterministically validated
+
+Structure stays code-owned; the model fills **four prose slots** and nothing else -
+`headline`, `narrative`, `today_note`, `month_note`. It cannot add a section, drop a
+period, choose a chart or reorder the page. Gated by
+`target_tracker_llm_authoring_enabled` (**code default false**); off, or on any failure,
+the page is exactly the deterministic Phase 3 page.
+
+- **Figure-grounding alone is not enough, and a live draft proved it.** The first authored
+  run produced *"No branch missed today. CFH017 was the lowest at 91.3% of target."* Every
+  number in that sentence was real, so a grounding check passed it - and 91.3% is below
+  target, so the claim was false. `validate()` therefore also holds a small set of
+  **assertions derived from the model**: it rejects "no branch missed" when one did and the
+  reverse; "days left" once the period is complete and "the month is complete" while days
+  remain; and a stated run length that is not the actual run. The run check uses
+  `finditer`, not `search` - a correct headline followed by a wrong sentence otherwise
+  passed on the first match.
+- **The rest of the validator is the rulebook.** Banned vocabulary with the plain
+  replacement named in the error; no asserted cause (`because`, `driven by`, `promotion`,
+  `stockout`, `weather`, ...); no prior-year comparison; no forecasting language; no emoji;
+  a headline that quotes no figure is rejected; every number must exist in the model and
+  carry at most one decimal place; and the narrative must not lead on the year or put the
+  week before today.
+- **Entity names are removed before the figure and name checks run.** A branch code like
+  `CFH017` otherwise leaks `017` into the figure check. The unknown-name token is
+  `[A-Z][A-Z0-9-]{2,}` - digits belong **inside** the token so `CFH099` is caught (there is
+  no word boundary between `H` and `0`), and spaces are excluded because including them
+  made `SAR 578894` read as one unknown entity.
+- **One repair attempt, then the fallback.** The rejection reasons are handed back and the
+  draft is re-requested once. The live run has exercised both paths: the first attempt was
+  rejected for asserting a cause and the second passed. The deterministic draft is asserted
+  to pass the same validator, so strict validation cannot dead-end.
+- **`config/targettracker/summary_business_rules.md` is the single rulebook**, loaded by the
+  runner and passed into the prompt, and `prompts/target_tracker_prompt.md` restates the
+  parts the model must act on. Both are enforced in code rather than trusted to the prompt.
+- **Verification:** `scripts/replay_target_tracker.py` grew to **83 offline checks** - every
+  rejection above is a named test, plus that a clean draft passes, that the deterministic
+  fallback passes, and that a failed LLM call still returns usable prose.
+
+#### Phase 5 - the multi-report insight feed
+
+The KPI feed carried findings from **one** report. Four reports now exist. Phase 5 makes
+the feed multi-report, with each card carrying the report it came from.
+`docs/phase5-insights-brief.md` is the brief; `docs/phase5-app-contract-change.md` is the
+handoff the **consumer app** needs before any of it can be switched on.
+
+- **Everything is behind `ai_content_multi_report_feed` (code default false).** The app
+that renders the feed today **cannot accept a new field**, so the flag ships OFF and the
+published card is byte-identical to what production renders - `reportId` is *removed* from
+the dumped payload rather than published as an explicit null. Flip it per client only after
+the app has shipped; rollback is flipping it back.
+- **`id` was the real breakage, and it is not obvious.** `_assemble_kpi_card` numbers cards
+`enumerate(signals, start=1)`. Verified against all seven committed `kpi_insights.json`
+payloads: every one is `[1, 2, 3, ...]` with an identical 12-key shape. Two reports in one
+feed therefore emit duplicate ids, and anything keying on id (a render key, a dedupe, a
+"seen" marker) mis-renders silently. In multi-report mode `id` becomes
+`stable_card_id(report_id, story_key, fallback)` - a sha256 of report + finding identity,
+bounded under 2^31 so it still fits a signed 32-bit column, and **stable across runs** so a
+republished finding keeps its id.
+- **`merge_alerts` was report-blind, and `insights.json` was worse.** The merge dropped
+every same-day card before appending its own, so the second report to publish erased the
+first; it now matches on `reportId` and a run replaces only its own cards. An untagged
+legacy card normalises to `""`, so single-report mode is unchanged while a tagged run
+leaves legacy cards to age out naturally. **`insights.json` was a plain
+`upload_blob(overwrite=True)`** - not a bad merge but no merge at all, so a second report
+would have erased the feed outright. It now gets the same read-merge-write with etag
+concurrency over a one-day window. `publish_kpi_feed` is the **single** implementation both
+the LangGraph publisher and the standalone runners call; a second copy would drift on
+exactly the report-awareness that stops one report erasing another.
+- **`_cap_feed` divides a total budget of 10 (`ai_content_feed_max_cards`) via
+`chain.fair_share`.** The slot is reserved *before* truncation - appending a quiet report's
+card and then cutting by score discards it every time, because an injected candidate is by
+definition the weakest thing in the list (WP8). Cards carry no score, so the caller's
+existing order becomes a descending score under a temporary key that is stripped before
+publish (`KpiCard` forbids extra fields).
+- **`TargetVsActualSpine`** (`domains/sales/spines.py`) is the third spine. Target Tracker
+holds **2026 only**, so `PeriodOverPeriodSpine` cannot be used at all. Its `classify`
+deliberately follows `SnapshotVsPolicySpine`, **not `BaseSpine`** - the two disagree, and
+the base maps "no baseline" to `current_only` while the policy spine maps it to
+`baseline_missing`. The policy reading is the one that has to hold here: August 2026 carries
+a NULL target on all 2,682 rows, and the base's mapping would have queued every August day
+as a 100% shortfall. `denominator` totals the **target**, not the actual - a shortfall is a
+share of what was asked for.
+- **`domains/sales/target_tracker_signals.py` turns the model into ranked signals; it
+recomputes nothing.** `target_tracker.build` already derives the run, the branch readings,
+the catch-up requirement and the surplus burn, so the detectors read them. Five detectors:
+run of days below target, branch below in every period, catch-up beyond the remaining
+target, surplus exhausting before month end, and a part below target inside a whole that is
+above. **Score is the gap as a share of the target it is measured against**, which is
+exposure-weighted by construction - a department at 10% of a trivial target must not
+outrank one 8% short of a large one, and the replay pins that ordering.
+- **Prose guards are imported, not copied.** The replay checks every signal against
+`target_tracker_author.BANNED`, `CAUSE_WORDS` and `PRIOR_YEAR_WORDS`. That caught the first
+draft of the detectors writing "month-to-date", which the rulebook bans in favour of "this
+month so far". No signal populates `prior`, and every signal carries an explicit
+`comparison_label` - without it a target signal falls through `_assemble_kpi_card` to the
+share branch and publishes against "the prior period", a comparison this dataset does not
+contain.
+- **On the committed live scan (anchor 2026-07-31) three signals fire**, led by CFH017 at
+score 11.13 - below target in all four periods (today 91.3%, week 94.5%, month 88.9%, year
+92.8%). That is precisely the case a live authored draft got wrong when it wrote "No branch
+missed today". A completed month with a surplus correctly produces *no* run, catch-up or
+surplus-exhaustion signal; those are exercised from synthetic mid-period models.
+- **Inventory (P5.3) is deliberately paused** - the semantic model is being changed. The
+blocking precondition is more than one retained `UPDATED_ON` **and** a durable item key
+across snapshots; with one snapshot every run sees `first_seen` forever and the identity
+cannot be validated. `docs/phase5-inventory-deferred.md` holds the restart checklist, the
+two blocking queries, the appear/persist/clear exit table, and the four config values that
+do not exist yet.
+- **Verification:** `scripts/replay_multi_report_feed.py` (legacy payload byte-identical,
+id collision, report-aware merge incl. the untagged-legacy migration rule, feed cap, and an
+end-to-end two-report publish against an in-memory container) and
+`scripts/replay_target_tracker_signals.py` (spine, live-scan detections, prose guards,
+synthetic mid-period states, exposure-weighted ranking). Both mutation-tested: reverting the
+merge fix, emitting `reportId` unconditionally, keeping the sequence id, classifying a
+missing target as a miss, and dropping the exposure weighting each produce precise failures.
 
 #### Two test failures worth remembering
 

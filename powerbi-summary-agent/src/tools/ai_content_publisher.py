@@ -18,6 +18,7 @@ from zoneinfo import ZoneInfo
 
 import requests
 
+from . import api_payloads
 from .azure_blob import PROJECT_ROOT, _service_client
 
 
@@ -146,15 +147,127 @@ def _card_date(card: dict) -> date | None:
         return None
 
 
-def merge_alerts(previous: list[dict], today: list[dict], run_date: date, days: int = 7) -> list[dict]:
-    """Replace a same-day rerun, retain seven calendar days, newest first."""
+_FEED_ORDER_KEY = "__feed_order"
+
+
+def publish_kpi_feed(
+    container,
+    *,
+    client: str,
+    dataset_id: str,
+    cards: list[dict],
+    report_id: str,
+    cfg: dict,
+    now,
+    expires,
+    json_settings,
+    receipts: dict,
+) -> None:
+    """Write this run's cards into the shared client KPI feed.
+
+    Extracted so the LangGraph publisher and the standalone report runners share
+    ONE implementation of the merge. A second copy would be free to drift, and
+    the thing it would drift on is precisely the report-awareness that stops one
+    report erasing another's cards.
+
+    ``insights.json`` holds today's feed (a one-day window); ``alerts.json``
+    holds the rolling retention. Both are read-merge-write with etag optimistic
+    concurrency and three retries.
+    """
+    insights_blob = "ai-content/kpi/client/insights.json"
+    alerts_blob = "ai-content/kpi/client/alerts.json"
+    run_date = _run_date(cards, now, {})
+    alert_days = max(1, int(cfg.get("ai_content_alert_days", 7)))
+
+    for blob_name, days in ((insights_blob, 1), (alerts_blob, alert_days)):
+        blob_client = container.get_blob_client(blob_name)
+        for attempt in range(3):
+            try:
+                previous, etag = _download_alerts(blob_client)
+                merged = merge_alerts(previous, cards, run_date, days, report_id=report_id)
+                merged = _cap_feed(merged, cfg)
+                envelope = build_envelope(
+                    client=client,
+                    dataset_id=dataset_id,
+                    payload=merged,
+                    generated_at=now,
+                    expires_at=expires,
+                )
+                _upload_alerts(blob_client, envelope, etag, json_settings)
+                receipts[blob_name] = {"status": "ok", "cards": len(merged)}
+                break
+            except Exception as exc:  # noqa: BLE001 - retry only Azure write conflicts
+                from azure.core.exceptions import ResourceExistsError, ResourceModifiedError
+
+                if isinstance(exc, (ResourceExistsError, ResourceModifiedError)) and attempt < 2:
+                    continue
+                raise
+
+
+def _cap_feed(cards: list[dict], cfg: dict) -> list[dict]:
+    """Trim a shared feed to its total budget, guaranteeing every report a slot.
+
+    ``fair_share`` reserves one place per contributing report **before** the list
+    is truncated. Appending a quiet report's card and then cutting by score
+    discards it every time, because an injected candidate is by definition the
+    weakest thing in the list (WP8).
+
+    Cards carry no score of their own, so the caller's existing order - newest
+    date first, as ``merge_alerts`` left it - is turned into a descending score.
+    That keeps the published ordering identical to what it would have been, and
+    only changes *which* cards survive the cut. The temporary key never reaches
+    the payload: ``KpiCard`` forbids extra fields, so leaking it would break the
+    contract this whole change exists to protect.
+    """
+    limit = max(1, int(cfg.get("ai_content_feed_max_cards", 10)))
+    if len(cards) <= limit:
+        return cards
+    from ..kernel import chain
+
+    total = len(cards)
+    ranked = [{**card, _FEED_ORDER_KEY: float(total - index)} for index, card in enumerate(cards)]
+    selected = ranked[:limit]
+    chosen = chain.fair_share(
+        ranked, selected, limit=limit,
+        score_key=_FEED_ORDER_KEY, report_key="reportId",
+    )
+    return [{k: v for k, v in card.items() if k != _FEED_ORDER_KEY} for card in chosen]
+
+
+def _card_report(card: dict) -> str:
+    """The report a published card belongs to; '' for a pre-multi-report card."""
+    return str(card.get("reportId") or "")
+
+
+def merge_alerts(
+    previous: list[dict],
+    today: list[dict],
+    run_date: date,
+    days: int = 7,
+    report_id: str = "",
+) -> list[dict]:
+    """Replace this report's same-day rerun, retain N calendar days, newest first.
+
+    The merge is **report-aware**: a run clears only the cards it published
+    itself for that date. Dropping every same-day card - the previous behaviour -
+    silently deleted the other reports' findings the moment two reports shared a
+    client feed, and the seven-day retention repeated the fault on every
+    subsequent day.
+
+    ``report_id`` defaults to ``""``, which is also what an untagged legacy card
+    reports. So in single-report mode a run still replaces the untagged cards it
+    wrote yesterday - today's behaviour exactly - while in multi-report mode a
+    run matches only its own tagged cards and leaves untagged legacy cards to
+    age out of the window naturally.
+    """
     cutoff = run_date - timedelta(days=max(1, int(days)) - 1)
+    own = str(report_id or "")
     merged = [
         card for card in previous
         if isinstance(card, dict)
         and _card_date(card) is not None
         and cutoff <= _card_date(card) <= run_date
-        and _card_date(card) != run_date
+        and not (_card_date(card) == run_date and _card_report(card) == own)
     ]
     merged.extend(card for card in today if isinstance(card, dict))
     indexed = list(enumerate(merged))
@@ -292,15 +405,52 @@ def publish(
 
         insights_blob = "ai-content/kpi/client/insights.json"
         alerts_blob = "ai-content/kpi/client/alerts.json"
-        upload_json(insights_blob, insights)
+        multi_report = api_payloads.multi_report_feed(state)
+        feed_report = api_payloads.feed_report_id(state) if multi_report else ""
+        run_date = _run_date(insights, now, state)
+
+        if multi_report:
+            # insights.json is a plain overwrite in single-report mode, which
+            # would erase every other report's cards the moment a second report
+            # publishes into the same client feed. In multi-report mode it gets
+            # the same read-merge-write with etag concurrency that alerts use,
+            # over a single day's window (insights is today's feed; alerts is
+            # the rolling history).
+            insights_client = container.get_blob_client(insights_blob)
+            for attempt in range(3):
+                try:
+                    previous, etag = _download_alerts(insights_client)
+                    merged_insights = merge_alerts(
+                        previous, insights, run_date, 1, report_id=feed_report,
+                    )
+                    merged_insights = _cap_feed(merged_insights, cfg)
+                    envelope = build_envelope(
+                        client=client,
+                        dataset_id=dataset_id,
+                        payload=merged_insights,
+                        generated_at=now,
+                        expires_at=expires,
+                    )
+                    _upload_alerts(insights_client, envelope, etag, json_settings)
+                    receipts[insights_blob] = {"status": "ok", "cards": len(merged_insights)}
+                    break
+                except Exception as exc:  # noqa: BLE001 - retry only Azure write conflicts
+                    from azure.core.exceptions import ResourceExistsError, ResourceModifiedError
+
+                    if isinstance(exc, (ResourceExistsError, ResourceModifiedError)) and attempt < 2:
+                        continue
+                    raise
+        else:
+            upload_json(insights_blob, insights)
 
         alert_client = container.get_blob_client(alerts_blob)
         alert_days = max(1, int(cfg.get("ai_content_alert_days", 7)))
-        run_date = _run_date(insights, now, state)
         for attempt in range(3):
             try:
                 previous, etag = _download_alerts(alert_client)
-                merged = merge_alerts(previous, insights, run_date, alert_days)
+                merged = merge_alerts(
+                    previous, insights, run_date, alert_days, report_id=feed_report,
+                )
                 envelope = build_envelope(
                     client=client,
                     dataset_id=dataset_id,

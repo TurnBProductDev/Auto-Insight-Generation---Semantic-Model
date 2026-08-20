@@ -1,0 +1,1679 @@
+{
+  "report_id": "target_tracker",
+  "report_name": "Target Tracker",
+  "anchor": "2026-07-31",
+  "sold_through": "2026-08-19",
+  "anchor_forced": false,
+  "target_lag_days": 19,
+  "population": [
+    "CFH014",
+    "CFH017",
+    "CFH018",
+    "CFH021"
+  ],
+  "periods": {
+    "day": {
+      "name": "Today",
+      "when": "Friday 31 July 2026",
+      "elapsed": "Full day",
+      "actual": 1358215.17,
+      "target": 1086638.819171638,
+      "variance": 271576.35082836193,
+      "attainment": 124.9923291931894,
+      "band": "good",
+      "status": "On target"
+    },
+    "wtd": {
+      "name": "This week so far",
+      "when": "Mon 27 Jul \u2013 Fri 31 Jul",
+      "elapsed": "5 days of 7",
+      "actual": 3319061.490000001,
+      "target": 2831225.947682229,
+      "variance": 487835.5423177723,
+      "attainment": 117.23054080926099,
+      "band": "good",
+      "status": "On target"
+    },
+    "mtd": {
+      "name": "This month so far",
+      "when": "1 \u2013 31 July",
+      "elapsed": "31 days of 31",
+      "actual": 17663580.730000008,
+      "target": 16805350.486057665,
+      "variance": 858230.2439423427,
+      "attainment": 105.10688690875185,
+      "band": "good",
+      "status": "On target"
+    },
+    "ytd": {
+      "name": "This year so far",
+      "when": "1 January \u2013 31 July 2026",
+      "elapsed": "212 days elapsed",
+      "actual": 128378807.45000002,
+      "target": 124789767.77979597,
+      "variance": 3589039.6702040434,
+      "attainment": 102.8760688749235,
+      "band": "good",
+      "status": "On target"
+    }
+  },
+  "days": [
+    {
+      "date": "2026-07-01",
+      "dow": "Wed",
+      "day": 1,
+      "actual": 548926.52,
+      "target": 454347.8096095215,
+      "variance": 94578.71039047855,
+      "attainment": 120.81636763513002,
+      "band": "good"
+    },
+    {
+      "date": "2026-07-02",
+      "dow": "Thu",
+      "day": 2,
+      "actual": 874022.5699999997,
+      "target": 648474.9994328407,
+      "variance": 225547.57056715898,
+      "attainment": 134.78122838419736,
+      "band": "good"
+    },
+    {
+      "date": "2026-07-03",
+      "dow": "Fri",
+      "day": 3,
+      "actual": 1423202.9600000004,
+      "target": 1163831.9991014122,
+      "variance": 259370.96089858818,
+      "attainment": 122.28594514490467,
+      "band": "good"
+    },
+    {
+      "date": "2026-07-04",
+      "dow": "Sat",
+      "day": 4,
+      "actual": 532904.0800000002,
+      "target": 513024.9995790565,
+      "variance": 19879.080420943676,
+      "attainment": 103.8748755786277,
+      "band": "good"
+    },
+    {
+      "date": "2026-07-05",
+      "dow": "Sun",
+      "day": 5,
+      "actual": 495771.50999999995,
+      "target": 439024.99962225056,
+      "variance": 56746.51037774939,
+      "attainment": 112.92557608941989,
+      "band": "good"
+    },
+    {
+      "date": "2026-07-06",
+      "dow": "Mon",
+      "day": 6,
+      "actual": 455209.4199999999,
+      "target": 441024.999620351,
+      "variance": 14184.420379648916,
+      "attainment": 103.21623953106045,
+      "band": "good"
+    },
+    {
+      "date": "2026-07-07",
+      "dow": "Tue",
+      "day": 7,
+      "actual": 431450.77999999985,
+      "target": 441024.999620351,
+      "variance": -9574.219620351156,
+      "attainment": 97.82909820790364,
+      "band": "warn"
+    },
+    {
+      "date": "2026-07-08",
+      "dow": "Wed",
+      "day": 8,
+      "actual": 439371.9499999999,
+      "target": 441024.99962035107,
+      "variance": -1653.049620351172,
+      "attainment": 99.6251800642199,
+      "band": "warn"
+    },
+    {
+      "date": "2026-07-09",
+      "dow": "Thu",
+      "day": 9,
+      "actual": 609818.11,
+      "target": 580336.9995002396,
+      "variance": 29481.11049976037,
+      "attainment": 105.07999843627896,
+      "band": "good"
+    },
+    {
+      "date": "2026-07-10",
+      "dow": "Fri",
+      "day": 10,
+      "actual": 1192610.759999999,
+      "target": 1023761.9991929247,
+      "variance": 168848.76080707437,
+      "attainment": 116.49297013760864,
+      "band": "good"
+    },
+    {
+      "date": "2026-07-11",
+      "dow": "Sat",
+      "day": 11,
+      "actual": 426132.1400000001,
+      "target": 485567.73959812976,
+      "variance": -59435.59959812969,
+      "attainment": 87.75956581314065,
+      "band": "crit"
+    },
+    {
+      "date": "2026-07-12",
+      "dow": "Sun",
+      "day": 12,
+      "actual": 401410.9799999999,
+      "target": 423024.9996336085,
+      "variance": -21614.01963360858,
+      "attainment": 94.89060465638461,
+      "band": "crit"
+    },
+    {
+      "date": "2026-07-13",
+      "dow": "Mon",
+      "day": 13,
+      "actual": 375439.24999999994,
+      "target": 426024.99963075895,
+      "variance": -50585.749630759005,
+      "attainment": 88.12610769917205,
+      "band": "crit"
+    },
+    {
+      "date": "2026-07-14",
+      "dow": "Tue",
+      "day": 14,
+      "actual": 365292.9499999997,
+      "target": 421024.99963807187,
+      "variance": -55732.049638072145,
+      "attainment": 86.76276950632827,
+      "band": "crit"
+    },
+    {
+      "date": "2026-07-15",
+      "dow": "Wed",
+      "day": 15,
+      "actual": 359154.0299999999,
+      "target": 423024.9996361721,
+      "variance": -63870.96963617217,
+      "attainment": 84.9013723323432,
+      "band": "crit"
+    },
+    {
+      "date": "2026-07-16",
+      "dow": "Thu",
+      "day": 16,
+      "actual": 526059.9499999997,
+      "target": 553336.9995234706,
+      "variance": -27277.049523470923,
+      "attainment": 95.07044539820006,
+      "band": "warn"
+    },
+    {
+      "date": "2026-07-17",
+      "dow": "Fri",
+      "day": 17,
+      "actual": 949971.9400000002,
+      "target": 959364.999239011,
+      "variance": -9393.059239010792,
+      "attainment": 99.02090870039437,
+      "band": "warn"
+    },
+    {
+      "date": "2026-07-18",
+      "dow": "Sat",
+      "day": 18,
+      "actual": 391459.7399999998,
+      "target": 443024.99964185205,
+      "variance": -51565.25964185223,
+      "attainment": 88.36064337598593,
+      "band": "crit"
+    },
+    {
+      "date": "2026-07-19",
+      "dow": "Sun",
+      "day": 19,
+      "actual": 341881.5399999999,
+      "target": 373024.999682606,
+      "variance": -31143.459682606102,
+      "attainment": 91.65110657218551,
+      "band": "crit"
+    },
+    {
+      "date": "2026-07-20",
+      "dow": "Mon",
+      "day": 20,
+      "actual": 358139.8099999999,
+      "target": 375024.9996807066,
+      "variance": -16885.18968070671,
+      "attainment": 95.49758290911737,
+      "band": "warn"
+    },
+    {
+      "date": "2026-07-21",
+      "dow": "Tue",
+      "day": 21,
+      "actual": 340467.23000000004,
+      "target": 375024.9996807066,
+      "variance": -34557.76968070655,
+      "attainment": 90.78520906336144,
+      "band": "crit"
+    },
+    {
+      "date": "2026-07-22",
+      "dow": "Wed",
+      "day": 22,
+      "actual": 338516.5700000002,
+      "target": 375024.9996807066,
+      "variance": -36508.42968070641,
+      "attainment": 90.2650677390069,
+      "band": "crit"
+    },
+    {
+      "date": "2026-07-23",
+      "dow": "Thu",
+      "day": 23,
+      "actual": 523015.82,
+      "target": 515336.9995597135,
+      "variance": 7678.820440286479,
+      "attainment": 101.49005804878108,
+      "band": "good"
+    },
+    {
+      "date": "2026-07-24",
+      "dow": "Fri",
+      "day": 24,
+      "actual": 901687.2199999997,
+      "target": 884148.999305573,
+      "variance": 17538.220694426796,
+      "attainment": 101.98362727415872,
+      "band": "good"
+    },
+    {
+      "date": "2026-07-25",
+      "dow": "Sat",
+      "day": 25,
+      "actual": 370602.58999999985,
+      "target": 418024.9996621827,
+      "variance": -47422.40966218285,
+      "attainment": 88.65560440152953,
+      "band": "crit"
+    },
+    {
+      "date": "2026-07-26",
+      "dow": "Sun",
+      "day": 26,
+      "actual": 371998.8199999998,
+      "target": 378239.99968286336,
+      "variance": -6241.179682863585,
+      "attainment": 98.3499419183332,
+      "band": "warn"
+    },
+    {
+      "date": "2026-07-27",
+      "dow": "Mon",
+      "day": 27,
+      "actual": 380547.34,
+      "target": 381239.9996800139,
+      "variance": -692.6596800138941,
+      "attainment": 99.81831400676865,
+      "band": "warn"
+    },
+    {
+      "date": "2026-07-28",
+      "dow": "Tue",
+      "day": 28,
+      "actual": 370747.18000000017,
+      "target": 381239.9996800139,
+      "variance": -10492.819680013752,
+      "attainment": 97.24771280851414,
+      "band": "warn"
+    },
+    {
+      "date": "2026-07-29",
+      "dow": "Wed",
+      "day": 29,
+      "actual": 431327.9699999999,
+      "target": 384645.1296765718,
+      "variance": 46682.8403234281,
+      "attainment": 112.13659987393609,
+      "band": "good"
+    },
+    {
+      "date": "2026-07-30",
+      "dow": "Thu",
+      "day": 30,
+      "actual": 778223.8299999995,
+      "target": 597461.99947399,
+      "variance": 180761.83052600943,
+      "attainment": 130.25495022029074,
+      "band": "good"
+    },
+    {
+      "date": "2026-07-31",
+      "dow": "Fri",
+      "day": 31,
+      "actual": 1358215.1699999997,
+      "target": 1086638.819171638,
+      "variance": 271576.3508283617,
+      "attainment": 124.99232919318939,
+      "band": "good"
+    }
+  ],
+  "run": {
+    "length": 0,
+    "average_shortfall": 0.0,
+    "first": null,
+    "last": null
+  },
+  "surplus": {
+    "built": 858230.2439423372,
+    "given_back": 0.0,
+    "now": 858230.2439423427,
+    "share_given_back": 0.0,
+    "days_until_exhausted": null,
+    "exhausts_on": null,
+    "earlier_days": 31,
+    "run_days": 0
+  },
+  "week_close": {
+    "needed": -487835.5423177723,
+    "remaining_target": 0,
+    "needed_vs_target": null
+  },
+  "month_close": {
+    "needed": -858230.2439423427,
+    "remaining_target": 0.0,
+    "needed_vs_target": null
+  },
+  "week_full_target": 2831225.947682229,
+  "month_full_target": 16805350.486057665,
+  "remaining_week_days": [],
+  "days_hit": 13,
+  "days_elapsed": 31,
+  "days_in_month": 31,
+  "prev_week": {
+    "actual": 3204428.0599999987,
+    "target": 3320825.9972524517,
+    "attainment": 96.49491008114376,
+    "variance": -116397.93725245306
+  },
+  "branches": [
+    {
+      "name": "CFH017",
+      "day": {
+        "actual": 136937.41999999995,
+        "target": 149999.9997806145,
+        "variance": -13062.579780614557,
+        "attainment": 91.29161346685368,
+        "band": "crit"
+      },
+      "wtd": {
+        "actual": 483213.5299999999,
+        "target": 511405.1292520344,
+        "variance": -28191.599252034503,
+        "attainment": 94.48742344581747,
+        "band": "crit"
+      },
+      "mtd": {
+        "actual": 2673571.21,
+        "target": 3008405.125599997,
+        "variance": -334833.91559999716,
+        "attainment": 88.87005234930858,
+        "band": "crit"
+      },
+      "ytd": {
+        "actual": 21247266.56,
+        "target": 22895758.643620495,
+        "variance": -1648492.083620496,
+        "attainment": 92.80001108816799,
+        "band": "crit"
+      },
+      "month_full_target": 3008405.125599997,
+      "close": {
+        "needed": 334833.91559999716,
+        "remaining_target": 0.0,
+        "needed_vs_target": null
+      }
+    },
+    {
+      "name": "CFH014",
+      "day": {
+        "actual": 340681.19,
+        "target": 276638.8198040136,
+        "variance": 64042.37019598641,
+        "attainment": 123.15017474458487,
+        "band": "good"
+      },
+      "wtd": {
+        "actual": 989992.9,
+        "target": 911820.8193540153,
+        "variance": 78172.08064598474,
+        "attainment": 108.57318444443571,
+        "band": "good"
+      },
+      "mtd": {
+        "actual": 5533118.549999998,
+        "target": 5363778.816200001,
+        "variance": 169339.7337999968,
+        "attainment": 103.15709762842098,
+        "band": "good"
+      },
+      "ytd": {
+        "actual": 39799372.360000014,
+        "target": 39128478.89380833,
+        "variance": 670893.4661916867,
+        "attainment": 101.71459122653972,
+        "band": "good"
+      },
+      "month_full_target": 5363778.816200001,
+      "close": {
+        "needed": -169339.7337999968,
+        "remaining_target": 0.0,
+        "needed_vs_target": null
+      }
+    },
+    {
+      "name": "CFH021",
+      "day": {
+        "actual": 488157.78,
+        "target": 359999.9996580674,
+        "variance": 128157.78034193261,
+        "attainment": 135.59938346212738,
+        "band": "good"
+      },
+      "wtd": {
+        "actual": 1098833.7500000002,
+        "target": 827999.999213555,
+        "variance": 270833.7507864452,
+        "attainment": 132.70939022266745,
+        "band": "good"
+      },
+      "mtd": {
+        "actual": 5794945.340000001,
+        "target": 5252623.805010993,
+        "variance": 542321.5349890077,
+        "attainment": 110.32477396290277,
+        "band": "good"
+      },
+      "ytd": {
+        "actual": 41808278.93000002,
+        "target": 38590044.502443165,
+        "variance": 3218234.4275568575,
+        "attainment": 108.33954577936056,
+        "band": "good"
+      },
+      "month_full_target": 5252623.805010993,
+      "close": {
+        "needed": -542321.5349890077,
+        "remaining_target": 0.0,
+        "needed_vs_target": null
+      }
+    },
+    {
+      "name": "CFH018",
+      "day": {
+        "actual": 392438.7800000001,
+        "target": 299999.999928943,
+        "variance": 92438.78007105709,
+        "attainment": 130.81292669765062,
+        "band": "good"
+      },
+      "wtd": {
+        "actual": 747021.31,
+        "target": 579999.9998626232,
+        "variance": 167021.3101373769,
+        "attainment": 128.79677761671326,
+        "band": "good"
+      },
+      "mtd": {
+        "actual": 3661945.6299999994,
+        "target": 3180542.7392466664,
+        "variance": 481402.890753333,
+        "attainment": 115.13587240356836,
+        "band": "good"
+      },
+      "ytd": {
+        "actual": 25523889.599999998,
+        "target": 24175485.739923958,
+        "variance": 1348403.86007604,
+        "attainment": 105.57756677397077,
+        "band": "good"
+      },
+      "month_full_target": 3180542.7392466664,
+      "close": {
+        "needed": -481402.890753333,
+        "remaining_target": 0.0,
+        "needed_vs_target": null
+      }
+    }
+  ],
+  "departments": [
+    {
+      "name": "FASHION",
+      "day": {
+        "actual": 75750.13,
+        "target": 66747.39088280326,
+        "variance": 9002.739117196747,
+        "attainment": 113.48777682262366,
+        "band": "good"
+      },
+      "wtd": {
+        "actual": 185244.03,
+        "target": 178173.37212680661,
+        "variance": 7070.657873193384,
+        "attainment": 103.96841446552472,
+        "band": "good"
+      },
+      "mtd": {
+        "actual": 1022382.1499999999,
+        "target": 1064562.4388102354,
+        "variance": -42180.28881023545,
+        "attainment": 96.03778160185921,
+        "band": "warn"
+      }
+    },
+    {
+      "name": "FOOTWEAR",
+      "day": {
+        "actual": 19673.69,
+        "target": 16224.717178238401,
+        "variance": 3448.9728217615975,
+        "attainment": 121.25752198865798,
+        "band": "good"
+      },
+      "wtd": {
+        "actual": 48394.35999999999,
+        "target": 42080.69045145814,
+        "variance": 6313.669548541853,
+        "attainment": 115.00372137625673,
+        "band": "good"
+      },
+      "mtd": {
+        "actual": 271356.27,
+        "target": 247901.41723226983,
+        "variance": 23454.85276773019,
+        "attainment": 109.4613629198232,
+        "band": "good"
+      }
+    },
+    {
+      "name": "FARM FRESH",
+      "day": {
+        "actual": 220515.76000000004,
+        "target": 191769.0317666088,
+        "variance": 28746.728233391244,
+        "attainment": 114.99028699710871,
+        "band": "good"
+      },
+      "wtd": {
+        "actual": 602508.3999999999,
+        "target": 507980.670337903,
+        "variance": 94527.72966209688,
+        "attainment": 118.60852886374951,
+        "band": "good"
+      },
+      "mtd": {
+        "actual": 3332056.3800000004,
+        "target": 3002853.771308806,
+        "variance": 329202.60869119456,
+        "attainment": 110.96299166601477,
+        "band": "good"
+      }
+    },
+    {
+      "name": "FMCG FOOD",
+      "day": {
+        "actual": 518608.3,
+        "target": 411458.2795636311,
+        "variance": 107150.02043636888,
+        "attainment": 126.04152735728297,
+        "band": "good"
+      },
+      "wtd": {
+        "actual": 1300875.5500000003,
+        "target": 1080788.9635281577,
+        "variance": 220086.5864718426,
+        "attainment": 120.36351164739744,
+        "band": "good"
+      },
+      "mtd": {
+        "actual": 6642623.7700000005,
+        "target": 6380117.858081462,
+        "variance": 262505.9119185386,
+        "attainment": 104.11443671978617,
+        "band": "good"
+      }
+    },
+    {
+      "name": "FMCG NON-FOOD",
+      "day": {
+        "actual": 256534.04999999996,
+        "target": 172113.83210129474,
+        "variance": 84420.21789870522,
+        "attainment": 149.0490606524995,
+        "band": "good"
+      },
+      "wtd": {
+        "actual": 545027.5999999999,
+        "target": 435812.3549788568,
+        "variance": 109215.24502114306,
+        "attainment": 125.0601534750986,
+        "band": "good"
+      },
+      "mtd": {
+        "actual": 2802008.0599999996,
+        "target": 2591025.619365949,
+        "variance": 210982.4406340504,
+        "attainment": 108.14281568878042,
+        "band": "good"
+      }
+    },
+    {
+      "name": "HOME FASHION",
+      "day": {
+        "actual": 17558.9,
+        "target": 13927.951380905954,
+        "variance": 3630.948619094048,
+        "attainment": 126.06950957677647,
+        "band": "good"
+      },
+      "wtd": {
+        "actual": 42126.939999999995,
+        "target": 35570.6001120671,
+        "variance": 6556.339887932896,
+        "attainment": 118.43190687611902,
+        "band": "good"
+      },
+      "mtd": {
+        "actual": 233202.04,
+        "target": 213511.60763782647,
+        "variance": 19690.43236217354,
+        "attainment": 109.22218355246234,
+        "band": "good"
+      }
+    },
+    {
+      "name": "GM HOME WARE",
+      "day": {
+        "actual": 43912.22000000001,
+        "target": 37172.188078238556,
+        "variance": 6740.031921761452,
+        "attainment": 118.13192139127054,
+        "band": "good"
+      },
+      "wtd": {
+        "actual": 100031.56999999998,
+        "target": 96472.5044182645,
+        "variance": 3559.065581735471,
+        "attainment": 103.689202019992,
+        "band": "good"
+      },
+      "mtd": {
+        "actual": 579881.17,
+        "target": 574233.4337917989,
+        "variance": 5647.736208201153,
+        "attainment": 100.98352618915061,
+        "band": "good"
+      }
+    },
+    {
+      "name": "GM FASHION",
+      "day": {
+        "actual": 109071.58,
+        "target": 96357.91272172109,
+        "variance": 12713.66727827891,
+        "attainment": 113.19421199481108,
+        "band": "good"
+      },
+      "wtd": {
+        "actual": 274969.34,
+        "target": 248103.22936397622,
+        "variance": 26866.110636023805,
+        "attainment": 110.8286017497218,
+        "band": "good"
+      },
+      "mtd": {
+        "actual": 1504527.19,
+        "target": 1491808.973640371,
+        "variance": 12718.21635962883,
+        "attainment": 100.85253652339905,
+        "band": "good"
+      }
+    },
+    {
+      "name": "ELECTRONICS",
+      "day": {
+        "actual": 70343.08,
+        "target": 55913.88272029241,
+        "variance": 14429.197279707594,
+        "attainment": 125.80610856858078,
+        "band": "good"
+      },
+      "wtd": {
+        "actual": 150700.44,
+        "target": 144595.28138333544,
+        "variance": 6105.1586166645575,
+        "attainment": 104.22223917561959,
+        "band": "good"
+      },
+      "mtd": {
+        "actual": 868585.6200000001,
+        "target": 867945.080157847,
+        "variance": 640.5398421530845,
+        "attainment": 100.07379958211602,
+        "band": "good"
+      }
+    },
+    {
+      "name": "GM OTHERS",
+      "day": {
+        "actual": 22922.78,
+        "target": 21222.632775572394,
+        "variance": 1700.1472244276047,
+        "attainment": 108.01100995529877,
+        "band": "good"
+      },
+      "wtd": {
+        "actual": 59317.94,
+        "target": 53066.980976039595,
+        "variance": 6250.959023960408,
+        "attainment": 111.77937562866596,
+        "band": "good"
+      },
+      "mtd": {
+        "actual": 336769.98999999993,
+        "target": 316952.6764550994,
+        "variance": 19817.313544900506,
+        "attainment": 106.25245186964302,
+        "band": "good"
+      }
+    },
+    {
+      "name": "LIVE KITCHEN",
+      "day": {
+        "actual": 3324.68,
+        "target": 3731.000002331912,
+        "variance": -406.3200023319123,
+        "attainment": 89.10962202953743,
+        "band": "crit"
+      },
+      "wtd": {
+        "actual": 9761.0,
+        "target": 8581.300005363402,
+        "variance": 1179.6999946365977,
+        "attainment": 113.74733424888154,
+        "band": "good"
+      },
+      "mtd": {
+        "actual": 60856.55999999999,
+        "target": 54437.609575996285,
+        "variance": 6418.950424003706,
+        "attainment": 111.79138921418415,
+        "band": "good"
+      }
+    }
+  ],
+  "sections": [
+    {
+      "name": "CF-LADIES FOOTWEAR",
+      "mtd": {
+        "actual": 20728.540000000008,
+        "target": 19034.595571913556,
+        "variance": 1693.9444280864518,
+        "attainment": 108.89929298306681,
+        "band": "good"
+      },
+      "department": "FOOTWEAR"
+    },
+    {
+      "name": "CF-EGGS",
+      "mtd": {
+        "actual": 251725.21000000002,
+        "target": 213858.16161136836,
+        "variance": 37867.048388631665,
+        "attainment": 117.70661830407259,
+        "band": "good"
+      },
+      "department": "FARM FRESH"
+    },
+    {
+      "name": "CF-DELICATESSEN",
+      "mtd": {
+        "actual": 26019.720000000005,
+        "target": 25835.675258242394,
+        "variance": 184.0447417576106,
+        "attainment": 100.71236667870292,
+        "band": "good"
+      },
+      "department": "FARM FRESH"
+    },
+    {
+      "name": "CF-GROCERY FOOD",
+      "mtd": {
+        "actual": 2308487.87,
+        "target": 2299929.591420537,
+        "variance": 8558.278579463251,
+        "attainment": 100.37211045987617,
+        "band": "good"
+      },
+      "department": "FMCG FOOD"
+    },
+    {
+      "name": "CF-PERSONAL GROOMING",
+      "mtd": {
+        "actual": 109898.59000000001,
+        "target": 102577.09730248054,
+        "variance": 7321.4926975194685,
+        "attainment": 107.13755106164659,
+        "band": "good"
+      },
+      "department": "FMCG NON-FOOD"
+    },
+    {
+      "name": "CF-ROASTERY",
+      "mtd": {
+        "actual": 861174.69,
+        "target": 811351.3060122062,
+        "variance": 49823.3839877937,
+        "attainment": 106.14079050820486,
+        "band": "good"
+      },
+      "department": "FMCG FOOD"
+    },
+    {
+      "name": "CF-KIDS FOOTWEAR",
+      "mtd": {
+        "actual": 33769.38,
+        "target": 25878.73599780189,
+        "variance": 7890.644002198107,
+        "attainment": 130.4908400582947,
+        "band": "good"
+      },
+      "department": "FOOTWEAR"
+    },
+    {
+      "name": "CF-HOME DECORE",
+      "mtd": {
+        "actual": 8398.179999999998,
+        "target": 8551.688219020003,
+        "variance": -153.50821902000462,
+        "attainment": 98.20493667345609,
+        "band": "warn"
+      },
+      "department": "HOME FASHION"
+    },
+    {
+      "name": "CF-STAPLES",
+      "mtd": {
+        "actual": 1657835.84,
+        "target": 1391955.1174123317,
+        "variance": 265880.72258766834,
+        "attainment": 119.10124250859073,
+        "band": "good"
+      },
+      "department": "FMCG FOOD"
+    },
+    {
+      "name": "CF-CHILLED & DAIRY",
+      "mtd": {
+        "actual": 706948.0500000002,
+        "target": 757972.5898498228,
+        "variance": -51024.53984982264,
+        "attainment": 93.2682869363479,
+        "band": "crit"
+      },
+      "department": "FMCG FOOD"
+    },
+    {
+      "name": "CF-HOME ACCESSORIES",
+      "mtd": {
+        "actual": 52112.18000000001,
+        "target": 54179.57903431047,
+        "variance": -2067.3990343104597,
+        "attainment": 96.18417294641357,
+        "band": "warn"
+      },
+      "department": "GM HOME WARE"
+    },
+    {
+      "name": "CF-SMART WATCHES",
+      "mtd": {
+        "actual": 121802.7,
+        "target": 137005.9917946991,
+        "variance": -15203.291794699107,
+        "attainment": 88.90319204616908,
+        "band": "crit"
+      },
+      "department": "GM FASHION"
+    },
+    {
+      "name": "CF-WATCHES & SUNGLASSES",
+      "mtd": {
+        "actual": 326871.93000000005,
+        "target": 308328.88018391596,
+        "variance": 18543.049816084094,
+        "attainment": 106.01404896129849,
+        "band": "good"
+      },
+      "department": "GM FASHION"
+    },
+    {
+      "name": "CF-HOME CARE",
+      "mtd": {
+        "actual": 376036.86,
+        "target": 318204.83275263547,
+        "variance": 57832.02724736452,
+        "attainment": 118.17446540553382,
+        "band": "good"
+      },
+      "department": "FMCG NON-FOOD"
+    },
+    {
+      "name": "CF-ELECTRICALS",
+      "mtd": {
+        "actual": 13883.810000000003,
+        "target": 12600.489163988965,
+        "variance": 1283.3208360110384,
+        "attainment": 110.18469060454137,
+        "band": "good"
+      },
+      "department": "ELECTRONICS"
+    },
+    {
+      "name": "CF-PERSONAL ACCESSORIES",
+      "mtd": {
+        "actual": 190405.19999999995,
+        "target": 172619.52016129784,
+        "variance": 17785.67983870211,
+        "attainment": 110.30340011493655,
+        "band": "good"
+      },
+      "department": "GM OTHERS"
+    },
+    {
+      "name": "CF-PLASTICS",
+      "mtd": {
+        "actual": 207889.74000000002,
+        "target": 227522.70551738006,
+        "variance": -19632.965517380042,
+        "attainment": 91.37098626146553,
+        "band": "crit"
+      },
+      "department": "GM HOME WARE"
+    },
+    {
+      "name": "CF-CROCKERY",
+      "mtd": {
+        "actual": 22028.6,
+        "target": 19622.55219017712,
+        "variance": 2406.0478098228778,
+        "attainment": 112.26164561319054,
+        "band": "good"
+      },
+      "department": "GM HOME WARE"
+    },
+    {
+      "name": "CF-PERFUMES",
+      "mtd": {
+        "actual": 271460.0,
+        "target": 279855.2900745946,
+        "variance": -8395.29007459461,
+        "attainment": 97.00013172080583,
+        "band": "warn"
+      },
+      "department": "GM FASHION"
+    },
+    {
+      "name": "CF-LADIES HAND BAGS",
+      "mtd": {
+        "actual": 64674.46,
+        "target": 61718.32235596896,
+        "variance": 2956.1376440310414,
+        "attainment": 104.78972456020614,
+        "band": "good"
+      },
+      "department": "GM FASHION"
+    },
+    {
+      "name": "CF-MENS FOOTWEAR",
+      "mtd": {
+        "actual": 216858.34999999998,
+        "target": 202972.8955091051,
+        "variance": 13885.454490894888,
+        "attainment": 106.84103877814168,
+        "band": "good"
+      },
+      "department": "FOOTWEAR"
+    },
+    {
+      "name": "CF-BEAUTY PRODUCTS",
+      "mtd": {
+        "actual": 129670.87000000001,
+        "target": 126703.0116021965,
+        "variance": 2967.8583978035167,
+        "attainment": 102.34237399748758,
+        "band": "good"
+      },
+      "department": "FMCG NON-FOOD"
+    },
+    {
+      "name": "CF-STATIONARY",
+      "mtd": {
+        "actual": 146364.78999999998,
+        "target": 143740.8009974964,
+        "variance": 2623.989002503571,
+        "attainment": 101.82550047327848,
+        "band": "good"
+      },
+      "department": "GM OTHERS"
+    },
+    {
+      "name": "CF-FRUIT & VEGETABLES",
+      "mtd": {
+        "actual": 1890419.51,
+        "target": 1668659.0861242982,
+        "variance": 221760.42387570185,
+        "attainment": 113.28973819276484,
+        "band": "good"
+      },
+      "department": "FARM FRESH"
+    },
+    {
+      "name": "CF-KIDS FASHION",
+      "mtd": {
+        "actual": 90853.98000000001,
+        "target": 89958.47605129224,
+        "variance": 895.5039487077738,
+        "attainment": 100.99546367170247,
+        "band": "good"
+      },
+      "department": "FASHION"
+    },
+    {
+      "name": "CF-HOME LINEN",
+      "mtd": {
+        "actual": 224803.86000000002,
+        "target": 204959.9194188065,
+        "variance": 19843.940581193514,
+        "attainment": 109.68186396514201,
+        "band": "good"
+      },
+      "department": "HOME FASHION"
+    },
+    {
+      "name": "CF-MEAT",
+      "mtd": {
+        "actual": 1163891.94,
+        "target": 1094500.8483148967,
+        "variance": 69391.09168510325,
+        "attainment": 106.33997605318794,
+        "band": "good"
+      },
+      "department": "FARM FRESH"
+    },
+    {
+      "name": "CF-INFANT UTILITIES",
+      "mtd": {
+        "actual": 511.55000000000007,
+        "target": 153.6917113739946,
+        "variance": 357.85828862600545,
+        "attainment": 332.84163174889136,
+        "band": "good"
+      },
+      "department": "FASHION"
+    },
+    {
+      "name": "CF-SPORTS",
+      "mtd": {
+        "actual": 36860.899999999994,
+        "target": 37539.48657620953,
+        "variance": -678.5865762095345,
+        "attainment": 98.19233921904626,
+        "band": "warn"
+      },
+      "department": "GM FASHION"
+    },
+    {
+      "name": "CF-CONFECTIONERY",
+      "mtd": {
+        "actual": 551864.78,
+        "target": 593214.3817214934,
+        "variance": -41349.60172149341,
+        "attainment": 93.02956856819657,
+        "band": "crit"
+      },
+      "department": "FMCG FOOD"
+    },
+    {
+      "name": "CF-PERSONAL CARE",
+      "mtd": {
+        "actual": 2186401.7399999998,
+        "target": 2043540.677708637,
+        "variance": 142861.0622913628,
+        "attainment": 106.99085972937661,
+        "band": "good"
+      },
+      "department": "FMCG NON-FOOD"
+    },
+    {
+      "name": "CF-FROZEN FOOD",
+      "mtd": {
+        "actual": 473530.44,
+        "target": 451014.49585928576,
+        "variance": 22515.944140714244,
+        "attainment": 104.99228835157864,
+        "band": "good"
+      },
+      "department": "FMCG FOOD"
+    },
+    {
+      "name": "CF-LADIES FASHION",
+      "mtd": {
+        "actual": 135892.47,
+        "target": 139887.52533739217,
+        "variance": -3995.055337392172,
+        "attainment": 97.14409463763364,
+        "band": "warn"
+      },
+      "department": "FASHION"
+    },
+    {
+      "name": "CF-MENS FASHION",
+      "mtd": {
+        "actual": 795124.15,
+        "target": 834562.7457101769,
+        "variance": -39438.59571017686,
+        "attainment": 95.27434025627201,
+        "band": "warn"
+      },
+      "department": "FASHION"
+    },
+    {
+      "name": "CF-FASHION JWELRY&HAIR ACCS",
+      "mtd": {
+        "actual": 107787.59,
+        "target": 91687.26945703049,
+        "variance": 16100.320542969508,
+        "attainment": 117.56003929260316,
+        "band": "good"
+      },
+      "department": "GM FASHION"
+    },
+    {
+      "name": "CF-LUGGAGE",
+      "mtd": {
+        "actual": 277712.25,
+        "target": 290877.18720547203,
+        "variance": -13164.93720547203,
+        "attainment": 95.47405648000424,
+        "band": "warn"
+      },
+      "department": "GM FASHION"
+    },
+    {
+      "name": "CF-UTENSILS",
+      "mtd": {
+        "actual": 297850.64999999997,
+        "target": 272908.59704993124,
+        "variance": 24942.052950068726,
+        "attainment": 109.13934306932272,
+        "band": "good"
+      },
+      "department": "GM HOME WARE"
+    },
+    {
+      "name": "CF-TOYS",
+      "mtd": {
+        "actual": 297357.36,
+        "target": 284796.5459924802,
+        "variance": 12560.814007519803,
+        "attainment": 104.41045166602949,
+        "band": "good"
+      },
+      "department": "GM FASHION"
+    },
+    {
+      "name": "CF-ELECTRONICS",
+      "mtd": {
+        "actual": 854701.81,
+        "target": 855344.5909938581,
+        "variance": -642.7809938580031,
+        "attainment": 99.92485122363244,
+        "band": "warn"
+      },
+      "department": "ELECTRONICS"
+    },
+    {
+      "name": "CF-BAKERY",
+      "mtd": {
+        "actual": 82782.1,
+        "target": 74680.37580578338,
+        "variance": 8101.724194216629,
+        "attainment": 110.8485316347179,
+        "band": "good"
+      },
+      "department": "FMCG FOOD"
+    },
+    {
+      "name": "CF-FRESH BAKES",
+      "mtd": {
+        "actual": 10471.08,
+        "target": 11566.090841126004,
+        "variance": -1095.0108411260044,
+        "attainment": 90.53257616452024,
+        "band": "crit"
+      },
+      "department": "LIVE KITCHEN"
+    },
+    {
+      "name": "CF-HOT FOOD",
+      "mtd": {
+        "actual": 50385.479999999996,
+        "target": 42871.51873487031,
+        "variance": 7513.961265129685,
+        "attainment": 117.52669718000466,
+        "band": "good"
+      },
+      "department": "LIVE KITCHEN"
+    },
+    {
+      "name": "CF-FOOTWEAR ACC",
+      "mtd": {
+        "actual": 0.0,
+        "target": 15.190153449243502,
+        "variance": -15.190153449243502,
+        "attainment": 0.0,
+        "band": "crit"
+      },
+      "department": "FOOTWEAR"
+    },
+    {
+      "name": "CF-INFANT UTILITIES",
+      "mtd": {
+        "actual": 0.0,
+        "target": 592.3552963051947,
+        "variance": -592.3552963051947,
+        "attainment": 0.0,
+        "band": "crit"
+      },
+      "department": "GM OTHERS"
+    }
+  ],
+  "weeks": [
+    {
+      "number": 1,
+      "actual": 5072538.42,
+      "target": 3560901.6428287886,
+      "days": 4,
+      "attainment": 142.45095565095033,
+      "band": "good",
+      "label": "1 Jan\u20134 Jan"
+    },
+    {
+      "number": 2,
+      "actual": 4235881.010000002,
+      "target": 4440957.998862246,
+      "days": 7,
+      "attainment": 95.38214527327698,
+      "band": "warn",
+      "label": "5 Jan\u201311 Jan"
+    },
+    {
+      "number": 3,
+      "actual": 3682577.98,
+      "target": 3907273.9989811545,
+      "days": 7,
+      "attainment": 94.24928942685501,
+      "band": "crit",
+      "label": "12 Jan\u201318 Jan"
+    },
+    {
+      "number": 4,
+      "actual": 3441116.9900000016,
+      "target": 3664318.9990361924,
+      "days": 7,
+      "attainment": 93.90877243234286,
+      "band": "crit",
+      "label": "19 Jan\u201325 Jan"
+    },
+    {
+      "number": 5,
+      "actual": 4591933.480000001,
+      "target": 4134736.569114823,
+      "days": 7,
+      "attainment": 111.05746166032185,
+      "band": "good",
+      "label": "26 Jan\u20131 Feb"
+    },
+    {
+      "number": 6,
+      "actual": 5160609.689999995,
+      "target": 4955938.320162031,
+      "days": 7,
+      "attainment": 104.12982076482487,
+      "band": "good",
+      "label": "2 Feb\u20138 Feb"
+    },
+    {
+      "number": 7,
+      "actual": 4535956.399999999,
+      "target": 4490457.241985447,
+      "days": 7,
+      "attainment": 101.01324109244688,
+      "band": "good",
+      "label": "9 Feb\u201315 Feb"
+    },
+    {
+      "number": 8,
+      "actual": 4842018.699999988,
+      "target": 4114570.741084804,
+      "days": 7,
+      "attainment": 117.67980196941257,
+      "band": "good",
+      "label": "16 Feb\u201322 Feb"
+    },
+    {
+      "number": 9,
+      "actual": 4399286.710000008,
+      "target": 4241934.39473236,
+      "days": 7,
+      "attainment": 103.70944716785458,
+      "band": "good",
+      "label": "23 Feb\u20131 Mar"
+    },
+    {
+      "number": 10,
+      "actual": 4711403.560000004,
+      "target": 5090489.999601995,
+      "days": 7,
+      "attainment": 92.55304617764439,
+      "band": "crit",
+      "label": "2 Mar\u20138 Mar"
+    },
+    {
+      "number": 11,
+      "actual": 4228395.219999995,
+      "target": 4561343.999644495,
+      "days": 7,
+      "attainment": 92.70064306330657,
+      "band": "crit",
+      "label": "9 Mar\u201315 Mar"
+    },
+    {
+      "number": 12,
+      "actual": 5038834.209999996,
+      "target": 4513698.869809812,
+      "days": 7,
+      "attainment": 111.63425729843408,
+      "band": "good",
+      "label": "16 Mar\u201322 Mar"
+    },
+    {
+      "number": 13,
+      "actual": 3211254.739999999,
+      "target": 3681629.9999220055,
+      "days": 7,
+      "attainment": 87.22372264643727,
+      "band": "crit",
+      "label": "23 Mar\u201329 Mar"
+    },
+    {
+      "number": 14,
+      "actual": 4606236.590000012,
+      "target": 4141876.7816537954,
+      "days": 7,
+      "attainment": 111.21133806787955,
+      "band": "good",
+      "label": "30 Mar\u20135 Apr"
+    },
+    {
+      "number": 15,
+      "actual": 4049489.5200000014,
+      "target": 3906650.062034075,
+      "days": 7,
+      "attainment": 103.65631565913928,
+      "band": "good",
+      "label": "6 Apr\u201312 Apr"
+    },
+    {
+      "number": 16,
+      "actual": 3787113.659999999,
+      "target": 3549920.0018612677,
+      "days": 7,
+      "attainment": 106.68166206602876,
+      "band": "good",
+      "label": "13 Apr\u201319 Apr"
+    },
+    {
+      "number": 17,
+      "actual": 3512130.949999997,
+      "target": 3367533.001788692,
+      "days": 7,
+      "attainment": 104.29388362740619,
+      "band": "good",
+      "label": "20 Apr\u201326 Apr"
+    },
+    {
+      "number": 18,
+      "actual": 4847582.809999998,
+      "target": 4262918.569862942,
+      "days": 7,
+      "attainment": 113.71511631187113,
+      "band": "good",
+      "label": "27 Apr\u20133 May"
+    },
+    {
+      "number": 19,
+      "actual": 4551866.420000011,
+      "target": 4599033.986147754,
+      "days": 7,
+      "attainment": 98.97440274871178,
+      "band": "warn",
+      "label": "4 May\u201310 May"
+    },
+    {
+      "number": 20,
+      "actual": 3922909.12,
+      "target": 4063756.9869408207,
+      "days": 7,
+      "attainment": 96.53404799072766,
+      "band": "warn",
+      "label": "11 May\u201317 May"
+    },
+    {
+      "number": 21,
+      "actual": 3868081.4899999984,
+      "target": 3884812.987925378,
+      "days": 7,
+      "attainment": 99.56931008062978,
+      "band": "warn",
+      "label": "18 May\u201324 May"
+    },
+    {
+      "number": 22,
+      "actual": 4867610.899999996,
+      "target": 4079751.897610384,
+      "days": 7,
+      "attainment": 119.31144398391189,
+      "band": "good",
+      "label": "25 May\u201331 May"
+    },
+    {
+      "number": 23,
+      "actual": 3905807.2800000007,
+      "target": 4303855.680557685,
+      "days": 7,
+      "attainment": 90.75135343511086,
+      "band": "crit",
+      "label": "1 Jun\u20137 Jun"
+    },
+    {
+      "number": 24,
+      "actual": 3597989.9999999995,
+      "target": 4033227.0005078167,
+      "days": 7,
+      "attainment": 89.20871549126748,
+      "band": "crit",
+      "label": "8 Jun\u201314 Jun"
+    },
+    {
+      "number": 25,
+      "actual": 3806551.4500000007,
+      "target": 3823033.000472934,
+      "days": 7,
+      "attainment": 99.56888809301687,
+      "band": "warn",
+      "label": "15 Jun\u201321 Jun"
+    },
+    {
+      "number": 26,
+      "actual": 3331368.530000009,
+      "target": 3695220.0004728464,
+      "days": 7,
+      "attainment": 90.15345580435594,
+      "band": "crit",
+      "label": "22 Jun\u201328 Jun"
+    },
+    {
+      "number": 27,
+      "actual": 4783508.5299999975,
+      "target": 4133279.3674809076,
+      "days": 7,
+      "attainment": 115.73155610130902,
+      "band": "good",
+      "label": "29 Jun\u20135 Jul"
+    },
+    {
+      "number": 28,
+      "actual": 3956004.140000001,
+      "target": 3835766.7367859576,
+      "days": 7,
+      "attainment": 103.13463803888116,
+      "band": "good",
+      "label": "6 Jul\u201312 Jul"
+    },
+    {
+      "number": 29,
+      "actual": 3309259.399999999,
+      "target": 3598826.996991949,
+      "days": 7,
+      "attainment": 91.95383392327602,
+      "band": "crit",
+      "label": "13 Jul\u201319 Jul"
+    },
+    {
+      "number": 30,
+      "actual": 3204428.06,
+      "target": 3320825.997252453,
+      "days": 7,
+      "attainment": 96.49491008114376,
+      "band": "warn",
+      "label": "20 Jul\u201326 Jul"
+    },
+    {
+      "number": 31,
+      "actual": 3319061.4900000016,
+      "target": 2831225.9476822307,
+      "days": 5,
+      "attainment": 117.23054080926092,
+      "band": "good",
+      "label": "27 Jul\u201331 Jul"
+    }
+  ],
+  "months": [
+    {
+      "number": 1,
+      "name": "Jan",
+      "actual": 20454233.350000016,
+      "target": 19138881.208843242,
+      "attainment": 106.87266996855075,
+      "band": "good",
+      "complete": true
+    },
+    {
+      "number": 2,
+      "name": "Feb",
+      "actual": 18942694.14,
+      "target": 17769310.697959732,
+      "attainment": 106.60342689699829,
+      "band": "good",
+      "complete": true
+    },
+    {
+      "number": 3,
+      "name": "Mar",
+      "actual": 18618361.019999966,
+      "target": 19393702.329033814,
+      "attainment": 96.00209750629665,
+      "band": "warn",
+      "complete": true
+    },
+    {
+      "number": 4,
+      "name": "Apr",
+      "actual": 17197835.640000023,
+      "target": 15691369.653319636,
+      "attainment": 109.60060224163848,
+      "band": "good",
+      "complete": true
+    },
+    {
+      "number": 5,
+      "name": "May",
+      "actual": 19951704.419999976,
+      "target": 19221243.162434626,
+      "attainment": 103.80028102965233,
+      "band": "good",
+      "complete": true
+    },
+    {
+      "number": 6,
+      "name": "Jun",
+      "actual": 15550398.14999995,
+      "target": 16769910.242147086,
+      "attainment": 92.72797483982836,
+      "band": "crit",
+      "complete": true
+    },
+    {
+      "number": 7,
+      "name": "Jul",
+      "actual": 17663580.73000006,
+      "target": 16805350.48605765,
+      "attainment": 105.10688690875224,
+      "band": "good",
+      "complete": false
+    }
+  ],
+  "projections": {
+    "at_month_rate": 17663580.730000008,
+    "at_month_rate_pct": 105.10688690875185,
+    "recent_rate": null,
+    "at_recent_rate": null,
+    "at_recent_rate_pct": null
+  },
+  "checks": {
+    "surplus_splits_reconcile": true,
+    "branch_day_sums_to_company": true,
+    "branch_month_sums_to_company": true,
+    "day_series_sums_to_month": true,
+    "every_period_has_a_target": true
+  },
+  "prose": {
+    "headline": "July finished at 105.1% of target, with 17.66M sold against 16.81M and 858.2K above target.",
+    "narrative": "Today ended strongly at 125.0% of target, with 1.36M sold against 1.09M and 271.6K above target. That helped lift this week so far to 117.2% of target, with 3.32M sold against 2.83M and 487.8K above target, and it closed the month at 105.1% of target. The month is complete: 13 of 31 days reached their target, and July still finished with 17.66M sold against 16.81M, 858.2K above target. This is a review rather than a decision aid, and this year so far stands at 102.9% of target, with 128.38M sold against 124.79M and 3.59M above target.",
+    "today_note": "CFH017 was the only branch below target today at 91.3%. The other branches were above target: CFH014 at 123.2%, CFH021 at 135.6%, and CFH018 at 130.8%.",
+    "month_note": "The month's surplus was 858.2K above target at 105.1% of target. CFH017 was 334.8K below target for the month, while CFH014 was 169.3K above target, CFH021 was 542.3K above target, and CFH018 was 481.4K above target.",
+    "authoring_mode": "llm"
+  }
+}

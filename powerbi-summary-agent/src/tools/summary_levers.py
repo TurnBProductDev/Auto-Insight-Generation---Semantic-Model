@@ -5,11 +5,17 @@ Deterministic, pure functions - no state, no IO, no LLM. Summary-only; imports n
 
 Why a third lever when ``summary_overall._bridge`` already splits volume from
 rate/mix: the two-way bridge answers "did we sell more items, or earn more per
-item". It cannot separate *more shopping trips* from *fuller baskets*, and those
-two have opposite management responses - a footfall problem is a traffic problem,
-a basket problem is a range/cross-sell problem. Splitting quantity into
-transactions x items-per-transaction is what turns "revenue -8%" into "revenue
--8% because baskets thinned while footfall held".
+item". It cannot separate *more bills* from *fuller baskets*, and those two have
+opposite management responses - a transactions problem is a footfall problem in
+the real world, a basket problem is a range/cross-sell problem. Splitting
+quantity into transactions x items-per-transaction is what turns "revenue -8%"
+into "revenue -8% because baskets thinned while transactions held".
+
+BR-26 governs the *output*, not this note: the model counts bills, so every
+manager-facing string says "transactions". ``_OFF_VOCABULARY`` in
+``summary_validation`` rejects "footfall"/"traffic"/"visits"/"shoppers", and an
+example here written with one of them is how the banned word reaches a page -
+which it did, from a hardcoded tl;dr string in ``summary_dashboard``.
 
 The decomposition is sequential and therefore *exact* (the three effects sum to
 the revenue change), using the same construction as the existing two-way bridge:
@@ -359,8 +365,8 @@ def lever_facts(bridge: dict | None, subject: str = "Overall",
     """All three lever effects as supported facts, in the shape validation reads.
 
     Every side is promoted - not only the dominant one - so an offsetting lever
-    can never be quietly dropped from the narrative ("footfall added +3.7M while
-    thinner baskets removed -5.2M").
+    can never be quietly dropped from the narrative ("transactions added +3.7M
+    while thinner baskets removed -5.2M").
     """
     if not bridge or not bridge.get("reconciles"):
         return []

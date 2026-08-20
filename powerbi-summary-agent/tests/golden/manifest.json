@@ -57,7 +57,7 @@
         "material_share_pct": 5.0,
         "title": "Sales vs Previous Year"
       },
-      "sha256": "2f43da977a0a3cf8b04047c002ed2497684f1d336e3f80551ba638e9059e873b",
+      "sha256": "1b6dc07abf473e3030b61b75cde74b9f1664143f577a200fe19d2937148c93ca",
       "snapshot": "tests/golden/outputs_r4_acceptance_20260730_fix/dashboard.json"
     },
     "outputs_r4_acceptance_20260730_fix:dashboard_html": {
@@ -73,7 +73,7 @@
         "material_share_pct": 5.0,
         "title": "Sales vs Previous Year"
       },
-      "sha256": "15b4c84a4595979785ae8ae1c2cf644c2c1c0d63b1e7bccb6a9a6a4c18cb07cb",
+      "sha256": "2b304258871f976383c7604770c85c1f67f77f4d52ddb699ef739d5236cac6db",
       "snapshot": "tests/golden/outputs_r4_acceptance_20260730_fix/dashboard_html.html"
     },
     "outputs_r4_acceptance_20260730_fix:semantic_profile": {

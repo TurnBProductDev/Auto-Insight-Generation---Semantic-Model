@@ -1,0 +1,101 @@
+[
+  {
+    "id": 601226025,
+    "reportId": "target_tracker",
+    "severity": "critical",
+    "category": "Performance",
+    "metric": "CFH017",
+    "value": "-334.8K",
+    "delta": "11.1%",
+    "deltaDirection": "down",
+    "description": "CFH017 performance decreased by 334.8K, accounting for about 11.1% of the total decline in performance. The shortfall is broad-based, with CFH017 below target across all reported time views, making the month-to-date gap the clearest area to break down by department.",
+    "displayTime": "11:50 AM",
+    "isoDate": "2026-08-20",
+    "comparisonLabel": "against its target for this month so far",
+    "insight": {
+      "title": "CFH017 department shortfall",
+      "summary": "The underperformance is not limited to a single reporting window, which suggests a sustained gap rather than a one-off period effect. Department-level review within CFH017 may show where the month-to-date shortfall is most concentrated.",
+      "stats": [
+        {
+          "label": "Performance change",
+          "value": "-334.8K"
+        },
+        {
+          "label": "Share of performance decline",
+          "value": "11.1%"
+        },
+        {
+          "label": "Segments",
+          "value": "CFH017"
+        }
+      ],
+      "action": "Review department performance within CFH017 for the current month to identify which areas are furthest below target."
+    }
+  },
+  {
+    "id": 1727001593,
+    "reportId": "target_tracker",
+    "severity": "info",
+    "category": "Performance",
+    "metric": "CF-CHILLED & DAIRY",
+    "value": "-51.0K",
+    "delta": "6.7%",
+    "deltaDirection": "down",
+    "description": "CF-CHILLED & DAIRY performance decreased by 51.0K, accounting for about 0.3% of the total decline in performance. The gap sits within CF-CHILLED & DAIRY even though the wider FMCG FOOD area is ahead, so the shortfall is concentrated in this branch rather than the overall group.",
+    "displayTime": "11:50 AM",
+    "isoDate": "2026-08-20",
+    "comparisonLabel": "against its target for this month so far",
+    "insight": {
+      "title": "Chilled and Dairy shortfall",
+      "summary": "This branch is below target while its wider business area is above target, indicating the pressure is localized. Branch-level comparison may show which locations contribute most to the month-to-date gap.",
+      "stats": [
+        {
+          "label": "Performance change",
+          "value": "-51.0K"
+        },
+        {
+          "label": "Share of performance decline",
+          "value": "0.3%"
+        },
+        {
+          "label": "Segments",
+          "value": "CF-CHILLED & DAIRY"
+        }
+      ],
+      "action": "Compare branch performance within CF-CHILLED & DAIRY for the current month to see which branches are contributing most to the shortfall."
+    }
+  },
+  {
+    "id": 1450215756,
+    "reportId": "target_tracker",
+    "severity": "info",
+    "category": "Performance",
+    "metric": "FASHION",
+    "value": "-42.2K",
+    "delta": "4.0%",
+    "deltaDirection": "down",
+    "description": "FASHION performance decreased by 42.2K, accounting for about 0.3% of the total decline in performance. The gap is concentrated within FASHION while the wider business is ahead of target, so the issue appears specific to this area rather than business-wide.",
+    "displayTime": "11:50 AM",
+    "isoDate": "2026-08-20",
+    "comparisonLabel": "against its target for this month so far",
+    "insight": {
+      "title": "Fashion section shortfall",
+      "summary": "FASHION is trailing even though the overall business is ahead, which suggests the weakness is localized within this segment. Section-level review may indicate where the month-to-date shortfall is most concentrated.",
+      "stats": [
+        {
+          "label": "Performance change",
+          "value": "-42.2K"
+        },
+        {
+          "label": "Share of performance decline",
+          "value": "0.3%"
+        },
+        {
+          "label": "Segments",
+          "value": "FASHION"
+        }
+      ],
+      "action": "Examine section performance within FASHION for the current month to identify which sections are furthest below target."
+    }
+  }
+]

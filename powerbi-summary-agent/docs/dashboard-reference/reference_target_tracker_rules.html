@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Target Tracker &mdash; reference dashboard (rules version)</title>
+<style>
+:root{
+  --ground:#eef1f0; --card:#fff; --rail:#0e1b19; --ink:#12201e; --mid:#41545a;
+  --muted:#5b7182; --faint:#8fa1a9; --line:#dfe7ec; --soft:#f7fafb;
+  --teal:#0f9f95; --teal-dk:#087f79; --teal-tint:#e2f2ef;
+  --amber:#c08429; --amber-tint:#faf1e1; --amber-dk:#8a5f10;
+  --red:#cf4636; --red-tint:#fbeae7; --green:#2f8f4e; --green-tint:#e8f4ec;
+  --r:12px; --shadow:0 1px 2px rgba(16,24,40,.05),0 10px 28px -20px rgba(16,24,40,.35);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);
+  font-family:'Segoe UI',Inter,Roboto,Arial,sans-serif;font-size:13.5px;line-height:1.5;
+  -webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+h1,h2,h3,h4,p{margin:0}
+.app{display:flex;min-height:100vh}
+.rail{width:182px;flex:0 0 182px;background:var(--rail);color:#cfe0dc;padding:18px 12px;
+  position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:5px}
+.rail .mark{width:34px;height:34px;border-radius:9px;background:rgba(15,159,149,.16);
+  border:1px solid rgba(15,159,149,.5);color:#4fd3c4;display:grid;place-items:center;
+  font-weight:800;font-size:12px;letter-spacing:.04em;margin-bottom:14px}
+.rail .grp{font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:#5f7d78;
+  margin:14px 0 5px;padding-left:9px}
+.rail button{all:unset;cursor:pointer;display:block;padding:8px 11px;border-radius:8px;
+  font-size:12.5px;font-weight:600;color:#a9c2bd}
+.rail button:hover{background:rgba(255,255,255,.06);color:#fff}
+.rail button[aria-current=true]{background:var(--teal);color:#fff}
+.rail .foot{margin-top:auto;font-size:10px;color:#4d6b66;line-height:1.45;padding-left:9px}
+main{flex:1;min-width:0}
+.page{max-width:1280px;margin:0 auto;padding:22px 26px 60px}
+.masthead{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;
+  flex-wrap:wrap;margin-bottom:16px}
+.eyebrow{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--teal-dk);
+  font-weight:750;margin-bottom:5px}
+h1{font-size:27px;line-height:1.12;letter-spacing:-.02em;font-weight:700}
+.asat{font-size:12px;color:var(--muted);margin-top:5px}
+.hero{background:var(--rail);border-radius:var(--r);padding:20px 24px;margin-bottom:14px;
+  display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:26px;align-items:center}
+.hero-tag{display:inline-block;font-size:9px;letter-spacing:.12em;text-transform:uppercase;
+  font-weight:750;color:#f0c46a;background:rgba(240,196,106,.14);padding:4px 9px;
+  border-radius:6px;margin-bottom:10px}
+.hero h2{color:#fff;font-size:23px;line-height:1.22;letter-spacing:-.015em;font-weight:700}
+.hero p{color:#a9c2bd;font-size:12.5px;margin-top:8px;max-width:60ch}
+.hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.hs{border-left:2px solid rgba(255,255,255,.14);padding-left:12px}
+.hs b{display:block;color:#fff;font-size:19px;font-weight:700;line-height:1.15}
+.hs span{display:block;color:#7f9a95;font-size:10.5px;margin-top:3px;line-height:1.35}
+.hs.crit b{color:#ff8b73}
+.grid{display:grid;gap:14px}
+.g-2{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr)}
+.g-2r{grid-template-columns:minmax(0,1fr) minmax(0,1.3fr)}
+.g-2e{grid-template-columns:repeat(2,minmax(0,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  padding:16px 18px;box-shadow:var(--shadow)}
+.card>h3{font-size:13.5px;font-weight:700;letter-spacing:-.01em}
+.card>.sub{font-size:11.5px;color:var(--muted);margin-top:2px;margin-bottom:12px}
+.sect{margin:22px 0 10px;display:flex;align-items:baseline;gap:11px}
+.sect h2{font-size:16px;font-weight:700;letter-spacing:-.015em}
+.sect span{font-size:11.5px;color:var(--faint)}
+.note{font-size:11.5px;color:var(--muted);margin-top:10px;line-height:1.55}
+.note b{color:var(--ink)}
+.kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:11px}
+.kpis.k4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  padding:13px 14px 12px;position:relative;overflow:hidden;box-shadow:var(--shadow)}
+.kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--faint)}
+.kpi.crit::before{background:var(--red)} .kpi.warn::before{background:var(--amber)}
+.kpi.good::before{background:var(--green)}
+.kpi .lab{font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);
+  font-weight:650;min-height:26px}
+.lab-sub{text-transform:none;letter-spacing:0;font-weight:500;color:var(--faint)}
+.kpi .val{font-size:21px;font-weight:750;line-height:1.1;margin:5px 0 4px;letter-spacing:-.02em}
+.kpi.crit .val{color:var(--red)} .kpi.warn .val{color:var(--amber-dk)} .kpi.good .val{color:var(--green)}
+.kpi .sub{font-size:10.5px;color:var(--muted);line-height:1.4}
+.pill{display:inline-block;font-size:9px;font-weight:750;letter-spacing:.05em;
+  text-transform:uppercase;padding:2px 6px;border-radius:5px;margin-top:7px}
+.pill-crit{background:var(--red-tint);color:var(--red)}
+.pill-warn{background:var(--amber-tint);color:var(--amber-dk)}
+.pill-ok{background:var(--green-tint);color:var(--green)}
+/* --- executive pulse list --- */
+.pulse-list{list-style:none;margin:0;padding:0;display:grid;gap:9px}
+.pl{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--faint);
+  border-radius:var(--r);padding:12px 16px;display:grid;grid-template-columns:120px minmax(0,1fr);
+  gap:14px;align-items:baseline;box-shadow:var(--shadow)}
+.pl-crit{border-left-color:var(--red)} .pl-warn{border-left-color:var(--amber)}
+.pl-good{border-left-color:var(--green)}
+.pl-k{font-size:10px;font-weight:750;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.pl p{font-size:12.5px;color:var(--mid);line-height:1.6}
+.pl p b{color:var(--ink)}
+/* --- target pulse bar --- */
+.pulse{margin:2px 0 0}
+.pulse-track{position:relative;height:14px;border-radius:99px;background:#eef2f6}
+.pulse-fill{display:block;height:100%;border-radius:99px}
+.pulse-tick{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--mid);opacity:.7;border-radius:2px}
+.pulse-legend{display:flex;justify-content:space-between;margin-top:7px;font-size:11px;color:var(--muted)}
+/* --- ranked strip --- */
+.strips{display:flex;flex-direction:column;gap:7px}
+.sr{display:grid;grid-template-columns:104px minmax(0,1fr) 74px 92px;gap:10px;align-items:center;font-size:12px}
+.sr-n{font-weight:650}
+.sr-t{background:#eef2f6;border-radius:99px;height:9px;overflow:hidden}
+.sr-t i{display:block;height:100%;border-radius:99px}
+.sr-v{text-align:right;font-weight:750}
+.sr-x{text-align:right;color:var(--muted);font-size:11px}
+/* --- contribution bars --- */
+.cbs{display:flex;flex-direction:column;gap:7px}
+.cb{display:grid;grid-template-columns:120px minmax(0,1fr) 42px 84px;gap:10px;align-items:center;font-size:12px}
+.cb-n{font-weight:650}
+.cb-t{background:#eef2f6;border-radius:99px;height:9px;overflow:hidden}
+.cb-t i{display:block;height:100%;border-radius:99px;background:var(--red)}
+.cb-v{text-align:right;font-weight:750;color:var(--red)}
+.cb-x{text-align:right;color:var(--muted);font-size:11px}
+/* --- benchmark cards --- */
+.benches{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.bench{border:1px solid var(--line);border-radius:9px;padding:11px 12px;background:var(--soft)}
+.bl{font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.bv{font-size:19px;font-weight:750;letter-spacing:-.02em;margin:4px 0 2px}
+.bs{font-size:10.5px;color:var(--muted);line-height:1.35}
+/* --- diagnostic chain --- */
+.chain{display:grid;grid-template-columns:1fr 20px 1fr 20px 1fr 20px 1fr;gap:8px;align-items:center}
+.ch{border:1px solid var(--line);border-radius:9px;padding:11px 13px;background:var(--soft)}
+.ch-l{font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.ch-v{font-size:17px;font-weight:750;letter-spacing:-.02em;margin:4px 0 2px}
+.ch-s{font-size:10.5px;color:var(--muted);line-height:1.35}
+.ch-a{text-align:center;color:var(--faint);font-size:15px}
+/* --- scenarios --- */
+.scen{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.sc{border:1px solid var(--line);border-radius:9px;padding:11px 12px;background:var(--soft)}
+.sc-l{font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:700;min-height:24px}
+.sc-v{font-size:17px;font-weight:750;letter-spacing:-.02em;margin:4px 0 2px}
+.sc-s{font-size:10.5px;color:var(--muted);line-height:1.35}
+/* --- persistence --- */
+.pers{display:flex;flex-direction:column;gap:8px}
+.pr{display:grid;grid-template-columns:74px minmax(0,1fr) 92px;gap:11px;align-items:center;font-size:12px}
+.pr-n{font-weight:650}
+.pr-d{display:flex;gap:3px}
+.pr-d i{flex:1;height:15px;border-radius:3px;display:block}
+.pr-v{text-align:right;color:var(--muted);font-size:11px}
+/* --- management attention --- */
+.atts{list-style:none;margin:0 0 14px;padding:0;display:grid;gap:10px}
+.att{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--faint);
+  border-radius:var(--r);padding:14px 18px;box-shadow:var(--shadow)}
+.att-crit{border-left-color:var(--red)} .att-warn{border-left-color:var(--amber)}
+.att-ok{border-left-color:var(--green)}
+.att h3{font-size:13px;font-weight:750;margin-bottom:5px}
+.att p{font-size:12.5px;color:var(--mid);line-height:1.6}
+.att p b{color:var(--ink)}
+.scroll{overflow-x:auto;margin-top:4px}
+table{border-collapse:collapse;width:100%;font-size:12px;min-width:440px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
+th{font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);
+  font-weight:700;white-space:nowrap}
+td.n,th.n{text-align:right;white-space:nowrap}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--soft)}
+tr.urgent td{background:var(--red-tint)}
+.dz{fill:var(--faint);font-size:9.5px} .dza{fill:var(--muted);font-size:10px;font-weight:700}
+.caveats{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--faint);
+  border-radius:var(--r);padding:15px 18px;margin-top:20px}
+.caveats h3{font-size:12px;font-weight:700;margin-bottom:9px}
+.caveats ul{margin:0;padding-left:17px;color:var(--mid);font-size:11.5px;line-height:1.6}
+.caveats li{margin-bottom:5px}
+.foot{margin-top:18px;padding-top:12px;border-top:1px solid var(--line);
+  display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;
+  font-size:10.5px;color:var(--faint)}
+svg{display:block;width:100%;height:auto;overflow:visible}
+.mini{max-width:560px}
+@media (max-width:1080px){
+  .kpis,.kpis.k4{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .g-2,.g-2e,.g-2r{grid-template-columns:minmax(0,1fr)}
+  .hero{grid-template-columns:minmax(0,1fr)}
+  .chain{grid-template-columns:1fr}.ch-a{transform:rotate(90deg)}
+  .pl{grid-template-columns:1fr;gap:4px}
+}
+@media (max-width:720px){.rail{display:none}.benches,.scen{grid-template-columns:1fr}
+  .sr{grid-template-columns:88px minmax(0,1fr) 64px}.sr-x{display:none}}
+@media print{
+  .rail{display:none}.app{display:block}.card,.kpi,.hero,.att,.pl{break-inside:avoid;box-shadow:none}
+  body{background:#fff}.layer[hidden]{display:block}
+}
+.layer[hidden]{display:none}
+</style>
+</head>
+<body>
+<div class="app">
+  <nav class="rail" aria-label="Sections">
+    <div class="mark">AI</div>
+    <div class="grp">Report</div>
+    <button data-nav="pulse" aria-current="true">Executive pulse</button><button data-nav="yesterday">Yesterday</button><button data-nav="last7">Last 7 days</button><button data-nav="wtd">This week</button><button data-nav="mtd">This month</button><button data-nav="ytd">This year</button><button data-nav="attention">Management attention</button>
+    <p class="foot">Reference design, built to the<br>Target Tracker insight rules.<br>
+      Figures are the live position<br>as at 16&nbsp;Jul&nbsp;2026.</p>
+  </nav>
+<main><div class="page">
+    <div class="masthead">
+      <div>
+        <p class="eyebrow">Sales &middot; City Flower</p>
+        <h1>Target Tracker</h1>
+        <p class="asat">Performance against target up to 16 July 2026 &middot; report run 17 July &middot;
+          4 branches &middot; all figures in Saudi Riyals (SAR)</p>
+      </div>
+    </div>
+<div class="layer" data-layer="pulse"><section class="hero">
+      <div>
+        <span class="hero-tag">Executive pulse</span>
+        <h2>The month is comfortably ahead, but the last six days have all missed target.</h2>
+        <p>Nothing in the year or the month is at risk today. The issue is recent and narrow: a
+           six-day run below target, and one branch that has now missed in four of seven months.</p>
+      </div>
+      <div class="hero-stats">
+        <div class="hs crit"><b>95.1%</b><span>yesterday</span></div>
+        <div class="hs crit"><b>89.2%</b><span>this week so far</span></div>
+        <div class="hs"><b>106.5%</b><span>this month so far</span></div>
+      </div>
+    </section>
+    <div class="sect"><h2>The five things that matter</h2><span>one per time period, plus the exception worth watching</span></div>
+    <ol class="pulse-list"><li class="pl pl-crit"><span class="pl-k">Yesterday</span><p>Thursday closed at <b>95.1%</b> of target, SAR&nbsp;27.3K short. CFH017 accounts for <b>83%</b> of the shortfall on its own.</p></li><li class="pl pl-crit"><span class="pl-k">This week</span><p>Week to date is at <b>89.2%</b>, SAR&nbsp;197.5K behind, and all four branches are below target. The remaining three days must reach <b>111.1%</b> of their own target to close the week.</p></li><li class="pl pl-good"><span class="pl-k">This month</span><p>The month is at <b>106.5%</b> with a surplus of SAR&nbsp;578.9K and is running <b>ahead</b> of the rate needed (pace index 1.21). The risk is the last six days, not the month so far.</p></li><li class="pl pl-good"><span class="pl-k">This year</span><p>The year is at <b>102.8%</b>, SAR&nbsp;3.31M ahead, and the quarterly trend is improving: 103.0% to 102.0% to 106.5%.</p></li><li class="pl pl-warn"><span class="pl-k">Watch this</span><p>CFH017 has missed target in <b>4 of the 7 months</b> this year and is below target yesterday, this week and this month. CFH018 is the opposite risk: 110.9% over seven days but 92.1% yesterday, the sharpest fall of any branch.</p></li></ol>
+    <div class="sect"><h2>Where we stand</h2><span>every time period, measured against the target for the days that have passed</span></div>
+    <div class="kpis k4">
+      <div class="kpi warn"><p class="lab">Yesterday<br><span class="lab-sub">Thursday 16 July</span></p><p class="val">95.1%</p><p class="sub">SAR&nbsp;526.1K against a target of SAR&nbsp;553.3K<br>SAR&nbsp;27.3K below target &middot; 6th day below target in a row</p><span class="pill pill-warn">Near target</span></div>
+      <div class="kpi crit"><p class="lab">This week so far<br><span class="lab-sub">4 days of 7</span></p><p class="val">89.2%</p><p class="sub">SAR&nbsp;1.63M against a target of SAR&nbsp;1.82M<br>SAR&nbsp;197.5K below target &middot; all four branches below target</p><span class="pill pill-crit">Below target</span></div>
+      <div class="kpi good"><p class="lab">This month so far<br><span class="lab-sub">16 days of 31</span></p><p class="val">106.5%</p><p class="sub">SAR&nbsp;9.46M against a target of SAR&nbsp;8.88M<br>SAR&nbsp;578.9K above target &middot; ahead of the rate needed</p><span class="pill pill-ok">Strong</span></div>
+      <div class="kpi good"><p class="lab">This year so far<br><span class="lab-sub">1 Jan – 16 July</span></p><p class="val">102.8%</p><p class="sub">SAR&nbsp;120.17M against a target of SAR&nbsp;116.86M<br>SAR&nbsp;3.31M above target &middot; quarterly trend improving</p><span class="pill pill-ok">On target</span></div>
+    </div>
+    <p class="note" style="margin-top:10px">Each period is compared with the target for the days that have
+    already passed, never with the target for the whole period. That is what makes these four percentages
+    comparable with each other.</p><div class="caveats">
+  <h3>Important things to know about these numbers</h3>
+  <ul>
+    <li><b>No causes are given, only amounts and places.</b> The report holds sales and targets. It does not
+        hold promotions, stock levels, staffing, weather or footfall, so nothing here explains <i>why</i>
+        sales moved - only where the difference sits.</li>
+    <li><b>There is no comparison with last year.</b> The report only holds 2026 data, so every figure is
+        compared with target.</li>
+    <li><b>Each period is compared with the target for the days that have passed.</b> This week covers 4 days
+        of 7 and this month 16 of 31. Full-period targets are used only in the "what is needed" figures.</li>
+    <li><b>Percentages and values are both shown</b>, because a small branch with an extreme percentage is
+        not the same as a large branch a few points below target.</li>
+    <li><b>Branch CFH022 is not included.</b> It has had no sales since 1 August, and the Sales performance
+        report leaves it out for the same reason.</li>
+    <li><b>Projections carry a current rate forward.</b> They are arithmetic, not forecasts.</li>
+  </ul>
+</div></div><div class="layer" data-layer="yesterday" hidden><div class="sect"><h2>Yesterday</h2><span>Thursday 16 July 2026 - the most important block</span></div>
+    <div class="grid g-2">
+      <section class="card"><h3>How the business did against target</h3><p class="sub">Actual against target for the day.</p><div class="pulse"><div class="pulse-track"><span class="pulse-fill" style="width:79.2%;background:#c08429"></span><i class="pulse-tick" style="left:83.3%"></i></div><div class="pulse-legend"><span>SAR&nbsp;526.1K sold</span><span>target SAR&nbsp;553.3K</span></div></div><div class="benches"><div class="bench"><p class="bl">Reached</p><p class="bv" style="color:#8a5f10">95.1%</p><p class="bs">of target</p></div><div class="bench"><p class="bl">Short by</p><p class="bv" style="color:#cf4636">SAR&nbsp;27.3K</p><p class="bs">-4.9% gap</p></div><div class="bench"><p class="bl">Status</p><p class="bv" style="color:#8a5f10">Near target</p><p class="bs">section 6 band</p></div></div><p class="note">Yesterday reached <b>95.1%</b> of target and fell SAR&nbsp;27.3K short. It is the sixth day below target in a row, which matters more than the size of the miss.</p></section>
+      <section class="card"><h3>Is this unusual?</h3><p class="sub">Yesterday measured against the last 30 days.</p><div class="benches"><div class="bench"><p class="bl">Yesterday</p><p class="bv" style="color:#8a5f10">95.1%</p><p class="bs">of target</p></div><div class="bench"><p class="bl">30-day average</p><p class="bv" style="color:#41545a">102.2%</p><p class="bs">of target</p></div><div class="bench"><p class="bl">Difference</p><p class="bv" style="color:#cf4636">&minus;7.1 pts</p><p class="bs">below the average</p></div></div><p class="note">Yesterday is the <b>12th weakest of the last 30 days</b>, not a record low - the weakest was 22 June at 74.3% and the strongest 2 July at 134.8%. What is notable is not the size of the miss but that it is the sixth in a row, and that it sits &minus;7.1 pts below the 30-day average.</p></section>
+    </div>
+    <div class="grid g-2" style="margin-top:14px">
+      <section class="card"><h3>Which branches missed, and by how much</h3><p class="sub">Ranked worst to best. The bar is how much of its target the branch reached.</p><div class="strips"><div class="sr"><span class="sr-n">CFH017</span><span class="sr-t"><i style="width:52.9%;background:#cf4636"></i></span><span class="sr-v" style="color:#cf4636">68.7% &#9660;</span><span class="sr-x">SAR &minus;39.1K</span></div><div class="sr"><span class="sr-n">CFH018</span><span class="sr-t"><i style="width:70.8%;background:#cf4636"></i></span><span class="sr-v" style="color:#cf4636">92.1% &#9660;</span><span class="sr-x">SAR &minus;7.9K</span></div><div class="sr"><span class="sr-n">CFH014</span><span class="sr-t"><i style="width:78.9%;background:#2f8f4e"></i></span><span class="sr-v" style="color:#2f8f4e">102.6% &#9650;</span><span class="sr-x">SAR +4.6K</span></div><div class="sr"><span class="sr-n">CFH021</span><span class="sr-t"><i style="width:84.5%;background:#2f8f4e"></i></span><span class="sr-v" style="color:#2f8f4e">109.8% &#9650;</span><span class="sr-x">SAR +15.2K</span></div></div><p class="note">Two branches missed and two beat target. Ranking on percentage alone would be misleading, so the value of each miss is shown beside it.</p></section>
+      <section class="card"><h3>Who explains the shortfall</h3><p class="sub">Each branch&#x27;s share of the total shortfall across the branches that missed.</p><div class="cbs"><div class="cb"><span class="cb-n">CFH017</span><span class="cb-t"><i style="width:83.2%"></i></span><span class="cb-v">83%</span><span class="cb-x">SAR &minus;39.1K</span></div><div class="cb"><span class="cb-n">CFH018</span><span class="cb-t"><i style="width:16.8%"></i></span><span class="cb-v">17%</span><span class="cb-x">SAR &minus;7.9K</span></div></div><p class="note">The two missing branches were SAR&nbsp;47.0K short between them, and the two that beat target added SAR&nbsp;19.7K back, leaving the company SAR&nbsp;27.3K short. <b>CFH017 alone was short by more than the whole company miss</b> - without it the day would have finished above target.</p></section>
+    </div>
+    <div style="margin-top:14px">
+      <section class="card"><h3>Following the shortfall down: company, branch, department, section</h3><p class="sub">Each step explains the step above it.</p><div class="chain">
+              <div class="ch"><p class="ch-l">Company</p><p class="ch-v">SAR &minus;27.3K</p>
+                <p class="ch-s">95.1% of target</p></div>
+              <div class="ch-a">&rarr;</div>
+              <div class="ch"><p class="ch-l">Branch CFH017</p><p class="ch-v" style="color:#cf4636">SAR &minus;39.1K</p>
+                <p class="ch-s">83% of all shortfall</p></div>
+              <div class="ch-a">&rarr;</div>
+              <div class="ch"><p class="ch-l">FMCG FOOD in CFH017</p><p class="ch-v" style="color:#cf4636">SAR &minus;18.7K</p>
+                <p class="ch-s">48% of that branch's shortfall</p></div>
+              <div class="ch-a">&rarr;</div>
+              <div class="ch"><p class="ch-l">Its four weakest sections</p>
+                <p class="ch-v" style="color:#cf4636">SAR &minus;15.2K</p>
+                <p class="ch-s">Grocery Food, Staples, Roastery</p></div>
+            </div><p class="note">This is a chain of arithmetic, not of cause. It shows <b>where</b> the shortfall sits, not why it happened - the report has no data on promotions, stock, staffing or footfall, so it does not guess.</p></section>
+    </div>
+    <div class="grid g-2e" style="margin-top:14px">
+      <section class="card"><h3>Departments that pulled the day down</h3><p class="sub">The four largest shortfalls by value.</p><div class="strips"><div class="sr"><span class="sr-n">FMCG FOOD</span><span class="sr-t"><i style="width:69.8%;background:#cf4636"></i></span><span class="sr-v" style="color:#cf4636">90.7% &#9660;</span><span class="sr-x">SAR &minus;19.8K</span></div><div class="sr"><span class="sr-n">FMCG NON-FOOD</span><span class="sr-t"><i style="width:69.6%;background:#cf4636"></i></span><span class="sr-v" style="color:#cf4636">90.5% &#9660;</span><span class="sr-x">SAR &minus;8.0K</span></div><div class="sr"><span class="sr-n">GM FASHION</span><span class="sr-t"><i style="width:66.8%;background:#cf4636"></i></span><span class="sr-v" style="color:#cf4636">86.8% &#9660;</span><span class="sr-x">SAR &minus;6.4K</span></div><div class="sr"><span class="sr-n">ELECTRONICS</span><span class="sr-t"><i style="width:60.6%;background:#cf4636"></i></span><span class="sr-v" style="color:#cf4636">78.7% &#9660;</span><span class="sr-x">SAR &minus;6.0K</span></div></div><p class="note">FMCG FOOD is the largest single shortfall at SAR&nbsp;19.8K. ELECTRONICS reached only 78.7%, the lowest of any department.</p></section>
+      <section class="card"><h3>Departments that held the day up</h3><p class="sub">The departments that beat target.</p><div class="strips"><div class="sr"><span class="sr-n">FARM FRESH</span><span class="sr-t"><i style="width:92.7%;background:#2f8f4e"></i></span><span class="sr-v" style="color:#2f8f4e">120.5% &#9650;</span><span class="sr-x">SAR +20.4K</span></div><div class="sr"><span class="sr-n">LIVE KITCHEN</span><span class="sr-t"><i style="width:100.0%;background:#2f8f4e"></i></span><span class="sr-v" style="color:#2f8f4e">138.1% &#9650;</span><span class="sr-x">SAR +612</span></div></div><p class="note">FARM FRESH added SAR&nbsp;20.4K above its target and was the main offset. Without it the day would have been close to SAR&nbsp;47.7K short.</p></section>
+    </div></div><div class="layer" data-layer="last7" hidden><div class="sect"><h2>The last seven days</h2><span>is yesterday a one-off, or part of a pattern?</span></div>
+    <div class="grid g-2">
+      <section class="card"><h3>The seven-day journey</h3><p class="sub">How much of target each day reached. The dashed line is target.</p><div class="mini"><svg viewBox="0 0 520 128" role="img" aria-label="How much of target was reached on each of the last seven days"><line x1="10" y1="59.7" x2="510" y2="59.7" stroke="#8fa1a9" stroke-dasharray="4 3"/><text x="510" y="54.7" text-anchor="end" class="dz">target</text><polyline points="45.7,31.4 117.1,80.7 188.6,68.5 260.0,80.1 331.4,82.4 402.9,85.6 474.3,68.2" fill="none" stroke="#41545a" stroke-width="1.6"/><circle cx="45.7" cy="31.4" r="4.5" fill="#2f8f4e"><title>Fri 10 July - 116.5%</title></circle><text x="45.7" y="110" text-anchor="middle" class="dza" fill="#2f8f4e">116</text><text x="45.7" y="123" text-anchor="middle" class="dz">Fri</text><circle cx="117.1" cy="80.7" r="4.5" fill="#cf4636"><title>Sat 11 July - 87.8%</title></circle><text x="117.1" y="110" text-anchor="middle" class="dza" fill="#cf4636">88</text><text x="117.1" y="123" text-anchor="middle" class="dz">Sat</text><circle cx="188.6" cy="68.5" r="4.5" fill="#cf4636"><title>Sun 12 July - 94.9%</title></circle><text x="188.6" y="110" text-anchor="middle" class="dza" fill="#cf4636">95</text><text x="188.6" y="123" text-anchor="middle" class="dz">Sun</text><circle cx="260.0" cy="80.1" r="4.5" fill="#cf4636"><title>Mon 13 July - 88.1%</title></circle><text x="260.0" y="110" text-anchor="middle" class="dza" fill="#cf4636">88</text><text x="260.0" y="123" text-anchor="middle" class="dz">Mon</text><circle cx="331.4" cy="82.4" r="4.5" fill="#cf4636"><title>Tue 14 July - 86.8%</title></circle><text x="331.4" y="110" text-anchor="middle" class="dza" fill="#cf4636">87</text><text x="331.4" y="123" text-anchor="middle" class="dz">Tue</text><circle cx="402.9" cy="85.6" r="4.5" fill="#cf4636"><title>Wed 15 July - 84.9%</title></circle><text x="402.9" y="110" text-anchor="middle" class="dza" fill="#cf4636">85</text><text x="402.9" y="123" text-anchor="middle" class="dz">Wed</text><circle cx="474.3" cy="68.2" r="4.5" fill="#c08429"><title>Thu 16 July - 95.1%</title></circle><text x="474.3" y="110" text-anchor="middle" class="dza" fill="#c08429">95</text><text x="474.3" y="123" text-anchor="middle" class="dz">Thu</text></svg></div><p class="note">Only <b>1 of the 7 days</b> reached target, and that one was Friday 10 July. Every day since has missed. Yesterday is <b>not</b> a one-off - it is the sixth day of a continuous run below target.</p></section>
+      <section class="card"><h3>The seven days in total</h3><p class="sub">Everything from 10 to 16 July added together.</p><div class="benches"><div class="bench"><p class="bl">Reached</p><p class="bv" style="color:#8a5f10">97.1%</p><p class="bs">of target &middot; SAR&nbsp;109.7K short</p></div><div class="bench"><p class="bl">Average day</p><p class="bv" style="color:#41545a">93.4%</p><p class="bs">of its own target</p></div><div class="bench"><p class="bl">Days on target</p><p class="bv" style="color:#cf4636">1 of 7</p><p class="bs">best Fri 116.5% &middot; worst Wed 84.9%</p></div></div><p class="note">The seven-day total of 97.1% looks better than the daily average of 93.4% because one very large Friday carries most of the week's sales. The daily average is the fairer read of how the week has actually gone.</p></section>
+    </div>
+    <div style="margin-top:14px">
+      <section class="card"><h3>Which branches are moving, and which way</h3><p class="sub">Yesterday compared with each branch&#x27;s own seven-day average.</p><div class="scroll"><table><thead><tr><th>Branch</th><th class="n">Yesterday</th><th class="n">Last 7 days</th><th class="n">Change</th><th>Direction</th></tr></thead><tbody><tr><td><b>CFH018</b></td><td class="n" style="color:#cf4636;font-weight:700">92.1%</td><td class="n" style="color:#2f8f4e;font-weight:700">110.9%</td><td class="n">&minus;18.8 pts</td><td><span class="pill" style="background:#cf46361f;color:#cf4636">Deteriorating</span></td></tr><tr><td><b>CFH017</b></td><td class="n" style="color:#cf4636;font-weight:700">68.7%</td><td class="n" style="color:#cf4636;font-weight:700">81.5%</td><td class="n">&minus;12.7 pts</td><td><span class="pill" style="background:#cf46361f;color:#cf4636">Deteriorating</span></td></tr><tr><td><b>CFH014</b></td><td class="n" style="color:#2f8f4e;font-weight:700">102.6%</td><td class="n" style="color:#c08429;font-weight:700">97.0%</td><td class="n">+5.6 pts</td><td><span class="pill" style="background:#2f8f4e1f;color:#2f8f4e">Improving</span></td></tr><tr><td><b>CFH021</b></td><td class="n" style="color:#2f8f4e;font-weight:700">109.8%</td><td class="n" style="color:#c08429;font-weight:700">98.1%</td><td class="n">+11.6 pts</td><td><span class="pill" style="background:#2f8f4e1f;color:#2f8f4e">Improving</span></td></tr></tbody></table></div><p class="note"><b>CFH018 is the sharpest change on the page</b>: 110.9% across seven days but 92.1% yesterday, a fall of &minus;18.8 pts. It is still the strongest branch for the month, so this is worth watching rather than acting on yet. CFH017 is different - it was already weak and has got weaker.</p></section>
+    </div></div><div class="layer" data-layer="wtd" hidden><div class="sect"><h2>This week</h2><span>week 29, Monday 13 to Thursday 16 July - 4 days of 7</span></div>
+    <div class="grid g-2r">
+      <section class="card"><h3>Where the week stands</h3><p class="sub">Sales so far against the target for those four days.</p><div class="pulse"><div class="pulse-track"><span class="pulse-fill" style="width:74.3%;background:#cf4636"></span><i class="pulse-tick" style="left:83.3%"></i></div><div class="pulse-legend"><span>SAR&nbsp;1.63M sold</span><span>target SAR&nbsp;1.82M</span></div></div><p class="note">The week is at <b>89.2%</b> of target and SAR&nbsp;197.5K behind after four days. All four branches are below target, which makes this a broad slowdown rather than one branch's problem.</p></section>
+      <section class="card"><h3>What the rest of the week has to do</h3><p class="sub">The daily rate so far against the daily rate needed.</p><div class="mini"><svg viewBox="0 0 520 96" role="img" aria-label="Current daily rate against the rate needed"><rect x="10" y="16" width="500" height="18" rx="9" fill="#eef2f6"/><rect x="10" y="16" width="261.9" height="18" rx="9" fill="#cf4636"/><line x1="433.7" y1="9" x2="433.7" y2="41" stroke="#41545a" stroke-width="2"/><text x="10" y="60" class="dza" fill="#cf4636">Selling now: SAR 406.5K a day</text><text x="433.7" y="60" text-anchor="end" class="dza">Needed: SAR 657.6K a day</text><text x="10" y="80" class="dz">Pace index 0.62 &#183; behind the rate needed</text></svg></div><p class="note">Read this one carefully. The three days left are Friday, Saturday and Sunday, which carry much larger targets than midweek days - so a raw daily-rate comparison overstates the task. Measured against their own targets, those three days need to reach <b>111.1%</b>, not 161.8%.</p></section>
+    </div>
+    <div class="grid g-2" style="margin-top:14px">
+      <section class="card"><h3>Every branch is behind this week</h3><p class="sub">Ranked worst to best.</p><div class="strips"><div class="sr"><span class="sr-n">CFH017</span><span class="sr-t"><i style="width:58.6%;background:#cf4636"></i></span><span class="sr-v" style="color:#cf4636">76.2% &#9660;</span><span class="sr-x">SAR &minus;88.2K</span></div><div class="sr"><span class="sr-n">CFH014</span><span class="sr-t"><i style="width:68.6%;background:#cf4636"></i></span><span class="sr-v" style="color:#cf4636">89.2% &#9660;</span><span class="sr-x">SAR &minus;67.6K</span></div><div class="sr"><span class="sr-n">CFH021</span><span class="sr-t"><i style="width:72.3%;background:#cf4636"></i></span><span class="sr-v" style="color:#cf4636">94.0% &#9660;</span><span class="sr-x">SAR &minus;33.1K</span></div><div class="sr"><span class="sr-n">CFH018</span><span class="sr-t"><i style="width:74.6%;background:#c08429"></i></span><span class="sr-v" style="color:#c08429">97.0% &#8212;</span><span class="sr-x">SAR &minus;8.5K</span></div></div><p class="note">CFH017 is furthest behind at 76.2%, but CFH014 has the largest shortfall in value at SAR&nbsp;67.6K because it is a bigger branch. Both matter, for different reasons.</p></section>
+      <section class="card"><h3>Where the week is being lost</h3><p class="sub">The four departments with the largest shortfalls this week.</p><div class="cbs"><div class="cb"><span class="cb-n">FMCG FOOD</span><span class="cb-t"><i style="width:49.5%"></i></span><span class="cb-v">50%</span><span class="cb-x">SAR &minus;100.2K</span></div><div class="cb"><span class="cb-n">FMCG NON-FOOD</span><span class="cb-t"><i style="width:19.7%"></i></span><span class="cb-v">20%</span><span class="cb-x">SAR &minus;39.8K</span></div><div class="cb"><span class="cb-n">FASHION</span><span class="cb-t"><i style="width:10.9%"></i></span><span class="cb-v">11%</span><span class="cb-x">SAR &minus;22.0K</span></div><div class="cb"><span class="cb-n">GM FASHION</span><span class="cb-t"><i style="width:9.7%"></i></span><span class="cb-v">10%</span><span class="cb-x">SAR &minus;19.6K</span></div></div><p class="note">Nine of eleven departments are below target this week. FMCG FOOD accounts for 50% of the total departmental shortfall - but it is still above target for the month, so this is recent rather than long-running.</p></section>
+    </div>
+    <div style="margin-top:14px">
+      <section class="card"><h3>This week against the last four weeks</h3><p class="sub">How much of target each week reached. Week 29 is only four days old.</p><div class="mini"><svg viewBox="0 0 520 130" role="img" aria-label="How much of target was reached, weekly"><line x1="12" y1="62.9" x2="508" y2="62.9" stroke="#8fa1a9" stroke-dasharray="4 3"/><line x1="74.0" y1="62.9" x2="74.0" y2="83.3" stroke="#cf4636" stroke-width="2"/><circle cx="74.0" cy="83.3" r="5" fill="#cf4636"><title>wk26 - 90.2%</title></circle><text x="74.0" y="99.3" text-anchor="middle" class="dza" fill="#cf4636">90</text><text x="74.0" y="122" text-anchor="middle" class="dz">wk26</text><line x1="198.0" y1="62.9" x2="198.0" y2="30.2" stroke="#2f8f4e" stroke-width="2"/><circle cx="198.0" cy="30.2" r="5" fill="#2f8f4e"><title>wk27 - 115.7%</title></circle><text x="198.0" y="20.2" text-anchor="middle" class="dza" fill="#2f8f4e">116</text><text x="198.0" y="122" text-anchor="middle" class="dz">wk27</text><line x1="322.0" y1="62.9" x2="322.0" y2="56.4" stroke="#2f8f4e" stroke-width="2"/><circle cx="322.0" cy="56.4" r="5" fill="#2f8f4e"><title>wk28 - 103.1%</title></circle><text x="322.0" y="46.4" text-anchor="middle" class="dza" fill="#2f8f4e">103</text><text x="322.0" y="122" text-anchor="middle" class="dz">wk28</text><line x1="446.0" y1="62.9" x2="446.0" y2="85.3" stroke="#cf4636" stroke-width="2"/><circle cx="446.0" cy="85.3" r="5" fill="#cf4636"><title>wk29 - 89.2%</title></circle><text x="446.0" y="101.3" text-anchor="middle" class="dza" fill="#cf4636">89</text><text x="446.0" y="122" text-anchor="middle" class="dz">wk29</text></svg></div><p class="note">Two of the last four weeks reached target. Week 29 at 89.2% is the weakest of the four, but it is not yet complete - the weekend is still to come, and the weekend carries most of the week's target.</p></section>
+    </div></div><div class="layer" data-layer="mtd" hidden><div class="sect"><h2>This month</h2><span>1 to 16 July - 16 days of 31</span></div>
+    <div class="grid g-2r">
+      <section class="card"><h3>Where the month stands</h3><p class="sub">Sales so far against the target for those sixteen days.</p><div class="pulse"><div class="pulse-track"><span class="pulse-fill" style="width:88.8%;background:#2f8f4e"></span><i class="pulse-tick" style="left:83.3%"></i></div><div class="pulse-legend"><span>SAR&nbsp;9.46M sold</span><span>target SAR&nbsp;8.88M</span></div></div><p class="note">The month is at <b>106.5%</b> of target with a surplus of SAR&nbsp;578.9K. That surplus was built in the first ten days; the last six have used up about a third of it.</p></section>
+      <section class="card"><h3>Can the month still be made?</h3><p class="sub">The daily rate so far against the daily rate needed for the rest of July.</p><div class="mini"><svg viewBox="0 0 520 96" role="img" aria-label="Current daily rate against the rate needed"><rect x="10" y="16" width="500" height="18" rx="9" fill="#eef2f6"/><rect x="10" y="16" width="423.7" height="18" rx="9" fill="#2f8f4e"/><line x1="361.2" y1="9" x2="361.2" y2="41" stroke="#41545a" stroke-width="2"/><text x="10" y="60" class="dza" fill="#2f8f4e">Selling now: SAR 591.0K a day</text><text x="361.2" y="60" text-anchor="end" class="dza">Needed: SAR 489.9K a day</text><text x="10" y="80" class="dz">Pace index 1.21 &#183; ahead of the rate needed</text></svg></div><p class="note">Yes, comfortably on today's figures. The month is selling SAR&nbsp;591.0K a day and needs SAR&nbsp;489.9K a day to finish on target - a pace index of <b>1.21</b>. The remaining days can sell <b>7.3% below</b> their own target and July would still land on plan.</p></section>
+    </div>
+    <div class="grid g-2e" style="margin-top:14px">
+      <section class="card"><h3>Three ways the month could finish</h3><p class="sub">Each carries a different current rate forward. None is a forecast.</p><div class="scen">
+              <div class="sc"><p class="sc-l">If the last six days continue</p>
+                <p class="sc-v" style="color:#cf4636">SAR&nbsp;16.58M</p>
+                <p class="sc-s">98.6% of target &middot; below plan</p></div>
+              <div class="sc"><p class="sc-l">If the month's own rate continues</p>
+                <p class="sc-v" style="color:#2f8f4e">SAR&nbsp;17.90M</p>
+                <p class="sc-s">106.5% of target</p></div>
+              <div class="sc"><p class="sc-l">If the daily rate continues</p>
+                <p class="sc-v" style="color:#2f8f4e">SAR&nbsp;18.32M</p>
+                <p class="sc-s">109.0% of target &middot; flattering</p></div>
+            </div><p class="note">The third is the most optimistic and the least reliable: it carries a flat daily average forward and ignores that the days already gone included three of July's biggest Fridays. The gap between the first two is what the next week decides.</p></section>
+      <section class="card"><h3>Is this month normal?</h3><p class="sub">July so far against the last three completed months.</p><div class="benches"><div class="bench"><p class="bl">July so far</p><p class="bv" style="color:#2f8f4e">106.5%</p><p class="bs">of target</p></div><div class="bench"><p class="bl">Last 3 months</p><p class="bv" style="color:#41545a">102.0%</p><p class="bs">April, May, June</p></div><div class="bench"><p class="bl">Difference</p><p class="bv" style="color:#2f8f4e">+4.6 pts</p><p class="bs">above the recent average</p></div></div><p class="note">July is running better than the recent norm, not worse. June was the weak month at 92.7%, and April the strongest at 109.6%.</p></section>
+    </div>
+    <div class="grid g-2" style="margin-top:14px">
+      <section class="card"><h3>How each branch is doing this month</h3><p class="sub">Ranked worst to best.</p><div class="strips"><div class="sr"><span class="sr-n">CFH017</span><span class="sr-t"><i style="width:70.8%;background:#cf4636"></i></span><span class="sr-v" style="color:#cf4636">92.0% &#9660;</span><span class="sr-x">SAR &minus;127.3K</span></div><div class="sr"><span class="sr-n">CFH014</span><span class="sr-t"><i style="width:81.8%;background:#2f8f4e"></i></span><span class="sr-v" style="color:#2f8f4e">106.4% &#9650;</span><span class="sr-x">SAR +178.9K</span></div><div class="sr"><span class="sr-n">CFH021</span><span class="sr-t"><i style="width:82.2%;background:#2f8f4e"></i></span><span class="sr-v" style="color:#2f8f4e">106.9% &#9650;</span><span class="sr-x">SAR +199.5K</span></div><div class="sr"><span class="sr-n">CFH018</span><span class="sr-t"><i style="width:92.8%;background:#2f8f4e"></i></span><span class="sr-v" style="color:#2f8f4e">120.7% &#9650;</span><span class="sr-x">SAR +327.8K</span></div></div><p class="note">Only CFH017 is below target for the month. It needs SAR&nbsp;1.55M from the remaining fifteen days, which is 109.0% of what those days are already targeted to sell - the only branch that has to beat its own plan to catch up.</p></section>
+      <section class="card"><h3>How widely spread the performance is</h3><p class="sub">Three measures of whether the result is broad or concentrated.</p><div class="benches"><div class="bench"><p class="bl">Branches on target</p><p class="bv" style="color:#2f8f4e">75%</p><p class="bs">3 of 4</p></div><div class="bench"><p class="bl">Departments on target</p><p class="bv" style="color:#2f8f4e">82%</p><p class="bs">9 of 11</p></div><div class="bench"><p class="bl">Days on target</p><p class="bv" style="color:#8a5f10">50%</p><p class="bs">8 of 16 days</p></div></div><p class="note">The month is broad-based: most branches and most departments are above target. The weak measure is consistency - only half the days have reached target, and all eight of the misses are in the second half of the month.</p></section>
+    </div></div><div class="layer" data-layer="ytd" hidden><div class="sect"><h2>This year</h2><span>1 January to 16 July 2026</span></div>
+    <div class="grid g-2r">
+      <section class="card"><h3>Where the year stands</h3><p class="sub">Sales so far against the target for the days that have passed.</p><div class="pulse"><div class="pulse-track"><span class="pulse-fill" style="width:85.7%;background:#2f8f4e"></span><i class="pulse-tick" style="left:83.3%"></i></div><div class="pulse-legend"><span>SAR&nbsp;120.17M sold</span><span>target SAR&nbsp;116.86M</span></div></div><p class="note">The year is at <b>102.8%</b> of target, SAR&nbsp;3.31M ahead. Nothing in the current week threatens that position.</p></section>
+      <section class="card"><h3>The trend across quarters</h3><p class="sub">How much of target each quarter reached.</p><div class="mini"><svg viewBox="0 0 520 130" role="img" aria-label="How much of target was reached, quarterly"><line x1="12" y1="59.0" x2="508" y2="59.0" stroke="#8fa1a9" stroke-dasharray="4 3"/><line x1="94.7" y1="59.0" x2="94.7" y2="51.9" stroke="#2f8f4e" stroke-width="2"/><circle cx="94.7" cy="51.9" r="5" fill="#2f8f4e"><title>Q1 - 103.0%</title></circle><text x="94.7" y="41.9" text-anchor="middle" class="dza" fill="#2f8f4e">103</text><text x="94.7" y="122" text-anchor="middle" class="dz">Q1</text><line x1="260.0" y1="59.0" x2="260.0" y2="54.4" stroke="#2f8f4e" stroke-width="2"/><circle cx="260.0" cy="54.4" r="5" fill="#2f8f4e"><title>Q2 - 102.0%</title></circle><text x="260.0" y="44.4" text-anchor="middle" class="dza" fill="#2f8f4e">102</text><text x="260.0" y="122" text-anchor="middle" class="dz">Q2</text><line x1="425.3" y1="59.0" x2="425.3" y2="43.8" stroke="#2f8f4e" stroke-width="2"/><circle cx="425.3" cy="43.8" r="5" fill="#2f8f4e"><title>Q3 - 106.5%</title></circle><text x="425.3" y="33.8" text-anchor="middle" class="dza" fill="#2f8f4e">107</text><text x="425.3" y="122" text-anchor="middle" class="dz">Q3</text></svg></div><p class="note">The direction is improving: 103.0% in Q1, 102.0% in Q2, and Q3 currently tracking at 106.5%. Q3 covers only 16 days so far.</p></section>
+    </div>
+    <div class="grid g-2" style="margin-top:14px">
+      <section class="card"><h3>Branch performance for the year</h3><p class="sub">Ranked worst to best.</p><div class="strips"><div class="sr"><span class="sr-n">CFH017</span><span class="sr-t"><i style="width:71.4%;background:#cf4636"></i></span><span class="sr-v" style="color:#cf4636">92.8% &#9660;</span><span class="sr-x">SAR &minus;1.65M</span></div><div class="sr"><span class="sr-n">CFH014</span><span class="sr-t"><i style="width:78.2%;background:#2f8f4e"></i></span><span class="sr-v" style="color:#2f8f4e">101.7% &#9650;</span><span class="sr-x">SAR +670.9K</span></div><div class="sr"><span class="sr-n">CFH018</span><span class="sr-t"><i style="width:81.2%;background:#2f8f4e"></i></span><span class="sr-v" style="color:#2f8f4e">105.6% &#9650;</span><span class="sr-x">SAR +1.35M</span></div><div class="sr"><span class="sr-n">CFH021</span><span class="sr-t"><i style="width:83.3%;background:#2f8f4e"></i></span><span class="sr-v" style="color:#2f8f4e">108.3% &#9650;</span><span class="sr-x">SAR +3.22M</span></div></div><p class="note">CFH017 is the only branch below target for the year, at 92.8% and SAR&nbsp;1.65M short. CFH021 is the strongest at 108.3%.</p></section>
+      <section class="card"><h3>A long-running risk, not a bad week</h3><p class="sub">Months below target, by branch.</p><div class="pers"><div class="pr"><span class="pr-n">CFH017</span>
+                    <span class="pr-d"><i style="background:#2f8f4e" title="Jan: 101.2%"></i><i style="background:#2f8f4e" title="Feb: 100.1%"></i><i style="background:#cf4636" title="Mar: 85.4%"></i><i style="background:#2f8f4e" title="Apr: 100.3%"></i><i style="background:#cf4636" title="May: 89.8%"></i><i style="background:#cf4636" title="Jun: 83.7%"></i><i style="background:#cf4636" title="Jul: 92.0%"></i></span>
+                    <span class="pr-v">4 of 7 below</span></div><div class="pr"><span class="pr-n">CFH018</span>
+                    <span class="pr-d"><i style="background:#2f8f4e" title="Jan: 108.0%"></i><i style="background:#2f8f4e" title="Feb: 103.3%"></i><i style="background:#c08429" title="Mar: 95.1%"></i><i style="background:#2f8f4e" title="Apr: 110.0%"></i><i style="background:#2f8f4e" title="May: 111.6%"></i><i style="background:#c08429" title="Jun: 96.9%"></i><i style="background:#2f8f4e" title="Jul: 120.7%"></i></span>
+                    <span class="pr-v">2 of 7 below</span></div><div class="pr"><span class="pr-n">CFH014</span>
+                    <span class="pr-d"><i style="background:#2f8f4e" title="Jan: 105.5%"></i><i style="background:#2f8f4e" title="Feb: 101.5%"></i><i style="background:#c08429" title="Mar: 98.7%"></i><i style="background:#2f8f4e" title="Apr: 112.6%"></i><i style="background:#2f8f4e" title="May: 100.2%"></i><i style="background:#cf4636" title="Jun: 91.4%"></i><i style="background:#2f8f4e" title="Jul: 106.4%"></i></span>
+                    <span class="pr-v">2 of 7 below</span></div><div class="pr"><span class="pr-n">CFH021</span>
+                    <span class="pr-d"><i style="background:#2f8f4e" title="Jan: 111.0%"></i><i style="background:#2f8f4e" title="Feb: 117.9%"></i><i style="background:#2f8f4e" title="Mar: 100.3%"></i><i style="background:#2f8f4e" title="Apr: 112.2%"></i><i style="background:#2f8f4e" title="May: 110.6%"></i><i style="background:#c08429" title="Jun: 96.8%"></i><i style="background:#2f8f4e" title="Jul: 106.9%"></i></span>
+                    <span class="pr-v">1 of 7 below</span></div></div><p class="note"><b>CFH017 has missed target in four of the seven months</b> - March, May, June and July - and is below target yesterday, this week, this month and for the year. That combination is what separates a long-running problem from a bad week. CFH021 has missed once.</p></section>
+    </div></div><div class="layer" data-layer="attention" hidden><div class="sect"><h2>Management attention</h2><span>the shortest list that covers what matters</span></div>
+    <ol class="atts"><li class="att att-crit"><h3>CFH017 &mdash; a long-running shortfall, not a bad day</h3><p>68.7% yesterday and responsible for 83% of the day's shortfall. Below target this week (76.2%), this month (92.0%) and this year (92.8%), and it has missed in four of seven months. It needs SAR&nbsp;1.55M from the remaining fifteen days to make July, more than those days are targeted to sell.</p></li><li class="att att-crit"><h3>Six days below target in a row</h3><p>Every day since Saturday 11 July has missed. The run has used up about a third of the month's surplus, and at the recent average shortfall the remaining SAR&nbsp;578.9K would be gone around <b>28 July</b>, three days before month end.</p></li><li class="att att-warn"><h3>CFH018 has turned sharply</h3><p>110.9% across seven days but 92.1% yesterday - a fall of &minus;18.8 pts, the largest of any branch. It is still the strongest branch for the month at 120.7%, so this is one to watch before acting.</p></li><li class="att att-warn"><h3>The weekend decides the week</h3><p>Week 29 needs SAR&nbsp;1.97M from Friday, Saturday and Sunday - 111.1% of what those days are targeted to sell. Friday alone carries SAR&nbsp;959.4K of it.</p></li><li class="att att-ok"><h3>The month and the year are not at risk</h3><p>July is at 106.5% and running ahead of the rate needed. The remaining days can sell 7.3% below their own target and the month still lands on plan. The year is 102.8% with an improving quarterly trend. Act on the week, not on the year.</p></li></ol>
+    <p class="note" style="max-width:900px">This section introduces no new figures. Every point above appears
+    in one of the earlier sections, brought together in order of how much attention it needs.</p><div class="caveats">
+  <h3>Important things to know about these numbers</h3>
+  <ul>
+    <li><b>No causes are given, only amounts and places.</b> The report holds sales and targets. It does not
+        hold promotions, stock levels, staffing, weather or footfall, so nothing here explains <i>why</i>
+        sales moved - only where the difference sits.</li>
+    <li><b>There is no comparison with last year.</b> The report only holds 2026 data, so every figure is
+        compared with target.</li>
+    <li><b>Each period is compared with the target for the days that have passed.</b> This week covers 4 days
+        of 7 and this month 16 of 31. Full-period targets are used only in the "what is needed" figures.</li>
+    <li><b>Percentages and values are both shown</b>, because a small branch with an extreme percentage is
+        not the same as a large branch a few points below target.</li>
+    <li><b>Branch CFH022 is not included.</b> It has had no sales since 1 August, and the Sales performance
+        report leaves it out for the same reason.</li>
+    <li><b>Projections carry a current rate forward.</b> They are arithmetic, not forecasts.</li>
+  </ul>
+</div></div>
+    <p class="foot"><span>Every figure comes from the Target Tracker report and has been checked against its
+      own totals. Nothing is estimated, and no cause is inferred.</span><span>AI-assisted analysis</span></p>
+  </div></main>
+</div>
+<script>
+(function(){
+  var LAYERS = ['pulse','yesterday','last7','wtd','mtd','ytd','attention'];
+  function setLayer(name){
+    document.querySelectorAll('.layer').forEach(function(el){
+      el.hidden = el.getAttribute('data-layer') !== name;
+    });
+    document.querySelectorAll('[data-nav]').forEach(function(btn){
+      btn.setAttribute('aria-current', btn.getAttribute('data-nav') === name ? 'true' : 'false');
+    });
+    var hash = '#' + name;
+    if (location.hash !== hash){ history.replaceState(null, '', hash); }
+  }
+  document.addEventListener('click', function(ev){
+    var nav = ev.target.closest('[data-nav]');
+    if (nav){ setLayer(nav.getAttribute('data-nav')); }
+  });
+  window.addEventListener('hashchange', function(){
+    var n = (location.hash || '').replace('#','');
+    setLayer(LAYERS.indexOf(n) !== -1 ? n : 'pulse');
+  });
+  var start = (location.hash || '').replace('#','');
+  setLayer(LAYERS.indexOf(start) !== -1 ? start : 'pulse');
+})();
+</script>
+</body>
+</html>

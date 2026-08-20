@@ -777,6 +777,26 @@ _PUBLISHING: tuple[ConfigKey, ...] = (
        "How long alerts are kept",
        "Alerts older than this many days drop off.",
        in_state=False),
+    _k("ai_content_multi_report_feed", "bool", False, "publishing",
+       "Let several reports share one insight feed",
+       "Turn this on only after your app has been updated to handle it. It lets more than one "
+       "report put findings into the same feed, and stamps each finding with the report it came "
+       "from. With it off, the feed looks exactly as it does today.",
+       "Adds reportId to every KpiCard and switches card id from a per-run 1..n sequence to a "
+       "stable hash of report_id + story_key, because two reports both numbering from 1 collide "
+       "in one feed. Also makes the insights/alerts merges report-aware so a run replaces only "
+       "its own report's cards for the date. OFF reproduces today's payload byte-for-byte. See "
+       "docs/phase5-app-contract-change.md - the consumer must tolerate the field first.",
+       tier="expert"),
+    _k("ai_content_feed_max_cards", "int", 10, "publishing",
+       "How many findings the feed holds in total",
+       "The most findings shown for this client at once, shared out between whichever reports "
+       "ran. Every report that found something is guaranteed at least one place before the list "
+       "is cut, so a quiet report is never squeezed out entirely.",
+       "Total budget across reports, divided by kernel.chain.fair_share. Only consulted when "
+       "ai_content_multi_report_feed is on; otherwise each report publishes its own "
+       "insight_max_new_per_run cards.",
+       in_state=False, tier="expert"),
     _k("api_summary_title", "string", "AI Summary", "publishing",
        "Title shown above the summary",
        "The heading your readers see, for example 'Sales vs Last Year'.",
@@ -873,6 +893,57 @@ _SUMMARY_TUNING: tuple[ConfigKey, ...] = (
     _k("summary_dashboard_tldr", "int", 5, "summary_tuning",
        "Bullet points in 'what matters most'",
        "The short summary at the top of the page."),
+    # --- Target Tracker (WP9). Its own report, its own semantic model. ---------
+    _k("target_tracker_population", "list", [], "scope",
+       "Branches the Target Tracker report covers",
+       "The branches measured against target. Leave empty to include every branch in the model.",
+       "Applied as a TREATAS filter on LOC_CODE in every Target Tracker query, so a branch left "
+       "out here is absent from the totals as well as the tables.",
+       tier="essential", per_client=True, in_state=False),
+    _k("target_tracker_excluded_entities", "list", [], "scope",
+       "Branches the Target Tracker report leaves out",
+       "Recorded so the page can say which branches are missing and why.",
+       "Documentation only - exclusion is achieved by omitting the branch from "
+       "target_tracker_population.",
+       tier="standard", per_client=True, in_state=False),
+    _k("target_tracker_currency", "string", "SAR", "summary_tuning",
+       "Currency shown on the Target Tracker page",
+       "The currency code printed beside every figure.",
+       "The model's own 'Metrics description' table says QAR on four rows and is stale; the "
+       "group is Saudi-based, so SAR is correct. Do not read the currency from that table.",
+       tier="standard", in_state=False),
+    _k("target_tracker_anchor_override", "string", "", "summary_tuning",
+       "Report on a specific date instead of the latest",
+       "Leave empty for normal running. Set a date (YYYY-MM-DD) only to reproduce an earlier day.",
+       "Normally the report anchors on the latest date that carries a sales target, which is not "
+       "always the latest date with sales. When this is set the page says the date was chosen "
+       "rather than resolved.",
+       tier="expert", in_state=False),
+    _k("target_tracker_week_start", "string", "monday", "summary_tuning",
+       "First day of the Target Tracker week",
+       "Which day the week-to-date figure starts from.",
+       "The model's own week numbering runs Monday to Sunday; changing this would put the page "
+       "out of step with it.",
+       tier="expert", in_state=False),
+    _k("target_tracker_llm_authoring_enabled", "bool", False, "features",
+       "Let the AI write the Target Tracker wording",
+       "When off, the report uses fixed sentences built from the figures. When on, the AI "
+       "rewrites those sentences to read better. It can never change a number, add a section "
+       "or leave a period out.",
+       "Every draft is checked against the rulebook before it is used: figures must exist in "
+       "the report and be rounded, no cause may be asserted, no prior-year comparison, no "
+       "forecasting, no banned vocabulary. A draft that fails twice is discarded and the "
+       "deterministic wording is kept, so the report ships either way.",
+       tier="standard", in_state=False),
+    _k("target_tracker_material_pct", "float", 5.0, "summary_tuning",
+       "Difference from target that counts as significant (%)",
+       "A gap smaller than this is treated as normal variation rather than a finding.",
+       tier="standard", in_state=False),
+    _k("target_tracker_display_rows", "int", 12, "summary_tuning",
+       "Rows shown in Target Tracker detail tables",
+       "Only affects what is visible at first glance. Every branch and department is always in "
+       "the page; this only limits what is shown before scrolling.",
+       tier="standard", in_state=False),
     _k("summary_dashboard_eyebrow", "string", "AI Insights", "summary_tuning",
        "Small heading above the page title",
        "Appears in small letters above the main title."),
