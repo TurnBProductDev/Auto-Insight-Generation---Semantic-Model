@@ -36,42 +36,152 @@ def _guid(value) -> str | None:
         return None
 
 
+#: Band -> the contract's Tone literal. `Tone` allows only these five values.
+_TONE = {"good": "positive", "warn": "warning", "crit": "critical", "none": "info"}
+
+
 def summary_payload(model: dict, *, currency: str = "SAR", title: str = "Target Tracker") -> dict:
-    """The app-facing summary object. Same field names the report-summary contract uses."""
+    """The app-facing summary object, in the shared report-summary contract.
+
+    **This must be `api_payloads.ReportSummaryPayload` and nothing else.** That
+    model is `extra="forbid"` with exactly five fields - `title`, `generatedAt`,
+    `headline`, `metrics`, `sections` - and the app reads those names.
+
+    An earlier version of this function invented its own shape: the headline
+    sentence was filed under `heading`, the detail under `points`, `metrics` was
+    absent, and ten fields the contract does not allow were added
+    (`reportId`, `dataAsOf`, `soldThrough`, `currency`, `grain`, `summaryType`,
+    `branchesBelowTarget`, `schemaVersion`). The app looked for `headline`, did
+    not find it, and discarded the whole file **silently** - no error, no log
+    line - so the report simply never appeared for eight days and looked from
+    the outside like a missing blob.
+
+    The figures that the contract has no field for are not dropped; they are
+    stated in the prose, and `grain`/`dataAsOf` ride on the history index entry
+    where the contract does carry them.
+
+    The result is validated before it is returned, so this can never drift
+    again in silence.
+    """
+    from ...tools.api_payloads import ReportSummaryPayload
     from .target_tracker_html import _R, headline, money, pc
 
     r = _R(currency)
-    p = model["periods"]
-    points = []
-    for key in ("day", "wtd", "mtd", "ytd"):
-        q = p[key]
-        points.append({
-            "label": q["name"],
-            "text": (f"{q['name']} ({q['elapsed']}): {currency} {money(q['actual'])} against a "
-                     f"target of {currency} {money(q['target'])} — {pc(q['attainment'])} of target, "
-                     f"{currency} {money(abs(q['variance']))} "
-                     f"{'above' if q['variance'] >= 0 else 'below'} target."),
-            "value": round(q["actual"], 2),
-            "target": round(q["target"], 2),
-            "attainmentPct": round(q["attainment"], 2) if q["attainment"] is not None else None,
-            "variance": round(q["variance"], 2),
-            "status": q["status"],
-        })
+    periods = model["periods"]
+
+    # KPI tiles: one per period, worst-performing tone carried from its band.
+    metrics = [
+        {
+            "label": periods[key]["name"],
+            "value": f"{pc(periods[key]['attainment'])} of target",
+            "tone": _TONE.get(periods[key]["band"], "info"),
+        }
+        for key in ("day", "wtd", "mtd", "ytd")
+    ]
+
+    performance_points = [
+        (f"{periods[key]['name']} ({periods[key]['elapsed']}): {currency} "
+         f"{money(periods[key]['actual'])} against a target of {currency} "
+         f"{money(periods[key]['target'])} - {pc(periods[key]['attainment'])} of target, "
+         f"{currency} {money(abs(periods[key]['variance']))} "
+         f"{'above' if periods[key]['variance'] >= 0 else 'below'} target.")
+        for key in ("day", "wtd", "mtd", "ytd")
+    ]
+
     behind = [b["name"] for b in model["branches"] if b["mtd"]["band"] == "crit"]
-    return {
-        "schemaVersion": SCHEMA_VERSION,
-        "reportId": model["report_id"],
+    if behind:
+        branch_points = [
+            (f"{b['name']} is at {pc(b['mtd']['attainment'])} of target for this month so far, "
+             f"{currency} {money(abs(b['mtd']['variance']))} below target.")
+            for b in model["branches"] if b["mtd"]["band"] == "crit"
+        ]
+        branch_tone = "critical"
+    else:
+        branch_points = ["Every branch reached its target for this month so far."]
+        branch_tone = "positive"
+
+    # Where the contract has no field, the fact becomes a sentence rather than
+    # being lost: the as-at date, the gap to the latest sales, and the branches
+    # the comparison covers.
+    coverage_points = [
+        f"Figures are measured to {model['anchor']}, the most recent day that carries a target."
+    ]
+    if model.get("target_lag_days"):
+        coverage_points.append(
+            f"Sales have been recorded for a further {model['target_lag_days']} days, to "
+            f"{model['sold_through']}, but no target has been set for them, so they are not "
+            f"included in any comparison above."
+        )
+    if model.get("population"):
+        coverage_points.append(
+            f"Covers {len(model['population'])} branches: {', '.join(model['population'])}."
+        )
+    coverage_points.append(f"All figures are in {currency}.")
+
+    payload = {
         "title": title,
-        "heading": headline(r, model),
-        "dataAsOf": model["anchor"],
-        "soldThrough": model["sold_through"],
-        "currency": currency,
-        "grain": "day",
-        "summaryType": "target_vs_actual",
-        "points": points,
-        "branchesBelowTarget": behind,
         "generatedAt": _iso(datetime.now(timezone.utc)),
+        "headline": headline(r, model),
+        "metrics": metrics,
+        "sections": [
+            {"heading": "Performance against target",
+             "tone": _TONE.get(periods["mtd"]["band"], "info"),
+             "points": performance_points},
+            {"heading": "Branches", "tone": branch_tone, "points": branch_points},
+            {"heading": "What these figures cover", "tone": "info", "points": coverage_points},
+        ],
     }
+    # Fail loudly here rather than have the app discard the file in silence.
+    return ReportSummaryPayload(**payload).model_dump()
+
+
+def history_entry(model: dict, payload: dict, report_id: str, generated_at: datetime) -> dict:
+    """One row of the report's history index.
+
+    The index is the app's *second* route to a summary: it reads the dated
+    archive when the current file is unavailable. Target Tracker published no
+    archive at all, so when its current file was rejected there was no fallback
+    and the report vanished entirely.
+
+    ``grain`` and ``dataAsOf`` live here rather than in the payload - the
+    payload contract has no field for them, the index entry does.
+    """
+    return {
+        "reportId": report_id,
+        "date": model["anchor"],
+        "label": "Latest",
+        "generatedAt": _iso(generated_at),
+        "headline": payload["headline"],
+        "grain": "day",
+        "dataAsOf": model["anchor"],
+        "runsThatDay": 1,
+    }
+
+
+def merge_index(existing: list, entry: dict, *, keep: int = 30) -> list:
+    """Newest first, one row per date, only the newest labelled 'Latest'.
+
+    A re-run on the same date replaces that date's row and increments its run
+    count rather than adding a duplicate.
+    """
+    rows = [dict(row) for row in (existing or []) if isinstance(row, dict)]
+    same_day = next((row for row in rows if row.get("date") == entry["date"]), None)
+    if same_day is not None:
+        entry = {**entry, "runsThatDay": int(same_day.get("runsThatDay") or 0) + 1}
+        rows = [row for row in rows if row.get("date") != entry["date"]]
+    rows.append(entry)
+    rows.sort(key=lambda row: str(row.get("date") or ""), reverse=True)
+    rows = rows[: max(1, int(keep))]
+    for index, row in enumerate(rows):
+        row["label"] = "Latest" if index == 0 else _day_label(row.get("date"))
+    return rows
+
+
+def _day_label(value) -> str:
+    try:
+        return datetime.strptime(str(value), "%Y-%m-%d").strftime("%d %b %Y")
+    except (ValueError, TypeError):
+        return str(value or "")
 
 
 def publish(cfg: dict, out_dir: Path, model: dict, *, cards: list | None = None,
@@ -157,6 +267,31 @@ def publish(cfg: dict, out_dir: Path, model: dict, *, cards: list | None = None,
                     html_bytes, html_ct, {**meta, "reportid": report_id})
                 put(client_container, f"ai-content/report-summaries/client/{report_id}.md",
                     md_bytes, md_ct, {**meta, "reportid": report_id})
+            # The dated archive and its index - the app's fallback route.
+            for report_id in report_ids:
+                folder = f"ai-content/report-summaries/client/{report_id}"
+                dated = {
+                    "schemaVersion": SCHEMA_VERSION,
+                    "client": client_container,
+                    "generatedFor": "client",
+                    "generatedAt": _iso(now),
+                    "sourceRunId": f"{model['report_id']}-{model['anchor']}",
+                    "payload": payload,
+                }
+                put(client_container, f"{folder}/{model['anchor']}.json",
+                    json.dumps(dated, indent=2, ensure_ascii=False).encode("utf-8"), json_ct)
+
+                index_blob = svc.get_container_client(client_container).get_blob_client(
+                    f"{folder}/index.json")
+                try:
+                    existing = json.loads(index_blob.download_blob().readall())
+                    if not isinstance(existing, list):
+                        existing = []
+                except Exception:  # noqa: BLE001 - a missing index is the first run
+                    existing = []
+                merged = merge_index(existing, history_entry(model, payload, report_id, now))
+                put(client_container, f"{folder}/index.json",
+                    json.dumps(merged, indent=2, ensure_ascii=False).encode("utf-8"), json_ct)
             app_status = "ok"
         except Exception as exc:  # noqa: BLE001
             return {"status": "failed", "reason": type(exc).__name__, "error": str(exc),

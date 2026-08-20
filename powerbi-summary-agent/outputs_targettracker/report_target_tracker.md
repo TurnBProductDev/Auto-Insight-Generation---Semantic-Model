@@ -1,10 +1,10 @@
-# July finished at 105.1% of target, with 17.66M sold against 16.81M and 858.2K above target.
+# July finished at 105.1% of target, 858.2K above target.
 
 *Target Tracker · data to 31 July 2026 · 31 days of 31 · 4 branches · all figures in SAR*
 
 > **Why this date.** 31 July is the most recent day that has a sales target. Sales have been recorded for a further 19 days, up to 19 August, but no target has been set for them, so they cannot be measured against one.
 
-Today ended strongly at 125.0% of target, with 1.36M sold against 1.09M and 271.6K above target. That helped lift this week so far to 117.2% of target, with 3.32M sold against 2.83M and 487.8K above target, and it closed the month at 105.1% of target. The month is complete: 13 of 31 days reached their target, and July still finished with 17.66M sold against 16.81M, 858.2K above target. This is a review rather than a decision aid, and this year so far stands at 102.9% of target, with 128.38M sold against 124.79M and 3.59M above target.
+Today closed at 125.0% of target, with 1.36M sold against 1.09M, putting 271.6K above target into a week that is now at 117.2% of target and 487.8K above target. That strong finish sits inside a month that ended at 105.1% of target, with 17.66M sold against 16.81M and 858.2K above target. Only 13 of 31 days reached their target, so the monthly surplus was built by stronger days outweighing weaker ones. This year so far is also above target at 102.9%, with 128.38M sold against 124.79M and 3.59M above target.
 
 ## Where we stand
 

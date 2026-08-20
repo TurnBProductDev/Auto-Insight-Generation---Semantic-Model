@@ -9,6 +9,7 @@ checkout, and additionally replays the committed live scan when one is present.
 
 from __future__ import annotations
 
+import re
 import json
 import sys
 from pathlib import Path
@@ -227,13 +228,30 @@ def main() -> int:
     check("branch table present", "| Branch |" in document)
 
     print("\napp payload")
+    # These assertions used to pin this report's OWN invented shape - reportId,
+    # points, dataAsOf - which is precisely why the mismatch with the app went
+    # unnoticed: the test agreed with the bug. They now pin the SHARED contract
+    # the app actually reads. See replay_target_tracker_signals.py [6] for the
+    # full check, including that no fact was lost in the move.
+    from src.tools.api_payloads import ReportSummaryPayload
+
     payload = pub.summary_payload(m)
-    check("payload names the report", payload["reportId"] == "target_tracker")
-    check("payload carries four points", len(payload["points"]) == 4)
-    check("payload dataAsOf is the anchor", payload["dataAsOf"] == m["anchor"])
-    check("payload figures are rounded",
-          all(isinstance(pt["value"], float) and round(pt["value"], 2) == pt["value"]
-              for pt in payload["points"]))
+    check("payload is exactly the shared report-summary contract",
+          set(payload) == {"title", "generatedAt", "headline", "metrics", "sections"},
+          str(sorted(payload)))
+    check("payload validates against the shared model",
+          ReportSummaryPayload(**payload) is not None)
+    check("headline is under 'headline' (the name the app reads)",
+          bool(str(payload["headline"]).strip()))
+    check("payload carries four period metrics", len(payload["metrics"]) == 4)
+    check("the anchor is stated in the prose",
+          m["anchor"] in " ".join(pt for s in payload["sections"] for pt in s["points"]))
+    # Two decimals is the compact money format ("SAR 17.66M"); three or more is
+    # the over-precise raw float the rulebook rejects.
+    check("no payload figure is printed with more than two decimals",
+          not re.search(r"\d+\.\d{3,}", " ".join(
+              [x["value"] for x in payload["metrics"]]
+              + [pt for s in payload["sections"] for pt in s["points"]])))
 
     print("\nforced anchor is described honestly")
     forced_model = tt.build(synthetic(forced=True))
