@@ -1,0 +1,478 @@
+{
+  "queries": {
+    "snapshot": "EVALUATE ROW(\n  \"as_at\", MAX('REP_SSR_SAG'[UPDATED_ON]),\n  \"snapshot_cardinality\", DISTINCTCOUNT('REP_SSR_SAG'[UPDATED_ON]),\n  \"total_value\", [STOCK VALUE],\n  \"aged_value\", CALCULATE([STOCK VALUE], KEEPFILTERS('REP_SSR_SAG'[NEW AGE] IN {\"09-12 MONTHS\", \"12-24 MONTHS\", \"24+ MONTHS\"})),\n  \"high_risk_value\", CALCULATE([STOCK VALUE], KEEPFILTERS('REP_SSR_SAG'[NEW AGE] IN {\"12-24 MONTHS\", \"24+ MONTHS\"})),\n  \"oldest_value\", CALCULATE([STOCK VALUE], KEEPFILTERS('REP_SSR_SAG'[NEW AGE] = \"24+ MONTHS\")),\n  \"skus\", DISTINCTCOUNT('REP_SSR_SAG'[ITEM]),\n  \"locations\", DISTINCTCOUNT('REP_SSR_SAG'[LOC_CODE]),\n  \"source_aged_share\", [aged stock share],\n  \"source_aged_numerator\", SUM('REP_SSR_SAG'[agingstock])\n)",
+    "bands": "EVALUATE\nSUMMARIZECOLUMNS(\n  'REP_SSR_SAG'[NEW AGE],\n  \"value\", [STOCK VALUE],\n  \"aged\", CALCULATE([STOCK VALUE], KEEPFILTERS('REP_SSR_SAG'[NEW AGE] IN {\"09-12 MONTHS\", \"12-24 MONTHS\", \"24+ MONTHS\"})),\n  \"skus\", DISTINCTCOUNT('REP_SSR_SAG'[ITEM])\n)",
+    "risk_split": "EVALUATE\nSUMMARIZECOLUMNS(\n  'REP_SSR_SAG'[non_moving_status],\n  \"value\", [STOCK VALUE],\n  \"aged\", CALCULATE([STOCK VALUE], KEEPFILTERS('REP_SSR_SAG'[NEW AGE] IN {\"09-12 MONTHS\", \"12-24 MONTHS\", \"24+ MONTHS\"}))\n)",
+    "dimension__division": "EVALUATE\nTOPN(\n  15,\n  FILTER(\n    SUMMARIZECOLUMNS(\n      'REP_SSR_SAG'[DEPARTMENT],\n      \"value\", [STOCK VALUE],\n      \"aged\", CALCULATE([STOCK VALUE], KEEPFILTERS('REP_SSR_SAG'[NEW AGE] IN {\"09-12 MONTHS\", \"12-24 MONTHS\", \"24+ MONTHS\"})),\n      \"high_risk\", CALCULATE([STOCK VALUE], KEEPFILTERS('REP_SSR_SAG'[NEW AGE] IN {\"12-24 MONTHS\", \"24+ MONTHS\"}))\n    ),\n    [value] <> 0\n  ),\n  [aged], DESC,\n  'REP_SSR_SAG'[DEPARTMENT], ASC\n)",
+    "dimension__section": "EVALUATE\nTOPN(\n  15,\n  FILTER(\n    SUMMARIZECOLUMNS(\n      'LINK TABLE'[SECTION],\n      \"value\", [STOCK VALUE],\n      \"aged\", CALCULATE([STOCK VALUE], KEEPFILTERS('REP_SSR_SAG'[NEW AGE] IN {\"09-12 MONTHS\", \"12-24 MONTHS\", \"24+ MONTHS\"})),\n      \"high_risk\", CALCULATE([STOCK VALUE], KEEPFILTERS('REP_SSR_SAG'[NEW AGE] IN {\"12-24 MONTHS\", \"24+ MONTHS\"}))\n    ),\n    [value] <> 0\n  ),\n  [aged], DESC,\n  'LINK TABLE'[SECTION], ASC\n)",
+    "dimension__location": "EVALUATE\nTOPN(\n  15,\n  FILTER(\n    SUMMARIZECOLUMNS(\n      'REP_SSR_SAG'[LOC_CODE],\n      \"value\", [STOCK VALUE],\n      \"aged\", CALCULATE([STOCK VALUE], KEEPFILTERS('REP_SSR_SAG'[NEW AGE] IN {\"09-12 MONTHS\", \"12-24 MONTHS\", \"24+ MONTHS\"})),\n      \"high_risk\", CALCULATE([STOCK VALUE], KEEPFILTERS('REP_SSR_SAG'[NEW AGE] IN {\"12-24 MONTHS\", \"24+ MONTHS\"}))\n    ),\n    [value] <> 0\n  ),\n  [aged], DESC,\n  'REP_SSR_SAG'[LOC_CODE], ASC\n)",
+    "dimension__sku_type": "EVALUATE\nTOPN(\n  15,\n  FILTER(\n    SUMMARIZECOLUMNS(\n      'REP_SSR_SAG'[skutype],\n      \"value\", [STOCK VALUE],\n      \"aged\", CALCULATE([STOCK VALUE], KEEPFILTERS('REP_SSR_SAG'[NEW AGE] IN {\"09-12 MONTHS\", \"12-24 MONTHS\", \"24+ MONTHS\"})),\n      \"high_risk\", CALCULATE([STOCK VALUE], KEEPFILTERS('REP_SSR_SAG'[NEW AGE] IN {\"12-24 MONTHS\", \"24+ MONTHS\"}))\n    ),\n    [value] <> 0\n  ),\n  [aged], DESC,\n  'REP_SSR_SAG'[skutype], ASC\n)",
+    "deep__oldest_items": "EVALUATE\nTOPN(5,\n  FILTER(SUMMARIZECOLUMNS('REP_SSR_SAG'[ITEM], \"value\", CALCULATE([STOCK VALUE], KEEPFILTERS('REP_SSR_SAG'[NEW AGE] = \"24+ MONTHS\"))), [value] > 0),\n  [value], DESC, 'REP_SSR_SAG'[ITEM], ASC)\nORDER BY [value] DESC",
+    "deep__aged_non_moving_items": "EVALUATE\nTOPN(5,\n  FILTER(SUMMARIZECOLUMNS(\n    'REP_SSR_SAG'[ITEM],\n    \"value\", CALCULATE([STOCK VALUE], 'REP_SSR_SAG'[NEW AGE] IN {\"09-12 MONTHS\", \"12-24 MONTHS\", \"24+ MONTHS\"}, 'REP_SSR_SAG'[non_moving_status] = \"YES\")\n  ), [value] > 0),\n  [value], DESC, 'REP_SSR_SAG'[ITEM], ASC)\nORDER BY [value] DESC"
+  },
+  "dimensions": {
+    "division": [
+      {
+        "REP_SSR_SAG[DEPARTMENT]": "LIFESTYLE",
+        "[value]": 2016539.4152,
+        "[aged]": 363300.5656,
+        "[high_risk]": 195502.5198
+      },
+      {
+        "REP_SSR_SAG[DEPARTMENT]": "HOME & LIVING",
+        "[value]": 1200614.8102,
+        "[aged]": 352830.2924,
+        "[high_risk]": 215932.9214
+      },
+      {
+        "REP_SSR_SAG[DEPARTMENT]": "CONSUMER GOODS",
+        "[value]": 2662952.3566,
+        "[aged]": 60796.6867,
+        "[high_risk]": 32911.5501
+      },
+      {
+        "REP_SSR_SAG[DEPARTMENT]": "TECHNOLOGY",
+        "[value]": 321228.5064,
+        "[aged]": 48458.9839,
+        "[high_risk]": 16536.8012
+      }
+    ],
+    "section": [
+      {
+        "LINK TABLE[SECTION]": "CLEANING ESSENSTIALS",
+        "[value]": 138221.5875,
+        "[aged]": 4422.5809,
+        "[high_risk]": 2238.4618
+      },
+      {
+        "LINK TABLE[SECTION]": "TRAVEL",
+        "[value]": 121809.3407,
+        "[aged]": 22682.1598,
+        "[high_risk]": 13947.1529
+      },
+      {
+        "LINK TABLE[SECTION]": "GLASS ITEMS",
+        "[value]": 19506.4237,
+        "[aged]": 5489.2707,
+        "[high_risk]": 3648.7206
+      },
+      {
+        "LINK TABLE[SECTION]": "KIDS FASHION",
+        "[value]": 123000.7803,
+        "[aged]": 35153.5741,
+        "[high_risk]": 13546.4959
+      },
+      {
+        "LINK TABLE[SECTION]": "ENTERTAINMENTS",
+        "[value]": 316957.9697,
+        "[aged]": 48431.2519,
+        "[high_risk]": 16531.8119
+      },
+      {
+        "LINK TABLE[SECTION]": "PERSONAL CARE",
+        "[value]": 1037437.7729,
+        "[aged]": 25919.4892,
+        "[high_risk]": 15328.263
+      },
+      {
+        "LINK TABLE[SECTION]": "SPORTING GOODS",
+        "[value]": 50925.4674,
+        "[aged]": 20069.6339,
+        "[high_risk]": 19200.8673
+      },
+      {
+        "LINK TABLE[SECTION]": "LADIES APPAREL",
+        "[value]": 754838.1734,
+        "[aged]": 120544.8594,
+        "[high_risk]": 69623.9062
+      },
+      {
+        "LINK TABLE[SECTION]": "OFFICE SUPPLIES",
+        "[value]": 436670.2123,
+        "[aged]": 111135.4758,
+        "[high_risk]": 82774.8726
+      },
+      {
+        "LINK TABLE[SECTION]": "CULINARY SUPPLIES",
+        "[value]": 614879.7332,
+        "[aged]": 197823.4566,
+        "[high_risk]": 115957.436
+      },
+      {
+        "LINK TABLE[SECTION]": "FOOTWEAR",
+        "[value]": 244077.5588,
+        "[aged]": 58133.5432,
+        "[high_risk]": 33904.1175
+      },
+      {
+        "LINK TABLE[SECTION]": "PROVISIONS",
+        "[value]": 1059685.762,
+        "[aged]": 26861.8082,
+        "[high_risk]": 13416.6009
+      },
+      {
+        "LINK TABLE[SECTION]": "MENS APPAREL",
+        "[value]": 464686.1944,
+        "[aged]": 67952.0865,
+        "[high_risk]": 25394.2723
+      },
+      {
+        "LINK TABLE[SECTION]": "TOYS",
+        "[value]": 256505.9176,
+        "[aged]": 38101.6733,
+        "[high_risk]": 19312.6019
+      },
+      {
+        "LINK TABLE[SECTION]": "HOME TEXTILES",
+        "[value]": 129558.441,
+        "[aged]": 38382.0893,
+        "[high_risk]": 13551.8922
+      }
+    ],
+    "location": [
+      {
+        "REP_SSR_SAG[LOC_CODE]": "WH1",
+        "[value]": 3849004.2918,
+        "[aged]": 672148.8222,
+        "[high_risk]": 367351.6192
+      },
+      {
+        "REP_SSR_SAG[LOC_CODE]": "ST2",
+        "[value]": 269464.9162,
+        "[aged]": 42551.46,
+        "[high_risk]": 25864.2178
+      },
+      {
+        "REP_SSR_SAG[LOC_CODE]": "ST1",
+        "[value]": 344315.9532,
+        "[aged]": 28729.9667,
+        "[high_risk]": 15987.4639
+      },
+      {
+        "REP_SSR_SAG[LOC_CODE]": "ST3",
+        "[value]": 258589.2389,
+        "[aged]": 31356.8223,
+        "[high_risk]": 21927.2701
+      },
+      {
+        "REP_SSR_SAG[LOC_CODE]": "ST5",
+        "[value]": 16867.6364,
+        "[aged]": 4055.4915,
+        "[high_risk]": 1276.1027
+      },
+      {
+        "REP_SSR_SAG[LOC_CODE]": "WH2",
+        "[value]": 1011799.203,
+        "[aged]": 9072.0538,
+        "[high_risk]": 3698.0248
+      },
+      {
+        "REP_SSR_SAG[LOC_CODE]": "ST4",
+        "[value]": 451293.8489,
+        "[aged]": 37471.9121,
+        "[high_risk]": 24779.094
+      }
+    ],
+    "sku_type": [
+      {
+        "REP_SSR_SAG[skutype]": "OVERSEAS",
+        "[value]": 2198806.7318,
+        "[aged]": 637842.5306,
+        "[high_risk]": 343007.918
+      },
+      {
+        "REP_SSR_SAG[skutype]": "LOCAL",
+        "[value]": 4002528.3566,
+        "[aged]": 187543.998,
+        "[high_risk]": 117875.8745
+      }
+    ]
+  },
+  "deep_dives": {
+    "oldest_items": [
+      {
+        "REP_SSR_SAG[ITEM]": "0101574527 - CF PAD LOCK GOLDEN 264",
+        "[value]": 2177.074
+      },
+      {
+        "REP_SSR_SAG[ITEM]": "0101640088 - SPICE KITCHEN KNIFE P.HANDLE 7 CFKT-0657",
+        "[value]": 1838.2318
+      },
+      {
+        "REP_SSR_SAG[ITEM]": "0101624997 - CF MAX FRESH STEEL HOT POT 3PCS SET 3.5/5/8.5 LTR",
+        "[value]": 1719.5172
+      },
+      {
+        "REP_SSR_SAG[ITEM]": "0101571330 - LIBERO MENS SATIN SILKY PLAIN JEANS BLACK 1601",
+        "[value]": 1651.9008
+      },
+      {
+        "REP_SSR_SAG[ITEM]": "0101584782 - SPICE STEEL DEEP MIXING BOWL 36CM 22133",
+        "[value]": 1594.7568
+      }
+    ],
+    "aged_non_moving_items": [
+      {
+        "REP_SSR_SAG[ITEM]": "0101637144 - SPICE STEEL FLASK RED 1.2L CFTM-7010",
+        "[value]": 3897.8201
+      },
+      {
+        "REP_SSR_SAG[ITEM]": "0101657351 - MEN FLEECE JOGGER PMX254 W25",
+        "[value]": 3801.3588
+      },
+      {
+        "REP_SSR_SAG[ITEM]": "0101637145 - SPICE STEEL FLASK RED 1.5L CFTM-7011/4715",
+        "[value]": 3131.0405
+      },
+      {
+        "REP_SSR_SAG[ITEM]": "0101653358 - LIBERO MENS PUFFER S/L HDY JKT BLACK W25",
+        "[value]": 2839.264
+      },
+      {
+        "REP_SSR_SAG[ITEM]": "0101624997 - CF MAX FRESH STEEL HOT POT 3PCS SET 3.5/5/8.5 LTR",
+        "[value]": 2281.3743
+      }
+    ]
+  },
+  "currency": "QAR",
+  "snapshot": [
+    {
+      "[as_at]": "2026-08-19T00:00:00",
+      "[snapshot_cardinality]": 1,
+      "[total_value]": 6201335.0884,
+      "[aged_value]": 825386.5286,
+      "[high_risk_value]": 460883.7925,
+      "[oldest_value]": 91037.828,
+      "[skus]": 41452,
+      "[locations]": 7,
+      "[source_aged_share]": 1.943314908517435,
+      "[source_aged_numerator]": 12051146.930000005
+    }
+  ],
+  "bands": [
+    {
+      "[NEW AGE]": "09-12 MONTHS",
+      "[value]": 364502.7361,
+      "[aged]": 364502.7361,
+      "[skus]": 10029.0
+    },
+    {
+      "[NEW AGE]": "12-24 MONTHS",
+      "[value]": 369845.9645,
+      "[aged]": 369845.9645,
+      "[skus]": 10222.0
+    },
+    {
+      "[NEW AGE]": "24+ MONTHS",
+      "[value]": 91037.828,
+      "[aged]": 91037.828,
+      "[skus]": 4970.0
+    },
+    {
+      "[NEW AGE]": "06-09 MONTHS",
+      "[value]": 610679.231,
+      "[aged]": 0.0,
+      "[skus]": 11561.0
+    },
+    {
+      "[NEW AGE]": "03-06 MONTHS",
+      "[value]": 927664.6547,
+      "[aged]": 0.0,
+      "[skus]": 15405.0
+    },
+    {
+      "[NEW AGE]": "0-03 MONTHS",
+      "[value]": 3837604.6741,
+      "[aged]": 0.0,
+      "[skus]": 24143.0
+    }
+  ],
+  "risk_split": [
+    {
+      "[non_moving_status]": "YES",
+      "[value]": 657950.2496,
+      "[aged]": 285488.2244
+    },
+    {
+      "[non_moving_status]": "NO",
+      "[value]": 5543384.8388,
+      "[aged]": 539898.3042
+    }
+  ],
+  "divisions": [
+    {
+      "[DEPARTMENT]": "LIFESTYLE",
+      "[value]": 2016539.4152,
+      "[aged]": 363300.5656,
+      "[high_risk]": 195502.5198
+    },
+    {
+      "[DEPARTMENT]": "HOME & LIVING",
+      "[value]": 1200614.8102,
+      "[aged]": 352830.2924,
+      "[high_risk]": 215932.9214
+    },
+    {
+      "[DEPARTMENT]": "CONSUMER GOODS",
+      "[value]": 2662952.3566,
+      "[aged]": 60796.6867,
+      "[high_risk]": 32911.5501
+    },
+    {
+      "[DEPARTMENT]": "TECHNOLOGY",
+      "[value]": 321228.5064,
+      "[aged]": 48458.9839,
+      "[high_risk]": 16536.8012
+    }
+  ],
+  "locations": [
+    {
+      "[LOC_CODE]": "WH1",
+      "[value]": 3849004.2918,
+      "[aged]": 672148.8222,
+      "[high_risk]": 367351.6192
+    },
+    {
+      "[LOC_CODE]": "ST2",
+      "[value]": 269464.9162,
+      "[aged]": 42551.46,
+      "[high_risk]": 25864.2178
+    },
+    {
+      "[LOC_CODE]": "ST1",
+      "[value]": 344315.9532,
+      "[aged]": 28729.9667,
+      "[high_risk]": 15987.4639
+    },
+    {
+      "[LOC_CODE]": "ST3",
+      "[value]": 258589.2389,
+      "[aged]": 31356.8223,
+      "[high_risk]": 21927.2701
+    },
+    {
+      "[LOC_CODE]": "ST5",
+      "[value]": 16867.6364,
+      "[aged]": 4055.4915,
+      "[high_risk]": 1276.1027
+    },
+    {
+      "[LOC_CODE]": "WH2",
+      "[value]": 1011799.203,
+      "[aged]": 9072.0538,
+      "[high_risk]": 3698.0248
+    },
+    {
+      "[LOC_CODE]": "ST4",
+      "[value]": 451293.8489,
+      "[aged]": 37471.9121,
+      "[high_risk]": 24779.094
+    }
+  ],
+  "sections_high_risk": [
+    {
+      "[SECTION]": "CLEANING ESSENSTIALS",
+      "[value]": 138221.5875,
+      "[aged]": 4422.5809,
+      "[high_risk]": 2238.4618
+    },
+    {
+      "[SECTION]": "TRAVEL",
+      "[value]": 121809.3407,
+      "[aged]": 22682.1598,
+      "[high_risk]": 13947.1529
+    },
+    {
+      "[SECTION]": "GLASS ITEMS",
+      "[value]": 19506.4237,
+      "[aged]": 5489.2707,
+      "[high_risk]": 3648.7206
+    },
+    {
+      "[SECTION]": "KIDS FASHION",
+      "[value]": 123000.7803,
+      "[aged]": 35153.5741,
+      "[high_risk]": 13546.4959
+    },
+    {
+      "[SECTION]": "ENTERTAINMENTS",
+      "[value]": 316957.9697,
+      "[aged]": 48431.2519,
+      "[high_risk]": 16531.8119
+    },
+    {
+      "[SECTION]": "PERSONAL CARE",
+      "[value]": 1037437.7729,
+      "[aged]": 25919.4892,
+      "[high_risk]": 15328.263
+    },
+    {
+      "[SECTION]": "SPORTING GOODS",
+      "[value]": 50925.4674,
+      "[aged]": 20069.6339,
+      "[high_risk]": 19200.8673
+    },
+    {
+      "[SECTION]": "LADIES APPAREL",
+      "[value]": 754838.1734,
+      "[aged]": 120544.8594,
+      "[high_risk]": 69623.9062
+    },
+    {
+      "[SECTION]": "OFFICE SUPPLIES",
+      "[value]": 436670.2123,
+      "[aged]": 111135.4758,
+      "[high_risk]": 82774.8726
+    },
+    {
+      "[SECTION]": "CULINARY SUPPLIES",
+      "[value]": 614879.7332,
+      "[aged]": 197823.4566,
+      "[high_risk]": 115957.436
+    },
+    {
+      "[SECTION]": "FOOTWEAR",
+      "[value]": 244077.5588,
+      "[aged]": 58133.5432,
+      "[high_risk]": 33904.1175
+    },
+    {
+      "[SECTION]": "PROVISIONS",
+      "[value]": 1059685.762,
+      "[aged]": 26861.8082,
+      "[high_risk]": 13416.6009
+    },
+    {
+      "[SECTION]": "MENS APPAREL",
+      "[value]": 464686.1944,
+      "[aged]": 67952.0865,
+      "[high_risk]": 25394.2723
+    },
+    {
+      "[SECTION]": "TOYS",
+      "[value]": 256505.9176,
+      "[aged]": 38101.6733,
+      "[high_risk]": 19312.6019
+    },
+    {
+      "[SECTION]": "HOME TEXTILES",
+      "[value]": 129558.441,
+      "[aged]": 38382.0893,
+      "[high_risk]": 13551.8922
+    }
+  ],
+  "skutype": [
+    {
+      "[skutype]": "OVERSEAS",
+      "[value]": 2198806.7318,
+      "[aged]": 637842.5306,
+      "[high_risk]": 343007.918
+    },
+    {
+      "[skutype]": "LOCAL",
+      "[value]": 4002528.3566,
+      "[aged]": 187543.998,
+      "[high_risk]": 117875.8745
+    }
+  ]
+}

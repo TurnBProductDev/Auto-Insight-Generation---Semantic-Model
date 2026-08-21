@@ -22,7 +22,7 @@ from __future__ import annotations
 from typing import Any, Sequence
 
 from ....kernel.report import ReportSpec
-from .. import buckets, families
+from .. import ageing_stats, buckets, families
 
 #: BR-26: below this a finding is not worth a manager's time - except in the
 #: oldest band, where the write-off implication makes even a small value worth
@@ -66,16 +66,16 @@ def _cell(row: dict, *names: str) -> Any:
     return None
 
 
-def _sar(value: Any) -> str:
-    """SAR, rounded sensibly (BR-25): millions in headlines, exact below."""
+def _sar(value: Any, currency: str = "SAR") -> str:
+    """Currency value, rounded sensibly: millions in headlines, exact below."""
     number = _num(value)
     if number is None:
         return "not available"
     if abs(number) >= 1_000_000:
-        return f"SAR {number / 1_000_000:.2f}M"
+        return f"{currency} {number / 1_000_000:.2f}M".strip()
     if abs(number) >= 1_000:
-        return f"SAR {number / 1_000:.0f}K"
-    return f"SAR {number:,.0f}"
+        return f"{currency} {number / 1_000:.0f}K".strip()
+    return f"{currency} {number:,.0f}".strip()
 
 
 def _pct(value: Any) -> str:
@@ -112,6 +112,7 @@ def build(scan: dict) -> dict:
     as_at = str(_cell(header, "as_at") or "").split("T")[0]
     total = _num(_cell(header, "total_value")) or 0.0
     aged = _num(_cell(header, "aged_value")) or 0.0
+    currency = str(scan.get("currency") or "SAR")
 
     band_rows = [
         {"band": _cell(r, "NEW AGE", "new age"), "value": _num(_cell(r, "value")) or 0.0,
@@ -140,13 +141,13 @@ def build(scan: dict) -> dict:
         "risk_split_aged_matches": buckets.reconciles([split.aged_total], aged),
     }
 
-    return {
+    report = {
         "report_id": SPEC.report_id,
         "report_name": SPEC.report_name,
         # Non-negotiable 18: a position, never a span.
         "period_label": f"as at {as_at}" if as_at else "as at the latest snapshot",
         "as_at": as_at,
-        "currency": "SAR",
+        "currency": currency,
         "header": {
             "total_value": total,
             "aged_value": aged,
@@ -189,12 +190,16 @@ def build(scan: dict) -> dict:
         "migration": buckets.migration(),
         "checks": checks,
         "caveats": list(distribution.caveats),
-        "narrative": _narrative(distribution, split, total, aged, as_at),
+        "narrative": _narrative(distribution, split, total, aged, as_at, currency),
     }
+    report["stat_check"] = ageing_stats.analyze(report)
+    report["stat_signals"] = ageing_stats.detect(report)
+    return report
 
 
 def _narrative(distribution: buckets.Distribution, split: buckets.RiskSplit,
-               total: float, aged: float, as_at: str) -> list[str]:
+               total: float, aged: float, as_at: str,
+               currency: str = "SAR") -> list[str]:
     """Grounded sentences, in BR-28's order. Every figure comes from the scan.
 
     Deliberately deterministic: BR-25 requires a number on every comparison, and
@@ -206,7 +211,7 @@ def _narrative(distribution: buckets.Distribution, split: buckets.RiskSplit,
     oldest = distribution.band("24+ MONTHS")
     if oldest and oldest.value > 0:
         lines.append(
-            f"{_sar(oldest.value)} of stock is more than two years old, "
+            f"{_sar(oldest.value, currency)} of stock is more than two years old, "
             f"{_pct(oldest.share_pct)} of all stock value as at {as_at}. This is "
             f"the most likely write-off candidate and is reported separately "
             f"from the 12-24 month band.")
@@ -214,28 +219,28 @@ def _narrative(distribution: buckets.Distribution, split: buckets.RiskSplit,
     twelve = distribution.band("12-24 MONTHS")
     if twelve and twelve.value > 0:
         lines.append(
-            f"A further {_sar(twelve.value)} is between one and two years old "
+            f"A further {_sar(twelve.value, currency)} is between one and two years old "
             f"({_pct(twelve.share_pct)} of stock value). Together with the "
-            f"24+ month band, {_sar(distribution.high_risk_value)} is classed as "
+            f"24+ month band, {_sar(distribution.high_risk_value, currency)} is classed as "
             f"high-risk, {_pct(distribution.high_risk_share_pct)} of all stock.")
 
     if split.aged_non_moving > 0:
         lines.append(
-            f"{_sar(split.aged_non_moving)} is both aged and non-moving - old "
+            f"{_sar(split.aged_non_moving, currency)} is both aged and non-moving - old "
             f"stock with no recorded sales. This is the highest-risk "
             f"combination. It is not added to the aged total, because the two "
             f"measures overlap.")
 
     if split.fresh_non_moving > 0:
         lines.append(
-            f"{_sar(split.fresh_non_moving)} of stock under nine months old has "
+            f"{_sar(split.fresh_non_moving, currency)} of stock under nine months old has "
             f"recorded no sales since it arrived. That is a demand or placement "
             f"signal rather than an age problem.")
 
     if aged and total:
         lines.append(
-            f"Aged stock totals {_sar(aged)}, {_pct(aged / total * 100.0)} of the "
-            f"{_sar(total)} held across all locations. Food divisions cross the "
-            f"aged threshold at six months and all others at nine.")
+            f"Aged stock totals {_sar(aged, currency)}, {_pct(aged / total * 100.0)} of the "
+            f"{_sar(total, currency)} held across all locations. The configured "
+            f"ageing policy defines the threshold used for this report.")
 
     return lines

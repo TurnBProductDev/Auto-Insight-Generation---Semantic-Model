@@ -604,7 +604,7 @@ def render(page: dict, eyebrow: str = "Inventory") -> str:
     # inside `main > .page`. Getting this wrong renders the header, rail, views
     # and footer as four side-by-side columns, with the title wrapping one word
     # per line - which is precisely what happened the first time.
-    return f"""<!doctype html>
+    html = f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{_safe(title)}</title><style>{_style()}{_EXTRA_CSS}</style></head>
@@ -620,3 +620,8 @@ def render(page: dict, eyebrow: str = "Inventory") -> str:
 copied or derived arithmetically from the scanned stock position; no number is
 estimated.</span><strong>AI-assisted analysis</strong></footer>
 </div></main></div>{_script()}</body></html>"""
+    currency = str((page or {}).get("currency") or "SAR").strip() or "SAR"
+    if currency != "SAR":
+        html = html.replace("SAR ", f"{currency} ")
+        html = html.replace("values are SAR ", f"values are {currency} ")
+    return html

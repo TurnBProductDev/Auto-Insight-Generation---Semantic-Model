@@ -67,16 +67,16 @@ _BAND_COLOUR = {
 }
 
 
-def _sar(value: Any) -> str:
+def _sar(value: Any, currency: str = "SAR") -> str:
     try:
         number = float(value)
     except (TypeError, ValueError):
         return "-"
     if abs(number) >= 1_000_000:
-        return f"SAR {number / 1_000_000:.2f}M"
+        return f"{currency} {number / 1_000_000:.2f}M".strip()
     if abs(number) >= 1_000:
-        return f"SAR {number / 1_000:.0f}K"
-    return f"SAR {number:,.0f}"
+        return f"{currency} {number / 1_000:.0f}K".strip()
+    return f"{currency} {number:,.0f}".strip()
 
 
 def _pct(value: Any) -> str:
@@ -94,6 +94,7 @@ def render(report: dict, eyebrow: str = "Inventory") -> str:
     header = report.get("header") or {}
     bands = (report.get("distribution") or {}).get("bands") or []
     split = report.get("risk_split") or {}
+    currency = str(report.get("currency") or "SAR")
 
     parts: list[str] = []
     parts.append(f"<style>{_CSS}</style>")
@@ -107,12 +108,12 @@ def render(report: dict, eyebrow: str = "Inventory") -> str:
 
     parts.append('<div class="kpis">')
     for label, value, sub in (
-        ("Stock value", _sar(header.get("total_value")), "all locations"),
-        ("Aged stock", _sar(header.get("aged_value")),
+        ("Stock value", _sar(header.get("total_value"), currency), "all locations"),
+        ("Aged stock", _sar(header.get("aged_value"), currency),
          f"{_pct(header.get('aged_share_pct'))} of stock value"),
-        ("High-risk (12+ months)", _sar(header.get("high_risk_value")),
+        ("High-risk (12+ months)", _sar(header.get("high_risk_value"), currency),
          f"{_pct(header.get('high_risk_share_pct'))} of stock value"),
-        ("Aged and non-moving", _sar(header.get("aged_non_moving")),
+        ("Aged and non-moving", _sar(header.get("aged_non_moving"), currency),
          "highest-risk combination"),
     ):
         parts.append(f'<div class="kpi"><p class="label">{_e(label)}</p>'
@@ -129,7 +130,7 @@ def render(report: dict, eyebrow: str = "Inventory") -> str:
         colour = _BAND_COLOUR.get(str(band.get("name", "")).upper(), "var(--muted)")
         parts.append(
             f'<span style="width:{width:.4f}%;background:{colour}" '
-            f'title="{_e(band.get("name"))}: {_e(_sar(band.get("value")))}"></span>')
+            f'title="{_e(band.get("name"))}: {_e(_sar(band.get("value"), currency))}"></span>')
     parts.append("</div>")
     parts.append('<div class="legend">')
     for band in bands:
@@ -151,9 +152,9 @@ def render(report: dict, eyebrow: str = "Inventory") -> str:
                    f'{"write-off risk" if crit else "high risk"}</span>')
         parts.append(
             f'<tr><td>{_e(band.get("name"))}</td>'
-            f'<td class="n">{_e(_sar(band.get("value")))}</td>'
+            f'<td class="n">{_e(_sar(band.get("value"), currency))}</td>'
             f'<td class="n">{_e(_pct(band.get("share_pct")))}</td>'
-            f'<td class="n">{_e(_sar(band.get("aged_value")))}</td>'
+            f'<td class="n">{_e(_sar(band.get("aged_value"), currency))}</td>'
             f'<td class="n">{_e(_pct(band.get("cumulative_older_pct")))}</td>'
             f"<td>{tag}</td></tr>")
     parts.append("</tbody></table></div>")
@@ -168,10 +169,10 @@ def render(report: dict, eyebrow: str = "Inventory") -> str:
     parts.append('<div class="scroll"><table><thead><tr><th></th>'
                  '<th class="n">Not selling</th><th class="n">Still selling</th>'
                  "</tr></thead><tbody>")
-    parts.append(f'<tr><td>Aged</td><td class="n">{_e(_sar(split.get("aged_non_moving")))}</td>'
-                 f'<td class="n">{_e(_sar(split.get("aged_moving")))}</td></tr>')
-    parts.append(f'<tr><td>Not aged</td><td class="n">{_e(_sar(split.get("fresh_non_moving")))}</td>'
-                 f'<td class="n">{_e(_sar(split.get("fresh_moving")))}</td></tr>')
+    parts.append(f'<tr><td>Aged</td><td class="n">{_e(_sar(split.get("aged_non_moving"), currency))}</td>'
+                 f'<td class="n">{_e(_sar(split.get("aged_moving"), currency))}</td></tr>')
+    parts.append(f'<tr><td>Not aged</td><td class="n">{_e(_sar(split.get("fresh_non_moving"), currency))}</td>'
+                 f'<td class="n">{_e(_sar(split.get("fresh_moving"), currency))}</td></tr>')
     parts.append("</tbody></table></div>")
     parts.append('<p class="note">These two measures overlap, so they are never '
                  "added together into a single at-risk figure.</p>")
@@ -190,8 +191,8 @@ def render(report: dict, eyebrow: str = "Inventory") -> str:
             value = float(row.get("total") or 0)
             share = (float(row.get("value") or 0) / value * 100.0) if value else None
             parts.append(f'<tr><td>{_e(row.get("name"))}</td>'
-                         f'<td class="n">{_e(_sar(row.get("value")))}</td>'
-                         f'<td class="n">{_e(_sar(value))}</td>'
+                         f'<td class="n">{_e(_sar(row.get("value"), currency))}</td>'
+                         f'<td class="n">{_e(_sar(value, currency))}</td>'
                          f'<td class="n">{_e(_pct(share))}</td></tr>')
         parts.append("</tbody></table></div>")
 
@@ -205,8 +206,8 @@ def render(report: dict, eyebrow: str = "Inventory") -> str:
             value = float(row.get("value") or 0)
             share = (float(row.get("aged") or 0) / value * 100.0) if value else None
             parts.append(f'<tr><td>{_e(row.get("name"))}</td>'
-                         f'<td class="n">{_e(_sar(value))}</td>'
-                         f'<td class="n">{_e(_sar(row.get("aged")))}</td>'
+                         f'<td class="n">{_e(_sar(value, currency))}</td>'
+                         f'<td class="n">{_e(_sar(row.get("aged"), currency))}</td>'
                          f'<td class="n">{_e(_pct(share))}</td></tr>')
         parts.append("</tbody></table></div>")
 
@@ -227,6 +228,6 @@ def render(report: dict, eyebrow: str = "Inventory") -> str:
                      f"withheld: {_e(', '.join(failed))}.</p>")
 
     parts.append(f"<footer>Stock position {_e(report.get('period_label'))}. "
-                 "All values are SAR at landing cost, excluding VAT.</footer>")
+                 f"All values are {_e(currency)} at landing cost, excluding VAT.</footer>")
     parts.append("</div>")
     return "\n".join(parts)

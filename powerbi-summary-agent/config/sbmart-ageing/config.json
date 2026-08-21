@@ -1,0 +1,39 @@
+{
+  "tenant_id": "315642c5-e14a-4c12-bf77-41ee070def79",
+  "workspace_id": "2829a4af-2e07-4b43-b913-0a829a06bef4",
+  "dataset_id": "3cd81c72-585b-4be9-9c8c-c56235c577b6",
+  "report_id": "inventory_ageing",
+  "report_name": "SB Mart Stock Ageing",
+  "report_domain": "inventory",
+  "report_cadence": "daily",
+  "chain_id": "sb_mart_inventory",
+  "output_folder": "outputs_sbmart_ageing",
+  "ageing_currency": "QAR",
+  "ageing_high_risk_bands": ["12-24 MONTHS", "24+ MONTHS"],
+  "ageing_bucket_order": ["0-03 MONTHS", "03-06 MONTHS", "06-09 MONTHS", "09-12 MONTHS", "12-24 MONTHS", "24+ MONTHS"],
+  "ageing_mapping": {
+    "exposure": "[STOCK VALUE]",
+    "bucket": "'REP_SSR_SAG'[NEW AGE]",
+    "snapshot": "'REP_SSR_SAG'[UPDATED_ON]",
+    "non_moving": "'REP_SSR_SAG'[non_moving_status]",
+    "sku": "'REP_SSR_SAG'[ITEM]",
+    "location": "'REP_SSR_SAG'[LOC_CODE]",
+    "dimensions": {
+      "division": "'REP_SSR_SAG'[DEPARTMENT]",
+      "section": "'LINK TABLE'[SECTION]",
+      "location": "'REP_SSR_SAG'[LOC_CODE]",
+      "sku_type": "'REP_SSR_SAG'[skutype]"
+    }
+  },
+  "ageing_aged_filter": "'REP_SSR_SAG'[NEW AGE] IN {\"09-12 MONTHS\", \"12-24 MONTHS\", \"24+ MONTHS\"}",
+  "ageing_high_risk_filter": "'REP_SSR_SAG'[NEW AGE] IN {\"12-24 MONTHS\", \"24+ MONTHS\"}",
+  "ageing_oldest_filter": "'REP_SSR_SAG'[NEW AGE] = \"24+ MONTHS\"",
+  "ageing_validation_share_expression": "[aged stock share]",
+  "ageing_validation_numerator_expression": "SUM('REP_SSR_SAG'[agingstock])",
+  "ageing_top_members": 15,
+  "ageing_deep_dive_members": 5,
+  "ageing_publish": false,
+  "powerbi_auth_mode": "auto",
+  "powerbi_query_api": "auto",
+  "fabric_definitions": true
+}

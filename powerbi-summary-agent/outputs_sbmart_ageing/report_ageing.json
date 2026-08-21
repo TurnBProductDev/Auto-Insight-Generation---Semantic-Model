@@ -1,0 +1,1032 @@
+{
+  "report_id": "inventory_ageing",
+  "report_name": "SB Mart Stock Ageing",
+  "period_label": "as at 2026-08-19",
+  "as_at": "2026-08-19",
+  "currency": "QAR",
+  "header": {
+    "total_value": 6201335.0884,
+    "aged_value": 825386.5286,
+    "aged_share_pct": 13.309819850630861,
+    "high_risk_value": 460883.7925,
+    "high_risk_share_pct": 7.432009171091448,
+    "aged_non_moving": 285488.2244,
+    "skus": 41452.0,
+    "locations": 7.0
+  },
+  "distribution": {
+    "bands": [
+      {
+        "name": "0-03 MONTHS",
+        "value": 3837604.6741,
+        "share_pct": 61.88352377987909,
+        "aged_value": 0.0,
+        "high_risk": false,
+        "cumulative_older_pct": 100.0
+      },
+      {
+        "name": "03-06 MONTHS",
+        "value": 927664.6547,
+        "share_pct": 14.959111892457756,
+        "aged_value": 0.0,
+        "high_risk": false,
+        "cumulative_older_pct": 38.11647622012091
+      },
+      {
+        "name": "06-09 MONTHS",
+        "value": 610679.231,
+        "share_pct": 9.847544477032296,
+        "aged_value": 0.0,
+        "high_risk": false,
+        "cumulative_older_pct": 23.157364327663153
+      },
+      {
+        "name": "09-12 MONTHS",
+        "value": 364502.7361,
+        "share_pct": 5.877810679539412,
+        "aged_value": 364502.7361,
+        "high_risk": false,
+        "cumulative_older_pct": 13.309819850630861
+      },
+      {
+        "name": "12-24 MONTHS",
+        "value": 369845.9645,
+        "share_pct": 5.963973228794246,
+        "aged_value": 369845.9645,
+        "high_risk": true,
+        "cumulative_older_pct": 7.432009171091448
+      },
+      {
+        "name": "24+ MONTHS",
+        "value": 91037.828,
+        "share_pct": 1.4680359422972027,
+        "aged_value": 91037.828,
+        "high_risk": true,
+        "cumulative_older_pct": 1.4680359422972027
+      }
+    ],
+    "undetermined_value": 0.0
+  },
+  "risk_split": {
+    "aged_non_moving": 285488.2244,
+    "aged_moving": 539898.3042,
+    "fresh_non_moving": 372462.0252,
+    "fresh_moving": 5003486.5346,
+    "non_moving_total": 657950.2496,
+    "aged_total": 825386.5286000001
+  },
+  "call_outs": [
+    {
+      "band": "24+ MONTHS",
+      "value": 91037.828,
+      "share_pct": 1.4680359422972027,
+      "material": true,
+      "always_separate": true,
+      "note": "24+ MONTHS stock is the most likely write-off candidate."
+    },
+    {
+      "band": "12-24 MONTHS",
+      "value": 369845.9645,
+      "share_pct": 5.963973228794246,
+      "material": true,
+      "always_separate": false,
+      "note": "12-24 MONTHS stock is high-risk."
+    }
+  ],
+  "divisions": [
+    {
+      "name": "LIFESTYLE",
+      "value": 363300.5656,
+      "total": 2016539.4152,
+      "high_risk": 195502.5198
+    },
+    {
+      "name": "HOME & LIVING",
+      "value": 352830.2924,
+      "total": 1200614.8102,
+      "high_risk": 215932.9214
+    },
+    {
+      "name": "CONSUMER GOODS",
+      "value": 60796.6867,
+      "total": 2662952.3566,
+      "high_risk": 32911.5501
+    },
+    {
+      "name": "TECHNOLOGY",
+      "value": 48458.9839,
+      "total": 321228.5064,
+      "high_risk": 16536.8012
+    }
+  ],
+  "locations": [
+    {
+      "name": "WH1",
+      "value": 672148.8222,
+      "total": 3849004.2918,
+      "high_risk": 367351.6192
+    },
+    {
+      "name": "ST2",
+      "value": 42551.46,
+      "total": 269464.9162,
+      "high_risk": 25864.2178
+    },
+    {
+      "name": "ST4",
+      "value": 37471.9121,
+      "total": 451293.8489,
+      "high_risk": 24779.094
+    },
+    {
+      "name": "ST3",
+      "value": 31356.8223,
+      "total": 258589.2389,
+      "high_risk": 21927.2701
+    },
+    {
+      "name": "ST1",
+      "value": 28729.9667,
+      "total": 344315.9532,
+      "high_risk": 15987.4639
+    },
+    {
+      "name": "WH2",
+      "value": 9072.0538,
+      "total": 1011799.203,
+      "high_risk": 3698.0248
+    },
+    {
+      "name": "ST5",
+      "value": 4055.4915,
+      "total": 16867.6364,
+      "high_risk": 1276.1027
+    }
+  ],
+  "sections": [
+    {
+      "name": "CULINARY SUPPLIES",
+      "value": 197823.4566,
+      "total": 614879.7332,
+      "high_risk": 115957.436
+    },
+    {
+      "name": "LADIES APPAREL",
+      "value": 120544.8594,
+      "total": 754838.1734,
+      "high_risk": 69623.9062
+    },
+    {
+      "name": "OFFICE SUPPLIES",
+      "value": 111135.4758,
+      "total": 436670.2123,
+      "high_risk": 82774.8726
+    },
+    {
+      "name": "MENS APPAREL",
+      "value": 67952.0865,
+      "total": 464686.1944,
+      "high_risk": 25394.2723
+    },
+    {
+      "name": "FOOTWEAR",
+      "value": 58133.5432,
+      "total": 244077.5588,
+      "high_risk": 33904.1175
+    },
+    {
+      "name": "ENTERTAINMENTS",
+      "value": 48431.2519,
+      "total": 316957.9697,
+      "high_risk": 16531.8119
+    },
+    {
+      "name": "HOME TEXTILES",
+      "value": 38382.0893,
+      "total": 129558.441,
+      "high_risk": 13551.8922
+    },
+    {
+      "name": "TOYS",
+      "value": 38101.6733,
+      "total": 256505.9176,
+      "high_risk": 19312.6019
+    },
+    {
+      "name": "KIDS FASHION",
+      "value": 35153.5741,
+      "total": 123000.7803,
+      "high_risk": 13546.4959
+    },
+    {
+      "name": "PROVISIONS",
+      "value": 26861.8082,
+      "total": 1059685.762,
+      "high_risk": 13416.6009
+    },
+    {
+      "name": "PERSONAL CARE",
+      "value": 25919.4892,
+      "total": 1037437.7729,
+      "high_risk": 15328.263
+    },
+    {
+      "name": "TRAVEL",
+      "value": 22682.1598,
+      "total": 121809.3407,
+      "high_risk": 13947.1529
+    },
+    {
+      "name": "SPORTING GOODS",
+      "value": 20069.6339,
+      "total": 50925.4674,
+      "high_risk": 19200.8673
+    },
+    {
+      "name": "GLASS ITEMS",
+      "value": 5489.2707,
+      "total": 19506.4237,
+      "high_risk": 3648.7206
+    },
+    {
+      "name": "CLEANING ESSENSTIALS",
+      "value": 4422.5809,
+      "total": 138221.5875,
+      "high_risk": 2238.4618
+    }
+  ],
+  "sku_types": [
+    {
+      "name": "OVERSEAS",
+      "value": 2198806.7318,
+      "aged": 637842.5306
+    },
+    {
+      "name": "LOCAL",
+      "value": 4002528.3566,
+      "aged": 187543.998
+    }
+  ],
+  "migration": {
+    "available": false,
+    "reason": "Stock age movement between two dates cannot be shown, because the model holds only one stock position (a single snapshot date). Showing it would need the previous snapshot to be retained."
+  },
+  "checks": {
+    "bands_sum_to_total": true,
+    "aged_sums_to_total_aged": true,
+    "risk_split_sums_to_total": true,
+    "risk_split_aged_matches": true
+  },
+  "caveats": [
+    "The semantic model's [aged stock share] was excluded: its numerator does not reconcile to the Stock Value exposure used by this report."
+  ],
+  "narrative": [
+    "QAR 91K of stock is more than two years old, 1.5% of all stock value as at 2026-08-19. This is the most likely write-off candidate and is reported separately from the 12-24 month band.",
+    "A further QAR 370K is between one and two years old (6.0% of stock value). Together with the 24+ month band, QAR 461K is classed as high-risk, 7.4% of all stock.",
+    "QAR 285K is both aged and non-moving - old stock with no recorded sales. This is the highest-risk combination. It is not added to the aged total, because the two measures overlap.",
+    "QAR 372K of stock under nine months old has recorded no sales since it arrived. That is a demand or placement signal rather than an age problem.",
+    "Aged stock totals QAR 825K, 13.3% of the QAR 6.20M held across all locations. The configured ageing policy defines the threshold used for this report."
+  ],
+  "stat_check": {
+    "method": "single_snapshot_ageing_v2",
+    "report_id": "inventory_ageing",
+    "anchor": "2026-08-19",
+    "overall": {
+      "total_value": 6201335.0884,
+      "aged_value": 825386.5286,
+      "aged_share_pct": 13.309819850630861,
+      "high_risk_value": 460883.7925,
+      "high_risk_share_pct": 7.432009171091448
+    },
+    "aged_non_moving_association": {
+      "aged_non_moving_value": 285488.2244,
+      "aged_share_within_non_moving_pct": 43.39054884067028,
+      "non_moving_share_within_aged_pct": 34.58842790713316,
+      "estate_aged_share_pct": 13.309819850630861,
+      "aged_rate_lift": 3.260040280606326,
+      "note": "Monetary association, not a causal or significance test."
+    },
+    "dimensions": {
+      "division": {
+        "hotspots": [
+          {
+            "role": "division",
+            "member": "HOME & LIVING",
+            "stock_value": 1200614.8102,
+            "aged_value": 352830.2924,
+            "aged_rate_pct": 29.38746793746656,
+            "rest_of_estate_rate_pct": 9.449763432280916,
+            "rate_gap_pct_points": 19.937704505185643,
+            "rate_ratio": 3.1098628180550363,
+            "expected_aged_at_baseline": 113455.25929682853,
+            "excess_aged_value": 239375.03310317144,
+            "excess_share_of_total_pct": 3.8600564183499455,
+            "member_stock_share_pct": 19.360585955850507
+          },
+          {
+            "role": "division",
+            "member": "LIFESTYLE",
+            "stock_value": 2016539.4152,
+            "aged_value": 363300.5656,
+            "aged_rate_pct": 18.016040889732267,
+            "rest_of_estate_rate_pct": 11.042019708614719,
+            "rate_gap_pct_points": 6.974021181117548,
+            "rate_ratio": 1.6315892712704165,
+            "expected_aged_at_baseline": 222666.67965836797,
+            "excess_aged_value": 140633.885941632,
+            "excess_share_of_total_pct": 2.2678001420161418,
+            "member_stock_share_pct": 32.517826991353324
+          }
+        ],
+        "concentration": {
+          "top1_share_pct": 44.015809928012914,
+          "top3_share_pct": 94.12893447846854,
+          "hhi": 0.38534465639241045,
+          "members": 4
+        }
+      },
+      "section": {
+        "hotspots": [
+          {
+            "role": "section",
+            "member": "CULINARY SUPPLIES",
+            "stock_value": 614879.7332,
+            "aged_value": 197823.4566,
+            "aged_rate_pct": 32.1727072659353,
+            "rest_of_estate_rate_pct": 11.233654116932124,
+            "rate_gap_pct_points": 20.93905314900318,
+            "rate_ratio": 2.8639574381627453,
+            "expected_aged_at_baseline": 69073.46246280306,
+            "excess_aged_value": 128749.99413719695,
+            "excess_share_of_total_pct": 2.076165733698735,
+            "member_stock_share_pct": 9.915279926578593
+          },
+          {
+            "role": "section",
+            "member": "OFFICE SUPPLIES",
+            "stock_value": 436670.2123,
+            "aged_value": 111135.4758,
+            "aged_rate_pct": 25.450665667033867,
+            "rest_of_estate_rate_pct": 12.390157418538719,
+            "rate_gap_pct_points": 13.060508248495148,
+            "rate_ratio": 2.054103495808166,
+            "expected_aged_at_baseline": 54104.126703837224,
+            "excess_aged_value": 57031.349096162776,
+            "excess_share_of_total_pct": 0.9196624320921413,
+            "member_stock_share_pct": 7.041551634853921
+          }
+        ],
+        "concentration": {
+          "top1_share_pct": 23.967371618669766,
+          "top3_share_pct": 52.03668547008074,
+          "hhi": 0.12165625067884957,
+          "members": 15
+        }
+      },
+      "location": {
+        "hotspots": [
+          {
+            "role": "location",
+            "member": "WH1",
+            "stock_value": 3849004.2918,
+            "aged_value": 672148.8222,
+            "aged_rate_pct": 17.46292732465797,
+            "rest_of_estate_rate_pct": 6.514292404005671,
+            "rate_gap_pct_points": 10.948634920652298,
+            "rate_ratio": 2.680709775004869,
+            "expected_aged_at_baseline": 250735.39421057966,
+            "excess_aged_value": 421413.42798942036,
+            "excess_share_of_total_pct": 6.795527446625188,
+            "member_stock_share_pct": 62.06734899715083
+          }
+        ],
+        "concentration": {
+          "top1_share_pct": 81.43443088901417,
+          "top3_share_pct": 91.1296911491657,
+          "hhi": 0.6706753092079424,
+          "members": 7
+        }
+      },
+      "sku_type": {
+        "hotspots": [
+          {
+            "role": "sku_type",
+            "member": "OVERSEAS",
+            "stock_value": 2198806.7318,
+            "aged_value": 637842.5306,
+            "aged_rate_pct": 29.008576396245868,
+            "rest_of_estate_rate_pct": 4.68563820892731,
+            "rate_gap_pct_points": 24.322938187318556,
+            "rate_ratio": 6.190955234438991,
+            "expected_aged_at_baseline": 103028.12836568664,
+            "excess_aged_value": 534814.4022343134,
+            "excess_share_of_total_pct": 8.62418164170355,
+            "member_stock_share_pct": 35.456989510420286
+          }
+        ],
+        "concentration": {
+          "top1_share_pct": 77.2780398635646,
+          "top3_share_pct": 100.0,
+          "hhi": 0.6488182917596439,
+          "members": 2
+        }
+      }
+    },
+    "quality": {
+      "reconciled": true,
+      "failed_checks": [],
+      "undetermined_value": 0.0,
+      "comparison_available": false,
+      "comparison_reason": "Stock age movement between two dates cannot be shown, because the model holds only one stock position (a single snapshot date). Showing it would need the previous snapshot to be retained."
+    }
+  },
+  "stat_signals": [
+    {
+      "candidate_id": "ageing_oldest_band:age_band:24+ MONTHS",
+      "story_key": "age:v1:830e05f172106b710b6783ee8fbc5f83",
+      "report_id": "inventory_ageing",
+      "analysis_type": "ageing_oldest_band",
+      "dimension": "age_band",
+      "affected_segment": "24+ MONTHS",
+      "segment_members": [
+        "24+ MONTHS"
+      ],
+      "metric": "Stock value at ageing risk",
+      "metric_family": "stock_value",
+      "current": 91037.828,
+      "impact_value": 91037.828,
+      "impact_share": 1.4680359422972027,
+      "score": 601.4680359422972,
+      "severity": "critical",
+      "comparison_label": "share of the current stock position",
+      "description": "QAR 91K is in the oldest reported age band, 24+ MONTHS (1.5% of stock value).",
+      "band_ordinal": 5,
+      "high_risk": true,
+      "oldest_reported_band": true,
+      "id": "A1"
+    },
+    {
+      "candidate_id": "ageing_high_risk_band:age_band:12-24 MONTHS",
+      "story_key": "age:v1:a1b3bfa5ef5a1faee876d00171bfc16d",
+      "report_id": "inventory_ageing",
+      "analysis_type": "ageing_high_risk_band",
+      "dimension": "age_band",
+      "affected_segment": "12-24 MONTHS",
+      "segment_members": [
+        "12-24 MONTHS"
+      ],
+      "metric": "Stock value at ageing risk",
+      "metric_family": "stock_value",
+      "current": 369845.9645,
+      "impact_value": 369845.9645,
+      "impact_share": 5.963973228794246,
+      "score": 505.96397322879426,
+      "severity": "critical",
+      "comparison_label": "share of the current stock position",
+      "description": "QAR 370K is in the high-risk age band 12-24 MONTHS (6.0% of stock value).",
+      "band_ordinal": 4,
+      "high_risk": true,
+      "oldest_reported_band": false,
+      "id": "A2"
+    },
+    {
+      "candidate_id": "ageing_aged_non_moving:risk_intersection:Aged and non-moving",
+      "story_key": "age:v1:7441739342ed59a1bff68f8a2e761a8f",
+      "report_id": "inventory_ageing",
+      "analysis_type": "ageing_aged_non_moving",
+      "dimension": "risk_intersection",
+      "affected_segment": "Aged and non-moving",
+      "segment_members": [
+        "Aged and non-moving"
+      ],
+      "metric": "Stock value at ageing risk",
+      "metric_family": "stock_value",
+      "current": 285488.2244,
+      "impact_value": 285488.2244,
+      "impact_share": 4.603657443604754,
+      "score": 404.60365744360473,
+      "severity": "critical",
+      "comparison_label": "aged rate within non-moving stock versus the whole stock position",
+      "description": "QAR 285K is both aged and has not sold since arrival, 3.3x the estate aged rate.",
+      "aged_rate_lift": 3.260040280606326,
+      "aged_share_within_non_moving_pct": 43.39054884067028,
+      "id": "A3"
+    },
+    {
+      "candidate_id": "ageing_not_aged_non_moving:risk_intersection:Not aged and non-moving",
+      "story_key": "age:v1:bb5577d724cfcd96829d24521428b089",
+      "report_id": "inventory_ageing",
+      "analysis_type": "ageing_not_aged_non_moving",
+      "dimension": "risk_intersection",
+      "affected_segment": "Not aged and non-moving",
+      "segment_members": [
+        "Not aged and non-moving"
+      ],
+      "metric": "Stock value at ageing risk",
+      "metric_family": "stock_value",
+      "current": 372462.0252,
+      "impact_value": 372462.0252,
+      "impact_share": 6.0061586721335924,
+      "score": 306.0061586721336,
+      "severity": "warning",
+      "comparison_label": "share of the current stock position",
+      "description": "QAR 372K is not classified as aged and has not sold since arrival.",
+      "id": "A4"
+    },
+    {
+      "candidate_id": "ageing_rate_hotspot:sku_type:OVERSEAS",
+      "story_key": "age:v1:5baa8a06f152b6c3890e6b187ea32e56",
+      "report_id": "inventory_ageing",
+      "analysis_type": "ageing_rate_hotspot",
+      "dimension": "sku_type",
+      "affected_segment": "OVERSEAS",
+      "segment_members": [
+        "OVERSEAS"
+      ],
+      "metric": "Stock value at ageing risk",
+      "metric_family": "stock_value",
+      "current": 534814.4022343134,
+      "impact_value": 534814.4022343134,
+      "impact_share": 8.62418164170355,
+      "score": 208.62418164170356,
+      "severity": "warning",
+      "comparison_label": "aged-stock rate versus the rest of the estate",
+      "description": "OVERSEAS holds QAR 535K more aged stock than its stock value would imply at the rest-of-estate rate; its aged rate is 29.0% versus 4.7% elsewhere.",
+      "role": "sku_type",
+      "member": "OVERSEAS",
+      "stock_value": 2198806.7318,
+      "aged_value": 637842.5306,
+      "aged_rate_pct": 29.008576396245868,
+      "rest_of_estate_rate_pct": 4.68563820892731,
+      "rate_gap_pct_points": 24.322938187318556,
+      "rate_ratio": 6.190955234438991,
+      "expected_aged_at_baseline": 103028.12836568664,
+      "excess_aged_value": 534814.4022343134,
+      "excess_share_of_total_pct": 8.62418164170355,
+      "member_stock_share_pct": 35.456989510420286,
+      "id": "A5"
+    },
+    {
+      "candidate_id": "ageing_rate_hotspot:location:WH1",
+      "story_key": "age:v1:9ba6ef35471d2368055305382691e1dc",
+      "report_id": "inventory_ageing",
+      "analysis_type": "ageing_rate_hotspot",
+      "dimension": "location",
+      "affected_segment": "WH1",
+      "segment_members": [
+        "WH1"
+      ],
+      "metric": "Stock value at ageing risk",
+      "metric_family": "stock_value",
+      "current": 421413.42798942036,
+      "impact_value": 421413.42798942036,
+      "impact_share": 6.795527446625188,
+      "score": 206.7955274466252,
+      "severity": "warning",
+      "comparison_label": "aged-stock rate versus the rest of the estate",
+      "description": "WH1 holds QAR 421K more aged stock than its stock value would imply at the rest-of-estate rate; its aged rate is 17.5% versus 6.5% elsewhere.",
+      "role": "location",
+      "member": "WH1",
+      "stock_value": 3849004.2918,
+      "aged_value": 672148.8222,
+      "aged_rate_pct": 17.46292732465797,
+      "rest_of_estate_rate_pct": 6.514292404005671,
+      "rate_gap_pct_points": 10.948634920652298,
+      "rate_ratio": 2.680709775004869,
+      "expected_aged_at_baseline": 250735.39421057966,
+      "excess_aged_value": 421413.42798942036,
+      "excess_share_of_total_pct": 6.795527446625188,
+      "member_stock_share_pct": 62.06734899715083,
+      "id": "A6"
+    },
+    {
+      "candidate_id": "ageing_rate_hotspot:division:HOME & LIVING",
+      "story_key": "age:v1:2800446a470b350c52a9b0f2539dd880",
+      "report_id": "inventory_ageing",
+      "analysis_type": "ageing_rate_hotspot",
+      "dimension": "division",
+      "affected_segment": "HOME & LIVING",
+      "segment_members": [
+        "HOME & LIVING"
+      ],
+      "metric": "Stock value at ageing risk",
+      "metric_family": "stock_value",
+      "current": 239375.03310317144,
+      "impact_value": 239375.03310317144,
+      "impact_share": 3.8600564183499455,
+      "score": 203.86005641834996,
+      "severity": "warning",
+      "comparison_label": "aged-stock rate versus the rest of the estate",
+      "description": "HOME & LIVING holds QAR 239K more aged stock than its stock value would imply at the rest-of-estate rate; its aged rate is 29.4% versus 9.4% elsewhere.",
+      "role": "division",
+      "member": "HOME & LIVING",
+      "stock_value": 1200614.8102,
+      "aged_value": 352830.2924,
+      "aged_rate_pct": 29.38746793746656,
+      "rest_of_estate_rate_pct": 9.449763432280916,
+      "rate_gap_pct_points": 19.937704505185643,
+      "rate_ratio": 3.1098628180550363,
+      "expected_aged_at_baseline": 113455.25929682853,
+      "excess_aged_value": 239375.03310317144,
+      "excess_share_of_total_pct": 3.8600564183499455,
+      "member_stock_share_pct": 19.360585955850507,
+      "id": "A7"
+    },
+    {
+      "candidate_id": "ageing_rate_hotspot:division:LIFESTYLE",
+      "story_key": "age:v1:6a7da3a1ecf917563665e93c83f304da",
+      "report_id": "inventory_ageing",
+      "analysis_type": "ageing_rate_hotspot",
+      "dimension": "division",
+      "affected_segment": "LIFESTYLE",
+      "segment_members": [
+        "LIFESTYLE"
+      ],
+      "metric": "Stock value at ageing risk",
+      "metric_family": "stock_value",
+      "current": 140633.885941632,
+      "impact_value": 140633.885941632,
+      "impact_share": 2.2678001420161418,
+      "score": 202.26780014201614,
+      "severity": "warning",
+      "comparison_label": "aged-stock rate versus the rest of the estate",
+      "description": "LIFESTYLE holds QAR 141K more aged stock than its stock value would imply at the rest-of-estate rate; its aged rate is 18.0% versus 11.0% elsewhere.",
+      "role": "division",
+      "member": "LIFESTYLE",
+      "stock_value": 2016539.4152,
+      "aged_value": 363300.5656,
+      "aged_rate_pct": 18.016040889732267,
+      "rest_of_estate_rate_pct": 11.042019708614719,
+      "rate_gap_pct_points": 6.974021181117548,
+      "rate_ratio": 1.6315892712704165,
+      "expected_aged_at_baseline": 222666.67965836797,
+      "excess_aged_value": 140633.885941632,
+      "excess_share_of_total_pct": 2.2678001420161418,
+      "member_stock_share_pct": 32.517826991353324,
+      "id": "A8"
+    },
+    {
+      "candidate_id": "ageing_rate_hotspot:section:CULINARY SUPPLIES",
+      "story_key": "age:v1:39218fc8fe7d7cb0d6d8105edf059297",
+      "report_id": "inventory_ageing",
+      "analysis_type": "ageing_rate_hotspot",
+      "dimension": "section",
+      "affected_segment": "CULINARY SUPPLIES",
+      "segment_members": [
+        "CULINARY SUPPLIES"
+      ],
+      "metric": "Stock value at ageing risk",
+      "metric_family": "stock_value",
+      "current": 128749.99413719695,
+      "impact_value": 128749.99413719695,
+      "impact_share": 2.076165733698735,
+      "score": 202.07616573369873,
+      "severity": "warning",
+      "comparison_label": "aged-stock rate versus the rest of the estate",
+      "description": "CULINARY SUPPLIES holds QAR 129K more aged stock than its stock value would imply at the rest-of-estate rate; its aged rate is 32.2% versus 11.2% elsewhere.",
+      "role": "section",
+      "member": "CULINARY SUPPLIES",
+      "stock_value": 614879.7332,
+      "aged_value": 197823.4566,
+      "aged_rate_pct": 32.1727072659353,
+      "rest_of_estate_rate_pct": 11.233654116932124,
+      "rate_gap_pct_points": 20.93905314900318,
+      "rate_ratio": 2.8639574381627453,
+      "expected_aged_at_baseline": 69073.46246280306,
+      "excess_aged_value": 128749.99413719695,
+      "excess_share_of_total_pct": 2.076165733698735,
+      "member_stock_share_pct": 9.915279926578593,
+      "id": "A9"
+    },
+    {
+      "candidate_id": "ageing_rate_hotspot:section:OFFICE SUPPLIES",
+      "story_key": "age:v1:a00396114adb3fbe0211f7dda027fdc7",
+      "report_id": "inventory_ageing",
+      "analysis_type": "ageing_rate_hotspot",
+      "dimension": "section",
+      "affected_segment": "OFFICE SUPPLIES",
+      "segment_members": [
+        "OFFICE SUPPLIES"
+      ],
+      "metric": "Stock value at ageing risk",
+      "metric_family": "stock_value",
+      "current": 57031.349096162776,
+      "impact_value": 57031.349096162776,
+      "impact_share": 0.9196624320921413,
+      "score": 200.91966243209214,
+      "severity": "warning",
+      "comparison_label": "aged-stock rate versus the rest of the estate",
+      "description": "OFFICE SUPPLIES holds QAR 57K more aged stock than its stock value would imply at the rest-of-estate rate; its aged rate is 25.5% versus 12.4% elsewhere.",
+      "role": "section",
+      "member": "OFFICE SUPPLIES",
+      "stock_value": 436670.2123,
+      "aged_value": 111135.4758,
+      "aged_rate_pct": 25.450665667033867,
+      "rest_of_estate_rate_pct": 12.390157418538719,
+      "rate_gap_pct_points": 13.060508248495148,
+      "rate_ratio": 2.054103495808166,
+      "expected_aged_at_baseline": 54104.126703837224,
+      "excess_aged_value": 57031.349096162776,
+      "excess_share_of_total_pct": 0.9196624320921413,
+      "member_stock_share_pct": 7.041551634853921,
+      "id": "A10"
+    },
+    {
+      "candidate_id": "ageing_concentration:location:WH1",
+      "story_key": "age:v1:ba24841eb846c6800b17379c9efc4626",
+      "report_id": "inventory_ageing",
+      "analysis_type": "ageing_concentration",
+      "dimension": "location",
+      "affected_segment": "WH1",
+      "segment_members": [
+        "WH1"
+      ],
+      "metric": "Stock value at ageing risk",
+      "metric_family": "stock_value",
+      "current": 672148.8222,
+      "impact_value": 672148.8222,
+      "impact_share": 10.838776047714276,
+      "score": 110.83877604771428,
+      "severity": "info",
+      "comparison_label": "share of aged stock across location members",
+      "description": "WH1 holds 81.4% of all aged stock value across location members.",
+      "top1_share_pct": 81.43443088901417,
+      "top3_share_pct": 91.1296911491657,
+      "hhi": 0.6706753092079424,
+      "members": 7,
+      "id": "A11"
+    },
+    {
+      "candidate_id": "ageing_concentration:sku_type:OVERSEAS",
+      "story_key": "age:v1:d52a54c787d8c6d18099d5dd9f135f9d",
+      "report_id": "inventory_ageing",
+      "analysis_type": "ageing_concentration",
+      "dimension": "sku_type",
+      "affected_segment": "OVERSEAS",
+      "segment_members": [
+        "OVERSEAS"
+      ],
+      "metric": "Stock value at ageing risk",
+      "metric_family": "stock_value",
+      "current": 637842.5306,
+      "impact_value": 637842.5306,
+      "impact_share": 10.285567889939152,
+      "score": 110.28556788993916,
+      "severity": "info",
+      "comparison_label": "share of aged stock across sku_type members",
+      "description": "OVERSEAS holds 77.3% of all aged stock value across sku_type members.",
+      "top1_share_pct": 77.2780398635646,
+      "top3_share_pct": 100.0,
+      "hhi": 0.6488182917596439,
+      "members": 2,
+      "id": "A12"
+    }
+  ],
+  "ageing_dimensions": {
+    "division": [
+      {
+        "name": "LIFESTYLE",
+        "total": 2016539.4152,
+        "value": 363300.5656,
+        "high_risk": 195502.5198
+      },
+      {
+        "name": "HOME & LIVING",
+        "total": 1200614.8102,
+        "value": 352830.2924,
+        "high_risk": 215932.9214
+      },
+      {
+        "name": "CONSUMER GOODS",
+        "total": 2662952.3566,
+        "value": 60796.6867,
+        "high_risk": 32911.5501
+      },
+      {
+        "name": "TECHNOLOGY",
+        "total": 321228.5064,
+        "value": 48458.9839,
+        "high_risk": 16536.8012
+      }
+    ],
+    "section": [
+      {
+        "name": "CLEANING ESSENSTIALS",
+        "total": 138221.5875,
+        "value": 4422.5809,
+        "high_risk": 2238.4618
+      },
+      {
+        "name": "TRAVEL",
+        "total": 121809.3407,
+        "value": 22682.1598,
+        "high_risk": 13947.1529
+      },
+      {
+        "name": "GLASS ITEMS",
+        "total": 19506.4237,
+        "value": 5489.2707,
+        "high_risk": 3648.7206
+      },
+      {
+        "name": "KIDS FASHION",
+        "total": 123000.7803,
+        "value": 35153.5741,
+        "high_risk": 13546.4959
+      },
+      {
+        "name": "ENTERTAINMENTS",
+        "total": 316957.9697,
+        "value": 48431.2519,
+        "high_risk": 16531.8119
+      },
+      {
+        "name": "PERSONAL CARE",
+        "total": 1037437.7729,
+        "value": 25919.4892,
+        "high_risk": 15328.263
+      },
+      {
+        "name": "SPORTING GOODS",
+        "total": 50925.4674,
+        "value": 20069.6339,
+        "high_risk": 19200.8673
+      },
+      {
+        "name": "LADIES APPAREL",
+        "total": 754838.1734,
+        "value": 120544.8594,
+        "high_risk": 69623.9062
+      },
+      {
+        "name": "OFFICE SUPPLIES",
+        "total": 436670.2123,
+        "value": 111135.4758,
+        "high_risk": 82774.8726
+      },
+      {
+        "name": "CULINARY SUPPLIES",
+        "total": 614879.7332,
+        "value": 197823.4566,
+        "high_risk": 115957.436
+      },
+      {
+        "name": "FOOTWEAR",
+        "total": 244077.5588,
+        "value": 58133.5432,
+        "high_risk": 33904.1175
+      },
+      {
+        "name": "PROVISIONS",
+        "total": 1059685.762,
+        "value": 26861.8082,
+        "high_risk": 13416.6009
+      },
+      {
+        "name": "MENS APPAREL",
+        "total": 464686.1944,
+        "value": 67952.0865,
+        "high_risk": 25394.2723
+      },
+      {
+        "name": "TOYS",
+        "total": 256505.9176,
+        "value": 38101.6733,
+        "high_risk": 19312.6019
+      },
+      {
+        "name": "HOME TEXTILES",
+        "total": 129558.441,
+        "value": 38382.0893,
+        "high_risk": 13551.8922
+      }
+    ],
+    "location": [
+      {
+        "name": "WH1",
+        "total": 3849004.2918,
+        "value": 672148.8222,
+        "high_risk": 367351.6192
+      },
+      {
+        "name": "ST2",
+        "total": 269464.9162,
+        "value": 42551.46,
+        "high_risk": 25864.2178
+      },
+      {
+        "name": "ST1",
+        "total": 344315.9532,
+        "value": 28729.9667,
+        "high_risk": 15987.4639
+      },
+      {
+        "name": "ST3",
+        "total": 258589.2389,
+        "value": 31356.8223,
+        "high_risk": 21927.2701
+      },
+      {
+        "name": "ST5",
+        "total": 16867.6364,
+        "value": 4055.4915,
+        "high_risk": 1276.1027
+      },
+      {
+        "name": "WH2",
+        "total": 1011799.203,
+        "value": 9072.0538,
+        "high_risk": 3698.0248
+      },
+      {
+        "name": "ST4",
+        "total": 451293.8489,
+        "value": 37471.9121,
+        "high_risk": 24779.094
+      }
+    ],
+    "sku_type": [
+      {
+        "name": "OVERSEAS",
+        "total": 2198806.7318,
+        "value": 637842.5306,
+        "high_risk": 343007.918
+      },
+      {
+        "name": "LOCAL",
+        "total": 4002528.3566,
+        "value": 187543.998,
+        "high_risk": 117875.8745
+      }
+    ]
+  },
+  "deep_dives": [
+    {
+      "analysis": "oldest_items",
+      "title": "Largest product exposures over 24 months",
+      "rows": [
+        {
+          "member": "0101574527 - CF PAD LOCK GOLDEN 264",
+          "value": 2177.074
+        },
+        {
+          "member": "0101640088 - SPICE KITCHEN KNIFE P.HANDLE 7 CFKT-0657",
+          "value": 1838.2318
+        },
+        {
+          "member": "0101624997 - CF MAX FRESH STEEL HOT POT 3PCS SET 3.5/5/8.5 LTR",
+          "value": 1719.5172
+        },
+        {
+          "member": "0101571330 - LIBERO MENS SATIN SILKY PLAIN JEANS BLACK 1601",
+          "value": 1651.9008
+        },
+        {
+          "member": "0101584782 - SPICE STEEL DEEP MIXING BOWL 36CM 22133",
+          "value": 1594.7568
+        }
+      ]
+    },
+    {
+      "analysis": "aged_non_moving_items",
+      "title": "Largest products both aged and non-moving",
+      "rows": [
+        {
+          "member": "0101637144 - SPICE STEEL FLASK RED 1.2L CFTM-7010",
+          "value": 3897.8201
+        },
+        {
+          "member": "0101657351 - MEN FLEECE JOGGER PMX254 W25",
+          "value": 3801.3588
+        },
+        {
+          "member": "0101637145 - SPICE STEEL FLASK RED 1.5L CFTM-7011/4715",
+          "value": 3131.0405
+        },
+        {
+          "member": "0101653358 - LIBERO MENS PUFFER S/L HDY JKT BLACK W25",
+          "value": 2839.264
+        },
+        {
+          "member": "0101624997 - CF MAX FRESH STEEL HOT POT 3PCS SET 3.5/5/8.5 LTR",
+          "value": 2281.3743
+        }
+      ]
+    }
+  ],
+  "semantic_policy": {
+    "exposure": "[STOCK VALUE]",
+    "aged_filter": "'REP_SSR_SAG'[NEW AGE] IN {\"09-12 MONTHS\", \"12-24 MONTHS\", \"24+ MONTHS\"}",
+    "high_risk_filter": "'REP_SSR_SAG'[NEW AGE] IN {\"12-24 MONTHS\", \"24+ MONTHS\"}",
+    "oldest_filter": "'REP_SSR_SAG'[NEW AGE] = \"24+ MONTHS\"",
+    "rejected_measure": "[aged stock share]"
+  },
+  "semantic_validation": {
+    "measure": "[aged stock share]",
+    "reported_share": 1.943314908517435,
+    "reported_numerator": 12051146.930000005,
+    "stock_value": 6201335.0884,
+    "excluded": true,
+    "message": "The semantic model's [aged stock share] was excluded: its numerator does not reconcile to the Stock Value exposure used by this report."
+  }
+}

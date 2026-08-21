@@ -176,8 +176,9 @@ def build(report: dict) -> dict:
         "This report shows how old stock is and which aged stock is not "
         "selling. It does not say why stock is ageing, or what to do about it.")
 
-    return {
+    page = {
         "status": "ok",
+        "currency": str(report.get("currency") or "SAR"),
         "title": report.get("report_name") or "Stock Age Analysis",
         "subtitle": f"Stock position {report.get('period_label')}",
         "layers": list(LAYERS),
@@ -187,6 +188,21 @@ def build(report: dict) -> dict:
         "caveats": [c for c in caveats if c],
         "checks": report.get("checks") or {},
     }
+    currency = str(report.get("currency") or "SAR").strip() or "SAR"
+    return _replace_currency(page, currency)
+
+
+def _replace_currency(node, currency: str):
+    """Translate display strings while leaving all numeric evidence untouched."""
+    if currency == "SAR":
+        return node
+    if isinstance(node, dict):
+        return {key: _replace_currency(value, currency) for key, value in node.items()}
+    if isinstance(node, list):
+        return [_replace_currency(value, currency) for value in node]
+    if isinstance(node, str):
+        return node.replace("SAR ", f"{currency} ")
+    return node
 
 
 def _all_stock_view(report, header, bands, split, total, aged, high_risk,
@@ -198,8 +214,7 @@ def _all_stock_view(report, header, bands, split, total, aged, high_risk,
     kpis = [
         _kpi("Stock value", total, sub="Held across all locations."),
         _kpi("Aged stock", aged,
-             sub=f"{_pct(aged_share)} of stock value. Food ages at six months, "
-                 f"everything else at nine.",
+             sub=f"{_pct(aged_share)} of stock value under the configured ageing policy.",
              tone=_tone_for_share(aged_share, warn=10.0, critical=15.0)),
         _kpi("High-risk, over a year", high_risk,
              sub=f"{_pct(hr_share)} of stock value.",

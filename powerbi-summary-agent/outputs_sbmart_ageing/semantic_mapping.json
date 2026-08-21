@@ -1,0 +1,260 @@
+{
+  "status": "ready",
+  "method": "ageing_semantic_mapping_v1",
+  "roles": {
+    "exposure": {
+      "reference": "[STOCK VALUE]",
+      "confidence": "override",
+      "candidates": [
+        {
+          "reference": "[STOCK VALUE]",
+          "table": "REP_SSR_SAG",
+          "kind": "measure",
+          "score": 143,
+          "evidence": [
+            "strong semantic token: stockvalue",
+            "supporting token: stock, value",
+            "model measure",
+            "additive expression"
+          ]
+        },
+        {
+          "reference": "[stock share1]",
+          "table": "REP_SSR_SAG",
+          "kind": "measure",
+          "score": 63,
+          "evidence": [
+            "supporting token: stock, value",
+            "model measure",
+            "additive expression"
+          ]
+        },
+        {
+          "reference": "[stock_above_12]",
+          "table": "AGED STOCK",
+          "kind": "measure",
+          "score": 63,
+          "evidence": [
+            "supporting token: stock, value",
+            "model measure",
+            "additive expression"
+          ]
+        },
+        {
+          "reference": "[stock_above_24]",
+          "table": "AGED STOCK",
+          "kind": "measure",
+          "score": 63,
+          "evidence": [
+            "supporting token: stock, value",
+            "model measure",
+            "additive expression"
+          ]
+        },
+        {
+          "reference": "[stock_above_3]",
+          "table": "AGED STOCK",
+          "kind": "measure",
+          "score": 63,
+          "evidence": [
+            "supporting token: stock, value",
+            "model measure",
+            "additive expression"
+          ]
+        }
+      ]
+    },
+    "bucket": {
+      "reference": "'REP_SSR_SAG'[NEW AGE]",
+      "confidence": "override",
+      "candidates": [
+        {
+          "reference": "'REP_SSR_SAG'[AGE]",
+          "table": "REP_SSR_SAG",
+          "kind": "column",
+          "score": 18,
+          "evidence": [
+            "supporting token: age"
+          ]
+        },
+        {
+          "reference": "'REP_SSR_SAG'[AGE_ABOVE_12]",
+          "table": "REP_SSR_SAG",
+          "kind": "column",
+          "score": 18,
+          "evidence": [
+            "supporting token: age"
+          ]
+        },
+        {
+          "reference": "'REP_SSR_SAG'[AGE_ABOVE_24]",
+          "table": "REP_SSR_SAG",
+          "kind": "column",
+          "score": 18,
+          "evidence": [
+            "supporting token: age"
+          ]
+        },
+        {
+          "reference": "'REP_SSR_SAG'[AGE_ABOVE_3]",
+          "table": "REP_SSR_SAG",
+          "kind": "column",
+          "score": 18,
+          "evidence": [
+            "supporting token: age"
+          ]
+        },
+        {
+          "reference": "'REP_SSR_SAG'[AGE_ABOVE_6]",
+          "table": "REP_SSR_SAG",
+          "kind": "column",
+          "score": 18,
+          "evidence": [
+            "supporting token: age"
+          ]
+        }
+      ]
+    },
+    "snapshot": {
+      "reference": "'REP_SSR_SAG'[UPDATED_ON]",
+      "confidence": "override",
+      "candidates": [
+        {
+          "reference": "'REP_SSR_SAG'[UPDATED_ON]",
+          "table": "REP_SSR_SAG",
+          "kind": "column",
+          "score": 98,
+          "evidence": [
+            "strong semantic token: updatedon",
+            "supporting token: updated"
+          ]
+        }
+      ]
+    },
+    "aged": {
+      "reference": null,
+      "confidence": "derived",
+      "candidates": [
+        {
+          "reference": "[AGED STOCK LABEL]",
+          "table": "REP_SSR_SAG",
+          "kind": "measure",
+          "score": 125,
+          "evidence": [
+            "strong semantic token: agingstock",
+            "supporting token: aged",
+            "model measure",
+            "additive expression"
+          ]
+        },
+        {
+          "reference": "'REP_SSR_SAG'[agingstock]",
+          "table": "REP_SSR_SAG",
+          "kind": "column",
+          "score": 80,
+          "evidence": [
+            "strong semantic token: agingstock"
+          ]
+        },
+        {
+          "reference": "[STOCK VALUE]",
+          "table": "REP_SSR_SAG",
+          "kind": "measure",
+          "score": 27,
+          "evidence": [
+            "model measure",
+            "additive expression"
+          ]
+        },
+        {
+          "reference": "[measure 3]",
+          "table": "REP_SSR_SAG",
+          "kind": "measure",
+          "score": 27,
+          "evidence": [
+            "model measure",
+            "additive expression"
+          ]
+        },
+        {
+          "reference": "[stock share1]",
+          "table": "REP_SSR_SAG",
+          "kind": "measure",
+          "score": 27,
+          "evidence": [
+            "model measure",
+            "additive expression"
+          ]
+        }
+      ]
+    },
+    "non_moving": {
+      "reference": "'REP_SSR_SAG'[non_moving_status]",
+      "confidence": "override",
+      "candidates": [
+        {
+          "reference": "'REP_SSR_SAG'[non_moving_status]",
+          "table": "REP_SSR_SAG",
+          "kind": "column",
+          "score": 80,
+          "evidence": [
+            "strong semantic token: nonmovingstatus"
+          ]
+        }
+      ]
+    }
+  },
+  "dimensions": {
+    "division": [
+      {
+        "reference": "'REP_SSR_SAG'[DEPARTMENT]",
+        "score": 999,
+        "evidence": [
+          "configured"
+        ]
+      }
+    ],
+    "section": [
+      {
+        "reference": "'LINK TABLE'[SECTION]",
+        "score": 999,
+        "evidence": [
+          "configured"
+        ]
+      }
+    ],
+    "location": [
+      {
+        "reference": "'REP_SSR_SAG'[LOC_CODE]",
+        "score": 999,
+        "evidence": [
+          "configured"
+        ]
+      }
+    ],
+    "sku_type": [
+      {
+        "reference": "'REP_SSR_SAG'[skutype]",
+        "score": 999,
+        "evidence": [
+          "configured"
+        ]
+      }
+    ]
+  },
+  "bucket_order": [
+    "0-03 MONTHS",
+    "03-06 MONTHS",
+    "06-09 MONTHS",
+    "09-12 MONTHS",
+    "12-24 MONTHS",
+    "24+ MONTHS"
+  ],
+  "high_risk_bands": [
+    "12-24 MONTHS",
+    "24+ MONTHS"
+  ],
+  "issues": [],
+  "warnings": [],
+  "requires_configuration": false
+}

@@ -213,9 +213,8 @@ def age_columns(bands: Sequence[dict]) -> str:
 
     return (_legend([("Not yet aged", SERIES_CALM), ("Aged", SERIES_FLAG)])
             + _stage(svg,
-                     "The 06-09 month band is only partly aged because food "
-                     "crosses the aged threshold at six months and every other "
-                     "division at nine."))
+                     "The aged portion follows the configured policy threshold; "
+                     "the high-risk flag is a separate 12+ month classification."))
 
 
 def cumulative_curve(bands: Sequence[dict]) -> str:
