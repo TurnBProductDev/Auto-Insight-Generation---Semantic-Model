@@ -11,6 +11,8 @@ from __future__ import annotations
 from html import escape
 from typing import Any
 
+from . import money
+
 _CSS = """
 :root { --ink:#12263f; --muted:#5a6b7f; --line:#dfe6ee; --bg:#ffffff;
         --fresh:#2e9e6b; --mid:#c9a227; --risk:#c0562e; --crit:#9b2c2c; }

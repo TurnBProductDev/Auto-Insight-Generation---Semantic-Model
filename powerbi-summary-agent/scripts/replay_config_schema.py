@@ -52,6 +52,11 @@ CONFIG_FILES = (
     "config/sbmart-yoy/config.json",
     "config/sbmart-targettracker/config.json",
     "config/experiment/config.json",
+    # The per-report configs. These sit outside the LangGraph pipeline but are
+    # read by the same catalogue, and an uncatalogued key here fails the same
+    # way: silently, by changing behaviour rather than raising.
+    "config/targettracker/config.json",
+    "config/inventory/config.json",
 )
 
 

@@ -1,19 +1,51 @@
-# Inventory dashboard — reference designs
+# Inventory dashboard - reference designs
 
 Two hand-authored exemplars that define what a finished inventory dashboard should
 look like. They are the **design target**, not generated output.
 
-| File | Report | Opens in a browser, no server needed |
-|---|---|---|
-| `reference_inventory_management.html` | Inventory Management (WP7) | yes |
-| `reference_stock_age_analysis.html` | Stock Age Analysis (WP5) | yes |
+| File | Report | Figures | Opens in a browser |
+|---|---|---|---|
+| `reference_inventory_management.html` | Inventory Management | live, as at **19 Aug 2026** | yes |
+| `reference_inventory_management_standardised.html` | Inventory Management, terminology per the business rules | live, as at **19 Aug 2026** | yes |
+| `reference_stock_age_analysis.html` | Stock Age Analysis (WP5) | live, as at 12 Aug 2026 | yes |
 
-Both carry the **real live figures as at 2026-08-12**, so the layout is proven against
-the actual shape of the data rather than against invented numbers. Neither is produced
-by the pipeline; `src/domains/inventory/dashboard_html.py` is what must be brought up
-to them.
+The two Inventory Management pages are **both current and both maintained**. They carry
+the same figures from the same scan and differ only in vocabulary and in one extra tab -
+see *The standardised version* below. Neither replaces the other; the standardised page is
+a separate file and the original is never rewritten by its build.
 
----
+Everything below describes `reference_inventory_management.html`, the plain-language
+page. The standardised page shares its scan, its facts module and its structure.
+
+`reference_inventory_management.html` is **built, not typed**. Three files beside it
+reproduce and check it, and they must stay in step with it:
+
+| File | Job |
+|---|---|
+| `inventory_management_scan.json` | The raw read of the semantic model. The only source of figures. |
+| `inventory_management_facts.py` | Derives every published figure from that scan. Asserts the model reconciles, and refuses to produce facts at all if it does not. |
+| `build_inventory_management_reference.py` | Renders the page. Idempotent - rebuilding produces a byte-identical file. |
+| `audit_inventory_management_reference.py` | Audits the **produced page**: 101 checks over the arithmetic, the document, the plain language, and the grounding of every figure in the prose. |
+| `inventory_management_br_counts.json` | BR-08 / BR-26 / BR-28 counts. Kept separate from the main scan so the original page's inputs are provably untouched. |
+| `build_inventory_management_standardised.py` | Renders the standardised page. Idempotent, and writes only its own file. |
+| `audit_inventory_management_standardised.py` | Audits the standardised page: 168 checks, adding BR-03 synonyms, BR-31 state names, the exclusion list and the Overview tab. |
+| `inventory_management_standard_counts.py` | Re-exports the BR counts for the auditor. |
+
+```bash
+python build_inventory_management_reference.py       # the plain-language page
+python audit_inventory_management_reference.py       # 101 checks
+
+python build_inventory_management_standardised.py    # the business-rules page
+python audit_inventory_management_standardised.py    # 168 checks
+```
+
+Running either build never touches the other page. The standardised build was verified
+against the original's checksum before and after.
+
+The Inventory Management figures come from report `ea29c0ea-2b15-4b29-b506-82afa92b4240`
+in workspace `2829a4af-2e07-4b43-b913-0a829a06bef4`, semantic model
+**`16d47b06-f48c-4a50-9d61-3fc91791ad73`**. Neither reference is produced by the pipeline;
+`src/domains/inventory/dashboard_html.py` is what must be brought up to them.
 
 ## Why these exist
 
@@ -35,75 +67,205 @@ failure on a page whose every *number* was right:
 
 ---
 
-## The Inventory Health Score — the story spine
+## The standardised version
 
-`reference_inventory_management.html` opens on a **score, its trend, and what moved it**,
-not on a table. The page answers three questions in order: *what is happening*, *why*, and
-*where to look* — the queue and the estate splits are demoted to "the evidence underneath".
+`reference_inventory_management_standardised.html` is the same report with its terminology
+aligned to **`business_rules_Inventory.md`**, which is the authority for KPI names,
+inventory classifications and business language. It exists because the plain-language page
+below optimises for a reader with no background, while a trained user reads the Power BI
+report itself - and the two must not use different words for the same thing.
 
-### The score is computed, not decorative
+### What changed
 
-Five drivers, each measured against a stated business tolerance band, then weighted. On
-the real 2026-08-12 figures the weighted drivers add to **exactly 40.0**:
+Every approved name in **BR-03** is used, every time:
 
-| Driver | Weight | Reading | Target → floor | Score |
-|---|---|---|---|---|
-| Availability | 30% | 20.7% of lines unavailable | 5% → 30% | 37.3 |
-| Cover discipline | 25% | 41.6% above agreed cover | 15% → 50% | 24.1 |
-| Movement | 20% | 14.3% of value not moving | 5% → 25% | 53.6 |
-| Buying quality | 15% | 27.0% of open orders unwanted | 5% → 40% | 37.0 |
-| Data integrity | 10% | 6.5% of lines unclassified | 2% → 15% | 65.7 |
+| Plain-language page | Standardised page | Rule |
+|---|---|---|
+| product | **SKU**, or **Loc-SKU** for one SKU at one Location | BR-03, BR-08 |
+| shop | **Store**; **Location** for a Store or Warehouse | BR-03 |
+| Department | **Division** | BR-02 |
+| stock not selling | **Non-Moving** | BR-03, BR-24 |
+| more stock than needed | **Excess Stock** | BR-03, BR-20 |
+| sales missed | **Opportunity Loss** | BR-03, BR-16 |
+| days of stock | **Burn-Out Days** | BR-03, BR-09 |
+| written off | **Damage** | BR-03, BR-29 |
+| plain description first | **Recommended Action state name first**, never abbreviated | BR-31 |
+| no currency symbol | **USD** on every money figure | BR-00 analogue |
 
-```
-score(driver) = clamp( (1 - (actual - target) / (floor - target)) * 100, 0, 100 )
-total         = Σ score(driver) × weight            → 40.0
-```
+Two further things the rules document forced, both of which made the page more correct:
 
-Bands: **≥65 healthy · 45–64 watch · <45 needs attention.**
+- **BR-08 separates `#SKUs` from `#Loc-SKUs`, and the page had been conflating them.** The
+  120,897 rows are Loc-SKUs - one SKU at one Location - covering 44,504 distinct SKUs. Every
+  count now says which it is, and where a classification is stated across Locations the page
+  gives both (Non-Moving is 31,608 Loc-SKUs and 22,510 SKUs), which is what **BR-26**
+  requires.
+- **BR-28's Unwanted SKUs were missing entirely.** 117 SKUs carry Excess Stock *and* have
+  more arriving in Pending Orders, worth USD 7,840. The rules call this one of the most
+  actionable signals in the report, and it is now in the Excess Stock story.
+
+### Where two rules disagreed
+
+Four sentences sat between conflicting rules; each was resolved toward the stricter reading
+and is recorded here rather than left to be rediscovered:
+
+| Phrase | Conflict | Resolution |
+|---|---|---|
+| "surplus above the threshold" | BR-20 uses *Surplus Qty*; BR-03 bans *surplus* as a name for Excess Stock | "only the portion above the coverage threshold counts as Excess Stock" |
+| "write-off risk" | BR-25 says *write-off risk*; BR-03 bans *write-off* as a name for Damage | "obsolescence risk", which BR-25 also uses |
+| "based on sales velocity" | BR-16 prescribes it; BR-33 bans *velocity* | "based on average daily sales and retail price" - BR-16's own formula |
+| "replenishment need" | BR-30 uses it; BR-03 bans *Replenishment* as a name for Transfer | "the reorder decision" |
+
+### The naming clash the page states rather than hides
+
+The health-score model names one risk **Dead Stock**. BR-03 bans that phrase for the
+classification the business calls **Non-Moving** - and they are the same thing. The page
+uses Non-Moving throughout, prints the model measure name in small grey type under the risk
+so a user can still find it in the model, and carries a caveat saying so. The same applies
+to the model's *Verge of Stockout* against BR-17's *On the Verge of Stockout*.
+
+The auditor enforces both directions: the banned synonyms must be absent, **and** all six
+model measure names and all fourteen BR-31 state names must be present. "Standardise" can
+never quietly become "delete the model's terminology".
+
+### What was deliberately excluded
+
+The rules document is written for one client. Carried over: rules, definitions, KPI
+vocabulary, thresholds as concepts. **Not** carried over, and asserted absent by the
+auditor: the Saudi and SAR references, the seven location codes, the nine named Divisions,
+the named Sections, the lead-day and excess-threshold tables, and the buying team's name.
+Where the page names a Location, Division or Section it is reading the semantic model's own
+data, not that document.
+
+### The Overview tab
+
+The standardised version carries **six** tabs rather than five: an **Overview** leading on
+the BR-08 headline measures, Stock Value by Location, the most urgent Recommended Actions
+and the two figures that cover a period - then Inventory Health Score, Where to focus,
+Locations, Divisions and Recommended Actions. The auditor asserts Overview exists, comes
+first, carries the measures, and does *not* carry the score gauge.
+
+---
+
+## Everyday language, with the model's own words kept alongside
+
+Someone with no business background has to be able to read this page. So it says **"more
+stock than needed"** and prints *"called Excess Stock in the model"* underneath in small
+grey type. Both readers are served, and the page can never drift from the semantic model's
+vocabulary. The queue table does the same: the plain description on top, the model's own
+code beneath it.
+
+Words like *SKU*, *materiality*, *eligible*, *P90*, *breadth*, *velocity*, *burnout*,
+*scoped* and *opportunity loss* appear nowhere else on the page, and the auditor fails the
+build if one of them creeps back in. The two places where the model's vocabulary is
+deliberately shown are stripped out before that check runs, and the auditor separately
+asserts that all six model names and the queue codes are still present - so "simplify" can
+never quietly become "delete the model's terminology".
+
+Where a technical idea cannot be avoided, it is explained in the sentence that uses it. The
+"90th-percentile benchmark" became *"products are only compared with similar products in the
+same shop, so an expensive product does not look worse simply because it costs more"*.
+
+### Proving a wording pass changed only wording
+
+The plain-language rewrite was applied to a page that had already been approved, so the
+risk was not a bad sentence - it was quietly moving the furniture while claiming to reword
+it. The check that settles it: reduce both the old and new HTML to their **tag + class
+skeleton** in document order, with every scrap of text removed, then compare the two as
+multisets. Anything left over is a structural change and has to be justified out loud.
+
+Run positionally, that diff is useless - inserting one sentence makes every following table
+row read as "moved". Compared as multisets it answers the real question: same elements, same
+numbers? On this pass it came back with **zero removals** and exactly the additions that
+were intended: six `p.d-model` lines and fourteen `span.act` codes. It also caught two
+things that had crept in unnoticed - an explanatory note under a table, and a method
+paragraph split in two - and both were reverted.
+
+It caught a content loss as well: one caveat, the one about products with no reorder level,
+had gone missing in the rewrite. Counting `<li>` elements is what found it.
+
+## The Inventory Health Score - the story spine
+
+### The score is the model's own, and every figure reconciles
+
+An earlier version of this reference invented a five-driver composite (Availability, Cover
+discipline, Movement, Buying quality, Data integrity) because the model held no score of
+its own. **It does now.** `_HEALTH SCORE MEASURES` publishes an Inventory Health Score
+built exactly as the Retail Inventory Health Score methodology describes it, and the
+invented drivers have been removed. Using anything other than the model's own vocabulary
+here is a defect: the page and the semantic model must say the same words.
+
+Every SKU starts at 100 and loses points to six risks, each capped at 25:
+
+| Risk | Points lost | Share of the loss | Behind it |
+|---|---|---|---|
+| Excess Stock | 12.5 | 30.2% | 1,823,947 above cover, 51,255 lines |
+| Ageing Stock | 10.2 | 24.7% | 1,609,994 ageing, 56,852 lines |
+| Dead Stock | 7.2 | 17.3% | 807,388 not moving, 31,606 lines |
+| Out of Stock | 6.2 | 14.9% | 19,347 lines, 1,626,901 of sales at risk |
+| Verge of Stockout | 4.6 | 11.1% | 1,700 lines, segment severity 89.0% |
+| Damage | 0.7 | 1.8% | 106,624 written off in the latest month |
+| **Total** | **41.5** | **100%** | **score 58.5 - Critical** |
+
+Each risk is rebuilt from three dimensions rather than averaged from the level below -
+value impact (50%), SKU breadth (30%), duration or severity (20%); 70/30 for damage, which
+has no duration term - then multiplied by 25 and capped. The auditor re-derives all six
+from their own dimensions and asserts they close on the published score.
+
+Bands are the methodology's, not a design choice: **90+ Excellent, 80-89 Healthy, 70-79
+Watch, 60-69 At Risk, below 60 Critical.** Out-of-stock lines start from 0 rather than 100,
+are not floored, and are labelled Out of Stock rather than placed in a band.
 
 Three rules this must keep:
 
-- **Both directions count.** Availability and Movement are positive contributors that are
-  currently weak; Cover discipline, Buying quality and Data integrity are drags. A score
-  that only aggregated bad news would never rise when the business fixed something.
-- **The weights and bands are printed on the page**, on every driver card and in a "How
-  the score is worked out" panel. A composite a manager cannot argue with is a composite
-  they cannot act on.
-- **The drivers reconcile to the movement exactly.** The waterfall's five deltas sum to
-  the full −17, so nothing about the fall is unexplained. Its axis floats and *says so*,
-  for the reason `summary_dashboard_html._waterfall` already documents: against a base of
-  57, movements of 0.6–7.5 points render as invisible slivers on a zero-anchored axis.
+- **The waterfall shows composition, not movement.** With one snapshot there is no movement
+  to decompose. It runs 100 -> each risk -> 58.5, ordered biggest cause first, and the six
+  deductions add to the whole of the loss so nothing is unexplained. Its axis floats and
+  *says so*.
+- **The weights, caps and bands are printed on the page**, on every risk card and in a
+  "How the score is worked out" panel. A composite a manager cannot argue with is a
+  composite they cannot act on.
+- **The company score is not the average line.** The average scored line reads 71.9 against
+  a company score of 58.5, and the page states why: the score is rebuilt from where the
+  value and the breadth actually sit. Leaving that gap unexplained invites the reader to
+  assume one of the two numbers is wrong.
 
 ### The focus sub-stories
 
-Four areas, ordered by **what they are costing inventory health** — not by how much money
-they hold. Each carries the same four slots:
+Four areas, ordered by **what they are costing the score** - not by how much money they
+hold. On this position that is Excess, Ageing, Dead and Out of Stock, which together account
+for 36.1 of the 41.5 points lost. Each carries four slots:
 
 ```
-What changed          → the movement, with both endpoints
-Why                   → the mechanism, not a restatement of the number
-What it is doing      → its share of the score movement, in context
-   to inventory health
-Do this               → one concrete next step, with the count to act on
+What it is                 -> the figure, plainly, with the product count
+Why it happened            -> the mechanism, not a restatement of the number
+What it does to the score  -> its share of the points lost, in context
+Do this                    -> one concrete next step, with the count to act on
 ```
 
-That structure is what turns "216 unwanted SKUs" into "216 products already flagged as
-overstocked have more on order, up from 96 — orders raised against lines that were
-already above cover; SAR 875K is still cancellable; review it before the stock lands."
+Those four headings are the plain-language versions of the original slots. The shape did
+not change; only the words did.
+
+The first slot is **"What it is", not "What changed"** - deliberately. The model holds one
+health snapshot, so there is no change to state, and a slot headed "What changed" could only
+be filled with something invented. It becomes "What changed" the day a second snapshot
+lands.
 
 ### Honesty rule for the history
 
-**The twelve-week history is illustrative and the page says so, in a banner directly under
-the hero.** The live model retains one snapshot (gap 4), so no trend can be produced from
-it today. That banner is not optional decoration — without it the page reads as though the
-history exists.
+Snapshot history has only just begun to be captured. The score line under "The story"
+therefore shows **the shape the chart will take and nothing else**: it is dashed, its
+points are unlabelled, it carries the words *"shape only - no past values are implied"*
+inside the plot, and a banner above it says the same. Only the final point - the real
+19 August reading - is drawn solid and given a value.
 
-This is also the clearest argument for fixing gap 4: the score, the trend, the waterfall
-and every "up from…" in the focus stories become real the day a daily snapshot is
-retained, and none of them can exist before that.
+Drawing a plausible line with invented values on it would have been worse than drawing
+nothing, because every one of those values would have been quotable. The auditor enforces
+both markers.
 
-`reference_stock_age_analysis.html` has **not** yet been converted to this shape. It is
-still the structural reference; the same score-and-sub-story spine applies to it.
+The one **genuinely historical** series in the model is store stock value at four dates
+(1 Jun, 1 Jul, 1 Aug, 19 Aug), from `SSR TREND`. It sits on the Locations layer, labelled
+as the real series, and it is what exposes the ST5 wind-down: 815,718 -> 62,478, down
+92.3%.
 
 ## The interaction model
 
@@ -145,17 +307,21 @@ reusing the wider view's rows is the failure it exists to prevent.
 rail (172px, dark)  |  page (max 1280px)
                     |
                     |  masthead      title · as-at · view toggle          ← the date, ONCE
-                    |  hero          dark band: verdict + 3 proof stats
-                    |  ─ Inventory summary ─────────────────────────────
-                    |  2-up          lead chart (1.55fr) | shape chart (1fr)
-                    |  KPI row       6 cards, severity stripe + pill
-                    |  ─ Where it sits ────────────────────────────────
-                    |  2-up equal    by location | by division
-                    |  ─ Detail ────────────────────────────────────────
-                    |  full tables + supporting charts
+                    |  hero          dark band: verdict + gauge + 3 proof stats
+                    |  banner        the one thing that would be misread
+                    |  ─ The story ─────────────────────────────────────
+                    |  full width    the lead chart, whatever carries the argument
+                    |  2-up          supporting chart (1.55fr) | distribution (1fr)
+                    |  ─ The six problems ──────────────────────────────
+                    |  cards         6 across 3 columns, severity pill + own weights
+                    |  method        how the score is worked out
                     |  caveats       ONE block, bulleted
                     |  footer        provenance
 ```
+
+That is the *summary* layer. Four more sit behind the rail — **Where to focus**
+(the sub-stories, then the evidence behind them), **Shops**, **Departments** and
+**Every product** — and each of the two views carries all five.
 
 ### Non-negotiables
 
@@ -164,11 +330,16 @@ rail (172px, dark)  |  page (max 1280px)
 - **The date appears once**, in the masthead.
 - **Two columns wherever content allows.** A 1280px page running one narrow column is
   the single biggest reason the generated version looked unfinished.
-- **The lead chart carries the report's argument.** Inventory Management leads with the
-  urgency ladder (its whole point is that the biggest bar is *not* at the top). Stock Age
-  leads with the age distribution and its aged portion.
-- **A summary shows the top of a list, never all of it.** Six queue rows in the summary;
-  all fifteen in Detail, with a line saying so.
+- **The lead chart carries the report's argument, and gets the full page width.**
+  Inventory Management leads with the health score against its bands; Stock Age leads with
+  the age distribution and its aged portion. A chart that carries the argument and is then
+  squeezed into a 1.55fr column renders its own axis labels at 7px — that was one of the
+  three layout faults caught by rendering this rewrite.
+- **Six cards go three across, not auto-fit.** `repeat(auto-fit,minmax(232px,1fr))` lays
+  six cards out 5+1 at 1280px and four stories 3+1, orphaning the last one beside a gap the
+  width of two cards. Fixed column counts that divide the card count exactly.
+- **A summary shows the top of a list, never all of it.** Six queue rows under
+  "Where to focus"; all fourteen in Action queue, with a line saying so.
 - **One caveats block**, bulleted, at the end. Never one box per caution.
 - **Every card states its own reading rule** in a `.sub` under the heading and a `.note`
   under the content — what the bar is, what the number beside it means.
@@ -209,41 +380,82 @@ drift the shared renderer exists to prevent.
 |---|---|---|---|
 | 1 | Hero is a self-contained dark band | Inherits the sales 2-column hero and breaks | `_hero` + its own CSS |
 | 2 | Date once, in the masthead | Three times | `render` / `_view_html` |
-| 3 | Summary = 2-up lead + shape chart | Single column, stacked | `_view_html` |
-| 4 | Six queue rows in summary, all in Detail | All fifteen in summary | `charts.queue_ladder(limit=)` |
-| 5 | Locations and divisions side by side | Separate full-width layers | layer composition |
+| 3 | Summary = full-width chart, then a 2-up | Single column, stacked | `_view_html` |
+| 4 | Six queue rows in summary, all fourteen in Detail | All fifteen in summary | `charts.queue_ladder(limit=)` |
+| 5 | Locations and divisions each own a layer | Separate full-width layers | layer composition |
 | 6 | One caveats block | One `.note-band` per caveat | `render` |
-| 7 | KPI cards carry a severity pill | Stripe only, no word | `_kpi` |
-| 8 | Unmeasurable states say so (`FOOTWEAR — not set`) | Prints `SAR 0` | `stock_health.build` (gap 2) |
-| 9 | Scoped view states it does not own breakdowns | Shows the wider view's unfiltered rows | `_stock_health_view` |
+| 7 | Risk cards carry a severity pill and their own weights | Stripe only, no word | `_kpi` |
+| 8 | Unmeasurable states say so (`FOOTWEAR - no cover threshold set`) | Prints `0` | `stock_health.build` (gap 2) |
+| 9 | Scoped view states it does not own breakdowns, in all three layers | Shows the wider view's unfiltered rows | `_stock_health_view` |
 | 10 | `#view/layer` in the URL | No routing | `_script` |
-| 11 | Opens on a health score, its trend and what moved it | Opens on the work queue | new `inventory_health.py` + `dashboard.py` |
-| 12 | Four focus sub-stories (changed / why / effect / do this) | KPI cards and tables only | `dashboard.py` |
-| 13 | Queue and estate split demoted to "the evidence underneath" | They are the summary | layer composition |
+| 11 | Opens on the model's own Inventory Health Score | Opens on the work queue | new `inventory_health.py` + `dashboard.py` |
+| 12 | Four focus sub-stories (what it is / why / effect / do this) | KPI cards and tables only | `dashboard.py` |
+| 13 | Queue and estate split demoted to "the evidence behind those four" | They are the summary | layer composition |
+| 14 | Every nav button reaches a layer in **both** views | n/a | `_view_html` |
+| 15 | Everyday language, with the model's own term shown beside it | Emits the model's term alone | `dashboard.py` + `charts.py` |
 
-Items 11–13 need **retained history** (gap 4) before they can carry real figures. The
-score itself is computable from a single snapshot; its *trend*, the waterfall and every
-"up from…" in the focus stories are not.
+Items 11-13 are now **buildable against real figures** - the score exists in the model, so
+they no longer wait on retained history. Only the score's *trend* does.
 
-Items 1–7, 9 and 10 are presentation and can be done without touching any figure. Item 8
-needs the threshold scan and is tracked separately.
-
-Item 9 is a live defect, not only a design gap: the generated *Needs action only* view
-states that its totals will not match the all-stock view, and then prints unfiltered
-location and division tables underneath that sentence.
-
----
+Item 14 is a defect this rewrite fixed in the reference itself: the previous version had no
+`focus` layer inside the scoped view, so clicking "Where to focus" there hid every layer and
+left a blank page. Both views now carry all five layers, and the auditor asserts it.
 
 ## Rules for keeping these honest
 
 These are exemplars, so they carry real numbers and can therefore go stale or, worse, be
-mistaken for output. Two guards:
+mistaken for output. Three guards:
 
-- Every reference states **"Reference design"** in the rail and the date the figures
-  belong to. Never remove that.
-- The figures are the committed `outputs_ageing/report_ageing.json` and
-  `outputs_stock_health/report_stock_health.json` as at 2026-08-12. If a reference is
-  updated with newer figures, update the date in the rail and the masthead together.
+- Every reference states **"Reference design"** in the rail and the date the figures belong
+  to. Never remove that.
+- Inventory Management is rebuilt from `inventory_management_scan.json`, never edited by
+  hand. To refresh it: re-run the scan against the model, replace that file, then rebuild
+  and audit. Update the date in the rail, the masthead and this README together - the
+  builder takes it from `AS_AT`.
+- **Run the auditor after any change, and look at the rendered page.** The auditor catches
+  arithmetic, grounding and jargon; it cannot see layout. Both matter, and only one of them
+  is automated. Rendering is what caught every layout fault in this work: a chart too small
+  to read once squeezed into a column, six risk cards wrapping 5+1, four stories wrapping
+  3+1, and a card left half empty because it held only two bars.
+- **Keep the plain-language pass honest.** If a new sentence seems to need a technical word,
+  either explain it in the same sentence or add the word to the auditor's jargon list and
+  find another way to say it. That list is the specification, not a suggestion.
+- **If you are asked to reword the page and change nothing else, prove it.** Keep a copy of
+  the page before the pass, then compare tag+class skeletons as multisets (see above). "I
+  only changed the words" is very easy to believe and very easy to get wrong.
 
-Do **not** wire these files into the pipeline or publish them to a client container —
-they are documentation. The pipeline writes `report_dashboard_*.html`.
+```
+chrome --headless=new --screenshot=out.png --window-size=1500,2500 \
+    "file:///.../reference_inventory_management.html#all/summary"
+```
+
+Do **not** wire these files into the pipeline or publish them to a client container - they
+are documentation. The pipeline writes `report_dashboard_*.html`.
+
+## What the model cannot currently do
+
+Recorded here because each one changes what the page is allowed to claim:
+
+- **Warehouses are not scored.** `FCT SKU HEALTH`, `LOC_CATEGORY_HEALTH` and
+  `P90 CATEGORY STORE` hold ST1-ST5 only. Warehouse scoring is planned; until it lands the
+  page states which locations the score covers, and shows WH1/WH2 as stock evidence with no
+  score attached, never added to the store total.
+- **`LOC_CATEGORY_HEALTH` and `P90 CATEGORY STORE` carry no relationships.** Slicing the
+  score by `LOC_CATEGORY_HEALTH[DEPARTMENT]` returns the company total for all four
+  departments. Every roll-up on the page is built from `REP_SSR_STOCK_STATUS_REPORTV2`
+  instead, which propagates correctly and reconciles to 4,964,930 exactly.
+- **FOOTWEAR has no cover threshold**, so its Excess risk scores zero across 5,583 lines
+  holding 214,739 - its 64.1 is flattering. The threshold table names the section
+  `CF-FOOT WEAR`; the stock data names it `FOOTWEAR`; the two never match. `CF-COMPUTER ACC`
+  is a single line and is marked as unreadable.
+- **7,896 lines holding 353,377 carry no usable reorder level.** They are shown as *cannot
+  assess* in the queue rather than counted as healthy, which is why the queue splits three
+  ways rather than two.
+- **Sales at risk must be published scoped.** The model's own `OPPORTUNITY LOSS` column is
+  already restricted to prime actionable lines at stores and reads 59,051. The unscoped
+  stockout column reads 313,038 - 6.4x - and is not comparable.
+- **ST5 is a wind-down**, confirmed with the business. It is kept in the estate table and
+  flagged, never silently excluded and never read as an availability failure.
+- **Values carry no currency symbol.** The model declares none, and the methodology
+  document's worked examples use a different one from the group. The page states the unit
+  once, in the caveats.

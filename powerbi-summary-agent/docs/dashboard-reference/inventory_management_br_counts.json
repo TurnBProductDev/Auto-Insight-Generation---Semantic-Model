@@ -1,0 +1,18 @@
+{
+ "counts": {
+  "[locskus]": 120897,
+  "[skus_in_scope]": 44504,
+  "[skus_with_stock]": 40121,
+  "[locskus_with_stock]": 94155,
+  "[nm_skus]": 22510,
+  "[excess_skus]": 29251,
+  "[oos_skus]": 14972,
+  "[verge_skus]": 2362,
+  "[unwanted_skus]": 117,
+  "[unwanted_po_value]": 7840.355199999999,
+  "[pending_skus]": 325,
+  "[pending_value]": 27853.5019,
+  "[critical_skus]": 15210,
+  "[critical_oos_skus]": 5430
+ }
+}

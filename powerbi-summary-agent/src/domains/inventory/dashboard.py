@@ -21,6 +21,8 @@ from __future__ import annotations
 
 from typing import Any, Sequence
 
+from . import money
+
 from . import buckets
 
 #: Bands that count as high-risk for the second view (BR-17).
@@ -82,14 +84,8 @@ def _num(value: Any) -> float | None:
 
 
 def _sar(value: Any) -> str:
-    number = _num(value)
-    if number is None:
-        return "-"
-    if abs(number) >= 1_000_000:
-        return f"SAR {number / 1_000_000:.2f}M"
-    if abs(number) >= 1_000:
-        return f"SAR {number / 1_000:.0f}K"
-    return f"SAR {number:,.0f}"
+    """A money figure in the run's configured currency (see `money.py`)."""
+    return money.fmt(value)
 
 
 def _pct(value: Any) -> str:
@@ -431,12 +427,24 @@ def _high_risk_area(row: dict) -> dict:
 # layout, and BR-31 makes RECOMMENDED_ACTION the operational output. So the
 # Detail layer leads with the queue, ordered by urgency rather than by value.
 
+#: Six tabs, in the reference's order. `score` and `focus` sit between the
+#: summary and the breakdowns deliberately: the page opens on the model's own
+#: Inventory Health Score and what is costing it, and the Location/Division
+#: splits are the evidence underneath that, not the story itself.
+STOCK_HEALTH_LAYERS = ("overview", "score", "focus", "entities", "areas", "detail")
+
 STOCK_HEALTH_LAYER_TITLES = {
-    "overview": "Summary",
+    "overview": "Overview",
+    "score": "Inventory Health Score",
+    "focus": "Where to focus",
     "entities": "Locations",
     "areas": "Divisions",
-    "detail": "Action queue",
+    "detail": "Recommended Actions",
 }
+
+#: A summary shows the top of a list, never all of it. The full queue is the
+#: Recommended Actions tab; six rows is what fits without swallowing the page.
+SUMMARY_QUEUE_ROWS = 6
 
 #: This report has no concept of stock age at all. Its measure is value held
 #: above the agreed cover (BR-20), and the wording is the plain-English form the
@@ -456,8 +464,14 @@ STOCK_HEALTH_LABELS = {
 }
 
 
-def build_stock_health(report: dict) -> dict:
-    """The Inventory Management page model. Pure."""
+def build_stock_health(report: dict, score: dict | None = None) -> dict:
+    """The Inventory Management page model. Pure.
+
+    ``score`` is the Inventory Health Score model from `health.build`, or None
+    when the semantic model publishes no score - the other environment's
+    Inventory Management model has no `_HEALTH SCORE MEASURES` table at all. The
+    two score layers are dropped in that case rather than rendered empty.
+    """
     header = report.get("header") or {}
     stock = _num(header.get("stock_value")) or 0.0
     excess = _num(header.get("excess_value")) or 0.0
@@ -465,15 +479,17 @@ def build_stock_health(report: dict) -> dict:
     exceptions = [r for r in queue if r.get("is_exception")]
 
     views = [
-        _stock_health_view(report, header, stock, excess, queue, "all"),
-        _stock_health_view(report, header, stock, excess, exceptions, "exceptions"),
+        _stock_health_view(report, header, stock, excess, queue, "all", score),
+        _stock_health_view(report, header, stock, excess, exceptions, "exceptions", score),
     ]
+    layers = [name for name in STOCK_HEALTH_LAYERS
+              if score is not None or name not in ("score", "focus")]
 
     return {
         "status": "ok",
         "title": report.get("report_name") or "Inventory Management",
         "subtitle": f"Stock position {report.get('period_label')}",
-        "layers": list(LAYERS),
+        "layers": layers,
         "layer_titles": dict(STOCK_HEALTH_LAYER_TITLES),
         "default_view": "all",
         "views": [v for v in views if v],
@@ -482,8 +498,12 @@ def build_stock_health(report: dict) -> dict:
     }
 
 
-def _stock_health_view(report, header, stock, excess, queue, key) -> dict:
+def _stock_health_view(report, header, stock, excess, queue, key, score=None) -> dict:
     scoped = key == "exceptions"
+    # The scoped view keeps its own count-based headline: an authored sentence
+    # describes the whole position, and repeating it over a filtered view would
+    # attach the wrong total to it.
+    prose = (report.get("prose") or {}) if not scoped else {}
     rows = sum(r.get("loc_skus") or 0 for r in queue)
     value = sum(r.get("stock_value") or 0.0 for r in queue)
     excess_share = _share(excess, stock)
@@ -506,7 +526,7 @@ def _stock_health_view(report, header, stock, excess, queue, key) -> dict:
         kpis = [
             _kpi("Stock value", stock, sub="Held across all locations."),
             _kpi("Held above agreed cover", excess,
-                 sub=f"{_pct(excess_share)} of stock value. The surplus only, not "
+                 sub=f"{_pct(excess_share)} of stock value. The portion above cover only, not "
                      f"the whole value of overstocked products.",
                  tone=_tone_for_share(excess_share, warn=25.0, critical=35.0)),
             _kpi("Lines needing action", f"{sum(r['loc_skus'] for r in queue if r.get('is_exception')):,}",
@@ -557,35 +577,54 @@ def _stock_health_view(report, header, stock, excess, queue, key) -> dict:
         "labels": dict(STOCK_HEALTH_LABELS),
         "owns_breakdowns": True,
         "period": {"data_as_of": report.get("as_at"), "grain": "snapshot"},
+        # The authored slots when they exist, the grounded wording otherwise.
+        # Both have been through the same validator, so the page cannot tell
+        # which it is reading and does not need to.
         "hero": {
-            "headline": (f"{double_rows:,} product lines need attention today"
-                         if double_rows else
-                         f"{_sar(excess)} is held above the agreed cover"),
-            "narrative": (report.get("narrative") or [""])[0],
+            "headline": (prose.get("headline")
+                         or (f"{double_rows:,} Loc-SKUs need attention today"
+                             if double_rows else
+                             f"{_sar(excess)} is held above the agreed cover")),
+            "narrative": (prose.get("narrative")
+                          or (report.get("narrative") or [""])[0]),
         },
         "kpis": kpis,
         "signals": signals,
         "tldr": [] if scoped else _stock_health_tldr(report, doubles, excess, unwanted),
         "layers": {
-            "overview": True,
+            "overview": {
+                # A summary shows the top of the queue, never all fifteen rows.
+                "queue": queue[:SUMMARY_QUEUE_ROWS],
+                "queue_total": len(queue),
+                "trend": report.get("trend") or [],
+            },
+            "score": _score_layer(score, scoped),
+            "focus": _focus_layer(score, report, scoped),
             "entities": {
-                "available": bool(locations),
+                "available": bool(locations) and not scoped,
                 "role": "location",
                 "cards": _stock_health_cards(locations),
                 "caption": "Each location's stock held above the agreed cover.",
                 "rate_unit": "above-cover",
                 "average_rate": excess_share,
+                "pointer": _POINTER if scoped else "",
+                "scores": (score or {}).get("by_location") or [],
             },
             "areas": {
-                "available": bool(divisions),
+                "available": bool(divisions) and not scoped,
                 "role": "division",
                 "rows": [_stock_health_area(d) for d in divisions],
                 "caption": "Divisions ranked by stock held above the agreed cover.",
                 "rate_unit": "above-cover",
                 "average_rate": excess_share,
+                "pointer": _POINTER if scoped else "",
+                "scores": (score or {}).get("by_division") or [],
             },
             "detail": {
                 "queue": queue,
+                "queue_note": (("All %d Recommended Action states." % len(queue))
+                               if not scoped
+                               else "Only the states that need action."),
                 "sections": report.get("sections") or [],
                 "segments": report.get("segments") or [],
                 "non_moving_bands": report.get("non_moving_bands") or [],
@@ -596,6 +635,130 @@ def _stock_health_view(report, header, stock, excess, queue, key) -> dict:
             ["This view counts only lines in an exception state. Totals will not "
              "match the all-stock view."] if scoped else []),
     }
+
+
+#: The Location and Division splits are calculated across ALL stock, not across
+#: the lines needing action, so showing them inside the scoped view would print
+#: rows that do not add to that view's own totals. Each breakdown layer says so
+#: and names the view that does own them - the same `owns_breakdowns` / pointer
+#: contract the sales dashboard uses.
+_POINTER = ("These splits cover all stock, not only the lines needing action. "
+            "Switch to All stock to read them.")
+
+
+def _score_layer(score, scoped: bool) -> dict:
+    """The Inventory Health Score, its bands, and what each risk costs it."""
+    if not score:
+        return {"available": False}
+    return {
+        "available": True,
+        "scoped": scoped,
+        "score": score.get("score"),
+        "band": score.get("band"),
+        "points_lost": score.get("points_lost") or 0.0,
+        "bands": score.get("bands") or [],
+        "risk_cap": score.get("risk_cap"),
+        # The waterfall shows COMPOSITION, not movement: with one position there
+        # is no movement to decompose. It runs 100 -> each risk -> the score,
+        # biggest cause first, and the six deductions add to the whole of the
+        # loss so nothing is left unexplained.
+        "waterfall": [{"name": r["name"], "model_name": r["model_name"],
+                       "points": r["points"], "share_pct": r["share_of_loss_pct"]}
+                      for r in score.get("risks") or []],
+        "risks": score.get("risks") or [],
+        "status_bands": score.get("status_bands") or [],
+        "avg_scored_line": score.get("avg_scored_line"),
+        "scored_loc_skus": score.get("scored_loc_skus"),
+        # Printed on the page, because a composite a manager cannot argue with
+        # is a composite they cannot act on.
+        "method_available": bool(score.get("dimensions_reconcile")),
+        "method_note": score.get("dimension_note") or "",
+        "caveats": score.get("caveats") or [],
+    }
+
+
+def _focus_layer(score, report: dict, scoped: bool) -> dict:
+    """The few risks worth acting on, ordered by what they cost the score.
+
+    Ordered by points lost rather than by money held: a risk holding more value
+    but costing fewer points is not where the score is being lost, and the score
+    is what the page leads on.
+    """
+    if not score:
+        return {"available": False}
+    header = report.get("header") or {}
+    stories = []
+    for risk in (score.get("risks") or [])[:4]:
+        stories.append({
+            "name": risk["name"],
+            "model_name": risk["model_name"],
+            "points": risk["points"],
+            "share_pct": risk["share_of_loss_pct"],
+            "loc_skus": risk["loc_skus"],
+            "value": risk["value"],
+            "at_cap": risk["at_cap"],
+            # Four slots. The first is "What it is", not "What changed": the
+            # model holds one position, so a slot headed "What changed" could
+            # only be filled with something invented.
+            "what_it_is": _what_it_is(risk),
+            "effect": _effect(risk, score.get("points_lost") or 0.0),
+            "do_this": _do_this(risk, header),
+        })
+    return {
+        "available": True,
+        "scoped": scoped,
+        "stories": stories,
+        "covered_points": sum(st["points"] for st in stories),
+        "points_lost": score.get("points_lost"),
+        "queue": (report.get("queue") or [])[:SUMMARY_QUEUE_ROWS],
+        "queue_total": len(report.get("queue") or []),
+    }
+
+
+def _what_it_is(risk: dict) -> str:
+    lines = int(_num(risk.get("loc_skus")) or 0)
+    value = _num(risk.get("value"))
+    if not value:
+        return "%s Loc-SKUs." % format(lines, ",")
+    if risk["key"] in ("oos", "verge"):
+        return "%s Loc-SKUs, carrying %s of sales at risk." % (
+            format(lines, ","), _sar(value))
+    return "%s Loc-SKUs, holding %s." % (format(lines, ","), _sar(value))
+
+
+def _effect(risk: dict, lost: float) -> str:
+    share = risk.get("share_of_loss_pct")
+    at_cap = (" It has reached the cap, so the score cannot show it worsening."
+              if risk.get("at_cap") else "")
+    if share is None:
+        return "Costs %.1f points.%s" % (risk["points"], at_cap)
+    return "Costs %.1f of the %.1f points lost, %.1f%% of the whole loss.%s" % (
+        risk["points"], lost, share, at_cap)
+
+
+def _do_this(risk: dict, header: dict) -> str:
+    """One concrete next step with the count to act on, per BR-31's guidance."""
+    lines = format(int(_num(risk.get("loc_skus")) or 0), ",")
+    steps = {
+        "excess": "Review the %s Loc-SKUs above cover for markdown, promotion "
+                  "or transfer between Locations." % lines,
+        "ageing": "Work the %s oldest Loc-SKUs first - obsolescence risk rises "
+                  "with every band." % lines,
+        "dead": "Investigate demand on the %s Non-Moving Loc-SKUs; consider "
+                "promotion, transfer or clearance." % lines,
+        "oos": "Raise orders or transfers against the %s out-of-stock Loc-SKUs, "
+               "Critical SKUs first." % lines,
+        "verge": "Act on the %s Loc-SKUs On the Verge of Stockout before they "
+                 "go out of stock." % lines,
+        "damage": "Review the %s Loc-SKUs carrying Damage against the monthly "
+                  "trend." % lines,
+    }
+    step = steps.get(risk["key"], "Review the %s Loc-SKUs affected." % lines)
+    unwanted = int(_num(header.get("unwanted_skus")) or 0)
+    if risk["key"] == "excess" and unwanted:
+        step += (" %s of them are Unwanted SKUs - already carrying Excess Stock "
+                 "with more arriving in Pending Orders." % format(unwanted, ","))
+    return step
 
 
 def _stock_health_cards(rows: Sequence[dict]) -> list[dict]:
@@ -641,7 +804,7 @@ def _stock_health_tldr(report, doubles, excess, unwanted) -> list[dict]:
     for row in doubles:
         items.append({
             "rank": len(items) + 1, "tone": "critical", "layer": "detail",
-            "to": "Action queue",
+            "to": STOCK_HEALTH_LAYER_TITLES["detail"],
             "text": f"{row['loc_skus']:,} lines: {row['action'].lower()}."})
     if unwanted:
         items.append({

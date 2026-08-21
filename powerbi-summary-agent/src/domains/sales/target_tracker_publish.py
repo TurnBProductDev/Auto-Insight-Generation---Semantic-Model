@@ -44,7 +44,6 @@ def summary_payload(
     generated_at: datetime | None = None,
 ) -> dict:
     """Project Target Tracker into the app's strict report-summary contract.
-
     The standalone report model is intentionally richer and has its own shape.
     The app does not deserialize that model directly: it expects exactly
     ``title``, ``generatedAt``, ``headline``, ``metrics`` and ``sections``.
@@ -140,11 +139,63 @@ def summary_payload(
                     context,
                     "This model has no prior-year comparison; every figure is actual sales "
                     "against target.",
+                    (f"Covers {len(model['population'])} branches: "
+                     f"{', '.join(model['population'])}."
+                     if model.get("population") else "No branch population was supplied."),
                 ],
             },
         ],
     }
     return ReportSummaryPayload(**payload).model_dump()
+
+
+def history_entry(model: dict, payload: dict, report_id: str, generated_at: datetime) -> dict:
+    """One row of the report's history index.
+
+    The index is the app's *second* route to a summary: it reads the dated
+    archive when the current file is unavailable. Target Tracker published no
+    archive at all, so when its current file was rejected there was no fallback
+    and the report vanished entirely.
+
+    ``grain`` and ``dataAsOf`` live here rather than in the payload - the
+    payload contract has no field for them, the index entry does.
+    """
+    return {
+        "reportId": report_id,
+        "date": model["anchor"],
+        "label": "Latest",
+        "generatedAt": _iso(generated_at),
+        "headline": payload["headline"],
+        "grain": "day",
+        "dataAsOf": model["anchor"],
+        "runsThatDay": 1,
+    }
+
+
+def merge_index(existing: list, entry: dict, *, keep: int = 30) -> list:
+    """Newest first, one row per date, only the newest labelled 'Latest'.
+
+    A re-run on the same date replaces that date's row and increments its run
+    count rather than adding a duplicate.
+    """
+    rows = [dict(row) for row in (existing or []) if isinstance(row, dict)]
+    same_day = next((row for row in rows if row.get("date") == entry["date"]), None)
+    if same_day is not None:
+        entry = {**entry, "runsThatDay": int(same_day.get("runsThatDay") or 0) + 1}
+        rows = [row for row in rows if row.get("date") != entry["date"]]
+    rows.append(entry)
+    rows.sort(key=lambda row: str(row.get("date") or ""), reverse=True)
+    rows = rows[: max(1, int(keep))]
+    for index, row in enumerate(rows):
+        row["label"] = "Latest" if index == 0 else _day_label(row.get("date"))
+    return rows
+
+
+def _day_label(value) -> str:
+    try:
+        return datetime.strptime(str(value), "%Y-%m-%d").strftime("%d %b %Y")
+    except (ValueError, TypeError):
+        return str(value or "")
 
 
 def publish(cfg: dict, out_dir: Path, model: dict, *, cards: list | None = None,
@@ -230,6 +281,31 @@ def publish(cfg: dict, out_dir: Path, model: dict, *, cards: list | None = None,
                     html_bytes, html_ct, {**meta, "reportid": report_id})
                 put(client_container, f"ai-content/report-summaries/client/{report_id}.md",
                     md_bytes, md_ct, {**meta, "reportid": report_id})
+            # The dated archive and its index - the app's fallback route.
+            for report_id in report_ids:
+                folder = f"ai-content/report-summaries/client/{report_id}"
+                dated = {
+                    "schemaVersion": SCHEMA_VERSION,
+                    "client": client_container,
+                    "generatedFor": "client",
+                    "generatedAt": _iso(now),
+                    "sourceRunId": f"{model['report_id']}-{model['anchor']}",
+                    "payload": payload,
+                }
+                put(client_container, f"{folder}/{model['anchor']}.json",
+                    json.dumps(dated, indent=2, ensure_ascii=False).encode("utf-8"), json_ct)
+
+                index_blob = svc.get_container_client(client_container).get_blob_client(
+                    f"{folder}/index.json")
+                try:
+                    existing = json.loads(index_blob.download_blob().readall())
+                    if not isinstance(existing, list):
+                        existing = []
+                except Exception:  # noqa: BLE001 - a missing index is the first run
+                    existing = []
+                merged = merge_index(existing, history_entry(model, payload, report_id, now))
+                put(client_container, f"{folder}/index.json",
+                    json.dumps(merged, indent=2, ensure_ascii=False).encode("utf-8"), json_ct)
             app_status = "ok"
         except Exception as exc:  # noqa: BLE001
             return {"status": "failed", "reason": type(exc).__name__, "error": str(exc),

@@ -293,6 +293,76 @@ def test_ranking() -> None:
     check("limit is honoured", len(ts.detect(_live_model() or {}, limit=1)) <= 1)
 
 
+
+# --- 6. the published summary must match the shared app contract --------------
+def test_summary_contract() -> None:
+    """The app reads five field names. Anything else is discarded in silence.
+
+    An earlier version of `summary_payload` filed the headline under `heading`
+    and the detail under `points`, and added ten fields the contract forbids.
+    The app found no `headline`, dropped the whole file without logging
+    anything, and the report was invisible for eight days while looking like a
+    missing blob.
+    """
+    print("\n[6] Published summary conforms to the report-summary contract")
+    from src.domains.sales import target_tracker_publish as tp
+    from src.tools.api_payloads import ReportSummaryPayload
+
+    model = _live_model()
+    if model is None:
+        print("  [SKIP] no committed scan")
+        return
+    payload = tp.summary_payload(model)
+    contract = {"title", "generatedAt", "headline", "metrics", "sections"}
+
+    check("key set is exactly the contract", set(payload) == contract,
+          str(set(payload) ^ contract))
+    check("the headline is under 'headline', not 'heading'",
+          bool(str(payload.get("headline") or "").strip()) and "heading" not in payload)
+    check("the detail is under 'sections', not 'points'",
+          isinstance(payload.get("sections"), list) and "points" not in payload)
+    check("metrics are present", isinstance(payload.get("metrics"), list) and payload["metrics"])
+    check("it validates against the shared model",
+          ReportSummaryPayload(**payload) is not None)
+
+    tones = {"positive", "critical", "warning", "info", "teal"}
+    check("every metric tone is a contract tone",
+          all(m["tone"] in tones for m in payload["metrics"]))
+    check("every section tone is a contract tone",
+          all(s["tone"] in tones for s in payload["sections"]))
+    check("every section has points",
+          all(s["points"] for s in payload["sections"]))
+
+    # The facts the contract has no field for must survive as prose, not vanish.
+    prose = " ".join(pt for s in payload["sections"] for pt in s["points"])
+    check("the as-at date survives in the prose", model["anchor"] in prose)
+    if model.get("target_lag_days"):
+        check("the gap to the latest sales is stated",
+              str(model["target_lag_days"]) in prose and str(model["sold_through"]) in prose)
+    check("the branch population is stated",
+          all(b in prose for b in (model.get("population") or [])))
+    check("a branch below target is named",
+          all(b["name"] in prose for b in model["branches"] if b["mtd"]["band"] == "crit"))
+
+    # History index: the app's fallback route, which did not exist at all.
+    entry = tp.history_entry(model, payload, "guid-1", __import__("datetime").datetime.now())
+    check("history entry carries the headline", entry["headline"] == payload["headline"])
+    check("history entry carries grain and dataAsOf",
+          entry["grain"] == "day" and entry["dataAsOf"] == model["anchor"])
+    rows = tp.merge_index([], entry)
+    check("a fresh index has one row labelled Latest",
+          len(rows) == 1 and rows[0]["label"] == "Latest")
+    rows = tp.merge_index(rows, entry)
+    check("a same-day re-run does not duplicate the date", len(rows) == 1)
+    check("a same-day re-run increments the run count", rows[0]["runsThatDay"] == 2)
+    older = {**entry, "date": "2026-06-30", "dataAsOf": "2026-06-30"}
+    rows = tp.merge_index(rows, older)
+    check("older dates sort after the newest",
+          [r["date"] for r in rows] == sorted([r["date"] for r in rows], reverse=True))
+    check("only the newest row is labelled Latest",
+          [r["label"] for r in rows].count("Latest") == 1)
+
+
 def main() -> int:
     print("=" * 72)
     print("REPLAY: Target Tracker signals (P5.2 - target vs actual)")
@@ -302,6 +372,7 @@ def main() -> int:
     test_guards()
     test_mid_period()
     test_ranking()
+    test_summary_contract()
     print("\n" + "=" * 72)
     if FAILURES:
         print(f"FAILED ({len(FAILURES)}):")

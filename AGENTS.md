@@ -738,6 +738,111 @@ synthetic mid-period states, exposure-weighted ranking). Both mutation-tested: r
 merge fix, emitting `reportId` unconditionally, keeping the sequence id, classifying a
 missing target as a miss, and dropping the exposure weighting each produce precise failures.
 
+#### Inventory Management: the daily pipeline (P5.3)
+
+Inventory Management now runs end to end daily, like Target Tracker: live scan ->
+deterministic model -> validated prose -> six-tab page -> ranked KPI cards -> blob.
+`docs/inventory-daily-findings.md` is the decision record and supersedes
+`docs/inventory-daily-summary-prompt.md` on the dataset question.
+
+- **It targets SB Mart, not CityFlower, and `config/chains/inventory.json` was not
+  stale.** These are **two different clients**, not two generations of one. CityFlower
+  (`6d383900`) holds `64eefa4b`/`84212fd9`; SB Mart (`2829a4af`) holds
+  `16d47b06`/`3cd81c72`. Only SB Mart's model has `_HEALTH SCORE MEASURES`, and the
+  approved reference is built around the Inventory Health Score, so the reference is
+  **unbuildable** against CityFlower - `[Inventory Health Score]` returns HTTP 400 there.
+  SB Mart is a live client with its own container, four mapped users and two reports
+  already publishing daily; its configs are job secrets, which is why no `config/sbmart/`
+  exists. The chain config is left alone: it correctly describes CityFlower, and the
+  committed `outputs_stock_health/` fixture (as at 2026-08-12) stays as the shape fixture.
+- **The archive keys on the RUN date, never on the model's as-at stamp**, and this was
+  measured rather than reasoned. On 2026-08-21 the model still stamped `UPDATED_ON =
+  2026-08-19` - the reference's own stamp - while reading 139,732 scored Loc-SKUs against
+  the reference's 120,897 and a score of 43.5 against 58.5. Two things had happened under
+  one unchanged stamp: warehouse scoring landed (stores-only returns exactly 120,897, the
+  reference's figure), and the stores-only position itself fell to 48.8. The dataset had
+  refreshed six times between the readings. Keying on the stamp would have overwritten one
+  position with another under the same filename and later reported the difference between
+  two loads of "the same day" as a day's trading. `archive.compare_window` refuses a
+  comparison four ways - no prior, prior outside the window, an unchanged as-at, an as-at
+  that went backwards - and returns the reason as a sentence the page prints, so an absent
+  comparison never reads as "no change".
+- **The health score is the model's own, and the weights had changed.** `Total Points Lost`
+  is defined in the model as the sum of the six `Category X Risk` measures, so those six
+  *are* the authoritative points. The reference README documents the rebuild as 50/30/20;
+  read out of the live model it is now **40/30/30** (Damage still 70/30), and rebuilding
+  with the documented weights misses the published total by 5.85 points at every scope.
+  `health.DIMENSION_WEIGHTS` therefore records what the model does and `health.build`
+  proves it every run: if the model is revised again the rebuild stops closing,
+  `dimensions_reconcile` goes false, and the page drops the method panel rather than
+  printing weights that are no longer true. Score, bands and waterfall are unaffected.
+- **Six tabs, and the two score tabs are dropped rather than emptied.** Overview ->
+  Inventory Health Score -> Where to focus -> Locations -> Divisions -> Recommended
+  Actions. `build_stock_health(report, score=None)` returns the original four layers when
+  the model publishes no score, which is what CityFlower's does. Reference gaps closed:
+  the date appears once (2), the summary shows six queue rows of fifteen (4), one bulleted
+  caveats block (6), the scoped view states it does not own its breakdowns and names the
+  view that does (9), `#view/layer` routing (10), the score/focus tabs (11-13). The
+  routing JS is **spliced inside** the shared `_script()` rather than added as a second
+  tag - the page is asserted to hold exactly one, because nesting them once killed all
+  JavaScript on the page.
+- **`money.py` is one formatter for every inventory surface.** Four modules had grown
+  their own copy of the same nine lines, each hard-coding SAR, and `buckets.py` carried a
+  constant named after it. `money.use(currency)` is called once per run from
+  `inventory_currency`; the default is the shipped value, so every committed artifact
+  reproduces byte-for-byte. A per-process setting is safe here because reports in a chain
+  run sequentially in one process and share a client.
+- **Every signal carries an explicit `comparison_label`, and scores are shares.** A gap is
+  always expressed as a share of the base it is measured against (BR-34), so a large
+  percentage on a trivial slice cannot outrank a small one on a large slice. The two BR-31
+  double-warning states are **boosted** rather than left to compete: `STOCK OUT - PLACE
+  ORDER` holds no stock value at all, so on any value-weighted measure it ranks last.
+- **`NON MOVING - ORDER PLACED` has zero rows on both models**, and it is one of the two
+  states BR-31 says to report first. It is surfaced as a finding of its own
+  (`inventory_urgent_state_absent`, classified `data_quality`) rather than left as an
+  absent row, because an empty state and a state the source never produces look identical
+  and only one is good news. **BR-31's own heading says 14 states; its table lists 15**,
+  and live data holds 15 of which one - `STOCK AVAILABLE - REORDER LEVEL UNKNOW` (sic) -
+  is undocumented. The terminology check therefore asserts the state names appear as
+  *vocabulary*, never that every state has rows.
+- **The prose validator holds assertions, not just figure-grounding.** Grounding alone let
+  a Target Tracker draft through claiming "No branch missed today" when one had. So
+  `stock_health_author.validate` also rejects "nothing needs action" when the queue says
+  otherwise, a state reported as populated when the data returned none, and **any
+  comparison against an earlier position unless the archive said the two are comparable**.
+  Gated by `inventory_llm_authoring_enabled` (code default false); the deterministic draft
+  is asserted to pass the same validator, so strict validation cannot dead-end.
+- **A pre-existing feed bug, fixed for both reports.** `_assemble_kpi_card` always led with
+  `_main_change_sentence`, which is written for a period-over-period spine. On a stock
+  position it published *"STOCK OUT - PLACE ORDER performance increased by 17.8K,
+  accounting for 12.7% of the total increase in performance"* - nothing increased, and the
+  figure is a count of Loc-SKUs. Target Tracker had the same defect live. `_lead_sentence`
+  now uses the signal's own grounded description when the signal declares a
+  `comparison_label`, which by construction means a non-year-on-year spine, leaving every
+  year-on-year card on the original path.
+- **`AGENT_RUNNER` gives the standalone reports a container path.** Target Tracker and
+  Inventory Management sit outside the LangGraph deliberately (no prior year, no prior
+  period), and had only a command line. A job now names its runner; **absent means the
+  pipeline**, so every deployed job is unaffected, and an unknown name fails loudly rather
+  than silently running the graph.
+- **Verification.** `replay_inventory_scan.py` (scan shape against the committed fixture,
+  the query budget, the `locsku` leak guard, BR-16's three limits, and every archive
+  refusal path), `replay_stock_health_signals.py` (ranking order, prose guards, the
+  state diff), `replay_stock_health_author.py` (every rejection as a named test, plus the
+  clean and fallback drafts passing), `replay_container_runner.py` (runner routing, with
+  the default pinned), and `replay_multi_report_feed.py` extended to a third report. All
+  offline. `scripts/audit_stock_health.py` proves a *produced* artifact and now checks the
+  vocabulary in **both directions**: the banned synonyms absent, and the model's own
+  clashing names present inside the `.d-model` spans that are stripped before the ban runs
+  - so "standardise" can never quietly become "delete the model's terminology".
+- **Accepted live on 2026-08-21** against SB Mart, as at 2026-08-19: 16 queries,
+  Stock Value USD 13,966,417, Excess Stock USD 5,900,413 (42.2%), Opportunity Loss
+  USD 49,076/day scoped against USD 313,038 unscoped, health score 43.54 with all six
+  risks reconciling, and the feed carrying all three reports with unique hashed ids.
+- **Still open:** the Ageing report is not yet on this footing (deliberately - Inventory
+  Management went first alone), and `inventory_llm_authoring_enabled` stays false until a
+  live authored run is reviewed.
+
 #### Two test failures worth remembering
 
 **A rendering failure.**

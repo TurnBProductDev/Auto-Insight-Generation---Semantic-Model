@@ -365,6 +365,58 @@ def test_config_surface() -> None:
           kernel_report.from_state(overridden).report_id == "inventory_ageing")
 
 
+
+def test_python311_dataclass_defaults() -> None:
+    """Every dataclass default must be hashable, because 3.11 requires it.
+
+    The container runs **python:3.11-slim**; development here is on 3.12. Those
+    two disagree about exactly one thing that matters to this codebase:
+    3.11's dataclasses reject any field default whose class has
+    `__hash__ = None`, and on 3.11 `mappingproxy` is such a class. 3.12 gave it
+    a real `__hash__`, so `thresholds: Mapping = MappingProxyType({})` imported
+    cleanly here, passed every replay, and then crashed the container at import
+    with "mutable default <class 'mappingproxy'> ... use default_factory".
+
+    kernel/report.py landed on 2026-08-14 and the deployed image was built on
+    2026-08-12, so the fault was invisible until the first rollout attempted it.
+
+    This check reproduces 3.11's rule on any interpreter, so the next one is
+    caught by the gate rather than by a failed deployment.
+    """
+    import dataclasses
+    import importlib
+    import pkgutil
+
+    import src.kernel as kernel_pkg
+    import src.domains as domains_pkg
+
+    offenders = []
+    for package in (kernel_pkg, domains_pkg):
+        for module in pkgutil.walk_packages(package.__path__, package.__name__ + "."):
+            try:
+                loaded = importlib.import_module(module.name)
+            except Exception:  # noqa: BLE001 - an optional dependency is not this test's job
+                continue
+            for attribute in vars(loaded).values():
+                if not (isinstance(attribute, type) and dataclasses.is_dataclass(attribute)):
+                    continue
+                for f in dataclasses.fields(attribute):
+                    default = f.default
+                    if default is dataclasses.MISSING:
+                        continue
+                    if type(default).__hash__ is None:
+                        offenders.append(f"{attribute.__qualname__}.{f.name} = {type(default).__name__}")
+                        continue
+                    try:
+                        hash(default)
+                    except TypeError:
+                        offenders.append(
+                            f"{attribute.__qualname__}.{f.name} "
+                            f"({type(default).__name__} is unhashable at runtime)")
+    check("no dataclass default would be rejected by Python 3.11",
+          not offenders, "; ".join(offenders))
+
+
 def main() -> int:
     print("=" * 72)
     print("WP1 report identity and run scoping")
@@ -384,6 +436,7 @@ def main() -> int:
         test_safe_segment()
         test_report_spec()
         test_config_surface()
+        test_python311_dataclass_defaults()
     finally:
         shutil.rmtree(root, ignore_errors=True)
 

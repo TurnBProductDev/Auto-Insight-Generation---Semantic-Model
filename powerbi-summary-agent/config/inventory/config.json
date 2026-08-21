@@ -1,0 +1,46 @@
+{
+  "report_id": "inventory_stock_health",
+  "report_name": "Inventory Management",
+  "report_domain": "inventory",
+  "report_cadence": "daily",
+  "chain_id": "inventory",
+
+  "tenant_id": "315642c5-e14a-4c12-bf77-41ee070def79",
+  "workspace_id": "2829a4af-2e07-4b43-b913-0a829a06bef4",
+  "dataset_id": "16d47b06-f48c-4a50-9d61-3fc91791ad73",
+  "output_folder": "outputs_inventory",
+
+  "inventory_currency": "USD",
+  "inventory_display_rows": 12,
+  "inventory_material_pct": 5.0,
+  "inventory_max_queries": 25,
+  "inventory_archive_enabled": true,
+  "inventory_archive_dir": "archive",
+  "inventory_archive_max_age_days": 14,
+  "inventory_llm_authoring_enabled": false,
+
+  "ai_provider": "azure_openai",
+  "model": "claude-sonnet-5",
+  "azure_openai_api_key_env": "AZURE_OPENAI_API_KEY",
+  "openai_api_key_env": "OPENAI_API_KEY",
+  "anthropic_api_key_env": "ANTHROPIC_API_KEY",
+  "max_tokens": 8192,
+  "execution_mode": "python",
+  "powerbi_auth_mode": "auto",
+  "powerbi_query_api": "auto",
+
+  "azure_blob_upload": true,
+  "azure_blob_account": "turnbtestblobstorage",
+  "azure_blob_container": "insightgen",
+  "azure_blob_prefix": "sb-mart/inventory-management",
+
+  "ai_content_publish_enabled": true,
+  "ai_content_client": "sb-mart",
+  "ai_content_report_ids": ["ea29c0ea-2b15-4b29-b506-82afa92b4240"],
+  "ai_content_ttl_hours": 24,
+  "api_summary_title": "Inventory Management",
+
+  "ai_content_multi_report_feed": true,
+  "ai_content_feed_max_cards": 10,
+  "insight_max_new_per_run": 3
+}

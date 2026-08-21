@@ -988,6 +988,65 @@ _SUMMARY_TUNING: tuple[ConfigKey, ...] = (
        "Products shown in each Ageing drill-down",
        "Controls the length of the oldest-stock and aged-not-selling product lists.",
        tier="standard", per_client=True, in_state=False),
+    # --- Inventory Management. Its own report, its own semantic model, and a
+    # stock position rather than a period - so none of the year-on-year or
+    # focus-rotation keys above apply to it. ----------------------------------
+    _k("inventory_currency", "string", "USD", "summary_tuning",
+       "Currency shown on the Inventory Management page",
+       "The currency code printed beside every stock figure.",
+       "The semantic model declares no currency and the methodology document's worked examples "
+       "use a different one from the group, so it cannot be read from either. It is stated once "
+       "on the page rather than repeated as a symbol against every number.",
+       tier="essential", per_client=True, in_state=False),
+    _k("inventory_display_rows", "int", 12, "summary_tuning",
+       "Rows shown in Inventory Management detail tables",
+       "Only affects what is visible at first glance. Every Location, Division and Recommended "
+       "Action state is always in the page; this limits what is shown before expanding.",
+       tier="standard", in_state=False),
+    _k("inventory_material_pct", "float", 5.0, "summary_tuning",
+       "Share of Stock Value that counts as significant (%)",
+       "A classification holding less than this share of total Stock Value is treated as normal "
+       "rather than reported as a finding.",
+       "BR-34: only report what is big enough to matter. Applied to signal detection, not to the "
+       "coverage tables - every state is still listed, it just does not raise an alert.",
+       tier="standard", in_state=False),
+    _k("inventory_max_queries", "int", 25, "summary_tuning",
+       "Most queries one Inventory Management scan may run",
+       "A safety cap on how much the daily scan reads from the dashboard in one go.",
+       "The scan is bounded, TREATAS-scoped and validator-gated; this caps the total so a model "
+       "change cannot turn one run into an unbounded read.",
+       tier="expert", in_state=False),
+    _k("inventory_archive_enabled", "bool", True, "features",
+       "Keep a dated copy of each day's stock position",
+       "The dashboard replaces yesterday's stock position with today's rather than keeping both, "
+       "so the agent keeps its own dated copy. Without this the report can never say what "
+       "changed since yesterday - it can only describe today.",
+       "Writes scan_<run date>.json alongside the current scan. Keyed on the RUN date, never on "
+       "the model's as-at stamp: the same as-at stamp has been observed carrying materially "
+       "different data after a same-day reload, so keying on it would silently overwrite one "
+       "position with another.",
+       tier="standard", in_state=False),
+    _k("inventory_archive_dir", "string", "archive", "publishing",
+       "Folder holding the dated stock positions",
+       "Where the dated copies are kept, inside the report's own output folder.",
+       tier="expert", in_state=False),
+    _k("inventory_archive_max_age_days", "int", 14, "summary_tuning",
+       "Oldest stock position worth comparing against (days)",
+       "If the most recent kept copy is older than this, the report describes today only and "
+       "says why, rather than comparing against a stale position.",
+       "Guards the honesty rule: a comparison against a three-week-old position would be "
+       "presented as a movement without saying how long it took.",
+       tier="standard", in_state=False),
+    _k("inventory_llm_authoring_enabled", "bool", False, "features",
+       "Let the AI write the Inventory Management wording",
+       "When off, the report uses fixed sentences built from the figures. When on, the AI "
+       "rewrites those sentences to read better. It can never change a number, add or remove a "
+       "tab, choose a chart or reorder the page.",
+       "Every draft is checked against the rulebook before it is used: figures must exist in the "
+       "report and be rounded, no banned synonym (BR-03) or jargon (BR-33), no asserted cause, no "
+       "comparison without a number, and no client-specific content. A draft that fails twice is "
+       "discarded and the deterministic wording kept, so the report ships either way.",
+       tier="standard", in_state=False),
     _k("summary_dashboard_eyebrow", "string", "AI Insights", "summary_tuning",
        "Small heading above the page title",
        "Appears in small letters above the main title."),

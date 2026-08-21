@@ -73,6 +73,11 @@ desktop.ini
 .idea/
 *.swp
 
+# A live Inventory Management run: real stock values, same as the scans
+# above. Every other outputs_* sibling is ignored; this one was missed.
+outputs_inventory/
+powerbi-summary-agent/outputs_inventory/
+
 outputs_inventory_chain/
 powerbi-summary-agent/outputs_inventory_chain/
 

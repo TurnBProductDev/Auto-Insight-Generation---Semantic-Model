@@ -9,6 +9,7 @@ checkout, and additionally replays the committed live scan when one is present.
 
 from __future__ import annotations
 
+import re
 import json
 import sys
 from pathlib import Path
@@ -252,6 +253,15 @@ def main() -> int:
     check("payload keeps Target Tracker context",
           payload["sections"][0]["heading"] == "Performance against target"
           and "no prior-year comparison" in payload["sections"][2]["points"][1])
+    check("headline is under 'headline' (the name the app reads)",
+          bool(str(payload["headline"]).strip()))
+    check("the anchor is stated in the prose",
+          m["anchor"] in " ".join(pt for section in payload["sections"]
+                                   for pt in section["points"]))
+    check("no payload figure is printed with more than two decimals",
+          not re.search(r"\d+\.\d{3,}", " ".join(
+              [metric["value"] for metric in payload["metrics"]]
+              + [pt for section in payload["sections"] for pt in section["points"]])))
 
     one_warn = {**m, "branches": [dict(branch) for branch in m["branches"]]}
     one_warn["branches"][0] = {

@@ -1670,10 +1670,10 @@
     "every_period_has_a_target": true
   },
   "prose": {
-    "headline": "July finished at 105.1% of target, with 17.66M sold against 16.81M and 858.2K above target.",
-    "narrative": "Today ended strongly at 125.0% of target, with 1.36M sold against 1.09M and 271.6K above target. That helped lift this week so far to 117.2% of target, with 3.32M sold against 2.83M and 487.8K above target, and it closed the month at 105.1% of target. The month is complete: 13 of 31 days reached their target, and July still finished with 17.66M sold against 16.81M, 858.2K above target. This is a review rather than a decision aid, and this year so far stands at 102.9% of target, with 128.38M sold against 124.79M and 3.59M above target.",
-    "today_note": "CFH017 was the only branch below target today at 91.3%. The other branches were above target: CFH014 at 123.2%, CFH021 at 135.6%, and CFH018 at 130.8%.",
-    "month_note": "The month's surplus was 858.2K above target at 105.1% of target. CFH017 was 334.8K below target for the month, while CFH014 was 169.3K above target, CFH021 was 542.3K above target, and CFH018 was 481.4K above target.",
+    "headline": "July finished at 105.1% of target, 858.2K above target.",
+    "narrative": "Today closed at 125.0% of target, with 1.36M sold against 1.09M, putting 271.6K above target into a week that is now at 117.2% of target and 487.8K above target. That strong finish sits inside a month that ended at 105.1% of target, with 17.66M sold against 16.81M and 858.2K above target. Only 13 of 31 days reached their target, so the monthly surplus was built by stronger days outweighing weaker ones. This year so far is also above target at 102.9%, with 128.38M sold against 124.79M and 3.59M above target.",
+    "today_note": "CFH017 was the only branch below target today at 91.3%. CFH014 reached 123.2%, CFH021 reached 135.6%, and CFH018 reached 130.8%.",
+    "month_note": "The month ended 858.2K above target at 105.1%. CFH017 finished at 88.9% for the month and 334.8K below target, while CFH014 was 169.3K above target, CFH021 was 542.3K above target, and CFH018 was 481.4K above target.",
     "authoring_mode": "llm"
   }
 }

@@ -37,7 +37,7 @@ from ...tools.summary_dashboard_html import (  # noqa: F401  (shared primitives)
     _style,
     _tldr,
 )
-from . import charts
+from . import charts, money
 
 TONE_BAR = {
     "critical": "#c0562e",
@@ -57,12 +57,12 @@ def _pct_text(value: Any) -> str:
 def _hero(hero: dict, period: dict) -> str:
     if not hero:
         return ""
-    as_at = period.get("data_as_of")
-    # Non-negotiable 18: a position is stated as at a date, never as a span.
-    context = f"Stock position as at {as_at}" if as_at else "Latest stock position"
+    # Gap 2: the as-at date is stated ONCE, in the masthead. Non-negotiable 18
+    # still applies to it there - a position is stated as at a date, never as a
+    # span - but repeating it here put it twice in the first 120px.
+    del period
     return (
         '<section class="hero">'
-        f'<p class="hero-eyebrow">{_safe(context)}</p>'
         f'<h2 class="hero-line">{_safe(hero.get("headline"))}</h2>'
         f'<p class="hero-note">{_safe(hero.get("narrative"))}</p>'
         '</section>'
@@ -342,10 +342,10 @@ def _money(value: Any) -> str:
     except (TypeError, ValueError):
         return "-"
     if abs(number) >= 1_000_000:
-        return f"SAR {number / 1_000_000:.2f}M"
+        return f"{money.CURRENCY} {number / 1_000_000:.2f}M"
     if abs(number) >= 1_000:
-        return f"SAR {number / 1_000:.0f}K"
-    return f"SAR {number:,.0f}"
+        return f"{money.CURRENCY} {number / 1_000:.0f}K"
+    return f"{money.CURRENCY} {number:,.0f}"
 
 
 def _ratio(part: Any, whole: Any) -> float | None:
@@ -354,6 +354,161 @@ def _ratio(part: Any, whole: Any) -> float | None:
     except (TypeError, ValueError):
         return None
     return None if not whole else part / whole * 100.0
+
+
+def _score_layer_html(score: dict) -> str:
+    """The Inventory Health Score: the gauge, the composition, the six risks.
+
+    The waterfall shows COMPOSITION, not movement - with one stock position
+    there is nothing to decompose a change into - so it is labelled as such and
+    runs 100 down to the score, biggest cause first.
+    """
+    if not score.get("available"):
+        return ('<p class="note-band">This dashboard does not publish an '
+                'Inventory Health Score.</p>')
+
+    value = score.get("score")
+    band = score.get("band") or ""
+    lost = score.get("points_lost") or 0.0
+    tone = {"Excellent": "positive", "Healthy": "positive", "Watch": "warn",
+            "At Risk": "warn", "Critical": "critical"}.get(band, "neutral")
+
+    bands = "".join(
+        f'<li><b>{b["floor"]:.0f}+</b> {_safe(b["name"])}</li>'
+        if b["floor"] else f'<li><b>below 60</b> {_safe(b["name"])}</li>'
+        for b in score.get("bands") or [])
+
+    head = (
+        f'<div class="score-head">'
+        f'<div class="score-dial tone-{tone}">'
+        f'<span class="score-value">{value:.1f}</span>'
+        f'<span class="score-band">{_safe(band)}</span></div>'
+        f'<div class="score-copy">'
+        f'<p>Every SKU starts at 100 and loses points to six risks, each capped '
+        f'at {score.get("risk_cap", 25):.0f}. '
+        f'{lost:.1f} points are lost, leaving {value:.1f}.</p>'
+        f'<ul class="score-bands">{bands}</ul></div></div>')
+
+    # Composition bars. Each risk's width is its share of the whole loss, so the
+    # six add to the full bar and nothing is left unexplained.
+    rows = []
+    for item in score.get("waterfall") or []:
+        share = item.get("share_pct") or 0.0
+        alias = (f'<span class="d-model">model: {_safe(item["model_name"])}</span>'
+                 if item.get("model_name") else "")
+        rows.append(
+            f'<tr><th>{_safe(item["name"])}{alias}</th>'
+            f'<td class="num">{item["points"]:.1f}</td>'
+            f'<td class="bar-cell"><span class="bar" style="width:{max(1.0, share):.1f}%"></span></td>'
+            f'<td class="num">{share:.1f}%</td></tr>')
+    table = (
+        '<table class="tbl score-tbl"><caption>What the score is losing, '
+        'biggest cause first. This is what the position is made of, not how it '
+        'has moved - only one position is kept.</caption>'
+        '<thead><tr><th>Risk</th><th class="num">Points</th>'
+        '<th>Share of the loss</th><th class="num">%</th></tr></thead>'
+        f'<tbody>{"".join(rows)}</tbody></table>')
+
+    # How each risk is worked out. Dropped, with a reason, if the model's own
+    # build-up stopped matching the weights this report was set up with.
+    if score.get("method_available"):
+        cards = []
+        for risk in score.get("risks") or []:
+            dims = "".join(
+                f'<li>{_safe(d["name"])} <b>{d["weight_pct"]:.0f}%</b>'
+                f'<span class="num">{(d["value"] or 0.0) * 100:.1f}%</span></li>'
+                for d in risk.get("dimensions") or [])
+            cap = ('<span class="pill pill-critical">AT CAP</span>'
+                   if risk.get("at_cap") else "")
+            alias = (f'<p class="d-model">Called '
+                     f'&ldquo;{_safe(risk["model_name"])}&rdquo; in the model</p>'
+                     if risk.get("model_name") else "")
+            cards.append(
+                f'<article class="card risk-card"><h4>{_safe(risk["name"])} {cap}</h4>'
+                f'{alias}<p class="big">{risk["points"]:.1f} <small>points</small></p>'
+                f'<ul class="dims">{dims}</ul></article>')
+        method = (
+            '<section class="method"><h3>How the score is worked out</h3>'
+            '<p>Each risk is built from its own parts and multiplied by '
+            f'{score.get("risk_cap", 25):.0f}, then capped there. The weights '
+            'are read from the dashboard itself, and this report checks every '
+            'run that they still add up to the published score.</p>'
+            f'<div class="grid-3">{"".join(cards)}</div></section>')
+    else:
+        method = f'<p class="note-band">{_safe(score.get("method_note"))}</p>'
+
+    # The scored population by band. Out of Stock is not a band - those lines
+    # start from 0 rather than 100 - so it is listed apart, never sorted among
+    # them as though it were one.
+    band_rows = "".join(
+        f'<tr><th>{_safe(b["name"])}'
+        + ('' if b["is_band"] else '<span class="d-model">not a band</span>')
+        + f'</th><td class="num">{b["loc_skus"]:,}</td>'
+        f'<td class="num">{_money(b["stock_value"])}</td></tr>'
+        for b in score.get("status_bands") or [])
+    population = (
+        '<table class="tbl"><caption>Where the scored Loc-SKUs sit. Out of Stock '
+        'lines start from zero rather than 100, so they are listed separately '
+        'rather than placed in a band.</caption>'
+        '<thead><tr><th>Band</th><th class="num">Loc-SKUs</th>'
+        '<th class="num">Stock Value</th></tr></thead>'
+        f'<tbody>{band_rows}</tbody></table>')
+
+    avg = score.get("avg_scored_line")
+    gap = (f'<p class="note">The average scored line reads {avg:.1f} against a '
+           f'company score of {value:.1f}. They differ because the company score '
+           f'is rebuilt from where the value and the breadth actually sit, not '
+           f'averaged across lines.</p>' if avg is not None else "")
+
+    return (head + '<div class="two-up">' + table + population + '</div>'
+            + gap + method)
+
+
+def _focus_layer_html(focus: dict) -> str:
+    """The few risks worth acting on, each answering four questions."""
+    if not focus.get("available"):
+        return ('<p class="note-band">This dashboard does not publish an '
+                'Inventory Health Score, so there is nothing to rank by.</p>')
+
+    stories = focus.get("stories") or []
+    if not stories:
+        return '<p class="note-band">No risk is currently costing the score.</p>'
+
+    covered = focus.get("covered_points") or 0.0
+    lost = focus.get("points_lost") or 0.0
+    lead = (f'<p class="note">Ordered by what each is costing the score, not by '
+            f'how much stock it holds. Together these {len(stories)} account for '
+            f'{covered:.1f} of the {lost:.1f} points lost.</p>')
+
+    cards = []
+    for story in stories:
+        alias = (f'<p class="d-model">Called '
+                 f'&ldquo;{_safe(story["model_name"])}&rdquo; in the model</p>'
+                 if story.get("model_name") else "")
+        cards.append(
+            f'<article class="card story"><h4>{_safe(story["name"])}</h4>{alias}'
+            f'<dl>'
+            f'<dt>What it is</dt><dd>{_safe(story["what_it_is"])}</dd>'
+            f'<dt>What it does to the score</dt><dd>{_safe(story["effect"])}</dd>'
+            f'<dt>Do this</dt><dd>{_safe(story["do_this"])}</dd>'
+            f'</dl></article>')
+
+    queue = focus.get("queue") or []
+    total = focus.get("queue_total") or len(queue)
+    queue_rows = "".join(
+        f'<tr><th>{_safe(row.get("action"))}</th>'
+        f'<td class="num">{int(row.get("loc_skus") or 0):,}</td>'
+        f'<td>{_safe(row.get("guidance") or "")}</td></tr>'
+        for row in queue)
+    evidence = (
+        '<h3>The evidence underneath</h3>'
+        f'<table class="tbl"><caption>The most urgent Recommended Actions. '
+        f'All {total} states are in the Recommended Actions tab.</caption>'
+        '<thead><tr><th>Recommended Action</th><th class="num">Loc-SKUs</th>'
+        '<th>What to do</th></tr></thead>'
+        f'<tbody>{queue_rows}</tbody></table>')
+
+    return lead + f'<div class="grid-2">{"".join(cards)}</div>' + evidence
 
 
 def _view_html(view: dict, active: bool) -> str:
@@ -391,10 +546,19 @@ def _view_html(view: dict, active: bool) -> str:
                 'four answers</h3>' + charts.risk_matrix(split, total))
     elif kind == "stock_health":
         queue = detail.get("queue") or []
+        summary = layers.get("overview") or {}
+        # The ladder shows the top of the queue only; the donut below still
+        # counts every row, because that split describes the whole estate.
+        ladder = summary.get("queue") or queue
+        total_states = summary.get("queue_total") or len(queue)
         if queue:
+            more = (f'<p class="note">Showing the {len(ladder)} most urgent of '
+                    f'{total_states} Recommended Action states. All of them are '
+                    f'in the Recommended Actions tab.</p>'
+                    if total_states > len(ladder) else "")
             headline_block = (
                 '<h3 class="block-title">What needs doing, most urgent first</h3>'
-                + charts.queue_ladder(queue))
+                + charts.queue_ladder(ladder) + more)
             needs = sum(int(r.get("loc_skus") or 0) for r in queue
                         if r.get("is_exception"))
             rest = sum(int(r.get("loc_skus") or 0) for r in queue
@@ -427,20 +591,37 @@ def _view_html(view: dict, active: bool) -> str:
         + _contribution_rows(entities.get("cards") or [], entities.get("caption") or "")
         + _location_cards(entities.get("cards") or [])
     ) if entities.get("available") else (
+        f'<p class="note-band">{_safe(entities.get("pointer"))}</p>'
+        if entities.get("pointer") else
         '<p class="note-band">No location breakdown was returned for this view.</p>')
 
     limitations = "".join(
         f'<p class="note-band">{_safe(text)}</p>'
         for text in view.get("limitations") or []
     )
-    context = f'Stock position as at {period.get("data_as_of")}' if period.get("data_as_of") else ""
+    # Gap 2: the as-at date is printed ONCE, in the masthead. It used to appear
+    # three times inside the first 120px - page subtitle, view context and hero
+    # eyebrow - which reads as a stutter rather than as emphasis.
+
+    score_layer = layers.get("score") or {}
+    focus_layer = layers.get("focus") or {}
+    extra = ""
+    if score_layer.get("available"):
+        extra = (
+            _layer(key, "score", "Inventory Health Score",
+                   "the dashboard's own score, and what it is losing",
+                   _score_layer_html(score_layer), False)
+            + _layer(key, "focus", "Where to focus",
+                     "the few risks costing the score the most",
+                     _focus_layer_html(focus_layer), False))
 
     return (
         f'<section class="view" data-view="{_safe(key)}"{"" if active else " hidden"}>'
-        f'<p class="view-context">{_safe(context)}</p>{limitations}'
+        f'{limitations}'
         + _tldr(view.get("tldr") or [], key)
         + _layer(key, "overview", "Inventory summary",
                  "the whole position, before any breakdown", overview, True)
+        + extra
         + _layer(key, "entities",
                  labels.get("entities_title", "Locations"),
                  labels.get("entities_sub", ""), entities_body, False)
@@ -461,6 +642,56 @@ def _view_html(view: dict, active: bool) -> str:
 
 
 _EXTRA_CSS = """
+/* Six tabs, one of them two long words. Widen the rail rather than let a
+   name break mid-word: 'Recommend / ed Actions' reads as a rendering
+   fault. Scoped to this page so the sales dashboard's rail is untouched. */
+.rail{width:96px;min-width:96px}
+.rail-btn{width:84px;font-size:10px;overflow-wrap:break-word}
+/* --- Inventory Health Score ------------------------------------------- */
+/* Fixed column counts that divide the card count exactly. auto-fit lays six
+   risk cards out 5+1 at 1280px and four stories 3+1, orphaning the last one
+   beside a gap two cards wide. */
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:10px}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:10px 0 20px}
+.two-up{display:grid;grid-template-columns:1.4fr 1fr;gap:18px;align-items:start;margin:14px 0}
+@media(max-width:900px){.grid-3,.grid-2,.two-up{grid-template-columns:1fr}}
+.score-head{display:grid;grid-template-columns:190px 1fr;gap:22px;align-items:center;
+  background:#0f2233;color:#fff;border-radius:14px;padding:20px 24px;margin-bottom:6px}
+.score-dial{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  width:150px;height:150px;border-radius:50%;border:9px solid #2f8f4e;background:#12293c}
+.score-dial.tone-warn{border-color:#c08429}
+.score-dial.tone-critical{border-color:#cf4636}
+.score-dial.tone-neutral{border-color:#8fa1a9}
+.score-value{font-size:44px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.score-band{font-size:12px;letter-spacing:.09em;text-transform:uppercase;margin-top:6px;opacity:.88}
+.score-copy p{margin:0 0 10px;font-size:14px;line-height:1.55;color:#dbe6ee}
+.score-bands{list-style:none;display:flex;flex-wrap:wrap;gap:6px 16px;margin:0;padding:0;
+  font-size:12px;color:#b9c9d6}
+.score-bands b{color:#fff;margin-right:4px;font-variant-numeric:tabular-nums}
+.score-tbl .bar-cell{width:40%}
+.score-tbl .bar{display:block;height:11px;border-radius:99px;background:#0f9f95}
+.d-model{display:block;font-size:11px;color:#8fa1a9;font-weight:400;margin-top:2px}
+.risk-card .big{font-size:26px;font-weight:700;margin:6px 0 8px;font-variant-numeric:tabular-nums}
+.risk-card .big small{font-size:12px;font-weight:500;color:#5a6b7f}
+.dims{list-style:none;margin:0;padding:0;font-size:12px;color:#41566b}
+.dims li{display:flex;justify-content:space-between;gap:8px;padding:3px 0;border-top:1px solid #eef2f6}
+.dims li b{font-weight:600;color:#0f2233;margin-left:auto;margin-right:10px}
+.dims .num{font-variant-numeric:tabular-nums;color:#5a6b7f}
+/* Colour never carries meaning on its own - always paired with a word. */
+.pill{display:inline-block;font-size:10px;letter-spacing:.08em;padding:2px 7px;border-radius:99px;
+  vertical-align:middle;margin-left:6px;font-weight:700}
+.pill-critical{background:#fbe7e4;color:#a5301f}
+.method{margin-top:22px}
+.method h3{margin-bottom:4px}
+.story dl{margin:6px 0 0}
+.story dt{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:#5a6b7f;margin-top:9px}
+.story dd{margin:2px 0 0;font-size:13.5px;line-height:1.5;color:#233a4d}
+/* ONE caveats block, bulleted. Never one grey box per caution. */
+.caveats{margin:26px 0 8px;padding:16px 20px;background:#f5f8fa;border-radius:12px;
+  border:1px solid #e3ebf1}
+.caveats h3{margin:0 0 8px;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:#5a6b7f}
+.caveats ul{margin:0;padding-left:18px}
+.caveats li{font-size:13px;line-height:1.6;color:#41566b;margin-bottom:5px}
 .agebar{display:flex;height:30px;border-radius:8px;overflow:hidden;margin:10px 0 8px}
 .agebar span{display:block}
 .agelegend{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:#5a6b7f;margin-bottom:8px}
@@ -550,6 +781,93 @@ table.queue tr.urgent td{background:#fdf1ec}
 """
 
 
+#: Gap 10. The URL carries the state as `#<view>/<layer>`, which makes a tab
+#: linkable, survives a reload, and is what lets a screenshot tool reach every
+#: tab without a click:
+#:
+#:     chrome --headless=new --screenshot=out.png --window-size=1500,2500 \
+#:         "file:///.../report_dashboard_stock_health.html#all/score"
+#:
+#: Appended to the shared script rather than replacing it: `_script()` already
+#: carries its own <script> tags, and wrapping it again nests them, at which
+#: point no JavaScript runs at all and every nav button goes dead.
+_ROUTING_BODY = """
+(function(){
+  var app=document.getElementById('report');
+  if(!app) return;
+  function show(view,layer){
+    // Validate BEFORE touching anything. Hiding every view and then discovering
+    // the requested one does not exist leaves a blank page - which is exactly
+    // what a stale or hand-typed link produced: `#needs/entities` against views
+    // keyed `all` and `exceptions` hid all of them and returned.
+    var scope=app.querySelector('.view[data-view="'+view+'"]');
+    if(!scope) return;
+    var layers=scope.querySelectorAll('.layer');
+    var found=false;
+    for(var j=0;j<layers.length;j++){
+      if(layers[j].getAttribute('data-layer')===layer){found=true;}
+    }
+    if(!found){return;}
+    var views=app.querySelectorAll('.view');
+    for(var i=0;i<views.length;i++){
+      var on=views[i].getAttribute('data-view')===view;
+      if(on){views[i].removeAttribute('hidden');}else{views[i].setAttribute('hidden','');}
+    }
+    for(var k=0;k<layers.length;k++){
+      var vis=layers[k].getAttribute('data-layer')===layer;
+      if(vis){layers[k].removeAttribute('hidden');}else{layers[k].setAttribute('hidden','');}
+    }
+    var btns=app.querySelectorAll('.rail-btn');
+    for(var b=0;b<btns.length;b++){
+      btns[b].setAttribute('aria-pressed',
+        String(btns[b].getAttribute('data-layer')===layer));
+    }
+    var tog=app.querySelectorAll('.seg button');
+    for(var t=0;t<tog.length;t++){
+      tog[t].setAttribute('aria-pressed',
+        String(tog[t].getAttribute('data-view')===view));
+    }
+  }
+  function fromHash(){
+    var raw=(location.hash||'').replace(/^#/,'');
+    if(!raw) return;
+    var bits=raw.split('/');
+    if(bits.length!==2) return;
+    show(bits[0],bits[1]);
+  }
+  window.addEventListener('hashchange',fromHash);
+  app.addEventListener('click',function(e){
+    var el=e.target.closest?e.target.closest('.rail-btn,.seg button'):null;
+    if(!el) return;
+    var scope=app.querySelector('.view:not([hidden])');
+    var view=scope?scope.getAttribute('data-view'):'';
+    var layerEl=app.querySelector('.rail-btn[aria-pressed="true"]');
+    var layer=layerEl?layerEl.getAttribute('data-layer'):'overview';
+    if(el.matches('.seg button')){view=el.getAttribute('data-view');}
+    if(el.classList.contains('rail-btn')){layer=el.getAttribute('data-layer');}
+    if(view){history.replaceState(null,'','#'+view+'/'+layer);}
+  },true);
+  fromHash();
+})();
+"""
+
+
+def _script_with_routing() -> str:
+    """The shared behaviour plus this page's URL routing, in ONE script tag.
+
+    Spliced in rather than appended as a second `<script>`: the shared helper
+    already carries its own tags, and the page is asserted to hold exactly one
+    of them. That assertion exists because wrapping `_script()` a second time
+    nested the tags, at which point no JavaScript ran at all and every nav
+    button on the page went dead.
+    """
+    shared = _script()
+    closing = "</script>"
+    if shared.count(closing) != 1:  # pragma: no cover - shape guard
+        raise AssertionError("the shared script is no longer one <script> block")
+    return shared.replace(closing, _ROUTING_BODY + closing)
+
+
 def render(page: dict, eyebrow: str = "Inventory") -> str:
     """The whole dashboard as one self-contained HTML document."""
     views = list((page or {}).get("views") or [])
@@ -591,10 +909,12 @@ def render(page: dict, eyebrow: str = "Inventory") -> str:
 
     shown = {str(text).strip()
              for view in views for text in view.get("limitations") or []}
-    caveats = "".join(
-        f'<p class="note-band">{_safe(caveat)}</p>'
-        for caveat in (page or {}).get("caveats") or []
-        if str(caveat).strip() not in shown)
+    notes = [c for c in (page or {}).get("caveats") or []
+             if str(c).strip() and str(c).strip() not in shown]
+    caveats = (
+        '<section class="caveats"><h3>Worth knowing before reading this</h3><ul>'
+        + "".join(f'<li>{_safe(note)}</li>' for note in notes)
+        + '</ul></section>') if notes else ""
     subtitle = (f'<p class="sub">{_safe((page or {}).get("subtitle"))}</p>'
                 if (page or {}).get("subtitle") else "")
     generated = datetime.now(timezone.utc).date().isoformat()
@@ -616,10 +936,10 @@ def render(page: dict, eyebrow: str = "Inventory") -> str:
 <p class="eyebrow">{_safe(eyebrow)}</p><h1>{_safe(title)}</h1>{subtitle}
 <p class="sub">Generated {_safe(generated)}</p></div>{toggle}</header>
 {body}{caveats}
-<footer><span>All values are SAR at landing cost, excluding VAT. Every figure is
+<footer><span>All values are {_safe(money.CURRENCY)} at landing cost, excluding VAT. Every figure is
 copied or derived arithmetically from the scanned stock position; no number is
 estimated.</span><strong>AI-assisted analysis</strong></footer>
-</div></main></div>{_script()}</body></html>"""
+</div></main></div>{_script_with_routing()}</body></html>"""
     currency = str((page or {}).get("currency") or "SAR").strip() or "SAR"
     if currency != "SAR":
         html = html.replace("SAR ", f"{currency} ")

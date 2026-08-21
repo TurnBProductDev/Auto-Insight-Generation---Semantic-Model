@@ -350,6 +350,96 @@ def test_two_report_publish() -> None:
     # the second publish would have left the feed holding one report.
     check("the feed is not a blind overwrite", len(feed()) > 1, str(len(feed())))
 
+    # A third report - inventory - joins without disturbing either of the two
+    # already there. This is the case the feed cap and the report-aware merge
+    # exist for: three reports competing for one bounded feed.
+    publish("inventory_stock_health", [card("inventory_stock_health", 301, "critical"),
+                                       card("inventory_stock_health", 302)])
+    reports = {entry["reportId"] for entry in feed()}
+    check("a third report joins the feed",
+          reports == {"sales_yoy", "target_tracker", "inventory_stock_health"},
+          str(reports))
+    check("and the other two are untouched",
+          sorted(e["id"] for e in feed() if e["reportId"] != "inventory_stock_health")
+          == [201, 999])
+
+
+def test_inventory_cards() -> None:
+    """Inventory signals become feed cards the app can render.
+
+    Cards are assembled through `_assemble_kpi_card` rather than
+    `generate_kpi_insights_payload`, which authors its text with an LLM. The
+    card shape is what is under test, and it must be testable without
+    credentials.
+    """
+    print("\n[8] Inventory signals reach the feed with their own identity")
+    import json
+    from datetime import datetime, timezone
+
+    from src.domains.inventory import health, stock_health_signals as sig
+    from src.domains.inventory.reports import stock_health
+
+    scan = json.loads((PROJECT_ROOT / "outputs_stock_health"
+                       / "stock_health_scan.json").read_text(encoding="utf-8"))
+    model = stock_health.build(scan)
+    model["comparison"] = {"comparable": False, "reason": "no_prior"}
+    signals = sig.detect(model, health.build(scan), limit=3)
+    check("the report produces signals", bool(signals))
+
+    when = datetime(2026, 8, 21, 6, 0, tzinfo=timezone.utc)
+    cards = [api_payloads._assemble_kpi_card(
+                index, signal, _text(), when, report_id="inventory_stock_health")
+             for index, signal in enumerate(signals, start=1)]
+
+    check("each card names the report it came from",
+          all(c.get("reportId") == "inventory_stock_health" for c in cards))
+    check("only reportId is added to the contract",
+          all(set(c) == LEGACY_KEYS | {"reportId"} for c in cards),
+          str(set(cards[0]) ^ (LEGACY_KEYS | {"reportId"})))
+
+    # The id must be the stable hash, not the 1..N sequence: three reports
+    # publishing on the same day would otherwise emit duplicate ids, and
+    # anything keying on id would mis-render silently.
+    ids = [c["id"] for c in cards]
+    check("ids are stable hashes, not a run sequence",
+          ids != list(range(1, len(ids) + 1)), str(ids))
+    check("and they are unique", len(set(ids)) == len(ids))
+    check("every id fits a signed 32-bit column",
+          all(0 < int(i) < 2 ** 31 for i in ids), str(ids))
+    check("an id is stable when the same finding is republished",
+          api_payloads._assemble_kpi_card(
+              9, signals[0], _text(), when,
+              report_id="inventory_stock_health")["id"] == ids[0])
+
+    # Without an explicit comparison_label a stock finding falls through to the
+    # share branch and publishes against "the prior period" - a comparison a
+    # single stock position does not contain.
+    labels = [c.get("comparisonLabel") for c in cards]
+    check("every card carries the label its signal set", all(labels), str(labels))
+    check("no card claims a prior period",
+          not any("prior period" in str(lbl).lower() for lbl in labels), str(labels))
+
+    # The card must lead with the signal's own sentence, not a synthesised
+    # change sentence. `_main_change_sentence` is written for a period-over-
+    # period spine and on a stock position it produced "STOCK OUT - PLACE ORDER
+    # performance increased by 17.8K, accounting for 12.7% of the total increase
+    # in performance" - nothing increased, and the figure is a count of
+    # Loc-SKUs, not a value.
+    for card, signal in zip(cards, signals):
+        check(f"{signal['analysis_type']}: leads with its own grounded sentence",
+              card["description"].startswith(signal["description"][:40]),
+              card["description"][:90])
+    joined = " ".join(c["description"] for c in cards).lower()
+    check("no card invents an increase in performance",
+          "increase in performance" not in joined
+          and "decline in performance" not in joined, joined[:120])
+
+    # And the year-on-year path is untouched: a signal with no declared
+    # comparison still gets the synthesised change sentence.
+    yoy = _card("sales_yoy", story_key="k1", idx=1)
+    check("a year-on-year card still uses the change sentence",
+          "of the total" in yoy["description"], yoy["description"][:90])
+
 
 def main() -> int:
     print("=" * 72)
@@ -362,6 +452,7 @@ def main() -> int:
     test_schema()
     test_committed_payloads()
     test_two_report_publish()
+    test_inventory_cards()
     print("\n" + "=" * 72)
     if FAILURES:
         print(f"FAILED ({len(FAILURES)}):")
