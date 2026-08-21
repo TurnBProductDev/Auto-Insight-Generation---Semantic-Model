@@ -171,8 +171,8 @@ def _queue_block(queue: list[dict]) -> str:
     if not queue:
         return ""
     body = "".join(
-        f'<tr{" class=\"urgent\"" if r.get("double_warning") else ""}>'
-        f'<td>{_safe(r.get("action"))}'
+        ('<tr class="urgent">' if r.get("double_warning") else '<tr>')
+        + f'<td>{_safe(r.get("action"))}'
         + ('<span class="flag">most urgent</span>' if r.get("double_warning") else "")
         + f'</td>'
         f'<td class="n">{int(r.get("loc_skus") or 0):,}</td>'
@@ -196,11 +196,12 @@ def _simple_table(rows: list[dict], title: str, columns: list[tuple]) -> str:
     if not rows:
         return ""
     head = "".join(
-        f'<th{" class=\"n\"" if numeric else ""}>{_safe(label)}</th>'
+        ('<th class="n">' if numeric else '<th>') + f'{_safe(label)}</th>'
         for label, _key, numeric, _fmt in columns)
     body = "".join(
         "<tr>" + "".join(
-            f'<td{" class=\"n\"" if numeric else ""}>{_safe(fmt(r.get(key)))}</td>'
+            ('<td class="n">' if numeric else '<td>')
+            + f'{_safe(fmt(r.get(key)))}</td>'
             for _label, key, numeric, fmt in columns) + "</tr>"
         for r in rows)
     return (f'<h3 class="block-title">{_safe(title)}</h3>'

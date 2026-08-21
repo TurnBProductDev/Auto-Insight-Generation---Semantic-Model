@@ -145,8 +145,17 @@ def merge_secrets(existing: Iterable[dict], updates: dict) -> tuple[list[dict], 
 def build_job_body(spec: JobSpec, secrets: list[dict], *, existing: dict | None = None) -> dict:
     """The ARM body for a create-or-update of the scheduled job."""
     template_env = [{"name": name, "value": str(value)} for name, value in sorted(spec.env.items())]
+    # These three mappings are part of the deployment contract, not optional
+    # caller configuration. Without them the secrets exist on the job but the
+    # container cannot see or materialise its config and rulebooks.
+    secret_env = {
+        "AGENT_CONFIG_B64": CONFIG_SECRET,
+        "AGENT_RULES_B64": RULES_SECRET,
+        "AGENT_SUMMARY_RULES_B64": SUMMARY_RULES_SECRET,
+        **spec.secret_env,
+    }
     template_env += [
-        {"name": name, "secretRef": secret} for name, secret in sorted(spec.secret_env.items())
+        {"name": name, "secretRef": secret} for name, secret in sorted(secret_env.items())
     ]
 
     existing_props = (existing or {}).get("properties") or {}

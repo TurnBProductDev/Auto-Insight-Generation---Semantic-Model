@@ -882,8 +882,20 @@ SCRIPT = """<script>
 </script>"""
 
 
+def _currency_label(currency: str) -> str:
+    code = str(currency or "").strip().upper()
+    names = {
+        "SAR": "Saudi riyals",
+        "QAR": "Qatari riyals",
+        "INR": "Indian rupees",
+        "AED": "UAE dirhams",
+        "USD": "US dollars",
+    }
+    return f"{names.get(code, 'currency')} ({code})" if code else "the configured currency"
+
+
 def render(model: dict, *, currency: str = "SAR", title: str = "Target Tracker",
-           eyebrow: str = "Sales &middot; City Flower") -> str:
+           eyebrow: str = "Sales · City Flower") -> str:
     r = _R(currency)
     anchor = _dt.date.fromisoformat(model["anchor"])
     wtd, mtd = model["periods"]["wtd"], model["periods"]["mtd"]
@@ -920,12 +932,12 @@ def render(model: dict, *, currency: str = "SAR", title: str = "Target Tracker",
 <main><div class="page">
     <div class="masthead">
       <div>
-        <p class="eyebrow">{eyebrow}</p>
+        <p class="eyebrow">{e(eyebrow)}</p>
         <h1>{e(title)}</h1>
         <p class="asat">Performance against target up to {e(fmt_date(anchor, 'medium'))} {anchor.year}
           &middot; {e(mtd['elapsed'])} &middot; {e(wtd['elapsed'])} of the week
           &middot; {len(model['population'])} branches
-          &middot; all figures in Saudi Riyals ({e(currency)})</p>
+          &middot; all figures in {e(_currency_label(currency))}</p>
       </div>
       <div class="seg" role="group" aria-label="View">
         <button data-viewbtn="all" aria-pressed="true">All areas</button>

@@ -63,8 +63,16 @@ def main() -> int:
     # explicitly rather than left to main's env-var default, so the container
     # path keeps working if that default is ever changed. Absent means "the
     # report named in the config", which is every pre-WP1 job.
-    argv = ["--config", str(config_path)]
     report_id = os.environ.get("AGENT_REPORT_ID")
+    if report_id == "target_tracker":
+        # Target Tracker deliberately has its own deterministic scan/model/render
+        # path rather than the YoY LangGraph. Cloud jobs still share this image
+        # and runtime-injected configuration contract.
+        from scripts.run_target_tracker import main as target_tracker_main
+
+        return target_tracker_main(["--config", str(config_path), "--publish"])
+
+    argv = ["--config", str(config_path)]
     if report_id:
         argv += ["--report", report_id]
     return agent_main(argv)

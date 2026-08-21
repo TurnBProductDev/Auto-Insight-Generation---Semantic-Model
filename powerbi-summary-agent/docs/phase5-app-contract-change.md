@@ -3,9 +3,9 @@
 **Audience:** whoever owns the web app that reads
 `ai-content/kpi/client/insights.json` and `ai-content/kpi/client/alerts.json`.
 
-**Status:** the agent side is built but **switched off**. Nothing in the feed changes until
-someone sets `ai_content_multi_report_feed: true` in the agent config. Do not enable it
-until the app changes below have shipped.
+**Status:** the agent side is built behind `ai_content_multi_report_feed` (code default
+`false`). Enable it only for a client whose app has shipped the changes below; older
+clients can remain on the legacy contract.
 
 Everything stated here was verified against the agent code on 2026-08-18, not assumed.
 
@@ -102,6 +102,11 @@ derived from the report id plus the finding's identity. Two consequences:
 same-day cards. Now a run replaces only **its own report's** cards for that date and leaves
 other reports' cards alone. Nothing to do in the app — just be aware that the same-day set
 can grow through the day as different reports finish.
+
+Stable ids are unique inside the delivered feed. If upstream memory misses a commit and
+the same finding is republished on a later day, the publisher keeps only the newest card
+for that `{reportId, id}` pair. This protects render keys while preserving the id's meaning
+for read/dismissed state.
 
 ---
 

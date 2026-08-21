@@ -650,9 +650,10 @@ the page is exactly the deterministic Phase 3 page.
 - **`config/targettracker/summary_business_rules.md` is the single rulebook**, loaded by the
   runner and passed into the prompt, and `prompts/target_tracker_prompt.md` restates the
   parts the model must act on. Both are enforced in code rather than trusted to the prompt.
-- **Verification:** `scripts/replay_target_tracker.py` grew to **83 offline checks** - every
+- **Verification:** `scripts/replay_target_tracker.py` has **88 offline checks** - every
   rejection above is a named test, plus that a clean draft passes, that the deterministic
-  fallback passes, and that a failed LLM call still returns usable prose.
+  fallback passes, that a failed LLM call still returns usable prose, and that the app
+  projection validates against the exact `title/generatedAt/headline/metrics/sections` contract.
 
 #### Phase 5 - the multi-report insight feed
 
@@ -661,11 +662,11 @@ the feed multi-report, with each card carrying the report it came from.
 `docs/phase5-insights-brief.md` is the brief; `docs/phase5-app-contract-change.md` is the
 handoff the **consumer app** needs before any of it can be switched on.
 
-- **Everything is behind `ai_content_multi_report_feed` (code default false).** The app
-that renders the feed today **cannot accept a new field**, so the flag ships OFF and the
-published card is byte-identical to what production renders - `reportId` is *removed* from
-the dumped payload rather than published as an explicit null. Flip it per client only after
-the app has shipped; rollback is flipping it back.
+- **Everything is behind `ai_content_multi_report_feed` (code default false).** The flag is
+enabled only in client configs whose app has shipped the `reportId` migration; an older
+consumer can still run with it off. Off, the published card is byte-identical to the legacy
+shape - `reportId` is *removed* from the dumped payload rather than published as an explicit
+null. Rollback is flipping the flag back.
 - **`id` was the real breakage, and it is not obvious.** `_assemble_kpi_card` numbers cards
 `enumerate(signals, start=1)`. Verified against all seven committed `kpi_insights.json`
 payloads: every one is `[1, 2, 3, ...]` with an identical 12-key shape. Two reports in one
@@ -673,7 +674,9 @@ feed therefore emit duplicate ids, and anything keying on id (a render key, a de
 "seen" marker) mis-renders silently. In multi-report mode `id` becomes
 `stable_card_id(report_id, story_key, fallback)` - a sha256 of report + finding identity,
 bounded under 2^31 so it still fits a signed 32-bit column, and **stable across runs** so a
-republished finding keeps its id.
+republished finding keeps its id. The rolling publisher coalesces repeated `{reportId, id}`
+pairs across dates, newest first, so a missed memory commit cannot hand the app duplicate
+render keys.
 - **`merge_alerts` was report-blind, and `insights.json` was worse.** The merge dropped
 every same-day card before appending its own, so the second report to publish erased the
 first; it now matches on `reportId` and a run replaces only its own cards. An untagged
@@ -683,7 +686,9 @@ leaves legacy cards to age out naturally. **`insights.json` was a plain
 would have erased the feed outright. It now gets the same read-merge-write with etag
 concurrency over a one-day window. `publish_kpi_feed` is the **single** implementation both
 the LangGraph publisher and the standalone runners call; a second copy would drift on
-exactly the report-awareness that stops one report erasing another.
+exactly the report-awareness that stops one report erasing another. The merge is also
+idempotent by stable identity: only the newest `{reportId, id}` survives the retention
+window, while the same numeric id under another report remains distinct.
 - **`_cap_feed` divides a total budget of 10 (`ai_content_feed_max_cards`) via
 `chain.fair_share`.** The slot is reserved *before* truncation - appending a quiet report's
 card and then cutting by score discards it every time, because an injected candidate is by
@@ -725,7 +730,8 @@ cannot be validated. `docs/phase5-inventory-deferred.md` holds the restart check
 two blocking queries, the appear/persist/clear exit table, and the four config values that
 do not exist yet.
 - **Verification:** `scripts/replay_multi_report_feed.py` (legacy payload byte-identical,
-id collision, report-aware merge incl. the untagged-legacy migration rule, feed cap, and an
+id collision, report-aware merge incl. the untagged-legacy migration rule and cross-day
+stable-id coalescing, feed cap, and an
 end-to-end two-report publish against an in-memory container) and
 `scripts/replay_target_tracker_signals.py` (spine, live-scan detections, prose guards,
 synthetic mid-period states, exposure-weighted ranking). Both mutation-tested: reverting the

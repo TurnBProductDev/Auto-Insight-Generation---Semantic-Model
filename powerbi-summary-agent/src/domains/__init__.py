@@ -15,7 +15,9 @@ from dataclasses import dataclass, field
 from types import MappingProxyType
 from typing import Any, Mapping
 
-_EMPTY: Mapping[str, Any] = MappingProxyType({})
+def _empty_mapping() -> Mapping[str, Any]:
+    """Return an immutable empty mapping suitable for dataclass defaults."""
+    return MappingProxyType({})
 
 
 @dataclass(frozen=True)
@@ -34,13 +36,13 @@ class Domain:
     #: Ranking blends its reports default to.
     blends: tuple[str, ...] = ()
     #: Decomposition helpers (three-lever, volume/rate) - WP4+.
-    decompositions: Mapping[str, Any] = _EMPTY
+    decompositions: Mapping[str, Any] = field(default_factory=_empty_mapping)
     #: Default layout name per report kind - WP5+.
-    layouts: Mapping[str, str] = _EMPTY
+    layouts: Mapping[str, str] = field(default_factory=_empty_mapping)
     #: Default rule packs - WP5+.
     rules: tuple[str, ...] = ()
     #: Default thresholds, overridable per report.
-    thresholds: Mapping[str, Any] = _EMPTY
+    thresholds: Mapping[str, Any] = field(default_factory=_empty_mapping)
 
     def supports_spine(self, kind: str) -> bool:
         return kind in self.spines

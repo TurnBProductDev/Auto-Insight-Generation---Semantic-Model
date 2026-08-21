@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -61,7 +62,9 @@ def main(argv=None) -> int:
     if not config_path.is_absolute():
         config_path = PROJECT_ROOT / config_path
     cfg = json.loads(config_path.read_text(encoding="utf-8"))
-    out_dir = PROJECT_ROOT / cfg.get("output_folder", "outputs_targettracker")
+    out_dir = PROJECT_ROOT / os.environ.get(
+        "AGENT_OUTPUT_FOLDER", cfg.get("output_folder", "outputs_targettracker")
+    )
     out_dir.mkdir(parents=True, exist_ok=True)
 
     population = cfg.get("target_tracker_population") or []
@@ -70,8 +73,6 @@ def main(argv=None) -> int:
         scanned = json.loads(Path(args.from_scan).read_text(encoding="utf-8"))
         print(f"Rebuilt from {args.from_scan}")
     else:
-        import os
-
         os.environ.setdefault("POWERBI_TENANT_ID", str(cfg.get("tenant_id") or ""))
         from src.tools.powerbi_executor import get_powerbi_token
 
@@ -113,8 +114,23 @@ def main(argv=None) -> int:
     (out_dir / "report_target_tracker.json").write_text(
         json.dumps(model, indent=2, default=str), encoding="utf-8")
 
+    report_title = str(
+        cfg.get("api_summary_title") or cfg.get("report_name") or "Target Tracker"
+    ).strip()
+    brand = (
+        report_title[:-len("Target Tracker")].strip()
+        if report_title.lower().endswith("target tracker")
+        else ""
+    )
     (out_dir / "report_target_tracker.html").write_text(
-        html.render(model, currency=cfg.get("target_tracker_currency", "SAR")), encoding="utf-8")
+        html.render(
+            model,
+            currency=cfg.get("target_tracker_currency", "SAR"),
+            title=report_title,
+            eyebrow=f"Sales · {brand}" if brand else "Sales",
+        ),
+        encoding="utf-8",
+    )
     (out_dir / "report_target_tracker.md").write_text(
         doc.render(model, currency=cfg.get("target_tracker_currency", "SAR")), encoding="utf-8")
 

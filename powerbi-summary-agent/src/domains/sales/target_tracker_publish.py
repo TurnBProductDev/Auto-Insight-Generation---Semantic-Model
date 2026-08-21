@@ -36,42 +36,115 @@ def _guid(value) -> str | None:
         return None
 
 
-def summary_payload(model: dict, *, currency: str = "SAR", title: str = "Target Tracker") -> dict:
-    """The app-facing summary object. Same field names the report-summary contract uses."""
-    from .target_tracker_html import _R, headline, money, pc
+def summary_payload(
+    model: dict,
+    *,
+    currency: str = "SAR",
+    title: str = "Target Tracker",
+    generated_at: datetime | None = None,
+) -> dict:
+    """Project Target Tracker into the app's strict report-summary contract.
 
+    The standalone report model is intentionally richer and has its own shape.
+    The app does not deserialize that model directly: it expects exactly
+    ``title``, ``generatedAt``, ``headline``, ``metrics`` and ``sections``.
+    Keep this boundary explicit so adding fields to the report cannot silently
+    make the app summary disappear.
+    """
+    from .target_tracker_html import _R, headline, money, pc
+    from ...tools.api_payloads import ReportSummaryPayload
+
+    currency = str(currency or "SAR").strip().upper()
     r = _R(currency)
     p = model["periods"]
-    points = []
+
+    def tone(reading: dict) -> str:
+        return {
+            "good": "positive",
+            "warn": "warning",
+            "crit": "critical",
+            "none": "info",
+        }.get(str(reading.get("band") or "none"), "info")
+
+    metrics = []
+    performance = []
     for key in ("day", "wtd", "mtd", "ytd"):
         q = p[key]
-        points.append({
+        metrics.append({
             "label": q["name"],
-            "text": (f"{q['name']} ({q['elapsed']}): {currency} {money(q['actual'])} against a "
-                     f"target of {currency} {money(q['target'])} — {pc(q['attainment'])} of target, "
-                     f"{currency} {money(abs(q['variance']))} "
-                     f"{'above' if q['variance'] >= 0 else 'below'} target."),
-            "value": round(q["actual"], 2),
-            "target": round(q["target"], 2),
-            "attainmentPct": round(q["attainment"], 2) if q["attainment"] is not None else None,
-            "variance": round(q["variance"], 2),
-            "status": q["status"],
+            "value": (f"{pc(q['attainment'])} of target"
+                      if q.get("attainment") is not None else "No target set"),
+            "tone": tone(q),
         })
-    behind = [b["name"] for b in model["branches"] if b["mtd"]["band"] == "crit"]
-    return {
-        "schemaVersion": SCHEMA_VERSION,
-        "reportId": model["report_id"],
+        performance.append(
+            f"{q['name']} ({q['elapsed']}): {currency} {money(q['actual'])} against a "
+            f"target of {currency} {money(q['target'])} — {pc(q['attainment'])} of target, "
+            f"{currency} {money(abs(q['variance']))} "
+            f"{'above' if q['variance'] >= 0 else 'below'} target."
+        )
+
+    behind = sorted(
+        (b for b in model.get("branches") or [] if b.get("mtd", {}).get("variance", 0) < 0),
+        key=lambda b: b["mtd"]["variance"],
+    )
+    if behind:
+        branch_points = [
+            f"{branch['name']}: {pc(branch['mtd']['attainment'])} of target this month, "
+            f"{currency} {money(abs(branch['mtd']['variance']))} below target."
+            for branch in behind
+        ]
+        branch_tone = (
+            "critical" if any(branch["mtd"].get("band") == "crit" for branch in behind)
+            else "warning"
+        )
+    else:
+        branch_points = ["Every branch is at or above target for the month."]
+        branch_tone = "positive"
+
+    lag = int(model.get("target_lag_days") or 0)
+    if lag:
+        context = (
+            f"Targets are available through {model['anchor']}; sales are available through "
+            f"{model['sold_through']}. The further {lag} sales "
+            f"{'day is' if lag == 1 else 'days are'} excluded because no target is set."
+        )
+    else:
+        context = f"Actual sales and targets are both measured through {model['anchor']}."
+
+    prose = model.get("prose") or {}
+    when = generated_at or datetime.now(timezone.utc)
+    generated_date = (
+        when.astimezone(timezone.utc).date().isoformat()
+        if when.tzinfo is not None else when.date().isoformat()
+    )
+    payload = {
         "title": title,
-        "heading": headline(r, model),
-        "dataAsOf": model["anchor"],
-        "soldThrough": model["sold_through"],
-        "currency": currency,
-        "grain": "day",
-        "summaryType": "target_vs_actual",
-        "points": points,
-        "branchesBelowTarget": behind,
-        "generatedAt": _iso(datetime.now(timezone.utc)),
+        "generatedAt": generated_date,
+        "headline": str(prose.get("headline") or headline(r, model)).strip(),
+        "metrics": metrics,
+        "sections": [
+            {
+                "heading": "Performance against target",
+                "tone": tone(p["mtd"]),
+                "points": performance,
+            },
+            {
+                "heading": "Branch performance",
+                "tone": branch_tone,
+                "points": branch_points,
+            },
+            {
+                "heading": "Important context",
+                "tone": "info",
+                "points": [
+                    context,
+                    "This model has no prior-year comparison; every figure is actual sales "
+                    "against target.",
+                ],
+            },
+        ],
     }
+    return ReportSummaryPayload(**payload).model_dump()
 
 
 def publish(cfg: dict, out_dir: Path, model: dict, *, cards: list | None = None,
@@ -95,7 +168,7 @@ def publish(cfg: dict, out_dir: Path, model: dict, *, cards: list | None = None,
 
     now = generated_at or datetime.now(timezone.utc)
     expires = now + timedelta(hours=max(1.0, float(cfg.get("ai_content_ttl_hours", 24))))
-    payload = summary_payload(model, currency=currency, title=title)
+    payload = summary_payload(model, currency=currency, title=title, generated_at=now)
     receipts: dict[str, dict] = {}
 
     from ...tools.azure_blob import _service_client

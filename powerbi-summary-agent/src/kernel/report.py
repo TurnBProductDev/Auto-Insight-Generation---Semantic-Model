@@ -35,7 +35,9 @@ DEFAULT_CADENCE = "daily"
 
 CADENCES = ("daily", "weekly", "monthly")
 
-_EMPTY: Mapping[str, Any] = MappingProxyType({})
+def _empty_mapping() -> Mapping[str, Any]:
+    """Return an immutable empty mapping suitable for dataclass defaults."""
+    return MappingProxyType({})
 
 
 @dataclass(frozen=True)
@@ -53,10 +55,10 @@ class ReportSpec:
     spine: str | None = None                      # WP2
     kpis: tuple[str, ...] = ()                    # WP3
     axes: tuple[str, ...] = ()                    # WP3
-    thresholds: Mapping[str, Any] = _EMPTY        # WP3
+    thresholds: Mapping[str, Any] = field(default_factory=_empty_mapping)  # WP3
     layout: str | None = None                     # WP3
     rules: tuple[str, ...] = ()                   # WP5+
-    knowledge: Mapping[str, Any] = _EMPTY         # WP5+
+    knowledge: Mapping[str, Any] = field(default_factory=_empty_mapping)  # WP5+
 
     def __post_init__(self) -> None:
         if not str(self.report_id or "").strip():
@@ -96,7 +98,7 @@ class ResolvedReport:
     #: The resolved measurement spine instance.
     spine: Any = None
     #: Facts carried over from the metadata scan, for nodes that need them.
-    profile: Mapping[str, Any] = _EMPTY
+    profile: Mapping[str, Any] = field(default_factory=_empty_mapping)
 
     @property
     def report_id(self) -> str:

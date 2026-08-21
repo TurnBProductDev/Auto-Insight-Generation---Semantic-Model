@@ -49,6 +49,8 @@ CONFIG_FILES = (
     "config/config.json",
     "config/config.example.json",
     "config/scanb/config.json",
+    "config/sbmart-yoy/config.json",
+    "config/sbmart-targettracker/config.json",
     "config/experiment/config.json",
 )
 
@@ -145,7 +147,7 @@ def test_code_coverage(config_reads: dict[str, str]) -> None:
     check(
         "no config key read by src/ is missing from the schema",
         not missing,
-        f"missing: {[f'{k} ({config_reads.get(k, 'main.py')})' for k in missing]}",
+        "missing: " + str([f"{k} ({config_reads.get(k, 'main.py')})" for k in missing]),
     )
 
 

@@ -584,7 +584,19 @@ def test_deploy_payload() -> None:
     check("the cron reaches the body",
           properties["configuration"]["scheduleTriggerConfig"]["cronExpression"] == "30 3 * * *")
     env_names = {e["name"] for e in properties["template"]["containers"][0]["env"]}
-    check("plain and secret-backed env both land", {"AGENT_OUTPUT_FOLDER", "AZURE_OPENAI_API_KEY"} <= env_names)
+    check("plain and secret-backed env both land", {
+        "AGENT_OUTPUT_FOLDER", "AZURE_OPENAI_API_KEY", "AGENT_CONFIG_B64",
+        "AGENT_RULES_B64", "AGENT_SUMMARY_RULES_B64",
+    } <= env_names)
+    check("the three runtime files are always connected to their owned secrets",
+          {
+              "AGENT_CONFIG_B64": "agent-config-b64",
+              "AGENT_RULES_B64": "agent-rules-b64",
+              "AGENT_SUMMARY_RULES_B64": "agent-summary-rules-b64",
+          }.items() <= {
+              e["name"]: e.get("secretRef")
+              for e in properties["template"]["containers"][0]["env"]
+          }.items())
     check("the secret-backed var references the secret, not a value",
           all("value" not in e for e in properties["template"]["containers"][0]["env"]
               if e["name"] == "AZURE_OPENAI_API_KEY"))
