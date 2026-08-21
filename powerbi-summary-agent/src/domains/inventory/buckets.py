@@ -69,8 +69,13 @@ UNDETERMINED = "CANNOT BE DETERMINED"
 HIGH_RISK_BANDS: frozenset[str] = frozenset({"12-24 MONTHS", "24+ MONTHS"})
 
 #: Even a small value here is worth flagging, because of the write-off
-#: implication (BR-26). SAR.
-HIGH_RISK_CALL_OUT_SAR = 50_000.0
+#: implication (BR-26). Expressed in the run's configured currency: it is a
+#: materiality floor, not a converted amount, so it is not re-scaled.
+HIGH_RISK_CALL_OUT = 50_000.0
+
+#: Retained under its original name - the currency was hard-coded when this
+#: was written and callers outside this module still reach for it.
+HIGH_RISK_CALL_OUT_SAR = HIGH_RISK_CALL_OUT
 
 #: The oldest band is always called out separately, even when it is smaller than
 #: the one below it (BR-17).

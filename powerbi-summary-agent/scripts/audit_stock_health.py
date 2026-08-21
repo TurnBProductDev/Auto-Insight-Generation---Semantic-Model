@@ -169,9 +169,57 @@ def audit(folder: Path) -> int:
               [r.get("action") for r in queue if str(r.get("action")) not in html])
         check("the 'as at' label is on the page",
               str(report.get("period_label")) in html)
-        lower = html.lower()
+        # The vocabulary check runs in BOTH directions, and the order matters.
+        #
+        # The page deliberately prints the model's own measure name beside the
+        # business term where the two clash - the health-score model calls
+        # Non-Moving "Dead Stock", and BR-03 bans that phrase for the
+        # classification. Hiding the model's name would make the figure
+        # unfindable in the model; printing it unqualified would breach BR-03.
+        # The reference resolves this by showing both, so those deliberate
+        # mentions are stripped before the ban is applied - and then asserted
+        # present separately, so "standardise" can never quietly become "delete
+        # the model's terminology".
+        deliberate = re.findall(r'<[^>]*class="d-model"[^>]*>.*?</[a-z]+>', html,
+                                flags=re.S | re.I)
+        stripped = html
+        for span in deliberate:
+            stripped = stripped.replace(span, " ")
+        lower = stripped.lower()
         html_hits = sorted(w for w in BANNED if w in lower)
         check("no banned vocabulary in the document", not html_hits, f"{html_hits}")
+
+        score_path = folder / "report_inventory_health.json"
+        if score_path.is_file():
+            score = json.loads(score_path.read_text(encoding="utf-8"))
+            clashes = [r for r in score.get("risks") or [] if r.get("model_name")]
+            check("the model's own name is shown where it clashes with the rules",
+                  bool(deliberate) and all(
+                      r["model_name"].lower() in " ".join(deliberate).lower()
+                      for r in clashes),
+                  [r["model_name"] for r in clashes])
+            check("and the business term is what the page leads with",
+                  all(r["name"] in html for r in clashes),
+                  [r["name"] for r in clashes])
+
+        # BR-31's state names appear in full and are never abbreviated. Asserted
+        # as vocabulary, not as rows: `NON MOVING - ORDER PLACED` legitimately
+        # has no data on this model, and a check that demanded rows would be
+        # asking the report to fabricate them.
+        #
+        # The documented set is derived from the ARTIFACT - the states that have
+        # data plus the states recorded as absent - rather than imported from
+        # the code that produced it. An auditor that imports its subject can
+        # only confirm the code agrees with itself.
+        documented = ([str(r.get("action")) for r in queue]
+                      + [str(x) for x in report.get("states_absent") or []])
+        missing_names = sorted({state for state in documented if state and state not in html})
+        check("every documented Recommended Action state is named on the page",
+              not missing_names, f"{missing_names}")
+        check("and none of them is abbreviated",
+              all(" - " in state or "-" not in state
+                  for state in documented if state),
+              [s for s in documented if s and "-" in s and " - " not in s])
         check("data is escaped", "<img" not in lower and "onerror" not in lower)
 
     print("\n" + "=" * 72)

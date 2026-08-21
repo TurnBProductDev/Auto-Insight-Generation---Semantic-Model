@@ -194,10 +194,21 @@ def test_dashboard() -> None:
     report = stock_health.build(_scan())
     page = dashboard.build_stock_health(report)
 
-    check("same four layers as the sales and ageing dashboards",
+    # A model with no Inventory Health Score drops the two score layers rather
+    # than rendering them empty - the other environment's Inventory Management
+    # model has no `_HEALTH SCORE MEASURES` table at all.
+    check("a model with no health score keeps the original four layers",
           page["layers"] == ["overview", "entities", "areas", "detail"])
-    check("the detail layer is named for what it is - a work queue",
-          page["layer_titles"]["detail"] == "Action queue")
+    check("the queue layer carries BR-31's own name",
+          page["layer_titles"]["detail"] == "Recommended Actions")
+    overview = page["views"][0]["layers"]["overview"]
+    check("the summary shows the top of the queue, not all of it",
+          len(overview["queue"]) == min(dashboard.SUMMARY_QUEUE_ROWS,
+                                        overview["queue_total"])
+          and len(overview["queue"]) < overview["queue_total"],
+          f"{len(overview['queue'])} of {overview['queue_total']}")
+    check("and the full queue is still reachable in its own layer",
+          len(page["views"][0]["layers"]["detail"]["queue"]) == overview["queue_total"])
     check("two views, defaulting to all stock",
           [v["key"] for v in page["views"]] == ["all", "exceptions"]
           and page["default_view"] == "all")
@@ -220,6 +231,25 @@ def test_dashboard() -> None:
     check("the skeleton matches the shared stylesheet",
           '<div class="app" id="report">\n<nav class="rail"' in html
           and '<main><div class="page">' in html)
+    # An unrecognised view or layer in the URL must leave the page alone, never
+    # blank it. Validating after hiding every view is what produced a blank
+    # page from a stale link (`#needs/entities` against views keyed `all` and
+    # `exceptions`).
+    # Scoped to the routing function itself - the shared script has its own
+    # `.view` query, and comparing against that measures nothing.
+    show_fn = html.split("function show(view,layer){", 1)[-1].split("}", 1)[0]         if "function show(view,layer){" in html else ""
+    show_body = html.split("function show(view,layer){", 1)[-1][:900]
+    del show_fn
+    check("routing validates the target before hiding anything",
+          "function show(view,layer){" in html
+          and show_body.index("if(!scope) return;")
+          < show_body.index("for(var i=0;i<views.length"),
+          "an unknown view must not blank the page")
+    check("the view keys the routing serves are the ones the page emits",
+          all(f'data-view="{key}"' in html
+              for key in (v["key"] for v in page["views"])),
+          [v["key"] for v in page["views"]])
+
     check("exactly one script tag", html.count("<script") == 1)
     check("it is self-contained", "http://" not in html and "https://" not in html)
     check("all four layer buttons are present",
@@ -312,6 +342,70 @@ def test_dashboard() -> None:
           "&lt;img" in dashboard_html.render({**page, "title": "<img src=x>"}))
 
 
+def test_published_summary_contract() -> None:
+    """The app-facing payload must BE the shared contract, not resemble it.
+
+    There was no coverage here at all, which is how the report shipped for a
+    live client emitting `name`/`unit`/`band` metrics, no `sections` and no
+    `generatedAt`. The app discards an unparseable summary in silence - no
+    error, no log line - so nothing downstream said a word: the client's
+    insights rendered normally while the Home brief stayed empty. Target
+    Tracker had already shipped this identical defect once.
+    """
+    print("\n[published summary contract]")
+    from src.domains.inventory import stock_health_publish as pub
+    from src.tools.api_payloads import ReportSummaryPayload
+
+    report = stock_health.build(_scan())
+    payload = pub.summary_payload(report, {"score": 43.54, "band": "Critical"})
+
+    try:
+        ReportSummaryPayload(**payload)
+        check("the payload validates against the shared contract", True)
+    except Exception as exc:  # noqa: BLE001 - the message is the whole point
+        check("the payload validates against the shared contract", False, str(exc))
+
+    check("exactly the five contract fields, no more",
+          set(payload) == {"title", "generatedAt", "headline", "metrics", "sections"},
+          f"got {sorted(payload)}")
+    check("every metric is label/value/tone with a string value",
+          all(set(m) == {"label", "value", "tone"} and isinstance(m["value"], str)
+              for m in payload["metrics"]),
+          str(payload["metrics"][:2]))
+    check("sections are present and populated",
+          bool(payload["sections"]) and all(s["points"] for s in payload["sections"]))
+
+    # The headline is the field the app keys on; an empty one is discarded just
+    # as surely as a wrong shape, so the deterministic floor must fill it.
+    stripped = {**report, "prose": {}}
+    check("a missing prose block still yields a headline",
+          bool(pub.summary_payload(stripped).get("headline", "").strip()))
+
+    # Nothing the contract has no room for may be silently dropped: the queue,
+    # the caveats and the as-at date all have to survive as prose.
+    text = " ".join(pt for s in payload["sections"] for pt in s["points"])
+    check("the as-at date survives into the sections",
+          str(report.get("as_at") or "") in text)
+    check("the urgent state the source returned nothing for is still stated",
+          all(state in text for state in (report.get("states_absent_urgent") or [])))
+    check("every standing caveat survives into the sections",
+          all(str(c) in text for c in (report.get("caveats") or [])))
+    check("the double-warning state leads the action section",
+          "most urgent" in payload["sections"][0]["points"][0].lower(),
+          payload["sections"][0]["points"][0])
+
+    # And the shape that shipped must be provably rejected, so this test cannot
+    # pass against a regression.
+    try:
+        ReportSummaryPayload(**{"reportId": "inventory_stock_health", "title": "t",
+                                "headline": "h", "metrics": [{"name": "Stock Value",
+                                                              "value": 1.0}],
+                                "queue": [], "checks": {}})
+        check("the previously shipped shape is rejected", False, "it validated")
+    except Exception:
+        check("the previously shipped shape is rejected", True)
+
+
 def main() -> int:
     print("=" * 72)
     print("WP7 Inventory Management")
@@ -322,6 +416,7 @@ def main() -> int:
     test_excess_meaning()
     test_completeness_and_prose()
     test_dashboard()
+    test_published_summary_contract()
 
     print("\n" + "=" * 72)
     if _failures:

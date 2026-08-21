@@ -37,6 +37,8 @@ from __future__ import annotations
 
 from typing import Any, Sequence
 
+from . import money
+
 from ...tools.summary_dashboard_html import (
     AMBER,
     FAINT,
@@ -75,10 +77,10 @@ def _sar(value: Any) -> str:
     if number is None:
         return "-"
     if abs(number) >= 1_000_000:
-        return f"SAR {number / 1_000_000:.2f}M"
+        return f"{money.CURRENCY} {number / 1_000_000:.2f}M"
     if abs(number) >= 1_000:
-        return f"SAR {number / 1_000:.0f}K"
-    return f"SAR {number:,.0f}"
+        return f"{money.CURRENCY} {number / 1_000:.0f}K"
+    return f"{money.CURRENCY} {number:,.0f}"
 
 
 def _pct(value: Any) -> str:

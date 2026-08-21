@@ -700,6 +700,29 @@ def stable_card_id(report_id: str, story_key: Any, fallback: int) -> int:
     return 1 + (int(digest[:12], 16) % 2_000_000_000)
 
 
+def _lead_sentence(sig: Dict[str, Any], family: str) -> str:
+    """The card's code-owned first sentence.
+
+    `_main_change_sentence` is written for a change spine - it says "increased
+    by X, accounting for Y% of the total increase". A report whose spine is not
+    a period-over-period comparison has no such total, and forcing one produces
+    a sentence that is confidently wrong: a stock position published as
+    "STOCK OUT - PLACE ORDER performance increased by 17.8K, accounting for
+    12.7% of the total increase in performance", when nothing increased and the
+    figure is a count of Loc-SKUs rather than a value.
+
+    Those reports already write their own lead sentence, grounded in their own
+    model and checked by their own prose validator, so it is used verbatim. The
+    test is `comparison_label`: a spine that declares its own baseline is by
+    construction not year-on-year, which leaves every existing year-on-year
+    signal on the original path untouched.
+    """
+    declared = str(sig.get("description") or "").strip()
+    if declared and str(sig.get("comparison_label") or "").strip():
+        return _sentence(declared)
+    return _main_change_sentence(sig, family)
+
+
 def _assemble_kpi_card(
     idx: int,
     sig: Dict[str, Any],
@@ -763,7 +786,7 @@ def _assemble_kpi_card(
         "deltaDirection": "up" if (val or 0) >= 0 else "down",
         "description": " ".join(
             part for part in (
-                _main_change_sentence(sig, family),
+                _lead_sentence(sig, family),
                 _sentence(_plain_business_text(text.description)),
             ) if part
         ),

@@ -11,6 +11,8 @@ from __future__ import annotations
 from html import escape
 from typing import Any
 
+from . import money
+
 _CSS = """
 :root { --ink:#12263f; --muted:#5a6b7f; --line:#dfe6ee; --bg:#ffffff;
         --fresh:#2e9e6b; --mid:#c9a227; --risk:#c0562e; --crit:#9b2c2c; }
@@ -73,10 +75,10 @@ def _sar(value: Any) -> str:
     except (TypeError, ValueError):
         return "-"
     if abs(number) >= 1_000_000:
-        return f"SAR {number / 1_000_000:.2f}M"
+        return f"{money.CURRENCY} {number / 1_000_000:.2f}M"
     if abs(number) >= 1_000:
-        return f"SAR {number / 1_000:.0f}K"
-    return f"SAR {number:,.0f}"
+        return f"{money.CURRENCY} {number / 1_000:.0f}K"
+    return f"{money.CURRENCY} {number:,.0f}"
 
 
 def _pct(value: Any) -> str:
@@ -227,6 +229,6 @@ def render(report: dict, eyebrow: str = "Inventory") -> str:
                      f"withheld: {_e(', '.join(failed))}.</p>")
 
     parts.append(f"<footer>Stock position {_e(report.get('period_label'))}. "
-                 "All values are SAR at landing cost, excluding VAT.</footer>")
+                 f"All values are {money.CURRENCY} at landing cost, excluding VAT.</footer>")
     parts.append("</div>")
     return "\n".join(parts)

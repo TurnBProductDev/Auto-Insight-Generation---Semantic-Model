@@ -22,6 +22,7 @@ differ.
 
 from __future__ import annotations
 
+import datetime as _dt
 from typing import Any, Sequence
 
 from ....kernel.report import ReportSpec
@@ -140,8 +141,14 @@ def absent_states(queue: Sequence[dict]) -> list[str]:
     return [state for state in ACTION_PRIORITY if state.upper() not in present]
 
 
-def build(scan: dict) -> dict:
-    """The whole report model, from one scan. Pure."""
+def build(scan: dict, currency: str = "SAR") -> dict:
+    """The whole report model, from one scan. Pure.
+
+    ``currency`` defaults to the value this report shipped with so every
+    committed artifact reproduces byte-for-byte; the runner passes
+    ``inventory_currency`` from the active config. The semantic model declares
+    no currency of its own, so it cannot be resolved from the data.
+    """
     header = (scan.get("snapshot") or [{}])[0]
     as_at = str(_cell(header, "as_at") or "").split("T")[0]
     stock = _num(_cell(header, "stock_value")) or 0.0
@@ -186,7 +193,7 @@ def build(scan: dict) -> dict:
         "report_name": SPEC.report_name,
         "period_label": f"as at {as_at}" if as_at else "as at the latest snapshot",
         "as_at": as_at,
-        "currency": "SAR",
+        "currency": currency,
         "header": {
             "stock_value": stock,
             "excess_value": excess,
@@ -218,7 +225,8 @@ def build(scan: dict) -> dict:
         "checks": checks,
         "observations": observations,
         "caveats": _caveats(opp_scoped, opp_all, missing_urgent),
-        "narrative": _narrative(queue, stock, excess, opp_scoped, unwanted, as_at),
+        "narrative": _narrative(queue, stock, excess, opp_scoped, unwanted, as_at,
+                                currency=currency),
     }
 
 
@@ -323,21 +331,31 @@ def _caveats(opp_scoped: float, opp_all: float,
     return notes
 
 
-def _sar(value: Any) -> str:
+def _money(value: Any, currency: str = "SAR") -> str:
     number = _num(value)
     if number is None:
         return "not available"
     if abs(number) >= 1_000_000:
-        return f"SAR {number / 1_000_000:.2f}M"
+        return f"{currency} {number / 1_000_000:.2f}M"
     if abs(number) >= 1_000:
-        return f"SAR {number / 1_000:.0f}K"
-    return f"SAR {number:,.0f}"
+        return f"{currency} {number / 1_000:.0f}K"
+    return f"{currency} {number:,.0f}"
 
 
-def _narrative(queue, stock, excess, opp_scoped, unwanted, as_at) -> list[str]:
+#: Retained under its original name: the currency was hard-coded when this was
+#: written and callers outside this module still reach for it.
+def _sar(value: Any) -> str:
+    return _money(value, "SAR")
+
+
+def _narrative(queue, stock, excess, opp_scoped, unwanted, as_at,
+               currency: str = "SAR") -> list[str]:
     """Grounded sentences, led by the two double-warning states (BR-31)."""
     lines: list[str] = []
     by_action = {r["action"].upper(): r for r in queue}
+
+    def _sar(value: Any) -> str:  # noqa: A001 - shadows deliberately, see _money
+        return _money(value, currency)
 
     nm_order = by_action.get("NON MOVING - ORDER PLACED")
     if nm_order and nm_order["loc_skus"]:
@@ -382,3 +400,297 @@ def _narrative(queue, stock, excess, opp_scoped, unwanted, as_at) -> list[str]:
             f"estimated to cost {_sar(opp_scoped)} a day in sales not made.")
 
     return lines
+
+
+# ---------------------------------------------------------------------------
+# The live scan
+# ---------------------------------------------------------------------------
+#
+# `build()` above is pure and takes a scan dict. Until now that dict was
+# produced by hand, which is why the committed scans carry no provenance. This
+# is the missing half: one bounded read of the semantic model returning exactly
+# the dict `build()` already consumes, so every existing replay and auditor
+# keeps working against it unchanged.
+
+#: The fact table. Everything rolls up from here, and deliberately so: the
+#: health-score tables (`LOC_CATEGORY_HEALTH`, `P90 CATEGORY LOCATION`) carry no
+#: relationships, so slicing them by Division returns the company total for
+#: every Division rather than that Division's own figure.
+FACT = "REP_SSR_STOCK_STATUS_REPORTV2"
+DAMAGE_TABLE = "DAMAGE DATA"
+
+#: BR-16's three hard limits on Opportunity Loss, held as data rather than prose
+#: so the query and the caveat cannot drift apart.
+CRITICAL_SEGMENTS: tuple[str, ...] = ("SEG_A", "SEG_B")
+LOCAL_PROCUREMENT = "LOCAL"
+STORE_LOC_TYPE = "SH"
+
+#: Columns that must never be selected. `LOC_CODE` is a display alias (ST1-ST5,
+#: WH1/WH2), but `locsku` is built on the REAL location code, so any query
+#: returning it leaks the client's own branch codes into published output.
+#: Nothing here needs it - the scan aggregates, and its aggregation keys are the
+#: aliases.
+FORBIDDEN_COLUMNS: frozenset = frozenset({"locsku"})
+
+
+class ScanBudgetExceeded(RuntimeError):
+    """The scan asked for more queries than the config allows."""
+
+
+def reject_forbidden(label: str, dax: str) -> None:
+    """Raise if a query names a column that must never leave the model.
+
+    Module level rather than buried in `scan`'s closure so it can be driven
+    directly by a test: a guard that can only be exercised through the queries
+    that already satisfy it is a guard nobody has actually checked.
+    """
+    lowered = dax.lower()
+    for banned in FORBIDDEN_COLUMNS:
+        if "[" + banned + "]" in lowered:
+            raise ValueError(
+                label + ": query selects [" + banned + "], which embeds the "
+                "real location code and must never reach published output.")
+
+
+def _critical_store_scope() -> str:
+    """BR-16's scope, as TREATAS filter arguments.
+
+    TREATAS rather than a bare equality throughout: a bare
+    `KEEPFILTERS('Table'[Col] = "value")` fails against these models with
+    "single value for column cannot be determined", and a multi-value scope
+    written as a comma-joined string is a fake member rather than a filter.
+    """
+    segments = ", ".join('"%s"' % seg for seg in CRITICAL_SEGMENTS)
+    return (
+        "TREATAS({%s}, '%s'[SKUSEGMENT]), " % (segments, FACT)
+        + 'TREATAS({"%s"}, \'%s\'[SKU_TYPE]), ' % (LOCAL_PROCUREMENT, FACT)
+        + 'TREATAS({"%s"}, \'%s\'[loc_type])' % (STORE_LOC_TYPE, FACT)
+    )
+
+
+def scan(execute, cfg: dict | None = None, *, log=None) -> dict:
+    """Every row the report needs, in the shape :func:`build` consumes.
+
+    Eleven queries, none unfiltered by construction: each is either a single
+    ``ROW`` of aggregates or a ``SUMMARIZECOLUMNS`` over a bounded, low
+    cardinality axis (15 Recommended Action states, 7 Locations, 10 Divisions,
+    4 SKU segments, 7 non-moving bands). ``execute`` is the caller's bound
+    executor, which already holds the pre-fetched token: this function never
+    acquires one, because ``get_powerbi_token`` does an unlocked
+    read-modify-write of the shared cache.
+
+    The Opportunity Loss trap
+    -------------------------
+    Three figures are available and only one may be published. Measured live on
+    2026-08-21:
+
+    ==========================================  ========
+    ``OPP_LOSS_DUE_TO_STOCKOUT``, unscoped       313,038
+    the model's own ``OPPORTUNITY LOSS`` column    59,051
+    BR-16's scope applied to the first             49,076
+    ==========================================  ========
+
+    BR-16 names ``OPP_LOSS_DUE_TO_STOCKOUT`` as the column and states three hard
+    limits - critical segments, local procurement, stores only. Applying them
+    gives the smallest figure, and that is the one published. The model's own
+    pre-scoped column is 20% higher, so it does not apply all three; it is
+    returned as a third diagnostic purely so a caveat can name the gap, rather
+    than leaving a reader to discover two different numbers for one measure.
+    """
+    cfg = cfg or {}
+    budget = int(cfg.get("inventory_max_queries", 25) or 25)
+    used = 0
+
+    def run(label: str, dax: str) -> list:
+        nonlocal used
+        reject_forbidden(label, dax)
+        used += 1
+        if used > budget:
+            raise ScanBudgetExceeded(
+                "the scan needs more than inventory_max_queries=%d queries" % budget)
+        rows = execute(dax)
+        if log:
+            log("  %s: %d row(s)" % (label, len(rows)))
+        return rows
+
+    scoped = _critical_store_scope()
+    out: dict = {}
+
+    out["snapshot"] = run("snapshot", """EVALUATE ROW(
+      "as_at", MAX('{F}'[UPDATED_ON]),
+      "stock_value", SUM('{F}'[SKU_STOCK_VALUE]),
+      "excess_value", SUM('{F}'[EXCESS_STOCK_VALUE]),
+      "pending_value", SUM('{F}'[PENDING_ORDERS_VALUE]),
+      "loc_skus", COUNTROWS('{F}'),
+      "skus", DISTINCTCOUNT('{F}'[sku_code]),
+      "locations", DISTINCTCOUNT('{F}'[LOC_CODE]))""".format(F=FACT))
+
+    out["actions"] = run("recommended actions", """EVALUATE SUMMARIZECOLUMNS(
+      '{F}'[RECOMMENDED_ACTION],
+      "loc_skus", COUNTROWS('{F}'),
+      "stock_value", SUM('{F}'[SKU_STOCK_VALUE]),
+      "excess_value", SUM('{F}'[EXCESS_STOCK_VALUE]))""".format(F=FACT))
+
+    out["status"] = run("stock status", """EVALUATE SUMMARIZECOLUMNS(
+      '{F}'[SKU_STOCK_STATUS],
+      "loc_skus", COUNTROWS('{F}'),
+      "stock_value", SUM('{F}'[SKU_STOCK_VALUE]))""".format(F=FACT))
+
+    out["locations"] = run("locations", """EVALUATE SUMMARIZECOLUMNS(
+      '{F}'[LOC_CODE], '{F}'[loc_type],
+      "stock_value", SUM('{F}'[SKU_STOCK_VALUE]),
+      "excess_value", SUM('{F}'[EXCESS_STOCK_VALUE]),
+      "loc_skus", COUNTROWS('{F}'))""".format(F=FACT))
+
+    out["divisions"] = run("divisions", """EVALUATE SUMMARIZECOLUMNS(
+      '{F}'[DEPARTMENT],
+      "stock_value", SUM('{F}'[SKU_STOCK_VALUE]),
+      "excess_value", SUM('{F}'[EXCESS_STOCK_VALUE]),
+      "loc_skus", COUNTROWS('{F}'))""".format(F=FACT))
+
+    out["sections"] = run("sections", """EVALUATE SUMMARIZECOLUMNS(
+      '{F}'[DEPARTMENT], '{F}'[SECTION],
+      "stock_value", SUM('{F}'[SKU_STOCK_VALUE]),
+      "excess_value", SUM('{F}'[EXCESS_STOCK_VALUE]))""".format(F=FACT))
+
+    out["segments"] = run("SKU segments", """EVALUATE SUMMARIZECOLUMNS(
+      '{F}'[SKUSEGMENT],
+      "loc_skus", COUNTROWS('{F}'),
+      "stock_value", SUM('{F}'[SKU_STOCK_VALUE]),
+      "excess_value", SUM('{F}'[EXCESS_STOCK_VALUE]))""".format(F=FACT))
+
+    out["non_moving_bands"] = run("non-moving bands", """EVALUATE SUMMARIZECOLUMNS(
+      '{F}'[NM DAYS TAG],
+      "loc_skus", COUNTROWS('{F}'),
+      "stock_value", SUM('{F}'[SKU_STOCK_VALUE]))""".format(F=FACT))
+
+    # BR-29: Damage is a monthly flow, not part of the stock position, and it is
+    # negative at source. `build` takes its absolute value; the scan reports it
+    # exactly as the model holds it.
+    out["damage"] = run("damage by month", """EVALUATE TOPN(12,
+      SUMMARIZECOLUMNS('{D}'[month_date],
+        "damage_value", SUM('{D}'[damage_value])),
+      '{D}'[month_date], DESC)""".format(D=DAMAGE_TABLE))
+
+    out["opportunity_loss"] = run("opportunity loss", """EVALUATE ROW(
+      "opp_loss_all", SUM('{F}'[OPP_LOSS_DUE_TO_STOCKOUT]),
+      "opp_loss_stores_critical", CALCULATE(
+          SUM('{F}'[OPP_LOSS_DUE_TO_STOCKOUT]), {S}),
+      "opp_loss_model_column", SUM('{F}'[OPPORTUNITY LOSS]),
+      "critical_stockout_skus", CALCULATE(DISTINCTCOUNT('{F}'[sku_code]), {S},
+          FILTER(ALL('{F}'[CURRENT_STOCK]), '{F}'[CURRENT_STOCK] <= 0)))
+    """.format(F=FACT, S=scoped))
+
+    # BR-28: an Unwanted SKU is in Pending Orders AND already carrying Excess
+    # Stock. BR-26 requires unique SKUs where a classification spans Locations,
+    # so these are DISTINCTCOUNT of sku_code, never a row count.
+    out["unwanted"] = run("unwanted SKUs", """EVALUATE ROW(
+      "unwanted_skus", CALCULATE(DISTINCTCOUNT('{F}'[sku_code]),
+          FILTER(ALL('{F}'[PENDING_ORDERS], '{F}'[EXCESS_STOCK]),
+                 '{F}'[PENDING_ORDERS] > 0 && '{F}'[EXCESS_STOCK] > 0)),
+      "unwanted_pending_value", CALCULATE(SUM('{F}'[PENDING_ORDERS_VALUE]),
+          FILTER(ALL('{F}'[PENDING_ORDERS], '{F}'[EXCESS_STOCK]),
+                 '{F}'[PENDING_ORDERS] > 0 && '{F}'[EXCESS_STOCK] > 0)),
+      "pending_skus", CALCULATE(DISTINCTCOUNT('{F}'[sku_code]),
+          FILTER(ALL('{F}'[PENDING_ORDERS]), '{F}'[PENDING_ORDERS] > 0)))
+    """.format(F=FACT))
+
+    # --- The Inventory Health Score -------------------------------------
+    #
+    # `_HEALTH SCORE MEASURES` publishes the score the business already uses, so
+    # the page reports the model's own number rather than inventing a composite.
+    # `Total Points Lost` is defined in the model as the sum of the six
+    # `Category X Risk` measures and the score as `100 - that sum`, so those six
+    # ARE the authoritative points; the impact dimensions are read alongside so
+    # the page can show how each was arrived at, and `health.py` asserts the
+    # rebuild reconciles rather than trusting it.
+    #
+    # Every roll-up is keyed on the FACT table, never on `LOC_CATEGORY_HEALTH`
+    # or `P90 CATEGORY LOCATION`: those carry no relationships, so slicing them
+    # returns the company total for every member. `FCT SKU HEALTH` is
+    # bidirectionally related to the fact table on `locsku`, so a Division or
+    # Location key on the fact table propagates correctly.
+    out["health_overall"] = run("health score", """EVALUATE ROW(
+      "score", [Inventory Health Score],
+      "lost", [Total Points Lost],
+      "stock", [Total Stock Value],
+      "scored_loc_skus", [Total SKU Count],
+      "eligible_loc_skus", [Eligible SKU Count],
+      "sales_base", [Total Sales Value Base],
+      "avg_scored_line", [Avg SKU Health (Simple Avg)],
+      "dead_points", [Category Dead Risk],
+      "excess_points", [Category Excess Risk],
+      "ageing_points", [Category Ageing Risk],
+      "damage_points", [Category Damage Risk],
+      "verge_points", [Category Verge Risk],
+      "oos_points", [Category OOS Risk],
+      "dead_value_impact", [Dead Value Impact],
+      "dead_sku_impact", [Dead SKU Impact],
+      "dead_duration_impact", [Dead Duration Impact],
+      "excess_value_impact", [Excess Value Impact],
+      "excess_sku_impact", [Excess SKU Impact],
+      "excess_duration_impact", [Excess Duration Impact],
+      "ageing_value_impact", [Ageing Value Impact],
+      "ageing_sku_impact", [Ageing SKU Impact],
+      "ageing_severity_impact", [Ageing Severity Impact],
+      "damage_value_impact", [Damage Value Impact],
+      "damage_sku_impact", [Damage SKU Impact],
+      "verge_sales_impact", [Verge Sales Impact],
+      "verge_sku_impact", [Verge SKU Impact],
+      "verge_severity_impact", [Verge Weighted Segment Severity],
+      "oos_sales_impact", [OOS Sales Impact],
+      "oos_sku_impact", [OOS SKU Impact],
+      "oos_severity_impact", [OOS Weighted Segment Severity],
+      "dead_loc_skus", [Dead SKU Count], "dead_value", [Dead Stock Value (Sum)],
+      "excess_loc_skus", [Excess SKU Count], "excess_value", [Excess Value (Sum)],
+      "ageing_loc_skus", [Ageing SKU Count], "ageing_value", [Ageing Value (Sum)],
+      "damage_loc_skus", [Damage SKU Count], "damage_value", [Damage Value (Sum)],
+      "verge_loc_skus", [Verge SKU Count], "verge_value", [Verge Sales At Risk (Sum)],
+      "oos_loc_skus", [OOS SKU Count], "oos_value", [OOS Sales At Risk (Sum)])""")
+
+    out["health_by_location"] = run("health by location", """EVALUATE SUMMARIZECOLUMNS(
+      '{F}'[LOC_CODE], '{F}'[loc_type],
+      "score", [Inventory Health Score],
+      "lost", [Total Points Lost],
+      "scored_loc_skus", [Total SKU Count],
+      "stock", [Total Stock Value])""".format(F=FACT))
+
+    out["health_by_division"] = run("health by division", """EVALUATE SUMMARIZECOLUMNS(
+      '{F}'[DEPARTMENT],
+      "score", [Inventory Health Score],
+      "lost", [Total Points Lost],
+      "scored_loc_skus", [Total SKU Count],
+      "stock", [Total Stock Value])""".format(F=FACT))
+
+    out["health_status"] = run("health status bands", """EVALUATE SUMMARIZECOLUMNS(
+      'FCT SKU HEALTH'[Health Status],
+      "loc_skus", COUNTROWS('FCT SKU HEALTH'),
+      "stock", [Total Stock Value],
+      "avg_scored_line", [Avg SKU Health (Simple Avg)])""")
+
+    # The one genuinely historical series in the model. Stock Value only - there
+    # is no history of the score itself, which is why the score's own trend is
+    # drawn shape-only and says so.
+    out["trend"] = run("stock value trend", """EVALUATE SUMMARIZECOLUMNS(
+      'SSR TREND'[dates],
+      "stock", SUM('SSR TREND'[SKU_STOCK_VALUE]))
+    ORDER BY 'SSR TREND'[dates]""")
+
+    header = (out["snapshot"] or [{}])[0]
+    out["provenance"] = {
+        "report_id": SPEC.report_id,
+        "workspace_id": cfg.get("workspace_id"),
+        "dataset_id": cfg.get("dataset_id"),
+        # The RUN date, not the model's as-at stamp. They are different things,
+        # and the archive keys on this one - see `inventory/archive.py`.
+        "scanned_on": _dt.date.today().isoformat(),
+        "scanned_at": _dt.datetime.now(_dt.timezone.utc)
+                         .replace(microsecond=0).isoformat(),
+        "as_at": str(_cell(header, "as_at") or "").split("T")[0],
+        "queries": used,
+        "query_budget": budget,
+    }
+    if log:
+        log("  scan complete: %d/%d queries, as at %s"
+            % (used, budget, out["provenance"]["as_at"]))
+    return out
