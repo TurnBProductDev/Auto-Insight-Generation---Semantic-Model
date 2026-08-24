@@ -32,6 +32,10 @@ python scripts/golden_master.py --update  # re-record (deliberate act)
 pip install -r powerbi-summary-agent/requirements-ui.txt
 python -m src.api.app                    # http://127.0.0.1:8020
 python -m src.api.app --allow-deploy     # also expose the ARM endpoints
+
+# Daily KPI red/amber/green snapshot (independent of the LangGraph pipeline, from repo root)
+python -m fastapi_backend.app.kpi_snapshot
+python "Benchmark Test/run_kpi_benchmark.py"
 ```
 
 There is no suite for the LLM pipeline as a whole; the end-to-end run against a live model is the acceptance test and writes roughly 30 artifacts into `powerbi-summary-agent/outputs/`. Deterministic components are offline-testable: `python scripts/replay_metadata_scanner.py`, `python scripts/replay_stat_detector.py` (incl. the Phase-2 period, Phase-3 recent-week/rolling-week, and Phase-3b daily-anomaly fixtures), `python scripts/replay_novelty_filter.py` (memory/novelty + recent-week/rolling-week suppression/reserved-slot + daily recency + `commit_run` observed-vs-reported), `python scripts/replay_evidence_assembler.py`, `python scripts/replay_summary_coverage.py` (full-coverage tables + report shell; also replays the committed universe fixture), `python scripts/replay_multi_report_feed.py` (multi-report KPI feed) and `python scripts/replay_target_tracker_signals.py` (target-vs-actual spine + detectors), `python scripts/replay_config_schema.py` (the config catalogue cannot drift from the code), `python scripts/replay_config_ui.py` (onboarding services + API), and `python scripts/replay_summary_dashboard.py` (R6: three-lever spine, RAG bands, calendar comparator, contributions, mover ranking, entity stories + prose validation, two views, R6-off isolation, rendered shell; also replays the committed universe/overall fixtures) (from the project directory). They require no auth or LLM and write replay artifacts to `outputs_replay/`. **`python scripts/replay_all.py` is the one gate over all of them** - it discovers `scripts/replay_*.py` by glob (so a new replay joins automatically), runs them sequentially because they share `outputs_replay/`, and exits non-zero on any failure; `MIN_EXPECTED` guards the opposite failure mode, a replay deleted or renamed silently shrinking the gate. A replay proves the *code* is right; `python scripts/audit_summary_dashboard.py [output_dir]` proves a *produced* R6 artifact is right - it re-derives every arithmetic guarantee from the written `summary_dashboard.json`, re-runs prose grounding, and inspects `report_dashboard.html` as a document. Run it after every live run with `summary_r6_enabled`.
@@ -839,9 +843,104 @@ deterministic model -> validated prose -> six-tab page -> ranked KPI cards -> bl
   Stock Value USD 13,966,417, Excess Stock USD 5,900,413 (42.2%), Opportunity Loss
   USD 49,076/day scoped against USD 313,038 unscoped, health score 43.54 with all six
   risks reconciling, and the feed carrying all three reports with unique hashed ids.
-- **Still open:** the Ageing report is not yet on this footing (deliberately - Inventory
-  Management went first alone), and `inventory_llm_authoring_enabled` stays false until a
-  live authored run is reviewed.
+- **Still open:** `inventory_llm_authoring_enabled` stays false until a live authored run
+  is reviewed. (The Ageing report is now on this footing too - see the next section.)
+
+#### Stock Age Analysis: history, clearance and the stuck lines
+
+The SB Mart ageing model now retains a previous stock position
+(`REP_SSR_SAG_HIST`) and exposes `REP_SSR_STOCK_STATUS`, so the Stock Age report
+gained two tabs on the same R6 shell - **What changed** and **Where to act** -
+taking it to six: Summary, What changed, Locations, Divisions, Where to act,
+Full detail. Everything is config-gated: a model with neither table produces
+byte-for-byte the previous four-tab page (pinned by
+`replay_ageing.test_optional_everywhere`).
+
+- **`AGE_ABOVE_9` is defective and must not be used.** Measured live on
+  2026-08-23 it returns `Y` for the 09-12 and 12-24 bands and **`N` for
+  24+ MONTHS**, so it silently drops the oldest and worst stock: aged reads
+  USD 751,607 (13.1%) through the flag against **USD 842,321 (14.7%)** summed
+  from the `NEW AGE` bands. `AGE_ABOVE_12` *does* include 24+, so the flag set is
+  inconsistent rather than uniformly exclusive. Aged is summed from the bands
+  everywhere, on both dates - which is also what makes the two positions
+  comparable. Knock-on: the 30%-category count is **46 of 173**, not 29, and
+  aged SKUs are 19,468, not 16,799.
+- **`ageing_history.basis_check` is the load-bearing piece, and it decides from
+  the data rather than from a config flag.** The first live pair (14 August
+  against 23 August) showed total value **-59%** while quantity went **+55%**. A
+  report saying "stock nearly halved" would have been confidently wrong. The
+  discriminator is arithmetic: **ST5 held a byte-identical quantity on both dates
+  (79,838.25944) while its value moved from 0.78 to 0.21 per unit.** Stock that
+  did not move cannot lose 73% of its worth, so VALUE was rebased. When that
+  signature fires, every absolute value comparison is withheld and the reason is
+  printed in plain words; when it does not, value compares normally - so a
+  corrected model re-enables the comparison with no code change. The weaker
+  fallback signal is the share of today's value sitting where value-per-unit
+  moved past `UNIT_VALUE_SHIFT_PCT`.
+- **Shares survive a rebasing, which is why the report leads on them.** A share
+  divides two figures taken from the same table on the same day, so whatever
+  rescaled them cancels. Aged share of value went 12.86% -> 14.69% (+1.83 pts)
+  and aged share of units 14.90% -> 18.06% (+3.15 pts): two independent readings
+  agreeing that ageing worsened, which `_agreement` says out loud because
+  agreement is what makes the finding hard to argue with.
+- **Two history lanes, one engine, never merged.** The model's own history table
+  is a *reference position* whose window moves only when the source re-freezes
+  it; the pipeline's `archive.py` scans are the day-on-day lane. Both go through
+  `ageing_history.build` (via `position_from_scan` for the archive lane), so a
+  bug in the band arithmetic cannot be fixed in one and left in the other. They
+  render as separate blocks, each stating its own two dates and day count -
+  merging them would produce one comparison whose window silently changes length.
+- **`buckets.migration()` no longer has to refuse**, but the movement it now
+  reports is counted in **units**, because a rightward shift measured in rebased
+  money would be an artefact. The auditor pins `counted_in == "units"`.
+- **Members are matched on each table's OWN column, never through the shared
+  lookup.** 1.5% of history value (USD 210,785) does not match `LINK TABLE` at
+  all, and losing it from one side of a comparison only is the worst kind of
+  error - both sides still add up to something.
+- **Clearance is units and days, and it states its assumption.** It assumes each
+  sale takes the oldest stock first, which the source does not guarantee. An
+  estimate over 100% is capped (nothing clears more than it holds); a division
+  with no sales is "no sales recorded", never zero days; and the 25% of selling
+  velocity that maps to no division is **declared on the page**, not dropped.
+  Ranked slowest-first, because the slow ones are the work.
+- **The category list is ranked by money stuck, not by share** - the
+  `CF-FRESH BAKES +2166.79%` failure in a new costume. `KHALBATTA` is 100% aged
+  on **USD 4**; sorting on percentage would headline it. The count still treats
+  every category equally (that is the check), and the page names the freak
+  percentage so the ordering explains itself.
+- **Two value bases, labelled rather than blended.** `REP_SSR_STOCK_STATUS`
+  carries USD 13.03M against the ageing table's USD 5.73M - close to a 2.3x gap
+  on the same shelves. Clearance is therefore expressed in units and days, and
+  the stuck-lines table labels its money column as coming from that table.
+- **The footer no longer asserts a costing convention on this page.** "at
+  landing cost, excluding VAT" is documented for Inventory Management's
+  `SKU_STOCK_VALUE`; the ageing table reads a different column whose basis was
+  measured *moving*, so `value_basis_note` on the page model replaces the claim
+  with what can be seen. Inventory Management keeps the original sentence.
+- **Three pre-existing rendering faults surfaced and were fixed**, all invisible
+  until the page was screenshotted: every inventory `<table>` carried no class
+  so none picked up the shared `.tbl` styling, and `.scroll` was referenced
+  everywhere and defined nowhere; `.sb-val small` was missing from the
+  display-block rule so the two-population chart read `USD 2.21MUSD 657K aged`;
+  and `cumulative_curve` centred its end labels on the plot edges, clipping them
+  to `MONTHS` and `24+ MON`. A KPI card with no comparison also emitted an empty
+  coloured pill, hidden with `.badge:empty` in the inventory stylesheet rather
+  than in the shared card renderer - that one also draws the sales dashboard,
+  whose output is byte-compared.
+- **A layer key present in a view but absent from the page's tab list renders a
+  section with no way to reach it.** Caught by the replay, not by eye. The keys
+  and the tabs are now decided in one place (`_ageing_layers`).
+- **Verification.** `scripts/replay_ageing.py` gained ~60 offline checks (basis
+  detection and its opposite, the live pair's shares, the three refusal paths,
+  one engine for both lanes, clearance arithmetic and its caveats, category
+  ranking, the stuck-line filters, the four-tab fallback, and the rendered
+  document). `scripts/audit_ageing.py` re-derives all of it from a **produced**
+  artifact and is mutation-tested - six corruptions, six catches, including a
+  clearance list reordered fastest-first and a category list re-sorted by
+  percentage. Accepted live on 2026-08-24 against the position as at 2026-08-23:
+  17 queries, all four reconciliation checks passing, audit clean.
+- **Still open:** `inventory_llm_authoring_enabled` stays false until a live
+  authored run is reviewed. The Stock Age page remains deterministic prose.
 
 #### Two test failures worth remembering
 
@@ -1034,6 +1133,24 @@ Both are config-driven and documented in `powerbi-summary-agent/README.md`:
 
 1. **LLM provider is a three-way switch (Azure OpenAI / Anthropic / OpenAI), not a single default** — `src/tools/llm.py` and `main.py` fall back to `ai_provider: "azure_openai"`. For Azure, the `AZURE_OPENAI_DEPLOYMENT` env var routes, not the `model` config string. Always check live `config.json` + `.env` before assuming which backend a run hits.
 2. **DAX execution defaults to `python` (REST), not `powershell`** — the PowerShell layer only existed to dodge the login hang. `scripts/execute_dax.ps1` still ships for `execution_mode: "powershell"`; the Python path is the fallback if it throws.
+
+## Repo-root KPI tooling (`fastapi_backend/`, `Benchmark Test/`)
+
+A third, independent piece alongside `pbi_agent.py` and `powerbi-summary-agent/`: a small daily red/amber/green KPI snapshot, unrelated to the LangGraph pipeline and its config/memory.
+
+```bash
+# Daily snapshot (run after a Power BI refresh, from repo root)
+python -m fastapi_backend.app.kpi_snapshot
+
+# Benchmark harness — re-scores the same 8 KPIs and writes Benchmark Test/benchmark_results.json
+python "Benchmark Test/run_kpi_benchmark.py"
+```
+
+- **`fastapi_backend/app/kpi_snapshot.py`** computes eight KPIs (Revenue/Volume/Footfall growth, ASP/ATV/UPT growth, category-decline breadth, at-risk concentration delta) **year-to-date vs. the same elapsed window last year**, as ONE `EVALUATE ROW(...)` referencing measures by name plus a single column (`MIS_DEEP_DIVE2[max_date]`) — deliberately flat and drift-resistant. `kpi_thresholds.json` holds the red/amber/green/severe bands per KPI (documented in human terms in `KPI_BENCHMARKS.md`); `evaluate_status()` maps a value to a band given its `higher_is_better`/`lower_is_better` direction.
+- **The alignment guard is the load-bearing check**: the comparison is only valid if last year's `max_date` lands on the same (month, day) as this year's — i.e. last year is trimmed to the same elapsed window, not a full year. `alignment_status()` verifies this every run and every KPI reports `"degraded"` (not its computed band) the moment it breaks, rather than silently comparing a partial year to a full one.
+- **Auth and target model are shared, not reconfigured.** It reuses `pbi_agent.py`'s headless MSAL flow against the same repo-root `.pbi_token_cache.json`, and reads `tenant_id`/`workspace_id`/`dataset_id` from `powerbi-summary-agent/config/config.json` — so it always points at the same dataset the summary agent runs against, with no separate credentials.
+- **`Benchmark Test/run_kpi_benchmark.py`** runs each KPI as its own isolated `EVALUATE` query (rather than one packed `ROW()`) so one broken measure can't blank out the rest, and imports `evaluate_status` from `kpi_snapshot.py` directly rather than reimplementing the banding — the two are asserted to score identically by construction, since they scored differently once (when `kpi_thresholds.json` moved its bands into `labels` + numeric `*_at` cut points and only one copy was updated).
+- Output lands in `fastapi_backend/outputs/kpi_snapshot_<date>.json` / `kpi_snapshot_latest.json`; there is no replay/offline test for this piece — `evaluate_status`/`alignment_status`/`kpi_facts` are pure functions but currently only exercised via the live run.
 
 ## Gotchas
 

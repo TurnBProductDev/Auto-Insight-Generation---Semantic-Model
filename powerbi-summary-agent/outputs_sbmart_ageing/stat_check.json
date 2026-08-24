@@ -1,20 +1,20 @@
 {
   "method": "single_snapshot_ageing_v2",
   "report_id": "inventory_ageing",
-  "anchor": "2026-08-19",
+  "anchor": "2026-08-23",
   "overall": {
-    "total_value": 6201335.0884,
-    "aged_value": 825386.5286,
-    "aged_share_pct": 13.309819850630861,
-    "high_risk_value": 460883.7925,
-    "high_risk_share_pct": 7.432009171091448
+    "total_value": 5732499.5474,
+    "aged_value": 842320.7491,
+    "aged_share_pct": 14.693777856154187,
+    "high_risk_value": 453777.8088,
+    "high_risk_share_pct": 7.915880412163537
   },
   "aged_non_moving_association": {
-    "aged_non_moving_value": 285488.2244,
-    "aged_share_within_non_moving_pct": 43.39054884067028,
-    "non_moving_share_within_aged_pct": 34.58842790713316,
-    "estate_aged_share_pct": 13.309819850630861,
-    "aged_rate_lift": 3.260040280606326,
+    "aged_non_moving_value": 278109.2302,
+    "aged_share_within_non_moving_pct": 45.8353292389646,
+    "non_moving_share_within_aged_pct": 33.01702237504575,
+    "estate_aged_share_pct": 14.693777856154187,
+    "aged_rate_lift": 3.1193699596981053,
     "note": "Monetary association, not a causal or significance test."
   },
   "dimensions": {
@@ -23,36 +23,36 @@
         {
           "role": "division",
           "member": "HOME & LIVING",
-          "stock_value": 1200614.8102,
-          "aged_value": 352830.2924,
-          "aged_rate_pct": 29.38746793746656,
-          "rest_of_estate_rate_pct": 9.449763432280916,
-          "rate_gap_pct_points": 19.937704505185643,
-          "rate_ratio": 3.1098628180550363,
-          "expected_aged_at_baseline": 113455.25929682853,
-          "excess_aged_value": 239375.03310317144,
-          "excess_share_of_total_pct": 3.8600564183499455,
-          "member_stock_share_pct": 19.360585955850507
+          "stock_value": 1164133.729,
+          "aged_value": 365334.4867,
+          "aged_rate_pct": 31.38251882915764,
+          "rest_of_estate_rate_pct": 10.441069768949834,
+          "rate_gap_pct_points": 20.941449060207805,
+          "rate_ratio": 3.0056804066652743,
+          "expected_aged_at_baseline": 121548.01484876739,
+          "excess_aged_value": 243786.47185123264,
+          "excess_share_of_total_pct": 4.2527080872043515,
+          "member_stock_share_pct": 20.307611354771026
         },
         {
           "role": "division",
           "member": "LIFESTYLE",
-          "stock_value": 2016539.4152,
-          "aged_value": 363300.5656,
-          "aged_rate_pct": 18.016040889732267,
-          "rest_of_estate_rate_pct": 11.042019708614719,
-          "rate_gap_pct_points": 6.974021181117548,
-          "rate_ratio": 1.6315892712704165,
-          "expected_aged_at_baseline": 222666.67965836797,
-          "excess_aged_value": 140633.885941632,
-          "excess_share_of_total_pct": 2.2678001420161418,
-          "member_stock_share_pct": 32.517826991353324
+          "stock_value": 1964357.4462,
+          "aged_value": 368859.4199,
+          "aged_rate_pct": 18.77761201829887,
+          "rest_of_estate_rate_pct": 12.564848046713045,
+          "rate_gap_pct_points": 6.212763971585826,
+          "rate_ratio": 1.4944559574845857,
+          "expected_aged_at_baseline": 246818.52820932295,
+          "excess_aged_value": 122040.89169067703,
+          "excess_share_of_total_pct": 2.12892980944114,
+          "member_stock_share_pct": 34.26703185857106
         }
       ],
       "concentration": {
-        "top1_share_pct": 44.015809928012914,
-        "top3_share_pct": 94.12893447846854,
-        "hhi": 0.38534465639241045,
+        "top1_share_pct": 43.790850491824834,
+        "top3_share_pct": 94.44515442009548,
+        "hhi": 0.3882684064308314,
         "members": 4
       }
     },
@@ -61,36 +61,36 @@
         {
           "role": "section",
           "member": "CULINARY SUPPLIES",
-          "stock_value": 614879.7332,
-          "aged_value": 197823.4566,
-          "aged_rate_pct": 32.1727072659353,
-          "rest_of_estate_rate_pct": 11.233654116932124,
-          "rate_gap_pct_points": 20.93905314900318,
-          "rate_ratio": 2.8639574381627453,
-          "expected_aged_at_baseline": 69073.46246280306,
-          "excess_aged_value": 128749.99413719695,
-          "excess_share_of_total_pct": 2.076165733698735,
-          "member_stock_share_pct": 9.915279926578593
+          "stock_value": 591650.31,
+          "aged_value": 210956.5073,
+          "aged_rate_pct": 35.655606653869576,
+          "rest_of_estate_rate_pct": 12.281321872012619,
+          "rate_gap_pct_points": 23.374284781856957,
+          "rate_ratio": 2.903238513365863,
+          "expected_aged_at_baseline": 72662.47892786046,
+          "excess_aged_value": 138294.02837213955,
+          "excess_share_of_total_pct": 2.4124559841415674,
+          "member_stock_share_pct": 10.320983108814124
         },
         {
           "role": "section",
           "member": "OFFICE SUPPLIES",
-          "stock_value": 436670.2123,
-          "aged_value": 111135.4758,
-          "aged_rate_pct": 25.450665667033867,
-          "rest_of_estate_rate_pct": 12.390157418538719,
-          "rate_gap_pct_points": 13.060508248495148,
-          "rate_ratio": 2.054103495808166,
-          "expected_aged_at_baseline": 54104.126703837224,
-          "excess_aged_value": 57031.349096162776,
-          "excess_share_of_total_pct": 0.9196624320921413,
-          "member_stock_share_pct": 7.041551634853921
+          "stock_value": 416848.235,
+          "aged_value": 111495.9371,
+          "aged_rate_pct": 26.747369363336755,
+          "rest_of_estate_rate_pct": 13.748546867534001,
+          "rate_gap_pct_points": 12.998822495802754,
+          "rate_ratio": 1.9454688281638217,
+          "expected_aged_at_baseline": 57310.57495546327,
+          "excess_aged_value": 54185.362144536724,
+          "excess_share_of_total_pct": 0.9452309886201864,
+          "member_stock_share_pct": 7.271666252273206
         }
       ],
       "concentration": {
-        "top1_share_pct": 23.967371618669766,
-        "top3_share_pct": 52.03668547008074,
-        "hhi": 0.12165625067884957,
+        "top1_share_pct": 25.044676570700897,
+        "top3_share_pct": 53.98261563493996,
+        "hhi": 0.12759012741906603,
         "members": 15
       }
     },
@@ -99,22 +99,22 @@
         {
           "role": "location",
           "member": "WH1",
-          "stock_value": 3849004.2918,
-          "aged_value": 672148.8222,
-          "aged_rate_pct": 17.46292732465797,
-          "rest_of_estate_rate_pct": 6.514292404005671,
-          "rate_gap_pct_points": 10.948634920652298,
-          "rate_ratio": 2.680709775004869,
-          "expected_aged_at_baseline": 250735.39421057966,
-          "excess_aged_value": 421413.42798942036,
-          "excess_share_of_total_pct": 6.795527446625188,
-          "member_stock_share_pct": 62.06734899715083
+          "stock_value": 3570579.272,
+          "aged_value": 689062.6078,
+          "aged_rate_pct": 19.2983422382899,
+          "rest_of_estate_rate_pct": 7.088982098178626,
+          "rate_gap_pct_points": 12.209360140111276,
+          "rate_ratio": 2.722300884812254,
+          "expected_aged_at_baseline": 253117.72539335667,
+          "excess_aged_value": 435944.88240664336,
+          "excess_share_of_total_pct": 7.604795757975561,
+          "member_stock_share_pct": 62.28660364429426
         }
       ],
       "concentration": {
-        "top1_share_pct": 81.43443088901417,
-        "top3_share_pct": 91.1296911491657,
-        "hhi": 0.6706753092079424,
+        "top1_share_pct": 81.80525156672766,
+        "top3_share_pct": 91.31606837678456,
+        "hhi": 0.676456404859313,
         "members": 7
       }
     },
@@ -123,22 +123,22 @@
         {
           "role": "sku_type",
           "member": "OVERSEAS",
-          "stock_value": 2198806.7318,
-          "aged_value": 637842.5306,
-          "aged_rate_pct": 29.008576396245868,
-          "rest_of_estate_rate_pct": 4.68563820892731,
-          "rate_gap_pct_points": 24.322938187318556,
-          "rate_ratio": 6.190955234438991,
-          "expected_aged_at_baseline": 103028.12836568664,
-          "excess_aged_value": 534814.4022343134,
-          "excess_share_of_total_pct": 8.62418164170355,
-          "member_stock_share_pct": 35.456989510420286
+          "stock_value": 2212277.747,
+          "aged_value": 656676.5223,
+          "aged_rate_pct": 29.68327657729678,
+          "rest_of_estate_rate_pct": 5.273651415342791,
+          "rate_gap_pct_points": 24.40962516195399,
+          "rate_ratio": 5.628600421131048,
+          "expected_aged_at_baseline": 116667.8167159791,
+          "excess_aged_value": 540008.7055840208,
+          "excess_share_of_total_pct": 9.420126440811394,
+          "member_stock_share_pct": 38.591852100596995
         }
       ],
       "concentration": {
-        "top1_share_pct": 77.2780398635646,
-        "top3_share_pct": 100.0,
-        "hhi": 0.6488182917596439,
+        "top1_share_pct": 77.9603877740924,
+        "top3_share_pct": 99.99999999999999,
+        "hhi": 0.6563566568955231,
         "members": 2
       }
     }
@@ -147,7 +147,7 @@
     "reconciled": true,
     "failed_checks": [],
     "undetermined_value": 0.0,
-    "comparison_available": false,
-    "comparison_reason": "Stock age movement between two dates cannot be shown, because the model holds only one stock position (a single snapshot date). Showing it would need the previous snapshot to be retained."
+    "comparison_available": true,
+    "comparison_reason": ""
   }
 }

@@ -1,18 +1,22 @@
 {
   "status": "ok",
-  "currency": "QAR",
+  "currency": "USD",
   "title": "SB Mart Stock Ageing",
-  "subtitle": "Stock position as at 2026-08-19",
+  "subtitle": "Stock position as at 2026-08-23",
   "layers": [
     "overview",
+    "change",
     "entities",
     "areas",
+    "outlook",
     "detail"
   ],
   "layer_titles": {
     "overview": "Summary",
+    "change": "What changed",
     "entities": "Locations",
     "areas": "Divisions",
+    "outlook": "Where to act",
     "detail": "Full detail"
   },
   "default_view": "all",
@@ -21,7 +25,7 @@
       "key": "all",
       "label": "All stock",
       "kind": "ageing",
-      "total_value": 6201335.0884,
+      "total_value": 5732499.5474,
       "labels": {
         "entities_title": "Which locations hold the aged stock",
         "entities_sub": "ranked by value, with each location's own share",
@@ -36,17 +40,17 @@
       },
       "owns_breakdowns": true,
       "period": {
-        "data_as_of": "2026-08-19",
+        "data_as_of": "2026-08-23",
         "grain": "snapshot"
       },
       "hero": {
-        "headline": "QAR 91K of stock is more than two years old, inside QAR 461K held over a year",
-        "narrative": "QAR 91K of stock is more than two years old, 1.5% of all stock value as at 2026-08-19. This is the most likely write-off candidate and is reported separately from the 12-24 month band."
+        "headline": "Aged stock has risen to 14.7% of the value on the shelf, 1.8 points higher than on 14 August",
+        "narrative": "Counted in units rather than money the picture is the same: 14.9% of units were nine months old or more on 14 August, and 18.1% are now. Totals are not compared between the two dates, because stock value is worked out differently on each of them. Shares are, because a share compares two figures taken on the same day. USD 91K of stock is more than two years old, 1.6% of all stock value as at 2026-08-23. This is the most likely write-off candidate and is reported separately from the 12-24 month band."
       },
       "kpis": [
         {
           "label": "Stock value",
-          "value_display": "QAR 6.20M",
+          "value_display": "USD 5.73M",
           "change_display": "",
           "note": "Held across all locations.",
           "rag": {
@@ -56,19 +60,19 @@
         },
         {
           "label": "Aged stock",
-          "value_display": "QAR 825K",
-          "change_display": "",
-          "note": "13.3% of stock value under the configured ageing policy.",
+          "value_display": "USD 842K",
+          "change_display": "+1.8 points since 14 August",
+          "note": "14.7% of stock value, nine months old or more.",
           "rag": {
             "tone": "warn",
             "caution": ""
           }
         },
         {
-          "label": "High-risk, over a year",
-          "value_display": "QAR 461K",
-          "change_display": "",
-          "note": "7.4% of stock value.",
+          "label": "Over a year old",
+          "value_display": "USD 454K",
+          "change_display": "+0.5 points since 14 August",
+          "note": "7.9% of stock value. The hardest to sell.",
           "rag": {
             "tone": "warn",
             "caution": ""
@@ -76,7 +80,7 @@
         },
         {
           "label": "Aged and not selling",
-          "value_display": "QAR 285K",
+          "value_display": "USD 278K",
           "change_display": "",
           "note": "Old stock with no recorded sales. The highest-risk combination.",
           "rag": {
@@ -85,35 +89,40 @@
           }
         },
         {
-          "label": "Over two years old",
-          "value_display": "QAR 91K",
+          "label": "Products holding aged stock",
+          "value_display": "19,468",
           "change_display": "",
-          "note": "The most likely write-off candidate.",
+          "note": "of 41,674 products stocked anywhere - 46.7%.",
           "rag": {
             "tone": "critical",
             "caution": ""
           }
         },
         {
-          "label": "Not selling, any age",
-          "value_display": "QAR 658K",
+          "label": "Categories over the review line",
+          "value_display": "46",
           "change_display": "",
-          "note": "Stock with no recorded sales since it arrived.",
+          "note": "of 173 categories carried. Each is measured against its own stock.",
           "rag": {
-            "tone": "warn",
+            "tone": "critical",
             "caution": ""
           }
         }
       ],
       "signals": [
         {
-          "label": "No movement over time",
-          "value": "Not available",
-          "note": "Stock age movement between two dates cannot be shown, because the model holds only one stock position (a single snapshot date). Showing it would need the previous snapshot to be retained."
+          "label": "Over two years old",
+          "value": "USD 91K",
+          "note": "The most likely write-off. Reported on its own because age at this end is a decision, not a trend."
+        },
+        {
+          "label": "Not selling, any age",
+          "value": "USD 607K",
+          "note": "Stock with no recorded sales since it arrived, whether it is old or not."
         },
         {
           "label": "Fresh but not selling",
-          "value": "QAR 372K",
+          "value": "USD 329K",
           "note": "Under nine months old with no sales - a demand or placement signal, not an age problem."
         }
       ],
@@ -123,117 +132,654 @@
           "tone": "critical",
           "layer": "overview",
           "to": "Overview",
-          "text": "QAR 91K is over two years old - the likeliest write-off."
+          "text": "USD 91K is over two years old - the likeliest write-off."
         },
         {
           "rank": 2,
           "tone": "critical",
           "layer": "detail",
           "to": "Full detail",
-          "text": "QAR 285K is both aged and not selling."
+          "text": "USD 278K is both aged and not selling."
         },
         {
           "rank": 3,
           "tone": "warn",
           "layer": "entities",
           "to": "Locations",
-          "text": "WH1 holds the most aged stock, QAR 672K."
+          "text": "WH1 holds the most aged stock, USD 689K."
         },
         {
           "rank": 4,
           "tone": "warn",
           "layer": "areas",
           "to": "Divisions",
-          "text": "LIFESTYLE holds QAR 363K of aged stock."
+          "text": "LIFESTYLE holds USD 369K of aged stock."
+        },
+        {
+          "rank": 5,
+          "tone": "critical",
+          "layer": "outlook",
+          "to": "Where to act",
+          "text": "HOME & LIVING is the slowest to clear - about 46% of its aged stock would move in the next 30 days."
+        },
+        {
+          "rank": 6,
+          "tone": "warn",
+          "layer": "outlook",
+          "to": "Where to act",
+          "text": "46 of 173 categories have more than 30% of their own stock aged."
         }
       ],
       "layers": {
         "overview": true,
+        "change": {
+          "available": true,
+          "lanes": [
+            {
+              "title": "Since the last stock position",
+              "sub": "compared with the position kept in the source report",
+              "available": true,
+              "reason": "",
+              "window": "14 August to 23 August - 9 days",
+              "verdict": "Ageing has got worse",
+              "verdict_tone": "critical",
+              "agreement": "Counted in money and counted in units, the picture moved the same way - worse. Two separate readings agreeing makes this a solid finding.",
+              "headlines": [
+                {
+                  "label": "Aged share of stock value",
+                  "note": "How much of the money on the shelf is nine months old or more.",
+                  "then_pct": 12.861507359213164,
+                  "now_pct": 14.693777856154187,
+                  "points": 1.8322704969410228,
+                  "movement": "1.8 points higher",
+                  "direction": "worse",
+                  "tone": "critical"
+                },
+                {
+                  "label": "Aged share of units",
+                  "note": "The same question counted in units instead of money.",
+                  "then_pct": 14.904903136868345,
+                  "now_pct": 18.058437664205755,
+                  "points": 3.15353452733741,
+                  "movement": "3.2 points higher",
+                  "direction": "worse",
+                  "tone": "critical"
+                },
+                {
+                  "label": "Over a year old, share of value",
+                  "note": "The part of the aged stock that is hardest to sell.",
+                  "then_pct": 7.443425819101693,
+                  "now_pct": 7.915880412163537,
+                  "points": 0.472454593061844,
+                  "movement": "0.5 points higher",
+                  "direction": "worse",
+                  "tone": "critical"
+                }
+              ],
+              "bands": [
+                {
+                  "name": "0-03 MONTHS",
+                  "high_risk": false,
+                  "qty_now": 9040561.860109998,
+                  "qty_then": 6333425.259640001,
+                  "qty_change": 2707136.600469997,
+                  "value_share_now_pct": 59.57593624493131,
+                  "value_share_then_pct": 62.649478063773415,
+                  "value_share_points": -3.073541818842102,
+                  "qty_share_now_pct": 56.095836247229634,
+                  "qty_share_then_pct": 60.878825230601365,
+                  "qty_share_points": -4.78298898337173,
+                  "direction": "better"
+                },
+                {
+                  "name": "03-06 MONTHS",
+                  "high_risk": false,
+                  "qty_now": 2457723.57349,
+                  "qty_then": 1593180.5595199997,
+                  "qty_change": 864543.0139700002,
+                  "value_share_now_pct": 15.67644196862759,
+                  "value_share_then_pct": 15.351645711633438,
+                  "value_share_points": 0.3247962569941514,
+                  "qty_share_now_pct": 15.24994367084322,
+                  "qty_share_then_pct": 15.314139958655298,
+                  "qty_share_points": -0.06419628781207898,
+                  "direction": "worse"
+                },
+                {
+                  "name": "06-09 MONTHS",
+                  "high_risk": false,
+                  "qty_now": 1707645.92904,
+                  "qty_then": 926118.1600400001,
+                  "qty_change": 781527.769,
+                  "value_share_now_pct": 10.05384393028692,
+                  "value_share_then_pct": 9.137368865379985,
+                  "value_share_points": 0.9164750649069351,
+                  "qty_share_now_pct": 10.595782417721395,
+                  "qty_share_then_pct": 8.902131673875004,
+                  "qty_share_points": 1.6936507438463906,
+                  "direction": "worse"
+                },
+                {
+                  "name": "09-12 MONTHS",
+                  "high_risk": false,
+                  "qty_now": 1063064.34298,
+                  "qty_then": 505554.61648,
+                  "qty_change": 557509.7264999999,
+                  "value_share_now_pct": 6.777897443990648,
+                  "value_share_then_pct": 5.41808154011147,
+                  "value_share_points": 1.359815903879178,
+                  "qty_share_now_pct": 6.596214286990041,
+                  "qty_share_then_pct": 4.859545961225893,
+                  "qty_share_points": 1.736668325764148,
+                  "direction": "worse"
+                },
+                {
+                  "name": "12-24 MONTHS",
+                  "high_risk": true,
+                  "qty_now": 1570626.26857,
+                  "qty_then": 891046.2690699999,
+                  "qty_change": 679579.9995000002,
+                  "value_share_now_pct": 6.33342989908598,
+                  "value_share_then_pct": 5.920954479898461,
+                  "value_share_points": 0.41247541918751907,
+                  "qty_share_now_pct": 9.745588308626212,
+                  "qty_share_then_pct": 8.56500990589969,
+                  "qty_share_points": 1.180578402726523,
+                  "direction": "worse"
+                },
+                {
+                  "name": "24+ MONTHS",
+                  "high_risk": true,
+                  "qty_now": 276657.70879,
+                  "qty_then": 154005.41577,
+                  "qty_change": 122652.29302000001,
+                  "value_share_now_pct": 1.5824505130775584,
+                  "value_share_then_pct": 1.5224713392032325,
+                  "value_share_points": 0.05997917387432583,
+                  "qty_share_now_pct": 1.7166350685895042,
+                  "qty_share_then_pct": 1.4803472697427635,
+                  "qty_share_points": 0.23628779884674067,
+                  "direction": "flat"
+                }
+              ],
+              "members": [
+                {
+                  "name": "WH1",
+                  "aged_share_now_pct": 19.2983422382899,
+                  "aged_share_then_pct": 17.071072031667313,
+                  "points": 2.2272702066225882,
+                  "direction": "worse",
+                  "qty_now": 10280860.00004,
+                  "qty_then": 5431855.00002,
+                  "qty_change": 4849005.00002,
+                  "new": false,
+                  "gone": false,
+                  "comparable": true
+                },
+                {
+                  "name": "ST5",
+                  "aged_share_now_pct": 24.801630326828903,
+                  "aged_share_then_pct": 23.4401754513726,
+                  "points": 1.3614548754563032,
+                  "direction": "worse",
+                  "qty_now": 79838.25944000001,
+                  "qty_then": 79838.25943999998,
+                  "qty_change": 2.9103830456733704e-11,
+                  "new": false,
+                  "gone": false,
+                  "comparable": true
+                },
+                {
+                  "name": "ST1",
+                  "aged_share_now_pct": 8.79099963440326,
+                  "aged_share_then_pct": 8.380139576402907,
+                  "points": 0.4108600580003525,
+                  "direction": "worse",
+                  "qty_now": 705705.1438900001,
+                  "qty_then": 757552.9715099998,
+                  "qty_change": -51847.82761999976,
+                  "new": false,
+                  "gone": false,
+                  "comparable": true
+                },
+                {
+                  "name": "ST4",
+                  "aged_share_now_pct": 8.78237304584524,
+                  "aged_share_then_pct": 8.442059345541578,
+                  "points": 0.34031370030366226,
+                  "direction": "worse",
+                  "qty_now": 973357.08673,
+                  "qty_then": 1013076.5373300003,
+                  "qty_change": -39719.45060000033,
+                  "new": false,
+                  "gone": false,
+                  "comparable": true
+                },
+                {
+                  "name": "ST3",
+                  "aged_share_now_pct": 12.251683385655147,
+                  "aged_share_then_pct": 12.039497495322015,
+                  "points": 0.2121858903331315,
+                  "direction": "worse",
+                  "qty_now": 585145.1532799999,
+                  "qty_then": 578904.43193,
+                  "qty_change": 6240.721349999891,
+                  "new": false,
+                  "gone": false,
+                  "comparable": true
+                },
+                {
+                  "name": "WH2",
+                  "aged_share_now_pct": 1.002381049641056,
+                  "aged_share_then_pct": 0.9569877719841493,
+                  "points": 0.045393277656906594,
+                  "direction": "flat",
+                  "qty_now": 2893546.08,
+                  "qty_then": 1909810.9200000004,
+                  "qty_change": 983735.1599999997,
+                  "new": false,
+                  "gone": false,
+                  "comparable": true
+                },
+                {
+                  "name": "ST2",
+                  "aged_share_now_pct": 15.540512253757328,
+                  "aged_share_then_pct": 16.829476563121286,
+                  "points": -1.2889643093639584,
+                  "direction": "better",
+                  "qty_now": 597827.9596000001,
+                  "qty_then": 632292.16029,
+                  "qty_change": -34464.20068999997,
+                  "new": false,
+                  "gone": false,
+                  "comparable": true
+                }
+              ],
+              "value_comparable": false,
+              "value_note": "ST5 holds the same quantity of stock on both dates (79,838 units) but its value has moved from 0.78 to 0.21 per unit. Stock that did not move cannot change in worth, so the way stock value is calculated has changed between the two dates. Value figures are therefore not compared here.",
+              "skus_now": 41674.0,
+              "skus_then": 41939.0
+            },
+            {
+              "title": "Since yesterday's reading",
+              "sub": "compared with the position this report kept on its last run",
+              "available": false,
+              "reason": "This is the first stock position kept for this report, so nothing is compared against an earlier day. Figures describe today only.",
+              "window": "",
+              "verdict": "",
+              "verdict_tone": "neutral",
+              "agreement": "",
+              "headlines": [],
+              "bands": [],
+              "members": [],
+              "value_comparable": false,
+              "value_note": "",
+              "skus_now": null,
+              "skus_then": null
+            }
+          ],
+          "caption": "Ageing is judged on shares rather than totals, because a share compares two figures taken on the same day and is not affected by anything that rescales them.",
+          "reason": ""
+        },
+        "outlook": {
+          "available": true,
+          "clearance": {
+            "available": true,
+            "horizon_days": 30,
+            "rows": [
+              {
+                "name": "HOME & LIVING",
+                "aged_qty": 1548073.05004,
+                "aged_value": 365334.4867,
+                "total_value": 1164133.729,
+                "aged_share_pct": 31.38251882915764,
+                "daily_qty": 23936.970000000132,
+                "cleared_pct": 46.38728773047558,
+                "capped": false,
+                "days_to_clear": 64.6728909314751,
+                "days_display": "about 65 days",
+                "tone": "critical",
+                "cleared_display": "46.4%",
+                "aged_display": "USD 365K",
+                "share_display": "31.4%",
+                "qty_display": "1,548,073 units",
+                "daily_display": "23,937 units a day"
+              },
+              {
+                "name": "LIFESTYLE",
+                "aged_qty": 1142115.0,
+                "aged_value": 368859.4199,
+                "total_value": 1964357.4462,
+                "aged_share_pct": 18.77761201829887,
+                "daily_qty": 30811.620000000166,
+                "cleared_pct": 80.93305840480205,
+                "capped": false,
+                "days_to_clear": 37.06767122273979,
+                "days_display": "about 37 days",
+                "tone": "warn",
+                "cleared_display": "80.9%",
+                "aged_display": "USD 369K",
+                "share_display": "18.8%",
+                "qty_display": "1,142,115 units",
+                "daily_display": "30,812 units a day"
+              },
+              {
+                "name": "CONSUMER GOODS",
+                "aged_qty": 183603.2703,
+                "aged_value": 61337.2256,
+                "total_value": 2312537.35,
+                "aged_share_pct": 2.652377727001901,
+                "daily_qty": 155800.409999998,
+                "cleared_pct": 100.0,
+                "capped": true,
+                "days_to_clear": 1.1784517787854496,
+                "days_display": "about a day",
+                "tone": "positive",
+                "cleared_display": "100.0%",
+                "aged_display": "USD 61K",
+                "share_display": "2.7%",
+                "qty_display": "183,603 units",
+                "daily_display": "155,800 units a day"
+              },
+              {
+                "name": "TECHNOLOGY",
+                "aged_qty": 36557.0,
+                "aged_value": 46789.6169,
+                "total_value": 291471.0222,
+                "aged_share_pct": 16.0529223614875,
+                "daily_qty": 3460.35000000001,
+                "cleared_pct": 100.0,
+                "capped": true,
+                "days_to_clear": 10.56453826925019,
+                "days_display": "about 11 days",
+                "tone": "positive",
+                "cleared_display": "100.0%",
+                "aged_display": "USD 47K",
+                "share_display": "16.1%",
+                "qty_display": "36,557 units",
+                "daily_display": "3,460 units a day"
+              }
+            ],
+            "caveats": [
+              "This assumes each sale takes the oldest stock first, which the source data does not guarantee. Read it as 'this division is slow to turn over', not as a promise about the next 30 days.",
+              "25% of recorded daily sales belong to products that are not mapped to a division, so they are not counted in any row below. The divisions shown may clear slightly faster than these figures suggest."
+            ],
+            "reason": ""
+          },
+          "categories": {
+            "available": true,
+            "threshold_pct": 30.0,
+            "carried": 173,
+            "over": 46,
+            "over_share_pct": 26.589595375722542,
+            "aged_value_in_over": 411474.7243,
+            "worst": [
+              {
+                "name": "OTHER",
+                "total": 240923.1104,
+                "aged": 74110.9366,
+                "aged_share_pct": 30.76124016369996
+              },
+              {
+                "name": "KITCHEN KNIFE",
+                "total": 118084.4913,
+                "aged": 38908.5106,
+                "aged_share_pct": 32.94972114598084
+              },
+              {
+                "name": "HOME LINEN PRODUCTS",
+                "total": 121581.1455,
+                "aged": 37534.7095,
+                "aged_share_pct": 30.87214661914828
+              },
+              {
+                "name": "COOKING POT NON STICK TEFLON",
+                "total": 98530.4819,
+                "aged": 37390.0995,
+                "aged_share_pct": 37.94774853323842
+              },
+              {
+                "name": "CUTTING BOARD PLASTIC",
+                "total": 69567.4268,
+                "aged": 29727.3528,
+                "aged_share_pct": 42.73171248012871
+              },
+              {
+                "name": "FRY PAN NON STICK TEFLON",
+                "total": 33289.8499,
+                "aged": 23214.4924,
+                "aged_share_pct": 69.73444599400251
+              },
+              {
+                "name": "LADIES PANTIES",
+                "total": 23176.2748,
+                "aged": 18294.0899,
+                "aged_share_pct": 78.93455724817346
+              },
+              {
+                "name": "EMERGENCY LAMPS",
+                "total": 53307.9411,
+                "aged": 17969.4983,
+                "aged_share_pct": 33.70885824738784
+              }
+            ],
+            "highest_share": {
+              "name": "KHALBATTA",
+              "total": 4.374,
+              "aged": 4.374,
+              "aged_share_pct": 100.0
+            },
+            "note": "Each category is measured against its own stock, so a small category with a bad ratio still counts. The list below is ordered by how much money is stuck, not by the percentage, so the biggest problems come first. 30% is a review line that can be moved."
+          },
+          "stuck": {
+            "available": true,
+            "risk_cutoff": -70.0,
+            "value_floor": 500.0,
+            "matched": 10,
+            "rows": [
+              {
+                "sku": "0101657844",
+                "category": "SMART WATCHES",
+                "location": "WH1",
+                "status": "Excess Stock",
+                "risk_score": -100.0,
+                "value": 26548.8111,
+                "qty": 14047.0,
+                "daily_qty": 56.67,
+                "still_selling": true
+              },
+              {
+                "sku": "0100109445",
+                "category": "COVRD CHOCO BARS AND TAB",
+                "location": "WH2",
+                "status": "Excess Stock",
+                "risk_score": -100.0,
+                "value": 19354.1454,
+                "qty": 7800.0,
+                "daily_qty": 79.2,
+                "still_selling": true
+              },
+              {
+                "sku": "0101659739",
+                "category": "MENS VESTS",
+                "location": "WH1",
+                "status": "Excess Stock",
+                "risk_score": -100.0,
+                "value": 16835.8743,
+                "qty": 10878.0,
+                "daily_qty": 12.27,
+                "still_selling": true
+              },
+              {
+                "sku": "0100007855",
+                "category": "COSMETICS",
+                "location": "WH1",
+                "status": "Excess Stock",
+                "risk_score": -100.0,
+                "value": 16163.6418,
+                "qty": 4804.0,
+                "daily_qty": 31.57,
+                "still_selling": true
+              },
+              {
+                "sku": "0101662608",
+                "category": "COSMETICS",
+                "location": "WH1",
+                "status": "Excess Stock",
+                "risk_score": -100.0,
+                "value": 15223.14,
+                "qty": 9397.0,
+                "daily_qty": 73.53,
+                "still_selling": true
+              },
+              {
+                "sku": "0101622482",
+                "category": "MENS JEANS COMFORT FIT",
+                "location": "WH1",
+                "status": "Excess Stock",
+                "risk_score": -100.0,
+                "value": 15140.2959,
+                "qty": 6178.999999999999,
+                "daily_qty": 8.4,
+                "still_selling": true
+              },
+              {
+                "sku": "0101622483",
+                "category": "MENS JEANS COMFORT FIT",
+                "location": "WH1",
+                "status": "Excess Stock",
+                "risk_score": -100.0,
+                "value": 14635.2825,
+                "qty": 5970.0,
+                "daily_qty": 15.8,
+                "still_selling": true
+              },
+              {
+                "sku": "0101667714",
+                "category": "COSMETICS",
+                "location": "WH1",
+                "status": "Excess Stock",
+                "risk_score": -100.0,
+                "value": 13357.7478,
+                "qty": 4993.0,
+                "daily_qty": 39.07,
+                "still_selling": true
+              },
+              {
+                "sku": "0100128190",
+                "category": "COOKING POT NON STICK TEFLON",
+                "location": "WH1",
+                "status": "Excess Stock",
+                "risk_score": -100.0,
+                "value": 13309.272,
+                "qty": 2622.0,
+                "daily_qty": 1.24,
+                "still_selling": true
+              },
+              {
+                "sku": "0100000413",
+                "category": "COSMETICS",
+                "location": "WH1",
+                "status": "Excess Stock",
+                "risk_score": -100.0,
+                "value": 13087.6263,
+                "qty": 2288.0,
+                "daily_qty": 21.2,
+                "still_selling": true
+              }
+            ],
+            "value_shown": 163655.8371,
+            "still_selling": 10,
+            "note": "The ageing risk score runs from 0 (healthy) to -100 (worst) and is calculated inside the source report. Stock value in this table comes from the stock-status table, which is on a different basis from the headline stock value above, so the two are not added together.",
+            "estate_lines": 40769.0,
+            "estate_all_lines": 139200.0
+          }
+        },
         "entities": {
           "available": true,
           "role": "location",
           "cards": [
             {
               "member": "WH1",
-              "value": 672148.8222,
-              "held": 3849004.2918,
-              "value_display": "QAR 672K",
-              "change_display": "17.5%",
-              "note": "QAR 672K aged of QAR 3.85M held here - 17.5% of this location's own stock.",
-              "share_of_group_pct": 81.43443088901417,
-              "own_share_pct": 17.46292732465797,
-              "tone": "warn"
+              "value": 689062.6078,
+              "held": 3570579.272,
+              "value_display": "USD 689K",
+              "change_display": "19.3%",
+              "note": "USD 689K aged of USD 3.57M held here - 19.3% of this location's own stock.",
+              "share_of_group_pct": 81.80525156672766,
+              "own_share_pct": 19.2983422382899,
+              "tone": "critical"
             },
             {
               "member": "ST2",
-              "value": 42551.46,
-              "held": 269464.9162,
-              "value_display": "QAR 43K",
-              "change_display": "15.8%",
-              "note": "QAR 43K aged of QAR 269K held here - 15.8% of this location's own stock.",
-              "share_of_group_pct": 5.15533735111654,
-              "own_share_pct": 15.791094662734428,
-              "tone": "warn"
+              "value": 42754.1497,
+              "held": 275114.1597,
+              "value_display": "USD 43K",
+              "change_display": "15.5%",
+              "note": "USD 43K aged of USD 275K held here - 15.5% of this location's own stock.",
+              "share_of_group_pct": 5.075756443810961,
+              "own_share_pct": 15.540512253757328,
+              "tone": "critical"
             },
             {
               "member": "ST4",
-              "value": 37471.9121,
-              "held": 451293.8489,
-              "value_display": "QAR 37K",
-              "change_display": "8.3%",
-              "note": "QAR 37K aged of QAR 451K held here - 8.3% of this location's own stock.",
-              "share_of_group_pct": 4.539922909034986,
-              "own_share_pct": 8.303218001161639,
-              "tone": "positive"
+              "value": 37357.4337,
+              "held": 425368.3316,
+              "value_display": "USD 37K",
+              "change_display": "8.8%",
+              "note": "USD 37K aged of USD 425K held here - 8.8% of this location's own stock.",
+              "share_of_group_pct": 4.435060366245939,
+              "own_share_pct": 8.78237304584524,
+              "tone": "warn"
             },
             {
               "member": "ST3",
-              "value": 31356.8223,
-              "held": 258589.2389,
-              "value_display": "QAR 31K",
-              "change_display": "12.1%",
-              "note": "QAR 31K aged of QAR 259K held here - 12.1% of this location's own stock.",
-              "share_of_group_pct": 3.799047017787734,
-              "own_share_pct": 12.126112607542076,
+              "value": 31863.8531,
+              "held": 260077.3469,
+              "value_display": "USD 32K",
+              "change_display": "12.3%",
+              "note": "USD 32K aged of USD 260K held here - 12.3% of this location's own stock.",
+              "share_of_group_pct": 3.7828645600913644,
+              "own_share_pct": 12.251683385655147,
               "tone": "warn"
             },
             {
               "member": "ST1",
-              "value": 28729.9667,
-              "held": 344315.9532,
-              "value_display": "QAR 29K",
-              "change_display": "8.3%",
-              "note": "QAR 29K aged of QAR 344K held here - 8.3% of this location's own stock.",
-              "share_of_group_pct": 3.4807893883040535,
-              "own_share_pct": 8.344070738805373,
-              "tone": "positive"
+              "value": 28472.681,
+              "held": 323884.4521,
+              "value_display": "USD 28K",
+              "change_display": "8.8%",
+              "note": "USD 28K aged of USD 324K held here - 8.8% of this location's own stock.",
+              "share_of_group_pct": 3.3802658940103743,
+              "own_share_pct": 8.79099963440326,
+              "tone": "warn"
             },
             {
               "member": "WH2",
-              "value": 9072.0538,
-              "held": 1011799.203,
-              "value_display": "QAR 9K",
-              "change_display": "0.9%",
-              "note": "QAR 9K aged of QAR 1.01M held here - 0.9% of this location's own stock.",
-              "share_of_group_pct": 1.0991279219673953,
-              "own_share_pct": 0.8966259088859946,
+              "value": 8626.575,
+              "held": 860608.3488,
+              "value_display": "USD 9K",
+              "change_display": "1.0%",
+              "note": "USD 9K aged of USD 861K held here - 1.0% of this location's own stock.",
+              "share_of_group_pct": 1.0241437135695985,
+              "own_share_pct": 1.002381049641056,
               "tone": "positive"
             },
             {
               "member": "ST5",
-              "value": 4055.4915,
-              "held": 16867.6364,
-              "value_display": "QAR 4K",
-              "change_display": "24.0%",
-              "note": "QAR 4K aged of QAR 17K held here - 24.0% of this location's own stock.",
-              "share_of_group_pct": 0.49134452277514434,
-              "own_share_pct": 24.0430336760164,
+              "value": 4183.4488,
+              "held": 16867.6363,
+              "value_display": "USD 4K",
+              "change_display": "24.8%",
+              "note": "USD 4K aged of USD 17K held here - 24.8% of this location's own stock.",
+              "share_of_group_pct": 0.4966574555440926,
+              "own_share_pct": 24.801630326828903,
               "tone": "critical"
             }
           ],
           "caption": "Each location's aged stock, and what share of its own stock that is.",
           "rate_unit": "aged",
-          "average_rate": 13.309819850630861
+          "average_rate": 14.693777856154187
         },
         "areas": {
           "available": true,
@@ -241,211 +787,241 @@
           "rows": [
             {
               "name": "LIFESTYLE",
-              "value": 363300.5656,
-              "held": 2016539.4152,
-              "value_display": "QAR 363K",
-              "held_display": "QAR 2.02M",
-              "own_share": 18.016040889732267,
-              "group_share": 44.015809928012914,
+              "value": 368859.4199,
+              "held": 1964357.4462,
+              "value_display": "USD 369K",
+              "held_display": "USD 1.96M",
+              "own_share": 18.77761201829887,
+              "group_share": 43.790850491824834,
               "tone": "warn"
             },
             {
               "name": "HOME & LIVING",
-              "value": 352830.2924,
-              "held": 1200614.8102,
-              "value_display": "QAR 353K",
-              "held_display": "QAR 1.20M",
-              "own_share": 29.38746793746656,
-              "group_share": 42.747280234687366,
+              "value": 365334.4867,
+              "held": 1164133.729,
+              "value_display": "USD 365K",
+              "held_display": "USD 1.16M",
+              "own_share": 31.38251882915764,
+              "group_share": 43.37237175866216,
               "tone": "critical"
             },
             {
               "name": "CONSUMER GOODS",
-              "value": 60796.6867,
-              "held": 2662952.3566,
-              "value_display": "QAR 61K",
-              "held_display": "QAR 2.66M",
-              "own_share": 2.2830557425978095,
-              "group_share": 7.3658443157682525,
+              "value": 61337.2256,
+              "held": 2312537.35,
+              "value_display": "USD 61K",
+              "held_display": "USD 2.31M",
+              "own_share": 2.652377727001901,
+              "group_share": 7.281932169608477,
               "tone": "positive"
             },
             {
               "name": "TECHNOLOGY",
-              "value": 48458.9839,
-              "held": 321228.5064,
-              "value_display": "QAR 48K",
-              "held_display": "QAR 321K",
-              "own_share": 15.085517920896448,
-              "group_share": 5.8710655215314596,
+              "value": 46789.6169,
+              "held": 291471.0222,
+              "value_display": "USD 47K",
+              "held_display": "USD 291K",
+              "own_share": 16.0529223614875,
+              "group_share": 5.554845579904521,
               "tone": "warn"
             }
           ],
           "caption": "Divisions ranked by the aged stock they hold.",
           "rate_unit": "aged",
-          "average_rate": 13.309819850630861
+          "average_rate": 14.693777856154187
         },
         "detail": {
           "bands": [
             {
               "name": "0-03 MONTHS",
-              "value": 3837604.6741,
-              "share_pct": 61.88352377987909,
+              "value": 3415190.2756,
+              "share_pct": 59.57593624493131,
               "aged_value": 0.0,
               "high_risk": false,
               "cumulative_older_pct": 100.0
             },
             {
               "name": "03-06 MONTHS",
-              "value": 927664.6547,
-              "share_pct": 14.959111892457756,
+              "value": 898651.9649,
+              "share_pct": 15.67644196862759,
               "aged_value": 0.0,
               "high_risk": false,
-              "cumulative_older_pct": 38.11647622012091
+              "cumulative_older_pct": 40.424063755068694
             },
             {
               "name": "06-09 MONTHS",
-              "value": 610679.231,
-              "share_pct": 9.847544477032296,
+              "value": 576336.5578,
+              "share_pct": 10.05384393028692,
               "aged_value": 0.0,
               "high_risk": false,
-              "cumulative_older_pct": 23.157364327663153
+              "cumulative_older_pct": 24.747621786441105
             },
             {
               "name": "09-12 MONTHS",
-              "value": 364502.7361,
-              "share_pct": 5.877810679539412,
-              "aged_value": 364502.7361,
+              "value": 388542.9403,
+              "share_pct": 6.777897443990648,
+              "aged_value": 388542.9403,
               "high_risk": false,
-              "cumulative_older_pct": 13.309819850630861
+              "cumulative_older_pct": 14.693777856154187
             },
             {
               "name": "12-24 MONTHS",
-              "value": 369845.9645,
-              "share_pct": 5.963973228794246,
-              "aged_value": 369845.9645,
+              "value": 363063.8403,
+              "share_pct": 6.33342989908598,
+              "aged_value": 363063.8403,
               "high_risk": true,
-              "cumulative_older_pct": 7.432009171091448
+              "cumulative_older_pct": 7.915880412163537
             },
             {
               "name": "24+ MONTHS",
-              "value": 91037.828,
-              "share_pct": 1.4680359422972027,
-              "aged_value": 91037.828,
+              "value": 90713.9685,
+              "share_pct": 1.5824505130775584,
+              "aged_value": 90713.9685,
               "high_risk": true,
-              "cumulative_older_pct": 1.4680359422972027
+              "cumulative_older_pct": 1.5824505130775584
             }
           ],
           "sections": [
             {
               "name": "CULINARY SUPPLIES",
-              "value": 197823.4566,
-              "total": 614879.7332,
-              "high_risk": 115957.436
+              "value": 210956.5073,
+              "total": 591650.31,
+              "high_risk": 113855.7547,
+              "qty": 1657507.45,
+              "aged_qty": 631911.05
             },
             {
               "name": "LADIES APPAREL",
-              "value": 120544.8594,
-              "total": 754838.1734,
-              "high_risk": 69623.9062
+              "value": 132254.328,
+              "total": 731297.0988,
+              "high_risk": 68773.7311,
+              "qty": 2661379.0,
+              "aged_qty": 764753.0
             },
             {
               "name": "OFFICE SUPPLIES",
-              "value": 111135.4758,
-              "total": 436670.2123,
-              "high_risk": 82774.8726
+              "value": 111495.9371,
+              "total": 416848.235,
+              "high_risk": 82398.4643,
+              "qty": 2580174.00004,
+              "aged_qty": 843366.0000400001
             },
             {
               "name": "MENS APPAREL",
-              "value": 67952.0865,
-              "total": 464686.1944,
-              "high_risk": 25394.2723
+              "value": 66055.278,
+              "total": 466528.571,
+              "high_risk": 25658.4964,
+              "qty": 700757.0,
+              "aged_qty": 75061.0
             },
             {
               "name": "FOOTWEAR",
-              "value": 58133.5432,
-              "total": 244077.5588,
-              "high_risk": 33904.1175
+              "value": 56854.3069,
+              "total": 238600.2987,
+              "high_risk": 33202.7934,
+              "qty": 310417.0,
+              "aged_qty": 64421.0
             },
             {
               "name": "ENTERTAINMENTS",
-              "value": 48431.2519,
-              "total": 316957.9697,
-              "high_risk": 16531.8119
+              "value": 46761.0014,
+              "total": 288068.4789,
+              "high_risk": 16200.3738,
+              "qty": 182415.0,
+              "aged_qty": 36525.0
             },
             {
               "name": "HOME TEXTILES",
-              "value": 38382.0893,
-              "total": 129558.441,
-              "high_risk": 13551.8922
+              "value": 37527.4939,
+              "total": 130455.4455,
+              "high_risk": 12884.3268,
+              "qty": 187961.0,
+              "aged_qty": 47368.0
             },
             {
               "name": "TOYS",
-              "value": 38101.6733,
-              "total": 256505.9176,
-              "high_risk": 19312.6019
+              "value": 37202.7067,
+              "total": 235365.3801,
+              "high_risk": 18796.4873,
+              "qty": 524492.0,
+              "aged_qty": 73679.0
             },
             {
               "name": "KIDS FASHION",
-              "value": 35153.5741,
-              "total": 123000.7803,
-              "high_risk": 13546.4959
+              "value": 34954.3481,
+              "total": 121748.3533,
+              "high_risk": 13405.5102,
+              "qty": 207434.0,
+              "aged_qty": 75437.0
             },
             {
               "name": "PROVISIONS",
-              "value": 26861.8082,
-              "total": 1059685.762,
-              "high_risk": 13416.6009
+              "value": 27402.5122,
+              "total": 948162.4323,
+              "high_risk": 13931.2485,
+              "qty": 3785765.4538600035,
+              "aged_qty": 60889.4223
             },
             {
               "name": "PERSONAL CARE",
-              "value": 25919.4892,
-              "total": 1037437.7729,
-              "high_risk": 15328.263
+              "value": 25838.4684,
+              "total": 868814.0642,
+              "high_risk": 14554.1564,
+              "qty": 2024270.0,
+              "aged_qty": 108513.0
             },
             {
               "name": "TRAVEL",
-              "value": 22682.1598,
-              "total": 121809.3407,
-              "high_risk": 13947.1529
+              "value": 20898.8123,
+              "total": 119740.2567,
+              "high_risk": 12581.2419,
+              "qty": 68812.0,
+              "aged_qty": 19348.0
             },
             {
               "name": "SPORTING GOODS",
-              "value": 20069.6339,
-              "total": 50925.4674,
-              "high_risk": 19200.8673
+              "value": 19976.9478,
+              "total": 50382.8361,
+              "high_risk": 19113.4328,
+              "qty": 160985.0,
+              "aged_qty": 68511.0
             },
             {
               "name": "GLASS ITEMS",
-              "value": 5489.2707,
-              "total": 19506.4237,
-              "high_risk": 3648.7206
+              "value": 5354.5484,
+              "total": 25179.7385,
+              "high_risk": 3577.5836,
+              "qty": 162735.0,
+              "aged_qty": 25428.0
             },
             {
               "name": "CLEANING ESSENSTIALS",
-              "value": 4422.5809,
-              "total": 138221.5875,
-              "high_risk": 2238.4618
+              "value": 4586.9099,
+              "total": 119961.7648,
+              "high_risk": 2349.3486,
+              "qty": 195595.0,
+              "aged_qty": 6333.0
             }
           ],
           "sku_types": [
             {
               "name": "OVERSEAS",
-              "value": 2198806.7318,
-              "aged": 637842.5306
+              "value": 2212277.747,
+              "aged": 656676.5223
             },
             {
               "name": "LOCAL",
-              "value": 4002528.3566,
-              "aged": 187543.998
+              "value": 3520221.8004,
+              "aged": 185644.2268
             }
           ],
           "risk_split": {
-            "aged_non_moving": 285488.2244,
-            "aged_moving": 539898.3042,
-            "fresh_non_moving": 372462.0252,
-            "fresh_moving": 5003486.5346,
-            "non_moving_total": 657950.2496,
-            "aged_total": 825386.5286000001
+            "aged_non_moving": 278109.2302,
+            "aged_moving": 564211.5189,
+            "fresh_non_moving": 328648.12230000005,
+            "fresh_moving": 4561530.675999999,
+            "non_moving_total": 606757.3525,
+            "aged_total": 842320.7491
           }
         }
       },
@@ -455,7 +1031,7 @@
       "key": "high_risk",
       "label": "High-risk only",
       "kind": "ageing",
-      "total_value": 6201335.0884,
+      "total_value": 5732499.5474,
       "labels": {
         "entities_title": "Which locations hold the high-risk stock",
         "entities_sub": "ranked by stock more than a year old",
@@ -470,19 +1046,19 @@
       },
       "owns_breakdowns": true,
       "period": {
-        "data_as_of": "2026-08-19",
+        "data_as_of": "2026-08-23",
         "grain": "snapshot"
       },
       "hero": {
-        "headline": "QAR 461K of stock is more than a year old",
+        "headline": "USD 454K of stock is more than a year old",
         "narrative": "This view shows only stock in the 12-24 month and 24+ month bands. Every figure below is scoped to it."
       },
       "kpis": [
         {
           "label": "High-risk stock",
-          "value_display": "QAR 461K",
+          "value_display": "USD 454K",
           "change_display": "",
-          "note": "7.4% of all stock value.",
+          "note": "7.9% of all stock value.",
           "rag": {
             "tone": "critical",
             "caution": ""
@@ -490,9 +1066,9 @@
         },
         {
           "label": "Over two years old",
-          "value_display": "QAR 91K",
+          "value_display": "USD 91K",
           "change_display": "",
-          "note": "1.5% of all stock value. Reported separately because it is the likeliest write-off.",
+          "note": "1.6% of all stock value. Reported separately because it is the likeliest write-off.",
           "rag": {
             "tone": "critical",
             "caution": ""
@@ -500,9 +1076,9 @@
         },
         {
           "label": "One to two years old",
-          "value_display": "QAR 370K",
+          "value_display": "USD 363K",
           "change_display": "",
-          "note": "6.0% of all stock value.",
+          "note": "6.3% of all stock value.",
           "rag": {
             "tone": "warn",
             "caution": ""
@@ -513,91 +1089,99 @@
       "tldr": [],
       "layers": {
         "overview": true,
+        "change": {
+          "available": false,
+          "pointer": "What changed is measured across all stock, so it is shown in the all-stock view rather than repeated here."
+        },
+        "outlook": {
+          "available": false,
+          "pointer": "Clearance and the stuck-product list cover all aged stock, so they are shown in the all-stock view rather than repeated here."
+        },
         "entities": {
           "available": true,
           "role": "location",
           "cards": [
             {
               "member": "WH1",
-              "value": 367351.6192,
-              "held": 3849004.2918,
-              "value_display": "QAR 367K",
-              "change_display": "9.5%",
-              "note": "QAR 367K over a year old, 9.5% of this location's own stock.",
-              "share_of_group_pct": 79.70590964098614,
-              "own_share_pct": 9.544068838338623,
-              "tone": "warn"
+              "value": 360079.9818,
+              "held": 3570579.272,
+              "value_display": "USD 360K",
+              "change_display": "10.1%",
+              "note": "USD 360K over a year old, 10.1% of this location's own stock.",
+              "share_of_group_pct": 79.351606627089,
+              "own_share_pct": 10.084637655959597,
+              "tone": "critical"
             },
             {
               "member": "ST2",
-              "value": 25864.2178,
-              "held": 269464.9162,
-              "value_display": "QAR 26K",
-              "change_display": "9.6%",
-              "note": "QAR 26K over a year old, 9.6% of this location's own stock.",
-              "share_of_group_pct": 5.611874017027839,
-              "own_share_pct": 9.5983618812934,
+              "value": 25978.7451,
+              "held": 275114.1597,
+              "value_display": "USD 26K",
+              "change_display": "9.4%",
+              "note": "USD 26K over a year old, 9.4% of this location's own stock.",
+              "share_of_group_pct": 5.724992407341363,
+              "own_share_pct": 9.442896406469476,
               "tone": "warn"
             },
             {
               "member": "ST4",
-              "value": 24779.094,
-              "held": 451293.8489,
-              "value_display": "QAR 25K",
-              "change_display": "5.5%",
-              "note": "QAR 25K over a year old, 5.5% of this location's own stock.",
-              "share_of_group_pct": 5.376429894744021,
-              "own_share_pct": 5.49067842612911,
+              "value": 24777.5438,
+              "held": 425368.3316,
+              "value_display": "USD 25K",
+              "change_display": "5.8%",
+              "note": "USD 25K over a year old, 5.8% of this location's own stock.",
+              "share_of_group_pct": 5.4602810713735375,
+              "own_share_pct": 5.824962029213743,
               "tone": "positive"
             },
             {
               "member": "ST3",
-              "value": 21927.2701,
-              "held": 258589.2389,
-              "value_display": "QAR 22K",
+              "value": 21994.2991,
+              "held": 260077.3469,
+              "value_display": "USD 22K",
               "change_display": "8.5%",
-              "note": "QAR 22K over a year old, 8.5% of this location's own stock.",
-              "share_of_group_pct": 4.757657018281892,
-              "own_share_pct": 8.479575636354914,
+              "note": "USD 22K over a year old, 8.5% of this location's own stock.",
+              "share_of_group_pct": 4.846931399788628,
+              "own_share_pct": 8.456830001598266,
               "tone": "warn"
             },
             {
               "member": "ST1",
-              "value": 15987.4639,
-              "held": 344315.9532,
-              "value_display": "QAR 16K",
-              "change_display": "4.6%",
-              "note": "QAR 16K over a year old, 4.6% of this location's own stock.",
-              "share_of_group_pct": 3.468870930192235,
-              "own_share_pct": 4.643253892657565,
+              "value": 16036.4334,
+              "held": 323884.4521,
+              "value_display": "USD 16K",
+              "change_display": "5.0%",
+              "note": "USD 16K over a year old, 5.0% of this location's own stock.",
+              "share_of_group_pct": 3.533983612466155,
+              "own_share_pct": 4.951282253909712,
               "tone": "positive"
             },
             {
               "member": "WH2",
-              "value": 3698.0248,
-              "held": 1011799.203,
-              "value_display": "QAR 4K",
+              "value": 3631.0266,
+              "held": 860608.3488,
+              "value_display": "USD 4K",
               "change_display": "0.4%",
-              "note": "QAR 4K over a year old, 0.4% of this location's own stock.",
-              "share_of_group_pct": 0.8023768377578606,
-              "own_share_pct": 0.3654899894203613,
+              "note": "USD 4K over a year old, 0.4% of this location's own stock.",
+              "share_of_group_pct": 0.8001772077841637,
+              "own_share_pct": 0.4219139408841394,
               "tone": "positive"
             },
             {
               "member": "ST5",
-              "value": 1276.1027,
-              "held": 16867.6364,
-              "value_display": "QAR 1K",
+              "value": 1279.779,
+              "held": 16867.6363,
+              "value_display": "USD 1K",
               "change_display": "7.6%",
-              "note": "QAR 1K over a year old, 7.6% of this location's own stock.",
-              "share_of_group_pct": 0.27688166101002565,
-              "own_share_pct": 7.565391319438211,
+              "note": "USD 1K over a year old, 7.6% of this location's own stock.",
+              "share_of_group_pct": 0.28202767415716784,
+              "own_share_pct": 7.587186356395413,
               "tone": "warn"
             }
           ],
           "caption": "High-risk stock by location.",
           "rate_unit": "high-risk",
-          "average_rate": 7.432009171091448
+          "average_rate": 7.915880412163537
         },
         "areas": {
           "available": true,
@@ -605,158 +1189,188 @@
           "rows": [
             {
               "name": "HOME & LIVING",
-              "value": 215932.9214,
-              "held": 1200614.8102,
-              "value_display": "QAR 216K",
-              "held_display": "QAR 1.20M",
-              "own_share": 17.985195548606438,
+              "value": 212716.1294,
+              "held": 1164133.729,
+              "value_display": "USD 213K",
+              "held_display": "USD 1.16M",
+              "own_share": 18.272482284550318,
               "group_share": null,
               "tone": "critical"
             },
             {
               "name": "LIFESTYLE",
-              "value": 195502.5198,
-              "held": 2016539.4152,
-              "value_display": "QAR 196K",
-              "held_display": "QAR 2.02M",
-              "own_share": 9.694951575276306,
+              "value": 192104.7202,
+              "held": 1964357.4462,
+              "value_display": "USD 192K",
+              "held_display": "USD 1.96M",
+              "own_share": 9.77951953559276,
               "group_share": null,
               "tone": "warn"
             },
             {
               "name": "CONSUMER GOODS",
-              "value": 32911.5501,
-              "held": 2662952.3566,
-              "value_display": "QAR 33K",
-              "held_display": "QAR 2.66M",
-              "own_share": 1.2359045785565896,
+              "value": 32751.5961,
+              "held": 2312537.35,
+              "value_display": "USD 33K",
+              "held_display": "USD 2.31M",
+              "own_share": 1.4162623622057389,
               "group_share": null,
               "tone": "positive"
             },
             {
               "name": "TECHNOLOGY",
-              "value": 16536.8012,
-              "held": 321228.5064,
-              "value_display": "QAR 17K",
-              "held_display": "QAR 321K",
-              "own_share": 5.147986828855112,
+              "value": 16205.3631,
+              "held": 291471.0222,
+              "value_display": "USD 16K",
+              "held_display": "USD 291K",
+              "own_share": 5.559853935970448,
               "group_share": null,
               "tone": "positive"
             }
           ],
           "caption": "Divisions ranked by high-risk stock held.",
           "rate_unit": "high-risk",
-          "average_rate": 7.432009171091448
+          "average_rate": 7.915880412163537
         },
         "detail": {
           "bands": [
             {
               "name": "12-24 MONTHS",
-              "value": 369845.9645,
-              "share_pct": 5.963973228794246,
-              "aged_value": 369845.9645,
+              "value": 363063.8403,
+              "share_pct": 6.33342989908598,
+              "aged_value": 363063.8403,
               "high_risk": true,
-              "cumulative_older_pct": 7.432009171091448
+              "cumulative_older_pct": 7.915880412163537
             },
             {
               "name": "24+ MONTHS",
-              "value": 91037.828,
-              "share_pct": 1.4680359422972027,
-              "aged_value": 91037.828,
+              "value": 90713.9685,
+              "share_pct": 1.5824505130775584,
+              "aged_value": 90713.9685,
               "high_risk": true,
-              "cumulative_older_pct": 1.4680359422972027
+              "cumulative_older_pct": 1.5824505130775584
             }
           ],
           "sections": [
             {
               "name": "CULINARY SUPPLIES",
-              "value": 197823.4566,
-              "total": 614879.7332,
-              "high_risk": 115957.436
+              "value": 210956.5073,
+              "total": 591650.31,
+              "high_risk": 113855.7547,
+              "qty": 1657507.45,
+              "aged_qty": 631911.05
             },
             {
               "name": "LADIES APPAREL",
-              "value": 120544.8594,
-              "total": 754838.1734,
-              "high_risk": 69623.9062
+              "value": 132254.328,
+              "total": 731297.0988,
+              "high_risk": 68773.7311,
+              "qty": 2661379.0,
+              "aged_qty": 764753.0
             },
             {
               "name": "OFFICE SUPPLIES",
-              "value": 111135.4758,
-              "total": 436670.2123,
-              "high_risk": 82774.8726
+              "value": 111495.9371,
+              "total": 416848.235,
+              "high_risk": 82398.4643,
+              "qty": 2580174.00004,
+              "aged_qty": 843366.0000400001
             },
             {
               "name": "MENS APPAREL",
-              "value": 67952.0865,
-              "total": 464686.1944,
-              "high_risk": 25394.2723
+              "value": 66055.278,
+              "total": 466528.571,
+              "high_risk": 25658.4964,
+              "qty": 700757.0,
+              "aged_qty": 75061.0
             },
             {
               "name": "FOOTWEAR",
-              "value": 58133.5432,
-              "total": 244077.5588,
-              "high_risk": 33904.1175
+              "value": 56854.3069,
+              "total": 238600.2987,
+              "high_risk": 33202.7934,
+              "qty": 310417.0,
+              "aged_qty": 64421.0
             },
             {
               "name": "ENTERTAINMENTS",
-              "value": 48431.2519,
-              "total": 316957.9697,
-              "high_risk": 16531.8119
+              "value": 46761.0014,
+              "total": 288068.4789,
+              "high_risk": 16200.3738,
+              "qty": 182415.0,
+              "aged_qty": 36525.0
             },
             {
               "name": "HOME TEXTILES",
-              "value": 38382.0893,
-              "total": 129558.441,
-              "high_risk": 13551.8922
+              "value": 37527.4939,
+              "total": 130455.4455,
+              "high_risk": 12884.3268,
+              "qty": 187961.0,
+              "aged_qty": 47368.0
             },
             {
               "name": "TOYS",
-              "value": 38101.6733,
-              "total": 256505.9176,
-              "high_risk": 19312.6019
+              "value": 37202.7067,
+              "total": 235365.3801,
+              "high_risk": 18796.4873,
+              "qty": 524492.0,
+              "aged_qty": 73679.0
             },
             {
               "name": "KIDS FASHION",
-              "value": 35153.5741,
-              "total": 123000.7803,
-              "high_risk": 13546.4959
+              "value": 34954.3481,
+              "total": 121748.3533,
+              "high_risk": 13405.5102,
+              "qty": 207434.0,
+              "aged_qty": 75437.0
             },
             {
               "name": "PROVISIONS",
-              "value": 26861.8082,
-              "total": 1059685.762,
-              "high_risk": 13416.6009
+              "value": 27402.5122,
+              "total": 948162.4323,
+              "high_risk": 13931.2485,
+              "qty": 3785765.4538600035,
+              "aged_qty": 60889.4223
             },
             {
               "name": "PERSONAL CARE",
-              "value": 25919.4892,
-              "total": 1037437.7729,
-              "high_risk": 15328.263
+              "value": 25838.4684,
+              "total": 868814.0642,
+              "high_risk": 14554.1564,
+              "qty": 2024270.0,
+              "aged_qty": 108513.0
             },
             {
               "name": "TRAVEL",
-              "value": 22682.1598,
-              "total": 121809.3407,
-              "high_risk": 13947.1529
+              "value": 20898.8123,
+              "total": 119740.2567,
+              "high_risk": 12581.2419,
+              "qty": 68812.0,
+              "aged_qty": 19348.0
             },
             {
               "name": "SPORTING GOODS",
-              "value": 20069.6339,
-              "total": 50925.4674,
-              "high_risk": 19200.8673
+              "value": 19976.9478,
+              "total": 50382.8361,
+              "high_risk": 19113.4328,
+              "qty": 160985.0,
+              "aged_qty": 68511.0
             },
             {
               "name": "GLASS ITEMS",
-              "value": 5489.2707,
-              "total": 19506.4237,
-              "high_risk": 3648.7206
+              "value": 5354.5484,
+              "total": 25179.7385,
+              "high_risk": 3577.5836,
+              "qty": 162735.0,
+              "aged_qty": 25428.0
             },
             {
               "name": "CLEANING ESSENSTIALS",
-              "value": 4422.5809,
-              "total": 138221.5875,
-              "high_risk": 2238.4618
+              "value": 4586.9099,
+              "total": 119961.7648,
+              "high_risk": 2349.3486,
+              "qty": 195595.0,
+              "aged_qty": 6333.0
             }
           ],
           "sku_types": [],
@@ -769,8 +1383,8 @@
     }
   ],
   "caveats": [
+    "Stock value is calculated differently on the two dates being compared, so this report compares units and shares only. ST5 holds the same quantity of stock on both dates (79,838 units) but its value has moved from 0.78 to 0.21 per unit. Stock that did not move cannot change in worth, so the way stock value is calculated has changed between the two dates. Value figures are therefore not compared here.",
     "The semantic model's [aged stock share] was excluded: its numerator does not reconcile to the Stock Value exposure used by this report.",
-    "Stock age movement between two dates cannot be shown, because the model holds only one stock position (a single snapshot date). Showing it would need the previous snapshot to be retained.",
     "This report shows how old stock is and which aged stock is not selling. It does not say why stock is ageing, or what to do about it."
   ],
   "checks": {
@@ -778,5 +1392,6 @@
     "aged_sums_to_total_aged": true,
     "risk_split_sums_to_total": true,
     "risk_split_aged_matches": true
-  }
+  },
+  "value_basis_note": "All values are USD and are the stock value held in the source report."
 }

@@ -18,12 +18,12 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 #: Which runner this job invokes, named by `AGENT_RUNNER`.
 #:
-#: Two of the four reports are deliberately outside the LangGraph pipeline:
-#: Target Tracker has no prior year and Inventory Management has no prior
-#: period at all, so the summary branch's year-on-year spine, focus rotation
-#: and coverage have nothing to work with. They follow a deterministic
-#: scan -> model -> render shape instead, and until now had no container path -
-#: only a command line.
+#: Three of the five reports are deliberately outside the LangGraph pipeline:
+#: Target Tracker has no prior year, Inventory Management has no prior
+#: period, and Ageing has exactly one stock snapshot - so the summary
+#: branch's year-on-year spine, focus rotation and coverage have nothing to
+#: work with. They follow a deterministic scan -> model -> render shape
+#: instead, and until now had no container path - only a command line.
 #:
 #: The default is deliberately absent, not "graph": a job that sets no
 #: `AGENT_RUNNER` runs exactly what it ran before this existed, so every
@@ -32,6 +32,9 @@ RUNNERS: dict[str, str] = {
     "graph": "",  # the LangGraph pipeline - src.main
     "target_tracker": "scripts.run_target_tracker",
     "inventory": "scripts.run_inventory",
+    "ageing": "scripts.run_ageing",
+    "sku_overview": "scripts.run_sku_overview",
+    "daily_sales": "scripts.run_daily_sales",
 }
 
 

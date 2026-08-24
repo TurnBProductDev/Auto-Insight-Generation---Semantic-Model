@@ -166,6 +166,39 @@ def render(report: dict, eyebrow: str = "Inventory") -> str:
     for line in report.get("narrative") or []:
         parts.append(f"<p>{_e(line)}</p>")
 
+    # --- what moved since the earlier position ---
+    # Shares and counts only unless the basis check cleared value; the two
+    # artifacts from one run must not disagree about that, so this page states
+    # the same refusal the dashboard does rather than quietly omitting it.
+    comparison = report.get("comparison") or {}
+    if comparison.get("available"):
+        parts.append(f"<h2>What changed since {_e(comparison.get('prior_as_at'))}</h2>")
+        parts.append(f"<p><strong>{_e(comparison.get('verdict'))}</strong> over "
+                     f"{_e(comparison.get('days'))} days, from "
+                     f"{_e(comparison.get('prior_as_at'))} to "
+                     f"{_e(comparison.get('as_at'))}.</p>")
+        parts.append('<div class="scroll"><table><thead><tr><th>Reading</th>'
+                     f'<th class="n">{_e(comparison.get("prior_as_at"))}</th>'
+                     f'<th class="n">{_e(comparison.get("as_at"))}</th>'
+                     '<th class="n">Change</th></tr></thead><tbody>')
+        for reading in comparison.get("headlines") or []:
+            points = reading.get("points")
+            moved = ("-" if not isinstance(points, (int, float))
+                     else f"{'+' if points >= 0 else '-'}{abs(float(points)):.1f} pts")
+            parts.append(
+                f'<tr><td>{_e(reading.get("label"))}</td>'
+                f'<td class="n">{_e(_pct(reading.get("then_pct")))}</td>'
+                f'<td class="n">{_e(_pct(reading.get("now_pct")))}</td>'
+                f'<td class="n">{_e(moved)}</td></tr>')
+        parts.append("</tbody></table></div>")
+        agreement = (comparison.get("agreement") or {}).get("text")
+        if agreement:
+            parts.append(f"<p>{_e(agreement)}</p>")
+        if not comparison.get("value_comparable"):
+            reason = (comparison.get("basis") or {}).get("reason")
+            parts.append(f"<p><strong>Why totals are not compared.</strong> "
+                         f"{_e(reason)}</p>")
+
     # --- aged x non-moving, kept as four cells so nothing is double-counted ---
     parts.append("<h2>Aged and non-moving are separate things</h2>")
     parts.append('<div class="scroll"><table><thead><tr><th></th>'
@@ -230,6 +263,7 @@ def render(report: dict, eyebrow: str = "Inventory") -> str:
                      f"withheld: {_e(', '.join(failed))}.</p>")
 
     parts.append(f"<footer>Stock position {_e(report.get('period_label'))}. "
-                 f"All values are {_e(currency)} at landing cost, excluding VAT.</footer>")
+                 f"All values are {_e(currency)} and are the stock value held in the "
+                 f"source report.</footer>")
     parts.append("</div>")
     return "\n".join(parts)

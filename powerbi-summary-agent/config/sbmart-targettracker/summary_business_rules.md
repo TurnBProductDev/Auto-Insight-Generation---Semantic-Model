@@ -27,7 +27,8 @@ date, then year to date. The nearer period leads; the year is context.
 
 ## Currency and language
 
-- All money is Qatari riyals, shown as QAR.
+- All money is shown in USD (the model's own figures are labelled QAR, but this
+  report publishes in USD by configuration - never restate the model's own label).
 - Always pair a percentage with its actual and target values or its value gap.
 - Prefer plain phrases such as `this week`, `this month` and `% of target`.
 - Do not use forecasting language. A projection is only arithmetic carrying a stated

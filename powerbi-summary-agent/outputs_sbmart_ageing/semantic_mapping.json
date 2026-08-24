@@ -128,6 +128,16 @@
             "strong semantic token: updatedon",
             "supporting token: updated"
           ]
+        },
+        {
+          "reference": "'REP_SSR_SAG_HIST'[UPDATED_ON]",
+          "table": "REP_SSR_SAG_HIST",
+          "kind": "column",
+          "score": 98,
+          "evidence": [
+            "strong semantic token: updatedon",
+            "supporting token: updated"
+          ]
         }
       ]
     },
@@ -157,6 +167,15 @@
           ]
         },
         {
+          "reference": "'REP_SSR_SAG_HIST'[agingstock]",
+          "table": "REP_SSR_SAG_HIST",
+          "kind": "column",
+          "score": 80,
+          "evidence": [
+            "strong semantic token: agingstock"
+          ]
+        },
+        {
           "reference": "[STOCK VALUE]",
           "table": "REP_SSR_SAG",
           "kind": "measure",
@@ -175,16 +194,6 @@
             "model measure",
             "additive expression"
           ]
-        },
-        {
-          "reference": "[stock share1]",
-          "table": "REP_SSR_SAG",
-          "kind": "measure",
-          "score": 27,
-          "evidence": [
-            "model measure",
-            "additive expression"
-          ]
         }
       ]
     },
@@ -195,6 +204,15 @@
         {
           "reference": "'REP_SSR_SAG'[non_moving_status]",
           "table": "REP_SSR_SAG",
+          "kind": "column",
+          "score": 80,
+          "evidence": [
+            "strong semantic token: nonmovingstatus"
+          ]
+        },
+        {
+          "reference": "'REP_SSR_SAG_HIST'[non_moving_status]",
+          "table": "REP_SSR_SAG_HIST",
           "kind": "column",
           "score": 80,
           "evidence": [

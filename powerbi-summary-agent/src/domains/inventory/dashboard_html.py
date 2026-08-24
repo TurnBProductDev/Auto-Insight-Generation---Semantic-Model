@@ -152,7 +152,7 @@ def _area_table(areas: dict, labels: dict) -> str:
     )
     return (
         f'<h3 class="block-title">{_safe(areas.get("caption"))}</h3>'
-        '<div class="scroll"><table><thead><tr>'
+        '<div class="scroll"><table class="tbl"><thead><tr>'
         f'<th>{_safe(labels.get("area_member", "Division"))}</th>'
         f'<th class="n">{_safe(labels.get("area_value", "Value"))}</th>'
         f'<th class="n">{_safe(labels.get("area_held", "Stock held"))}</th>'
@@ -183,7 +183,7 @@ def _queue_block(queue: list[dict]) -> str:
     )
     return (
         '<h3 class="block-title">What to do next, most urgent first</h3>'
-        '<div class="scroll"><table class="queue"><thead><tr>'
+        '<div class="scroll"><table class="tbl queue"><thead><tr>'
         '<th>Situation</th><th class="n">Product lines</th>'
         '<th class="n">Stock value</th><th>What the buying team should do</th>'
         f'</tr></thead><tbody>{body}</tbody></table></div>'
@@ -205,7 +205,7 @@ def _simple_table(rows: list[dict], title: str, columns: list[tuple]) -> str:
             for _label, key, numeric, fmt in columns) + "</tr>"
         for r in rows)
     return (f'<h3 class="block-title">{_safe(title)}</h3>'
-            f'<div class="scroll"><table><thead><tr>{head}</tr></thead>'
+            f'<div class="scroll"><table class="tbl"><thead><tr>{head}</tr></thead>'
             f'<tbody>{body}</tbody></table></div>')
 
 
@@ -278,7 +278,7 @@ def _detail_block(detail: dict) -> str:
             + charts.cumulative_curve(bands))
         parts.append(
             '<h3 class="block-title">Every age band</h3>'
-            '<div class="scroll"><table><thead><tr><th>Age band</th>'
+            '<div class="scroll"><table class="tbl"><thead><tr><th>Age band</th>'
             '<th class="n">Stock value</th><th class="n">Share</th>'
             '<th class="n">Of which aged</th><th class="n">This band or older</th>'
             f'</tr></thead><tbody>{body}</tbody></table></div>')
@@ -287,7 +287,7 @@ def _detail_block(detail: dict) -> str:
     if split:
         parts.append(
             '<h3 class="block-title">Aged and not selling are separate things</h3>'
-            '<div class="scroll"><table><thead><tr><th></th>'
+            '<div class="scroll"><table class="tbl"><thead><tr><th></th>'
             '<th class="n">Not selling</th><th class="n">Still selling</th>'
             '</tr></thead><tbody>'
             f'<tr><td>Aged</td><td class="n">{_safe(_money(split.get("aged_non_moving")))}</td>'
@@ -308,7 +308,7 @@ def _detail_block(detail: dict) -> str:
         )
         parts.append(
             '<h3 class="block-title">Sections holding the most aged stock</h3>'
-            '<div class="scroll"><table><thead><tr><th>Section</th>'
+            '<div class="scroll"><table class="tbl"><thead><tr><th>Section</th>'
             '<th class="n">Aged stock</th><th class="n">Stock held</th>'
             f'</tr></thead><tbody>{body}</tbody></table></div>')
 
@@ -328,7 +328,7 @@ def _detail_block(detail: dict) -> str:
             # the gap is bigger than that explains, which needs both rates side
             # by side rather than one share at a time.
             + charts.split_bars(sku_types, value_key="aged", total_key="value")
-            + '<div class="scroll"><table><thead><tr><th>Type</th>'
+            + '<div class="scroll"><table class="tbl"><thead><tr><th>Type</th>'
             '<th class="n">Stock value</th><th class="n">Aged stock</th>'
             '<th class="n">Aged share</th>'
             f'</tr></thead><tbody>{body}</tbody></table></div>')
@@ -511,6 +511,213 @@ def _focus_layer_html(focus: dict) -> str:
     return lead + f'<div class="grid-2">{"".join(cards)}</div>' + evidence
 
 
+def _change_layer_html(change: dict) -> str:
+    """What changed, one block per comparison lane.
+
+    Each lane states its own window in its own heading. That repetition is
+    deliberate and is the one thing this layer cannot get wrong: two comparisons
+    over two different windows sitting under one shared date would be read as
+    one comparison, and the reader has no way to notice.
+    """
+    if change.get("pointer"):
+        return f'<p class="note-band">{_safe(change["pointer"])}</p>'
+    lanes = change.get("lanes") or []
+    if not lanes:
+        return (f'<p class="note-band">{_safe(change.get("reason") or "")}</p>'
+                if change.get("reason") else "")
+
+    parts: list[str] = []
+    if change.get("caption"):
+        parts.append(f'<p class="viz-note">{_safe(change["caption"])}</p>')
+
+    for lane in lanes:
+        parts.append(f'<h3 class="block-title">{_safe(lane.get("title"))}</h3>')
+        if not lane.get("available"):
+            parts.append(f'<p class="note-band">{_safe(lane.get("reason") or "")}</p>')
+            continue
+        parts.append(
+            '<div class="lane-head">'
+            f'<span class="lane-verdict lane-{_safe(lane.get("verdict_tone") or "neutral")}">'
+            f'{_safe(lane.get("verdict"))}</span>'
+            f'<span class="lane-window">{_safe(lane.get("window"))}</span>'
+            f'<span class="lane-sub">{_safe(lane.get("sub"))}</span>'
+            '</div>')
+        then_label = _date_text(lane.get("window"), first=True)
+        now_label = _date_text(lane.get("window"), first=False)
+        parts.append(charts.shift_dumbbells(
+            lane.get("headlines") or [], then_label, now_label))
+        if lane.get("agreement"):
+            parts.append(f'<p class="viz-note">{_safe(lane["agreement"])}</p>')
+        if not lane.get("value_comparable") and lane.get("value_note"):
+            parts.append(
+                '<div class="basis-note"><strong>Why totals are not compared</strong>'
+                f'<p>{_safe(lane["value_note"])}</p></div>')
+
+        bands = lane.get("bands") or []
+        if bands:
+            parts.append('<h3 class="block-title">Where the stock sits on the '
+                         'age scale, then and now</h3>')
+            parts.append(charts.band_share_pairs(bands, then_label, now_label))
+
+        members = lane.get("members") or []
+        if members:
+            body = "".join(
+                '<tr>'
+                f'<td>{_safe(m.get("name"))}</td>'
+                f'<td class="n">{_safe(_pct_text(m.get("aged_share_then_pct")))}</td>'
+                f'<td class="n">{_safe(_pct_text(m.get("aged_share_now_pct")))}</td>'
+                f'<td class="n">{_safe(_points_text(m.get("points")))}</td>'
+                f'<td>{_safe(_move_word(m.get("direction")))}</td>'
+                '</tr>'
+                for m in members)
+            parts.append(
+                '<h3 class="block-title">Which locations moved</h3>'
+                '<div class="scroll"><table class="tbl"><thead><tr><th>Location</th>'
+                f'<th class="n">Aged share, {_safe(then_label)}</th>'
+                f'<th class="n">Aged share, {_safe(now_label)}</th>'
+                '<th class="n">Change</th><th>Reading</th>'
+                f'</tr></thead><tbody>{body}</tbody></table></div>'
+                '<p class="viz-note">Each location measured against its own '
+                'stock, so a small store and a large warehouse can be compared '
+                'fairly.</p>')
+
+        skus_now, skus_then = lane.get("skus_now"), lane.get("skus_then")
+        if skus_now and skus_then:
+            moved = int(skus_now) - int(skus_then)
+            word = ("the same number of" if moved == 0
+                    else f"{abs(moved):,} {'more' if moved > 0 else 'fewer'}")
+            parts.append(
+                f'<p class="viz-note">The business stocked {word} products on '
+                f'{_safe(now_label)} than on {_safe(then_label)} '
+                f'({int(skus_then):,} to {int(skus_now):,}). Counting products '
+                f'is not affected by how stock is valued.</p>')
+    return "".join(parts)
+
+
+def _date_text(window: Any, *, first: bool) -> str:
+    """Pull one end of a window label like `14 August to 23 August - 9 days`."""
+    text = str(window or "")
+    if " to " not in text:
+        return "earlier" if first else "now"
+    left, right = text.split(" to ", 1)
+    return left.strip() if first else right.split(" - ")[0].strip()
+
+
+def _points_text(value: Any) -> str:
+    number = _ratio_num(value)
+    if number is None:
+        return "-"
+    sign = "+" if number > 0 else ""
+    return f"{sign}{number:.1f} pts"
+
+
+def _move_word(direction: Any) -> str:
+    return {"worse": "Got worse", "better": "Improved"}.get(
+        str(direction or ""), "About the same")
+
+
+def _ratio_num(value: Any) -> float | None:
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        return None
+    return number
+
+
+def _outlook_layer_html(outlook: dict) -> str:
+    """Clearance, the category review and the stuck product lines."""
+    if outlook.get("pointer"):
+        return f'<p class="note-band">{_safe(outlook["pointer"])}</p>'
+    parts: list[str] = []
+
+    clearance = outlook.get("clearance") or {}
+    if clearance.get("available"):
+        horizon = int(clearance.get("horizon_days") or 30)
+        parts.append(
+            f'<h3 class="block-title">How much of the old stock would sell in '
+            f'the next {horizon} days</h3>')
+        parts.append(charts.clearance_bars(clearance.get("rows") or [], horizon))
+        parts.append(_simple_table(
+            clearance.get("rows") or [], "The same divisions as a table",
+            [("Division", "name", False, _text),
+             ("Aged stock", "aged_value", True, _money),
+             ("Aged share of its own stock", "aged_share_pct", True, _pct_text),
+             ("Units sitting aged", "aged_qty", True, _count),
+             ("Units sold a day", "daily_qty", True, _count),
+             (f"Clears in {horizon} days", "cleared_pct", True, _pct_text),
+             ("Time to clear it all", "days_display", False, _text)]))
+        for caveat in clearance.get("caveats") or []:
+            parts.append(f'<p class="viz-note">{_safe(caveat)}</p>')
+    elif clearance.get("reason"):
+        parts.append(f'<p class="note-band">{_safe(clearance["reason"])}</p>')
+
+    categories = outlook.get("categories") or {}
+    if categories.get("available"):
+        parts.append(
+            f'<h3 class="block-title">Categories with too much old stock of '
+            f'their own</h3>')
+        parts.append(
+            '<div class="cat-headline">'
+            f'<span class="cat-big">{int(categories.get("over") or 0):,}</span>'
+            f'<span class="cat-of">of {int(categories.get("carried") or 0):,} '
+            f'categories are above the '
+            f'{float(categories.get("threshold_pct") or 30):.0f}% line</span>'
+            '</div>')
+        parts.append(charts.category_bars(
+            categories.get("worst") or [],
+            float(categories.get("threshold_pct") or 30)))
+        highest = categories.get("highest_share") or {}
+        if highest.get("name"):
+            parts.append(
+                f'<p class="viz-note">The highest percentage of all belongs to '
+                f'{_safe(highest.get("name"))} at '
+                f'{_safe(_pct_text(highest.get("aged_share_pct")))}, but only '
+                f'{_safe(_money(highest.get("aged")))} sits behind it. That is '
+                f'why the list above is ordered by money rather than by '
+                f'percentage.</p>')
+    elif categories.get("reason"):
+        parts.append(f'<p class="note-band">{_safe(categories["reason"])}</p>')
+
+    stuck = outlook.get("stuck") or {}
+    if stuck.get("available"):
+        parts.append('<h3 class="block-title">The product lines with the most '
+                     'money stuck</h3>')
+        parts.append(_simple_table(
+            stuck.get("rows") or [], "",
+            [("Product", "sku", False, _text),
+             ("Category", "category", False, _text),
+             ("Location", "location", False, _text),
+             ("Units held", "qty", True, _count),
+             ("Stock value", "value", True, _money),
+             ("Units sold a day", "daily_qty", True, _count),
+             ("Ageing risk", "risk_score", True, _score_text),
+             ("Status in the source report", "status", False, _text)]))
+        estate = stuck.get("estate_lines")
+        if estate:
+            parts.append(
+                f'<p class="viz-note">These are the {len(stuck.get("rows") or []):,} '
+                f'with the most money against them. Across the whole business '
+                f'{int(estate):,} product-and-location lines sit at or below the '
+                f'same risk score, so this table is the top of a much longer '
+                f'list.</p>')
+        if stuck.get("still_selling"):
+            parts.append(
+                f'<p class="viz-note">{int(stuck["still_selling"])} of the lines '
+                f'above are still selling every day. A product can sell well and '
+                f'still be at the worst risk score, when one old batch is stuck '
+                f'behind newer stock of the same product.</p>')
+        if stuck.get("note"):
+            parts.append(f'<p class="viz-note">{_safe(stuck["note"])}</p>')
+    elif stuck.get("reason"):
+        parts.append(f'<p class="note-band">{_safe(stuck["reason"])}</p>')
+
+    return "".join(p for p in parts if p)
+
+
+def _score_text(value: Any) -> str:
+    number = _ratio_num(value)
+    return "-" if number is None else f"{number:.0f}"
+
 def _view_html(view: dict, active: bool) -> str:
     key = str(view.get("key") or "view")
     period = view.get("period") or {}
@@ -603,6 +810,23 @@ def _view_html(view: dict, active: bool) -> str:
     # three times inside the first 120px - page subtitle, view context and hero
     # eyebrow - which reads as a stutter rather than as emphasis.
 
+    # The Stock Age page grew two tabs once the source model started keeping an
+    # earlier position and exposing selling rates. They are emitted only when the
+    # view actually carries them, so a client whose model has neither still
+    # renders exactly the four-layer page.
+    change_layer = layers.get("change")
+    outlook_layer = layers.get("outlook")
+    change_html = (
+        _layer(key, "change", "What changed",
+               "how this position compares with the one before it",
+               _change_layer_html(change_layer), False)
+        if change_layer else "")
+    outlook_html = (
+        _layer(key, "outlook", "Where to act",
+               "how fast the old stock clears, and what is stuck",
+               _outlook_layer_html(outlook_layer), False)
+        if outlook_layer else "")
+
     score_layer = layers.get("score") or {}
     focus_layer = layers.get("focus") or {}
     extra = ""
@@ -621,6 +845,7 @@ def _view_html(view: dict, active: bool) -> str:
         + _tldr(view.get("tldr") or [], key)
         + _layer(key, "overview", "Inventory summary",
                  "the whole position, before any breakdown", overview, True)
+        + change_html
         + extra
         + _layer(key, "entities",
                  labels.get("entities_title", "Locations"),
@@ -633,6 +858,7 @@ def _view_html(view: dict, active: bool) -> str:
                      unit=str(areas.get("rate_unit") or ""),
                      average=areas.get("average_rate"))
                  + _area_table(areas, labels), False)
+        + outlook_html
         + _layer(key, "detail",
                  labels.get("detail_title", "Full detail"),
                  labels.get("detail_sub", ""),
@@ -740,7 +966,10 @@ table.queue tr.urgent td{background:#fdf1ec}
 .ranked-bars{display:flex;flex-direction:column;gap:7px;margin:8px 0 4px}
 .rb-row{display:grid;grid-template-columns:190px 1fr 150px;gap:12px;align-items:center;font-size:13px}
 .rb-lab{font-weight:600;line-height:1.25}
-.rb-lab small,.rb-val small,.sb-lab small,.ql-val small{display:block;font-weight:400;font-size:11px;color:#5b7182}
+/* `.sb-val small` was missing here, so the two-population chart rendered
+   its value and its sub-label as one run-on string: 'USD 2.21MUSD 657K
+   aged'. */
+.rb-lab small,.rb-val small,.sb-lab small,.sb-val small,.ql-val small{display:block;font-weight:400;font-size:11px;color:#5b7182}
 .rb-track{background:#eef2f6;border-radius:99px;height:11px;overflow:hidden}
 .rb-fill{display:block;height:100%;border-radius:99px}
 .rb-val{text-align:right;font-variant-numeric:tabular-nums;font-weight:650}
@@ -778,6 +1007,96 @@ table.queue tr.urgent td{background:#fdf1ec}
   .rb-track,.ql-track,.sb-track{grid-area:track}
 }
 @media print{.chart-stage{overflow:visible}.rm-cell,.ql-row,.rb-row{break-inside:avoid}}
+
+/* A KPI card with no comparison still emitted an empty coloured pill, which
+   read as a rendering fault once some cards on the same row DID carry one.
+   Hidden here rather than in the shared card renderer, because that renderer
+   also draws the sales dashboard and its output is byte-compared. */
+.badge:empty{display:none}
+
+/* `.scroll` was used by every table on both inventory pages and defined
+   nowhere, so a wide table pushed the page sideways instead of scrolling
+   inside its own box - and, because the tables carried no class at all, none
+   of them picked up the shared `.tbl` styling either. Both fixed together. */
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.scroll table{min-width:100%}
+
+/* --- Comparing two positions ------------------------------------------ */
+/* Each lane states its own window in its own head, because two comparisons
+   over two different windows under one shared date read as one comparison. */
+.lane-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px;margin:2px 0 12px}
+.lane-verdict{font-weight:700;font-size:13px;border-radius:99px;padding:2px 11px}
+.lane-critical{color:#cf4636;background:#fdeeeb}
+.lane-positive{color:#2f8f4e;background:#e9f6ee}
+.lane-neutral{color:#5b7182;background:#eef2f6}
+.lane-window{font-size:12.5px;font-weight:650;color:#233b4d;font-variant-numeric:tabular-nums}
+.lane-sub{font-size:11.5px;color:#5b7182}
+.basis-note{border-left:3px solid #c08429;background:#fdf7ec;border-radius:0 8px 8px 0;
+            padding:10px 14px;margin:10px 0 4px}
+.basis-note strong{display:block;font-size:12px;color:#8a5f10;margin-bottom:3px}
+.basis-note p{margin:0;font-size:12.5px;color:#3d5567;line-height:1.5}
+
+/* Where it was, where it is: the gap is the reading, so the gap is drawn. */
+/* Capped: on a wide screen a full-width track spreads three readings that
+   sit between 7% and 18% across 900px, and the gap the chart exists to show
+   becomes a smudge. */
+.dumbbells{display:flex;flex-direction:column;gap:13px;margin:8px 0 4px;max-width:880px}
+.band-pairs,.clearance,.cat-bars{max-width:980px}
+.db-row{display:grid;grid-template-columns:210px 1fr 160px;gap:14px;align-items:center;font-size:13px}
+.db-lab{font-weight:600;line-height:1.25}
+.db-lab small,.db-val small,.bp-val small,.cl-lab small,.cl-val small,.cat-val small{
+  display:block;font-weight:400;font-size:11px;color:#5b7182;margin-top:2px}
+.db-track{position:relative;height:14px;background:#eef2f6;border-radius:99px}
+.db-bar{position:absolute;top:4px;height:6px;border-radius:99px;opacity:.6}
+.db-dot{position:absolute;top:1px;width:12px;height:12px;margin-left:-6px;border-radius:50%;
+        border:2px solid #fff;box-shadow:0 0 0 1px rgba(16,24,40,.12)}
+.db-then{background:#98a9b8}
+.db-now{background:#c08429}
+.db-val{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
+.db-critical{color:#cf4636;font-weight:650}
+.db-positive{color:#2f8f4e;font-weight:650}
+.db-neutral{color:#5b7182}
+
+/* Band mix on both dates. Shares, not counts - the two totals differ in size. */
+.band-pairs{display:flex;flex-direction:column;gap:11px;margin:8px 0 4px}
+.bp-row{display:grid;grid-template-columns:190px 1fr 140px;gap:14px;align-items:center;font-size:13px}
+.bp-lab{font-weight:600}
+.bp-flag{display:inline-block;margin-left:7px;font-size:9px;font-weight:750;letter-spacing:.05em;
+         text-transform:uppercase;color:#8a5f10;border:1px solid #c08429;border-radius:99px;padding:1px 6px}
+.bp-bars{display:flex;flex-direction:column;gap:3px}
+.bp-bar{display:block;height:9px;border-radius:99px;min-width:2px}
+.bp-then{background:#98a9b8}
+.bp-now{background:#c08429}
+.bp-val{text-align:right;font-variant-numeric:tabular-nums;font-weight:650}
+
+/* Clearance outlook, slowest first. */
+.clearance{display:flex;flex-direction:column;gap:9px;margin:8px 0 4px}
+.cl-row{display:grid;grid-template-columns:200px 1fr 190px;gap:12px;align-items:center;font-size:13px}
+.cl-lab{font-weight:600;line-height:1.25}
+.cl-track{background:#eef2f6;border-radius:99px;height:13px;overflow:hidden}
+.cl-fill{display:block;height:100%;border-radius:99px}
+.cl-val{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
+.cl-cap{color:#8a5f10}
+
+/* Categories over the review line, ordered by money stuck. */
+.cat-headline{display:flex;align-items:baseline;gap:12px;margin:6px 0 12px}
+.cat-big{font-size:34px;font-weight:750;color:#cf4636;font-variant-numeric:tabular-nums;line-height:1}
+.cat-of{font-size:13px;color:#3d5567}
+.cat-bars{display:flex;flex-direction:column;gap:7px;margin:8px 0 4px}
+.cat-row{display:grid;grid-template-columns:230px 1fr 165px;gap:12px;align-items:center;font-size:13px}
+.cat-lab{font-weight:600;line-height:1.25}
+.cat-track{background:#eef2f6;border-radius:99px;height:11px;overflow:hidden}
+.cat-fill{display:block;height:100%;border-radius:99px;background:#c08429}
+.cat-val{text-align:right;font-variant-numeric:tabular-nums;font-weight:650}
+
+@media (max-width:720px){
+  .db-row,.bp-row,.cl-row,.cat-row{grid-template-columns:1fr 1fr;
+    grid-template-areas:"lab val" "track track"}
+  .db-lab,.bp-lab,.cl-lab,.cat-lab{grid-area:lab}
+  .db-val,.bp-val,.cl-val,.cat-val{grid-area:val}
+  .db-track,.bp-bars,.cl-track,.cat-track{grid-area:track}
+}
+@media print{.db-row,.bp-row,.cl-row,.cat-row,.basis-note{break-inside:avoid}}
 """
 
 
@@ -919,6 +1238,15 @@ def render(page: dict, eyebrow: str = "Inventory") -> str:
                 if (page or {}).get("subtitle") else "")
     generated = datetime.now(timezone.utc).date().isoformat()
 
+    # The costing sentence is a CLAIM about the source data, and it is only true
+    # where a rulebook says so. Inventory Management's rulebook states it of
+    # SKU_STOCK_VALUE, so that page keeps it. The Stock Age report reads a
+    # different column whose basis was measured MOVING between two snapshots, so
+    # asserting a costing convention there would state something this pipeline
+    # cannot see. A page that knows its own basis supplies the sentence.
+    basis_line = str((page or {}).get("value_basis_note") or "").strip() or (
+        f"All values are {money.CURRENCY} at landing cost, excluding VAT.")
+
     # The skeleton must match what _style() expects, exactly. `.app` is a flex
     # ROW whose only children are the rail and <main>; everything else lives
     # inside `main > .page`. Getting this wrong renders the header, rail, views
@@ -936,9 +1264,8 @@ def render(page: dict, eyebrow: str = "Inventory") -> str:
 <p class="eyebrow">{_safe(eyebrow)}</p><h1>{_safe(title)}</h1>{subtitle}
 <p class="sub">Generated {_safe(generated)}</p></div>{toggle}</header>
 {body}{caveats}
-<footer><span>All values are {_safe(money.CURRENCY)} at landing cost, excluding VAT. Every figure is
-copied or derived arithmetically from the scanned stock position; no number is
-estimated.</span><strong>AI-assisted analysis</strong></footer>
+<footer><span>{_safe(basis_line)} Every figure is copied or derived arithmetically
+from the scanned stock position; no number is estimated.</span><strong>AI-assisted analysis</strong></footer>
 </div></main></div>{_script_with_routing()}</body></html>"""
     currency = str((page or {}).get("currency") or "SAR").strip() or "SAR"
     if currency != "SAR":

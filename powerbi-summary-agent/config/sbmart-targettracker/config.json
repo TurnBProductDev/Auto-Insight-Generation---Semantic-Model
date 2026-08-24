@@ -21,7 +21,7 @@
   "target_tracker_anchor_override": "",
   "target_tracker_material_pct": 5,
   "target_tracker_display_rows": 12,
-  "target_tracker_currency": "QAR",
+  "target_tracker_currency": "USD",
   "ai_provider": "azure_openai",
   "model": "claude-sonnet-5",
   "azure_openai_api_key_env": "AZURE_OPENAI_API_KEY",

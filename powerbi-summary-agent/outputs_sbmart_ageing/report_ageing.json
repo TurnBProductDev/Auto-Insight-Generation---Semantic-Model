@@ -1,93 +1,93 @@
 {
   "report_id": "inventory_ageing",
   "report_name": "SB Mart Stock Ageing",
-  "period_label": "as at 2026-08-19",
-  "as_at": "2026-08-19",
-  "currency": "QAR",
+  "period_label": "as at 2026-08-23",
+  "as_at": "2026-08-23",
+  "currency": "USD",
   "header": {
-    "total_value": 6201335.0884,
-    "aged_value": 825386.5286,
-    "aged_share_pct": 13.309819850630861,
-    "high_risk_value": 460883.7925,
-    "high_risk_share_pct": 7.432009171091448,
-    "aged_non_moving": 285488.2244,
-    "skus": 41452.0,
+    "total_value": 5732499.5474,
+    "aged_value": 842320.7491,
+    "aged_share_pct": 14.693777856154187,
+    "high_risk_value": 453777.8088,
+    "high_risk_share_pct": 7.915880412163537,
+    "aged_non_moving": 278109.2302,
+    "skus": 41674.0,
     "locations": 7.0
   },
   "distribution": {
     "bands": [
       {
         "name": "0-03 MONTHS",
-        "value": 3837604.6741,
-        "share_pct": 61.88352377987909,
+        "value": 3415190.2756,
+        "share_pct": 59.57593624493131,
         "aged_value": 0.0,
         "high_risk": false,
         "cumulative_older_pct": 100.0
       },
       {
         "name": "03-06 MONTHS",
-        "value": 927664.6547,
-        "share_pct": 14.959111892457756,
+        "value": 898651.9649,
+        "share_pct": 15.67644196862759,
         "aged_value": 0.0,
         "high_risk": false,
-        "cumulative_older_pct": 38.11647622012091
+        "cumulative_older_pct": 40.424063755068694
       },
       {
         "name": "06-09 MONTHS",
-        "value": 610679.231,
-        "share_pct": 9.847544477032296,
+        "value": 576336.5578,
+        "share_pct": 10.05384393028692,
         "aged_value": 0.0,
         "high_risk": false,
-        "cumulative_older_pct": 23.157364327663153
+        "cumulative_older_pct": 24.747621786441105
       },
       {
         "name": "09-12 MONTHS",
-        "value": 364502.7361,
-        "share_pct": 5.877810679539412,
-        "aged_value": 364502.7361,
+        "value": 388542.9403,
+        "share_pct": 6.777897443990648,
+        "aged_value": 388542.9403,
         "high_risk": false,
-        "cumulative_older_pct": 13.309819850630861
+        "cumulative_older_pct": 14.693777856154187
       },
       {
         "name": "12-24 MONTHS",
-        "value": 369845.9645,
-        "share_pct": 5.963973228794246,
-        "aged_value": 369845.9645,
+        "value": 363063.8403,
+        "share_pct": 6.33342989908598,
+        "aged_value": 363063.8403,
         "high_risk": true,
-        "cumulative_older_pct": 7.432009171091448
+        "cumulative_older_pct": 7.915880412163537
       },
       {
         "name": "24+ MONTHS",
-        "value": 91037.828,
-        "share_pct": 1.4680359422972027,
-        "aged_value": 91037.828,
+        "value": 90713.9685,
+        "share_pct": 1.5824505130775584,
+        "aged_value": 90713.9685,
         "high_risk": true,
-        "cumulative_older_pct": 1.4680359422972027
+        "cumulative_older_pct": 1.5824505130775584
       }
     ],
     "undetermined_value": 0.0
   },
   "risk_split": {
-    "aged_non_moving": 285488.2244,
-    "aged_moving": 539898.3042,
-    "fresh_non_moving": 372462.0252,
-    "fresh_moving": 5003486.5346,
-    "non_moving_total": 657950.2496,
-    "aged_total": 825386.5286000001
+    "aged_non_moving": 278109.2302,
+    "aged_moving": 564211.5189,
+    "fresh_non_moving": 328648.12230000005,
+    "fresh_moving": 4561530.675999999,
+    "non_moving_total": 606757.3525,
+    "aged_total": 842320.7491
   },
   "call_outs": [
     {
       "band": "24+ MONTHS",
-      "value": 91037.828,
-      "share_pct": 1.4680359422972027,
+      "value": 90713.9685,
+      "share_pct": 1.5824505130775584,
       "material": true,
       "always_separate": true,
       "note": "24+ MONTHS stock is the most likely write-off candidate."
     },
     {
       "band": "12-24 MONTHS",
-      "value": 369845.9645,
-      "share_pct": 5.963973228794246,
+      "value": 363063.8403,
+      "share_pct": 6.33342989908598,
       "material": true,
       "always_separate": false,
       "note": "12-24 MONTHS stock is high-risk."
@@ -96,180 +96,323 @@
   "divisions": [
     {
       "name": "LIFESTYLE",
-      "value": 363300.5656,
-      "total": 2016539.4152,
-      "high_risk": 195502.5198
+      "value": 368859.4199,
+      "total": 1964357.4462,
+      "high_risk": 192104.7202,
+      "qty": 4635211.0,
+      "aged_qty": 1142115.0
     },
     {
       "name": "HOME & LIVING",
-      "value": 352830.2924,
-      "total": 1200614.8102,
-      "high_risk": 215932.9214
+      "value": 365334.4867,
+      "total": 1164133.729,
+      "high_risk": 212716.1294,
+      "qty": 4588377.4500400005,
+      "aged_qty": 1548073.05004
     },
     {
       "name": "CONSUMER GOODS",
-      "value": 60796.6867,
-      "total": 2662952.3566,
-      "high_risk": 32911.5501
+      "value": 61337.2256,
+      "total": 2312537.35,
+      "high_risk": 32751.5961,
+      "qty": 6705664.232939998,
+      "aged_qty": 183603.2703
     },
     {
       "name": "TECHNOLOGY",
-      "value": 48458.9839,
-      "total": 321228.5064,
-      "high_risk": 16536.8012
+      "value": 46789.6169,
+      "total": 291471.0222,
+      "high_risk": 16205.3631,
+      "qty": 187027.0,
+      "aged_qty": 36557.0
     }
   ],
   "locations": [
     {
       "name": "WH1",
-      "value": 672148.8222,
-      "total": 3849004.2918,
-      "high_risk": 367351.6192
+      "value": 689062.6078,
+      "total": 3570579.272,
+      "high_risk": 360079.9818,
+      "qty": 10280860.00004,
+      "aged_qty": 2588440.0000400003
     },
     {
       "name": "ST2",
-      "value": 42551.46,
-      "total": 269464.9162,
-      "high_risk": 25864.2178
+      "value": 42754.1497,
+      "total": 275114.1597,
+      "high_risk": 25978.7451,
+      "qty": 597827.9596000001,
+      "aged_qty": 76748.7325
     },
     {
       "name": "ST4",
-      "value": 37471.9121,
-      "total": 451293.8489,
-      "high_risk": 24779.094
+      "value": 37357.4337,
+      "total": 425368.3316,
+      "high_risk": 24777.5438,
+      "qty": 973357.08673,
+      "aged_qty": 95552.18882000001
     },
     {
       "name": "ST3",
-      "value": 31356.8223,
-      "total": 258589.2389,
-      "high_risk": 21927.2701
+      "value": 31863.8531,
+      "total": 260077.3469,
+      "high_risk": 21994.2991,
+      "qty": 585145.1532799999,
+      "aged_qty": 58867.263000000006
     },
     {
       "name": "ST1",
-      "value": 28729.9667,
-      "total": 344315.9532,
-      "high_risk": 15987.4639
+      "value": 28472.681,
+      "total": 323884.4521,
+      "high_risk": 16036.4334,
+      "qty": 705705.1438900001,
+      "aged_qty": 57474.44098
     },
     {
       "name": "WH2",
-      "value": 9072.0538,
-      "total": 1011799.203,
-      "high_risk": 3698.0248
+      "value": 8626.575,
+      "total": 860608.3488,
+      "high_risk": 3631.0266,
+      "qty": 2893546.08,
+      "aged_qty": 8626.7
     },
     {
       "name": "ST5",
-      "value": 4055.4915,
-      "total": 16867.6364,
-      "high_risk": 1276.1027
+      "value": 4183.4488,
+      "total": 16867.6363,
+      "high_risk": 1279.779,
+      "qty": 79838.25944000001,
+      "aged_qty": 24638.995000000003
     }
   ],
   "sections": [
     {
       "name": "CULINARY SUPPLIES",
-      "value": 197823.4566,
-      "total": 614879.7332,
-      "high_risk": 115957.436
+      "value": 210956.5073,
+      "total": 591650.31,
+      "high_risk": 113855.7547,
+      "qty": 1657507.45,
+      "aged_qty": 631911.05
     },
     {
       "name": "LADIES APPAREL",
-      "value": 120544.8594,
-      "total": 754838.1734,
-      "high_risk": 69623.9062
+      "value": 132254.328,
+      "total": 731297.0988,
+      "high_risk": 68773.7311,
+      "qty": 2661379.0,
+      "aged_qty": 764753.0
     },
     {
       "name": "OFFICE SUPPLIES",
-      "value": 111135.4758,
-      "total": 436670.2123,
-      "high_risk": 82774.8726
+      "value": 111495.9371,
+      "total": 416848.235,
+      "high_risk": 82398.4643,
+      "qty": 2580174.00004,
+      "aged_qty": 843366.0000400001
     },
     {
       "name": "MENS APPAREL",
-      "value": 67952.0865,
-      "total": 464686.1944,
-      "high_risk": 25394.2723
+      "value": 66055.278,
+      "total": 466528.571,
+      "high_risk": 25658.4964,
+      "qty": 700757.0,
+      "aged_qty": 75061.0
     },
     {
       "name": "FOOTWEAR",
-      "value": 58133.5432,
-      "total": 244077.5588,
-      "high_risk": 33904.1175
+      "value": 56854.3069,
+      "total": 238600.2987,
+      "high_risk": 33202.7934,
+      "qty": 310417.0,
+      "aged_qty": 64421.0
     },
     {
       "name": "ENTERTAINMENTS",
-      "value": 48431.2519,
-      "total": 316957.9697,
-      "high_risk": 16531.8119
+      "value": 46761.0014,
+      "total": 288068.4789,
+      "high_risk": 16200.3738,
+      "qty": 182415.0,
+      "aged_qty": 36525.0
     },
     {
       "name": "HOME TEXTILES",
-      "value": 38382.0893,
-      "total": 129558.441,
-      "high_risk": 13551.8922
+      "value": 37527.4939,
+      "total": 130455.4455,
+      "high_risk": 12884.3268,
+      "qty": 187961.0,
+      "aged_qty": 47368.0
     },
     {
       "name": "TOYS",
-      "value": 38101.6733,
-      "total": 256505.9176,
-      "high_risk": 19312.6019
+      "value": 37202.7067,
+      "total": 235365.3801,
+      "high_risk": 18796.4873,
+      "qty": 524492.0,
+      "aged_qty": 73679.0
     },
     {
       "name": "KIDS FASHION",
-      "value": 35153.5741,
-      "total": 123000.7803,
-      "high_risk": 13546.4959
+      "value": 34954.3481,
+      "total": 121748.3533,
+      "high_risk": 13405.5102,
+      "qty": 207434.0,
+      "aged_qty": 75437.0
     },
     {
       "name": "PROVISIONS",
-      "value": 26861.8082,
-      "total": 1059685.762,
-      "high_risk": 13416.6009
+      "value": 27402.5122,
+      "total": 948162.4323,
+      "high_risk": 13931.2485,
+      "qty": 3785765.4538600035,
+      "aged_qty": 60889.4223
     },
     {
       "name": "PERSONAL CARE",
-      "value": 25919.4892,
-      "total": 1037437.7729,
-      "high_risk": 15328.263
+      "value": 25838.4684,
+      "total": 868814.0642,
+      "high_risk": 14554.1564,
+      "qty": 2024270.0,
+      "aged_qty": 108513.0
     },
     {
       "name": "TRAVEL",
-      "value": 22682.1598,
-      "total": 121809.3407,
-      "high_risk": 13947.1529
+      "value": 20898.8123,
+      "total": 119740.2567,
+      "high_risk": 12581.2419,
+      "qty": 68812.0,
+      "aged_qty": 19348.0
     },
     {
       "name": "SPORTING GOODS",
-      "value": 20069.6339,
-      "total": 50925.4674,
-      "high_risk": 19200.8673
+      "value": 19976.9478,
+      "total": 50382.8361,
+      "high_risk": 19113.4328,
+      "qty": 160985.0,
+      "aged_qty": 68511.0
     },
     {
       "name": "GLASS ITEMS",
-      "value": 5489.2707,
-      "total": 19506.4237,
-      "high_risk": 3648.7206
+      "value": 5354.5484,
+      "total": 25179.7385,
+      "high_risk": 3577.5836,
+      "qty": 162735.0,
+      "aged_qty": 25428.0
     },
     {
       "name": "CLEANING ESSENSTIALS",
-      "value": 4422.5809,
-      "total": 138221.5875,
-      "high_risk": 2238.4618
+      "value": 4586.9099,
+      "total": 119961.7648,
+      "high_risk": 2349.3486,
+      "qty": 195595.0,
+      "aged_qty": 6333.0
     }
   ],
   "sku_types": [
     {
       "name": "OVERSEAS",
-      "value": 2198806.7318,
-      "aged": 637842.5306
+      "value": 2212277.747,
+      "aged": 656676.5223
     },
     {
       "name": "LOCAL",
-      "value": 4002528.3566,
-      "aged": 187543.998
+      "value": 3520221.8004,
+      "aged": 185644.2268
     }
   ],
   "migration": {
-    "available": false,
-    "reason": "Stock age movement between two dates cannot be shown, because the model holds only one stock position (a single snapshot date). Showing it would need the previous snapshot to be retained."
+    "available": true,
+    "counted_in": "units",
+    "prior_as_at": "2026-08-14",
+    "as_at": "2026-08-23",
+    "bands": [
+      {
+        "name": "0-03 MONTHS",
+        "high_risk": false,
+        "qty_now": 9040561.860109998,
+        "qty_then": 6333425.259640001,
+        "qty_change": 2707136.600469997,
+        "value_share_now_pct": 59.57593624493131,
+        "value_share_then_pct": 62.649478063773415,
+        "value_share_points": -3.073541818842102,
+        "qty_share_now_pct": 56.095836247229634,
+        "qty_share_then_pct": 60.878825230601365,
+        "qty_share_points": -4.78298898337173,
+        "direction": "better"
+      },
+      {
+        "name": "03-06 MONTHS",
+        "high_risk": false,
+        "qty_now": 2457723.57349,
+        "qty_then": 1593180.5595199997,
+        "qty_change": 864543.0139700002,
+        "value_share_now_pct": 15.67644196862759,
+        "value_share_then_pct": 15.351645711633438,
+        "value_share_points": 0.3247962569941514,
+        "qty_share_now_pct": 15.24994367084322,
+        "qty_share_then_pct": 15.314139958655298,
+        "qty_share_points": -0.06419628781207898,
+        "direction": "worse"
+      },
+      {
+        "name": "06-09 MONTHS",
+        "high_risk": false,
+        "qty_now": 1707645.92904,
+        "qty_then": 926118.1600400001,
+        "qty_change": 781527.769,
+        "value_share_now_pct": 10.05384393028692,
+        "value_share_then_pct": 9.137368865379985,
+        "value_share_points": 0.9164750649069351,
+        "qty_share_now_pct": 10.595782417721395,
+        "qty_share_then_pct": 8.902131673875004,
+        "qty_share_points": 1.6936507438463906,
+        "direction": "worse"
+      },
+      {
+        "name": "09-12 MONTHS",
+        "high_risk": false,
+        "qty_now": 1063064.34298,
+        "qty_then": 505554.61648,
+        "qty_change": 557509.7264999999,
+        "value_share_now_pct": 6.777897443990648,
+        "value_share_then_pct": 5.41808154011147,
+        "value_share_points": 1.359815903879178,
+        "qty_share_now_pct": 6.596214286990041,
+        "qty_share_then_pct": 4.859545961225893,
+        "qty_share_points": 1.736668325764148,
+        "direction": "worse"
+      },
+      {
+        "name": "12-24 MONTHS",
+        "high_risk": true,
+        "qty_now": 1570626.26857,
+        "qty_then": 891046.2690699999,
+        "qty_change": 679579.9995000002,
+        "value_share_now_pct": 6.33342989908598,
+        "value_share_then_pct": 5.920954479898461,
+        "value_share_points": 0.41247541918751907,
+        "qty_share_now_pct": 9.745588308626212,
+        "qty_share_then_pct": 8.56500990589969,
+        "qty_share_points": 1.180578402726523,
+        "direction": "worse"
+      },
+      {
+        "name": "24+ MONTHS",
+        "high_risk": true,
+        "qty_now": 276657.70879,
+        "qty_then": 154005.41577,
+        "qty_change": 122652.29302000001,
+        "value_share_now_pct": 1.5824505130775584,
+        "value_share_then_pct": 1.5224713392032325,
+        "value_share_points": 0.05997917387432583,
+        "qty_share_now_pct": 1.7166350685895042,
+        "qty_share_then_pct": 1.4803472697427635,
+        "qty_share_points": 0.23628779884674067,
+        "direction": "flat"
+      }
+    ],
+    "aged_share_points": 3.1535345273374116,
+    "reason": "",
+    "note": "Movement between the two stock positions is counted in units. Stock value is calculated differently on the two dates, so comparing money would show a change that is not real."
   },
   "checks": {
     "bands_sum_to_total": true,
@@ -278,32 +421,717 @@
     "risk_split_aged_matches": true
   },
   "caveats": [
+    "Stock value is calculated differently on the two dates being compared, so this report compares units and shares only. ST5 holds the same quantity of stock on both dates (79,838 units) but its value has moved from 0.78 to 0.21 per unit. Stock that did not move cannot change in worth, so the way stock value is calculated has changed between the two dates. Value figures are therefore not compared here.",
     "The semantic model's [aged stock share] was excluded: its numerator does not reconcile to the Stock Value exposure used by this report."
   ],
   "narrative": [
-    "QAR 91K of stock is more than two years old, 1.5% of all stock value as at 2026-08-19. This is the most likely write-off candidate and is reported separately from the 12-24 month band.",
-    "A further QAR 370K is between one and two years old (6.0% of stock value). Together with the 24+ month band, QAR 461K is classed as high-risk, 7.4% of all stock.",
-    "QAR 285K is both aged and non-moving - old stock with no recorded sales. This is the highest-risk combination. It is not added to the aged total, because the two measures overlap.",
-    "QAR 372K of stock under nine months old has recorded no sales since it arrived. That is a demand or placement signal rather than an age problem.",
-    "Aged stock totals QAR 825K, 13.3% of the QAR 6.20M held across all locations. The configured ageing policy defines the threshold used for this report."
+    "USD 91K of stock is more than two years old, 1.6% of all stock value as at 2026-08-23. This is the most likely write-off candidate and is reported separately from the 12-24 month band.",
+    "A further USD 363K is between one and two years old (6.3% of stock value). Together with the 24+ month band, USD 454K is classed as high-risk, 7.9% of all stock.",
+    "USD 278K is both aged and non-moving - old stock with no recorded sales. This is the highest-risk combination. It is not added to the aged total, because the two measures overlap.",
+    "USD 329K of stock under nine months old has recorded no sales since it arrived. That is a demand or placement signal rather than an age problem.",
+    "Aged stock totals USD 842K, 14.7% of the USD 5.73M held across all locations. The configured ageing policy defines the threshold used for this report."
   ],
+  "quantity": {
+    "total_qty": 16116279.682980003,
+    "aged_qty": 2910348.32034,
+    "aged_skus": 19468.0
+  },
+  "comparison": {
+    "available": true,
+    "lane": "reference",
+    "as_at": "2026-08-23",
+    "prior_as_at": "2026-08-14",
+    "days": 9,
+    "window_label": "since 2026-08-14",
+    "value_comparable": false,
+    "basis": {
+      "value_comparable": false,
+      "checked": true,
+      "proof": {
+        "name": "ST5",
+        "value_now": 16867.6363,
+        "value_then": 62472.6945,
+        "qty_now": 79838.25944000001,
+        "qty_then": 79838.25943999998,
+        "unit_value_now": 0.21127259559906053,
+        "unit_value_then": 0.782490687274432,
+        "qty_move_pct": 3.6453488165790746e-14,
+        "unit_value_move_pct": -72.99998593785642,
+        "shifted": true
+      },
+      "shifted_share_pct": 100.0,
+      "members": [
+        {
+          "name": "WH1",
+          "value_now": 3570579.272,
+          "value_then": 7198620.2631,
+          "qty_now": 10280860.00004,
+          "qty_then": 5431855.00002,
+          "unit_value_now": 0.3473035594285019,
+          "unit_value_then": 1.3252600194728126,
+          "qty_move_pct": 89.26977984504641,
+          "unit_value_move_pct": -73.79355339138209,
+          "shifted": true
+        },
+        {
+          "name": "ST2",
+          "value_now": 275114.1597,
+          "value_then": 1063704.933,
+          "qty_now": 597827.9596000001,
+          "qty_then": 632292.16029,
+          "unit_value_now": 0.46018951653595425,
+          "unit_value_then": 1.6822997338953767,
+          "qty_move_pct": 5.450676578718452,
+          "unit_value_move_pct": -72.64521254661426,
+          "shifted": true
+        },
+        {
+          "name": "ST4",
+          "value_now": 425368.3316,
+          "value_then": 1633191.1416,
+          "qty_now": 973357.08673,
+          "qty_then": 1013076.5373300003,
+          "unit_value_now": 0.4370115935858934,
+          "unit_value_then": 1.6121103208098513,
+          "qty_move_pct": 3.920676191424034,
+          "unit_value_move_pct": -72.89195485291859,
+          "shifted": true
+        },
+        {
+          "name": "ST3",
+          "value_now": 260077.3469,
+          "value_then": 965514.2355,
+          "qty_now": 585145.1532799999,
+          "qty_then": 578904.43193,
+          "unit_value_now": 0.4444663780297083,
+          "unit_value_then": 1.667830098106328,
+          "qty_move_pct": 1.0780227280682673,
+          "unit_value_move_pct": -73.35062015403366,
+          "shifted": true
+        },
+        {
+          "name": "ST1",
+          "value_now": 323884.4521,
+          "value_then": 1266745.4406,
+          "qty_now": 705705.1438900001,
+          "qty_then": 757552.9715099998,
+          "unit_value_now": 0.4589515251577713,
+          "unit_value_then": 1.6721542759908228,
+          "qty_move_pct": 6.8441191005631685,
+          "unit_value_move_pct": -72.55327862102779,
+          "shifted": true
+        },
+        {
+          "name": "WH2",
+          "value_now": 860608.3488,
+          "value_then": 1805739.9066,
+          "qty_now": 2893546.08,
+          "qty_then": 1909810.9200000004,
+          "unit_value_now": 0.2974234123135167,
+          "unit_value_then": 0.9455071639238505,
+          "qty_move_pct": 51.50955781528359,
+          "unit_value_move_pct": -68.54350515132948,
+          "shifted": true
+        },
+        {
+          "name": "ST5",
+          "value_now": 16867.6363,
+          "value_then": 62472.6945,
+          "qty_now": 79838.25944000001,
+          "qty_then": 79838.25943999998,
+          "unit_value_now": 0.21127259559906053,
+          "unit_value_then": 0.782490687274432,
+          "qty_move_pct": 3.6453488165790746e-14,
+          "unit_value_move_pct": -72.99998593785642,
+          "shifted": true
+        }
+      ],
+      "reason": "ST5 holds the same quantity of stock on both dates (79,838 units) but its value has moved from 0.78 to 0.21 per unit. Stock that did not move cannot change in worth, so the way stock value is calculated has changed between the two dates. Value figures are therefore not compared here."
+    },
+    "now": {
+      "aged_value": 842320.7491,
+      "aged_qty": 2910348.32034,
+      "high_risk_value": 453777.8088,
+      "aged_value_share_pct": 14.693777856154187,
+      "aged_qty_share_pct": 18.058437664205755,
+      "high_risk_share_pct": 7.915880412163537,
+      "total_value": 5732499.5474,
+      "total_qty": 16116279.682979997,
+      "skus": 41674.0
+    },
+    "then": {
+      "aged_value": 1800095.1057000002,
+      "aged_qty": 1550606.3013199999,
+      "high_risk_value": 1041781.0302,
+      "aged_value_share_pct": 12.861507359213164,
+      "aged_qty_share_pct": 14.904903136868345,
+      "high_risk_share_pct": 7.443425819101693,
+      "total_value": 13995988.6149,
+      "total_qty": 10403330.28052,
+      "skus": 41939.0
+    },
+    "sku_change": -265.0,
+    "headlines": [
+      {
+        "key": "aged_value_share",
+        "label": "Aged share of stock value",
+        "now_pct": 14.693777856154187,
+        "then_pct": 12.861507359213164,
+        "points": 1.8322704969410228,
+        "direction": "worse",
+        "note": "How much of the money on the shelf is nine months old or more."
+      },
+      {
+        "key": "aged_qty_share",
+        "label": "Aged share of units",
+        "now_pct": 18.058437664205755,
+        "then_pct": 14.904903136868345,
+        "points": 3.15353452733741,
+        "direction": "worse",
+        "note": "The same question counted in units instead of money."
+      },
+      {
+        "key": "high_risk_share",
+        "label": "Over a year old, share of value",
+        "now_pct": 7.915880412163537,
+        "then_pct": 7.443425819101693,
+        "points": 0.472454593061844,
+        "direction": "worse",
+        "note": "The part of the aged stock that is hardest to sell."
+      }
+    ],
+    "bands": [
+      {
+        "name": "0-03 MONTHS",
+        "high_risk": false,
+        "qty_now": 9040561.860109998,
+        "qty_then": 6333425.259640001,
+        "qty_change": 2707136.600469997,
+        "value_share_now_pct": 59.57593624493131,
+        "value_share_then_pct": 62.649478063773415,
+        "value_share_points": -3.073541818842102,
+        "qty_share_now_pct": 56.095836247229634,
+        "qty_share_then_pct": 60.878825230601365,
+        "qty_share_points": -4.78298898337173,
+        "direction": "better"
+      },
+      {
+        "name": "03-06 MONTHS",
+        "high_risk": false,
+        "qty_now": 2457723.57349,
+        "qty_then": 1593180.5595199997,
+        "qty_change": 864543.0139700002,
+        "value_share_now_pct": 15.67644196862759,
+        "value_share_then_pct": 15.351645711633438,
+        "value_share_points": 0.3247962569941514,
+        "qty_share_now_pct": 15.24994367084322,
+        "qty_share_then_pct": 15.314139958655298,
+        "qty_share_points": -0.06419628781207898,
+        "direction": "worse"
+      },
+      {
+        "name": "06-09 MONTHS",
+        "high_risk": false,
+        "qty_now": 1707645.92904,
+        "qty_then": 926118.1600400001,
+        "qty_change": 781527.769,
+        "value_share_now_pct": 10.05384393028692,
+        "value_share_then_pct": 9.137368865379985,
+        "value_share_points": 0.9164750649069351,
+        "qty_share_now_pct": 10.595782417721395,
+        "qty_share_then_pct": 8.902131673875004,
+        "qty_share_points": 1.6936507438463906,
+        "direction": "worse"
+      },
+      {
+        "name": "09-12 MONTHS",
+        "high_risk": false,
+        "qty_now": 1063064.34298,
+        "qty_then": 505554.61648,
+        "qty_change": 557509.7264999999,
+        "value_share_now_pct": 6.777897443990648,
+        "value_share_then_pct": 5.41808154011147,
+        "value_share_points": 1.359815903879178,
+        "qty_share_now_pct": 6.596214286990041,
+        "qty_share_then_pct": 4.859545961225893,
+        "qty_share_points": 1.736668325764148,
+        "direction": "worse"
+      },
+      {
+        "name": "12-24 MONTHS",
+        "high_risk": true,
+        "qty_now": 1570626.26857,
+        "qty_then": 891046.2690699999,
+        "qty_change": 679579.9995000002,
+        "value_share_now_pct": 6.33342989908598,
+        "value_share_then_pct": 5.920954479898461,
+        "value_share_points": 0.41247541918751907,
+        "qty_share_now_pct": 9.745588308626212,
+        "qty_share_then_pct": 8.56500990589969,
+        "qty_share_points": 1.180578402726523,
+        "direction": "worse"
+      },
+      {
+        "name": "24+ MONTHS",
+        "high_risk": true,
+        "qty_now": 276657.70879,
+        "qty_then": 154005.41577,
+        "qty_change": 122652.29302000001,
+        "value_share_now_pct": 1.5824505130775584,
+        "value_share_then_pct": 1.5224713392032325,
+        "value_share_points": 0.05997917387432583,
+        "qty_share_now_pct": 1.7166350685895042,
+        "qty_share_then_pct": 1.4803472697427635,
+        "qty_share_points": 0.23628779884674067,
+        "direction": "flat"
+      }
+    ],
+    "locations": [
+      {
+        "name": "WH1",
+        "aged_share_now_pct": 19.2983422382899,
+        "aged_share_then_pct": 17.071072031667313,
+        "points": 2.2272702066225882,
+        "direction": "worse",
+        "qty_now": 10280860.00004,
+        "qty_then": 5431855.00002,
+        "qty_change": 4849005.00002,
+        "new": false,
+        "gone": false,
+        "comparable": true
+      },
+      {
+        "name": "ST5",
+        "aged_share_now_pct": 24.801630326828903,
+        "aged_share_then_pct": 23.4401754513726,
+        "points": 1.3614548754563032,
+        "direction": "worse",
+        "qty_now": 79838.25944000001,
+        "qty_then": 79838.25943999998,
+        "qty_change": 2.9103830456733704e-11,
+        "new": false,
+        "gone": false,
+        "comparable": true
+      },
+      {
+        "name": "ST1",
+        "aged_share_now_pct": 8.79099963440326,
+        "aged_share_then_pct": 8.380139576402907,
+        "points": 0.4108600580003525,
+        "direction": "worse",
+        "qty_now": 705705.1438900001,
+        "qty_then": 757552.9715099998,
+        "qty_change": -51847.82761999976,
+        "new": false,
+        "gone": false,
+        "comparable": true
+      },
+      {
+        "name": "ST4",
+        "aged_share_now_pct": 8.78237304584524,
+        "aged_share_then_pct": 8.442059345541578,
+        "points": 0.34031370030366226,
+        "direction": "worse",
+        "qty_now": 973357.08673,
+        "qty_then": 1013076.5373300003,
+        "qty_change": -39719.45060000033,
+        "new": false,
+        "gone": false,
+        "comparable": true
+      },
+      {
+        "name": "ST3",
+        "aged_share_now_pct": 12.251683385655147,
+        "aged_share_then_pct": 12.039497495322015,
+        "points": 0.2121858903331315,
+        "direction": "worse",
+        "qty_now": 585145.1532799999,
+        "qty_then": 578904.43193,
+        "qty_change": 6240.721349999891,
+        "new": false,
+        "gone": false,
+        "comparable": true
+      },
+      {
+        "name": "WH2",
+        "aged_share_now_pct": 1.002381049641056,
+        "aged_share_then_pct": 0.9569877719841493,
+        "points": 0.045393277656906594,
+        "direction": "flat",
+        "qty_now": 2893546.08,
+        "qty_then": 1909810.9200000004,
+        "qty_change": 983735.1599999997,
+        "new": false,
+        "gone": false,
+        "comparable": true
+      },
+      {
+        "name": "ST2",
+        "aged_share_now_pct": 15.540512253757328,
+        "aged_share_then_pct": 16.829476563121286,
+        "points": -1.2889643093639584,
+        "direction": "better",
+        "qty_now": 597827.9596000001,
+        "qty_then": 632292.16029,
+        "qty_change": -34464.20068999997,
+        "new": false,
+        "gone": false,
+        "comparable": true
+      }
+    ],
+    "divisions": [
+      {
+        "name": "HOME & LIVING",
+        "aged_share_now_pct": 31.38251882915764,
+        "aged_share_then_pct": 28.2481517747299,
+        "points": 3.134367054427738,
+        "direction": "worse",
+        "qty_now": 4588377.4500400005,
+        "qty_then": 2620467.4500200003,
+        "qty_change": 1967910.0000200002,
+        "new": false,
+        "gone": false,
+        "comparable": true
+      },
+      {
+        "name": "LIFESTYLE",
+        "aged_share_now_pct": 18.77761201829887,
+        "aged_share_then_pct": 16.70466489281267,
+        "points": 2.072947125486202,
+        "direction": "worse",
+        "qty_now": 4635211.0,
+        "qty_then": 2607359.0,
+        "qty_change": 2027852.0,
+        "new": false,
+        "gone": false,
+        "comparable": true
+      },
+      {
+        "name": "TECHNOLOGY",
+        "aged_share_now_pct": 16.0529223614875,
+        "aged_share_then_pct": 15.155905042834178,
+        "points": 0.8970173186533223,
+        "direction": "worse",
+        "qty_now": 187027.0,
+        "qty_then": 122292.0,
+        "qty_change": 64735.0,
+        "new": false,
+        "gone": false,
+        "comparable": true
+      },
+      {
+        "name": "CONSUMER GOODS",
+        "aged_share_now_pct": 2.652377727001901,
+        "aged_share_then_pct": 3.0295416256018117,
+        "points": -0.37716389859991084,
+        "direction": "better",
+        "qty_now": 6705664.232939998,
+        "qty_then": 5053211.830499998,
+        "qty_change": 1652452.4024399994,
+        "new": false,
+        "gone": false,
+        "comparable": true
+      }
+    ],
+    "agreement": {
+      "agree": true,
+      "text": "Counted in money and counted in units, the picture moved the same way - worse. Two separate readings agreeing makes this a solid finding."
+    },
+    "verdict": "Ageing has got worse"
+  },
+  "clearance": {
+    "available": true,
+    "horizon_days": 30,
+    "rows": [
+      {
+        "name": "HOME & LIVING",
+        "aged_qty": 1548073.05004,
+        "aged_value": 365334.4867,
+        "total_value": 1164133.729,
+        "aged_share_pct": 31.38251882915764,
+        "daily_qty": 23936.970000000132,
+        "cleared_pct": 46.38728773047558,
+        "capped": false,
+        "days_to_clear": 64.6728909314751,
+        "days_display": "about 65 days",
+        "tone": "critical"
+      },
+      {
+        "name": "LIFESTYLE",
+        "aged_qty": 1142115.0,
+        "aged_value": 368859.4199,
+        "total_value": 1964357.4462,
+        "aged_share_pct": 18.77761201829887,
+        "daily_qty": 30811.620000000166,
+        "cleared_pct": 80.93305840480205,
+        "capped": false,
+        "days_to_clear": 37.06767122273979,
+        "days_display": "about 37 days",
+        "tone": "warn"
+      },
+      {
+        "name": "CONSUMER GOODS",
+        "aged_qty": 183603.2703,
+        "aged_value": 61337.2256,
+        "total_value": 2312537.35,
+        "aged_share_pct": 2.652377727001901,
+        "daily_qty": 155800.409999998,
+        "cleared_pct": 100.0,
+        "capped": true,
+        "days_to_clear": 1.1784517787854496,
+        "days_display": "about a day",
+        "tone": "positive"
+      },
+      {
+        "name": "TECHNOLOGY",
+        "aged_qty": 36557.0,
+        "aged_value": 46789.6169,
+        "total_value": 291471.0222,
+        "aged_share_pct": 16.0529223614875,
+        "daily_qty": 3460.35000000001,
+        "cleared_pct": 100.0,
+        "capped": true,
+        "days_to_clear": 10.56453826925019,
+        "days_display": "about 11 days",
+        "tone": "positive"
+      }
+    ],
+    "caveats": [
+      "This assumes each sale takes the oldest stock first, which the source data does not guarantee. Read it as 'this division is slow to turn over', not as a promise about the next 30 days.",
+      "25% of recorded daily sales belong to products that are not mapped to a division, so they are not counted in any row below. The divisions shown may clear slightly faster than these figures suggest."
+    ],
+    "slowest": {
+      "name": "HOME & LIVING",
+      "aged_qty": 1548073.05004,
+      "aged_value": 365334.4867,
+      "total_value": 1164133.729,
+      "aged_share_pct": 31.38251882915764,
+      "daily_qty": 23936.970000000132,
+      "cleared_pct": 46.38728773047558,
+      "capped": false,
+      "days_to_clear": 64.6728909314751,
+      "days_display": "about 65 days",
+      "tone": "critical"
+    },
+    "fastest": {
+      "name": "TECHNOLOGY",
+      "aged_qty": 36557.0,
+      "aged_value": 46789.6169,
+      "total_value": 291471.0222,
+      "aged_share_pct": 16.0529223614875,
+      "daily_qty": 3460.35000000001,
+      "cleared_pct": 100.0,
+      "capped": true,
+      "days_to_clear": 10.56453826925019,
+      "days_display": "about 11 days",
+      "tone": "positive"
+    }
+  },
+  "categories": {
+    "available": true,
+    "threshold_pct": 30.0,
+    "carried": 173,
+    "over": 46,
+    "over_share_pct": 26.589595375722542,
+    "aged_value_in_over": 411474.7243,
+    "worst": [
+      {
+        "name": "OTHER",
+        "total": 240923.1104,
+        "aged": 74110.9366,
+        "aged_share_pct": 30.76124016369996
+      },
+      {
+        "name": "KITCHEN KNIFE",
+        "total": 118084.4913,
+        "aged": 38908.5106,
+        "aged_share_pct": 32.94972114598084
+      },
+      {
+        "name": "HOME LINEN PRODUCTS",
+        "total": 121581.1455,
+        "aged": 37534.7095,
+        "aged_share_pct": 30.87214661914828
+      },
+      {
+        "name": "COOKING POT NON STICK TEFLON",
+        "total": 98530.4819,
+        "aged": 37390.0995,
+        "aged_share_pct": 37.94774853323842
+      },
+      {
+        "name": "CUTTING BOARD PLASTIC",
+        "total": 69567.4268,
+        "aged": 29727.3528,
+        "aged_share_pct": 42.73171248012871
+      },
+      {
+        "name": "FRY PAN NON STICK TEFLON",
+        "total": 33289.8499,
+        "aged": 23214.4924,
+        "aged_share_pct": 69.73444599400251
+      },
+      {
+        "name": "LADIES PANTIES",
+        "total": 23176.2748,
+        "aged": 18294.0899,
+        "aged_share_pct": 78.93455724817346
+      },
+      {
+        "name": "EMERGENCY LAMPS",
+        "total": 53307.9411,
+        "aged": 17969.4983,
+        "aged_share_pct": 33.70885824738784
+      }
+    ],
+    "highest_share": {
+      "name": "KHALBATTA",
+      "total": 4.374,
+      "aged": 4.374,
+      "aged_share_pct": 100.0
+    },
+    "note": "Each category is measured against its own stock, so a small category with a bad ratio still counts. The list below is ordered by how much money is stuck, not by the percentage, so the biggest problems come first. 30% is a review line that can be moved."
+  },
+  "stuck_lines": {
+    "available": true,
+    "risk_cutoff": -70.0,
+    "value_floor": 500.0,
+    "matched": 10,
+    "rows": [
+      {
+        "sku": "0101657844",
+        "category": "SMART WATCHES",
+        "location": "WH1",
+        "status": "Excess Stock",
+        "risk_score": -100.0,
+        "value": 26548.8111,
+        "qty": 14047.0,
+        "daily_qty": 56.67,
+        "still_selling": true
+      },
+      {
+        "sku": "0100109445",
+        "category": "COVRD CHOCO BARS AND TAB",
+        "location": "WH2",
+        "status": "Excess Stock",
+        "risk_score": -100.0,
+        "value": 19354.1454,
+        "qty": 7800.0,
+        "daily_qty": 79.2,
+        "still_selling": true
+      },
+      {
+        "sku": "0101659739",
+        "category": "MENS VESTS",
+        "location": "WH1",
+        "status": "Excess Stock",
+        "risk_score": -100.0,
+        "value": 16835.8743,
+        "qty": 10878.0,
+        "daily_qty": 12.27,
+        "still_selling": true
+      },
+      {
+        "sku": "0100007855",
+        "category": "COSMETICS",
+        "location": "WH1",
+        "status": "Excess Stock",
+        "risk_score": -100.0,
+        "value": 16163.6418,
+        "qty": 4804.0,
+        "daily_qty": 31.57,
+        "still_selling": true
+      },
+      {
+        "sku": "0101662608",
+        "category": "COSMETICS",
+        "location": "WH1",
+        "status": "Excess Stock",
+        "risk_score": -100.0,
+        "value": 15223.14,
+        "qty": 9397.0,
+        "daily_qty": 73.53,
+        "still_selling": true
+      },
+      {
+        "sku": "0101622482",
+        "category": "MENS JEANS COMFORT FIT",
+        "location": "WH1",
+        "status": "Excess Stock",
+        "risk_score": -100.0,
+        "value": 15140.2959,
+        "qty": 6178.999999999999,
+        "daily_qty": 8.4,
+        "still_selling": true
+      },
+      {
+        "sku": "0101622483",
+        "category": "MENS JEANS COMFORT FIT",
+        "location": "WH1",
+        "status": "Excess Stock",
+        "risk_score": -100.0,
+        "value": 14635.2825,
+        "qty": 5970.0,
+        "daily_qty": 15.8,
+        "still_selling": true
+      },
+      {
+        "sku": "0101667714",
+        "category": "COSMETICS",
+        "location": "WH1",
+        "status": "Excess Stock",
+        "risk_score": -100.0,
+        "value": 13357.7478,
+        "qty": 4993.0,
+        "daily_qty": 39.07,
+        "still_selling": true
+      },
+      {
+        "sku": "0100128190",
+        "category": "COOKING POT NON STICK TEFLON",
+        "location": "WH1",
+        "status": "Excess Stock",
+        "risk_score": -100.0,
+        "value": 13309.272,
+        "qty": 2622.0,
+        "daily_qty": 1.24,
+        "still_selling": true
+      },
+      {
+        "sku": "0100000413",
+        "category": "COSMETICS",
+        "location": "WH1",
+        "status": "Excess Stock",
+        "risk_score": -100.0,
+        "value": 13087.6263,
+        "qty": 2288.0,
+        "daily_qty": 21.2,
+        "still_selling": true
+      }
+    ],
+    "value_shown": 163655.8371,
+    "still_selling": 10,
+    "note": "The ageing risk score runs from 0 (healthy) to -100 (worst) and is calculated inside the source report. Stock value in this table comes from the stock-status table, which is on a different basis from the headline stock value above, so the two are not added together.",
+    "estate_lines": 40769.0,
+    "estate_all_lines": 139200.0
+  },
   "stat_check": {
     "method": "single_snapshot_ageing_v2",
     "report_id": "inventory_ageing",
-    "anchor": "2026-08-19",
+    "anchor": "2026-08-23",
     "overall": {
-      "total_value": 6201335.0884,
-      "aged_value": 825386.5286,
-      "aged_share_pct": 13.309819850630861,
-      "high_risk_value": 460883.7925,
-      "high_risk_share_pct": 7.432009171091448
+      "total_value": 5732499.5474,
+      "aged_value": 842320.7491,
+      "aged_share_pct": 14.693777856154187,
+      "high_risk_value": 453777.8088,
+      "high_risk_share_pct": 7.915880412163537
     },
     "aged_non_moving_association": {
-      "aged_non_moving_value": 285488.2244,
-      "aged_share_within_non_moving_pct": 43.39054884067028,
-      "non_moving_share_within_aged_pct": 34.58842790713316,
-      "estate_aged_share_pct": 13.309819850630861,
-      "aged_rate_lift": 3.260040280606326,
+      "aged_non_moving_value": 278109.2302,
+      "aged_share_within_non_moving_pct": 45.8353292389646,
+      "non_moving_share_within_aged_pct": 33.01702237504575,
+      "estate_aged_share_pct": 14.693777856154187,
+      "aged_rate_lift": 3.1193699596981053,
       "note": "Monetary association, not a causal or significance test."
     },
     "dimensions": {
@@ -312,36 +1140,36 @@
           {
             "role": "division",
             "member": "HOME & LIVING",
-            "stock_value": 1200614.8102,
-            "aged_value": 352830.2924,
-            "aged_rate_pct": 29.38746793746656,
-            "rest_of_estate_rate_pct": 9.449763432280916,
-            "rate_gap_pct_points": 19.937704505185643,
-            "rate_ratio": 3.1098628180550363,
-            "expected_aged_at_baseline": 113455.25929682853,
-            "excess_aged_value": 239375.03310317144,
-            "excess_share_of_total_pct": 3.8600564183499455,
-            "member_stock_share_pct": 19.360585955850507
+            "stock_value": 1164133.729,
+            "aged_value": 365334.4867,
+            "aged_rate_pct": 31.38251882915764,
+            "rest_of_estate_rate_pct": 10.441069768949834,
+            "rate_gap_pct_points": 20.941449060207805,
+            "rate_ratio": 3.0056804066652743,
+            "expected_aged_at_baseline": 121548.01484876739,
+            "excess_aged_value": 243786.47185123264,
+            "excess_share_of_total_pct": 4.2527080872043515,
+            "member_stock_share_pct": 20.307611354771026
           },
           {
             "role": "division",
             "member": "LIFESTYLE",
-            "stock_value": 2016539.4152,
-            "aged_value": 363300.5656,
-            "aged_rate_pct": 18.016040889732267,
-            "rest_of_estate_rate_pct": 11.042019708614719,
-            "rate_gap_pct_points": 6.974021181117548,
-            "rate_ratio": 1.6315892712704165,
-            "expected_aged_at_baseline": 222666.67965836797,
-            "excess_aged_value": 140633.885941632,
-            "excess_share_of_total_pct": 2.2678001420161418,
-            "member_stock_share_pct": 32.517826991353324
+            "stock_value": 1964357.4462,
+            "aged_value": 368859.4199,
+            "aged_rate_pct": 18.77761201829887,
+            "rest_of_estate_rate_pct": 12.564848046713045,
+            "rate_gap_pct_points": 6.212763971585826,
+            "rate_ratio": 1.4944559574845857,
+            "expected_aged_at_baseline": 246818.52820932295,
+            "excess_aged_value": 122040.89169067703,
+            "excess_share_of_total_pct": 2.12892980944114,
+            "member_stock_share_pct": 34.26703185857106
           }
         ],
         "concentration": {
-          "top1_share_pct": 44.015809928012914,
-          "top3_share_pct": 94.12893447846854,
-          "hhi": 0.38534465639241045,
+          "top1_share_pct": 43.790850491824834,
+          "top3_share_pct": 94.44515442009548,
+          "hhi": 0.3882684064308314,
           "members": 4
         }
       },
@@ -350,36 +1178,36 @@
           {
             "role": "section",
             "member": "CULINARY SUPPLIES",
-            "stock_value": 614879.7332,
-            "aged_value": 197823.4566,
-            "aged_rate_pct": 32.1727072659353,
-            "rest_of_estate_rate_pct": 11.233654116932124,
-            "rate_gap_pct_points": 20.93905314900318,
-            "rate_ratio": 2.8639574381627453,
-            "expected_aged_at_baseline": 69073.46246280306,
-            "excess_aged_value": 128749.99413719695,
-            "excess_share_of_total_pct": 2.076165733698735,
-            "member_stock_share_pct": 9.915279926578593
+            "stock_value": 591650.31,
+            "aged_value": 210956.5073,
+            "aged_rate_pct": 35.655606653869576,
+            "rest_of_estate_rate_pct": 12.281321872012619,
+            "rate_gap_pct_points": 23.374284781856957,
+            "rate_ratio": 2.903238513365863,
+            "expected_aged_at_baseline": 72662.47892786046,
+            "excess_aged_value": 138294.02837213955,
+            "excess_share_of_total_pct": 2.4124559841415674,
+            "member_stock_share_pct": 10.320983108814124
           },
           {
             "role": "section",
             "member": "OFFICE SUPPLIES",
-            "stock_value": 436670.2123,
-            "aged_value": 111135.4758,
-            "aged_rate_pct": 25.450665667033867,
-            "rest_of_estate_rate_pct": 12.390157418538719,
-            "rate_gap_pct_points": 13.060508248495148,
-            "rate_ratio": 2.054103495808166,
-            "expected_aged_at_baseline": 54104.126703837224,
-            "excess_aged_value": 57031.349096162776,
-            "excess_share_of_total_pct": 0.9196624320921413,
-            "member_stock_share_pct": 7.041551634853921
+            "stock_value": 416848.235,
+            "aged_value": 111495.9371,
+            "aged_rate_pct": 26.747369363336755,
+            "rest_of_estate_rate_pct": 13.748546867534001,
+            "rate_gap_pct_points": 12.998822495802754,
+            "rate_ratio": 1.9454688281638217,
+            "expected_aged_at_baseline": 57310.57495546327,
+            "excess_aged_value": 54185.362144536724,
+            "excess_share_of_total_pct": 0.9452309886201864,
+            "member_stock_share_pct": 7.271666252273206
           }
         ],
         "concentration": {
-          "top1_share_pct": 23.967371618669766,
-          "top3_share_pct": 52.03668547008074,
-          "hhi": 0.12165625067884957,
+          "top1_share_pct": 25.044676570700897,
+          "top3_share_pct": 53.98261563493996,
+          "hhi": 0.12759012741906603,
           "members": 15
         }
       },
@@ -388,22 +1216,22 @@
           {
             "role": "location",
             "member": "WH1",
-            "stock_value": 3849004.2918,
-            "aged_value": 672148.8222,
-            "aged_rate_pct": 17.46292732465797,
-            "rest_of_estate_rate_pct": 6.514292404005671,
-            "rate_gap_pct_points": 10.948634920652298,
-            "rate_ratio": 2.680709775004869,
-            "expected_aged_at_baseline": 250735.39421057966,
-            "excess_aged_value": 421413.42798942036,
-            "excess_share_of_total_pct": 6.795527446625188,
-            "member_stock_share_pct": 62.06734899715083
+            "stock_value": 3570579.272,
+            "aged_value": 689062.6078,
+            "aged_rate_pct": 19.2983422382899,
+            "rest_of_estate_rate_pct": 7.088982098178626,
+            "rate_gap_pct_points": 12.209360140111276,
+            "rate_ratio": 2.722300884812254,
+            "expected_aged_at_baseline": 253117.72539335667,
+            "excess_aged_value": 435944.88240664336,
+            "excess_share_of_total_pct": 7.604795757975561,
+            "member_stock_share_pct": 62.28660364429426
           }
         ],
         "concentration": {
-          "top1_share_pct": 81.43443088901417,
-          "top3_share_pct": 91.1296911491657,
-          "hhi": 0.6706753092079424,
+          "top1_share_pct": 81.80525156672766,
+          "top3_share_pct": 91.31606837678456,
+          "hhi": 0.676456404859313,
           "members": 7
         }
       },
@@ -412,22 +1240,22 @@
           {
             "role": "sku_type",
             "member": "OVERSEAS",
-            "stock_value": 2198806.7318,
-            "aged_value": 637842.5306,
-            "aged_rate_pct": 29.008576396245868,
-            "rest_of_estate_rate_pct": 4.68563820892731,
-            "rate_gap_pct_points": 24.322938187318556,
-            "rate_ratio": 6.190955234438991,
-            "expected_aged_at_baseline": 103028.12836568664,
-            "excess_aged_value": 534814.4022343134,
-            "excess_share_of_total_pct": 8.62418164170355,
-            "member_stock_share_pct": 35.456989510420286
+            "stock_value": 2212277.747,
+            "aged_value": 656676.5223,
+            "aged_rate_pct": 29.68327657729678,
+            "rest_of_estate_rate_pct": 5.273651415342791,
+            "rate_gap_pct_points": 24.40962516195399,
+            "rate_ratio": 5.628600421131048,
+            "expected_aged_at_baseline": 116667.8167159791,
+            "excess_aged_value": 540008.7055840208,
+            "excess_share_of_total_pct": 9.420126440811394,
+            "member_stock_share_pct": 38.591852100596995
           }
         ],
         "concentration": {
-          "top1_share_pct": 77.2780398635646,
-          "top3_share_pct": 100.0,
-          "hhi": 0.6488182917596439,
+          "top1_share_pct": 77.9603877740924,
+          "top3_share_pct": 99.99999999999999,
+          "hhi": 0.6563566568955231,
           "members": 2
         }
       }
@@ -436,14 +1264,14 @@
       "reconciled": true,
       "failed_checks": [],
       "undetermined_value": 0.0,
-      "comparison_available": false,
-      "comparison_reason": "Stock age movement between two dates cannot be shown, because the model holds only one stock position (a single snapshot date). Showing it would need the previous snapshot to be retained."
+      "comparison_available": true,
+      "comparison_reason": ""
     }
   },
   "stat_signals": [
     {
       "candidate_id": "ageing_oldest_band:age_band:24+ MONTHS",
-      "story_key": "age:v1:830e05f172106b710b6783ee8fbc5f83",
+      "story_key": "age:v1:ebd043068149743e572fffb8342eeb2b",
       "report_id": "inventory_ageing",
       "analysis_type": "ageing_oldest_band",
       "dimension": "age_band",
@@ -453,21 +1281,27 @@
       ],
       "metric": "Stock value at ageing risk",
       "metric_family": "stock_value",
-      "current": 91037.828,
-      "impact_value": 91037.828,
-      "impact_share": 1.4680359422972027,
-      "score": 601.4680359422972,
+      "current": 90713.9685,
+      "impact_value": 90713.9685,
+      "impact_share": 1.5824505130775584,
+      "score": 601.5824505130776,
       "severity": "critical",
       "comparison_label": "share of the current stock position",
-      "description": "QAR 91K is in the oldest reported age band, 24+ MONTHS (1.5% of stock value).",
+      "description": "USD 91K is in the oldest reported age band, 24+ MONTHS (1.6% of stock value).",
       "band_ordinal": 5,
       "high_risk": true,
       "oldest_reported_band": true,
-      "id": "A1"
+      "id": "A1",
+      "novelty": {
+        "report": false,
+        "reason": "unchanged since it was last reported 0 day(s) ago",
+        "kind": "unchanged",
+        "days_in_state": 0
+      }
     },
     {
       "candidate_id": "ageing_high_risk_band:age_band:12-24 MONTHS",
-      "story_key": "age:v1:a1b3bfa5ef5a1faee876d00171bfc16d",
+      "story_key": "age:v1:bd49d86fc2193db034196af7ca8f247c",
       "report_id": "inventory_ageing",
       "analysis_type": "ageing_high_risk_band",
       "dimension": "age_band",
@@ -477,21 +1311,27 @@
       ],
       "metric": "Stock value at ageing risk",
       "metric_family": "stock_value",
-      "current": 369845.9645,
-      "impact_value": 369845.9645,
-      "impact_share": 5.963973228794246,
-      "score": 505.96397322879426,
+      "current": 363063.8403,
+      "impact_value": 363063.8403,
+      "impact_share": 6.33342989908598,
+      "score": 506.33342989908596,
       "severity": "critical",
       "comparison_label": "share of the current stock position",
-      "description": "QAR 370K is in the high-risk age band 12-24 MONTHS (6.0% of stock value).",
+      "description": "USD 363K is in the high-risk age band 12-24 MONTHS (6.3% of stock value).",
       "band_ordinal": 4,
       "high_risk": true,
       "oldest_reported_band": false,
-      "id": "A2"
+      "id": "A2",
+      "novelty": {
+        "report": false,
+        "reason": "unchanged since it was last reported 0 day(s) ago",
+        "kind": "unchanged",
+        "days_in_state": 0
+      }
     },
     {
       "candidate_id": "ageing_aged_non_moving:risk_intersection:Aged and non-moving",
-      "story_key": "age:v1:7441739342ed59a1bff68f8a2e761a8f",
+      "story_key": "age:v1:753e723590e467992a2253e76814a54e",
       "report_id": "inventory_ageing",
       "analysis_type": "ageing_aged_non_moving",
       "dimension": "risk_intersection",
@@ -501,20 +1341,26 @@
       ],
       "metric": "Stock value at ageing risk",
       "metric_family": "stock_value",
-      "current": 285488.2244,
-      "impact_value": 285488.2244,
-      "impact_share": 4.603657443604754,
-      "score": 404.60365744360473,
+      "current": 278109.2302,
+      "impact_value": 278109.2302,
+      "impact_share": 4.851447922505945,
+      "score": 404.85144792250594,
       "severity": "critical",
       "comparison_label": "aged rate within non-moving stock versus the whole stock position",
-      "description": "QAR 285K is both aged and has not sold since arrival, 3.3x the estate aged rate.",
-      "aged_rate_lift": 3.260040280606326,
-      "aged_share_within_non_moving_pct": 43.39054884067028,
-      "id": "A3"
+      "description": "USD 278K is both aged and has not sold since arrival, 3.1x the estate aged rate.",
+      "aged_rate_lift": 3.1193699596981053,
+      "aged_share_within_non_moving_pct": 45.8353292389646,
+      "id": "A3",
+      "novelty": {
+        "report": false,
+        "reason": "unchanged since it was last reported 0 day(s) ago",
+        "kind": "unchanged",
+        "days_in_state": 0
+      }
     },
     {
       "candidate_id": "ageing_not_aged_non_moving:risk_intersection:Not aged and non-moving",
-      "story_key": "age:v1:bb5577d724cfcd96829d24521428b089",
+      "story_key": "age:v1:daa0d45b9dfc2787338023ae3e00527c",
       "report_id": "inventory_ageing",
       "analysis_type": "ageing_not_aged_non_moving",
       "dimension": "risk_intersection",
@@ -524,18 +1370,24 @@
       ],
       "metric": "Stock value at ageing risk",
       "metric_family": "stock_value",
-      "current": 372462.0252,
-      "impact_value": 372462.0252,
-      "impact_share": 6.0061586721335924,
-      "score": 306.0061586721336,
+      "current": 328648.12230000005,
+      "impact_value": 328648.12230000005,
+      "impact_share": 5.733068438689365,
+      "score": 305.7330684386894,
       "severity": "warning",
       "comparison_label": "share of the current stock position",
-      "description": "QAR 372K is not classified as aged and has not sold since arrival.",
-      "id": "A4"
+      "description": "USD 329K is not classified as aged and has not sold since arrival.",
+      "id": "A4",
+      "novelty": {
+        "report": false,
+        "reason": "unchanged since it was last reported 0 day(s) ago",
+        "kind": "unchanged",
+        "days_in_state": 0
+      }
     },
     {
       "candidate_id": "ageing_rate_hotspot:sku_type:OVERSEAS",
-      "story_key": "age:v1:5baa8a06f152b6c3890e6b187ea32e56",
+      "story_key": "age:v1:cb2e545a37b796ae166e0501853ebf25",
       "report_id": "inventory_ageing",
       "analysis_type": "ageing_rate_hotspot",
       "dimension": "sku_type",
@@ -545,30 +1397,36 @@
       ],
       "metric": "Stock value at ageing risk",
       "metric_family": "stock_value",
-      "current": 534814.4022343134,
-      "impact_value": 534814.4022343134,
-      "impact_share": 8.62418164170355,
-      "score": 208.62418164170356,
+      "current": 540008.7055840208,
+      "impact_value": 540008.7055840208,
+      "impact_share": 9.420126440811394,
+      "score": 209.4201264408114,
       "severity": "warning",
       "comparison_label": "aged-stock rate versus the rest of the estate",
-      "description": "OVERSEAS holds QAR 535K more aged stock than its stock value would imply at the rest-of-estate rate; its aged rate is 29.0% versus 4.7% elsewhere.",
+      "description": "OVERSEAS holds USD 540K more aged stock than its stock value would imply at the rest-of-estate rate; its aged rate is 29.7% versus 5.3% elsewhere.",
       "role": "sku_type",
       "member": "OVERSEAS",
-      "stock_value": 2198806.7318,
-      "aged_value": 637842.5306,
-      "aged_rate_pct": 29.008576396245868,
-      "rest_of_estate_rate_pct": 4.68563820892731,
-      "rate_gap_pct_points": 24.322938187318556,
-      "rate_ratio": 6.190955234438991,
-      "expected_aged_at_baseline": 103028.12836568664,
-      "excess_aged_value": 534814.4022343134,
-      "excess_share_of_total_pct": 8.62418164170355,
-      "member_stock_share_pct": 35.456989510420286,
-      "id": "A5"
+      "stock_value": 2212277.747,
+      "aged_value": 656676.5223,
+      "aged_rate_pct": 29.68327657729678,
+      "rest_of_estate_rate_pct": 5.273651415342791,
+      "rate_gap_pct_points": 24.40962516195399,
+      "rate_ratio": 5.628600421131048,
+      "expected_aged_at_baseline": 116667.8167159791,
+      "excess_aged_value": 540008.7055840208,
+      "excess_share_of_total_pct": 9.420126440811394,
+      "member_stock_share_pct": 38.591852100596995,
+      "id": "A5",
+      "novelty": {
+        "report": false,
+        "reason": "unchanged since it was last reported 0 day(s) ago",
+        "kind": "unchanged",
+        "days_in_state": 0
+      }
     },
     {
       "candidate_id": "ageing_rate_hotspot:location:WH1",
-      "story_key": "age:v1:9ba6ef35471d2368055305382691e1dc",
+      "story_key": "age:v1:8dd2611f27356fc61fb1623946389895",
       "report_id": "inventory_ageing",
       "analysis_type": "ageing_rate_hotspot",
       "dimension": "location",
@@ -578,30 +1436,36 @@
       ],
       "metric": "Stock value at ageing risk",
       "metric_family": "stock_value",
-      "current": 421413.42798942036,
-      "impact_value": 421413.42798942036,
-      "impact_share": 6.795527446625188,
-      "score": 206.7955274466252,
+      "current": 435944.88240664336,
+      "impact_value": 435944.88240664336,
+      "impact_share": 7.604795757975561,
+      "score": 207.60479575797555,
       "severity": "warning",
       "comparison_label": "aged-stock rate versus the rest of the estate",
-      "description": "WH1 holds QAR 421K more aged stock than its stock value would imply at the rest-of-estate rate; its aged rate is 17.5% versus 6.5% elsewhere.",
+      "description": "WH1 holds USD 436K more aged stock than its stock value would imply at the rest-of-estate rate; its aged rate is 19.3% versus 7.1% elsewhere.",
       "role": "location",
       "member": "WH1",
-      "stock_value": 3849004.2918,
-      "aged_value": 672148.8222,
-      "aged_rate_pct": 17.46292732465797,
-      "rest_of_estate_rate_pct": 6.514292404005671,
-      "rate_gap_pct_points": 10.948634920652298,
-      "rate_ratio": 2.680709775004869,
-      "expected_aged_at_baseline": 250735.39421057966,
-      "excess_aged_value": 421413.42798942036,
-      "excess_share_of_total_pct": 6.795527446625188,
-      "member_stock_share_pct": 62.06734899715083,
-      "id": "A6"
+      "stock_value": 3570579.272,
+      "aged_value": 689062.6078,
+      "aged_rate_pct": 19.2983422382899,
+      "rest_of_estate_rate_pct": 7.088982098178626,
+      "rate_gap_pct_points": 12.209360140111276,
+      "rate_ratio": 2.722300884812254,
+      "expected_aged_at_baseline": 253117.72539335667,
+      "excess_aged_value": 435944.88240664336,
+      "excess_share_of_total_pct": 7.604795757975561,
+      "member_stock_share_pct": 62.28660364429426,
+      "id": "A6",
+      "novelty": {
+        "report": false,
+        "reason": "unchanged since it was last reported 0 day(s) ago",
+        "kind": "unchanged",
+        "days_in_state": 0
+      }
     },
     {
       "candidate_id": "ageing_rate_hotspot:division:HOME & LIVING",
-      "story_key": "age:v1:2800446a470b350c52a9b0f2539dd880",
+      "story_key": "age:v1:3d4a9f1c2de424912a437384145e0473",
       "report_id": "inventory_ageing",
       "analysis_type": "ageing_rate_hotspot",
       "dimension": "division",
@@ -611,63 +1475,36 @@
       ],
       "metric": "Stock value at ageing risk",
       "metric_family": "stock_value",
-      "current": 239375.03310317144,
-      "impact_value": 239375.03310317144,
-      "impact_share": 3.8600564183499455,
-      "score": 203.86005641834996,
+      "current": 243786.47185123264,
+      "impact_value": 243786.47185123264,
+      "impact_share": 4.2527080872043515,
+      "score": 204.25270808720435,
       "severity": "warning",
       "comparison_label": "aged-stock rate versus the rest of the estate",
-      "description": "HOME & LIVING holds QAR 239K more aged stock than its stock value would imply at the rest-of-estate rate; its aged rate is 29.4% versus 9.4% elsewhere.",
+      "description": "HOME & LIVING holds USD 244K more aged stock than its stock value would imply at the rest-of-estate rate; its aged rate is 31.4% versus 10.4% elsewhere.",
       "role": "division",
       "member": "HOME & LIVING",
-      "stock_value": 1200614.8102,
-      "aged_value": 352830.2924,
-      "aged_rate_pct": 29.38746793746656,
-      "rest_of_estate_rate_pct": 9.449763432280916,
-      "rate_gap_pct_points": 19.937704505185643,
-      "rate_ratio": 3.1098628180550363,
-      "expected_aged_at_baseline": 113455.25929682853,
-      "excess_aged_value": 239375.03310317144,
-      "excess_share_of_total_pct": 3.8600564183499455,
-      "member_stock_share_pct": 19.360585955850507,
-      "id": "A7"
-    },
-    {
-      "candidate_id": "ageing_rate_hotspot:division:LIFESTYLE",
-      "story_key": "age:v1:6a7da3a1ecf917563665e93c83f304da",
-      "report_id": "inventory_ageing",
-      "analysis_type": "ageing_rate_hotspot",
-      "dimension": "division",
-      "affected_segment": "LIFESTYLE",
-      "segment_members": [
-        "LIFESTYLE"
-      ],
-      "metric": "Stock value at ageing risk",
-      "metric_family": "stock_value",
-      "current": 140633.885941632,
-      "impact_value": 140633.885941632,
-      "impact_share": 2.2678001420161418,
-      "score": 202.26780014201614,
-      "severity": "warning",
-      "comparison_label": "aged-stock rate versus the rest of the estate",
-      "description": "LIFESTYLE holds QAR 141K more aged stock than its stock value would imply at the rest-of-estate rate; its aged rate is 18.0% versus 11.0% elsewhere.",
-      "role": "division",
-      "member": "LIFESTYLE",
-      "stock_value": 2016539.4152,
-      "aged_value": 363300.5656,
-      "aged_rate_pct": 18.016040889732267,
-      "rest_of_estate_rate_pct": 11.042019708614719,
-      "rate_gap_pct_points": 6.974021181117548,
-      "rate_ratio": 1.6315892712704165,
-      "expected_aged_at_baseline": 222666.67965836797,
-      "excess_aged_value": 140633.885941632,
-      "excess_share_of_total_pct": 2.2678001420161418,
-      "member_stock_share_pct": 32.517826991353324,
-      "id": "A8"
+      "stock_value": 1164133.729,
+      "aged_value": 365334.4867,
+      "aged_rate_pct": 31.38251882915764,
+      "rest_of_estate_rate_pct": 10.441069768949834,
+      "rate_gap_pct_points": 20.941449060207805,
+      "rate_ratio": 3.0056804066652743,
+      "expected_aged_at_baseline": 121548.01484876739,
+      "excess_aged_value": 243786.47185123264,
+      "excess_share_of_total_pct": 4.2527080872043515,
+      "member_stock_share_pct": 20.307611354771026,
+      "id": "A7",
+      "novelty": {
+        "report": false,
+        "reason": "unchanged since it was last reported 0 day(s) ago",
+        "kind": "unchanged",
+        "days_in_state": 0
+      }
     },
     {
       "candidate_id": "ageing_rate_hotspot:section:CULINARY SUPPLIES",
-      "story_key": "age:v1:39218fc8fe7d7cb0d6d8105edf059297",
+      "story_key": "age:v1:6b0626f4342dde67837c065648f86cf6",
       "report_id": "inventory_ageing",
       "analysis_type": "ageing_rate_hotspot",
       "dimension": "section",
@@ -677,30 +1514,75 @@
       ],
       "metric": "Stock value at ageing risk",
       "metric_family": "stock_value",
-      "current": 128749.99413719695,
-      "impact_value": 128749.99413719695,
-      "impact_share": 2.076165733698735,
-      "score": 202.07616573369873,
+      "current": 138294.02837213955,
+      "impact_value": 138294.02837213955,
+      "impact_share": 2.4124559841415674,
+      "score": 202.41245598414156,
       "severity": "warning",
       "comparison_label": "aged-stock rate versus the rest of the estate",
-      "description": "CULINARY SUPPLIES holds QAR 129K more aged stock than its stock value would imply at the rest-of-estate rate; its aged rate is 32.2% versus 11.2% elsewhere.",
+      "description": "CULINARY SUPPLIES holds USD 138K more aged stock than its stock value would imply at the rest-of-estate rate; its aged rate is 35.7% versus 12.3% elsewhere.",
       "role": "section",
       "member": "CULINARY SUPPLIES",
-      "stock_value": 614879.7332,
-      "aged_value": 197823.4566,
-      "aged_rate_pct": 32.1727072659353,
-      "rest_of_estate_rate_pct": 11.233654116932124,
-      "rate_gap_pct_points": 20.93905314900318,
-      "rate_ratio": 2.8639574381627453,
-      "expected_aged_at_baseline": 69073.46246280306,
-      "excess_aged_value": 128749.99413719695,
-      "excess_share_of_total_pct": 2.076165733698735,
-      "member_stock_share_pct": 9.915279926578593,
-      "id": "A9"
+      "stock_value": 591650.31,
+      "aged_value": 210956.5073,
+      "aged_rate_pct": 35.655606653869576,
+      "rest_of_estate_rate_pct": 12.281321872012619,
+      "rate_gap_pct_points": 23.374284781856957,
+      "rate_ratio": 2.903238513365863,
+      "expected_aged_at_baseline": 72662.47892786046,
+      "excess_aged_value": 138294.02837213955,
+      "excess_share_of_total_pct": 2.4124559841415674,
+      "member_stock_share_pct": 10.320983108814124,
+      "id": "A8",
+      "novelty": {
+        "report": false,
+        "reason": "unchanged since it was last reported 0 day(s) ago",
+        "kind": "unchanged",
+        "days_in_state": 0
+      }
+    },
+    {
+      "candidate_id": "ageing_rate_hotspot:division:LIFESTYLE",
+      "story_key": "age:v1:b986311f9f3bdac7cde6bb9ffaeb7cdf",
+      "report_id": "inventory_ageing",
+      "analysis_type": "ageing_rate_hotspot",
+      "dimension": "division",
+      "affected_segment": "LIFESTYLE",
+      "segment_members": [
+        "LIFESTYLE"
+      ],
+      "metric": "Stock value at ageing risk",
+      "metric_family": "stock_value",
+      "current": 122040.89169067703,
+      "impact_value": 122040.89169067703,
+      "impact_share": 2.12892980944114,
+      "score": 202.12892980944113,
+      "severity": "warning",
+      "comparison_label": "aged-stock rate versus the rest of the estate",
+      "description": "LIFESTYLE holds USD 122K more aged stock than its stock value would imply at the rest-of-estate rate; its aged rate is 18.8% versus 12.6% elsewhere.",
+      "role": "division",
+      "member": "LIFESTYLE",
+      "stock_value": 1964357.4462,
+      "aged_value": 368859.4199,
+      "aged_rate_pct": 18.77761201829887,
+      "rest_of_estate_rate_pct": 12.564848046713045,
+      "rate_gap_pct_points": 6.212763971585826,
+      "rate_ratio": 1.4944559574845857,
+      "expected_aged_at_baseline": 246818.52820932295,
+      "excess_aged_value": 122040.89169067703,
+      "excess_share_of_total_pct": 2.12892980944114,
+      "member_stock_share_pct": 34.26703185857106,
+      "id": "A9",
+      "novelty": {
+        "report": false,
+        "reason": "unchanged since it was last reported 0 day(s) ago",
+        "kind": "unchanged",
+        "days_in_state": 0
+      }
     },
     {
       "candidate_id": "ageing_rate_hotspot:section:OFFICE SUPPLIES",
-      "story_key": "age:v1:a00396114adb3fbe0211f7dda027fdc7",
+      "story_key": "age:v1:e9ff20746d781b8c146b9b1bdf8e4a8d",
       "report_id": "inventory_ageing",
       "analysis_type": "ageing_rate_hotspot",
       "dimension": "section",
@@ -710,30 +1592,36 @@
       ],
       "metric": "Stock value at ageing risk",
       "metric_family": "stock_value",
-      "current": 57031.349096162776,
-      "impact_value": 57031.349096162776,
-      "impact_share": 0.9196624320921413,
-      "score": 200.91966243209214,
+      "current": 54185.362144536724,
+      "impact_value": 54185.362144536724,
+      "impact_share": 0.9452309886201864,
+      "score": 200.94523098862018,
       "severity": "warning",
       "comparison_label": "aged-stock rate versus the rest of the estate",
-      "description": "OFFICE SUPPLIES holds QAR 57K more aged stock than its stock value would imply at the rest-of-estate rate; its aged rate is 25.5% versus 12.4% elsewhere.",
+      "description": "OFFICE SUPPLIES holds USD 54K more aged stock than its stock value would imply at the rest-of-estate rate; its aged rate is 26.7% versus 13.7% elsewhere.",
       "role": "section",
       "member": "OFFICE SUPPLIES",
-      "stock_value": 436670.2123,
-      "aged_value": 111135.4758,
-      "aged_rate_pct": 25.450665667033867,
-      "rest_of_estate_rate_pct": 12.390157418538719,
-      "rate_gap_pct_points": 13.060508248495148,
-      "rate_ratio": 2.054103495808166,
-      "expected_aged_at_baseline": 54104.126703837224,
-      "excess_aged_value": 57031.349096162776,
-      "excess_share_of_total_pct": 0.9196624320921413,
-      "member_stock_share_pct": 7.041551634853921,
-      "id": "A10"
+      "stock_value": 416848.235,
+      "aged_value": 111495.9371,
+      "aged_rate_pct": 26.747369363336755,
+      "rest_of_estate_rate_pct": 13.748546867534001,
+      "rate_gap_pct_points": 12.998822495802754,
+      "rate_ratio": 1.9454688281638217,
+      "expected_aged_at_baseline": 57310.57495546327,
+      "excess_aged_value": 54185.362144536724,
+      "excess_share_of_total_pct": 0.9452309886201864,
+      "member_stock_share_pct": 7.271666252273206,
+      "id": "A10",
+      "novelty": {
+        "report": false,
+        "reason": "unchanged since it was last reported 0 day(s) ago",
+        "kind": "unchanged",
+        "days_in_state": 0
+      }
     },
     {
       "candidate_id": "ageing_concentration:location:WH1",
-      "story_key": "age:v1:ba24841eb846c6800b17379c9efc4626",
+      "story_key": "age:v1:b309a1c1851991fd2830bb3f3b9d1bb2",
       "report_id": "inventory_ageing",
       "analysis_type": "ageing_concentration",
       "dimension": "location",
@@ -743,22 +1631,28 @@
       ],
       "metric": "Stock value at ageing risk",
       "metric_family": "stock_value",
-      "current": 672148.8222,
-      "impact_value": 672148.8222,
-      "impact_share": 10.838776047714276,
-      "score": 110.83877604771428,
+      "current": 689062.6078,
+      "impact_value": 689062.6078,
+      "impact_share": 12.020281939883054,
+      "score": 112.02028193988305,
       "severity": "info",
       "comparison_label": "share of aged stock across location members",
-      "description": "WH1 holds 81.4% of all aged stock value across location members.",
-      "top1_share_pct": 81.43443088901417,
-      "top3_share_pct": 91.1296911491657,
-      "hhi": 0.6706753092079424,
+      "description": "WH1 holds 81.8% of all aged stock value across location members.",
+      "top1_share_pct": 81.80525156672766,
+      "top3_share_pct": 91.31606837678456,
+      "hhi": 0.676456404859313,
       "members": 7,
-      "id": "A11"
+      "id": "A11",
+      "novelty": {
+        "report": false,
+        "reason": "unchanged since it was last reported 0 day(s) ago",
+        "kind": "unchanged",
+        "days_in_state": 0
+      }
     },
     {
       "candidate_id": "ageing_concentration:sku_type:OVERSEAS",
-      "story_key": "age:v1:d52a54c787d8c6d18099d5dd9f135f9d",
+      "story_key": "age:v1:7bd9d152ba14e2d1add9434be8c289e1",
       "report_id": "inventory_ageing",
       "analysis_type": "ageing_concentration",
       "dimension": "sku_type",
@@ -768,195 +1662,201 @@
       ],
       "metric": "Stock value at ageing risk",
       "metric_family": "stock_value",
-      "current": 637842.5306,
-      "impact_value": 637842.5306,
-      "impact_share": 10.285567889939152,
-      "score": 110.28556788993916,
+      "current": 656676.5223,
+      "impact_value": 656676.5223,
+      "impact_share": 11.455326195321526,
+      "score": 111.45532619532153,
       "severity": "info",
       "comparison_label": "share of aged stock across sku_type members",
-      "description": "OVERSEAS holds 77.3% of all aged stock value across sku_type members.",
-      "top1_share_pct": 77.2780398635646,
-      "top3_share_pct": 100.0,
-      "hhi": 0.6488182917596439,
+      "description": "OVERSEAS holds 78.0% of all aged stock value across sku_type members.",
+      "top1_share_pct": 77.9603877740924,
+      "top3_share_pct": 99.99999999999999,
+      "hhi": 0.6563566568955231,
       "members": 2,
-      "id": "A12"
+      "id": "A12",
+      "novelty": {
+        "report": false,
+        "reason": "unchanged since it was last reported 0 day(s) ago",
+        "kind": "unchanged",
+        "days_in_state": 0
+      }
     }
   ],
   "ageing_dimensions": {
     "division": [
       {
-        "name": "LIFESTYLE",
-        "total": 2016539.4152,
-        "value": 363300.5656,
-        "high_risk": 195502.5198
+        "name": "HOME & LIVING",
+        "total": 1164133.729,
+        "value": 365334.4867,
+        "high_risk": 212716.1294
       },
       {
-        "name": "HOME & LIVING",
-        "total": 1200614.8102,
-        "value": 352830.2924,
-        "high_risk": 215932.9214
+        "name": "LIFESTYLE",
+        "total": 1964357.4462,
+        "value": 368859.4199,
+        "high_risk": 192104.7202
       },
       {
         "name": "CONSUMER GOODS",
-        "total": 2662952.3566,
-        "value": 60796.6867,
-        "high_risk": 32911.5501
+        "total": 2312537.35,
+        "value": 61337.2256,
+        "high_risk": 32751.5961
       },
       {
         "name": "TECHNOLOGY",
-        "total": 321228.5064,
-        "value": 48458.9839,
-        "high_risk": 16536.8012
+        "total": 291471.0222,
+        "value": 46789.6169,
+        "high_risk": 16205.3631
       }
     ],
     "section": [
       {
         "name": "CLEANING ESSENSTIALS",
-        "total": 138221.5875,
-        "value": 4422.5809,
-        "high_risk": 2238.4618
+        "total": 119961.7648,
+        "value": 4586.9099,
+        "high_risk": 2349.3486
       },
       {
         "name": "TRAVEL",
-        "total": 121809.3407,
-        "value": 22682.1598,
-        "high_risk": 13947.1529
+        "total": 119740.2567,
+        "value": 20898.8123,
+        "high_risk": 12581.2419
       },
       {
         "name": "GLASS ITEMS",
-        "total": 19506.4237,
-        "value": 5489.2707,
-        "high_risk": 3648.7206
-      },
-      {
-        "name": "KIDS FASHION",
-        "total": 123000.7803,
-        "value": 35153.5741,
-        "high_risk": 13546.4959
+        "total": 25179.7385,
+        "value": 5354.5484,
+        "high_risk": 3577.5836
       },
       {
         "name": "ENTERTAINMENTS",
-        "total": 316957.9697,
-        "value": 48431.2519,
-        "high_risk": 16531.8119
-      },
-      {
-        "name": "PERSONAL CARE",
-        "total": 1037437.7729,
-        "value": 25919.4892,
-        "high_risk": 15328.263
-      },
-      {
-        "name": "SPORTING GOODS",
-        "total": 50925.4674,
-        "value": 20069.6339,
-        "high_risk": 19200.8673
-      },
-      {
-        "name": "LADIES APPAREL",
-        "total": 754838.1734,
-        "value": 120544.8594,
-        "high_risk": 69623.9062
-      },
-      {
-        "name": "OFFICE SUPPLIES",
-        "total": 436670.2123,
-        "value": 111135.4758,
-        "high_risk": 82774.8726
-      },
-      {
-        "name": "CULINARY SUPPLIES",
-        "total": 614879.7332,
-        "value": 197823.4566,
-        "high_risk": 115957.436
+        "total": 288068.4789,
+        "value": 46761.0014,
+        "high_risk": 16200.3738
       },
       {
         "name": "FOOTWEAR",
-        "total": 244077.5588,
-        "value": 58133.5432,
-        "high_risk": 33904.1175
+        "total": 238600.2987,
+        "value": 56854.3069,
+        "high_risk": 33202.7934
       },
       {
-        "name": "PROVISIONS",
-        "total": 1059685.762,
-        "value": 26861.8082,
-        "high_risk": 13416.6009
+        "name": "SPORTING GOODS",
+        "total": 50382.8361,
+        "value": 19976.9478,
+        "high_risk": 19113.4328
+      },
+      {
+        "name": "KIDS FASHION",
+        "total": 121748.3533,
+        "value": 34954.3481,
+        "high_risk": 13405.5102
+      },
+      {
+        "name": "LADIES APPAREL",
+        "total": 731297.0988,
+        "value": 132254.328,
+        "high_risk": 68773.7311
+      },
+      {
+        "name": "OFFICE SUPPLIES",
+        "total": 416848.235,
+        "value": 111495.9371,
+        "high_risk": 82398.4643
+      },
+      {
+        "name": "CULINARY SUPPLIES",
+        "total": 591650.31,
+        "value": 210956.5073,
+        "high_risk": 113855.7547
       },
       {
         "name": "MENS APPAREL",
-        "total": 464686.1944,
-        "value": 67952.0865,
-        "high_risk": 25394.2723
+        "total": 466528.571,
+        "value": 66055.278,
+        "high_risk": 25658.4964
+      },
+      {
+        "name": "PROVISIONS",
+        "total": 948162.4323,
+        "value": 27402.5122,
+        "high_risk": 13931.2485
+      },
+      {
+        "name": "PERSONAL CARE",
+        "total": 868814.0642,
+        "value": 25838.4684,
+        "high_risk": 14554.1564
       },
       {
         "name": "TOYS",
-        "total": 256505.9176,
-        "value": 38101.6733,
-        "high_risk": 19312.6019
+        "total": 235365.3801,
+        "value": 37202.7067,
+        "high_risk": 18796.4873
       },
       {
         "name": "HOME TEXTILES",
-        "total": 129558.441,
-        "value": 38382.0893,
-        "high_risk": 13551.8922
+        "total": 130455.4455,
+        "value": 37527.4939,
+        "high_risk": 12884.3268
       }
     ],
     "location": [
       {
-        "name": "WH1",
-        "total": 3849004.2918,
-        "value": 672148.8222,
-        "high_risk": 367351.6192
-      },
-      {
         "name": "ST2",
-        "total": 269464.9162,
-        "value": 42551.46,
-        "high_risk": 25864.2178
+        "total": 275114.1597,
+        "value": 42754.1497,
+        "high_risk": 25978.7451
       },
       {
         "name": "ST1",
-        "total": 344315.9532,
-        "value": 28729.9667,
-        "high_risk": 15987.4639
+        "total": 323884.4521,
+        "value": 28472.681,
+        "high_risk": 16036.4334
       },
       {
         "name": "ST3",
-        "total": 258589.2389,
-        "value": 31356.8223,
-        "high_risk": 21927.2701
-      },
-      {
-        "name": "ST5",
-        "total": 16867.6364,
-        "value": 4055.4915,
-        "high_risk": 1276.1027
-      },
-      {
-        "name": "WH2",
-        "total": 1011799.203,
-        "value": 9072.0538,
-        "high_risk": 3698.0248
+        "total": 260077.3469,
+        "value": 31863.8531,
+        "high_risk": 21994.2991
       },
       {
         "name": "ST4",
-        "total": 451293.8489,
-        "value": 37471.9121,
-        "high_risk": 24779.094
+        "total": 425368.3316,
+        "value": 37357.4337,
+        "high_risk": 24777.5438
+      },
+      {
+        "name": "WH1",
+        "total": 3570579.272,
+        "value": 689062.6078,
+        "high_risk": 360079.9818
+      },
+      {
+        "name": "ST5",
+        "total": 16867.6363,
+        "value": 4183.4488,
+        "high_risk": 1279.779
+      },
+      {
+        "name": "WH2",
+        "total": 860608.3488,
+        "value": 8626.575,
+        "high_risk": 3631.0266
       }
     ],
     "sku_type": [
       {
         "name": "OVERSEAS",
-        "total": 2198806.7318,
-        "value": 637842.5306,
-        "high_risk": 343007.918
+        "total": 2212277.747,
+        "value": 656676.5223,
+        "high_risk": 335960.7287
       },
       {
         "name": "LOCAL",
-        "total": 4002528.3566,
-        "value": 187543.998,
-        "high_risk": 117875.8745
+        "total": 3520221.8004,
+        "value": 185644.2268,
+        "high_risk": 117817.0801
       }
     ]
   },
@@ -967,7 +1867,7 @@
       "rows": [
         {
           "member": "0101574527 - CF PAD LOCK GOLDEN 264",
-          "value": 2177.074
+          "value": 2180.0162
         },
         {
           "member": "0101640088 - SPICE KITCHEN KNIFE P.HANDLE 7 CFKT-0657",
@@ -1004,12 +1904,12 @@
           "value": 3131.0405
         },
         {
-          "member": "0101653358 - LIBERO MENS PUFFER S/L HDY JKT BLACK W25",
-          "value": 2839.264
+          "member": "0101639353 - SPICE GRANITE FRY PAN 26CM CFCK-1458/12",
+          "value": 3075.457
         },
         {
-          "member": "0101624997 - CF MAX FRESH STEEL HOT POT 3PCS SET 3.5/5/8.5 LTR",
-          "value": 2281.3743
+          "member": "0101653358 - LIBERO MENS PUFFER S/L HDY JKT BLACK W25",
+          "value": 2839.264
         }
       ]
     }
@@ -1021,12 +1921,40 @@
     "oldest_filter": "'REP_SSR_SAG'[NEW AGE] = \"24+ MONTHS\"",
     "rejected_measure": "[aged stock share]"
   },
+  "location_bands": {
+    "watch_pct": 5,
+    "critical_pct": 15
+  },
   "semantic_validation": {
     "measure": "[aged stock share]",
-    "reported_share": 1.943314908517435,
-    "reported_numerator": 12051146.930000005,
-    "stock_value": 6201335.0884,
+    "reported_share": 2.1404875026227033,
+    "reported_numerator": 12270343.640000002,
+    "stock_value": 5732499.5474,
     "excluded": true,
     "message": "The semantic model's [aged stock share] was excluded: its numerator does not reconcile to the Stock Value exposure used by this report."
+  },
+  "day_movement": {
+    "available": false,
+    "lane": "day_on_day",
+    "as_at": "2026-08-23",
+    "reason": "This is the first stock position kept for this report, so nothing is compared against an earlier day. Figures describe today only."
+  },
+  "trend_verdict": {
+    "metric": "ageing_band",
+    "comparable": false,
+    "reason_text": "This is the first stock position kept for this report, so nothing is compared against an earlier day. Figures describe today only.",
+    "history_days": 0,
+    "statistical": false,
+    "min_history_days": 5
+  },
+  "stat_signals_reportable": [],
+  "investigation": [],
+  "investigation_budget": {
+    "total": 9,
+    "used": 0,
+    "remaining": 9,
+    "per_finding_cap": 3,
+    "queries": 0,
+    "ledger": []
   }
 }

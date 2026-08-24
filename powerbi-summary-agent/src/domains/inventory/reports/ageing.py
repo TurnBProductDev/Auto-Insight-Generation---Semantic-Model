@@ -22,7 +22,7 @@ from __future__ import annotations
 from typing import Any, Sequence
 
 from ....kernel.report import ReportSpec
-from .. import ageing_stats, buckets, families
+from .. import ageing_history, ageing_outlook, ageing_stats, buckets, families
 
 #: BR-26: below this a finding is not worth a manager's time - except in the
 #: oldest band, where the write-off implication makes even a small value worth
@@ -101,13 +101,25 @@ def _rank(rows: Sequence[dict], key: str, label: str, top: int = 5) -> list[dict
             "value": value,
             "total": _num(_cell(row, "value")) or 0.0,
             "high_risk": _num(_cell(row, "high_risk")) or 0.0,
+            # Carried for the same reason ``high_risk`` is: the comparison
+            # against an earlier position is measured in units, and a member
+            # with no quantity here simply drops out of it.
+            "qty": _num(_cell(row, "qty")) or 0.0,
+            "aged_qty": _num(_cell(row, "aged_qty")) or 0.0,
         })
     ranked.sort(key=lambda item: item["value"], reverse=True)
     return ranked[:top]
 
 
-def build(scan: dict) -> dict:
-    """The whole report model, from one scan. Pure."""
+def build(scan: dict, cfg: dict | None = None) -> dict:
+    """The whole report model, from one scan. Pure.
+
+    ``cfg`` supplies the thresholds the new sections are measured against
+    (the clearance window, the category review line, the risk cut-off). It
+    is optional so a caller with only a scan - the offline replays, the
+    golden master - reproduces the previous model exactly.
+    """
+    cfg = cfg or {}
     header = (scan.get("snapshot") or [{}])[0]
     as_at = str(_cell(header, "as_at") or "").split("T")[0]
     total = _num(_cell(header, "total_value")) or 0.0
@@ -116,9 +128,11 @@ def build(scan: dict) -> dict:
 
     band_rows = [
         {"band": _cell(r, "NEW AGE", "new age"), "value": _num(_cell(r, "value")) or 0.0,
-         "aged": _num(_cell(r, "aged")) or 0.0, "skus": _num(_cell(r, "skus")) or 0}
+         "aged": _num(_cell(r, "aged")) or 0.0, "skus": _num(_cell(r, "skus")) or 0,
+         "qty": _num(_cell(r, "qty")) or 0.0}
         for r in scan.get("bands") or []
     ]
+    qty_by_band = {str(r["band"]): r["qty"] for r in band_rows if r.get("band")}
     distribution = buckets.build_distribution(band_rows)
 
     risk_rows = [
@@ -192,10 +206,163 @@ def build(scan: dict) -> dict:
         "caveats": list(distribution.caveats),
         "narrative": _narrative(distribution, split, total, aged, as_at, currency),
     }
+    report["quantity"] = {
+        "total_qty": _num(_cell(header, "total_qty")),
+        "aged_qty": _num(_cell(header, "aged_qty")),
+        "aged_skus": _num(_cell(header, "aged_skus")),
+    }
+    comparison = ageing_history.build(
+        _current_position(report, qty_by_band), _history_position(scan))
+    report["comparison"] = comparison
+    report["migration"] = _band_movement(comparison)
+    report["clearance"] = _clearance_section(scan, cfg)
+    report["categories"] = _category_section(scan, cfg)
+    report["stuck_lines"] = _stuck_section(scan, cfg)
+    if comparison.get("available") and not comparison.get("value_comparable"):
+        report["caveats"].append(
+            "Stock value is calculated differently on the two dates being "
+            "compared, so this report compares units and shares only. "
+            + str((comparison.get("basis") or {}).get("reason") or ""))
     report["stat_check"] = ageing_stats.analyze(report)
     report["stat_signals"] = ageing_stats.detect(report)
     return report
 
+
+# --- The sections that compare, forecast and rank ------------------------------
+# Added once the source model started retaining a previous stock position and
+# exposing the stock-status table. Each one is built only if its inputs are
+# present, and each returns an explicit `available: False` with a reason when
+# they are not - a missing section must read as "not available and here is why",
+# never as a silent gap.
+
+
+def _history_position(scan: dict) -> dict:
+    """The earlier stock position, in the shape `ageing_history.build` expects."""
+    header = (scan.get("history_snapshot") or [{}])[0]
+    dims = scan.get("history_dimensions") or {}
+    return {
+        "as_at": str(_cell(header, "as_at") or "").split("T")[0],
+        "skus": _num(_cell(header, "skus")) or 0.0,
+        "bands": [
+            {"name": str(r.get("name") or ""), "value": _num(r.get("value")) or 0.0,
+             "qty": _num(r.get("qty")) or 0.0, "skus": _num(r.get("skus")) or 0.0}
+            for r in scan.get("history_bands") or []
+        ],
+        "locations": dims.get("location") or [],
+        "divisions": dims.get("division") or [],
+    }
+
+
+def _current_position(report: dict, qty_by_band: dict) -> dict:
+    """Today's position, in the same shape, so the two can be compared."""
+    bands = (report.get("distribution") or {}).get("bands") or []
+    return {
+        "as_at": report.get("as_at") or "",
+        "skus": (report.get("header") or {}).get("skus") or 0.0,
+        "bands": [
+            {"name": b.get("name"), "value": b.get("value"),
+             "qty": qty_by_band.get(str(b.get("name")), 0.0)}
+            for b in bands
+        ],
+        "locations": [
+            {"name": r.get("name"), "value": r.get("total"), "qty": r.get("qty"),
+             "aged": r.get("value"), "aged_qty": r.get("aged_qty")}
+            for r in report.get("locations") or []
+        ],
+        "divisions": [
+            {"name": r.get("name"), "value": r.get("total"), "qty": r.get("qty"),
+             "aged": r.get("value"), "aged_qty": r.get("aged_qty")}
+            for r in report.get("divisions") or []
+        ],
+    }
+
+
+def _clearance_section(scan: dict, cfg: dict) -> dict:
+    rows = scan.get("clearance") or []
+    if not rows:
+        return {"available": False,
+                "reason": "No selling-rate figures were returned, so how fast "
+                          "the aged stock is likely to clear cannot be estimated."}
+    # A row with no division name is stock-status velocity that does not map to
+    # any division. It is not a division, so it never becomes a row - but its
+    # size is carried through so the page can say what it is not counting.
+    named = [r for r in rows if str(r.get("name") or "").strip()]
+    unmapped = sum(_num(r.get("daily_qty")) or 0.0
+                   for r in rows if not str(r.get("name") or "").strip())
+    return ageing_outlook.clearance(
+        named,
+        horizon_days=int(cfg.get("ageing_clearance_days",
+                                 ageing_outlook.DEFAULT_HORIZON_DAYS)
+                         or ageing_outlook.DEFAULT_HORIZON_DAYS),
+        unmapped_velocity=unmapped)
+
+
+def _category_section(scan: dict, cfg: dict) -> dict:
+    rows = scan.get("categories") or []
+    if not rows:
+        return {"available": False,
+                "reason": "No category breakdown was returned, so the category "
+                          "review check could not be run."}
+    return ageing_outlook.categories(
+        rows,
+        threshold_pct=float(cfg.get("ageing_category_threshold_pct",
+                                    ageing_outlook.DEFAULT_CATEGORY_THRESHOLD_PCT)
+                            or ageing_outlook.DEFAULT_CATEGORY_THRESHOLD_PCT))
+
+
+def _stuck_section(scan: dict, cfg: dict) -> dict:
+    rows = scan.get("risk_lines") or []
+    if not rows:
+        return {"available": False,
+                "reason": "No product lines were returned at or below the "
+                          "ageing risk cut-off with enough money against them."}
+    section = ageing_outlook.stuck_lines(
+        rows,
+        risk_cutoff=float(cfg.get("ageing_risk_score_cutoff",
+                                  ageing_outlook.DEFAULT_RISK_CUTOFF)
+                          or ageing_outlook.DEFAULT_RISK_CUTOFF),
+        value_floor=float(cfg.get("ageing_risk_value_floor",
+                                  ageing_outlook.DEFAULT_RISK_VALUE_FLOOR)
+                          or ageing_outlook.DEFAULT_RISK_VALUE_FLOOR),
+        top=int(cfg.get("ageing_risk_rows", 10) or 10))
+    total = (scan.get("risk_total") or [{}])[0]
+    # The number of lines at the cut-off across the whole estate, which is much
+    # larger than the handful shown. Naming it stops the table reading as the
+    # complete list of stuck stock.
+    section["estate_lines"] = _num(_cell(total, "risk_lines"))
+    section["estate_all_lines"] = _num(_cell(total, "all_lines"))
+    return section
+
+
+def _band_movement(comparison: dict) -> dict:
+    """Bucket migration - available at last, and counted in units.
+
+    `buckets.migration()` has refused this since the report was written, because
+    the model held one snapshot. It now holds a previous one, so the band-by-band
+    movement is computable. It is expressed in **units** rather than value
+    because the valuation basis moved between the two dates, and a rightward
+    shift measured in rebased money would be an artefact rather than a finding.
+    """
+    if not comparison.get("available"):
+        return buckets.migration()
+    bands = comparison.get("bands") or []
+    if not bands:
+        return buckets.migration()
+    aged_floor = buckets.band_index("09-12 MONTHS")
+    older = sum((b.get("qty_share_points") or 0.0) for b in bands
+                if buckets.band_index(str(b.get("name"))) >= aged_floor)
+    return {
+        "available": True,
+        "counted_in": "units",
+        "prior_as_at": comparison.get("prior_as_at"),
+        "as_at": comparison.get("as_at"),
+        "bands": bands,
+        "aged_share_points": older,
+        "reason": "",
+        "note": ("Movement between the two stock positions is counted in units. "
+                 "Stock value is calculated differently on the two dates, so "
+                 "comparing money would show a change that is not real."),
+    }
 
 def _narrative(distribution: buckets.Distribution, split: buckets.RiskSplit,
                total: float, aged: float, as_at: str,
