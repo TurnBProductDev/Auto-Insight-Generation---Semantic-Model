@@ -15,19 +15,9 @@ from dataclasses import dataclass, field
 from types import MappingProxyType
 from typing import Any, Mapping
 
-_EMPTY: Mapping[str, Any] = MappingProxyType({})
-
-
 def _empty_mapping() -> Mapping[str, Any]:
-    """Default factory for the immutable-mapping fields.
-
-    Not a plain `= _EMPTY` default: Python 3.11's dataclasses reject any default
-    whose class has `__hash__ = None`, and mappingproxy is one there. 3.12 gave
-    it a real `__hash__`, so the same code imports fine in development and
-    crashes the container - which runs 3.11 - at import time. Returning the
-    shared `_EMPTY` keeps the field genuinely immutable.
-    """
-    return _EMPTY
+    """Return an immutable empty mapping suitable for dataclass defaults."""
+    return MappingProxyType({})
 
 
 @dataclass(frozen=True)

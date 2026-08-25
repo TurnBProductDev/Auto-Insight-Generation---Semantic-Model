@@ -1,0 +1,98 @@
+{
+  "method": "single_snapshot_sku_overview_v1",
+  "report_id": "sku_overview",
+  "anchor": "2026-08-23",
+  "overall": {
+    "total_stock_value": 4819671.6147,
+    "total_excess_value": 1821506.4837,
+    "excess_share_pct": 37.79316578632463,
+    "total_opp_loss": 48998.58
+  },
+  "dimensions": {
+    "department": {
+      "hotspots": [
+        {
+          "role": "department",
+          "member": "HOME & LIVING",
+          "stock_value": 666908.3133,
+          "excess_value": 320100.6735,
+          "excess_rate_pct": 47.99770329988477,
+          "rest_of_estate_rate_pct": 36.15437965592305,
+          "rate_gap_pct_points": 11.843323643961718,
+          "rate_ratio": 1.3275764584172989,
+          "expected_excess_at_baseline": 241116.5635473948,
+          "surplus_excess_value": 78984.10995260518,
+          "member_stock_share_pct": 13.837214785877308
+        }
+      ]
+    },
+    "section": {
+      "hotspots": [
+        {
+          "role": "section",
+          "member": "OFFICE SUPPLIES",
+          "stock_value": 217508.6115,
+          "excess_value": 116861.7429,
+          "excess_rate_pct": 53.727409730625766,
+          "rest_of_estate_rate_pct": 37.04007745085773,
+          "rate_gap_pct_points": 16.687332279768036,
+          "rate_ratio": 1.4505209877573193,
+          "expected_excess_at_baseline": 80565.35816188525,
+          "surplus_excess_value": 36296.38473811475,
+          "member_stock_share_pct": 4.512934259599734
+        },
+        {
+          "role": "section",
+          "member": "CULINARY SUPPLIES",
+          "stock_value": 351983.7423,
+          "excess_value": 160894.5039,
+          "excess_rate_pct": 45.710777108241466,
+          "rest_of_estate_rate_pct": 37.169382177719925,
+          "rate_gap_pct_points": 8.541394930521541,
+          "rate_ratio": 1.2297965268747841,
+          "expected_excess_at_baseline": 130830.18237892783,
+          "surplus_excess_value": 30064.321521072183,
+          "member_stock_share_pct": 7.303064823471571
+        }
+      ]
+    },
+    "location": {
+      "hotspots": [
+        {
+          "role": "location",
+          "member": "ST2",
+          "stock_value": 1018940.6799,
+          "excess_value": 451136.9898,
+          "excess_rate_pct": 44.27509851155173,
+          "rest_of_estate_rate_pct": 36.055419797089925,
+          "rate_gap_pct_points": 8.219678714461807,
+          "rate_ratio": 1.2279734575472958,
+          "expected_excess_at_baseline": 367383.3396212672,
+          "surplus_excess_value": 83753.65017873276,
+          "member_stock_share_pct": 21.141288480987598
+        }
+      ]
+    },
+    "category": {
+      "hotspots": [
+        {
+          "role": "category",
+          "member": "COSMETICS",
+          "stock_value": 272534.1282,
+          "excess_value": 123466.7907,
+          "excess_rate_pct": 45.30324019067202,
+          "rest_of_estate_rate_pct": 37.343047093722404,
+          "rate_gap_pct_points": 7.960193096949617,
+          "rate_ratio": 1.213163994811976,
+          "expected_excess_at_baseline": 101772.54784019178,
+          "surplus_excess_value": 21694.24285980822,
+          "member_stock_share_pct": 5.6546202726503365
+        }
+      ]
+    }
+  },
+  "quality": {
+    "reconciled": true,
+    "failed_checks": []
+  }
+}

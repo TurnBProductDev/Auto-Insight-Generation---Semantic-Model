@@ -1,0 +1,35 @@
+[
+  {
+    "id": 1130446137,
+    "reportId": "target_tracker",
+    "severity": "critical",
+    "category": "Performance",
+    "metric": "ST2",
+    "value": "-334.8K",
+    "delta": "11.1%",
+    "deltaDirection": "down",
+    "description": "ST2 is below target in every period reported - today 91.3%, this week 94.5%, this month 88.9%, this year 92.8%. This month so far it is 334,834 short. The shortfall is broad-based, with ST2 below target across all reported timeframes, and the month-to-date gap is the clearest area to examine by department.",
+    "displayTime": "2:43 AM",
+    "isoDate": "2026-08-25",
+    "comparisonLabel": "against its target for this month so far",
+    "insight": {
+      "title": "ST2 target shortfall focus",
+      "summary": "ST2 is tracking below target in each reported period rather than in a single isolated window. This suggests the department-level gap this month may help show where the overall underperformance is most concentrated.",
+      "stats": [
+        {
+          "label": "Performance change",
+          "value": "-334.8K"
+        },
+        {
+          "label": "Share of performance decline",
+          "value": "11.1%"
+        },
+        {
+          "label": "Segments",
+          "value": "ST2"
+        }
+      ],
+      "action": "Review ST2 departments with the largest month-to-date target gaps."
+    }
+  }
+]

@@ -1,0 +1,58 @@
+{
+  "state:v1:1c020acba41a275023cfa70d": {
+    "days_in_state": 0,
+    "distance": 2.0258989459344967,
+    "exposure": 25872.17,
+    "first_seen": "2026-08-23",
+    "kind": "sku_overview_segment_a_stockout",
+    "last_seen": "2026-08-23",
+    "member": "Segment A stockouts",
+    "report_id": "sku_overview",
+    "reported_at_days": -1,
+    "role": "estate",
+    "state": "flagged",
+    "times_reported": 1
+  },
+  "state:v1:1f644af8d1d305767bb8343c": {
+    "days_in_state": 0,
+    "distance": null,
+    "exposure": 1678.5142999999998,
+    "first_seen": "2026-08-23",
+    "kind": "sku_overview_non_moving_pending",
+    "last_seen": "2026-08-23",
+    "member": "Non-moving with stock on order",
+    "report_id": "sku_overview",
+    "reported_at_days": -1,
+    "role": "estate",
+    "state": "flagged",
+    "times_reported": 1
+  },
+  "state:v1:a5427d771b5dc5ff3d2e1590": {
+    "days_in_state": 0,
+    "distance": null,
+    "exposure": 890656.89,
+    "first_seen": "2026-08-23",
+    "kind": "sku_overview_verge_stockout_fixable",
+    "last_seen": "2026-08-23",
+    "member": "Verge of stockout, fixable today",
+    "report_id": "sku_overview",
+    "reported_at_days": -1,
+    "role": "estate",
+    "state": "flagged",
+    "times_reported": 1
+  },
+  "state:v1:d0937dd0eb61c7da5e044ca6": {
+    "days_in_state": 0,
+    "distance": null,
+    "exposure": 1948.7088,
+    "first_seen": "2026-08-23",
+    "kind": "sku_overview_overstock_pending",
+    "last_seen": "2026-08-23",
+    "member": "Overstocked with more on order",
+    "report_id": "sku_overview",
+    "reported_at_days": -1,
+    "role": "estate",
+    "state": "flagged",
+    "times_reported": 1
+  }
+}

@@ -1,0 +1,414 @@
+{
+  "st5_drove_comparable_growth": {
+    "signal_id": "st5_drove_comparable_growth",
+    "segment": "ST5",
+    "scope_type": "comparable",
+    "comparable_finding": true,
+    "known_facts": [
+      {
+        "fact": "ST5: revenue Growth of 2.6M (from 577.7K to 3.2M), 73.0% of the total change; split: volume 2.6M / rate 32.2K (per QTY Growth)",
+        "metric": "revenue Growth",
+        "impact_value": 2636901.4428,
+        "impact_share": 72.9561,
+        "share_basis": "grand_total:revenue Growth",
+        "provenance": {
+          "source_query": "baseline_comparable_entities",
+          "population_status": "comparable",
+          "completeness": "complete",
+          "truncated": false,
+          "topn": null,
+          "dax_hash": "760a090e77329a75",
+          "parse_confidence": "construction",
+          "coverage_kind": "full_entity_breakdown",
+          "contract_source": "pre_fork_baseline_in_memory_filter"
+        },
+        "safe_to_reuse": true,
+        "verification_required": false
+      }
+    ],
+    "supporting_queries": [
+      "baseline_comparable_entities",
+      "meta_movers_by_mis_deep_dive2_item_category_name",
+      "meta_concentration_by_mis_deep_dive2_product_group_name",
+      "meta_cross_store_no_by_special_product_group_name"
+    ],
+    "already_answered": [],
+    "unanswered_questions": [
+      "How does ST5 decompose by item_category_name? (a scan slice exists but is partial/comparable - verification required)",
+      "How does ST5 decompose by product_group_name? (a scan slice exists but is partial/comparable - verification required)",
+      "How does ST5 decompose by special_product_group_name? (a scan slice exists but is partial/comparable - verification required)"
+    ],
+    "recommended_probes": [
+      {
+        "dimension": "item_category_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "item_category_name",
+          "reference": "'MIS_DEEP_DIVE2'[item_category_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "ST5",
+        "reason": "existing slice not reusable (partial/comparable)",
+        "verify_source": "meta_movers_by_mis_deep_dive2_item_category_name",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "product_group_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "product_group_name",
+          "reference": "'MIS_DEEP_DIVE2'[product_group_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "ST5",
+        "reason": "existing slice not reusable (partial/comparable)",
+        "verify_source": "meta_concentration_by_mis_deep_dive2_product_group_name",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "special_product_group_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "special_product_group_name",
+          "reference": "'MIS_DEEP_DIVE2'[special_product_group_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "ST5",
+        "reason": "existing slice not reusable (partial/comparable)",
+        "verify_source": "meta_cross_store_no_by_special_product_group_name",
+        "template": "segment_by_dimension_change"
+      }
+    ],
+    "available_dimensions": [
+      "division_name",
+      "item_category_name",
+      "max_date",
+      "product_group_name",
+      "sec",
+      "special_product_group",
+      "special_product_group_name"
+    ],
+    "stop_condition": "Stop once ST5's movement is decomposed across at least one drill dimension with complete + comparable coverage, or the shared probe budget is exhausted. Facts flagged verification_required may inform the explanation but must not, on their own, end the investigation.",
+    "reuse_summary": {
+      "drill_dimensions": 3,
+      "answered_by_reuse": 0,
+      "facts_reusable": 1,
+      "gaps_needing_probe": 3
+    }
+  },
+  "consumer_goods_dominates_division_results": {
+    "signal_id": "consumer_goods_dominates_division_results",
+    "segment": "CONSUMER GOODS",
+    "scope_type": "comparable",
+    "comparable_finding": true,
+    "known_facts": [
+      {
+        "fact": "CONSUMER GOODS: revenue Growth of 2.1M (from 20.0M to 22.0M), 56.9% of the total change; split: volume 1.3M / rate 781.6K (per QTY Growth)",
+        "metric": "revenue Growth",
+        "impact_value": 2057807.4354,
+        "impact_share": 56.9341,
+        "share_basis": "grand_total:revenue Growth",
+        "provenance": {
+          "source_query": "meta_movers_by_mis_deep_dive2_division_name",
+          "population_status": "comparable",
+          "completeness": "partial",
+          "truncated": false,
+          "topn": 14,
+          "dax_hash": "b5500bb67f892cea",
+          "parse_confidence": "construction",
+          "coverage_kind": "paired_change_tails",
+          "contract_source": "metadata_template"
+        },
+        "safe_to_reuse": true,
+        "verification_required": false
+      }
+    ],
+    "supporting_queries": [
+      "meta_movers_by_mis_deep_dive2_division_name"
+    ],
+    "already_answered": [],
+    "unanswered_questions": [
+      "How does CONSUMER GOODS decompose by product_group_name?",
+      "How does CONSUMER GOODS decompose by special_product_group_name?",
+      "How does CONSUMER GOODS decompose by store_no?"
+    ],
+    "recommended_probes": [
+      {
+        "dimension": "product_group_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "product_group_name",
+          "reference": "'MIS_DEEP_DIVE2'[product_group_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "CONSUMER GOODS",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "special_product_group_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "special_product_group_name",
+          "reference": "'MIS_DEEP_DIVE2'[special_product_group_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "CONSUMER GOODS",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "store_no",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "store_no",
+          "reference": "'MIS_DEEP_DIVE2'[store_no]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 70
+        },
+        "segment": "CONSUMER GOODS",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      }
+    ],
+    "available_dimensions": [
+      "item_category_name",
+      "max_date",
+      "product_group_name",
+      "sec",
+      "special_product_group",
+      "special_product_group_name",
+      "store_no"
+    ],
+    "stop_condition": "Stop once CONSUMER GOODS's movement is decomposed across at least one drill dimension with complete + comparable coverage, or the shared probe budget is exhausted. Facts flagged verification_required may inform the explanation but must not, on their own, end the investigation.",
+    "reuse_summary": {
+      "drill_dimensions": 3,
+      "answered_by_reuse": 0,
+      "facts_reusable": 1,
+      "gaps_needing_probe": 3
+    }
+  },
+  "st4_revenue_growth_led_by_higher_revenue_per_unit": {
+    "signal_id": "st4_revenue_growth_led_by_higher_revenue_per_unit",
+    "segment": "ST4",
+    "scope_type": "comparable",
+    "comparable_finding": true,
+    "known_facts": [
+      {
+        "fact": "ST4: revenue Growth of 1.2M (from 11.2M to 12.4M), 33.2% of the total change; split: volume 124.1K / rate 1.1M (per QTY Growth)",
+        "metric": "revenue Growth",
+        "impact_value": 1201105.5543,
+        "impact_share": 33.2314,
+        "share_basis": "grand_total:revenue Growth",
+        "provenance": {
+          "source_query": "baseline_comparable_entities",
+          "population_status": "comparable",
+          "completeness": "complete",
+          "truncated": false,
+          "topn": null,
+          "dax_hash": "760a090e77329a75",
+          "parse_confidence": "construction",
+          "coverage_kind": "full_entity_breakdown",
+          "contract_source": "pre_fork_baseline_in_memory_filter"
+        },
+        "safe_to_reuse": true,
+        "verification_required": false
+      }
+    ],
+    "supporting_queries": [
+      "baseline_comparable_entities",
+      "meta_movers_by_mis_deep_dive2_item_category_name",
+      "meta_concentration_by_mis_deep_dive2_product_group_name",
+      "meta_cross_store_no_by_special_product_group_name"
+    ],
+    "already_answered": [],
+    "unanswered_questions": [
+      "How does ST4 decompose by item_category_name? (a scan slice exists but is partial/comparable - verification required)",
+      "How does ST4 decompose by product_group_name? (a scan slice exists but is partial/comparable - verification required)",
+      "How does ST4 decompose by special_product_group_name? (a scan slice exists but is partial/comparable - verification required)"
+    ],
+    "recommended_probes": [
+      {
+        "dimension": "item_category_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "item_category_name",
+          "reference": "'MIS_DEEP_DIVE2'[item_category_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "ST4",
+        "reason": "existing slice not reusable (partial/comparable)",
+        "verify_source": "meta_movers_by_mis_deep_dive2_item_category_name",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "product_group_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "product_group_name",
+          "reference": "'MIS_DEEP_DIVE2'[product_group_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "ST4",
+        "reason": "existing slice not reusable (partial/comparable)",
+        "verify_source": "meta_concentration_by_mis_deep_dive2_product_group_name",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "special_product_group_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "special_product_group_name",
+          "reference": "'MIS_DEEP_DIVE2'[special_product_group_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "ST4",
+        "reason": "existing slice not reusable (partial/comparable)",
+        "verify_source": "meta_cross_store_no_by_special_product_group_name",
+        "template": "segment_by_dimension_change"
+      }
+    ],
+    "available_dimensions": [
+      "division_name",
+      "item_category_name",
+      "max_date",
+      "product_group_name",
+      "sec",
+      "special_product_group",
+      "special_product_group_name"
+    ],
+    "stop_condition": "Stop once ST4's movement is decomposed across at least one drill dimension with complete + comparable coverage, or the shared probe budget is exhausted. Facts flagged verification_required may inform the explanation but must not, on their own, end the investigation.",
+    "reuse_summary": {
+      "drill_dimensions": 3,
+      "answered_by_reuse": 0,
+      "facts_reusable": 1,
+      "gaps_needing_probe": 3
+    }
+  },
+  "provisions_large_category_gain_with_rate_pressure_per_bill": {
+    "signal_id": "provisions_large_category_gain_with_rate_pressure_per_bill",
+    "segment": "PROVISIONS",
+    "scope_type": "comparable",
+    "comparable_finding": true,
+    "known_facts": [
+      {
+        "fact": "PROVISIONS: revenue Growth of 950.0K (from 10.0M to 10.9M), 26.3% of the total change; split: volume 302.1K / rate 647.9K (per QTY Growth)",
+        "metric": "revenue Growth",
+        "impact_value": 950001.9579,
+        "impact_share": 26.2841,
+        "share_basis": "grand_total:revenue Growth",
+        "provenance": {
+          "source_query": "meta_movers_by_mis_deep_dive2_item_category_name",
+          "population_status": "comparable",
+          "completeness": "partial",
+          "truncated": true,
+          "topn": 14,
+          "dax_hash": "941f08779902b3a9",
+          "parse_confidence": "construction",
+          "coverage_kind": "paired_change_tails",
+          "contract_source": "metadata_template"
+        },
+        "safe_to_reuse": true,
+        "verification_required": false
+      }
+    ],
+    "supporting_queries": [
+      "meta_movers_by_mis_deep_dive2_item_category_name"
+    ],
+    "already_answered": [],
+    "unanswered_questions": [
+      "How does PROVISIONS decompose by product_group_name?",
+      "How does PROVISIONS decompose by special_product_group_name?",
+      "How does PROVISIONS decompose by store_no?"
+    ],
+    "recommended_probes": [
+      {
+        "dimension": "product_group_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "product_group_name",
+          "reference": "'MIS_DEEP_DIVE2'[product_group_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "PROVISIONS",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "special_product_group_name",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "special_product_group_name",
+          "reference": "'MIS_DEEP_DIVE2'[special_product_group_name]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 85
+        },
+        "segment": "PROVISIONS",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      },
+      {
+        "dimension": "store_no",
+        "dimension_spec": {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "store_no",
+          "reference": "'MIS_DEEP_DIVE2'[store_no]",
+          "data_type": "Text",
+          "category": "categorical",
+          "relationship_distance": 0,
+          "score": 70
+        },
+        "segment": "PROVISIONS",
+        "reason": "no scan cross-slice breaks this segment down by this dimension",
+        "template": "segment_by_dimension_change"
+      }
+    ],
+    "available_dimensions": [
+      "division_name",
+      "max_date",
+      "product_group_name",
+      "sec",
+      "special_product_group",
+      "special_product_group_name",
+      "store_no"
+    ],
+    "stop_condition": "Stop once PROVISIONS's movement is decomposed across at least one drill dimension with complete + comparable coverage, or the shared probe budget is exhausted. Facts flagged verification_required may inform the explanation but must not, on their own, end the investigation.",
+    "reuse_summary": {
+      "drill_dimensions": 3,
+      "answered_by_reuse": 0,
+      "facts_reusable": 1,
+      "gaps_needing_probe": 3
+    }
+  }
+}

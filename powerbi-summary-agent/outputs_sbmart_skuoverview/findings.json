@@ -1,0 +1,201 @@
+{
+  "report_id": "sku_overview",
+  "period_label": "as at 2026-08-23",
+  "stat_check": {
+    "method": "single_snapshot_sku_overview_v1",
+    "report_id": "sku_overview",
+    "anchor": "2026-08-23",
+    "overall": {
+      "total_stock_value": 4819671.6147,
+      "total_excess_value": 1821506.4837,
+      "excess_share_pct": 37.79316578632463,
+      "total_opp_loss": 48998.58
+    },
+    "dimensions": {
+      "department": {
+        "hotspots": [
+          {
+            "role": "department",
+            "member": "HOME & LIVING",
+            "stock_value": 666908.3133,
+            "excess_value": 320100.6735,
+            "excess_rate_pct": 47.99770329988477,
+            "rest_of_estate_rate_pct": 36.15437965592305,
+            "rate_gap_pct_points": 11.843323643961718,
+            "rate_ratio": 1.3275764584172989,
+            "expected_excess_at_baseline": 241116.5635473948,
+            "surplus_excess_value": 78984.10995260518,
+            "member_stock_share_pct": 13.837214785877308
+          }
+        ]
+      },
+      "section": {
+        "hotspots": [
+          {
+            "role": "section",
+            "member": "OFFICE SUPPLIES",
+            "stock_value": 217508.6115,
+            "excess_value": 116861.7429,
+            "excess_rate_pct": 53.727409730625766,
+            "rest_of_estate_rate_pct": 37.04007745085773,
+            "rate_gap_pct_points": 16.687332279768036,
+            "rate_ratio": 1.4505209877573193,
+            "expected_excess_at_baseline": 80565.35816188525,
+            "surplus_excess_value": 36296.38473811475,
+            "member_stock_share_pct": 4.512934259599734
+          },
+          {
+            "role": "section",
+            "member": "CULINARY SUPPLIES",
+            "stock_value": 351983.7423,
+            "excess_value": 160894.5039,
+            "excess_rate_pct": 45.710777108241466,
+            "rest_of_estate_rate_pct": 37.169382177719925,
+            "rate_gap_pct_points": 8.541394930521541,
+            "rate_ratio": 1.2297965268747841,
+            "expected_excess_at_baseline": 130830.18237892783,
+            "surplus_excess_value": 30064.321521072183,
+            "member_stock_share_pct": 7.303064823471571
+          }
+        ]
+      },
+      "location": {
+        "hotspots": [
+          {
+            "role": "location",
+            "member": "ST2",
+            "stock_value": 1018940.6799,
+            "excess_value": 451136.9898,
+            "excess_rate_pct": 44.27509851155173,
+            "rest_of_estate_rate_pct": 36.055419797089925,
+            "rate_gap_pct_points": 8.219678714461807,
+            "rate_ratio": 1.2279734575472958,
+            "expected_excess_at_baseline": 367383.3396212672,
+            "surplus_excess_value": 83753.65017873276,
+            "member_stock_share_pct": 21.141288480987598
+          }
+        ]
+      },
+      "category": {
+        "hotspots": [
+          {
+            "role": "category",
+            "member": "COSMETICS",
+            "stock_value": 272534.1282,
+            "excess_value": 123466.7907,
+            "excess_rate_pct": 45.30324019067202,
+            "rest_of_estate_rate_pct": 37.343047093722404,
+            "rate_gap_pct_points": 7.960193096949617,
+            "rate_ratio": 1.213163994811976,
+            "expected_excess_at_baseline": 101772.54784019178,
+            "surplus_excess_value": 21694.24285980822,
+            "member_stock_share_pct": 5.6546202726503365
+          }
+        ]
+      }
+    },
+    "quality": {
+      "reconciled": true,
+      "failed_checks": []
+    }
+  },
+  "findings": [
+    {
+      "candidate_id": "sku_overview_segment_a_stockout:estate:",
+      "story_key": "skuins:v1:7a3b3eb97c9e96b0e407faad49c4516a",
+      "report_id": "sku_overview",
+      "analysis_type": "sku_overview_segment_a_stockout",
+      "dimension": "estate",
+      "affected_segment": "Segment A stockouts",
+      "metric": "Segment A Loc-SKUs out of stock",
+      "current": 2439,
+      "impact_value": 25872.17,
+      "impact_share": 2.0258989459344967,
+      "score": 502.0258989459345,
+      "severity": "critical",
+      "comparison_label": "share of all Loc-SKU rows in the five shops",
+      "description": "2,439 Segment A Loc-SKUs are out of stock in the shops, an estimated 25,872 of Opportunity Loss (from rows where the model estimates one).",
+      "id": "I1",
+      "novelty": {
+        "report": false,
+        "reason": "unchanged since it was last reported 0 day(s) ago",
+        "kind": "unchanged",
+        "days_in_state": 0
+      }
+    },
+    {
+      "candidate_id": "sku_overview_verge_stockout_fixable:estate:",
+      "story_key": "skuins:v1:b505e16e4cd08aee11faec30843cbdda",
+      "report_id": "sku_overview",
+      "analysis_type": "sku_overview_verge_stockout_fixable",
+      "dimension": "estate",
+      "affected_segment": "Verge of stockout, fixable today",
+      "metric": "Loc-SKUs on the verge of stockout with warehouse stock available",
+      "current": 10,
+      "impact_value": 890656.89,
+      "impact_share": null,
+      "score": 400.0,
+      "severity": "warning",
+      "comparison_label": "3-month sales value of the affected Loc-SKUs",
+      "description": "10 Loc-SKUs are on the verge of stockout with stock already sitting in a warehouse - a same-day transfer, not a purchase order, would fix them.",
+      "id": "I2",
+      "novelty": {
+        "report": false,
+        "reason": "unchanged since it was last reported 0 day(s) ago",
+        "kind": "unchanged",
+        "days_in_state": 0
+      }
+    },
+    {
+      "candidate_id": "sku_overview_non_moving_pending:estate:",
+      "story_key": "skuins:v1:8bcec7a20b5e2e9c51b3b4ee3be7d7ff",
+      "report_id": "sku_overview",
+      "analysis_type": "sku_overview_non_moving_pending",
+      "dimension": "estate",
+      "affected_segment": "Non-moving with stock on order",
+      "metric": "Pending Orders Value on non-moving Loc-SKUs",
+      "current": 25,
+      "impact_value": 1678.5142999999998,
+      "impact_share": null,
+      "score": 300.0,
+      "severity": "warning",
+      "comparison_label": "total Pending Orders Value on these Loc-SKUs",
+      "description": "25 Loc-SKUs are not moving and still have 1,679 of stock on order - worth cancelling or deferring.",
+      "id": "I3",
+      "novelty": {
+        "report": false,
+        "reason": "unchanged since it was last reported 0 day(s) ago",
+        "kind": "unchanged",
+        "days_in_state": 0
+      }
+    },
+    {
+      "candidate_id": "sku_overview_overstock_pending:estate:",
+      "story_key": "skuins:v1:d1052b3b93a2145ea385f48ec6f6473a",
+      "report_id": "sku_overview",
+      "analysis_type": "sku_overview_overstock_pending",
+      "dimension": "estate",
+      "affected_segment": "Overstocked with more on order",
+      "metric": "Excess Stock Value already held on overstocked Loc-SKUs",
+      "current": 10,
+      "impact_value": 1948.7088,
+      "impact_share": null,
+      "score": 250.0,
+      "severity": "warning",
+      "comparison_label": "Excess Stock Value already held",
+      "description": "10 Loc-SKUs are already overstocked and have more stock on order, 1,949 of Excess Stock Value already sitting there.",
+      "id": "I4",
+      "novelty": {
+        "report": false,
+        "reason": "unchanged since it was last reported 0 day(s) ago",
+        "kind": "unchanged",
+        "days_in_state": 0
+      }
+    }
+  ],
+  "investigations": [],
+  "checks": {
+    "states_cover_every_row": true,
+    "excess_within_stock_value": true
+  }
+}

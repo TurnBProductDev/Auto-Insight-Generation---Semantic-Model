@@ -1,0 +1,46 @@
+{
+  "domain": "Sales / Retail",
+  "fact_tables": [
+    "MIS_DEEP_DIVE2",
+    "MIS_BASE_FILE_MONTHLY_BRAND_TB",
+    "CAT_TRANSACTIONS",
+    "rep_dept_wise_perf_eval_rpt",
+    "CAT_TABLE"
+  ],
+  "dimension_tables": [
+    "ODS",
+    "Users",
+    "UserOdsMapping",
+    "Latest_Refresh_Table",
+    "RefreshTimeStamp"
+  ],
+  "important_measures": [
+    "net revenue CURRENT",
+    "net revenue PAST",
+    "revenue Growth",
+    "revenue growth %",
+    "net qty CURRENT",
+    "net qty PAST",
+    "QTY Growth",
+    "QTY GROWTH %",
+    "net bills CURRENT",
+    "bills growth",
+    "bills growth %"
+  ],
+  "important_dimensions": [
+    "MIS_DEEP_DIVE2[store_no]",
+    "MIS_DEEP_DIVE2[division_name]",
+    "MIS_DEEP_DIVE2[item_category_name]",
+    "MIS_DEEP_DIVE2[product_group_name]",
+    "MIS_DEEP_DIVE2[special_product_group_name]"
+  ],
+  "date_fields": [
+    "Latest_Refresh_Table[MaxRefreshDate]",
+    "MIS_BASE_FILE_MONTHLY_BRAND_TB[max_date]",
+    "MIS_DEEP_DIVE2[max_date]",
+    "rep_dept_wise_perf_eval_rpt[TY_DATE]",
+    "rep_dept_wise_perf_eval_rpt[max_date]"
+  ],
+  "time_summary_possible": true,
+  "notes": "The model is centered on monthly year-on-year retail sales, quantity, and transaction analysis by store and merchandise hierarchy, with several date tables hidden and refresh dates present."
+}

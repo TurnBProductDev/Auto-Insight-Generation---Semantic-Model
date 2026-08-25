@@ -1,0 +1,631 @@
+{
+  "report_id": "inventory_ageing",
+  "period_label": "as at 2026-08-23",
+  "stat_check": {
+    "method": "single_snapshot_ageing_v2",
+    "report_id": "inventory_ageing",
+    "anchor": "2026-08-23",
+    "overall": {
+      "total_value": 5732499.5474,
+      "aged_value": 842320.7491,
+      "aged_share_pct": 14.693777856154187,
+      "high_risk_value": 453777.8088,
+      "high_risk_share_pct": 7.915880412163537
+    },
+    "aged_non_moving_association": {
+      "aged_non_moving_value": 278109.2302,
+      "aged_share_within_non_moving_pct": 45.8353292389646,
+      "non_moving_share_within_aged_pct": 33.01702237504575,
+      "estate_aged_share_pct": 14.693777856154187,
+      "aged_rate_lift": 3.1193699596981053,
+      "note": "Monetary association, not a causal or significance test."
+    },
+    "dimensions": {
+      "division": {
+        "hotspots": [
+          {
+            "role": "division",
+            "member": "HOME & LIVING",
+            "stock_value": 1164133.729,
+            "aged_value": 365334.4867,
+            "aged_rate_pct": 31.38251882915764,
+            "rest_of_estate_rate_pct": 10.441069768949834,
+            "rate_gap_pct_points": 20.941449060207805,
+            "rate_ratio": 3.0056804066652743,
+            "expected_aged_at_baseline": 121548.01484876739,
+            "excess_aged_value": 243786.47185123264,
+            "excess_share_of_total_pct": 4.2527080872043515,
+            "member_stock_share_pct": 20.307611354771026
+          },
+          {
+            "role": "division",
+            "member": "LIFESTYLE",
+            "stock_value": 1964357.4462,
+            "aged_value": 368859.4199,
+            "aged_rate_pct": 18.77761201829887,
+            "rest_of_estate_rate_pct": 12.564848046713045,
+            "rate_gap_pct_points": 6.212763971585826,
+            "rate_ratio": 1.4944559574845857,
+            "expected_aged_at_baseline": 246818.52820932295,
+            "excess_aged_value": 122040.89169067703,
+            "excess_share_of_total_pct": 2.12892980944114,
+            "member_stock_share_pct": 34.26703185857106
+          }
+        ],
+        "concentration": {
+          "top1_share_pct": 43.790850491824834,
+          "top3_share_pct": 94.44515442009548,
+          "hhi": 0.3882684064308314,
+          "members": 4
+        }
+      },
+      "section": {
+        "hotspots": [
+          {
+            "role": "section",
+            "member": "CULINARY SUPPLIES",
+            "stock_value": 591650.31,
+            "aged_value": 210956.5073,
+            "aged_rate_pct": 35.655606653869576,
+            "rest_of_estate_rate_pct": 12.281321872012619,
+            "rate_gap_pct_points": 23.374284781856957,
+            "rate_ratio": 2.903238513365863,
+            "expected_aged_at_baseline": 72662.47892786046,
+            "excess_aged_value": 138294.02837213955,
+            "excess_share_of_total_pct": 2.4124559841415674,
+            "member_stock_share_pct": 10.320983108814124
+          },
+          {
+            "role": "section",
+            "member": "OFFICE SUPPLIES",
+            "stock_value": 416848.235,
+            "aged_value": 111495.9371,
+            "aged_rate_pct": 26.747369363336755,
+            "rest_of_estate_rate_pct": 13.748546867534001,
+            "rate_gap_pct_points": 12.998822495802754,
+            "rate_ratio": 1.9454688281638217,
+            "expected_aged_at_baseline": 57310.57495546327,
+            "excess_aged_value": 54185.362144536724,
+            "excess_share_of_total_pct": 0.9452309886201864,
+            "member_stock_share_pct": 7.271666252273206
+          }
+        ],
+        "concentration": {
+          "top1_share_pct": 25.044676570700897,
+          "top3_share_pct": 53.98261563493996,
+          "hhi": 0.12759012741906603,
+          "members": 15
+        }
+      },
+      "location": {
+        "hotspots": [
+          {
+            "role": "location",
+            "member": "WH1",
+            "stock_value": 3570579.272,
+            "aged_value": 689062.6078,
+            "aged_rate_pct": 19.2983422382899,
+            "rest_of_estate_rate_pct": 7.088982098178626,
+            "rate_gap_pct_points": 12.209360140111276,
+            "rate_ratio": 2.722300884812254,
+            "expected_aged_at_baseline": 253117.72539335667,
+            "excess_aged_value": 435944.88240664336,
+            "excess_share_of_total_pct": 7.604795757975561,
+            "member_stock_share_pct": 62.28660364429426
+          }
+        ],
+        "concentration": {
+          "top1_share_pct": 81.80525156672766,
+          "top3_share_pct": 91.31606837678456,
+          "hhi": 0.676456404859313,
+          "members": 7
+        }
+      },
+      "sku_type": {
+        "hotspots": [
+          {
+            "role": "sku_type",
+            "member": "OVERSEAS",
+            "stock_value": 2212277.747,
+            "aged_value": 656676.5223,
+            "aged_rate_pct": 29.68327657729678,
+            "rest_of_estate_rate_pct": 5.273651415342791,
+            "rate_gap_pct_points": 24.40962516195399,
+            "rate_ratio": 5.628600421131048,
+            "expected_aged_at_baseline": 116667.8167159791,
+            "excess_aged_value": 540008.7055840208,
+            "excess_share_of_total_pct": 9.420126440811394,
+            "member_stock_share_pct": 38.591852100596995
+          }
+        ],
+        "concentration": {
+          "top1_share_pct": 77.9603877740924,
+          "top3_share_pct": 99.99999999999999,
+          "hhi": 0.6563566568955231,
+          "members": 2
+        }
+      }
+    },
+    "quality": {
+      "reconciled": true,
+      "failed_checks": [],
+      "undetermined_value": 0.0,
+      "comparison_available": true,
+      "comparison_reason": ""
+    }
+  },
+  "findings": [
+    {
+      "candidate_id": "ageing_oldest_band:age_band:24+ MONTHS",
+      "story_key": "age:v1:ebd043068149743e572fffb8342eeb2b",
+      "report_id": "inventory_ageing",
+      "analysis_type": "ageing_oldest_band",
+      "dimension": "age_band",
+      "affected_segment": "24+ MONTHS",
+      "segment_members": [
+        "24+ MONTHS"
+      ],
+      "metric": "Stock value at ageing risk",
+      "metric_family": "stock_value",
+      "current": 90713.9685,
+      "impact_value": 90713.9685,
+      "impact_share": 1.5824505130775584,
+      "score": 601.5824505130776,
+      "severity": "critical",
+      "comparison_label": "share of the current stock position",
+      "description": "USD 91K is in the oldest reported age band, 24+ MONTHS (1.6% of stock value).",
+      "band_ordinal": 5,
+      "high_risk": true,
+      "oldest_reported_band": true,
+      "id": "A1",
+      "novelty": {
+        "report": false,
+        "reason": "unchanged since it was last reported 0 day(s) ago",
+        "kind": "unchanged",
+        "days_in_state": 0
+      }
+    },
+    {
+      "candidate_id": "ageing_high_risk_band:age_band:12-24 MONTHS",
+      "story_key": "age:v1:bd49d86fc2193db034196af7ca8f247c",
+      "report_id": "inventory_ageing",
+      "analysis_type": "ageing_high_risk_band",
+      "dimension": "age_band",
+      "affected_segment": "12-24 MONTHS",
+      "segment_members": [
+        "12-24 MONTHS"
+      ],
+      "metric": "Stock value at ageing risk",
+      "metric_family": "stock_value",
+      "current": 363063.8403,
+      "impact_value": 363063.8403,
+      "impact_share": 6.33342989908598,
+      "score": 506.33342989908596,
+      "severity": "critical",
+      "comparison_label": "share of the current stock position",
+      "description": "USD 363K is in the high-risk age band 12-24 MONTHS (6.3% of stock value).",
+      "band_ordinal": 4,
+      "high_risk": true,
+      "oldest_reported_band": false,
+      "id": "A2",
+      "novelty": {
+        "report": false,
+        "reason": "unchanged since it was last reported 0 day(s) ago",
+        "kind": "unchanged",
+        "days_in_state": 0
+      }
+    },
+    {
+      "candidate_id": "ageing_aged_non_moving:risk_intersection:Aged and non-moving",
+      "story_key": "age:v1:753e723590e467992a2253e76814a54e",
+      "report_id": "inventory_ageing",
+      "analysis_type": "ageing_aged_non_moving",
+      "dimension": "risk_intersection",
+      "affected_segment": "Aged and non-moving",
+      "segment_members": [
+        "Aged and non-moving"
+      ],
+      "metric": "Stock value at ageing risk",
+      "metric_family": "stock_value",
+      "current": 278109.2302,
+      "impact_value": 278109.2302,
+      "impact_share": 4.851447922505945,
+      "score": 404.85144792250594,
+      "severity": "critical",
+      "comparison_label": "aged rate within non-moving stock versus the whole stock position",
+      "description": "USD 278K is both aged and has not sold since arrival, 3.1x the estate aged rate.",
+      "aged_rate_lift": 3.1193699596981053,
+      "aged_share_within_non_moving_pct": 45.8353292389646,
+      "id": "A3",
+      "novelty": {
+        "report": false,
+        "reason": "unchanged since it was last reported 0 day(s) ago",
+        "kind": "unchanged",
+        "days_in_state": 0
+      }
+    },
+    {
+      "candidate_id": "ageing_not_aged_non_moving:risk_intersection:Not aged and non-moving",
+      "story_key": "age:v1:daa0d45b9dfc2787338023ae3e00527c",
+      "report_id": "inventory_ageing",
+      "analysis_type": "ageing_not_aged_non_moving",
+      "dimension": "risk_intersection",
+      "affected_segment": "Not aged and non-moving",
+      "segment_members": [
+        "Not aged and non-moving"
+      ],
+      "metric": "Stock value at ageing risk",
+      "metric_family": "stock_value",
+      "current": 328648.12230000005,
+      "impact_value": 328648.12230000005,
+      "impact_share": 5.733068438689365,
+      "score": 305.7330684386894,
+      "severity": "warning",
+      "comparison_label": "share of the current stock position",
+      "description": "USD 329K is not classified as aged and has not sold since arrival.",
+      "id": "A4",
+      "novelty": {
+        "report": false,
+        "reason": "unchanged since it was last reported 0 day(s) ago",
+        "kind": "unchanged",
+        "days_in_state": 0
+      }
+    },
+    {
+      "candidate_id": "ageing_rate_hotspot:sku_type:OVERSEAS",
+      "story_key": "age:v1:cb2e545a37b796ae166e0501853ebf25",
+      "report_id": "inventory_ageing",
+      "analysis_type": "ageing_rate_hotspot",
+      "dimension": "sku_type",
+      "affected_segment": "OVERSEAS",
+      "segment_members": [
+        "OVERSEAS"
+      ],
+      "metric": "Stock value at ageing risk",
+      "metric_family": "stock_value",
+      "current": 540008.7055840208,
+      "impact_value": 540008.7055840208,
+      "impact_share": 9.420126440811394,
+      "score": 209.4201264408114,
+      "severity": "warning",
+      "comparison_label": "aged-stock rate versus the rest of the estate",
+      "description": "OVERSEAS holds USD 540K more aged stock than its stock value would imply at the rest-of-estate rate; its aged rate is 29.7% versus 5.3% elsewhere.",
+      "role": "sku_type",
+      "member": "OVERSEAS",
+      "stock_value": 2212277.747,
+      "aged_value": 656676.5223,
+      "aged_rate_pct": 29.68327657729678,
+      "rest_of_estate_rate_pct": 5.273651415342791,
+      "rate_gap_pct_points": 24.40962516195399,
+      "rate_ratio": 5.628600421131048,
+      "expected_aged_at_baseline": 116667.8167159791,
+      "excess_aged_value": 540008.7055840208,
+      "excess_share_of_total_pct": 9.420126440811394,
+      "member_stock_share_pct": 38.591852100596995,
+      "id": "A5",
+      "novelty": {
+        "report": false,
+        "reason": "unchanged since it was last reported 0 day(s) ago",
+        "kind": "unchanged",
+        "days_in_state": 0
+      }
+    },
+    {
+      "candidate_id": "ageing_rate_hotspot:location:WH1",
+      "story_key": "age:v1:8dd2611f27356fc61fb1623946389895",
+      "report_id": "inventory_ageing",
+      "analysis_type": "ageing_rate_hotspot",
+      "dimension": "location",
+      "affected_segment": "WH1",
+      "segment_members": [
+        "WH1"
+      ],
+      "metric": "Stock value at ageing risk",
+      "metric_family": "stock_value",
+      "current": 435944.88240664336,
+      "impact_value": 435944.88240664336,
+      "impact_share": 7.604795757975561,
+      "score": 207.60479575797555,
+      "severity": "warning",
+      "comparison_label": "aged-stock rate versus the rest of the estate",
+      "description": "WH1 holds USD 436K more aged stock than its stock value would imply at the rest-of-estate rate; its aged rate is 19.3% versus 7.1% elsewhere.",
+      "role": "location",
+      "member": "WH1",
+      "stock_value": 3570579.272,
+      "aged_value": 689062.6078,
+      "aged_rate_pct": 19.2983422382899,
+      "rest_of_estate_rate_pct": 7.088982098178626,
+      "rate_gap_pct_points": 12.209360140111276,
+      "rate_ratio": 2.722300884812254,
+      "expected_aged_at_baseline": 253117.72539335667,
+      "excess_aged_value": 435944.88240664336,
+      "excess_share_of_total_pct": 7.604795757975561,
+      "member_stock_share_pct": 62.28660364429426,
+      "id": "A6",
+      "novelty": {
+        "report": false,
+        "reason": "unchanged since it was last reported 0 day(s) ago",
+        "kind": "unchanged",
+        "days_in_state": 0
+      }
+    },
+    {
+      "candidate_id": "ageing_rate_hotspot:division:HOME & LIVING",
+      "story_key": "age:v1:3d4a9f1c2de424912a437384145e0473",
+      "report_id": "inventory_ageing",
+      "analysis_type": "ageing_rate_hotspot",
+      "dimension": "division",
+      "affected_segment": "HOME & LIVING",
+      "segment_members": [
+        "HOME & LIVING"
+      ],
+      "metric": "Stock value at ageing risk",
+      "metric_family": "stock_value",
+      "current": 243786.47185123264,
+      "impact_value": 243786.47185123264,
+      "impact_share": 4.2527080872043515,
+      "score": 204.25270808720435,
+      "severity": "warning",
+      "comparison_label": "aged-stock rate versus the rest of the estate",
+      "description": "HOME & LIVING holds USD 244K more aged stock than its stock value would imply at the rest-of-estate rate; its aged rate is 31.4% versus 10.4% elsewhere.",
+      "role": "division",
+      "member": "HOME & LIVING",
+      "stock_value": 1164133.729,
+      "aged_value": 365334.4867,
+      "aged_rate_pct": 31.38251882915764,
+      "rest_of_estate_rate_pct": 10.441069768949834,
+      "rate_gap_pct_points": 20.941449060207805,
+      "rate_ratio": 3.0056804066652743,
+      "expected_aged_at_baseline": 121548.01484876739,
+      "excess_aged_value": 243786.47185123264,
+      "excess_share_of_total_pct": 4.2527080872043515,
+      "member_stock_share_pct": 20.307611354771026,
+      "id": "A7",
+      "novelty": {
+        "report": false,
+        "reason": "unchanged since it was last reported 0 day(s) ago",
+        "kind": "unchanged",
+        "days_in_state": 0
+      }
+    },
+    {
+      "candidate_id": "ageing_rate_hotspot:section:CULINARY SUPPLIES",
+      "story_key": "age:v1:6b0626f4342dde67837c065648f86cf6",
+      "report_id": "inventory_ageing",
+      "analysis_type": "ageing_rate_hotspot",
+      "dimension": "section",
+      "affected_segment": "CULINARY SUPPLIES",
+      "segment_members": [
+        "CULINARY SUPPLIES"
+      ],
+      "metric": "Stock value at ageing risk",
+      "metric_family": "stock_value",
+      "current": 138294.02837213955,
+      "impact_value": 138294.02837213955,
+      "impact_share": 2.4124559841415674,
+      "score": 202.41245598414156,
+      "severity": "warning",
+      "comparison_label": "aged-stock rate versus the rest of the estate",
+      "description": "CULINARY SUPPLIES holds USD 138K more aged stock than its stock value would imply at the rest-of-estate rate; its aged rate is 35.7% versus 12.3% elsewhere.",
+      "role": "section",
+      "member": "CULINARY SUPPLIES",
+      "stock_value": 591650.31,
+      "aged_value": 210956.5073,
+      "aged_rate_pct": 35.655606653869576,
+      "rest_of_estate_rate_pct": 12.281321872012619,
+      "rate_gap_pct_points": 23.374284781856957,
+      "rate_ratio": 2.903238513365863,
+      "expected_aged_at_baseline": 72662.47892786046,
+      "excess_aged_value": 138294.02837213955,
+      "excess_share_of_total_pct": 2.4124559841415674,
+      "member_stock_share_pct": 10.320983108814124,
+      "id": "A8",
+      "novelty": {
+        "report": false,
+        "reason": "unchanged since it was last reported 0 day(s) ago",
+        "kind": "unchanged",
+        "days_in_state": 0
+      }
+    },
+    {
+      "candidate_id": "ageing_rate_hotspot:division:LIFESTYLE",
+      "story_key": "age:v1:b986311f9f3bdac7cde6bb9ffaeb7cdf",
+      "report_id": "inventory_ageing",
+      "analysis_type": "ageing_rate_hotspot",
+      "dimension": "division",
+      "affected_segment": "LIFESTYLE",
+      "segment_members": [
+        "LIFESTYLE"
+      ],
+      "metric": "Stock value at ageing risk",
+      "metric_family": "stock_value",
+      "current": 122040.89169067703,
+      "impact_value": 122040.89169067703,
+      "impact_share": 2.12892980944114,
+      "score": 202.12892980944113,
+      "severity": "warning",
+      "comparison_label": "aged-stock rate versus the rest of the estate",
+      "description": "LIFESTYLE holds USD 122K more aged stock than its stock value would imply at the rest-of-estate rate; its aged rate is 18.8% versus 12.6% elsewhere.",
+      "role": "division",
+      "member": "LIFESTYLE",
+      "stock_value": 1964357.4462,
+      "aged_value": 368859.4199,
+      "aged_rate_pct": 18.77761201829887,
+      "rest_of_estate_rate_pct": 12.564848046713045,
+      "rate_gap_pct_points": 6.212763971585826,
+      "rate_ratio": 1.4944559574845857,
+      "expected_aged_at_baseline": 246818.52820932295,
+      "excess_aged_value": 122040.89169067703,
+      "excess_share_of_total_pct": 2.12892980944114,
+      "member_stock_share_pct": 34.26703185857106,
+      "id": "A9",
+      "novelty": {
+        "report": false,
+        "reason": "unchanged since it was last reported 0 day(s) ago",
+        "kind": "unchanged",
+        "days_in_state": 0
+      }
+    },
+    {
+      "candidate_id": "ageing_rate_hotspot:section:OFFICE SUPPLIES",
+      "story_key": "age:v1:e9ff20746d781b8c146b9b1bdf8e4a8d",
+      "report_id": "inventory_ageing",
+      "analysis_type": "ageing_rate_hotspot",
+      "dimension": "section",
+      "affected_segment": "OFFICE SUPPLIES",
+      "segment_members": [
+        "OFFICE SUPPLIES"
+      ],
+      "metric": "Stock value at ageing risk",
+      "metric_family": "stock_value",
+      "current": 54185.362144536724,
+      "impact_value": 54185.362144536724,
+      "impact_share": 0.9452309886201864,
+      "score": 200.94523098862018,
+      "severity": "warning",
+      "comparison_label": "aged-stock rate versus the rest of the estate",
+      "description": "OFFICE SUPPLIES holds USD 54K more aged stock than its stock value would imply at the rest-of-estate rate; its aged rate is 26.7% versus 13.7% elsewhere.",
+      "role": "section",
+      "member": "OFFICE SUPPLIES",
+      "stock_value": 416848.235,
+      "aged_value": 111495.9371,
+      "aged_rate_pct": 26.747369363336755,
+      "rest_of_estate_rate_pct": 13.748546867534001,
+      "rate_gap_pct_points": 12.998822495802754,
+      "rate_ratio": 1.9454688281638217,
+      "expected_aged_at_baseline": 57310.57495546327,
+      "excess_aged_value": 54185.362144536724,
+      "excess_share_of_total_pct": 0.9452309886201864,
+      "member_stock_share_pct": 7.271666252273206,
+      "id": "A10",
+      "novelty": {
+        "report": false,
+        "reason": "unchanged since it was last reported 0 day(s) ago",
+        "kind": "unchanged",
+        "days_in_state": 0
+      }
+    },
+    {
+      "candidate_id": "ageing_concentration:location:WH1",
+      "story_key": "age:v1:b309a1c1851991fd2830bb3f3b9d1bb2",
+      "report_id": "inventory_ageing",
+      "analysis_type": "ageing_concentration",
+      "dimension": "location",
+      "affected_segment": "WH1",
+      "segment_members": [
+        "WH1"
+      ],
+      "metric": "Stock value at ageing risk",
+      "metric_family": "stock_value",
+      "current": 689062.6078,
+      "impact_value": 689062.6078,
+      "impact_share": 12.020281939883054,
+      "score": 112.02028193988305,
+      "severity": "info",
+      "comparison_label": "share of aged stock across location members",
+      "description": "WH1 holds 81.8% of all aged stock value across location members.",
+      "top1_share_pct": 81.80525156672766,
+      "top3_share_pct": 91.31606837678456,
+      "hhi": 0.676456404859313,
+      "members": 7,
+      "id": "A11",
+      "novelty": {
+        "report": false,
+        "reason": "unchanged since it was last reported 0 day(s) ago",
+        "kind": "unchanged",
+        "days_in_state": 0
+      }
+    },
+    {
+      "candidate_id": "ageing_concentration:sku_type:OVERSEAS",
+      "story_key": "age:v1:7bd9d152ba14e2d1add9434be8c289e1",
+      "report_id": "inventory_ageing",
+      "analysis_type": "ageing_concentration",
+      "dimension": "sku_type",
+      "affected_segment": "OVERSEAS",
+      "segment_members": [
+        "OVERSEAS"
+      ],
+      "metric": "Stock value at ageing risk",
+      "metric_family": "stock_value",
+      "current": 656676.5223,
+      "impact_value": 656676.5223,
+      "impact_share": 11.455326195321526,
+      "score": 111.45532619532153,
+      "severity": "info",
+      "comparison_label": "share of aged stock across sku_type members",
+      "description": "OVERSEAS holds 78.0% of all aged stock value across sku_type members.",
+      "top1_share_pct": 77.9603877740924,
+      "top3_share_pct": 99.99999999999999,
+      "hhi": 0.6563566568955231,
+      "members": 2,
+      "id": "A12",
+      "novelty": {
+        "report": false,
+        "reason": "unchanged since it was last reported 0 day(s) ago",
+        "kind": "unchanged",
+        "days_in_state": 0
+      }
+    }
+  ],
+  "investigations": [
+    {
+      "analysis": "oldest_items",
+      "title": "Largest product exposures over 24 months",
+      "rows": [
+        {
+          "member": "0101574527 - CF PAD LOCK GOLDEN 264",
+          "value": 2180.0162
+        },
+        {
+          "member": "0101640088 - SPICE KITCHEN KNIFE P.HANDLE 7 CFKT-0657",
+          "value": 1838.2318
+        },
+        {
+          "member": "0101624997 - CF MAX FRESH STEEL HOT POT 3PCS SET 3.5/5/8.5 LTR",
+          "value": 1719.5172
+        },
+        {
+          "member": "0101571330 - LIBERO MENS SATIN SILKY PLAIN JEANS BLACK 1601",
+          "value": 1651.9008
+        },
+        {
+          "member": "0101584782 - SPICE STEEL DEEP MIXING BOWL 36CM 22133",
+          "value": 1594.7568
+        }
+      ]
+    },
+    {
+      "analysis": "aged_non_moving_items",
+      "title": "Largest products both aged and non-moving",
+      "rows": [
+        {
+          "member": "0101637144 - SPICE STEEL FLASK RED 1.2L CFTM-7010",
+          "value": 3897.8201
+        },
+        {
+          "member": "0101657351 - MEN FLEECE JOGGER PMX254 W25",
+          "value": 3801.3588
+        },
+        {
+          "member": "0101637145 - SPICE STEEL FLASK RED 1.5L CFTM-7011/4715",
+          "value": 3131.0405
+        },
+        {
+          "member": "0101639353 - SPICE GRANITE FRY PAN 26CM CFCK-1458/12",
+          "value": 3075.457
+        },
+        {
+          "member": "0101653358 - LIBERO MENS PUFFER S/L HDY JKT BLACK W25",
+          "value": 2839.264
+        }
+      ]
+    }
+  ],
+  "checks": {
+    "bands_sum_to_total": true,
+    "aged_sums_to_total_aged": true,
+    "risk_split_sums_to_total": true,
+    "risk_split_aged_matches": true
+  }
+}

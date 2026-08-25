@@ -22,6 +22,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from src.kernel import chain  # noqa: E402
+from src.domains.inventory import ageing_stats  # noqa: E402
 from src.domains.inventory.reports import ageing, stock_health  # noqa: E402
 
 OUT = PROJECT_ROOT / "outputs_inventory_chain"
@@ -55,43 +56,37 @@ MAX_FINDINGS = 6
 
 
 def _evidence_from_ageing(report: dict) -> list[dict]:
-    """Turn the ageing report into scored, comparable findings."""
-    header = report.get("header") or {}
-    total = float(header.get("total_value") or 0) or 1.0
-    split = report.get("risk_split") or {}
+    """Use the report-specific detector; do not maintain a second formula set."""
+    kind_alias = {
+        "ageing_oldest_band": "write_off_risk",
+        "ageing_aged_non_moving": "aged_and_stalled",
+        "ageing_not_aged_non_moving": "no_demand",
+    }
+    # The detector's score bands encode priority *inside Ageing* (600 = 24+
+    # months, 500 = 12--24, ...).  They are not comparable with Stock Health's
+    # 0--100 chain score.  Translate at this boundary so one report-specific
+    # scale cannot crowd the other report out of the pooled narrative.
+    chain_tier = {
+        "ageing_data_quality": 90.0,
+        "ageing_oldest_band": 70.0,
+        "ageing_high_risk_band": 60.0,
+        "ageing_aged_non_moving": 50.0,
+        "ageing_not_aged_non_moving": 40.0,
+        "ageing_rate_hotspot": 20.0,
+        "ageing_concentration": 10.0,
+    }
     out = []
-
-    oldest = next((b for b in (report.get("distribution") or {}).get("bands") or []
-                   if str(b.get("name", "")).upper().startswith("24+")), None)
-    if oldest:
-        value = float(oldest.get("value") or 0)
+    for signal in (report.get("stat_signals") or ageing_stats.detect(report)):
+        analysis_type = str(signal.get("analysis_type") or "")
         out.append({
-            "finding": f"SAR {value / 1e6:.2f}M of stock is more than two years old",
-            "value": value, "score": value / total * 100.0 * 6.0,
-            "kind": "write_off_risk"})
-
-    # "Not selling" means something DIFFERENT in each report, and pooling them
-    # into one ranked list is exactly where that bites. Stock Age Analysis
-    # (BR-18) flags a batch from day one if it has not sold since it arrived;
-    # Inventory Management (BR-24) requires 30 consecutive days of no sales with
-    # stock available throughout. Same phrase, two populations. So each finding
-    # states its own definition inline rather than borrowing the shorter word,
-    # and the caveats say so as well.
-    aged_nm = float(split.get("aged_non_moving") or 0)
-    if aged_nm:
-        out.append({
-            "finding": f"SAR {aged_nm / 1e6:.2f}M is aged and has not sold since "
-                       f"it arrived",
-            "value": aged_nm, "score": aged_nm / total * 100.0 * 3.0,
-            "kind": "aged_and_stalled"})
-
-    fresh_nm = float(split.get("fresh_non_moving") or 0)
-    if fresh_nm:
-        out.append({
-            "finding": f"SAR {fresh_nm / 1e6:.2f}M of stock under nine months old "
-                       f"has not sold since it arrived",
-            "value": fresh_nm, "score": fresh_nm / total * 100.0 * 2.0,
-            "kind": "no_demand"})
+            **signal,
+            "report_score": signal.get("score"),
+            "score": chain_tier.get(analysis_type, 0.0)
+                     + min(9.99, float(signal.get("impact_share") or 0.0)),
+            "finding": signal["description"],
+            "value": float(signal.get("impact_value") or 0.0),
+            "kind": kind_alias.get(analysis_type, analysis_type),
+        })
     return out
 
 

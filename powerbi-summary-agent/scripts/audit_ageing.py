@@ -15,6 +15,7 @@ checks each figure quoted in prose exists in the model, and inspects
 from __future__ import annotations
 
 import json
+from datetime import date as _date
 import re
 import sys
 from pathlib import Path
@@ -60,6 +61,15 @@ def close(a, b, tolerance_pct: float = TOLERANCE_PCT) -> bool:
     return abs(a - b) / abs(b) * 100.0 <= tolerance_pct
 
 
+def _spoken_date(value) -> str:
+    """`2026-08-14` as the page writes it: `14 August`."""
+    try:
+        day = _date.fromisoformat(str(value)[:10])
+    except (TypeError, ValueError):
+        return str(value or "")
+    return f"{day.day} {day.strftime('%B')}"
+
+
 def audit(folder: Path) -> int:
     model_path = folder / "report_ageing.json"
     html_path = folder / "report_ageing.html"
@@ -69,6 +79,13 @@ def audit(folder: Path) -> int:
         return 1
     report = json.loads(model_path.read_text(encoding="utf-8"))
     html = html_path.read_text(encoding="utf-8") if html_path.exists() else ""
+    # The published artifact is the dashboard, not this page - see
+    # `ageing_publish.publish`. Both are inspected, because two artifacts from
+    # one run disagreeing about what may be compared is worse than either being
+    # wrong on its own.
+    dashboard_path = folder / "report_dashboard_ageing.html"
+    dashboard_html_text = (dashboard_path.read_text(encoding="utf-8")
+                           if dashboard_path.exists() else "")
 
     header = report.get("header") or {}
     bands = (report.get("distribution") or {}).get("bands") or []
@@ -180,8 +197,23 @@ def audit(folder: Path) -> int:
               [b.get("name") for b in bands if str(b.get("name")) not in html])
         check("the 'as at' label is on the page",
               str(report.get("period_label")) in html)
-        check("the movement limitation is stated, not omitted",
-              "one stock position" in html)
+        comparison_state = report.get("comparison") or {}
+        if comparison_state.get("available"):
+            for name, document in (("summary page", html),
+                                   ("published dashboard", dashboard_html_text)):
+                if not document:
+                    continue
+                check(f"the comparison window is stated on the {name}",
+                      str(comparison_state.get("prior_as_at") or "") in document
+                      or _spoken_date(comparison_state.get("prior_as_at")) in document,
+                      str(comparison_state.get("prior_as_at")))
+                if not comparison_state.get("value_comparable"):
+                    check(f"the {name} says why totals are not compared",
+                          "not compared" in document.lower())
+        else:
+            check("the movement limitation is stated, not omitted",
+                  "one stock position" in html
+                  or "nothing can be compared" in html.lower())
         lower = html.lower()
         html_hits = sorted(w for w in BANNED if w in lower)
         check("no banned vocabulary in the document", not html_hits, f"{html_hits}")
@@ -190,13 +222,162 @@ def audit(folder: Path) -> int:
 
     # --- 5. honesty ------------------------------------------------------------
     print("\n=== honesty ===")
-    migration = report.get("migration") or {}
-    check("bucket migration is explicitly reported as unavailable, so the "
-          "reader knows it was checked",
-          migration.get("available") is False and bool(migration.get("reason")))
     check("the period is 'as at', never a span (NN 18)",
           str(report.get("period_label", "")).startswith("as at"),
           report.get("period_label"))
+
+
+    # --- 6. the comparison against an earlier position -------------------------
+    # The guarantee under test is not "a comparison exists" but "every figure in
+    # it is a share or a count, unless the basis check cleared value". A value
+    # movement printed after the basis check refused it is the one failure this
+    # section exists to catch.
+    print("\n=== what changed ===")
+    comparison = report.get("comparison") or {}
+    if not comparison.get("available"):
+        check("an unavailable comparison states its reason",
+              bool(str(comparison.get("reason") or "").strip()),
+              str(comparison.get("reason") or "")[:120])
+    else:
+        prior, now = str(comparison.get("prior_as_at")), str(comparison.get("as_at"))
+        check("the earlier position is genuinely earlier", prior < now,
+              f"{prior} -> {now}")
+        days = comparison.get("days")
+        expected_days = None
+        try:
+            expected_days = (_date.fromisoformat(now) - _date.fromisoformat(prior)).days
+        except ValueError:
+            pass
+        check("the stated window length matches its two dates",
+              expected_days is None or days == expected_days,
+              f"stated {days}, dates give {expected_days}")
+
+        for reading in comparison.get("headlines") or []:
+            then_pct, now_pct = reading.get("then_pct"), reading.get("now_pct")
+            points = reading.get("points")
+            if not all(isinstance(v, (int, float)) for v in (then_pct, now_pct, points)):
+                continue
+            check(f"  {reading.get('label')}: the movement is now minus then",
+                  close(points, float(now_pct) - float(then_pct), tolerance_pct=1.0),
+                  f"{points} vs {float(now_pct) - float(then_pct)}")
+            check(f"  {reading.get('label')}: higher is worse is stated correctly",
+                  (reading.get("direction") == "worse") == (float(points) >= 0.2)
+                  or abs(float(points)) < 0.2,
+                  f"points={points} direction={reading.get('direction')}")
+
+        now_side, then_side = comparison.get("now") or {}, comparison.get("then") or {}
+        for side, label in ((now_side, "today"), (then_side, "the earlier position")):
+            total_value = float(side.get("total_value") or 0)
+            aged_value = float(side.get("aged_value") or 0)
+            if total_value:
+                check(f"  the aged share of value on {label} matches its own figures",
+                      close(side.get("aged_value_share_pct"),
+                            aged_value / total_value * 100.0))
+            total_qty = float(side.get("total_qty") or 0)
+            if total_qty:
+                check(f"  the aged share of units on {label} matches its own figures",
+                      close(side.get("aged_qty_share_pct"),
+                            float(side.get("aged_qty") or 0) / total_qty * 100.0))
+
+        basis = comparison.get("basis") or {}
+        check("the valuation basis was actually checked, not assumed",
+              basis.get("checked") is True or bool(basis.get("reason")),
+              str(basis.get("reason") or "")[:120])
+        if not comparison.get("value_comparable"):
+            check("a refused value comparison says why in plain words",
+                  len(str(basis.get("reason") or "")) > 40)
+            # The point of the whole lane: no absolute money movement anywhere.
+            for reading in comparison.get("headlines") or []:
+                check(f"  {reading.get('label')} is a share, not an amount",
+                      "share" in str(reading.get("label") or "").lower()
+                      or "%" in str(reading.get("label") or ""),
+                      str(reading.get("label")))
+            check("the page carries the basis warning as a caveat",
+                  any("calculated differently" in str(c)
+                      for c in report.get("caveats") or []))
+
+        for row in comparison.get("bands") or []:
+            then_pct, now_pct = row.get("qty_share_then_pct"), row.get("qty_share_now_pct")
+            if all(isinstance(v, (int, float)) for v in (then_pct, now_pct)):
+                check(f"  band {row.get('name')}: the unit-share movement adds up",
+                      close(row.get("qty_share_points"),
+                            float(now_pct) - float(then_pct), tolerance_pct=1.0))
+
+    migration = report.get("migration") or {}
+    check("stock movement between bands is either shown or explicitly refused",
+          bool(migration.get("available")) or bool(migration.get("reason")),
+          f"available={migration.get('available')}")
+    if migration.get("available"):
+        check("band movement is counted in units, not in rebased money",
+              str(migration.get("counted_in")) == "units",
+              str(migration.get("counted_in")))
+
+    # --- 7. the clearance outlook, re-derived ---------------------------------
+    print("\n=== where to act ===")
+    clearance = report.get("clearance") or {}
+    if clearance.get("available"):
+        horizon = float(clearance.get("horizon_days") or 30)
+        previous = None
+        for row in clearance.get("rows") or []:
+            aged_qty = float(row.get("aged_qty") or 0)
+            daily = float(row.get("daily_qty") or 0)
+            name = row.get("name")
+            if aged_qty > 0 and daily > 0:
+                expected = min(daily * horizon / aged_qty * 100.0, 100.0)
+                check(f"  {name}: the share clearing matches its own figures",
+                      close(row.get("cleared_pct"), expected),
+                      f"{row.get('cleared_pct')} vs {expected}")
+                check(f"  {name}: days to clear matches aged units over daily sales",
+                      close(row.get("days_to_clear"), aged_qty / daily))
+            check(f"  {name}: an estimate is never published above 100%",
+                  float(row.get("cleared_pct") or 0) <= 100.0 + 1e-9,
+                  str(row.get("cleared_pct")))
+            if previous is not None:
+                check(f"  {name}: the slowest divisions come first",
+                      float(row.get("cleared_pct") or 0) >= previous - 1e-9,
+                      f"{previous} then {row.get('cleared_pct')}")
+            previous = float(row.get("cleared_pct") or 0)
+        check("the outlook states that it assumes oldest stock sells first",
+              any("oldest stock first" in str(c) for c in clearance.get("caveats") or []))
+
+    categories = report.get("categories") or {}
+    if categories.get("available"):
+        threshold = float(categories.get("threshold_pct") or 30)
+        check("the count over the line cannot exceed the count carried",
+              int(categories.get("over") or 0) <= int(categories.get("carried") or 0),
+              f"{categories.get('over')} of {categories.get('carried')}")
+        worst = categories.get("worst") or []
+        check("every listed category is genuinely over the line",
+              all(float(c.get("aged_share_pct") or 0) > threshold for c in worst))
+        check("the list is ordered by money stuck, not by percentage",
+              all(float(worst[i].get("aged") or 0) >= float(worst[i + 1].get("aged") or 0)
+                  for i in range(len(worst) - 1)),
+              "; ".join(f"{c.get('name')}={c.get('aged'):,.0f}" for c in worst[:4]))
+        for row in worst:
+            total_cat = float(row.get("total") or 0)
+            if total_cat:
+                check(f"  {row.get('name')}: its share matches its own figures",
+                      close(row.get("aged_share_pct"),
+                            float(row.get("aged") or 0) / total_cat * 100.0))
+
+    stuck = report.get("stuck_lines") or {}
+    if stuck.get("available"):
+        cutoff = float(stuck.get("risk_cutoff") or -70)
+        floor = float(stuck.get("value_floor") or 0)
+        rows = stuck.get("rows") or []
+        check("every listed line is at or below the risk cut-off",
+              all(float(r.get("risk_score") or 0) <= cutoff for r in rows))
+        check("every listed line clears the money floor",
+              all(float(r.get("value") or 0) >= floor for r in rows))
+        check("the list is ordered by money at stake",
+              all(float(rows[i].get("value") or 0) >= float(rows[i + 1].get("value") or 0)
+                  for i in range(len(rows) - 1)))
+        check("the list says it is the top of a longer one",
+              isinstance(stuck.get("estate_lines"), (int, float))
+              and float(stuck.get("estate_lines") or 0) >= len(rows),
+              f"estate={stuck.get('estate_lines')} shown={len(rows)}")
+        check("the second value basis is named rather than blended",
+              "different basis" in str(stuck.get("note") or ""))
 
     print("\n" + "=" * 72)
     for note in _notes:

@@ -724,6 +724,11 @@ _PUBLISHING: tuple[ConfigKey, ...] = (
        "Folder for summary memory",
        "As above, for the summary's own memory.",
        tier="expert", in_state=False),
+    _k("azure_blob_snapshot_memory_prefix", "string", "snapshot-memory", "publishing",
+       "Folder for snapshot-report memory",
+       "Where cross-run memory for single-snapshot reports (Ageing, SKU Overview, "
+       "Daily Sales) is kept, scoped by dataset and report so they cannot clash.",
+       tier="expert", in_state=False),
     _k("insight_memory_storage", "enum", "local", "publishing",
        "Where insight memory is kept",
        "In the cloud this must be 'cloud storage'. A scheduled job gets a fresh, empty machine "
@@ -742,6 +747,16 @@ _PUBLISHING: tuple[ConfigKey, ...] = (
        choices=("local", "azure_blob"),
        choice_labels=(("local", "On this computer"), ("azure_blob", "Cloud storage")),
        in_state=False, derived=True),
+    _k("snapshot_memory_storage", "enum", "local", "publishing",
+       "Where snapshot-report memory is kept",
+       "For Ageing, SKU Overview and Daily Sales. In the cloud this must be 'cloud "
+       "storage'. A scheduled job gets a fresh, empty machine every run, so memory "
+       "kept on that machine is lost each time and the report repeats yesterday's "
+       "findings every morning.",
+       tier="essential",
+       choices=("local", "azure_blob"),
+       choice_labels=(("local", "On this computer"), ("azure_blob", "Cloud storage")),
+       in_state=False),
     _k("insight_memory_runtime_folder", "string", "outputs/.runtime/insight_memory", "publishing",
        "Temporary folder for downloaded memory",
        "A scratch folder used while cloud memory is being read and written. Leave as is.",
@@ -797,6 +812,27 @@ _PUBLISHING: tuple[ConfigKey, ...] = (
        "ai_content_multi_report_feed is on; otherwise each report publishes its own "
        "insight_max_new_per_run cards.",
        in_state=False, tier="expert"),
+    _k("ai_content_kpi_card_fields", "bool", False, "publishing",
+       "Add the extended KPI tile fields",
+       "Turn this on only after your app has been updated to read them. It adds a human-readable "
+       "name, a raw number with its currency or unit, which direction of movement is good, a "
+       "structured comparison, a target with percent-to-target, a share-of-total percent, and a "
+       "rank to every card - on top of the fields already there today. With it off, cards look "
+       "exactly as they do today.",
+       "Adds label/rawValue/unit/valueType/goodDirection/comparison/target/shareOfTotalPct/rank to "
+       "every KpiCard, each present only when the underlying signal actually supports it - never a "
+       "guessed unit or direction. OFF reproduces today's payload byte-for-byte. See "
+       "kpi-tile-schema-proposal.md and docs/phase5-app-contract-change.md for the rollout pattern "
+       "this follows.",
+       tier="expert"),
+    _k("ai_content_kpi_currency", "string", "SAR", "publishing",
+       "Currency for KPI tiles with no report-specific currency set",
+       "The currency code shown on a KPI card's raw figure, for a report that has no currency "
+       "setting of its own (Target Tracker, Ageing, Inventory Management, Daily Sales and SKU "
+       "Overview already have one each). Only used when ai_content_kpi_card_fields is on.",
+       "Fallback read by api_payloads._kpi_currency when report_id has no entry in "
+       "_CURRENCY_CONFIG_KEY_BY_REPORT - currently just the original Sales YoY report.",
+       tier="expert"),
     _k("api_summary_title", "string", "AI Summary", "publishing",
        "Title shown above the summary",
        "The heading your readers see, for example 'Sales vs Last Year'.",
@@ -944,6 +980,315 @@ _SUMMARY_TUNING: tuple[ConfigKey, ...] = (
        "Only affects what is visible at first glance. Every branch and department is always in "
        "the page; this only limits what is shown before scrolling.",
        tier="standard", in_state=False),
+    # --- Ageing report. One snapshot, policy-defined risk bands. ------------
+    _k("ageing_mapping", "object", {}, "scope",
+       "Ageing field mapping",
+       "Maps stock value, age band, snapshot date, movement status and breakdown fields.",
+       "Automatic discovery proposes this mapping, but a production report keeps the approved "
+       "references here so a weak naming guess can never silently change the denominator.",
+       tier="expert", per_client=True, in_state=False),
+    _k("ageing_currency", "string", "SAR", "summary_tuning",
+       "Currency shown on the Ageing page",
+       "The currency code printed beside every Ageing value.",
+       tier="standard", per_client=True, in_state=False),
+    _k("ageing_aged_filter", "string", "", "scope",
+       "Rule that identifies aged stock",
+       "The approved business rule used to classify exposure as aged.",
+       "This is intentionally explicit because different businesses use different age boundaries.",
+       tier="expert", per_client=True, in_state=False),
+    _k("ageing_high_risk_filter", "string", "", "scope",
+       "Rule that identifies high-risk stock",
+       "The approved business rule used for the high-risk Ageing view.",
+       tier="expert", per_client=True, in_state=False),
+    _k("ageing_oldest_filter", "string", "", "scope",
+       "Rule that identifies the oldest stock",
+       "The approved business rule used for the oldest Ageing drill-down.",
+       tier="expert", per_client=True, in_state=False),
+    _k("ageing_validation_share_expression", "string", "", "scope",
+       "Existing ageing rate to validate",
+       "An optional existing report rate checked against the chosen stock-value denominator.",
+       tier="expert", per_client=True, in_state=False),
+    _k("ageing_validation_numerator_expression", "string", "", "scope",
+       "Existing aged amount to validate",
+       "An optional existing aged amount checked before it is allowed into reporting.",
+       tier="expert", per_client=True, in_state=False),
+    _k("ageing_reject_model_aged_share", "bool", True, "features",
+       "Reject an invalid existing ageing rate",
+       "Keeps a source ageing rate out of the report when it fails the denominator check.",
+       tier="standard", per_client=True, in_state=False),
+    _k("ageing_top_members", "int", 50, "summary_tuning",
+       "Members scanned per Ageing breakdown",
+       "Limits each division, section, location or type breakdown while retaining the largest exposures.",
+       tier="standard", per_client=True, in_state=False),
+    _k("ageing_deep_dive_members", "int", 5, "summary_tuning",
+       "Products shown in each Ageing drill-down",
+       "Controls the length of the oldest-stock and aged-not-selling product lists.",
+       tier="standard", per_client=True, in_state=False),
+    _k("ageing_investigation_enabled", "bool", False, "features",
+       "Let the AI investigate why an Ageing hotspot is concentrated",
+       "When off, the report lists findings only. When on, the AI breaks the top "
+       "hotspot findings down by every other known dimension (with real, bounded "
+       "queries) and writes a short grounded note on where the exposure sits. It "
+       "never invents a figure and never claims a cause - this is one stock "
+       "position, not a comparison over time.",
+       "Every draft is checked before use: figures must come from the drill-down "
+       "results, no jargon, no causal language, no year-on-year or forecasting "
+       "words. A draft that fails twice falls back to a deterministic sentence "
+       "built from the same results, so the section ships either way.",
+       tier="standard", per_client=True, in_state=False),
+    _k("ageing_investigation_max_findings", "int", 3, "summary_tuning",
+       "Ageing hotspots investigated per run",
+       "How many of the top Ageing findings get a drill-down investigation.",
+       tier="expert", per_client=True, in_state=False),
+    _k("ageing_investigation_max_roles_per_finding", "int", 2, "summary_tuning",
+       "Dimensions checked per Ageing hotspot",
+       "How many other breakdowns (division, section, SKU type, ...) each "
+       "investigated hotspot is drilled into.",
+       tier="expert", per_client=True, in_state=False),
+    _k("ageing_investigation_max_queries", "int", 9, "summary_tuning",
+       "Query budget for Ageing investigation",
+       "A safety cap on how many extra queries the investigation step may run in "
+       "one go, across every hotspot it looks into.",
+       tier="expert", per_client=True, in_state=False),
+    _k("ageing_investigation_max_rounds", "int", 3, "summary_tuning",
+       "Adaptive rounds per Ageing hotspot",
+       "How many times the AI may check one more dimension before it must "
+       "conclude, per investigated hotspot.",
+       tier="expert", per_client=True, in_state=False),
+    _k("ageing_trend_min_history_days", "int", 5, "summary_tuning",
+       "Days of history before Ageing trend statistics activate",
+       "Below this many archived days, day-over-day movement is still shown "
+       "but a statistical (z-score) read is not attempted - there is not yet "
+       "a real distribution to be robust about.",
+       tier="expert", per_client=True, in_state=False),
+    _k("ageing_trend_materiality_pct", "float", 3.0, "summary_tuning",
+       "Minimum share-of-total move worth reporting (Ageing trend)",
+       "A day-over-day movement smaller than this share of total stock value "
+       "is treated as normal fluctuation.",
+       tier="expert", per_client=True, in_state=False),
+    _k("ageing_trend_z_cutoff", "float", 2.5, "summary_tuning",
+       "Statistical significance cutoff (Ageing trend)",
+       "Once enough history exists, a movement must also clear this robust "
+       "z-score to be reported on statistical grounds alone.",
+       tier="expert", per_client=True, in_state=False),
+    # --- Stock Age: comparing against an earlier position, and what to do next.
+    # All optional. A model with no history table and no stock-status table
+    # produces exactly the four-layer page it produced before these existed, so
+    # leaving every one of them unset is a supported configuration.
+    _k("ageing_quantity", "string", "", "scope",
+       "How many units of stock there are",
+       "The column holding stock quantity, for example SUM('STOCK'[QTY]). Needed "
+       "to compare today against an earlier position: if the way stock is valued "
+       "changes between two dates, units are what still compares honestly. Leave "
+       "empty and the report shows value only, with no comparison.",
+       tier="standard", per_client=True, in_state=False),
+    _k("ageing_history", "object", {}, "scope",
+       "Where the earlier stock position is kept",
+       "Points at the table holding a previous stock position - its age band, "
+       "value, quantity, date, product and location columns, and the filter that "
+       "marks stock as aged there. Leave empty if the model keeps no history; the "
+       "report then says plainly that there is nothing to compare against, rather "
+       "than comparing against something unsuitable.",
+       tier="standard", per_client=True, in_state=False),
+    _k("ageing_status", "object", {}, "scope",
+       "Where selling rates and risk scores are kept",
+       "Points at the stock-status table - units sold per day, stock value, "
+       "current stock, the ageing risk score, the status text, and the product, "
+       "location and category columns. This is what the clearance outlook and the "
+       "stuck-product list are built from. Note that this table's stock value is "
+       "often on a different basis from the main ageing table's, so the report "
+       "labels it rather than adding the two together.",
+       tier="standard", per_client=True, in_state=False),
+    _k("ageing_shared_division", "string", "", "scope",
+       "The division column that filters both tables",
+       "The clearance outlook needs one column that filters the ageing table AND "
+       "the stock-status table at the same time, which usually means a column on "
+       "the shared lookup rather than on either table itself. Getting this wrong "
+       "produces an outlook where the aged stock and the selling rate describe "
+       "different sets of products.",
+       tier="standard", per_client=True, in_state=False),
+    _k("ageing_category", "string", "", "scope",
+       "The category column for the review check",
+       "Used to count how many categories carry more aged stock than the review "
+       "line allows. Leave empty to leave that check out of the report.",
+       tier="standard", per_client=True, in_state=False),
+    _k("ageing_clearance_days", "int", 30, "summary_tuning",
+       "Days to look ahead in the clearance outlook",
+       "How far ahead the report estimates. Thirty days matches a monthly review "
+       "cycle; a longer window makes every division look better and is only "
+       "honest if that is how far ahead the buying team actually plans.",
+       tier="standard", per_client=True, in_state=False),
+    _k("ageing_category_threshold_pct", "float", 30.0, "summary_tuning",
+       "Aged share at which a category is flagged",
+       "A category with more than this share of its own stock aged is counted as "
+       "over the line. This is a review threshold the business chooses, not a "
+       "rule in the data - raising it reports fewer categories, it does not "
+       "change how much stock is old.",
+       tier="standard", per_client=True, in_state=False),
+    _k("ageing_risk_score_cutoff", "float", -70.0, "summary_tuning",
+       "Ageing risk score at which a product line is listed",
+       "The source report scores each product-and-location line from 0 (healthy) "
+       "to -100 (worst). A line at or below this number is listed as stuck. "
+       "Because the scale runs negative, a value closer to zero lists MORE lines, "
+       "not fewer.",
+       tier="expert", per_client=True, in_state=False),
+    _k("ageing_risk_value_floor", "float", 500.0, "summary_tuning",
+       "Smallest stock value worth listing as stuck",
+       "Lines holding less than this are left out, so the list is not filled with "
+       "products carrying a few units of stock. Expressed in the report's own "
+       "currency.",
+       tier="expert", per_client=True, in_state=False),
+    _k("ageing_risk_statuses", "list", [], "scope",
+       "Which stock statuses count as stuck",
+       "Limits the stuck-product list to the source report's own status wording, "
+       "for example excess stock and stock with no sales. Leave empty to include "
+       "every status at or below the risk score.",
+       tier="expert", per_client=True, in_state=False),
+    _k("ageing_risk_rows", "int", 10, "summary_tuning",
+       "Product lines shown in the stuck list",
+       "The list is the top of a much longer one and says so on the page. Ten "
+       "rows is a page a buyer can act on in a morning.",
+       tier="standard", per_client=True, in_state=False),
+    _k("ageing_location_watch_pct", "float", 5.0, "summary_tuning",
+       "Aged share at which a location becomes a watch",
+       "A location with more than this share of its own stock aged is marked as "
+       "one to watch. Measured against the location's own stock, so a small store "
+       "and a large warehouse are judged on the same scale.",
+       tier="standard", per_client=True, in_state=False),
+    _k("ageing_location_critical_pct", "float", 15.0, "summary_tuning",
+       "Aged share at which a location becomes critical",
+       "As above, but the point at which a location is called out as a problem "
+       "rather than a watch. Must be higher than the watch level.",
+       tier="standard", per_client=True, in_state=False),
+    # --- SKU Overview report. Single snapshot, Loc-SKU grain, shares most of
+    # its RECOMMENDED_ACTION vocabulary with Inventory Management over a
+    # different dataset. --------------------------------------------------
+    _k("daily_sales_mapping", "object", {}, "scope",
+       "Daily Sales field mapping",
+       "Maps the store/department/section/category benchmark table names and "
+       "their store, department, section and category columns.",
+       "Explicit, never auto-discovered: the exact table each grain lives in "
+       "is policy, not something a generic scan can infer.",
+       tier="expert", per_client=True, in_state=False),
+    _k("daily_sales_currency", "string", "USD", "summary_tuning",
+       "Currency shown on the Daily Sales page",
+       "The currency code printed beside every Daily Sales value.",
+       tier="standard", per_client=True, in_state=False),
+    _k("daily_sales_investigation_enabled", "bool", False, "summary_tuning",
+       "Turn on Daily Sales hotspot investigation",
+       "When on, the AI drills the top Bills findings one or two levels "
+       "deeper (department into section, section into category) to show "
+       "where a shortfall concentrates.",
+       tier="standard", per_client=True, in_state=False),
+    _k("daily_sales_investigation_max_findings", "int", 3, "summary_tuning",
+       "Findings investigated per Daily Sales run",
+       "How many of the day's top Bills findings get a deeper drill-down.",
+       tier="expert", per_client=True, in_state=False),
+    _k("daily_sales_investigation_max_rounds", "int", 2, "summary_tuning",
+       "Adaptive rounds per Daily Sales hotspot",
+       "How many times the AI may check one more level before it must "
+       "conclude, per investigated hotspot.",
+       tier="expert", per_client=True, in_state=False),
+    _k("daily_sales_investigation_max_queries", "int", 9, "summary_tuning",
+       "Query budget for Daily Sales investigation",
+       "A safety cap on how many extra queries the investigation step may "
+       "run in one go, across every hotspot it looks into.",
+       tier="expert", per_client=True, in_state=False),
+    _k("daily_sales_investigation_max_roles_per_finding", "int", 2, "summary_tuning",
+       "Query cap per Daily Sales hotspot",
+       "A safety cap on how many extra queries a single hotspot's "
+       "drill-down may use.",
+       tier="expert", per_client=True, in_state=False),
+    _k("sku_overview_mapping", "object", {}, "scope",
+       "SKU Overview field mapping",
+       "Maps stock value, excess, pending, opportunity loss, burnout days, "
+       "recommended action, snapshot date and breakdown fields.",
+       "Explicit, never auto-discovered: the exact business meaning of each "
+       "field is policy, not something a generic scan can infer.",
+       tier="expert", per_client=True, in_state=False),
+    _k("sku_overview_currency", "string", "USD", "summary_tuning",
+       "Currency shown on the SKU Overview page",
+       "The currency code printed beside every SKU Overview value.",
+       tier="standard", per_client=True, in_state=False),
+    _k("sku_overview_top_members", "int", 30, "summary_tuning",
+       "Members scanned per SKU Overview breakdown",
+       "Limits each department, section, location or category breakdown while "
+       "retaining the largest exposures.",
+       tier="standard", per_client=True, in_state=False),
+    _k("sku_overview_deep_dive_members", "int", 8, "summary_tuning",
+       "SKUs shown in each SKU Overview drill-down",
+       "Controls the length of the fastest-emptying, highest-loss and "
+       "highest-excess SKU lists.",
+       tier="standard", per_client=True, in_state=False),
+    _k("sku_overview_investigation_enabled", "bool", False, "features",
+       "Let the AI investigate why a SKU Overview hotspot is concentrated",
+       "When off, the report lists findings only. When on, the AI breaks the "
+       "top Excess Stock hotspots down by every other known dimension (with "
+       "real, bounded queries) and writes a short grounded note on where the "
+       "exposure sits. It never invents a figure and never claims a cause.",
+       "Every draft is checked before use: figures must come from the "
+       "drill-down results, no jargon, no causal language, no year-on-year or "
+       "forecasting words. A draft that fails twice falls back to a "
+       "deterministic sentence built from the same results.",
+       tier="standard", per_client=True, in_state=False),
+    _k("sku_overview_investigation_max_findings", "int", 3, "summary_tuning",
+       "SKU Overview hotspots investigated per run",
+       "How many of the top SKU Overview findings get a drill-down investigation.",
+       tier="expert", per_client=True, in_state=False),
+    _k("sku_overview_investigation_max_roles_per_finding", "int", 3, "summary_tuning",
+       "Dimensions checked per SKU Overview hotspot",
+       "How many other breakdowns each investigated hotspot may be drilled into.",
+       tier="expert", per_client=True, in_state=False),
+    _k("sku_overview_investigation_max_queries", "int", 9, "summary_tuning",
+       "Query budget for SKU Overview investigation",
+       "A safety cap on how many extra queries the investigation step may run "
+       "in one go, across every hotspot it looks into.",
+       tier="expert", per_client=True, in_state=False),
+    _k("sku_overview_investigation_max_rounds", "int", 3, "summary_tuning",
+       "Adaptive rounds per SKU Overview hotspot",
+       "How many times the AI may check one more dimension before it must "
+       "conclude, per investigated hotspot.",
+       tier="expert", per_client=True, in_state=False),
+    _k("sku_overview_trend_min_history_days", "int", 5, "summary_tuning",
+       "Days of history before SKU Overview trend statistics activate",
+       "Below this many archived days, day-over-day movement is still shown "
+       "but a statistical (z-score) read is not attempted.",
+       tier="expert", per_client=True, in_state=False),
+    _k("sku_overview_trend_materiality_pct", "float", 3.0, "summary_tuning",
+       "Minimum share-of-total move worth reporting (SKU Overview trend)",
+       "A day-over-day movement smaller than this share of total stock value "
+       "is treated as normal fluctuation.",
+       tier="expert", per_client=True, in_state=False),
+    _k("sku_overview_trend_z_cutoff", "float", 2.5, "summary_tuning",
+       "Statistical significance cutoff (SKU Overview trend)",
+       "Once enough history exists, a movement must also clear this robust "
+       "z-score to be reported on statistical grounds alone.",
+       tier="expert", per_client=True, in_state=False),
+    _k("sku_overview_insight_top_n", "int", 10, "summary_tuning",
+       "Rows kept per SKU Overview insight rule",
+       "How many SKUs each of the eight rulebook insights keeps (best sales "
+       "day, stockouts, verge-of-stockout, overstock, price floor).",
+       tier="standard", per_client=True, in_state=False),
+    _k("sku_overview_insight_dept_top_n", "int", 3, "summary_tuning",
+       "Top SKUs per department (SKU Overview Rule 1)",
+       "How many top-performing SKUs are kept per department.",
+       tier="standard", per_client=True, in_state=False),
+    _k("sku_overview_insight_rule6_cap", "int", 25, "summary_tuning",
+       "Row cap for non-moving-with-pending-order (SKU Overview Rule 6)",
+       "A defensive cap on the non-moving-with-a-pending-order list, which is "
+       "normally small.",
+       tier="expert", per_client=True, in_state=False),
+    _k("sku_overview_product_weeks", "int", 12, "summary_tuning",
+       "Weeks shown on the SKU Overview product spotlight",
+       "How many recent weeks of sales history the 'One product in full' "
+       "layer's trend chart requests - fewer are shown if the model has less.",
+       tier="expert", per_client=True, in_state=False),
+    _k("sku_overview_top_view_enabled", "bool", True, "summary_tuning",
+       "Recompute a 'Best sellers only' view for SKU Overview",
+       "When on, the page runs a second, separate scan filtered to the "
+       "model's own top sales band (Segment A) and offers it as a toggle "
+       "alongside the all-products view.",
+       tier="standard", per_client=True, in_state=False),
     # --- Inventory Management. Its own report, its own semantic model, and a
     # stock position rather than a period - so none of the year-on-year or
     # focus-rotation keys above apply to it. ----------------------------------

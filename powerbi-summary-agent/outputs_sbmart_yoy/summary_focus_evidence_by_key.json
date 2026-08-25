@@ -1,0 +1,614 @@
+{
+  "focus:v2:b801fc430e44f7038556ecfee1207245590dbe7ed77497ecb290a81fc10ad984": {
+    "focus_key": "focus:v2:b801fc430e44f7038556ecfee1207245590dbe7ed77497ecb290a81fc10ad984",
+    "candidate_id": "summary_b801fc430e44",
+    "segment": "CULINARY SUPPLIES",
+    "dimension_role": "section",
+    "sections": {
+      "scorecard": {
+        "source": "targeted_dax",
+        "metrics": {
+          "revenue": {
+            "current": 1336367.9619,
+            "prior": 1268825.9769,
+            "change": 67541.9850000001,
+            "change_pct": 5.323187437021026
+          },
+          "quantity": {
+            "current": 447917.6500000001,
+            "prior": 420622.9,
+            "change": 27294.75000000006,
+            "change_pct": 6.489126008117974
+          },
+          "transactions": {
+            "current": 345465.0,
+            "prior": 321921.0,
+            "change": 23544.0,
+            "change_pct": 7.313595571584333
+          }
+        }
+      },
+      "internal_contributors": [
+        {
+          "dimension": "item_category_name",
+          "reference": "'MIS_DEEP_DIVE2'[item_category_name]",
+          "hierarchy_role": "category",
+          "discovery_source": "metadata",
+          "hierarchy_checks": {
+            "semantic_order": true,
+            "relationship_path": true,
+            "parent_filters_child": true,
+            "filter_effect_observed": true,
+            "nestedness": true,
+            "reconciles_to_parent": true,
+            "focus_total": 1336367.9619,
+            "unfiltered_total": 41206710.5199
+          },
+          "rows": [
+            {
+              "item_category_name": "CULINARY SUPPLIES",
+              "revenue_current": 1336367.9619,
+              "revenue_prior": 1268825.9769,
+              "revenue_change": 67541.9850000001
+            }
+          ],
+          "completeness": "complete",
+          "top_positive": {
+            "member": "CULINARY SUPPLIES",
+            "change": 67541.9850000001
+          },
+          "top_negative": null
+        }
+      ],
+      "location": {
+        "dimension": "store_no",
+        "rows": [
+          {
+            "store_no": "ST3",
+            "revenue_current": 229029.0768,
+            "revenue_prior": 237943.4454,
+            "revenue_change": -8914.368599999987,
+            "abs_sort": 8914.368599999987
+          },
+          {
+            "store_no": "ST2",
+            "revenue_current": 167710.4325,
+            "revenue_prior": 179369.3295,
+            "revenue_change": -11658.896999999997,
+            "abs_sort": 11658.896999999997
+          },
+          {
+            "store_no": "ST1",
+            "revenue_current": 394110.7731,
+            "revenue_prior": 420076.4382,
+            "revenue_change": -25965.665099999984,
+            "abs_sort": 25965.665099999984
+          },
+          {
+            "store_no": "ST5",
+            "revenue_current": 85525.2459,
+            "revenue_prior": 18378.5409,
+            "revenue_change": 67146.70499999999,
+            "abs_sort": 67146.70499999999
+          },
+          {
+            "store_no": "ST4",
+            "revenue_current": 459992.4336,
+            "revenue_prior": 413058.2229,
+            "revenue_change": 46934.210699999996,
+            "abs_sort": 46934.210699999996
+          }
+        ],
+        "completeness": "complete",
+        "top_positive": {
+          "member": "ST5",
+          "change": 67146.70499999999
+        },
+        "top_negative": {
+          "member": "ST1",
+          "change": -25965.665099999984
+        }
+      },
+      "driver_bridge": {
+        "volume_effect": 82335.71646477484,
+        "rate_mix_effect": -14793.731464774733,
+        "total_change": 67541.9850000001,
+        "reconciles": true,
+        "driver_class": "volume"
+      },
+      "period_trend": {
+        "dimension": "Month",
+        "reference": "'MIS_DEEP_DIVE2'[Month]",
+        "grain": "month",
+        "rows": [
+          {
+            "month": 1,
+            "revenue_current": 218415.4173,
+            "revenue_prior": 176631.5727,
+            "revenue_change": 41783.84460000001
+          },
+          {
+            "month": 2,
+            "revenue_current": 205025.202,
+            "revenue_prior": 168376.8465,
+            "revenue_change": 36648.355499999976
+          },
+          {
+            "month": 3,
+            "revenue_current": 172332.4545,
+            "revenue_prior": 181409.0013,
+            "revenue_change": -9076.546800000011
+          },
+          {
+            "month": 4,
+            "revenue_current": 158552.5104,
+            "revenue_prior": 141703.5168,
+            "revenue_change": 16848.993599999987
+          },
+          {
+            "month": 5,
+            "revenue_current": 189911.8062,
+            "revenue_prior": 163710.8469,
+            "revenue_change": 26200.959299999988
+          },
+          {
+            "month": 6,
+            "revenue_current": 131183.1477,
+            "revenue_prior": 152155.1142,
+            "revenue_change": -20971.96650000001
+          },
+          {
+            "month": 7,
+            "revenue_current": 152887.7025,
+            "revenue_prior": 153772.9272,
+            "revenue_change": -885.2246999999916
+          },
+          {
+            "month": 8,
+            "revenue_current": 108059.7213,
+            "revenue_prior": 131066.1513,
+            "revenue_change": -23006.429999999993
+          }
+        ],
+        "completeness": "complete",
+        "direction": "deepening_decline"
+      },
+      "daily_trend": {
+        "status": "disabled",
+        "reason": "summary_focus_daily_trend_enabled is false"
+      },
+      "caveats": [
+        "child dimension special_product_group_name failed hierarchy validation",
+        "this deep dive repeats a recently delivered story (same contributors or driver)"
+      ]
+    },
+    "caveats": [
+      "child dimension special_product_group_name failed hierarchy validation",
+      "this deep dive repeats a recently delivered story (same contributors or driver)"
+    ],
+    "queries_attempted": 5,
+    "query_budget": 5,
+    "signature_fields": {
+      "top_pos_contributor": "CULINARY SUPPLIES",
+      "top_neg_contributor": null,
+      "leading_location": "ST5",
+      "driver_class": "volume"
+    },
+    "deep_dive_signature": "f5e0ca842ca16094",
+    "signature_duplicate": true,
+    "signature_duplicate_of": "focus:v2:6e2655ef9bc05a3f40cad7770556f8054ae059bc5615e17432e9ddab98809a4d",
+    "signature_overlap": 0.667,
+    "facts": [
+      {
+        "fact_id": "D1",
+        "fact_kind": "deep_dive",
+        "subject": "CULINARY SUPPLIES",
+        "metric": "Revenue change",
+        "display_value": "+67.5K",
+        "raw_value": 67541.9850000001,
+        "statement": "CULINARY SUPPLIES revenue changed by +67.5K (+5.3%).",
+        "subject_role": "focus",
+        "detail_role": "focus_metric",
+        "coverage": "complete"
+      },
+      {
+        "fact_id": "D2",
+        "fact_kind": "deep_dive",
+        "subject": "CULINARY SUPPLIES",
+        "metric": "Quantity change",
+        "display_value": "+27.3K",
+        "raw_value": 27294.75000000006,
+        "statement": "CULINARY SUPPLIES quantity changed by +27.3K.",
+        "subject_role": "focus",
+        "detail_role": "focus_metric",
+        "coverage": "complete"
+      },
+      {
+        "fact_id": "D3",
+        "fact_kind": "deep_dive",
+        "subject": "CULINARY SUPPLIES",
+        "metric": "Transactions change",
+        "display_value": "+23.5K",
+        "raw_value": 23544.0,
+        "statement": "CULINARY SUPPLIES transactions changed by +23.5K.",
+        "subject_role": "focus",
+        "detail_role": "focus_metric",
+        "coverage": "complete"
+      },
+      {
+        "fact_id": "D4",
+        "fact_kind": "deep_dive",
+        "subject": "CULINARY SUPPLIES",
+        "metric": "Revenue change in item_category_name",
+        "display_value": "+67.5K",
+        "raw_value": 67541.9850000001,
+        "statement": "Within CULINARY SUPPLIES, CULINARY SUPPLIES added +67.5K.",
+        "subject_role": "peer",
+        "detail_role": "contributor",
+        "coverage": "complete"
+      },
+      {
+        "fact_id": "D5",
+        "fact_kind": "deep_dive",
+        "subject": "ST5",
+        "metric": "Store contribution",
+        "display_value": "+67.1K",
+        "raw_value": 67146.70499999999,
+        "statement": "ST5 led CULINARY SUPPLIES across the stores included in the comparison at +67.1K.",
+        "subject_role": "peer",
+        "detail_role": "location",
+        "coverage": "complete"
+      },
+      {
+        "fact_id": "D6",
+        "fact_kind": "deep_dive",
+        "subject": "CULINARY SUPPLIES",
+        "metric": "Volume effect on revenue",
+        "display_value": "+82.3K",
+        "raw_value": 82335.71646477484,
+        "statement": "Within CULINARY SUPPLIES, change in units sold added revenue by +82.3K.",
+        "subject_role": "focus",
+        "detail_role": "driver",
+        "coverage": "complete"
+      },
+      {
+        "fact_id": "D7",
+        "fact_kind": "deep_dive",
+        "subject": "CULINARY SUPPLIES",
+        "metric": "Rate and mix effect on revenue",
+        "display_value": "-14.8K",
+        "raw_value": -14793.731464774733,
+        "statement": "Within CULINARY SUPPLIES, average revenue per item and mix reduced revenue by -14.8K.",
+        "subject_role": "focus",
+        "detail_role": "driver",
+        "coverage": "complete"
+      }
+    ],
+    "selection": {
+      "reason": "overdue",
+      "priority": 0.4726,
+      "importance": 0.0412,
+      "coverage_debt": 1.0,
+      "reversal": false,
+      "magnitude": false,
+      "sentiment": "opportunity"
+    },
+    "materiality_facts": {
+      "global_impact_pct": 0.16391015965077335,
+      "business_share_pct": 3.2430833353092483,
+      "sibling_movement_impact_pct": 50.779535511541795,
+      "area_change_pct": 5.323187437021026,
+      "reconciled": true,
+      "impact_share_pct": 1.8687094340973966
+    }
+  },
+  "focus:v2:661a933e0108f9d416e886a523e24d524b36a994c99ba25931a52cdb8c3ab810": {
+    "focus_key": "focus:v2:661a933e0108f9d416e886a523e24d524b36a994c99ba25931a52cdb8c3ab810",
+    "candidate_id": "summary_661a933e0108",
+    "segment": "TECHNOLOGY",
+    "dimension_role": "division",
+    "sections": {
+      "scorecard": {
+        "source": "targeted_dax",
+        "metrics": {
+          "revenue": {
+            "current": 1964026.4022,
+            "prior": 1727975.7027,
+            "change": 236050.69949999987,
+            "change_pct": 13.660533486157558
+          },
+          "quantity": {
+            "current": 168787.0,
+            "prior": 142004.0,
+            "change": 26783.0,
+            "change_pct": 18.860736317286836
+          },
+          "transactions": {
+            "current": 148888.0,
+            "prior": 125642.0,
+            "change": 23246.0,
+            "change_pct": 18.501774884194774
+          }
+        }
+      },
+      "internal_contributors": [
+        {
+          "dimension": "item_category_name",
+          "reference": "'MIS_DEEP_DIVE2'[item_category_name]",
+          "hierarchy_role": "category",
+          "discovery_source": "metadata",
+          "hierarchy_checks": {
+            "semantic_order": true,
+            "relationship_path": true,
+            "parent_filters_child": true,
+            "filter_effect_observed": true,
+            "nestedness": true,
+            "reconciles_to_parent": true,
+            "focus_total": 1964026.4022,
+            "unfiltered_total": 41206710.519899994
+          },
+          "rows": [
+            {
+              "item_category_name": "CONSUMER DEVICES",
+              "revenue_current": 3019.8771,
+              "revenue_prior": 1044.0252,
+              "revenue_change": 1975.8519000000001
+            },
+            {
+              "item_category_name": "ENTERTAINMENTS",
+              "revenue_current": 1961006.5251,
+              "revenue_prior": 1726931.6775,
+              "revenue_change": 234074.84759999998
+            }
+          ],
+          "completeness": "complete",
+          "top_positive": {
+            "member": "ENTERTAINMENTS",
+            "change": 234074.84759999998
+          },
+          "top_negative": null
+        }
+      ],
+      "location": {
+        "dimension": "store_no",
+        "rows": [
+          {
+            "store_no": "ST3",
+            "revenue_current": 288112.4343,
+            "revenue_prior": 290517.2109,
+            "revenue_change": -2404.776599999983,
+            "abs_sort": 2404.776599999983
+          },
+          {
+            "store_no": "ST2",
+            "revenue_current": 257086.0458,
+            "revenue_prior": 291663.045,
+            "revenue_change": -34576.99919999999,
+            "abs_sort": 34576.99919999999
+          },
+          {
+            "store_no": "ST1",
+            "revenue_current": 527443.8579,
+            "revenue_prior": 514543.5765,
+            "revenue_change": 12900.28139999992,
+            "abs_sort": 12900.28139999992
+          },
+          {
+            "store_no": "ST4",
+            "revenue_current": 783959.6313,
+            "revenue_prior": 608376.4308,
+            "revenue_change": 175583.20050000004,
+            "abs_sort": 175583.20050000004
+          },
+          {
+            "store_no": "ST5",
+            "revenue_current": 107424.4329,
+            "revenue_prior": 22875.4395,
+            "revenue_change": 84548.9934,
+            "abs_sort": 84548.9934
+          }
+        ],
+        "completeness": "complete",
+        "top_positive": {
+          "member": "ST4",
+          "change": 175583.20050000004
+        },
+        "top_negative": {
+          "member": "ST2",
+          "change": -34576.99919999999
+        }
+      },
+      "driver_bridge": {
+        "volume_effect": 325908.94091303134,
+        "rate_mix_effect": -89858.24141303166,
+        "total_change": 236050.69949999987,
+        "reconciles": true,
+        "driver_class": "volume"
+      },
+      "period_trend": {
+        "dimension": "Month",
+        "reference": "'MIS_DEEP_DIVE2'[Month]",
+        "grain": "month",
+        "rows": [
+          {
+            "month": 1,
+            "revenue_current": 320015.4156,
+            "revenue_prior": 226201.1427,
+            "revenue_change": 93814.27290000001
+          },
+          {
+            "month": 2,
+            "revenue_current": 263509.4025,
+            "revenue_prior": 213554.9907,
+            "revenue_change": 49954.41180000003
+          },
+          {
+            "month": 3,
+            "revenue_current": 222867.5337,
+            "revenue_prior": 258445.4985,
+            "revenue_change": -35577.96479999999
+          },
+          {
+            "month": 4,
+            "revenue_current": 243726.9102,
+            "revenue_prior": 184108.7151,
+            "revenue_change": 59618.19510000001
+          },
+          {
+            "month": 5,
+            "revenue_current": 294824.4156,
+            "revenue_prior": 237512.8089,
+            "revenue_change": 57311.606700000004
+          },
+          {
+            "month": 6,
+            "revenue_current": 216377.9352,
+            "revenue_prior": 196728.5448,
+            "revenue_change": 19649.390400000004
+          },
+          {
+            "month": 7,
+            "revenue_current": 234518.1174,
+            "revenue_prior": 219220.1631,
+            "revenue_change": 15297.954299999983
+          },
+          {
+            "month": 8,
+            "revenue_current": 168186.672,
+            "revenue_prior": 192203.8389,
+            "revenue_change": -24017.16690000001
+          }
+        ],
+        "completeness": "complete",
+        "direction": "reversal_down"
+      },
+      "daily_trend": {
+        "status": "disabled",
+        "reason": "summary_focus_daily_trend_enabled is false"
+      },
+      "caveats": [
+        "child dimension product_group_name failed hierarchy validation",
+        "this deep dive repeats a recently delivered story (same contributors or driver)"
+      ]
+    },
+    "caveats": [
+      "child dimension product_group_name failed hierarchy validation",
+      "this deep dive repeats a recently delivered story (same contributors or driver)"
+    ],
+    "queries_attempted": 5,
+    "query_budget": 5,
+    "signature_fields": {
+      "top_pos_contributor": "ENTERTAINMENTS",
+      "top_neg_contributor": null,
+      "leading_location": "ST4",
+      "driver_class": "volume"
+    },
+    "deep_dive_signature": "32f211c3f1754d18",
+    "signature_duplicate": true,
+    "signature_duplicate_of": "focus:v2:c593842634c4a78e64f9e10c6761ebbbeb288f661bf18e9c4a1d20f1bc98b2b0",
+    "signature_overlap": 1.0,
+    "facts": [
+      {
+        "fact_id": "D1",
+        "fact_kind": "deep_dive",
+        "subject": "TECHNOLOGY",
+        "metric": "Revenue change",
+        "display_value": "+236.1K",
+        "raw_value": 236050.69949999987,
+        "statement": "TECHNOLOGY revenue changed by +236.1K (+13.7%).",
+        "subject_role": "focus",
+        "detail_role": "focus_metric",
+        "coverage": "complete"
+      },
+      {
+        "fact_id": "D2",
+        "fact_kind": "deep_dive",
+        "subject": "TECHNOLOGY",
+        "metric": "Quantity change",
+        "display_value": "+26.8K",
+        "raw_value": 26783.0,
+        "statement": "TECHNOLOGY quantity changed by +26.8K.",
+        "subject_role": "focus",
+        "detail_role": "focus_metric",
+        "coverage": "complete"
+      },
+      {
+        "fact_id": "D3",
+        "fact_kind": "deep_dive",
+        "subject": "TECHNOLOGY",
+        "metric": "Transactions change",
+        "display_value": "+23.2K",
+        "raw_value": 23246.0,
+        "statement": "TECHNOLOGY transactions changed by +23.2K.",
+        "subject_role": "focus",
+        "detail_role": "focus_metric",
+        "coverage": "complete"
+      },
+      {
+        "fact_id": "D4",
+        "fact_kind": "deep_dive",
+        "subject": "ENTERTAINMENTS",
+        "metric": "Revenue change in item_category_name",
+        "display_value": "+234.1K",
+        "raw_value": 234074.84759999998,
+        "statement": "Within TECHNOLOGY, ENTERTAINMENTS added +234.1K.",
+        "subject_role": "peer",
+        "detail_role": "contributor",
+        "coverage": "complete"
+      },
+      {
+        "fact_id": "D5",
+        "fact_kind": "deep_dive",
+        "subject": "ST4",
+        "metric": "Store contribution",
+        "display_value": "+175.6K",
+        "raw_value": 175583.20050000004,
+        "statement": "ST4 led TECHNOLOGY across the stores included in the comparison at +175.6K.",
+        "subject_role": "peer",
+        "detail_role": "location",
+        "coverage": "complete"
+      },
+      {
+        "fact_id": "D6",
+        "fact_kind": "deep_dive",
+        "subject": "TECHNOLOGY",
+        "metric": "Volume effect on revenue",
+        "display_value": "+325.9K",
+        "raw_value": 325908.94091303134,
+        "statement": "Within TECHNOLOGY, change in units sold added revenue by +325.9K.",
+        "subject_role": "focus",
+        "detail_role": "driver",
+        "coverage": "complete"
+      },
+      {
+        "fact_id": "D7",
+        "fact_kind": "deep_dive",
+        "subject": "TECHNOLOGY",
+        "metric": "Rate and mix effect on revenue",
+        "display_value": "-89.9K",
+        "raw_value": -89858.24141303166,
+        "statement": "Within TECHNOLOGY, average revenue per item and mix reduced revenue by -89.9K.",
+        "subject_role": "focus",
+        "detail_role": "driver",
+        "coverage": "complete"
+      }
+    ],
+    "selection": {
+      "reason": "greedy",
+      "priority": 0.4203,
+      "importance": 0.1071,
+      "coverage_debt": 1.0,
+      "reversal": false,
+      "magnitude": false,
+      "sentiment": "opportunity"
+    },
+    "materiality_facts": {
+      "global_impact_pct": 0.5728452878712648,
+      "business_share_pct": 4.7662780586465665,
+      "sibling_movement_impact_pct": 6.527745077688104,
+      "area_change_pct": 13.660533486157558,
+      "reconciled": true,
+      "impact_share_pct": 6.530903246046717
+    }
+  }
+}

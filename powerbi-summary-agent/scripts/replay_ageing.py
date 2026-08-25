@@ -18,7 +18,9 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.domains.inventory import ageing_html, buckets  # noqa: E402
+from src.domains.inventory import (ageing_history, ageing_html,  # noqa: E402
+                                   ageing_outlook, buckets, dashboard,
+                                   dashboard_html)
 from src.domains.inventory.reports import ageing  # noqa: E402
 
 # Live figures, Stock Age Analysis, as at 2026-08-12.
@@ -421,6 +423,409 @@ def test_dashboard() -> None:
     check("content is escaped", "<img src=x" not in escaped and "&lt;img" in escaped)
 
 
+def test_published_summary_contract() -> None:
+    """The app-facing payload must BE the shared contract, not resemble it.
+
+    Two other reports already shipped a payload that merely resembled the
+    contract - the app discards an unparseable summary in silence, no error
+    and no log line, so the client's insights rendered normally while the
+    Home brief stayed empty. Same coverage as `replay_stock_health.py`'s
+    `test_published_summary_contract`, for the same reason.
+    """
+    print("\n[published summary contract]")
+    from src.domains.inventory import ageing_publish as pub
+    from src.tools.api_payloads import ReportSummaryPayload
+
+    report = ageing.build(_synthetic_scan())
+    payload = pub.summary_payload(report)
+
+    try:
+        ReportSummaryPayload(**payload)
+        check("the payload validates against the shared contract", True)
+    except Exception as exc:  # noqa: BLE001 - the message is the whole point
+        check("the payload validates against the shared contract", False, str(exc))
+
+    check("exactly the five contract fields, no more",
+          set(payload) == {"title", "generatedAt", "headline", "metrics", "sections"},
+          f"got {sorted(payload)}")
+    check("every metric is label/value/tone with a string value",
+          all(set(m) == {"label", "value", "tone"} and isinstance(m["value"], str)
+              for m in payload["metrics"]),
+          str(payload["metrics"][:2]))
+    check("sections are present and populated",
+          bool(payload["sections"]) and all(s["points"] for s in payload["sections"]))
+    check("the headline leads with the oldest band (BR-28)",
+          "24+ MONTHS" in payload["headline"], payload["headline"])
+
+    # A quiet position - no high-risk band - must still yield a real headline
+    # and a non-empty "what needs attention" section, never a blank one.
+    quiet = ageing.build({
+        "snapshot": [{"[as_at]": "2026-08-12", "[total_value]": 1000.0,
+                      "[aged_value]": 0.0, "[skus]": 5, "[locations]": 1}],
+        "bands": [{"REP_SSR_SAG[NEW AGE]": "0-03 MONTHS", "[value]": 1000.0,
+                   "[aged]": 0.0}],
+        "risk_split": [{"REP_SSR_SAG[non_moving_status]": "NO", "[value]": 1000.0,
+                        "[aged]": 0.0}],
+    })
+    quiet_payload = pub.summary_payload(quiet)
+    check("a quiet position still yields a headline",
+          bool(quiet_payload.get("headline", "").strip()))
+    check("and a stated, non-empty attention section rather than a blank one",
+          quiet_payload["sections"][0]["points"]
+          and "no age band" in quiet_payload["sections"][0]["points"][0].lower())
+
+    # Nothing the contract has no room for may be silently dropped: the as-at
+    # date and the single-snapshot limitation both have to survive as prose.
+    text = " ".join(pt for s in payload["sections"] for pt in s["points"])
+    check("the as-at date survives into the sections",
+          str(report.get("as_at") or "") in text)
+    check("the single-snapshot limitation survives into the sections",
+          "one stock position" in text)
+
+
+
+# --- Comparing against an earlier position ------------------------------------
+# The live SB Mart pair (14 August against 23 August 2026), which is the pair
+# that exposed the valuation-basis break. Committed here so the arithmetic under
+# test cannot drift away from the data it was built against.
+
+COMPARE_NOW = {
+    "as_at": "2026-08-23", "skus": 41674,
+    "bands": [
+        {"name": "0-03 MONTHS", "value": 3415190.2756, "qty": 9040561.86011},
+        {"name": "03-06 MONTHS", "value": 898651.9649, "qty": 2457723.57349},
+        {"name": "06-09 MONTHS", "value": 576336.5578, "qty": 1707645.92904},
+        {"name": "09-12 MONTHS", "value": 388542.9403, "qty": 1063064.34298},
+        {"name": "12-24 MONTHS", "value": 363063.8403, "qty": 1570626.26857},
+        {"name": "24+ MONTHS", "value": 90713.9685, "qty": 276657.70879},
+    ],
+    "locations": [
+        {"name": "WH1", "value": 3570579.272, "qty": 10280860.00004, "aged": 689062.6078},
+        {"name": "ST5", "value": 16867.6363, "qty": 79838.25944, "aged": 4183.4488},
+    ],
+    "divisions": [],
+}
+COMPARE_THEN = {
+    "as_at": "2026-08-14", "skus": 41939,
+    "bands": [
+        {"name": "0-03 MONTHS", "value": 8768413.8171, "qty": 6333425.25964},
+        {"name": "03-06 MONTHS", "value": 2148614.586, "qty": 1593180.55952},
+        {"name": "06-09 MONTHS", "value": 1278865.1061, "qty": 926118.16004},
+        {"name": "09-12 MONTHS", "value": 758314.0755, "qty": 505554.61648},
+        {"name": "12-24 MONTHS", "value": 828696.1149, "qty": 891046.26907},
+        {"name": "24+ MONTHS", "value": 213084.9153, "qty": 154005.41577},
+    ],
+    "locations": [
+        {"name": "WH1", "value": 7198620.2631, "qty": 5431855.00002, "aged": 1226564.127},
+        {"name": "ST5", "value": 62472.6945, "qty": 79838.25944, "aged": 14643.7092},
+    ],
+    "divisions": [],
+}
+
+
+def test_valuation_basis() -> None:
+    print("\n=== the valuation basis is measured, not assumed ===")
+
+    # THE test for this module. ST5 carries a byte-identical quantity on both
+    # dates while its value moves to 27% of what it was. Stock that did not move
+    # cannot lose 73% of its worth, so the change is in how VALUE is worked out.
+    basis = ageing_history.basis_check([
+        {"name": "ST5", "value_now": 16867.6363, "value_then": 62472.6945,
+         "qty_now": 79838.25944, "qty_then": 79838.25944},
+        {"name": "WH1", "value_now": 3570579.272, "value_then": 7198620.2631,
+         "qty_now": 10280860.00004, "qty_then": 5431855.00002},
+    ])
+    check("a rebased valuation is detected", basis["value_comparable"] is False)
+    check("the proof is the location whose quantity did not move",
+          (basis.get("proof") or {}).get("name") == "ST5")
+    check("the refusal is written in plain words a manager can check",
+          "did not move cannot change in worth" in basis["reason"],
+          basis["reason"])
+    check("the refusal quotes both value-per-unit readings",
+          "0.78" in basis["reason"] and "0.21" in basis["reason"], basis["reason"])
+
+    # And the opposite: a stable basis must NOT be refused, or the comparison
+    # would be permanently disabled on a healthy model.
+    steady = ageing_history.basis_check([
+        {"name": "A", "value_now": 1000.0, "value_then": 1100.0,
+         "qty_now": 100.0, "qty_then": 110.0},
+        {"name": "B", "value_now": 2000.0, "value_then": 1900.0,
+         "qty_now": 200.0, "qty_then": 190.0},
+    ])
+    check("a stable basis is left alone", steady["value_comparable"] is True)
+    check("and says so rather than staying silent",
+          "can be compared" in steady["reason"], steady["reason"])
+
+    # A location that traded normally is not proof of anything: the decisive
+    # signal is the UNCHANGED quantity, not a large value move on its own.
+    traded = ageing_history.basis_check([
+        {"name": "A", "value_now": 500.0, "value_then": 1000.0,
+         "qty_now": 50.0, "qty_then": 100.0},
+    ])
+    check("a location that simply sold half its stock is not called a rebasing",
+          traded["value_comparable"] is True, traded["reason"])
+    check("no pairs at all is reported as unchecked rather than as a pass",
+          ageing_history.basis_check([])["checked"] is False)
+
+
+def test_comparison() -> None:
+    print("\n=== what changed, on the live pair ===")
+
+    result = ageing_history.build(COMPARE_NOW, COMPARE_THEN)
+    check("the comparison is available", result["available"] is True)
+    check("the window is the nine days between the two positions",
+          result["days"] == 9, result["days"])
+    check("value totals are withheld once the basis check refuses them",
+          result["value_comparable"] is False)
+
+    readings = {r["key"]: r for r in result["headlines"]}
+    check("aged share of value: 12.9% to 14.7%",
+          round(readings["aged_value_share"]["then_pct"], 1) == 12.9
+          and round(readings["aged_value_share"]["now_pct"], 1) == 14.7,
+          f"{readings['aged_value_share']['then_pct']} -> "
+          f"{readings['aged_value_share']['now_pct']}")
+    check("aged share of units: 14.9% to 18.1%",
+          round(readings["aged_qty_share"]["then_pct"], 1) == 14.9
+          and round(readings["aged_qty_share"]["now_pct"], 1) == 18.1,
+          f"{readings['aged_qty_share']['then_pct']} -> "
+          f"{readings['aged_qty_share']['now_pct']}")
+    for key, reading in readings.items():
+        check(f"  {key}: the movement is now minus then",
+              abs(reading["points"] - (reading["now_pct"] - reading["then_pct"])) < 1e-9)
+
+    # The aged total is derived from the BANDS on both sides. The source model's
+    # own nine-month flag omits the 24+ band, so reading it would understate the
+    # oldest stock - and would do so on both dates, hiding the movement too.
+    aged_now = sum(b["value"] for b in COMPARE_NOW["bands"]
+                   if b["name"] in ("09-12 MONTHS", "12-24 MONTHS", "24+ MONTHS"))
+    check("aged is summed from the bands, so the oldest band is included",
+          abs(result["now"]["aged_value"] - aged_now) < 0.01,
+          f"{result['now']['aged_value']} vs {aged_now}")
+
+    check("both readings agree, and the page is told so",
+          (result["agreement"] or {}).get("agree") is True
+          and "same way" in result["agreement"]["text"])
+    check("the verdict is stated in words, not left to the reader",
+          result["verdict"] == "Ageing has got worse", result["verdict"])
+
+    bands = {b["name"]: b for b in result["bands"]}
+    check("the fresh band lost unit share", bands["0-03 MONTHS"]["qty_share_points"] < 0)
+    check("every band above six months gained unit share",
+          all(bands[n]["qty_share_points"] > 0
+              for n in ("06-09 MONTHS", "09-12 MONTHS", "12-24 MONTHS", "24+ MONTHS")))
+    check("the two oldest bands are marked high-risk",
+          bands["12-24 MONTHS"]["high_risk"] and bands["24+ MONTHS"]["high_risk"])
+
+    locations = {r["name"]: r for r in result["locations"]}
+    check("a location's own aged share is compared, not its size",
+          round(locations["WH1"]["aged_share_then_pct"], 1) == 17.0
+          and round(locations["WH1"]["aged_share_now_pct"], 1) == 19.3,
+          f"{locations['WH1']}")
+    check("product counts are compared, since counting is basis-free",
+          result["sku_change"] == -265, result["sku_change"])
+
+
+def test_comparison_refuses() -> None:
+    print("\n=== a comparison that cannot be made says why ===")
+
+    for label, history, expected in (
+        ("no earlier position at all", {"as_at": "", "bands": []}, "nothing to compare"),
+        ("an earlier position with no date",
+         {"as_at": "", "bands": COMPARE_THEN["bands"]}, "no date"),
+        ("an earlier position that is not earlier",
+         {"as_at": "2026-08-25", "bands": COMPARE_THEN["bands"]}, "not before"),
+    ):
+        result = ageing_history.build(COMPARE_NOW, history)
+        check(f"{label}: refused", result["available"] is False)
+        check(f"{label}: the reason is stated",
+              expected in str(result.get("reason") or ""), result.get("reason"))
+
+
+def test_position_from_scan() -> None:
+    print("\n=== both history lanes share one comparison engine ===")
+
+    scan = _synthetic_scan()
+    scan["bands"] = [{**b, "[qty]": 1000.0} for b in scan["bands"]]
+    position = ageing_history.position_from_scan(scan)
+    check("a kept scan becomes a position the same builder can read",
+          position["as_at"] == "2026-08-12" and len(position["bands"]) == 6)
+    check("its members carry quantity, or the basis check has nothing to work with",
+          all("qty" in row for row in position["locations"]))
+    check("a scan compared with itself reports no movement",
+          ageing_history.build(position, position)["available"] is False)
+
+
+def test_clearance() -> None:
+    print("\n=== the clearance outlook ===")
+
+    result = ageing_outlook.clearance([
+        {"name": "HOME & LIVING", "aged_qty": 1548073.05004, "aged_value": 365334.4867,
+         "total_value": 1164133.729, "daily_qty": 23936.97},
+        {"name": "CONSUMER GOODS", "aged_qty": 183603.2703, "aged_value": 61337.2256,
+         "total_value": 2312537.35, "daily_qty": 155800.41},
+        {"name": "NOTHING SELLS", "aged_qty": 5000.0, "aged_value": 900.0,
+         "total_value": 9000.0, "daily_qty": 0.0},
+    ], horizon_days=30, unmapped_velocity=72380.56)
+
+    rows = {r["name"]: r for r in result["rows"]}
+    check("the estimate is units sold over the window against units sitting aged",
+          abs(rows["HOME & LIVING"]["cleared_pct"] - 46.4) < 0.1,
+          rows["HOME & LIVING"]["cleared_pct"])
+    check("days to clear is aged units over daily sales",
+          abs(rows["HOME & LIVING"]["days_to_clear"] - 1548073.05004 / 23936.97) < 1e-6)
+    check("an estimate over 100% is capped, because nothing clears more than it holds",
+          rows["CONSUMER GOODS"]["cleared_pct"] == 100.0
+          and rows["CONSUMER GOODS"]["capped"] is True)
+    check("a division with no sales is reported as never clearing, not as zero days",
+          rows["NOTHING SELLS"]["days_to_clear"] is None
+          and rows["NOTHING SELLS"]["days_display"] == ageing_outlook.NEVER_CLEARS)
+    check("the slowest come first, because the slow ones are the work",
+          [r["name"] for r in result["rows"]][0] == "NOTHING SELLS")
+    check("a day is written as a day, not as '1 days'",
+          "1 days" not in rows["CONSUMER GOODS"]["days_display"],
+          rows["CONSUMER GOODS"]["days_display"])
+    check("the oldest-stock-first assumption is stated, never assumed silently",
+          any("oldest stock first" in c for c in result["caveats"]))
+    check("selling velocity that maps to no division is declared, not dropped",
+          any("not mapped to a division" in c for c in result["caveats"]),
+          result["caveats"])
+
+
+def test_categories_rank_by_money() -> None:
+    print("\n=== the category check counts fairly and ranks usefully ===")
+
+    rows = [
+        {"name": "KHALBATTA", "total": 4.0, "aged": 4.0},
+        {"name": "KITCHEN KNIFE", "total": 118084.0, "aged": 38909.0},
+        {"name": "OTHER", "total": 240923.0, "aged": 74111.0},
+        {"name": "HEALTHY", "total": 100000.0, "aged": 1000.0},
+        {"name": "EMPTY", "total": 0.0, "aged": 0.0},
+    ]
+    result = ageing_outlook.categories(rows, threshold_pct=30.0, top=8)
+
+    check("a category holding nothing cannot fail a threshold",
+          result["carried"] == 4, result["carried"])
+    check("the count treats every category over the line equally",
+          result["over"] == 3, result["over"])
+    # The failure this ordering exists to prevent: a category holding four
+    # dollars of entirely-old stock scores a perfect 100% and would lead a list
+    # sorted on share, which is a true number and a useless instruction.
+    check("the list leads with money stuck, not with the biggest percentage",
+          [c["name"] for c in result["worst"]][0] == "OTHER",
+          [c["name"] for c in result["worst"]])
+    check("the freak percentage is still recorded, so the ordering can be explained",
+          (result["highest_share"] or {})["name"] == "KHALBATTA")
+    check("every listed category really is over the line",
+          all(c["aged_share_pct"] > 30.0 for c in result["worst"]))
+    check("the note says the list is ordered by money",
+          "ordered by how much money is stuck" in result["note"], result["note"])
+
+
+def test_stuck_lines() -> None:
+    print("\n=== the stuck product lines ===")
+
+    rows = [
+        {"sku": "A", "risk_score": -100.0, "value": 26548.81, "qty": 14047.0,
+         "daily_qty": 56.67, "status": "EXCESS STOCK", "location": "WH1",
+         "category": "SMART WATCHES"},
+        {"sku": "B", "risk_score": -100.0, "value": 400.0, "qty": 10.0,
+         "daily_qty": 0.0, "status": "EXCESS STOCK", "location": "WH1",
+         "category": "SMALL"},
+        {"sku": "C", "risk_score": -20.0, "value": 90000.0, "qty": 10.0,
+         "daily_qty": 1.0, "status": "EXCESS STOCK", "location": "WH1",
+         "category": "HEALTHY"},
+        {"sku": "D", "risk_score": -80.0, "value": 5000.0, "qty": 40.0,
+         "daily_qty": 0.0, "status": "STOCK AVAILABLE BUT NO SALES",
+         "location": "ST1", "category": "DEAD"},
+    ]
+    result = ageing_outlook.stuck_lines(rows, risk_cutoff=-70.0, value_floor=500.0)
+
+    names = [r["sku"] for r in result["rows"]]
+    check("a healthy score is not listed however much money it holds", "C" not in names)
+    check("a line under the money floor is not listed", "B" not in names)
+    check("the rest are ordered by money at stake", names == ["A", "D"], names)
+    check("a line that still sells daily is flagged as such",
+          result["rows"][0]["still_selling"] is True)
+    check("a line with no sales is not", result["rows"][1]["still_selling"] is False)
+    check("the source's own status wording is kept, only tidied",
+          result["rows"][1]["status"] == "Stock Available but No Sales",
+          result["rows"][1]["status"])
+    check("the second value basis is named so the two are never added",
+          "different basis" in result["note"], result["note"])
+
+
+def test_optional_everywhere() -> None:
+    print("\n=== every new section is optional ===")
+
+    # A client whose model has no history table and no stock-status table must
+    # still get exactly the page it got before any of this existed.
+    scan = _synthetic_scan()
+    model = ageing.build(scan)
+    check("no history table means the comparison refuses, with a reason",
+          (model["comparison"] or {}).get("available") is False
+          and bool(model["comparison"].get("reason")))
+    check("and band movement falls back to the standing refusal",
+          model["migration"]["available"] is False
+          and "one stock position" in model["migration"]["reason"])
+    for section in ("clearance", "categories", "stuck_lines"):
+        check(f"{section}: absent inputs are reported, not silently skipped",
+              model[section]["available"] is False and bool(model[section].get("reason")),
+              model[section])
+
+    page = dashboard.build(model)
+    check("the page falls back to exactly the four original tabs",
+          page["layers"] == ["overview", "entities", "areas", "detail"],
+          page["layers"])
+    check("and renders without either new tab",
+          "What changed" not in dashboard_html.render(page)
+          and "Where to act" not in dashboard_html.render(page))
+
+
+def test_new_layers_render() -> None:
+    print("\n=== the two new tabs render as a document ===")
+
+    scan = _synthetic_scan()
+    scan["bands"] = [{**b, "[qty]": 1000.0} for b in scan["bands"]]
+    model = ageing.build(scan)
+    model["comparison"] = ageing_history.build(COMPARE_NOW, COMPARE_THEN)
+    model["migration"] = {"available": True, "counted_in": "units",
+                          "bands": model["comparison"]["bands"], "reason": ""}
+    model["clearance"] = ageing_outlook.clearance([
+        {"name": "HOME & LIVING", "aged_qty": 1548073.05, "aged_value": 365334.49,
+         "total_value": 1164133.73, "daily_qty": 23936.97}], horizon_days=30)
+    model["categories"] = ageing_outlook.categories(
+        [{"name": "KITCHEN KNIFE", "total": 118084.0, "aged": 38909.0}],
+        threshold_pct=30.0)
+    model["stuck_lines"] = ageing_outlook.stuck_lines(
+        [{"sku": "A", "risk_score": -100.0, "value": 26548.81, "qty": 14047.0,
+          "daily_qty": 56.67, "status": "EXCESS STOCK", "location": "WH1",
+          "category": "SMART WATCHES"}])
+    model["stuck_lines"]["estate_lines"] = 40769
+
+    page = dashboard.build(model)
+    check("both tabs are offered",
+          page["layers"] == ["overview", "change", "entities", "areas",
+                             "outlook", "detail"], page["layers"])
+    check("the scoped view defers rather than repeating unscoped rows",
+          (page["views"][1]["layers"]["change"] or {}).get("pointer"))
+
+    html = dashboard_html.render(page, eyebrow="Inventory")
+    check("exactly one script tag - nesting them kills every one of them",
+          html.count("<script") == 1, html.count("<script"))
+    check("the rail lists both new tabs",
+          'data-layer="change"' in html and 'data-layer="outlook"' in html)
+    check("the refusal to compare totals is on the page, not only in the model",
+          "not compared" in html.lower())
+    check("the comparison window is named",
+          "14 August" in html and "23 August" in html)
+    check("the page stays self-contained", "http://" not in html
+          and "https://" not in html and "<img" not in html)
+    check("tables carry the shared styling rather than rendering bare",
+          "<table>" not in html, "an unstyled <table> reached the document")
+    check("content is escaped",
+          "<script>alert" not in dashboard_html.render(
+              dashboard.build({**model, "report_name": "<script>alert(1)</script>"})))
+
 def main() -> int:
     print("=" * 72)
     print("WP5 Stock Age Analysis")
@@ -434,6 +839,16 @@ def main() -> int:
     test_report_model()
     test_rendering()
     test_dashboard()
+    test_published_summary_contract()
+    test_valuation_basis()
+    test_comparison()
+    test_comparison_refuses()
+    test_position_from_scan()
+    test_clearance()
+    test_categories_rank_by_money()
+    test_stuck_lines()
+    test_optional_everywhere()
+    test_new_layers_render()
 
     print("\n" + "=" * 72)
     if _failures:

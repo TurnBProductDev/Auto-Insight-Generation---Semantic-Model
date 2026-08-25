@@ -36,102 +36,116 @@ def _guid(value) -> str | None:
         return None
 
 
-#: Band -> the contract's Tone literal. `Tone` allows only these five values.
-_TONE = {"good": "positive", "warn": "warning", "crit": "critical", "none": "info"}
-
-
-def summary_payload(model: dict, *, currency: str = "SAR", title: str = "Target Tracker") -> dict:
-    """The app-facing summary object, in the shared report-summary contract.
-
-    **This must be `api_payloads.ReportSummaryPayload` and nothing else.** That
-    model is `extra="forbid"` with exactly five fields - `title`, `generatedAt`,
-    `headline`, `metrics`, `sections` - and the app reads those names.
-
-    An earlier version of this function invented its own shape: the headline
-    sentence was filed under `heading`, the detail under `points`, `metrics` was
-    absent, and ten fields the contract does not allow were added
-    (`reportId`, `dataAsOf`, `soldThrough`, `currency`, `grain`, `summaryType`,
-    `branchesBelowTarget`, `schemaVersion`). The app looked for `headline`, did
-    not find it, and discarded the whole file **silently** - no error, no log
-    line - so the report simply never appeared for eight days and looked from
-    the outside like a missing blob.
-
-    The figures that the contract has no field for are not dropped; they are
-    stated in the prose, and `grain`/`dataAsOf` ride on the history index entry
-    where the contract does carry them.
-
-    The result is validated before it is returned, so this can never drift
-    again in silence.
+def summary_payload(
+    model: dict,
+    *,
+    currency: str = "SAR",
+    title: str = "Target Tracker",
+    generated_at: datetime | None = None,
+) -> dict:
+    """Project Target Tracker into the app's strict report-summary contract.
+    The standalone report model is intentionally richer and has its own shape.
+    The app does not deserialize that model directly: it expects exactly
+    ``title``, ``generatedAt``, ``headline``, ``metrics`` and ``sections``.
+    Keep this boundary explicit so adding fields to the report cannot silently
+    make the app summary disappear.
     """
-    from ...tools.api_payloads import ReportSummaryPayload
     from .target_tracker_html import _R, headline, money, pc
+    from ...tools.api_payloads import ReportSummaryPayload
 
+    currency = str(currency or "SAR").strip().upper()
     r = _R(currency)
-    periods = model["periods"]
+    p = model["periods"]
 
-    # KPI tiles: one per period, worst-performing tone carried from its band.
-    metrics = [
-        {
-            "label": periods[key]["name"],
-            "value": f"{pc(periods[key]['attainment'])} of target",
-            "tone": _TONE.get(periods[key]["band"], "info"),
-        }
-        for key in ("day", "wtd", "mtd", "ytd")
-    ]
+    def tone(reading: dict) -> str:
+        return {
+            "good": "positive",
+            "warn": "warning",
+            "crit": "critical",
+            "none": "info",
+        }.get(str(reading.get("band") or "none"), "info")
 
-    performance_points = [
-        (f"{periods[key]['name']} ({periods[key]['elapsed']}): {currency} "
-         f"{money(periods[key]['actual'])} against a target of {currency} "
-         f"{money(periods[key]['target'])} - {pc(periods[key]['attainment'])} of target, "
-         f"{currency} {money(abs(periods[key]['variance']))} "
-         f"{'above' if periods[key]['variance'] >= 0 else 'below'} target.")
-        for key in ("day", "wtd", "mtd", "ytd")
-    ]
+    metrics = []
+    performance = []
+    for key in ("day", "wtd", "mtd", "ytd"):
+        q = p[key]
+        metrics.append({
+            "label": q["name"],
+            "value": (f"{pc(q['attainment'])} of target"
+                      if q.get("attainment") is not None else "No target set"),
+            "tone": tone(q),
+        })
+        performance.append(
+            f"{q['name']} ({q['elapsed']}): {currency} {money(q['actual'])} against a "
+            f"target of {currency} {money(q['target'])} — {pc(q['attainment'])} of target, "
+            f"{currency} {money(abs(q['variance']))} "
+            f"{'above' if q['variance'] >= 0 else 'below'} target."
+        )
 
-    behind = [b["name"] for b in model["branches"] if b["mtd"]["band"] == "crit"]
+    behind = sorted(
+        (b for b in model.get("branches") or [] if b.get("mtd", {}).get("variance", 0) < 0),
+        key=lambda b: b["mtd"]["variance"],
+    )
     if behind:
         branch_points = [
-            (f"{b['name']} is at {pc(b['mtd']['attainment'])} of target for this month so far, "
-             f"{currency} {money(abs(b['mtd']['variance']))} below target.")
-            for b in model["branches"] if b["mtd"]["band"] == "crit"
+            f"{branch['name']}: {pc(branch['mtd']['attainment'])} of target this month, "
+            f"{currency} {money(abs(branch['mtd']['variance']))} below target."
+            for branch in behind
         ]
-        branch_tone = "critical"
+        branch_tone = (
+            "critical" if any(branch["mtd"].get("band") == "crit" for branch in behind)
+            else "warning"
+        )
     else:
-        branch_points = ["Every branch reached its target for this month so far."]
+        branch_points = ["Every branch is at or above target for the month."]
         branch_tone = "positive"
 
-    # Where the contract has no field, the fact becomes a sentence rather than
-    # being lost: the as-at date, the gap to the latest sales, and the branches
-    # the comparison covers.
-    coverage_points = [
-        f"Figures are measured to {model['anchor']}, the most recent day that carries a target."
-    ]
-    if model.get("target_lag_days"):
-        coverage_points.append(
-            f"Sales have been recorded for a further {model['target_lag_days']} days, to "
-            f"{model['sold_through']}, but no target has been set for them, so they are not "
-            f"included in any comparison above."
+    lag = int(model.get("target_lag_days") or 0)
+    if lag:
+        context = (
+            f"Targets are available through {model['anchor']}; sales are available through "
+            f"{model['sold_through']}. The further {lag} sales "
+            f"{'day is' if lag == 1 else 'days are'} excluded because no target is set."
         )
-    if model.get("population"):
-        coverage_points.append(
-            f"Covers {len(model['population'])} branches: {', '.join(model['population'])}."
-        )
-    coverage_points.append(f"All figures are in {currency}.")
+    else:
+        context = f"Actual sales and targets are both measured through {model['anchor']}."
 
+    prose = model.get("prose") or {}
+    when = generated_at or datetime.now(timezone.utc)
+    generated_date = (
+        when.astimezone(timezone.utc).date().isoformat()
+        if when.tzinfo is not None else when.date().isoformat()
+    )
     payload = {
         "title": title,
-        "generatedAt": _iso(datetime.now(timezone.utc)),
-        "headline": headline(r, model),
+        "generatedAt": generated_date,
+        "headline": str(prose.get("headline") or headline(r, model)).strip(),
         "metrics": metrics,
         "sections": [
-            {"heading": "Performance against target",
-             "tone": _TONE.get(periods["mtd"]["band"], "info"),
-             "points": performance_points},
-            {"heading": "Branches", "tone": branch_tone, "points": branch_points},
-            {"heading": "What these figures cover", "tone": "info", "points": coverage_points},
+            {
+                "heading": "Performance against target",
+                "tone": tone(p["mtd"]),
+                "points": performance,
+            },
+            {
+                "heading": "Branch performance",
+                "tone": branch_tone,
+                "points": branch_points,
+            },
+            {
+                "heading": "Important context",
+                "tone": "info",
+                "points": [
+                    context,
+                    "This model has no prior-year comparison; every figure is actual sales "
+                    "against target.",
+                    (f"Covers {len(model['population'])} branches: "
+                     f"{', '.join(model['population'])}."
+                     if model.get("population") else "No branch population was supplied."),
+                ],
+            },
         ],
     }
-    # Fail loudly here rather than have the app discard the file in silence.
     return ReportSummaryPayload(**payload).model_dump()
 
 
@@ -205,7 +219,7 @@ def publish(cfg: dict, out_dir: Path, model: dict, *, cards: list | None = None,
 
     now = generated_at or datetime.now(timezone.utc)
     expires = now + timedelta(hours=max(1.0, float(cfg.get("ai_content_ttl_hours", 24))))
-    payload = summary_payload(model, currency=currency, title=title)
+    payload = summary_payload(model, currency=currency, title=title, generated_at=now)
     receipts: dict[str, dict] = {}
 
     from ...tools.azure_blob import _service_client

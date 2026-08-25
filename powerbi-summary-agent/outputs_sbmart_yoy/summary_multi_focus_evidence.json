@@ -1,0 +1,19 @@
+{
+  "focuses": [
+    {
+      "focus_key": "focus:v2:b801fc430e44f7038556ecfee1207245590dbe7ed77497ecb290a81fc10ad984",
+      "segment": "CULINARY SUPPLIES",
+      "role": "section",
+      "queries_attempted": 5
+    },
+    {
+      "focus_key": "focus:v2:661a933e0108f9d416e886a523e24d524b36a994c99ba25931a52cdb8c3ab810",
+      "segment": "TECHNOLOGY",
+      "role": "division",
+      "queries_attempted": 5
+    }
+  ],
+  "total_queries_used": 15,
+  "total_budget": 15,
+  "replacements": 0
+}

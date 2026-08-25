@@ -1,0 +1,81 @@
+[
+  {
+    "id": 107013950,
+    "reportId": "sku_overview",
+    "severity": "critical",
+    "category": "Performance",
+    "metric": "Segment A stockouts",
+    "value": "+25.9K",
+    "delta": "",
+    "deltaDirection": "up",
+    "description": "2,439 Segment A Loc-SKUs are out of stock in the shops, an estimated 25,872 of Opportunity Loss (from rows where the model estimates one). The increase is associated with items being unavailable in shops, indicating missed sales where demand likely remained present.",
+    "displayTime": "7:54 PM",
+    "isoDate": "2026-08-24",
+    "comparisonLabel": "share of all Loc-SKU rows in the five shops",
+    "insight": {
+      "title": "Segment A stockout impact",
+      "summary": "The change is concentrated in Segment A shop stockouts. This suggests availability gaps in stores may be limiting performance in that segment.",
+      "stats": [
+        {
+          "label": "Performance change",
+          "value": "+25.9K"
+        },
+        {
+          "label": "Share of performance increase",
+          "value": "2.0%"
+        }
+      ],
+      "action": "Review Segment A in-store availability for the affected location-item combinations."
+    }
+  },
+  {
+    "id": 1286294317,
+    "reportId": "sku_overview",
+    "severity": "warning",
+    "category": "Performance",
+    "metric": "Verge of stockout, fixable today",
+    "value": "+890.7K",
+    "delta": "",
+    "deltaDirection": "up",
+    "description": "10 Loc-SKUs are on the verge of stockout with stock already sitting in a warehouse - a same-day transfer, not a purchase order, would fix them. The increase is tied to items that are close to running out in stores even though stock is already available in a warehouse.",
+    "displayTime": "7:54 PM",
+    "isoDate": "2026-08-24",
+    "comparisonLabel": "3-month sales value of the affected Loc-SKUs",
+    "insight": {
+      "title": "Today-fixable stockout risk",
+      "summary": "The movement is concentrated in items that could be addressed through same-day warehouse-to-store transfer. This may indicate short-term replenishment execution gaps rather than a need for new purchasing.",
+      "stats": [
+        {
+          "label": "Performance change",
+          "value": "+890.7K"
+        }
+      ],
+      "action": "Check same-day transfer opportunities between warehouse stock and the affected stores."
+    }
+  },
+  {
+    "id": 601308625,
+    "reportId": "sku_overview",
+    "severity": "warning",
+    "category": "Performance",
+    "metric": "Non-moving with stock on order",
+    "value": "+1.7K",
+    "delta": "",
+    "deltaDirection": "up",
+    "description": "25 Loc-SKUs are not moving and still have 1,679 of stock on order - worth cancelling or deferring. The increase is linked to items with little current movement while additional stock is already on order.",
+    "displayTime": "7:54 PM",
+    "isoDate": "2026-08-24",
+    "comparisonLabel": "total Pending Orders Value on these Loc-SKUs",
+    "insight": {
+      "title": "Non-moving on-order stock",
+      "summary": "The change is concentrated in slow-moving items that also have inbound stock committed. This could suggest excess replenishment against current demand.",
+      "stats": [
+        {
+          "label": "Performance change",
+          "value": "+1.7K"
+        }
+      ],
+      "action": "Investigate open purchase orders for the non-moving items with inbound stock."
+    }
+  }
+]

@@ -32,6 +32,10 @@ python scripts/golden_master.py --update  # re-record (deliberate act)
 pip install -r powerbi-summary-agent/requirements-ui.txt
 python -m src.api.app                    # http://127.0.0.1:8020
 python -m src.api.app --allow-deploy     # also expose the ARM endpoints
+
+# Daily KPI red/amber/green snapshot (independent of the LangGraph pipeline, from repo root)
+python -m fastapi_backend.app.kpi_snapshot
+python "Benchmark Test/run_kpi_benchmark.py"
 ```
 
 There is no suite for the LLM pipeline as a whole; the end-to-end run against a live model is the acceptance test and writes roughly 30 artifacts into `powerbi-summary-agent/outputs/`. Deterministic components are offline-testable: `python scripts/replay_metadata_scanner.py`, `python scripts/replay_stat_detector.py` (incl. the Phase-2 period, Phase-3 recent-week/rolling-week, and Phase-3b daily-anomaly fixtures), `python scripts/replay_novelty_filter.py` (memory/novelty + recent-week/rolling-week suppression/reserved-slot + daily recency + `commit_run` observed-vs-reported), `python scripts/replay_evidence_assembler.py`, `python scripts/replay_summary_coverage.py` (full-coverage tables + report shell; also replays the committed universe fixture), `python scripts/replay_multi_report_feed.py` (multi-report KPI feed) and `python scripts/replay_target_tracker_signals.py` (target-vs-actual spine + detectors), `python scripts/replay_config_schema.py` (the config catalogue cannot drift from the code), `python scripts/replay_config_ui.py` (onboarding services + API), and `python scripts/replay_summary_dashboard.py` (R6: three-lever spine, RAG bands, calendar comparator, contributions, mover ranking, entity stories + prose validation, two views, R6-off isolation, rendered shell; also replays the committed universe/overall fixtures) (from the project directory). They require no auth or LLM and write replay artifacts to `outputs_replay/`. **`python scripts/replay_all.py` is the one gate over all of them** - it discovers `scripts/replay_*.py` by glob (so a new replay joins automatically), runs them sequentially because they share `outputs_replay/`, and exits non-zero on any failure; `MIN_EXPECTED` guards the opposite failure mode, a replay deleted or renamed silently shrinking the gate. A replay proves the *code* is right; `python scripts/audit_summary_dashboard.py [output_dir]` proves a *produced* R6 artifact is right - it re-derives every arithmetic guarantee from the written `summary_dashboard.json`, re-runs prose grounding, and inspects `report_dashboard.html` as a document. Run it after every live run with `summary_r6_enabled`.
@@ -650,9 +654,10 @@ the page is exactly the deterministic Phase 3 page.
 - **`config/targettracker/summary_business_rules.md` is the single rulebook**, loaded by the
   runner and passed into the prompt, and `prompts/target_tracker_prompt.md` restates the
   parts the model must act on. Both are enforced in code rather than trusted to the prompt.
-- **Verification:** `scripts/replay_target_tracker.py` grew to **83 offline checks** - every
+- **Verification:** `scripts/replay_target_tracker.py` has **88 offline checks** - every
   rejection above is a named test, plus that a clean draft passes, that the deterministic
-  fallback passes, and that a failed LLM call still returns usable prose.
+  fallback passes, that a failed LLM call still returns usable prose, and that the app
+  projection validates against the exact `title/generatedAt/headline/metrics/sections` contract.
 
 #### Phase 5 - the multi-report insight feed
 
@@ -661,11 +666,11 @@ the feed multi-report, with each card carrying the report it came from.
 `docs/phase5-insights-brief.md` is the brief; `docs/phase5-app-contract-change.md` is the
 handoff the **consumer app** needs before any of it can be switched on.
 
-- **Everything is behind `ai_content_multi_report_feed` (code default false).** The app
-that renders the feed today **cannot accept a new field**, so the flag ships OFF and the
-published card is byte-identical to what production renders - `reportId` is *removed* from
-the dumped payload rather than published as an explicit null. Flip it per client only after
-the app has shipped; rollback is flipping it back.
+- **Everything is behind `ai_content_multi_report_feed` (code default false).** The flag is
+enabled only in client configs whose app has shipped the `reportId` migration; an older
+consumer can still run with it off. Off, the published card is byte-identical to the legacy
+shape - `reportId` is *removed* from the dumped payload rather than published as an explicit
+null. Rollback is flipping the flag back.
 - **`id` was the real breakage, and it is not obvious.** `_assemble_kpi_card` numbers cards
 `enumerate(signals, start=1)`. Verified against all seven committed `kpi_insights.json`
 payloads: every one is `[1, 2, 3, ...]` with an identical 12-key shape. Two reports in one
@@ -673,7 +678,9 @@ feed therefore emit duplicate ids, and anything keying on id (a render key, a de
 "seen" marker) mis-renders silently. In multi-report mode `id` becomes
 `stable_card_id(report_id, story_key, fallback)` - a sha256 of report + finding identity,
 bounded under 2^31 so it still fits a signed 32-bit column, and **stable across runs** so a
-republished finding keeps its id.
+republished finding keeps its id. The rolling publisher coalesces repeated `{reportId, id}`
+pairs across dates, newest first, so a missed memory commit cannot hand the app duplicate
+render keys.
 - **`merge_alerts` was report-blind, and `insights.json` was worse.** The merge dropped
 every same-day card before appending its own, so the second report to publish erased the
 first; it now matches on `reportId` and a run replaces only its own cards. An untagged
@@ -683,7 +690,9 @@ leaves legacy cards to age out naturally. **`insights.json` was a plain
 would have erased the feed outright. It now gets the same read-merge-write with etag
 concurrency over a one-day window. `publish_kpi_feed` is the **single** implementation both
 the LangGraph publisher and the standalone runners call; a second copy would drift on
-exactly the report-awareness that stops one report erasing another.
+exactly the report-awareness that stops one report erasing another. The merge is also
+idempotent by stable identity: only the newest `{reportId, id}` survives the retention
+window, while the same numeric id under another report remains distinct.
 - **`_cap_feed` divides a total budget of 10 (`ai_content_feed_max_cards`) via
 `chain.fair_share`.** The slot is reserved *before* truncation - appending a quiet report's
 card and then cutting by score discards it every time, because an injected candidate is by
@@ -725,12 +734,46 @@ cannot be validated. `docs/phase5-inventory-deferred.md` holds the restart check
 two blocking queries, the appear/persist/clear exit table, and the four config values that
 do not exist yet.
 - **Verification:** `scripts/replay_multi_report_feed.py` (legacy payload byte-identical,
-id collision, report-aware merge incl. the untagged-legacy migration rule, feed cap, and an
+id collision, report-aware merge incl. the untagged-legacy migration rule and cross-day
+stable-id coalescing, feed cap, and an
 end-to-end two-report publish against an in-memory container) and
 `scripts/replay_target_tracker_signals.py` (spine, live-scan detections, prose guards,
 synthetic mid-period states, exposure-weighted ranking). Both mutation-tested: reverting the
 merge fix, emitting `reportId` unconditionally, keeping the sequence id, classifying a
 missing target as a miss, and dropping the exposure weighting each produce precise failures.
+- **Extended KPI tile fields (`kpi-tile-schema-proposal.md`) ship behind
+`ai_content_kpi_card_fields`** (code default `false`, same rollout shape as `reportId`
+above). Nine additive fields on `_assemble_kpi_card`'s output - `label`, `rawValue`, `unit`,
+`valueType`, `goodDirection`, `comparison{type,label,baselineValue}`,
+`target{value,attainmentPct}`, `shareOfTotalPct`, `rank` - each present only when the
+underlying signal actually supports it. `unit`/`valueType`/`goodDirection` resolve from the
+domain's own declared `metric_family` (`revenue`/`stock_value`/`quantity`/`transactions`),
+falling back to the prose-keyword `family` bucket, and stay absent on the catch-all
+"Performance" bucket rather than guess - the exact failure class the "STOCK OUT ... performance
+increased by 17.8K" bug above already showed, now generalized into a rule: no unit or
+direction is asserted for a family the classifier can't resolve. `label` is a template
+(dimension + segment + metric name), not a lookup - this pipeline's segment codes (`ST2`,
+`CFH017`, ...) are their own identity, there is no separate display name anywhere to resolve.
+`comparison.type` adds two values beyond the proposal's own five
+(`peer_comparison`, `other`) for comparison kinds this pipeline produces that the proposal's
+enum didn't anticipate; `shareOfTotalPct` is emitted only on a genuine
+`share_of_total` card, never from an unrelated percentage a signal happens to also carry (a
+Target Tracker attainment gap, for instance). `period` (multi-grain), `series` (sparkline)
+and `thresholds` (RAG bands) are deliberately **not** shipped here - each needs new
+aggregation this pipeline doesn't do today or a business decision only the app side can make,
+not just a new field. `docs/kpi-tile-fields-app-contract.md` is the handoff doc, mirroring
+`docs/phase5-app-contract-change.md`'s shape, with the full field table, what's deferred and
+why, and the same two-sided rollout order.
+- **Verification:** `scripts/replay_kpi_card_fields.py` - offline, no auth/LLM: flag-off
+byte-identity, the `label` template incl. a whole-population dimension not self-prefixing and
+a missing segment dropping the field entirely, `rawValue` vs the formatted `value` string,
+`unit`/`valueType` resolving per report and per declared `metric_family` (incl. the
+catch-all "Performance" bucket getting neither), `goodDirection` per family with the
+declared-field override winning, every `comparison` branch's type/chip/baseline (target,
+calendar and rolling week-over-week, daily incident vs expected, peer outlier, year-on-year,
+share-of-total), the target-tracker-attainment-gap-vs-shareOfTotalPct non-collision, `target`
+attainment matching the proposal's own 88.9% worked example plus a declared `attainment_pct`
+winning outright, `rank`, and the config catalogue/state-default wiring.
 
 #### Inventory Management: the daily pipeline (P5.3)
 
@@ -833,9 +876,218 @@ deterministic model -> validated prose -> six-tab page -> ranked KPI cards -> bl
   Stock Value USD 13,966,417, Excess Stock USD 5,900,413 (42.2%), Opportunity Loss
   USD 49,076/day scoped against USD 313,038 unscoped, health score 43.54 with all six
   risks reconciling, and the feed carrying all three reports with unique hashed ids.
-- **Still open:** the Ageing report is not yet on this footing (deliberately - Inventory
-  Management went first alone), and `inventory_llm_authoring_enabled` stays false until a
-  live authored run is reviewed.
+- **Still open:** `inventory_llm_authoring_enabled` stays false until a live authored run
+  is reviewed. (The Ageing report is now on this footing too - see the next section.)
+
+#### Stock Age Analysis: history, clearance and the stuck lines
+
+The SB Mart ageing model now retains a previous stock position
+(`REP_SSR_SAG_HIST`) and exposes `REP_SSR_STOCK_STATUS`, so the Stock Age report
+gained two tabs on the same R6 shell - **What changed** and **Where to act** -
+taking it to six: Summary, What changed, Locations, Divisions, Where to act,
+Full detail. Everything is config-gated: a model with neither table produces
+byte-for-byte the previous four-tab page (pinned by
+`replay_ageing.test_optional_everywhere`).
+
+- **`AGE_ABOVE_9` is defective and must not be used.** Measured live on
+  2026-08-23 it returns `Y` for the 09-12 and 12-24 bands and **`N` for
+  24+ MONTHS**, so it silently drops the oldest and worst stock: aged reads
+  USD 751,607 (13.1%) through the flag against **USD 842,321 (14.7%)** summed
+  from the `NEW AGE` bands. `AGE_ABOVE_12` *does* include 24+, so the flag set is
+  inconsistent rather than uniformly exclusive. Aged is summed from the bands
+  everywhere, on both dates - which is also what makes the two positions
+  comparable. Knock-on: the 30%-category count is **46 of 173**, not 29, and
+  aged SKUs are 19,468, not 16,799.
+- **`ageing_history.basis_check` is the load-bearing piece, and it decides from
+  the data rather than from a config flag.** The first live pair (14 August
+  against 23 August) showed total value **-59%** while quantity went **+55%**. A
+  report saying "stock nearly halved" would have been confidently wrong. The
+  discriminator is arithmetic: **ST5 held a byte-identical quantity on both dates
+  (79,838.25944) while its value moved from 0.78 to 0.21 per unit.** Stock that
+  did not move cannot lose 73% of its worth, so VALUE was rebased. When that
+  signature fires, every absolute value comparison is withheld and the reason is
+  printed in plain words; when it does not, value compares normally - so a
+  corrected model re-enables the comparison with no code change. The weaker
+  fallback signal is the share of today's value sitting where value-per-unit
+  moved past `UNIT_VALUE_SHIFT_PCT`.
+- **Shares survive a rebasing, which is why the report leads on them.** A share
+  divides two figures taken from the same table on the same day, so whatever
+  rescaled them cancels. Aged share of value went 12.86% -> 14.69% (+1.83 pts)
+  and aged share of units 14.90% -> 18.06% (+3.15 pts): two independent readings
+  agreeing that ageing worsened, which `_agreement` says out loud because
+  agreement is what makes the finding hard to argue with.
+- **Two history lanes, one engine, never merged.** The model's own history table
+  is a *reference position* whose window moves only when the source re-freezes
+  it; the pipeline's `archive.py` scans are the day-on-day lane. Both go through
+  `ageing_history.build` (via `position_from_scan` for the archive lane), so a
+  bug in the band arithmetic cannot be fixed in one and left in the other. They
+  render as separate blocks, each stating its own two dates and day count -
+  merging them would produce one comparison whose window silently changes length.
+- **`buckets.migration()` no longer has to refuse**, but the movement it now
+  reports is counted in **units**, because a rightward shift measured in rebased
+  money would be an artefact. The auditor pins `counted_in == "units"`.
+- **Members are matched on each table's OWN column, never through the shared
+  lookup.** 1.5% of history value (USD 210,785) does not match `LINK TABLE` at
+  all, and losing it from one side of a comparison only is the worst kind of
+  error - both sides still add up to something.
+- **Clearance is units and days, and it states its assumption.** It assumes each
+  sale takes the oldest stock first, which the source does not guarantee. An
+  estimate over 100% is capped (nothing clears more than it holds); a division
+  with no sales is "no sales recorded", never zero days; and the 25% of selling
+  velocity that maps to no division is **declared on the page**, not dropped.
+  Ranked slowest-first, because the slow ones are the work.
+- **The category list is ranked by money stuck, not by share** - the
+  `CF-FRESH BAKES +2166.79%` failure in a new costume. `KHALBATTA` is 100% aged
+  on **USD 4**; sorting on percentage would headline it. The count still treats
+  every category equally (that is the check), and the page names the freak
+  percentage so the ordering explains itself.
+- **Two value bases, labelled rather than blended.** `REP_SSR_STOCK_STATUS`
+  carries USD 13.03M against the ageing table's USD 5.73M - close to a 2.3x gap
+  on the same shelves. Clearance is therefore expressed in units and days, and
+  the stuck-lines table labels its money column as coming from that table.
+- **The footer no longer asserts a costing convention on this page.** "at
+  landing cost, excluding VAT" is documented for Inventory Management's
+  `SKU_STOCK_VALUE`; the ageing table reads a different column whose basis was
+  measured *moving*, so `value_basis_note` on the page model replaces the claim
+  with what can be seen. Inventory Management keeps the original sentence.
+- **Three pre-existing rendering faults surfaced and were fixed**, all invisible
+  until the page was screenshotted: every inventory `<table>` carried no class
+  so none picked up the shared `.tbl` styling, and `.scroll` was referenced
+  everywhere and defined nowhere; `.sb-val small` was missing from the
+  display-block rule so the two-population chart read `USD 2.21MUSD 657K aged`;
+  and `cumulative_curve` centred its end labels on the plot edges, clipping them
+  to `MONTHS` and `24+ MON`. A KPI card with no comparison also emitted an empty
+  coloured pill, hidden with `.badge:empty` in the inventory stylesheet rather
+  than in the shared card renderer - that one also draws the sales dashboard,
+  whose output is byte-compared.
+- **A layer key present in a view but absent from the page's tab list renders a
+  section with no way to reach it.** Caught by the replay, not by eye. The keys
+  and the tabs are now decided in one place (`_ageing_layers`).
+- **Verification.** `scripts/replay_ageing.py` gained ~60 offline checks (basis
+  detection and its opposite, the live pair's shares, the three refusal paths,
+  one engine for both lanes, clearance arithmetic and its caveats, category
+  ranking, the stuck-line filters, the four-tab fallback, and the rendered
+  document). `scripts/audit_ageing.py` re-derives all of it from a **produced**
+  artifact and is mutation-tested - six corruptions, six catches, including a
+  clearance list reordered fastest-first and a category list re-sorted by
+  percentage. Accepted live on 2026-08-24 against the position as at 2026-08-23:
+  17 queries, all four reconciliation checks passing, audit clean.
+- **Still open:** `inventory_llm_authoring_enabled` stays false until a live
+  authored run is reviewed. The Stock Age page remains deterministic prose.
+
+#### Daily Sales: the day against its own normal band (SB Mart)
+
+SB Mart's third daily report and its **second sales report**, over a third
+semantic model (`8d111712-9ea8-4a65-9bb9-58f00e49d379`) unrelated to Sales YoY
+or Target Tracker. The model hands the report a pre-joined, pre-benchmarked
+snapshot rather than raw transactions: `storebenchmark` / `departmentbenchmark`
+/ `sectionbenchmark` / `categorybenchmark` each carry one row per (store x
+grain) per day, already paired with that day's own historical P20/P50/P80 band
+for its weekday-and-week-of-month cohort ("past Wednesdays in week 2 of the
+month"). So there is no year-on-year spine and no prior period - like Target
+Tracker and the inventory reports it sits **outside the LangGraph**, as
+`daily_sales.py` (scan + pure model), `daily_sales_dashboard.py` (page model),
+`daily_sales_html.py` (page), `daily_sales_investigator.py`,
+`daily_sales_publish.py`, run by `scripts/run_daily_sales.py`
+(`AGENT_RUNNER=daily_sales`). The approved design is
+`docs/dashboard-reference/reference_daily_sales.html`.
+
+- **Net Sales arrives on TWO scales in one model, and the report measures the
+  ratio rather than withholding the figures.** `storebenchmark[actual_sales]`
+  and `_Sparkline14[actual_sales]`/`[profit_actual]` are on the reporting
+  scale; every `sales_p20/p50/p80`, every `basket_p*`/`profit_p*`, every
+  `actual_cost`, and every `actual_sales` **below** store level are on a source
+  scale exactly `1/0.27` = 3.7037037037... times larger. `measure_scale`
+  re-derives the factor every run by two independent routes -
+  `actual_cost / (actual_sales x (1 - actual_margin/100))` from a single store
+  row, and `SUM(department actual_sales) / store actual_sales` from a different
+  table - and **refuses to rescale unless they agree**, in which case the
+  report degrades to the figures that need no rescale and says so. On the live
+  model the two agree to twelve decimal places on all 28 store-days. The proof
+  the rescale is right is that department, section AND category Net Sales then
+  each sum to the whole business exactly (69,360.3054 on 2026-08-12), each
+  returning the same 23.1816% Margin, and rescaled store costs sum to the
+  whole-business cost to the cent.
+- **An earlier reading called this a "~3.7x join fan-out" and withheld every
+  affected figure**, which cost the report its Net Sales bands at every level,
+  all below-store Net Sales, Basket Value below store level, and the whole
+  reference design that rests on them. It is not a fan-out: a fan-out cannot be
+  constant to twelve decimal places across two tables and 28 days, and it would
+  not leave Margin correct. The constant is exactly 1/0.27 - what a currency
+  conversion applied to the actuals but not the benchmarks looks like. The page
+  states what was measured and what was done about it; it does not assert the
+  cause. A model fixed upstream measures 1.0 and the rescale becomes a no-op
+  with no code change.
+- **Category is `CATEGORY_NAME_2`; `CATEGORY_NAME` is the buying group under
+  it.** The reportable grain is `(SECTION, CATEGORY_NAME_2)` - 117 categories
+  with a sale on 2026-08-12, built from 1,596 group rows. Reading the group
+  column as the category gives 218 rows of near-duplicates and loses the
+  "groups that recorded nothing today" finding entirely (557 silent groups
+  worth 6,153.41 on a matching past day).
+- **A row that recorded no sale is EXCLUDED from its parent rollup, band
+  included.** A benchmark carrying groups that could not contribute makes every
+  name read below its band. Verified against the reference on the two grains
+  where it changes a number - DELI's section band and every category band.
+- **A figure sitting exactly on its band edge is IN BAND**
+  (`daily_sales.EDGE_TOLERANCE`, 1e-9 relative). The rescale leaves a store
+  that finished level with its floor a few parts in 1e-12 under it, and without
+  the tolerance ST1 published as "Underperforming" while the page text beside
+  it read "level with its P20 floor". A gap too small to survive rounding is
+  worded ("just below its P20 floor") rather than printed as `-SAR 0.00`.
+- **Rank by money, never by percentage** - the `CF-FRESH BAKES +2166.79%`
+  failure in a new costume. Every ranked list orders by the size of the gap in
+  currency, and the page says so. Ditto the KPI-feed signals, which are now
+  built on **Net Sales, not Bills**: a Bills gap is not additive (one basket
+  touching three departments is one Bill in each), so a section's Bills gap can
+  exceed its own department's - which shipped once, as a section at -4,797
+  under a department at -620.
+- **The drill DAX must keep its filters attached to the aggregation.**
+  `CALCULATETABLE(SUMMARIZE(...), filters)` with the aggregation added *outside*
+  in `ADDCOLUMNS` looks equivalent and is not: the expressions evaluate in the
+  outer filter context, so tran_date and the member filter never reach them and
+  each row sums across every day the table holds. Measured live 2026-08-23:
+  PROVISIONS came back at -28,293.58 against its true -5,672.40, from a query
+  that returned the right member names and no error. It now summarises over a
+  scoped table **variable**, and the drilled gaps are multiplied by the run's
+  measured scale before they are shown beside figures that already are.
+- **Four layers, two views**, matching the reference: *The day* (hero with its
+  three-stat column, four KPI bullets, the Net Sales trend, the Bills x Basket
+  Value bridge, all four measures side by side, the two stores, and what the
+  figures cover), *Stores* (each store on its own band, then each store's own
+  last fourteen days), *Departments* (every department, how many baskets each
+  reached against its usual share, the ones outside their band, and the same
+  departments store by store), *Detail* (what finished below and above its band
+  at section and category level, the groups that recorded nothing, then the
+  full lists). The second view is "outside the band only"; the day and store
+  layers are unchanged there, because the whole business and each store are the
+  subject either way.
+- **Per-store daily history DOES exist** - `storebenchmark` holds one row per
+  (store x day) over the same trailing window `_Sparkline14` covers, 28 rows
+  live. An earlier note that it held "one row per store, not 14" was wrong and
+  cost the report its per-store trend. The whole store table is fetched in one
+  query, so this costs nothing over fetching a single day.
+- **An SVG with both `width="100%"` and a fixed `height` letterboxes.** The
+  browser fits the drawing inside the taller box, which put a 106px chart in
+  the middle of a 250px band of white in the half-width store cards. The trend
+  carries a viewBox sized for its column and no height attribute.
+- **Prose is deterministic**, like the inventory reports: every figure on the
+  page is a comparison against a band and the rulebook wants a number beside
+  every comparison, so there is no LLM in this path. The investigator's
+  narrative is the one exception and falls back to a grounded deterministic
+  draft.
+- **Verification.** `scripts/replay_daily_sales.py` (138 offline checks - both
+  scale routes and the refusal path, every level reconciling, silent-row
+  exclusion, the category/group grain, the edge tolerance, money-vs-percentage
+  ranking on a fixture where the two orders genuinely disagree, the bridge
+  closing and naming the right driver's share, the page skeleton, every
+  reference section, escaping, and the committed live scan) and
+  `scripts/replay_daily_sales_investigator.py`. Both offline, no auth or LLM,
+  and **mutation-tested**: eight deliberate breakages, eight caught. And
+  **render the page and look at it** - that is what caught the letterboxed
+  charts, the overlapping axis labels and the missing hero column, none of
+  which any string assertion would have seen. Accepted live on 2026-08-25
+  against the position as at 2026-08-23: 6 queries, all 8 reconciliation checks
+  passing.
 
 #### Two test failures worth remembering
 
@@ -1028,6 +1280,24 @@ Both are config-driven and documented in `powerbi-summary-agent/README.md`:
 
 1. **LLM provider is a three-way switch (Azure OpenAI / Anthropic / OpenAI), not a single default** — `src/tools/llm.py` and `main.py` fall back to `ai_provider: "azure_openai"`. For Azure, the `AZURE_OPENAI_DEPLOYMENT` env var routes, not the `model` config string. Always check live `config.json` + `.env` before assuming which backend a run hits.
 2. **DAX execution defaults to `python` (REST), not `powershell`** — the PowerShell layer only existed to dodge the login hang. `scripts/execute_dax.ps1` still ships for `execution_mode: "powershell"`; the Python path is the fallback if it throws.
+
+## Repo-root KPI tooling (`fastapi_backend/`, `Benchmark Test/`)
+
+A third, independent piece alongside `pbi_agent.py` and `powerbi-summary-agent/`: a small daily red/amber/green KPI snapshot, unrelated to the LangGraph pipeline and its config/memory.
+
+```bash
+# Daily snapshot (run after a Power BI refresh, from repo root)
+python -m fastapi_backend.app.kpi_snapshot
+
+# Benchmark harness — re-scores the same 8 KPIs and writes Benchmark Test/benchmark_results.json
+python "Benchmark Test/run_kpi_benchmark.py"
+```
+
+- **`fastapi_backend/app/kpi_snapshot.py`** computes eight KPIs (Revenue/Volume/Footfall growth, ASP/ATV/UPT growth, category-decline breadth, at-risk concentration delta) **year-to-date vs. the same elapsed window last year**, as ONE `EVALUATE ROW(...)` referencing measures by name plus a single column (`MIS_DEEP_DIVE2[max_date]`) — deliberately flat and drift-resistant. `kpi_thresholds.json` holds the red/amber/green/severe bands per KPI (documented in human terms in `KPI_BENCHMARKS.md`); `evaluate_status()` maps a value to a band given its `higher_is_better`/`lower_is_better` direction.
+- **The alignment guard is the load-bearing check**: the comparison is only valid if last year's `max_date` lands on the same (month, day) as this year's — i.e. last year is trimmed to the same elapsed window, not a full year. `alignment_status()` verifies this every run and every KPI reports `"degraded"` (not its computed band) the moment it breaks, rather than silently comparing a partial year to a full one.
+- **Auth and target model are shared, not reconfigured.** It reuses `pbi_agent.py`'s headless MSAL flow against the same repo-root `.pbi_token_cache.json`, and reads `tenant_id`/`workspace_id`/`dataset_id` from `powerbi-summary-agent/config/config.json` — so it always points at the same dataset the summary agent runs against, with no separate credentials.
+- **`Benchmark Test/run_kpi_benchmark.py`** runs each KPI as its own isolated `EVALUATE` query (rather than one packed `ROW()`) so one broken measure can't blank out the rest, and imports `evaluate_status` from `kpi_snapshot.py` directly rather than reimplementing the banding — the two are asserted to score identically by construction, since they scored differently once (when `kpi_thresholds.json` moved its bands into `labels` + numeric `*_at` cut points and only one copy was updated).
+- Output lands in `fastapi_backend/outputs/kpi_snapshot_<date>.json` / `kpi_snapshot_latest.json`; there is no replay/offline test for this piece — `evaluate_status`/`alignment_status`/`kpi_facts` are pure functions but currently only exercised via the live run.
 
 ## Gotchas
 

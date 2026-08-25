@@ -1,52 +1,60 @@
 {
-  "run_at": "2026-07-27T09:00:24.419977+00:00",
+  "run_at": "2026-07-31T13:10:09.166027+00:00",
   "results": [
     {
       "name": "Revenue Growth %",
-      "value": 0.1266630241563625,
+      "formula": "(rev_current - rev_past) / abs(rev_past)",
+      "value": 0.12388628488861754,
       "status": "Green",
       "error": null
     },
     {
       "name": "Volume Growth %",
-      "value": 0.10050717773718554,
+      "formula": "(qty_current - qty_past) / qty_past",
+      "value": 0.0972015300326078,
       "status": "Green",
       "error": null
     },
     {
       "name": "Footfall (Transaction Count) Growth %",
-      "value": 0.12941352576623802,
+      "formula": "(bills_current - bills_past) / bills_past",
+      "value": 0.1268856019701118,
       "status": "Green",
       "error": null
     },
     {
       "name": "Average Selling Price (ASP) Growth %",
-      "value": 0.023767083893951855,
+      "formula": "asp_current = rev_current / qty_current; asp_past = rev_past / qty_past; (asp_current - asp_past) / asp_past",
+      "value": 0.0243207415644219,
       "status": "Green",
       "error": null
     },
     {
       "name": "Average Transaction Value (ATV) Growth %",
-      "value": -0.0024353361697253165,
+      "formula": "atv_current = rev_current / bills_current; atv_past = rev_past / bills_past; (atv_current - atv_past) / atv_past",
+      "value": -0.0026615985475815507,
       "status": "Amber",
       "error": null
     },
     {
       "name": "Units Per Transaction (UPT) Growth %",
-      "value": -0.025594122409186987,
-      "status": "Red",
+      "formula": "upt_current = qty_current / bills_current; upt_past = qty_past / bills_past; (upt_current - upt_past) / upt_past",
+      "value": -0.02634169066106431,
+      "status": "Amber",
       "error": null
     },
     {
       "name": "Category Decline Breadth %",
-      "value": 0.3306997742663657,
+      "formula": "categories_declining / categories_total",
+      "value": 0.3340857787810384,
       "status": "Green",
       "error": null
     },
     {
       "name": "At-Risk Revenue Concentration Delta",
-      "value": -0.04537689654789198,
-      "status": "Green",
+      "formula": "share_current = declining_rev_current / total_rev_current; share_past = declining_rev_past / total_rev_past; share_current - share_past",
+      "value": -0.04552658586340161,
+      "status": "Amber",
       "error": null
     }
   ]

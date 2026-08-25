@@ -1,0 +1,50 @@
+{
+  "report_id": "target_tracker",
+  "report_name": "SB Mart Target Tracker",
+  "report_domain": "sales",
+  "report_cadence": "daily",
+  "chain_id": "sb_mart_sales",
+  "tenant_id": "315642c5-e14a-4c12-bf77-41ee070def79",
+  "workspace_id": "2829a4af-2e07-4b43-b913-0a829a06bef4",
+  "dataset_id": "a07384e3-639e-47ec-a0e0-846f20c39951",
+  "output_folder": "outputs_sbmart_targettracker",
+  "target_tracker_population": [
+    "ST1",
+    "ST2",
+    "ST3",
+    "ST4"
+  ],
+  "target_tracker_excluded_entities": [
+    "ST5"
+  ],
+  "target_tracker_week_start": "monday",
+  "target_tracker_anchor_override": "",
+  "target_tracker_material_pct": 5,
+  "target_tracker_display_rows": 12,
+  "target_tracker_currency": "USD",
+  "ai_provider": "azure_openai",
+  "model": "claude-sonnet-5",
+  "azure_openai_api_key_env": "AZURE_OPENAI_API_KEY",
+  "openai_api_key_env": "OPENAI_API_KEY",
+  "anthropic_api_key_env": "ANTHROPIC_API_KEY",
+  "max_tokens": 8192,
+  "execution_mode": "python",
+  "powerbi_auth_mode": "auto",
+  "powerbi_query_api": "auto",
+  "azure_blob_upload": true,
+  "azure_blob_account": "turnbtestblobstorage",
+  "azure_blob_container": "insightgen",
+  "azure_blob_prefix": "sb-mart/target-tracker",
+  "ai_content_publish_enabled": true,
+  "ai_content_client": "sb-mart",
+  "ai_content_report_ids": [
+    "02e86e30-e985-4f37-97a8-40d4bd7e821d"
+  ],
+  "ai_content_ttl_hours": 24,
+  "api_summary_title": "SB Mart Target Tracker",
+  "target_tracker_llm_authoring_enabled": true,
+  "ai_content_multi_report_feed": true,
+  "ai_content_feed_max_cards": 10,
+  "insight_max_new_per_run": 3,
+  "ai_content_alert_days": 7
+}

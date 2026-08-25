@@ -1,0 +1,108 @@
+{
+  "tenant_id": "315642c5-e14a-4c12-bf77-41ee070def79",
+  "workspace_id": "2829a4af-2e07-4b43-b913-0a829a06bef4",
+  "dataset_id": "3cd81c72-585b-4be9-9c8c-c56235c577b6",
+  "report_id": "inventory_ageing",
+  "report_name": "SB Mart Stock Ageing",
+  "report_domain": "inventory",
+  "report_cadence": "daily",
+  "chain_id": "sb_mart_inventory",
+  "output_folder": "outputs_sbmart_ageing",
+  "ageing_currency": "USD",
+  "ageing_high_risk_bands": [
+    "12-24 MONTHS",
+    "24+ MONTHS"
+  ],
+  "ageing_bucket_order": [
+    "0-03 MONTHS",
+    "03-06 MONTHS",
+    "06-09 MONTHS",
+    "09-12 MONTHS",
+    "12-24 MONTHS",
+    "24+ MONTHS"
+  ],
+  "ageing_mapping": {
+    "exposure": "[STOCK VALUE]",
+    "bucket": "'REP_SSR_SAG'[NEW AGE]",
+    "snapshot": "'REP_SSR_SAG'[UPDATED_ON]",
+    "non_moving": "'REP_SSR_SAG'[non_moving_status]",
+    "sku": "'REP_SSR_SAG'[ITEM]",
+    "location": "'REP_SSR_SAG'[LOC_CODE]",
+    "dimensions": {
+      "division": "'REP_SSR_SAG'[DEPARTMENT]",
+      "section": "'LINK TABLE'[SECTION]",
+      "location": "'REP_SSR_SAG'[LOC_CODE]",
+      "sku_type": "'REP_SSR_SAG'[skutype]"
+    }
+  },
+  "ageing_quantity": "SUM('REP_SSR_SAG'[QTY])",
+  "ageing_aged_filter": "'REP_SSR_SAG'[NEW AGE] IN {\"09-12 MONTHS\", \"12-24 MONTHS\", \"24+ MONTHS\"}",
+  "ageing_high_risk_filter": "'REP_SSR_SAG'[NEW AGE] IN {\"12-24 MONTHS\", \"24+ MONTHS\"}",
+  "ageing_oldest_filter": "'REP_SSR_SAG'[NEW AGE] = \"24+ MONTHS\"",
+  "ageing_history": {
+    "bucket": "'REP_SSR_SAG_HIST'[NEW_AGE]",
+    "exposure": "SUM('REP_SSR_SAG_HIST'[VALUE])",
+    "quantity": "SUM('REP_SSR_SAG_HIST'[QTY])",
+    "snapshot": "'REP_SSR_SAG_HIST'[UPDATED_ON]",
+    "sku": "'REP_SSR_SAG_HIST'[ITEM]",
+    "aged_filter": "'REP_SSR_SAG_HIST'[NEW_AGE] IN {\"09-12 MONTHS\", \"12-24 MONTHS\", \"24+ MONTHS\"}",
+    "dimensions": {
+      "location": "'REP_SSR_SAG_HIST'[LOC_CODE]",
+      "division": "'REP_SSR_SAG_HIST'[DEPARTMENT]"
+    }
+  },
+  "ageing_status": {
+    "table": "'REP_SSR_STOCK_STATUS'",
+    "velocity": "SUM('REP_SSR_STOCK_STATUS'[AVG_DAILY_SALES_QTY])",
+    "value": "SUM('REP_SSR_STOCK_STATUS'[SKU_STOCK_VALUE])",
+    "quantity": "SUM('REP_SSR_STOCK_STATUS'[CURRENT_STOCK])",
+    "risk_score": "'REP_SSR_STOCK_STATUS'[AGING RISK SCORE]",
+    "status": "'REP_SSR_STOCK_STATUS'[SKU_STOCK_STATUS]",
+    "sku": "'REP_SSR_STOCK_STATUS'[PART_NUMBER_SUP]",
+    "location": "'REP_SSR_STOCK_STATUS'[LOC_CODE]",
+    "category": "'REP_SSR_STOCK_STATUS'[CATEGORY_NAME]"
+  },
+  "ageing_shared_division": "'LINK TABLE'[DEPARTMENT]",
+  "ageing_category": "'LINK TABLE'[CATEGORY_NAME]",
+  "ageing_clearance_days": 30,
+  "ageing_category_threshold_pct": 30,
+  "ageing_risk_score_cutoff": -70,
+  "ageing_risk_value_floor": 500,
+  "ageing_risk_statuses": [
+    "EXCESS STOCK",
+    "STOCK AVAILABLE BUT NO SALES"
+  ],
+  "ageing_risk_rows": 10,
+  "ageing_location_watch_pct": 5,
+  "ageing_location_critical_pct": 15,
+  "ageing_validation_share_expression": "[aged stock share]",
+  "ageing_validation_numerator_expression": "SUM('REP_SSR_SAG'[agingstock])",
+  "ageing_top_members": 15,
+  "ageing_deep_dive_members": 5,
+  "ageing_investigation_enabled": true,
+  "powerbi_auth_mode": "auto",
+  "powerbi_query_api": "auto",
+  "fabric_definitions": true,
+  "ai_provider": "azure_openai",
+  "model": "claude-sonnet-5",
+  "azure_openai_api_key_env": "AZURE_OPENAI_API_KEY",
+  "openai_api_key_env": "OPENAI_API_KEY",
+  "anthropic_api_key_env": "ANTHROPIC_API_KEY",
+  "max_tokens": 8192,
+  "azure_blob_upload": true,
+  "azure_blob_account": "turnbtestblobstorage",
+  "azure_blob_container": "insightgen",
+  "azure_blob_prefix": "sb-mart/ageing",
+  "snapshot_memory_storage": "azure_blob",
+  "ai_content_publish_enabled": true,
+  "ai_content_client": "sb-mart",
+  "ai_content_report_ids": [
+    "15a06619-c2cc-4c53-b8cd-c53c9dafa89c"
+  ],
+  "ai_content_ttl_hours": 24,
+  "api_summary_title": "SB Mart Stock Age Analysis",
+  "ai_content_multi_report_feed": true,
+  "ai_content_feed_max_cards": 10,
+  "insight_max_new_per_run": 3,
+  "ai_content_alert_days": 7
+}

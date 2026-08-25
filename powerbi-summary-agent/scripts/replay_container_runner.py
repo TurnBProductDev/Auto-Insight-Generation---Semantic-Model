@@ -1,7 +1,7 @@
 """Offline proof of the container's runner selection.
 
-Two of the four reports sit outside the LangGraph pipeline and until now had no
-container path at all - only a command line. `AGENT_RUNNER` gives them one
+Three of the five reports sit outside the LangGraph pipeline and until now had
+no container path at all - only a command line. `AGENT_RUNNER` gives them one
 through the same image and the same injected secrets.
 
 The property that matters most is the **default**: a job that sets no
@@ -94,7 +94,9 @@ def test_report_id_still_threads() -> None:
 def test_standalone_runners() -> None:
     print("\nA named runner is invoked instead of the pipeline")
     for runner, module in (("inventory", "scripts.run_inventory"),
-                           ("target_tracker", "scripts.run_target_tracker")):
+                           ("target_tracker", "scripts.run_target_tracker"),
+                           ("ageing", "scripts.run_ageing"),
+                           ("sku_overview", "scripts.run_sku_overview")):
         _config_env(AGENT_RUNNER=runner)
         calls = _recorder(module)
         graph: list = []

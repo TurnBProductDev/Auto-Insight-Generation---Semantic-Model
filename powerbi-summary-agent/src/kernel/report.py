@@ -35,23 +35,9 @@ DEFAULT_CADENCE = "daily"
 
 CADENCES = ("daily", "weekly", "monthly")
 
-_EMPTY: Mapping[str, Any] = MappingProxyType({})
-
-
 def _empty_mapping() -> Mapping[str, Any]:
-    """Default factory for the immutable-mapping fields.
-
-    These cannot be plain `= _EMPTY` defaults. Python 3.11's dataclasses reject
-    any default whose class has `__hash__ = None`, and `mappingproxy` is one -
-    "mutable default <class 'mappingproxy'> ... use default_factory". Python
-    3.12 gave mappingproxy a real `__hash__`, so the same code imports fine
-    there and fails only at runtime in the container, which runs 3.11.
-
-    Returning the shared `_EMPTY` rather than a fresh dict keeps the field
-    immutable, which is the point of a frozen spec being handed to two
-    concurrent branches.
-    """
-    return _EMPTY
+    """Return an immutable empty mapping suitable for dataclass defaults."""
+    return MappingProxyType({})
 
 
 @dataclass(frozen=True)
@@ -69,10 +55,10 @@ class ReportSpec:
     spine: str | None = None                      # WP2
     kpis: tuple[str, ...] = ()                    # WP3
     axes: tuple[str, ...] = ()                    # WP3
-    thresholds: Mapping[str, Any] = field(default_factory=_empty_mapping)        # WP3
+    thresholds: Mapping[str, Any] = field(default_factory=_empty_mapping)  # WP3
     layout: str | None = None                     # WP3
     rules: tuple[str, ...] = ()                   # WP5+
-    knowledge: Mapping[str, Any] = field(default_factory=_empty_mapping)         # WP5+
+    knowledge: Mapping[str, Any] = field(default_factory=_empty_mapping)  # WP5+
 
     def __post_init__(self) -> None:
         if not str(self.report_id or "").strip():

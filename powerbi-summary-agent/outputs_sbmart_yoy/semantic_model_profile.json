@@ -1,0 +1,2442 @@
+{
+  "source": "semantic model metadata only",
+  "primary_value_bundle": {
+    "id": "MIS_DEEP_DIVE2::revenue",
+    "family": "revenue",
+    "source_table": "MIS_DEEP_DIVE2",
+    "measures": {
+      "current": "net revenue CURRENT",
+      "prior": "net revenue PAST",
+      "change": "revenue Growth"
+    },
+    "derived": {},
+    "score": 200,
+    "additive_candidate": true,
+    "evidence": [
+      {
+        "name": "revenue Growth",
+        "home_table": "AA_MEASURE_TABLE",
+        "source_table": "MIS_DEEP_DIVE2",
+        "source_tables": [
+          "MIS_DEEP_DIVE2"
+        ],
+        "column_refs": [
+          {
+            "table": "MIS_DEEP_DIVE2",
+            "column": "NET_SALE_VAL_CURRENT"
+          },
+          {
+            "table": "MIS_DEEP_DIVE2",
+            "column": "net_sale_val_ly"
+          }
+        ],
+        "measure_refs": [],
+        "phase": "change",
+        "phase_confidence": 100,
+        "family": "revenue",
+        "family_confidence": 80,
+        "ratio_like": false,
+        "additive_candidate": true,
+        "format_string": "",
+        "description": "",
+        "definition_available": true
+      },
+      {
+        "name": "net revenue CURRENT",
+        "home_table": "AA_MEASURE_TABLE",
+        "source_table": "MIS_DEEP_DIVE2",
+        "source_tables": [
+          "MIS_DEEP_DIVE2"
+        ],
+        "column_refs": [
+          {
+            "table": "MIS_DEEP_DIVE2",
+            "column": "NET_SALE_VAL_CURRENT"
+          }
+        ],
+        "measure_refs": [],
+        "phase": "current",
+        "phase_confidence": 90,
+        "family": "revenue",
+        "family_confidence": 80,
+        "ratio_like": false,
+        "additive_candidate": true,
+        "format_string": "",
+        "description": "",
+        "definition_available": true
+      },
+      {
+        "name": "net revenue PAST",
+        "home_table": "AA_MEASURE_TABLE",
+        "source_table": "MIS_DEEP_DIVE2",
+        "source_tables": [
+          "MIS_DEEP_DIVE2"
+        ],
+        "column_refs": [
+          {
+            "table": "MIS_DEEP_DIVE2",
+            "column": "net_sale_val_ly"
+          }
+        ],
+        "measure_refs": [],
+        "phase": "prior",
+        "phase_confidence": 90,
+        "family": "revenue",
+        "family_confidence": 80,
+        "ratio_like": false,
+        "additive_candidate": true,
+        "format_string": "",
+        "description": "",
+        "definition_available": true
+      }
+    ]
+  },
+  "value_bundles": [
+    {
+      "id": "MIS_DEEP_DIVE2::revenue",
+      "family": "revenue",
+      "source_table": "MIS_DEEP_DIVE2",
+      "measures": {
+        "current": "net revenue CURRENT",
+        "prior": "net revenue PAST",
+        "change": "revenue Growth"
+      },
+      "derived": {},
+      "score": 200,
+      "additive_candidate": true,
+      "evidence": [
+        {
+          "name": "revenue Growth",
+          "home_table": "AA_MEASURE_TABLE",
+          "source_table": "MIS_DEEP_DIVE2",
+          "source_tables": [
+            "MIS_DEEP_DIVE2"
+          ],
+          "column_refs": [
+            {
+              "table": "MIS_DEEP_DIVE2",
+              "column": "NET_SALE_VAL_CURRENT"
+            },
+            {
+              "table": "MIS_DEEP_DIVE2",
+              "column": "net_sale_val_ly"
+            }
+          ],
+          "measure_refs": [],
+          "phase": "change",
+          "phase_confidence": 100,
+          "family": "revenue",
+          "family_confidence": 80,
+          "ratio_like": false,
+          "additive_candidate": true,
+          "format_string": "",
+          "description": "",
+          "definition_available": true
+        },
+        {
+          "name": "net revenue CURRENT",
+          "home_table": "AA_MEASURE_TABLE",
+          "source_table": "MIS_DEEP_DIVE2",
+          "source_tables": [
+            "MIS_DEEP_DIVE2"
+          ],
+          "column_refs": [
+            {
+              "table": "MIS_DEEP_DIVE2",
+              "column": "NET_SALE_VAL_CURRENT"
+            }
+          ],
+          "measure_refs": [],
+          "phase": "current",
+          "phase_confidence": 90,
+          "family": "revenue",
+          "family_confidence": 80,
+          "ratio_like": false,
+          "additive_candidate": true,
+          "format_string": "",
+          "description": "",
+          "definition_available": true
+        },
+        {
+          "name": "net revenue PAST",
+          "home_table": "AA_MEASURE_TABLE",
+          "source_table": "MIS_DEEP_DIVE2",
+          "source_tables": [
+            "MIS_DEEP_DIVE2"
+          ],
+          "column_refs": [
+            {
+              "table": "MIS_DEEP_DIVE2",
+              "column": "net_sale_val_ly"
+            }
+          ],
+          "measure_refs": [],
+          "phase": "prior",
+          "phase_confidence": 90,
+          "family": "revenue",
+          "family_confidence": 80,
+          "ratio_like": false,
+          "additive_candidate": true,
+          "format_string": "",
+          "description": "",
+          "definition_available": true
+        }
+      ]
+    },
+    {
+      "id": "MIS_BASE_FILE_MONTHLY_BRAND_TB::revenue",
+      "family": "revenue",
+      "source_table": "MIS_BASE_FILE_MONTHLY_BRAND_TB",
+      "measures": {
+        "current": "REV_CURRENT",
+        "prior": "REV_PREV"
+      },
+      "derived": {
+        "change": {
+          "alias": "revenue_change_derived",
+          "expression": "[REV_CURRENT] - [REV_PREV]"
+        }
+      },
+      "score": 170,
+      "additive_candidate": true,
+      "evidence": [
+        {
+          "name": "REV_CURRENT",
+          "home_table": "AA_MEASURE_TABLE",
+          "source_table": "MIS_BASE_FILE_MONTHLY_BRAND_TB",
+          "source_tables": [
+            "MIS_BASE_FILE_MONTHLY_BRAND_TB"
+          ],
+          "column_refs": [
+            {
+              "table": "MIS_BASE_FILE_MONTHLY_BRAND_TB",
+              "column": "NET_SALE_VAL_CURRENT"
+            }
+          ],
+          "measure_refs": [],
+          "phase": "current",
+          "phase_confidence": 90,
+          "family": "revenue",
+          "family_confidence": 80,
+          "ratio_like": false,
+          "additive_candidate": true,
+          "format_string": "",
+          "description": "",
+          "definition_available": true
+        },
+        {
+          "name": "REV_PREV",
+          "home_table": "AA_MEASURE_TABLE",
+          "source_table": "MIS_BASE_FILE_MONTHLY_BRAND_TB",
+          "source_tables": [
+            "MIS_BASE_FILE_MONTHLY_BRAND_TB"
+          ],
+          "column_refs": [
+            {
+              "table": "MIS_BASE_FILE_MONTHLY_BRAND_TB",
+              "column": "net_sale_val_ly"
+            }
+          ],
+          "measure_refs": [],
+          "phase": "prior",
+          "phase_confidence": 90,
+          "family": "revenue",
+          "family_confidence": 80,
+          "ratio_like": false,
+          "additive_candidate": true,
+          "format_string": "",
+          "description": "",
+          "definition_available": true
+        }
+      ]
+    }
+  ],
+  "volume_driver_bundles": [
+    {
+      "id": "MIS_DEEP_DIVE2::quantity",
+      "family": "quantity",
+      "source_table": "MIS_DEEP_DIVE2",
+      "measures": {
+        "current": "net qty CURRENT",
+        "prior": "net qty PAST",
+        "change": "QTY Growth"
+      },
+      "derived": {},
+      "score": 160,
+      "additive_candidate": true,
+      "evidence": [
+        {
+          "name": "QTY Growth",
+          "home_table": "AA_MEASURE_TABLE",
+          "source_table": "MIS_DEEP_DIVE2",
+          "source_tables": [
+            "MIS_DEEP_DIVE2"
+          ],
+          "column_refs": [
+            {
+              "table": "MIS_DEEP_DIVE2",
+              "column": "net_sales_qty_current"
+            },
+            {
+              "table": "MIS_DEEP_DIVE2",
+              "column": "net_sales_qty_ly"
+            }
+          ],
+          "measure_refs": [],
+          "phase": "change",
+          "phase_confidence": 100,
+          "family": "quantity",
+          "family_confidence": 80,
+          "ratio_like": false,
+          "additive_candidate": true,
+          "format_string": "",
+          "description": "",
+          "definition_available": true
+        },
+        {
+          "name": "net qty CURRENT",
+          "home_table": "AA_MEASURE_TABLE",
+          "source_table": "MIS_DEEP_DIVE2",
+          "source_tables": [
+            "MIS_DEEP_DIVE2"
+          ],
+          "column_refs": [
+            {
+              "table": "MIS_DEEP_DIVE2",
+              "column": "net_sales_qty_current"
+            }
+          ],
+          "measure_refs": [],
+          "phase": "current",
+          "phase_confidence": 90,
+          "family": "quantity",
+          "family_confidence": 80,
+          "ratio_like": false,
+          "additive_candidate": true,
+          "format_string": "",
+          "description": "",
+          "definition_available": true
+        },
+        {
+          "name": "net qty PAST",
+          "home_table": "AA_MEASURE_TABLE",
+          "source_table": "MIS_DEEP_DIVE2",
+          "source_tables": [
+            "MIS_DEEP_DIVE2"
+          ],
+          "column_refs": [
+            {
+              "table": "MIS_DEEP_DIVE2",
+              "column": "net_sales_qty_ly"
+            }
+          ],
+          "measure_refs": [],
+          "phase": "prior",
+          "phase_confidence": 90,
+          "family": "quantity",
+          "family_confidence": 80,
+          "ratio_like": false,
+          "additive_candidate": true,
+          "format_string": "",
+          "description": "",
+          "definition_available": true
+        }
+      ]
+    },
+    {
+      "id": "CAT_TRANSACTIONS::transactions",
+      "family": "transactions",
+      "source_table": "CAT_TRANSACTIONS",
+      "measures": {
+        "current": "net bills CURRENT",
+        "change": "bills growth"
+      },
+      "derived": {
+        "prior": {
+          "alias": "transactions_prior_derived",
+          "expression": "[net bills CURRENT] - [bills growth]"
+        }
+      },
+      "score": 110,
+      "additive_candidate": true,
+      "evidence": [
+        {
+          "name": "net bills CURRENT",
+          "home_table": "AA_MEASURE_TABLE",
+          "source_table": "CAT_TRANSACTIONS",
+          "source_tables": [
+            "CAT_TRANSACTIONS"
+          ],
+          "column_refs": [
+            {
+              "table": "CAT_TRANSACTIONS",
+              "column": "dist_bill_curr"
+            }
+          ],
+          "measure_refs": [],
+          "phase": "current",
+          "phase_confidence": 90,
+          "family": "transactions",
+          "family_confidence": 80,
+          "ratio_like": false,
+          "additive_candidate": true,
+          "format_string": "",
+          "description": "",
+          "definition_available": true
+        },
+        {
+          "name": "bills growth",
+          "home_table": "AA_MEASURE_TABLE",
+          "source_table": "CAT_TRANSACTIONS",
+          "source_tables": [
+            "CAT_TRANSACTIONS"
+          ],
+          "column_refs": [
+            {
+              "table": "CAT_TRANSACTIONS",
+              "column": "dist_bill_curr"
+            },
+            {
+              "table": "CAT_TRANSACTIONS",
+              "column": "dist_bill_ly"
+            }
+          ],
+          "measure_refs": [],
+          "phase": "change",
+          "phase_confidence": 100,
+          "family": "transactions",
+          "family_confidence": 80,
+          "ratio_like": false,
+          "additive_candidate": true,
+          "format_string": "",
+          "description": "",
+          "definition_available": true
+        }
+      ]
+    }
+  ],
+  "measure_bundles": [
+    {
+      "id": "MIS_DEEP_DIVE2::revenue",
+      "family": "revenue",
+      "source_table": "MIS_DEEP_DIVE2",
+      "measures": {
+        "current": "net revenue CURRENT",
+        "prior": "net revenue PAST",
+        "change": "revenue Growth"
+      },
+      "derived": {},
+      "score": 200,
+      "additive_candidate": true,
+      "evidence": [
+        {
+          "name": "revenue Growth",
+          "home_table": "AA_MEASURE_TABLE",
+          "source_table": "MIS_DEEP_DIVE2",
+          "source_tables": [
+            "MIS_DEEP_DIVE2"
+          ],
+          "column_refs": [
+            {
+              "table": "MIS_DEEP_DIVE2",
+              "column": "NET_SALE_VAL_CURRENT"
+            },
+            {
+              "table": "MIS_DEEP_DIVE2",
+              "column": "net_sale_val_ly"
+            }
+          ],
+          "measure_refs": [],
+          "phase": "change",
+          "phase_confidence": 100,
+          "family": "revenue",
+          "family_confidence": 80,
+          "ratio_like": false,
+          "additive_candidate": true,
+          "format_string": "",
+          "description": "",
+          "definition_available": true
+        },
+        {
+          "name": "net revenue CURRENT",
+          "home_table": "AA_MEASURE_TABLE",
+          "source_table": "MIS_DEEP_DIVE2",
+          "source_tables": [
+            "MIS_DEEP_DIVE2"
+          ],
+          "column_refs": [
+            {
+              "table": "MIS_DEEP_DIVE2",
+              "column": "NET_SALE_VAL_CURRENT"
+            }
+          ],
+          "measure_refs": [],
+          "phase": "current",
+          "phase_confidence": 90,
+          "family": "revenue",
+          "family_confidence": 80,
+          "ratio_like": false,
+          "additive_candidate": true,
+          "format_string": "",
+          "description": "",
+          "definition_available": true
+        },
+        {
+          "name": "net revenue PAST",
+          "home_table": "AA_MEASURE_TABLE",
+          "source_table": "MIS_DEEP_DIVE2",
+          "source_tables": [
+            "MIS_DEEP_DIVE2"
+          ],
+          "column_refs": [
+            {
+              "table": "MIS_DEEP_DIVE2",
+              "column": "net_sale_val_ly"
+            }
+          ],
+          "measure_refs": [],
+          "phase": "prior",
+          "phase_confidence": 90,
+          "family": "revenue",
+          "family_confidence": 80,
+          "ratio_like": false,
+          "additive_candidate": true,
+          "format_string": "",
+          "description": "",
+          "definition_available": true
+        }
+      ]
+    },
+    {
+      "id": "MIS_BASE_FILE_MONTHLY_BRAND_TB::revenue",
+      "family": "revenue",
+      "source_table": "MIS_BASE_FILE_MONTHLY_BRAND_TB",
+      "measures": {
+        "current": "REV_CURRENT",
+        "prior": "REV_PREV"
+      },
+      "derived": {
+        "change": {
+          "alias": "revenue_change_derived",
+          "expression": "[REV_CURRENT] - [REV_PREV]"
+        }
+      },
+      "score": 170,
+      "additive_candidate": true,
+      "evidence": [
+        {
+          "name": "REV_CURRENT",
+          "home_table": "AA_MEASURE_TABLE",
+          "source_table": "MIS_BASE_FILE_MONTHLY_BRAND_TB",
+          "source_tables": [
+            "MIS_BASE_FILE_MONTHLY_BRAND_TB"
+          ],
+          "column_refs": [
+            {
+              "table": "MIS_BASE_FILE_MONTHLY_BRAND_TB",
+              "column": "NET_SALE_VAL_CURRENT"
+            }
+          ],
+          "measure_refs": [],
+          "phase": "current",
+          "phase_confidence": 90,
+          "family": "revenue",
+          "family_confidence": 80,
+          "ratio_like": false,
+          "additive_candidate": true,
+          "format_string": "",
+          "description": "",
+          "definition_available": true
+        },
+        {
+          "name": "REV_PREV",
+          "home_table": "AA_MEASURE_TABLE",
+          "source_table": "MIS_BASE_FILE_MONTHLY_BRAND_TB",
+          "source_tables": [
+            "MIS_BASE_FILE_MONTHLY_BRAND_TB"
+          ],
+          "column_refs": [
+            {
+              "table": "MIS_BASE_FILE_MONTHLY_BRAND_TB",
+              "column": "net_sale_val_ly"
+            }
+          ],
+          "measure_refs": [],
+          "phase": "prior",
+          "phase_confidence": 90,
+          "family": "revenue",
+          "family_confidence": 80,
+          "ratio_like": false,
+          "additive_candidate": true,
+          "format_string": "",
+          "description": "",
+          "definition_available": true
+        }
+      ]
+    },
+    {
+      "id": "MIS_DEEP_DIVE2::quantity",
+      "family": "quantity",
+      "source_table": "MIS_DEEP_DIVE2",
+      "measures": {
+        "current": "net qty CURRENT",
+        "prior": "net qty PAST",
+        "change": "QTY Growth"
+      },
+      "derived": {},
+      "score": 160,
+      "additive_candidate": true,
+      "evidence": [
+        {
+          "name": "QTY Growth",
+          "home_table": "AA_MEASURE_TABLE",
+          "source_table": "MIS_DEEP_DIVE2",
+          "source_tables": [
+            "MIS_DEEP_DIVE2"
+          ],
+          "column_refs": [
+            {
+              "table": "MIS_DEEP_DIVE2",
+              "column": "net_sales_qty_current"
+            },
+            {
+              "table": "MIS_DEEP_DIVE2",
+              "column": "net_sales_qty_ly"
+            }
+          ],
+          "measure_refs": [],
+          "phase": "change",
+          "phase_confidence": 100,
+          "family": "quantity",
+          "family_confidence": 80,
+          "ratio_like": false,
+          "additive_candidate": true,
+          "format_string": "",
+          "description": "",
+          "definition_available": true
+        },
+        {
+          "name": "net qty CURRENT",
+          "home_table": "AA_MEASURE_TABLE",
+          "source_table": "MIS_DEEP_DIVE2",
+          "source_tables": [
+            "MIS_DEEP_DIVE2"
+          ],
+          "column_refs": [
+            {
+              "table": "MIS_DEEP_DIVE2",
+              "column": "net_sales_qty_current"
+            }
+          ],
+          "measure_refs": [],
+          "phase": "current",
+          "phase_confidence": 90,
+          "family": "quantity",
+          "family_confidence": 80,
+          "ratio_like": false,
+          "additive_candidate": true,
+          "format_string": "",
+          "description": "",
+          "definition_available": true
+        },
+        {
+          "name": "net qty PAST",
+          "home_table": "AA_MEASURE_TABLE",
+          "source_table": "MIS_DEEP_DIVE2",
+          "source_tables": [
+            "MIS_DEEP_DIVE2"
+          ],
+          "column_refs": [
+            {
+              "table": "MIS_DEEP_DIVE2",
+              "column": "net_sales_qty_ly"
+            }
+          ],
+          "measure_refs": [],
+          "phase": "prior",
+          "phase_confidence": 90,
+          "family": "quantity",
+          "family_confidence": 80,
+          "ratio_like": false,
+          "additive_candidate": true,
+          "format_string": "",
+          "description": "",
+          "definition_available": true
+        }
+      ]
+    },
+    {
+      "id": "MIS_DEEP_DIVE2::transactions",
+      "family": "transactions",
+      "source_table": "MIS_DEEP_DIVE2",
+      "measures": {
+        "current": "SPEND PER TRANSACTION CURRENT YEAR",
+        "prior": "SPEND PER TRANSACTION PAST YEAR"
+      },
+      "derived": {
+        "change": {
+          "alias": "transactions_change_derived",
+          "expression": "[SPEND PER TRANSACTION CURRENT YEAR] - [SPEND PER TRANSACTION PAST YEAR]"
+        }
+      },
+      "score": 110,
+      "additive_candidate": false,
+      "evidence": [
+        {
+          "name": "SPEND PER TRANSACTION CURRENT YEAR",
+          "home_table": "AA_MEASURE_TABLE",
+          "source_table": "MIS_DEEP_DIVE2",
+          "source_tables": [
+            "CAT_TRANSACTIONS",
+            "MIS_DEEP_DIVE2"
+          ],
+          "column_refs": [
+            {
+              "table": "MIS_DEEP_DIVE2",
+              "column": "NET_SALE_VAL_CURRENT"
+            },
+            {
+              "table": "CAT_TRANSACTIONS",
+              "column": "dist_bill_curr"
+            }
+          ],
+          "measure_refs": [],
+          "phase": "current",
+          "phase_confidence": 90,
+          "family": "transactions",
+          "family_confidence": 80,
+          "ratio_like": true,
+          "additive_candidate": false,
+          "format_string": "",
+          "description": "",
+          "definition_available": true
+        },
+        {
+          "name": "SPEND PER TRANSACTION PAST YEAR",
+          "home_table": "AA_MEASURE_TABLE",
+          "source_table": "MIS_DEEP_DIVE2",
+          "source_tables": [
+            "CAT_TRANSACTIONS",
+            "MIS_DEEP_DIVE2"
+          ],
+          "column_refs": [
+            {
+              "table": "MIS_DEEP_DIVE2",
+              "column": "net_sale_val_ly"
+            },
+            {
+              "table": "CAT_TRANSACTIONS",
+              "column": "dist_bill_ly"
+            }
+          ],
+          "measure_refs": [],
+          "phase": "prior",
+          "phase_confidence": 90,
+          "family": "transactions",
+          "family_confidence": 80,
+          "ratio_like": true,
+          "additive_candidate": false,
+          "format_string": "",
+          "description": "",
+          "definition_available": true
+        }
+      ]
+    },
+    {
+      "id": "CAT_TRANSACTIONS::transactions",
+      "family": "transactions",
+      "source_table": "CAT_TRANSACTIONS",
+      "measures": {
+        "current": "net bills CURRENT",
+        "change": "bills growth"
+      },
+      "derived": {
+        "prior": {
+          "alias": "transactions_prior_derived",
+          "expression": "[net bills CURRENT] - [bills growth]"
+        }
+      },
+      "score": 110,
+      "additive_candidate": true,
+      "evidence": [
+        {
+          "name": "net bills CURRENT",
+          "home_table": "AA_MEASURE_TABLE",
+          "source_table": "CAT_TRANSACTIONS",
+          "source_tables": [
+            "CAT_TRANSACTIONS"
+          ],
+          "column_refs": [
+            {
+              "table": "CAT_TRANSACTIONS",
+              "column": "dist_bill_curr"
+            }
+          ],
+          "measure_refs": [],
+          "phase": "current",
+          "phase_confidence": 90,
+          "family": "transactions",
+          "family_confidence": 80,
+          "ratio_like": false,
+          "additive_candidate": true,
+          "format_string": "",
+          "description": "",
+          "definition_available": true
+        },
+        {
+          "name": "bills growth",
+          "home_table": "AA_MEASURE_TABLE",
+          "source_table": "CAT_TRANSACTIONS",
+          "source_tables": [
+            "CAT_TRANSACTIONS"
+          ],
+          "column_refs": [
+            {
+              "table": "CAT_TRANSACTIONS",
+              "column": "dist_bill_curr"
+            },
+            {
+              "table": "CAT_TRANSACTIONS",
+              "column": "dist_bill_ly"
+            }
+          ],
+          "measure_refs": [],
+          "phase": "change",
+          "phase_confidence": 100,
+          "family": "transactions",
+          "family_confidence": 80,
+          "ratio_like": false,
+          "additive_candidate": true,
+          "format_string": "",
+          "description": "",
+          "definition_available": true
+        }
+      ]
+    }
+  ],
+  "measure_roles": {
+    "revenue Growth": {
+      "name": "revenue Growth",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "MIS_DEEP_DIVE2",
+      "source_tables": [
+        "MIS_DEEP_DIVE2"
+      ],
+      "column_refs": [
+        {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "NET_SALE_VAL_CURRENT"
+        },
+        {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "net_sale_val_ly"
+        }
+      ],
+      "measure_refs": [],
+      "phase": "change",
+      "phase_confidence": 100,
+      "family": "revenue",
+      "family_confidence": 80,
+      "ratio_like": false,
+      "additive_candidate": true,
+      "format_string": "",
+      "description": "",
+      "definition_available": true
+    },
+    "revenue growth %": {
+      "name": "revenue growth %",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "MIS_DEEP_DIVE2",
+      "source_tables": [
+        "MIS_DEEP_DIVE2"
+      ],
+      "column_refs": [
+        {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "net_sale_val_ly"
+        }
+      ],
+      "measure_refs": [
+        "revenue Growth"
+      ],
+      "phase": "change",
+      "phase_confidence": 100,
+      "family": "revenue",
+      "family_confidence": 80,
+      "ratio_like": true,
+      "additive_candidate": false,
+      "format_string": "0.00%;-0.00%;0.00%",
+      "description": "",
+      "definition_available": true
+    },
+    "IND REVENUE DEEP DIVE": {
+      "name": "IND REVENUE DEEP DIVE",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "AA_MEASURE_TABLE",
+      "source_tables": [],
+      "column_refs": [],
+      "measure_refs": [
+        "revenue Growth"
+      ],
+      "phase": null,
+      "phase_confidence": 0,
+      "family": "revenue",
+      "family_confidence": 60,
+      "ratio_like": false,
+      "additive_candidate": false,
+      "format_string": "",
+      "description": "",
+      "definition_available": true
+    },
+    "IND QTY DEEP DIVE": {
+      "name": "IND QTY DEEP DIVE",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "AA_MEASURE_TABLE",
+      "source_tables": [],
+      "column_refs": [],
+      "measure_refs": [
+        "QTY Growth"
+      ],
+      "phase": null,
+      "phase_confidence": 0,
+      "family": "quantity",
+      "family_confidence": 60,
+      "ratio_like": false,
+      "additive_candidate": false,
+      "format_string": "",
+      "description": "",
+      "definition_available": true
+    },
+    "QTY Growth": {
+      "name": "QTY Growth",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "MIS_DEEP_DIVE2",
+      "source_tables": [
+        "MIS_DEEP_DIVE2"
+      ],
+      "column_refs": [
+        {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "net_sales_qty_current"
+        },
+        {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "net_sales_qty_ly"
+        }
+      ],
+      "measure_refs": [],
+      "phase": "change",
+      "phase_confidence": 100,
+      "family": "quantity",
+      "family_confidence": 80,
+      "ratio_like": false,
+      "additive_candidate": true,
+      "format_string": "",
+      "description": "",
+      "definition_available": true
+    },
+    "IND TRANSACTIONS DEEP DIVE": {
+      "name": "IND TRANSACTIONS DEEP DIVE",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "AA_MEASURE_TABLE",
+      "source_tables": [],
+      "column_refs": [],
+      "measure_refs": [
+        "bills growth"
+      ],
+      "phase": null,
+      "phase_confidence": 0,
+      "family": "transactions",
+      "family_confidence": 60,
+      "ratio_like": false,
+      "additive_candidate": false,
+      "format_string": "",
+      "description": "",
+      "definition_available": true
+    },
+    "net revenue CURRENT": {
+      "name": "net revenue CURRENT",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "MIS_DEEP_DIVE2",
+      "source_tables": [
+        "MIS_DEEP_DIVE2"
+      ],
+      "column_refs": [
+        {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "NET_SALE_VAL_CURRENT"
+        }
+      ],
+      "measure_refs": [],
+      "phase": "current",
+      "phase_confidence": 90,
+      "family": "revenue",
+      "family_confidence": 80,
+      "ratio_like": false,
+      "additive_candidate": true,
+      "format_string": "",
+      "description": "",
+      "definition_available": true
+    },
+    "net revenue PAST": {
+      "name": "net revenue PAST",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "MIS_DEEP_DIVE2",
+      "source_tables": [
+        "MIS_DEEP_DIVE2"
+      ],
+      "column_refs": [
+        {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "net_sale_val_ly"
+        }
+      ],
+      "measure_refs": [],
+      "phase": "prior",
+      "phase_confidence": 90,
+      "family": "revenue",
+      "family_confidence": 80,
+      "ratio_like": false,
+      "additive_candidate": true,
+      "format_string": "",
+      "description": "",
+      "definition_available": true
+    },
+    "net qty CURRENT": {
+      "name": "net qty CURRENT",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "MIS_DEEP_DIVE2",
+      "source_tables": [
+        "MIS_DEEP_DIVE2"
+      ],
+      "column_refs": [
+        {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "net_sales_qty_current"
+        }
+      ],
+      "measure_refs": [],
+      "phase": "current",
+      "phase_confidence": 90,
+      "family": "quantity",
+      "family_confidence": 80,
+      "ratio_like": false,
+      "additive_candidate": true,
+      "format_string": "",
+      "description": "",
+      "definition_available": true
+    },
+    "net qty PAST": {
+      "name": "net qty PAST",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "MIS_DEEP_DIVE2",
+      "source_tables": [
+        "MIS_DEEP_DIVE2"
+      ],
+      "column_refs": [
+        {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "net_sales_qty_ly"
+        }
+      ],
+      "measure_refs": [],
+      "phase": "prior",
+      "phase_confidence": 90,
+      "family": "quantity",
+      "family_confidence": 80,
+      "ratio_like": false,
+      "additive_candidate": true,
+      "format_string": "",
+      "description": "",
+      "definition_available": true
+    },
+    "retail price current year": {
+      "name": "retail price current year",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "MIS_DEEP_DIVE2",
+      "source_tables": [
+        "MIS_DEEP_DIVE2"
+      ],
+      "column_refs": [
+        {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "NET_SALE_VAL_CURRENT"
+        },
+        {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "net_sales_qty_current"
+        }
+      ],
+      "measure_refs": [],
+      "phase": "current",
+      "phase_confidence": 90,
+      "family": "margin",
+      "family_confidence": 60,
+      "ratio_like": true,
+      "additive_candidate": false,
+      "format_string": "",
+      "description": "",
+      "definition_available": true
+    },
+    "retail price past year": {
+      "name": "retail price past year",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "MIS_DEEP_DIVE2",
+      "source_tables": [
+        "MIS_DEEP_DIVE2"
+      ],
+      "column_refs": [
+        {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "net_sale_val_ly"
+        },
+        {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "net_sales_qty_ly"
+        }
+      ],
+      "measure_refs": [],
+      "phase": "prior",
+      "phase_confidence": 90,
+      "family": "margin",
+      "family_confidence": 60,
+      "ratio_like": true,
+      "additive_candidate": false,
+      "format_string": "",
+      "description": "",
+      "definition_available": true
+    },
+    "IND RETAIL PRICE DEEP DIVE": {
+      "name": "IND RETAIL PRICE DEEP DIVE",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "AA_MEASURE_TABLE",
+      "source_tables": [],
+      "column_refs": [],
+      "measure_refs": [
+        "RETAIL PRICE GROWTH"
+      ],
+      "phase": null,
+      "phase_confidence": 0,
+      "family": "margin",
+      "family_confidence": 60,
+      "ratio_like": true,
+      "additive_candidate": false,
+      "format_string": "",
+      "description": "",
+      "definition_available": true
+    },
+    "QUANTITY PER TRANSACTION CURRENT YEAR": {
+      "name": "QUANTITY PER TRANSACTION CURRENT YEAR",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "MIS_DEEP_DIVE2",
+      "source_tables": [
+        "CAT_TRANSACTIONS",
+        "MIS_DEEP_DIVE2"
+      ],
+      "column_refs": [
+        {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "net_sales_qty_current"
+        },
+        {
+          "table": "CAT_TRANSACTIONS",
+          "column": "dist_bill_curr"
+        }
+      ],
+      "measure_refs": [],
+      "phase": "current",
+      "phase_confidence": 90,
+      "family": "quantity",
+      "family_confidence": 80,
+      "ratio_like": true,
+      "additive_candidate": false,
+      "format_string": "",
+      "description": "",
+      "definition_available": true
+    },
+    "QUANTITY PER TRANSACTION PAST YEAR": {
+      "name": "QUANTITY PER TRANSACTION PAST YEAR",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "MIS_DEEP_DIVE2",
+      "source_tables": [
+        "CAT_TRANSACTIONS",
+        "MIS_DEEP_DIVE2"
+      ],
+      "column_refs": [
+        {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "net_sales_qty_ly"
+        },
+        {
+          "table": "CAT_TRANSACTIONS",
+          "column": "dist_bill_ly"
+        }
+      ],
+      "measure_refs": [],
+      "phase": "prior",
+      "phase_confidence": 90,
+      "family": "quantity",
+      "family_confidence": 80,
+      "ratio_like": true,
+      "additive_candidate": false,
+      "format_string": "",
+      "description": "",
+      "definition_available": true
+    },
+    "QUANTITY PER TRANSACTION GROWTH": {
+      "name": "QUANTITY PER TRANSACTION GROWTH",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "AA_MEASURE_TABLE",
+      "source_tables": [],
+      "column_refs": [],
+      "measure_refs": [
+        "QUANTITY PER TRANSACTION CURRENT YEAR",
+        "QUANTITY PER TRANSACTION PAST YEAR"
+      ],
+      "phase": "change",
+      "phase_confidence": 100,
+      "family": "quantity",
+      "family_confidence": 60,
+      "ratio_like": false,
+      "additive_candidate": true,
+      "format_string": "",
+      "description": "",
+      "definition_available": true
+    },
+    "SPEND PER TRANSACTION CURRENT YEAR": {
+      "name": "SPEND PER TRANSACTION CURRENT YEAR",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "MIS_DEEP_DIVE2",
+      "source_tables": [
+        "CAT_TRANSACTIONS",
+        "MIS_DEEP_DIVE2"
+      ],
+      "column_refs": [
+        {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "NET_SALE_VAL_CURRENT"
+        },
+        {
+          "table": "CAT_TRANSACTIONS",
+          "column": "dist_bill_curr"
+        }
+      ],
+      "measure_refs": [],
+      "phase": "current",
+      "phase_confidence": 90,
+      "family": "transactions",
+      "family_confidence": 80,
+      "ratio_like": true,
+      "additive_candidate": false,
+      "format_string": "",
+      "description": "",
+      "definition_available": true
+    },
+    "SPEND PER TRANSACTION GROWTH": {
+      "name": "SPEND PER TRANSACTION GROWTH",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "AA_MEASURE_TABLE",
+      "source_tables": [],
+      "column_refs": [],
+      "measure_refs": [
+        "SPEND PER TRANSACTION CURRENT YEAR",
+        "SPEND PER TRANSACTION PAST YEAR"
+      ],
+      "phase": "change",
+      "phase_confidence": 100,
+      "family": "cost",
+      "family_confidence": 60,
+      "ratio_like": false,
+      "additive_candidate": true,
+      "format_string": "",
+      "description": "",
+      "definition_available": true
+    },
+    "SPEND PER TRANSACTION PAST YEAR": {
+      "name": "SPEND PER TRANSACTION PAST YEAR",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "MIS_DEEP_DIVE2",
+      "source_tables": [
+        "CAT_TRANSACTIONS",
+        "MIS_DEEP_DIVE2"
+      ],
+      "column_refs": [
+        {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "net_sale_val_ly"
+        },
+        {
+          "table": "CAT_TRANSACTIONS",
+          "column": "dist_bill_ly"
+        }
+      ],
+      "measure_refs": [],
+      "phase": "prior",
+      "phase_confidence": 90,
+      "family": "transactions",
+      "family_confidence": 80,
+      "ratio_like": true,
+      "additive_candidate": false,
+      "format_string": "",
+      "description": "",
+      "definition_available": true
+    },
+    "net bills CURRENT": {
+      "name": "net bills CURRENT",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "CAT_TRANSACTIONS",
+      "source_tables": [
+        "CAT_TRANSACTIONS"
+      ],
+      "column_refs": [
+        {
+          "table": "CAT_TRANSACTIONS",
+          "column": "dist_bill_curr"
+        }
+      ],
+      "measure_refs": [],
+      "phase": "current",
+      "phase_confidence": 90,
+      "family": "transactions",
+      "family_confidence": 80,
+      "ratio_like": false,
+      "additive_candidate": true,
+      "format_string": "",
+      "description": "",
+      "definition_available": true
+    },
+    "bills growth": {
+      "name": "bills growth",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "CAT_TRANSACTIONS",
+      "source_tables": [
+        "CAT_TRANSACTIONS"
+      ],
+      "column_refs": [
+        {
+          "table": "CAT_TRANSACTIONS",
+          "column": "dist_bill_curr"
+        },
+        {
+          "table": "CAT_TRANSACTIONS",
+          "column": "dist_bill_ly"
+        }
+      ],
+      "measure_refs": [],
+      "phase": "change",
+      "phase_confidence": 100,
+      "family": "transactions",
+      "family_confidence": 80,
+      "ratio_like": false,
+      "additive_candidate": true,
+      "format_string": "",
+      "description": "",
+      "definition_available": true
+    },
+    "bills growth %": {
+      "name": "bills growth %",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "CAT_TRANSACTIONS",
+      "source_tables": [
+        "CAT_TRANSACTIONS"
+      ],
+      "column_refs": [
+        {
+          "table": "CAT_TRANSACTIONS",
+          "column": "dist_bill_ly"
+        }
+      ],
+      "measure_refs": [
+        "bills growth"
+      ],
+      "phase": "change",
+      "phase_confidence": 100,
+      "family": "transactions",
+      "family_confidence": 80,
+      "ratio_like": true,
+      "additive_candidate": false,
+      "format_string": "0.00%;-0.00%;0.00%",
+      "description": "",
+      "definition_available": true
+    },
+    "QTY GROWTH %": {
+      "name": "QTY GROWTH %",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "MIS_DEEP_DIVE2",
+      "source_tables": [
+        "MIS_DEEP_DIVE2"
+      ],
+      "column_refs": [
+        {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "net_sales_qty_ly"
+        }
+      ],
+      "measure_refs": [
+        "QTY Growth"
+      ],
+      "phase": "change",
+      "phase_confidence": 100,
+      "family": "quantity",
+      "family_confidence": 80,
+      "ratio_like": true,
+      "additive_candidate": false,
+      "format_string": "0.00%;-0.00%;0.00%",
+      "description": "",
+      "definition_available": true
+    },
+    "IND SPEND PER TRANS DEEP DIVE": {
+      "name": "IND SPEND PER TRANS DEEP DIVE",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "AA_MEASURE_TABLE",
+      "source_tables": [],
+      "column_refs": [],
+      "measure_refs": [
+        "SPEND PER TRANSACTION GROWTH"
+      ],
+      "phase": null,
+      "phase_confidence": 0,
+      "family": "cost",
+      "family_confidence": 60,
+      "ratio_like": false,
+      "additive_candidate": false,
+      "format_string": "",
+      "description": "",
+      "definition_available": true
+    },
+    "RETAIL PRICE GROWTH": {
+      "name": "RETAIL PRICE GROWTH",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "AA_MEASURE_TABLE",
+      "source_tables": [],
+      "column_refs": [],
+      "measure_refs": [
+        "retail price current year",
+        "retail price past year"
+      ],
+      "phase": "change",
+      "phase_confidence": 100,
+      "family": "margin",
+      "family_confidence": 60,
+      "ratio_like": true,
+      "additive_candidate": false,
+      "format_string": "",
+      "description": "",
+      "definition_available": true
+    },
+    "UPDATED_DATE": {
+      "name": "UPDATED_DATE",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "MIS_BASE_FILE_MONTHLY_BRAND_TB",
+      "source_tables": [
+        "MIS_BASE_FILE_MONTHLY_BRAND_TB"
+      ],
+      "column_refs": [
+        {
+          "table": "MIS_BASE_FILE_MONTHLY_BRAND_TB",
+          "column": "MAX_DATE"
+        }
+      ],
+      "measure_refs": [],
+      "phase": null,
+      "phase_confidence": 0,
+      "family": "other",
+      "family_confidence": 0,
+      "ratio_like": false,
+      "additive_candidate": false,
+      "format_string": "Long Date",
+      "description": "",
+      "definition_available": true
+    },
+    "IND SPEND PER TRANS DEEP DIVE NEW": {
+      "name": "IND SPEND PER TRANS DEEP DIVE NEW",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "AA_MEASURE_TABLE",
+      "source_tables": [],
+      "column_refs": [],
+      "measure_refs": [
+        "SPEND PER TRANSACTION GROWTH"
+      ],
+      "phase": null,
+      "phase_confidence": 0,
+      "family": "cost",
+      "family_confidence": 60,
+      "ratio_like": false,
+      "additive_candidate": false,
+      "format_string": "",
+      "description": "",
+      "definition_available": true
+    },
+    "Last Refresh": {
+      "name": "Last Refresh",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "RefreshTimeStamp",
+      "source_tables": [
+        "RefreshTimeStamp"
+      ],
+      "column_refs": [
+        {
+          "table": "RefreshTimeStamp",
+          "column": "RefreshTimeStamp"
+        }
+      ],
+      "measure_refs": [],
+      "phase": "prior",
+      "phase_confidence": 90,
+      "family": "other",
+      "family_confidence": 0,
+      "ratio_like": false,
+      "additive_candidate": false,
+      "format_string": "0",
+      "description": "",
+      "definition_available": true
+    },
+    "contribution cur": {
+      "name": "contribution cur",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "AA_MEASURE_TABLE",
+      "source_tables": [],
+      "column_refs": [],
+      "measure_refs": [
+        "sum deg cur rev",
+        "sum total cur rev"
+      ],
+      "phase": null,
+      "phase_confidence": 0,
+      "family": "profit",
+      "family_confidence": 60,
+      "ratio_like": true,
+      "additive_candidate": false,
+      "format_string": "0.00%;-0.00%;0.00%",
+      "description": "",
+      "definition_available": true
+    },
+    "Measure 100": {
+      "name": "Measure 100",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "AA_MEASURE_TABLE",
+      "source_tables": [],
+      "column_refs": [],
+      "measure_refs": [],
+      "phase": null,
+      "phase_confidence": 0,
+      "family": "other",
+      "family_confidence": 0,
+      "ratio_like": true,
+      "additive_candidate": false,
+      "format_string": "0%;-0%;0%",
+      "description": "",
+      "definition_available": true
+    },
+    "Measure 2": {
+      "name": "Measure 2",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "MIS_DEEP_DIVE2",
+      "source_tables": [
+        "MIS_DEEP_DIVE2"
+      ],
+      "column_refs": [
+        {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "NET_SALE_VAL_CURRENT"
+        },
+        {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "CURRENT_YR_REVENUE"
+        },
+        {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "NET_SALE_VAL_CURRENT"
+        }
+      ],
+      "measure_refs": [],
+      "phase": "change",
+      "phase_confidence": 35,
+      "family": "revenue",
+      "family_confidence": 40,
+      "ratio_like": true,
+      "additive_candidate": false,
+      "format_string": "",
+      "description": "",
+      "definition_available": true
+    },
+    "Measure 1-contr": {
+      "name": "Measure 1-contr",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "AA_MEASURE_TABLE",
+      "source_tables": [],
+      "column_refs": [],
+      "measure_refs": [
+        "contribution cur"
+      ],
+      "phase": null,
+      "phase_confidence": 0,
+      "family": "other",
+      "family_confidence": 0,
+      "ratio_like": false,
+      "additive_candidate": false,
+      "format_string": "",
+      "description": "",
+      "definition_available": true
+    },
+    "Measure 0": {
+      "name": "Measure 0",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "AA_MEASURE_TABLE",
+      "source_tables": [],
+      "column_refs": [],
+      "measure_refs": [],
+      "phase": null,
+      "phase_confidence": 0,
+      "family": "other",
+      "family_confidence": 0,
+      "ratio_like": false,
+      "additive_candidate": false,
+      "format_string": "0",
+      "description": "",
+      "definition_available": true
+    },
+    "Measure": {
+      "name": "Measure",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "CAT_TABLE",
+      "source_tables": [
+        "CAT_TABLE"
+      ],
+      "column_refs": [
+        {
+          "table": "CAT_TABLE",
+          "column": "ABS1"
+        },
+        {
+          "table": "CAT_TABLE",
+          "column": "special_product_group_name"
+        }
+      ],
+      "measure_refs": [],
+      "phase": null,
+      "phase_confidence": 0,
+      "family": "other",
+      "family_confidence": 0,
+      "ratio_like": false,
+      "additive_candidate": true,
+      "format_string": "0",
+      "description": "",
+      "definition_available": true
+    },
+    "IND QTY PER TRANS DEEP DIVE": {
+      "name": "IND QTY PER TRANS DEEP DIVE",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "AA_MEASURE_TABLE",
+      "source_tables": [],
+      "column_refs": [],
+      "measure_refs": [
+        "QUANTITY PER TRANSACTION GROWTH"
+      ],
+      "phase": null,
+      "phase_confidence": 0,
+      "family": "quantity",
+      "family_confidence": 60,
+      "ratio_like": false,
+      "additive_candidate": false,
+      "format_string": "",
+      "description": "",
+      "definition_available": true
+    },
+    "contribution past": {
+      "name": "contribution past",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "AA_MEASURE_TABLE",
+      "source_tables": [],
+      "column_refs": [],
+      "measure_refs": [
+        "sum deg past rev",
+        "sum total past rev"
+      ],
+      "phase": "prior",
+      "phase_confidence": 90,
+      "family": "profit",
+      "family_confidence": 60,
+      "ratio_like": true,
+      "additive_candidate": false,
+      "format_string": "0.00%;-0.00%;0.00%",
+      "description": "",
+      "definition_available": true
+    },
+    "COUNT": {
+      "name": "COUNT",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "CAT_TABLE",
+      "source_tables": [
+        "CAT_TABLE"
+      ],
+      "column_refs": [
+        {
+          "table": "CAT_TABLE",
+          "column": "special_product_group_name"
+        }
+      ],
+      "measure_refs": [
+        "Measure"
+      ],
+      "phase": null,
+      "phase_confidence": 0,
+      "family": "other",
+      "family_confidence": 0,
+      "ratio_like": true,
+      "additive_candidate": false,
+      "format_string": "0",
+      "description": "",
+      "definition_available": true
+    },
+    "COUNT %": {
+      "name": "COUNT %",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "AA_MEASURE_TABLE",
+      "source_tables": [],
+      "column_refs": [],
+      "measure_refs": [
+        "COUNT",
+        "COUNT_TOTAL"
+      ],
+      "phase": null,
+      "phase_confidence": 0,
+      "family": "other",
+      "family_confidence": 0,
+      "ratio_like": true,
+      "additive_candidate": false,
+      "format_string": "0.00%;-0.00%;0.00%",
+      "description": "",
+      "definition_available": true
+    },
+    "COUNT_PLUS": {
+      "name": "COUNT_PLUS",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "AA_MEASURE_TABLE",
+      "source_tables": [],
+      "column_refs": [],
+      "measure_refs": [
+        "COUNT",
+        "COUNT_TOTAL"
+      ],
+      "phase": null,
+      "phase_confidence": 0,
+      "family": "other",
+      "family_confidence": 0,
+      "ratio_like": false,
+      "additive_candidate": false,
+      "format_string": "0",
+      "description": "",
+      "definition_available": true
+    },
+    "COUNT_TOTAL": {
+      "name": "COUNT_TOTAL",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "CAT_TABLE",
+      "source_tables": [
+        "CAT_TABLE"
+      ],
+      "column_refs": [
+        {
+          "table": "CAT_TABLE",
+          "column": "special_product_group_name"
+        }
+      ],
+      "measure_refs": [
+        "Measure"
+      ],
+      "phase": null,
+      "phase_confidence": 0,
+      "family": "other",
+      "family_confidence": 0,
+      "ratio_like": true,
+      "additive_candidate": false,
+      "format_string": "0",
+      "description": "",
+      "definition_available": true
+    },
+    "sum deg cur rev": {
+      "name": "sum deg cur rev",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "CAT_TABLE",
+      "source_tables": [
+        "CAT_TABLE"
+      ],
+      "column_refs": [
+        {
+          "table": "CAT_TABLE",
+          "column": "CURRENTREV"
+        },
+        {
+          "table": "CAT_TABLE",
+          "column": "special_product_group_name"
+        }
+      ],
+      "measure_refs": [
+        "Measure"
+      ],
+      "phase": null,
+      "phase_confidence": 0,
+      "family": "revenue",
+      "family_confidence": 60,
+      "ratio_like": false,
+      "additive_candidate": true,
+      "format_string": "",
+      "description": "",
+      "definition_available": true
+    },
+    "sum deg past rev": {
+      "name": "sum deg past rev",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "CAT_TABLE",
+      "source_tables": [
+        "CAT_TABLE"
+      ],
+      "column_refs": [
+        {
+          "table": "CAT_TABLE",
+          "column": "PREVIOUS"
+        },
+        {
+          "table": "CAT_TABLE",
+          "column": "special_product_group_name"
+        }
+      ],
+      "measure_refs": [
+        "Measure"
+      ],
+      "phase": "prior",
+      "phase_confidence": 90,
+      "family": "revenue",
+      "family_confidence": 60,
+      "ratio_like": false,
+      "additive_candidate": true,
+      "format_string": "",
+      "description": "",
+      "definition_available": true
+    },
+    "sum total cur rev": {
+      "name": "sum total cur rev",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "CAT_TABLE",
+      "source_tables": [
+        "CAT_TABLE"
+      ],
+      "column_refs": [
+        {
+          "table": "CAT_TABLE",
+          "column": "CURRENTREV"
+        }
+      ],
+      "measure_refs": [],
+      "phase": null,
+      "phase_confidence": 0,
+      "family": "revenue",
+      "family_confidence": 60,
+      "ratio_like": false,
+      "additive_candidate": true,
+      "format_string": "",
+      "description": "",
+      "definition_available": true
+    },
+    "sum total past rev": {
+      "name": "sum total past rev",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "CAT_TABLE",
+      "source_tables": [
+        "CAT_TABLE"
+      ],
+      "column_refs": [
+        {
+          "table": "CAT_TABLE",
+          "column": "PREVIOUS"
+        }
+      ],
+      "measure_refs": [],
+      "phase": "prior",
+      "phase_confidence": 90,
+      "family": "revenue",
+      "family_confidence": 60,
+      "ratio_like": false,
+      "additive_candidate": true,
+      "format_string": "",
+      "description": "",
+      "definition_available": true
+    },
+    "ABS_": {
+      "name": "ABS_",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "AA_MEASURE_TABLE",
+      "source_tables": [],
+      "column_refs": [],
+      "measure_refs": [
+        "REV_CURRENT",
+        "REV_PREV"
+      ],
+      "phase": null,
+      "phase_confidence": 0,
+      "family": "other",
+      "family_confidence": 0,
+      "ratio_like": false,
+      "additive_candidate": false,
+      "format_string": "",
+      "description": "",
+      "definition_available": true
+    },
+    "CATEGORY_NO": {
+      "name": "CATEGORY_NO",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "MIS_BASE_FILE_MONTHLY_BRAND_TB",
+      "source_tables": [
+        "MIS_BASE_FILE_MONTHLY_BRAND_TB"
+      ],
+      "column_refs": [
+        {
+          "table": "MIS_BASE_FILE_MONTHLY_BRAND_TB",
+          "column": "product_group_code"
+        }
+      ],
+      "measure_refs": [],
+      "phase": null,
+      "phase_confidence": 0,
+      "family": "other",
+      "family_confidence": 0,
+      "ratio_like": true,
+      "additive_candidate": false,
+      "format_string": "0",
+      "description": "",
+      "definition_available": true
+    },
+    "CURR_PRICE_BR": {
+      "name": "CURR_PRICE_BR",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "MIS_BASE_FILE_MONTHLY_BRAND_TB",
+      "source_tables": [
+        "MIS_BASE_FILE_MONTHLY_BRAND_TB"
+      ],
+      "column_refs": [
+        {
+          "table": "MIS_BASE_FILE_MONTHLY_BRAND_TB",
+          "column": "net_sale_val_current"
+        },
+        {
+          "table": "MIS_BASE_FILE_MONTHLY_BRAND_TB",
+          "column": "net_sales_qty_current"
+        }
+      ],
+      "measure_refs": [],
+      "phase": "current",
+      "phase_confidence": 90,
+      "family": "margin",
+      "family_confidence": 60,
+      "ratio_like": true,
+      "additive_candidate": false,
+      "format_string": "",
+      "description": "",
+      "definition_available": true
+    },
+    "IND": {
+      "name": "IND",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "AA_MEASURE_TABLE",
+      "source_tables": [],
+      "column_refs": [],
+      "measure_refs": [
+        "Percentage"
+      ],
+      "phase": null,
+      "phase_confidence": 0,
+      "family": "other",
+      "family_confidence": 0,
+      "ratio_like": false,
+      "additive_candidate": false,
+      "format_string": "",
+      "description": "",
+      "definition_available": true
+    },
+    "PAST_YEAR_RP": {
+      "name": "PAST_YEAR_RP",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "MIS_BASE_FILE_MONTHLY_BRAND_TB",
+      "source_tables": [
+        "MIS_BASE_FILE_MONTHLY_BRAND_TB"
+      ],
+      "column_refs": [
+        {
+          "table": "MIS_BASE_FILE_MONTHLY_BRAND_TB",
+          "column": "net_sale_val_ly"
+        },
+        {
+          "table": "MIS_BASE_FILE_MONTHLY_BRAND_TB",
+          "column": "net_sales_qty_ly"
+        }
+      ],
+      "measure_refs": [],
+      "phase": "prior",
+      "phase_confidence": 90,
+      "family": "revenue",
+      "family_confidence": 40,
+      "ratio_like": true,
+      "additive_candidate": false,
+      "format_string": "",
+      "description": "",
+      "definition_available": true
+    },
+    "Percentage": {
+      "name": "Percentage",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "AA_MEASURE_TABLE",
+      "source_tables": [],
+      "column_refs": [],
+      "measure_refs": [
+        "REV_CURRENT",
+        "REV_PREV"
+      ],
+      "phase": null,
+      "phase_confidence": 0,
+      "family": "margin",
+      "family_confidence": 60,
+      "ratio_like": true,
+      "additive_candidate": false,
+      "format_string": "0.00%;-0.00%;0.00%",
+      "description": "",
+      "definition_available": true
+    },
+    "PRICE DIFFERENCE": {
+      "name": "PRICE DIFFERENCE",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "AA_MEASURE_TABLE",
+      "source_tables": [],
+      "column_refs": [],
+      "measure_refs": [
+        "CURR_PRICE_BR",
+        "PAST_YEAR_RP"
+      ],
+      "phase": "change",
+      "phase_confidence": 100,
+      "family": "margin",
+      "family_confidence": 60,
+      "ratio_like": true,
+      "additive_candidate": false,
+      "format_string": "",
+      "description": "",
+      "definition_available": true
+    },
+    "REV_CURRENT": {
+      "name": "REV_CURRENT",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "MIS_BASE_FILE_MONTHLY_BRAND_TB",
+      "source_tables": [
+        "MIS_BASE_FILE_MONTHLY_BRAND_TB"
+      ],
+      "column_refs": [
+        {
+          "table": "MIS_BASE_FILE_MONTHLY_BRAND_TB",
+          "column": "NET_SALE_VAL_CURRENT"
+        }
+      ],
+      "measure_refs": [],
+      "phase": "current",
+      "phase_confidence": 90,
+      "family": "revenue",
+      "family_confidence": 80,
+      "ratio_like": false,
+      "additive_candidate": true,
+      "format_string": "",
+      "description": "",
+      "definition_available": true
+    },
+    "QTY_GRWTH%": {
+      "name": "QTY_GRWTH%",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "MIS_BASE_FILE_MONTHLY_BRAND_TB",
+      "source_tables": [
+        "MIS_BASE_FILE_MONTHLY_BRAND_TB"
+      ],
+      "column_refs": [
+        {
+          "table": "MIS_BASE_FILE_MONTHLY_BRAND_TB",
+          "column": "net_sales_qty_current"
+        },
+        {
+          "table": "MIS_BASE_FILE_MONTHLY_BRAND_TB",
+          "column": "net_sales_qty_ly"
+        }
+      ],
+      "measure_refs": [],
+      "phase": "change",
+      "phase_confidence": 100,
+      "family": "quantity",
+      "family_confidence": 80,
+      "ratio_like": true,
+      "additive_candidate": false,
+      "format_string": "0.0%;-0.0%;0.0%",
+      "description": "",
+      "definition_available": true
+    },
+    "REV_PREV": {
+      "name": "REV_PREV",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "MIS_BASE_FILE_MONTHLY_BRAND_TB",
+      "source_tables": [
+        "MIS_BASE_FILE_MONTHLY_BRAND_TB"
+      ],
+      "column_refs": [
+        {
+          "table": "MIS_BASE_FILE_MONTHLY_BRAND_TB",
+          "column": "net_sale_val_ly"
+        }
+      ],
+      "measure_refs": [],
+      "phase": "prior",
+      "phase_confidence": 90,
+      "family": "revenue",
+      "family_confidence": 80,
+      "ratio_like": false,
+      "additive_candidate": true,
+      "format_string": "",
+      "description": "",
+      "definition_available": true
+    },
+    "CF022_AccessText": {
+      "name": "CF022_AccessText",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "AA_MEASURE_TABLE",
+      "source_tables": [],
+      "column_refs": [],
+      "measure_refs": [
+        "ShowButton_CF022_v1"
+      ],
+      "phase": null,
+      "phase_confidence": 0,
+      "family": "other",
+      "family_confidence": 0,
+      "ratio_like": false,
+      "additive_candidate": false,
+      "format_string": "",
+      "description": "",
+      "definition_available": true
+    },
+    "ShowButton_CF022_v1": {
+      "name": "ShowButton_CF022_v1",
+      "home_table": "AA_MEASURE_TABLE",
+      "source_table": "MIS_DEEP_DIVE2",
+      "source_tables": [
+        "MIS_DEEP_DIVE2"
+      ],
+      "column_refs": [
+        {
+          "table": "MIS_DEEP_DIVE2",
+          "column": "store_no"
+        }
+      ],
+      "measure_refs": [
+        "store_no"
+      ],
+      "phase": null,
+      "phase_confidence": 0,
+      "family": "other",
+      "family_confidence": 0,
+      "ratio_like": false,
+      "additive_candidate": false,
+      "format_string": "0",
+      "description": "",
+      "definition_available": true
+    }
+  },
+  "fact_table": "MIS_DEEP_DIVE2",
+  "entity_dimension": {
+    "table": "MIS_DEEP_DIVE2",
+    "column": "store_no",
+    "reference": "'MIS_DEEP_DIVE2'[store_no]",
+    "data_type": "Text",
+    "category": "categorical",
+    "relationship_distance": 0,
+    "score": 70,
+    "entity_score": 170
+  },
+  "dimensions": [
+    {
+      "table": "MIS_DEEP_DIVE2",
+      "column": "special_product_group_name",
+      "reference": "'MIS_DEEP_DIVE2'[special_product_group_name]",
+      "data_type": "Text",
+      "category": "categorical",
+      "relationship_distance": 0,
+      "score": 85
+    },
+    {
+      "table": "MIS_DEEP_DIVE2",
+      "column": "product_group_name",
+      "reference": "'MIS_DEEP_DIVE2'[product_group_name]",
+      "data_type": "Text",
+      "category": "categorical",
+      "relationship_distance": 0,
+      "score": 85
+    },
+    {
+      "table": "MIS_DEEP_DIVE2",
+      "column": "item_category_name",
+      "reference": "'MIS_DEEP_DIVE2'[item_category_name]",
+      "data_type": "Text",
+      "category": "categorical",
+      "relationship_distance": 0,
+      "score": 85
+    },
+    {
+      "table": "MIS_DEEP_DIVE2",
+      "column": "division_name",
+      "reference": "'MIS_DEEP_DIVE2'[division_name]",
+      "data_type": "Text",
+      "category": "categorical",
+      "relationship_distance": 0,
+      "score": 85
+    },
+    {
+      "table": "MIS_DEEP_DIVE2",
+      "column": "store_no",
+      "reference": "'MIS_DEEP_DIVE2'[store_no]",
+      "data_type": "Text",
+      "category": "categorical",
+      "relationship_distance": 0,
+      "score": 70
+    },
+    {
+      "table": "CAT_TABLE",
+      "column": "special_product_group_name",
+      "reference": "'CAT_TABLE'[special_product_group_name]",
+      "data_type": "Text",
+      "category": "categorical",
+      "relationship_distance": 1,
+      "score": 55
+    },
+    {
+      "table": "MIS_DEEP_DIVE2",
+      "column": "special_product_group",
+      "reference": "'MIS_DEEP_DIVE2'[special_product_group]",
+      "data_type": "Text",
+      "category": "categorical",
+      "relationship_distance": 0,
+      "score": 50
+    },
+    {
+      "table": "MIS_BASE_FILE_MONTHLY_BRAND_TB",
+      "column": "special_product_group_name",
+      "reference": "'MIS_BASE_FILE_MONTHLY_BRAND_TB'[special_product_group_name]",
+      "data_type": "Text",
+      "category": "categorical",
+      "relationship_distance": 2,
+      "score": 45
+    },
+    {
+      "table": "MIS_BASE_FILE_MONTHLY_BRAND_TB",
+      "column": "product_group_name",
+      "reference": "'MIS_BASE_FILE_MONTHLY_BRAND_TB'[product_group_name]",
+      "data_type": "Text",
+      "category": "categorical",
+      "relationship_distance": 2,
+      "score": 45
+    },
+    {
+      "table": "MIS_BASE_FILE_MONTHLY_BRAND_TB",
+      "column": "item_category_name",
+      "reference": "'MIS_BASE_FILE_MONTHLY_BRAND_TB'[item_category_name]",
+      "data_type": "Text",
+      "category": "categorical",
+      "relationship_distance": 2,
+      "score": 45
+    },
+    {
+      "table": "MIS_BASE_FILE_MONTHLY_BRAND_TB",
+      "column": "division_name",
+      "reference": "'MIS_BASE_FILE_MONTHLY_BRAND_TB'[division_name]",
+      "data_type": "Text",
+      "category": "categorical",
+      "relationship_distance": 2,
+      "score": 45
+    },
+    {
+      "table": "CAT_TRANSACTIONS",
+      "column": "special_product_group_name",
+      "reference": "'CAT_TRANSACTIONS'[special_product_group_name]",
+      "data_type": "Text",
+      "category": "categorical",
+      "relationship_distance": 2,
+      "score": 45
+    },
+    {
+      "table": "CAT_TRANSACTIONS",
+      "column": "product_group_name",
+      "reference": "'CAT_TRANSACTIONS'[product_group_name]",
+      "data_type": "Text",
+      "category": "categorical",
+      "relationship_distance": 2,
+      "score": 45
+    },
+    {
+      "table": "CAT_TABLE",
+      "column": "store_no",
+      "reference": "'CAT_TABLE'[store_no]",
+      "data_type": "Text",
+      "category": "categorical",
+      "relationship_distance": 1,
+      "score": 40
+    },
+    {
+      "table": "MIS_BASE_FILE_MONTHLY_BRAND_TB",
+      "column": "store_no",
+      "reference": "'MIS_BASE_FILE_MONTHLY_BRAND_TB'[store_no]",
+      "data_type": "Text",
+      "category": "categorical",
+      "relationship_distance": 2,
+      "score": 30
+    },
+    {
+      "table": "CAT_TRANSACTIONS",
+      "column": "store_no",
+      "reference": "'CAT_TRANSACTIONS'[store_no]",
+      "data_type": "Text",
+      "category": "categorical",
+      "relationship_distance": 2,
+      "score": 30
+    },
+    {
+      "table": "CAT_TABLE",
+      "column": "sec",
+      "reference": "'CAT_TABLE'[sec]",
+      "data_type": "Text",
+      "category": "categorical",
+      "relationship_distance": 1,
+      "score": 20
+    },
+    {
+      "table": "CAT_TABLE",
+      "column": "keyyy",
+      "reference": "'CAT_TABLE'[keyyy]",
+      "data_type": "Text",
+      "category": "categorical",
+      "relationship_distance": 1,
+      "score": 20
+    },
+    {
+      "table": "CAT_TABLE",
+      "column": "dep",
+      "reference": "'CAT_TABLE'[dep]",
+      "data_type": "Text",
+      "category": "categorical",
+      "relationship_distance": 1,
+      "score": 20
+    },
+    {
+      "table": "CAT_TABLE",
+      "column": "COUNT_CAT_TABLE",
+      "reference": "'CAT_TABLE'[COUNT_CAT_TABLE]",
+      "data_type": "Text",
+      "category": "categorical",
+      "relationship_distance": 1,
+      "score": 20
+    },
+    {
+      "table": "ODS",
+      "column": "odsKey",
+      "reference": "'ODS'[odsKey]",
+      "data_type": "Text",
+      "category": "categorical",
+      "relationship_distance": 2,
+      "score": 10
+    },
+    {
+      "table": "MIS_BASE_FILE_MONTHLY_BRAND_TB",
+      "column": "special_product_group",
+      "reference": "'MIS_BASE_FILE_MONTHLY_BRAND_TB'[special_product_group]",
+      "data_type": "Text",
+      "category": "categorical",
+      "relationship_distance": 2,
+      "score": 10
+    },
+    {
+      "table": "MIS_BASE_FILE_MONTHLY_BRAND_TB",
+      "column": "item_family",
+      "reference": "'MIS_BASE_FILE_MONTHLY_BRAND_TB'[item_family]",
+      "data_type": "Text",
+      "category": "categorical",
+      "relationship_distance": 2,
+      "score": 10
+    },
+    {
+      "table": "CAT_TRANSACTIONS",
+      "column": "special_product_group",
+      "reference": "'CAT_TRANSACTIONS'[special_product_group]",
+      "data_type": "Text",
+      "category": "categorical",
+      "relationship_distance": 2,
+      "score": 10
+    }
+  ],
+  "time_dimensions": [
+    {
+      "table": "MIS_DEEP_DIVE2",
+      "column": "max_date",
+      "reference": "'MIS_DEEP_DIVE2'[max_date]",
+      "data_type": "Date",
+      "category": "date",
+      "relationship_distance": 0,
+      "score": 120
+    },
+    {
+      "table": "MIS_BASE_FILE_MONTHLY_BRAND_TB",
+      "column": "max_date",
+      "reference": "'MIS_BASE_FILE_MONTHLY_BRAND_TB'[max_date]",
+      "data_type": "Date",
+      "category": "date",
+      "relationship_distance": 2,
+      "score": 100
+    },
+    {
+      "table": "MIS_DEEP_DIVE2",
+      "column": "Month",
+      "reference": "'MIS_DEEP_DIVE2'[Month]",
+      "data_type": "Integer",
+      "category": "numeric",
+      "relationship_distance": 0,
+      "score": 70
+    },
+    {
+      "table": "MIS_BASE_FILE_MONTHLY_BRAND_TB",
+      "column": "Month",
+      "reference": "'MIS_BASE_FILE_MONTHLY_BRAND_TB'[Month]",
+      "data_type": "Integer",
+      "category": "numeric",
+      "relationship_distance": 2,
+      "score": 50
+    },
+    {
+      "table": "MIS_BASE_FILE_MONTHLY_BRAND_TB",
+      "column": "MONTH_NAME",
+      "reference": "'MIS_BASE_FILE_MONTHLY_BRAND_TB'[MONTH_NAME]",
+      "data_type": "Text",
+      "category": "categorical",
+      "relationship_distance": 2,
+      "score": 50
+    },
+    {
+      "table": "CAT_TRANSACTIONS",
+      "column": "Month",
+      "reference": "'CAT_TRANSACTIONS'[Month]",
+      "data_type": "Integer",
+      "category": "numeric",
+      "relationship_distance": 2,
+      "score": 50
+    },
+    {
+      "table": "CAT_TABLE",
+      "column": "Month",
+      "reference": "'CAT_TABLE'[Month]",
+      "data_type": "Integer",
+      "category": "numeric",
+      "relationship_distance": 1,
+      "score": 50
+    }
+  ],
+  "warnings": []
+}
