@@ -812,6 +812,27 @@ _PUBLISHING: tuple[ConfigKey, ...] = (
        "ai_content_multi_report_feed is on; otherwise each report publishes its own "
        "insight_max_new_per_run cards.",
        in_state=False, tier="expert"),
+    _k("ai_content_kpi_card_fields", "bool", False, "publishing",
+       "Add the extended KPI tile fields",
+       "Turn this on only after your app has been updated to read them. It adds a human-readable "
+       "name, a raw number with its currency or unit, which direction of movement is good, a "
+       "structured comparison, a target with percent-to-target, a share-of-total percent, and a "
+       "rank to every card - on top of the fields already there today. With it off, cards look "
+       "exactly as they do today.",
+       "Adds label/rawValue/unit/valueType/goodDirection/comparison/target/shareOfTotalPct/rank to "
+       "every KpiCard, each present only when the underlying signal actually supports it - never a "
+       "guessed unit or direction. OFF reproduces today's payload byte-for-byte. See "
+       "kpi-tile-schema-proposal.md and docs/phase5-app-contract-change.md for the rollout pattern "
+       "this follows.",
+       tier="expert"),
+    _k("ai_content_kpi_currency", "string", "SAR", "publishing",
+       "Currency for KPI tiles with no report-specific currency set",
+       "The currency code shown on a KPI card's raw figure, for a report that has no currency "
+       "setting of its own (Target Tracker, Ageing, Inventory Management, Daily Sales and SKU "
+       "Overview already have one each). Only used when ai_content_kpi_card_fields is on.",
+       "Fallback read by api_payloads._kpi_currency when report_id has no entry in "
+       "_CURRENCY_CONFIG_KEY_BY_REPORT - currently just the original Sales YoY report.",
+       tier="expert"),
     _k("api_summary_title", "string", "AI Summary", "publishing",
        "Title shown above the summary",
        "The heading your readers see, for example 'Sales vs Last Year'.",

@@ -255,6 +255,7 @@ def main(argv=None) -> int:
                  "model": cfg.get("model"), "max_tokens": cfg.get("max_tokens"),
                  "report_id": cfg.get("report_id", "inventory_ageing"),
                  "ai_content_multi_report_feed": True,
+                 "ai_content_kpi_card_fields": cfg.get("ai_content_kpi_card_fields", False),
                  "output_folder": str(out)}
         try:
             cards = api_payloads.generate_kpi_insights_payload(limited, state)

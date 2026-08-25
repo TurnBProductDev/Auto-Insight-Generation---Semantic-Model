@@ -741,6 +741,39 @@ end-to-end two-report publish against an in-memory container) and
 synthetic mid-period states, exposure-weighted ranking). Both mutation-tested: reverting the
 merge fix, emitting `reportId` unconditionally, keeping the sequence id, classifying a
 missing target as a miss, and dropping the exposure weighting each produce precise failures.
+- **Extended KPI tile fields (`kpi-tile-schema-proposal.md`) ship behind
+`ai_content_kpi_card_fields`** (code default `false`, same rollout shape as `reportId`
+above). Nine additive fields on `_assemble_kpi_card`'s output - `label`, `rawValue`, `unit`,
+`valueType`, `goodDirection`, `comparison{type,label,baselineValue}`,
+`target{value,attainmentPct}`, `shareOfTotalPct`, `rank` - each present only when the
+underlying signal actually supports it. `unit`/`valueType`/`goodDirection` resolve from the
+domain's own declared `metric_family` (`revenue`/`stock_value`/`quantity`/`transactions`),
+falling back to the prose-keyword `family` bucket, and stay absent on the catch-all
+"Performance" bucket rather than guess - the exact failure class the "STOCK OUT ... performance
+increased by 17.8K" bug above already showed, now generalized into a rule: no unit or
+direction is asserted for a family the classifier can't resolve. `label` is a template
+(dimension + segment + metric name), not a lookup - this pipeline's segment codes (`ST2`,
+`CFH017`, ...) are their own identity, there is no separate display name anywhere to resolve.
+`comparison.type` adds two values beyond the proposal's own five
+(`peer_comparison`, `other`) for comparison kinds this pipeline produces that the proposal's
+enum didn't anticipate; `shareOfTotalPct` is emitted only on a genuine
+`share_of_total` card, never from an unrelated percentage a signal happens to also carry (a
+Target Tracker attainment gap, for instance). `period` (multi-grain), `series` (sparkline)
+and `thresholds` (RAG bands) are deliberately **not** shipped here - each needs new
+aggregation this pipeline doesn't do today or a business decision only the app side can make,
+not just a new field. `docs/kpi-tile-fields-app-contract.md` is the handoff doc, mirroring
+`docs/phase5-app-contract-change.md`'s shape, with the full field table, what's deferred and
+why, and the same two-sided rollout order.
+- **Verification:** `scripts/replay_kpi_card_fields.py` - offline, no auth/LLM: flag-off
+byte-identity, the `label` template incl. a whole-population dimension not self-prefixing and
+a missing segment dropping the field entirely, `rawValue` vs the formatted `value` string,
+`unit`/`valueType` resolving per report and per declared `metric_family` (incl. the
+catch-all "Performance" bucket getting neither), `goodDirection` per family with the
+declared-field override winning, every `comparison` branch's type/chip/baseline (target,
+calendar and rolling week-over-week, daily incident vs expected, peer outlier, year-on-year,
+share-of-total), the target-tracker-attainment-gap-vs-shareOfTotalPct non-collision, `target`
+attainment matching the proposal's own 88.9% worked example plus a declared `attainment_pct`
+winning outright, `rank`, and the config catalogue/state-default wiring.
 
 #### Inventory Management: the daily pipeline (P5.3)
 
