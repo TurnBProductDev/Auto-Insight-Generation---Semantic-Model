@@ -1,0 +1,51 @@
+[
+  {
+    "name": "comparable_monthly_yoy_summary",
+    "purpose": "Show the monthly year-on-year summary for the comparable store population using the business month axis.",
+    "intent": "Summarize by 'MIS_DEEP_DIVE2'[Month] for only the comparable stores in resolved_entity_scope.active_comparable_population ('ST4','ST1','ST3','ST2','ST5'), returning [net revenue CURRENT], [net revenue PAST], [revenue Growth], [revenue growth %], [net qty CURRENT], [net qty PAST], [QTY Growth], [QTY GROWTH %], [net bills CURRENT], [bills growth], and [bills growth %]. Limit to 15 rows and sort by 'MIS_DEEP_DIVE2'[Month] DESC. This uses the business month axis and avoids using 'MIS_DEEP_DIVE2'[max_date] for trading period analysis.",
+    "dax": "EVALUATE\nTOPN(\n    15,\n    SUMMARIZECOLUMNS(\n        'MIS_DEEP_DIVE2'[Month],\n        TREATAS(\n            {\"ST4\",\"ST1\",\"ST3\",\"ST2\",\"ST5\"},\n            'MIS_DEEP_DIVE2'[store_no]\n        ),\n        \"net revenue CURRENT\", [net revenue CURRENT],\n        \"net revenue PAST\", [net revenue PAST],\n        \"revenue Growth\", [revenue Growth],\n        \"revenue growth %\", [revenue growth %],\n        \"net qty CURRENT\", [net qty CURRENT],\n        \"net qty PAST\", [net qty PAST],\n        \"QTY Growth\", [QTY Growth],\n        \"QTY GROWTH %\", [QTY GROWTH %],\n        \"net bills CURRENT\", [net bills CURRENT],\n        \"bills growth\", [bills growth],\n        \"bills growth %\", [bills growth %]\n    ),\n    'MIS_DEEP_DIVE2'[Month], DESC\n)",
+    "status": "valid"
+  },
+  {
+    "name": "latest_load_dates",
+    "purpose": "Confirm the latest available batch/load dates that frame the reporting cut-off.",
+    "intent": "Return one row with MAX of 'MIS_DEEP_DIVE2'[max_date], MAX of 'MIS_BASE_FILE_MONTHLY_BRAND_TB'[max_date], and MAX of 'Latest_Refresh_Table'[MaxRefreshDate], with no grouping. This is for reporting cut-off context only and not for daily trading analysis.",
+    "dax": "EVALUATE\nROW(\n    \"MIS_DEEP_DIVE2 max_date\", FORMAT(MAX('MIS_DEEP_DIVE2'[max_date]), \"yyyy-mm-dd hh:nn\"),\n    \"MIS_BASE_FILE_MONTHLY_BRAND_TB max_date\", FORMAT(MAX('MIS_BASE_FILE_MONTHLY_BRAND_TB'[max_date]), \"yyyy-mm-dd hh:nn\"),\n    \"Latest_Refresh_Table MaxRefreshDate\", FORMAT(MAX('Latest_Refresh_Table'[MaxRefreshDate]), \"yyyy-mm-dd hh:nn\")\n)",
+    "status": "valid"
+  },
+  {
+    "name": "store_comparable_ranking",
+    "purpose": "Rank comparable stores by current revenue with current, prior, and growth metrics together.",
+    "intent": "Summarize by 'MIS_DEEP_DIVE2'[store_no] for only the comparable stores in resolved_entity_scope.active_comparable_population ('ST4','ST1','ST3','ST2','ST5'), returning [net revenue CURRENT], [net revenue PAST], [revenue Growth], [revenue growth %], [net qty CURRENT], [net qty PAST], [QTY Growth], [QTY GROWTH %], [net bills CURRENT], [bills growth], and [bills growth %]. Limit to 15 rows and sort by [net revenue CURRENT] DESC.",
+    "dax": "EVALUATE\nTOPN(\n    15,\n    SUMMARIZECOLUMNS(\n        'MIS_DEEP_DIVE2'[store_no],\n        TREATAS({\"ST4\",\"ST1\",\"ST3\",\"ST2\",\"ST5\"}, 'MIS_DEEP_DIVE2'[store_no]),\n        \"net revenue CURRENT\", [net revenue CURRENT],\n        \"net revenue PAST\", [net revenue PAST],\n        \"revenue Growth\", [revenue Growth],\n        \"revenue growth %\", [revenue growth %],\n        \"net qty CURRENT\", [net qty CURRENT],\n        \"net qty PAST\", [net qty PAST],\n        \"QTY Growth\", [QTY Growth],\n        \"QTY GROWTH %\", [QTY GROWTH %],\n        \"net bills CURRENT\", [net bills CURRENT],\n        \"bills growth\", [bills growth],\n        \"bills growth %\", [bills growth %]\n    ),\n    [net revenue CURRENT], DESC\n)",
+    "status": "valid"
+  },
+  {
+    "name": "store_month_matrix",
+    "purpose": "Show which comparable stores drove the most recent monthly revenue positions across months.",
+    "intent": "Summarize by 'MIS_DEEP_DIVE2'[Month] and 'MIS_DEEP_DIVE2'[store_no] for only the comparable stores in resolved_entity_scope.active_comparable_population ('ST4','ST1','ST3','ST2','ST5'), returning [net revenue CURRENT], [net revenue PAST], [revenue Growth], [net qty CURRENT], [net qty PAST], [QTY Growth], [net bills CURRENT], and [bills growth]. Limit to 15 row combinations and sort first by 'MIS_DEEP_DIVE2'[Month] DESC, then by [net revenue CURRENT] DESC.",
+    "dax": "EVALUATE\nTOPN(\n    15,\n    FILTER(\n        SUMMARIZECOLUMNS(\n            'MIS_DEEP_DIVE2'[Month],\n            'MIS_DEEP_DIVE2'[store_no],\n            \"net revenue CURRENT\", [net revenue CURRENT],\n            \"net revenue PAST\", [net revenue PAST],\n            \"revenue Growth\", [revenue Growth],\n            \"net qty CURRENT\", [net qty CURRENT],\n            \"net qty PAST\", [net qty PAST],\n            \"QTY Growth\", [QTY Growth],\n            \"net bills CURRENT\", [net bills CURRENT],\n            \"bills growth\", [bills growth]\n        ),\n        'MIS_DEEP_DIVE2'[store_no] IN {\"ST4\",\"ST1\",\"ST3\",\"ST2\",\"ST5\"}\n    ),\n    'MIS_DEEP_DIVE2'[Month], DESC,\n    [net revenue CURRENT], DESC\n)",
+    "status": "valid"
+  },
+  {
+    "name": "division_contribution_ranking",
+    "purpose": "Show the leading divisions by current revenue for the comparable store population at the non-mirrored merchandise level.",
+    "intent": "Summarize by 'MIS_DEEP_DIVE2'[division_name] for only the comparable stores in resolved_entity_scope.active_comparable_population ('ST4','ST1','ST3','ST2','ST5'), returning [net revenue CURRENT], [net revenue PAST], [revenue Growth], [revenue growth %], [net qty CURRENT], [net qty PAST], [QTY Growth], [QTY GROWTH %], [net bills CURRENT], [bills growth], and [bills growth %]. Limit to 15 rows and sort by [net revenue CURRENT] DESC. Use Division and do not repeat mirrored Department findings.",
+    "dax": "EVALUATE\nTOPN(\n    15,\n    SUMMARIZECOLUMNS(\n        'MIS_DEEP_DIVE2'[division_name],\n        TREATAS(\n            {\"ST4\",\"ST1\",\"ST3\",\"ST2\",\"ST5\"},\n            'MIS_DEEP_DIVE2'[store_no]\n        ),\n        \"net revenue CURRENT\", [net revenue CURRENT],\n        \"net revenue PAST\", [net revenue PAST],\n        \"revenue Growth\", [revenue Growth],\n        \"revenue growth %\", [revenue growth %],\n        \"net qty CURRENT\", [net qty CURRENT],\n        \"net qty PAST\", [net qty PAST],\n        \"QTY Growth\", [QTY Growth],\n        \"QTY GROWTH %\", [QTY GROWTH %],\n        \"net bills CURRENT\", [net bills CURRENT],\n        \"bills growth\", [bills growth],\n        \"bills growth %\", [bills growth %]\n    ),\n    [net revenue CURRENT], DESC\n)",
+    "status": "valid"
+  },
+  {
+    "name": "section_contribution_ranking",
+    "purpose": "Show the leading sections by current revenue for the comparable store population at the non-mirrored merchandise level.",
+    "intent": "Summarize by 'MIS_DEEP_DIVE2'[item_category_name] for only the comparable stores in resolved_entity_scope.active_comparable_population ('ST4','ST1','ST3','ST2','ST5'), returning [net revenue CURRENT], [net revenue PAST], [revenue Growth], [revenue growth %], [net qty CURRENT], [net qty PAST], [QTY Growth], [QTY GROWTH %], [net bills CURRENT], [bills growth], and [bills growth %]. Limit to 15 rows and sort by [net revenue CURRENT] DESC. Use Section and do not repeat mirrored Category findings.",
+    "dax": "EVALUATE\nTOPN(\n    15,\n    SUMMARIZECOLUMNS(\n        'MIS_DEEP_DIVE2'[item_category_name],\n        TREATAS(\n            {\"ST4\",\"ST1\",\"ST3\",\"ST2\",\"ST5\"},\n            'MIS_DEEP_DIVE2'[store_no]\n        ),\n        \"net revenue CURRENT\", [net revenue CURRENT],\n        \"net revenue PAST\", [net revenue PAST],\n        \"revenue Growth\", [revenue Growth],\n        \"revenue growth %\", [revenue growth %],\n        \"net qty CURRENT\", [net qty CURRENT],\n        \"net qty PAST\", [net qty PAST],\n        \"QTY Growth\", [QTY Growth],\n        \"QTY GROWTH %\", [QTY GROWTH %],\n        \"net bills CURRENT\", [net bills CURRENT],\n        \"bills growth\", [bills growth],\n        \"bills growth %\", [bills growth %]\n    ),\n    [net revenue CURRENT], DESC\n)",
+    "status": "valid"
+  },
+  {
+    "name": "store_by_division_cross",
+    "purpose": "Identify the largest store-by-division combinations by current revenue within the comparable scope.",
+    "intent": "Summarize by 'MIS_DEEP_DIVE2'[store_no] and 'MIS_DEEP_DIVE2'[division_name] for only the comparable stores in resolved_entity_scope.active_comparable_population ('ST4','ST1','ST3','ST2','ST5'), returning [net revenue CURRENT], [net revenue PAST], [revenue Growth], [net qty CURRENT], [net qty PAST], [QTY Growth], [net bills CURRENT], and [bills growth]. Limit to 15 row combinations and sort by [net revenue CURRENT] DESC.",
+    "dax": "EVALUATE\nTOPN(\n    15,\n    SUMMARIZECOLUMNS(\n        'MIS_DEEP_DIVE2'[store_no],\n        'MIS_DEEP_DIVE2'[division_name],\n        TREATAS({\"ST4\",\"ST1\",\"ST3\",\"ST2\",\"ST5\"}, 'MIS_DEEP_DIVE2'[store_no]),\n        \"net revenue CURRENT\", [net revenue CURRENT],\n        \"net revenue PAST\", [net revenue PAST],\n        \"revenue Growth\", [revenue Growth],\n        \"net qty CURRENT\", [net qty CURRENT],\n        \"net qty PAST\", [net qty PAST],\n        \"QTY Growth\", [QTY Growth],\n        \"net bills CURRENT\", [net bills CURRENT],\n        \"bills growth\", [bills growth]\n    ),\n    [net revenue CURRENT], DESC,\n    'MIS_DEEP_DIVE2'[store_no], ASC,\n    'MIS_DEEP_DIVE2'[division_name], ASC\n)",
+    "status": "valid"
+  }
+]

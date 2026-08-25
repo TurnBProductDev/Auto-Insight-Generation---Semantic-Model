@@ -198,9 +198,9 @@
                 {
                   "label": "Aged share of units",
                   "note": "The same question counted in units instead of money.",
-                  "then_pct": 14.904903136868345,
+                  "then_pct": 14.904903136868347,
                   "now_pct": 18.058437664205755,
-                  "points": 3.15353452733741,
+                  "points": 3.153534527337408,
                   "movement": "3.2 points higher",
                   "direction": "worse",
                   "tone": "critical"
@@ -404,7 +404,7 @@
               "title": "Since yesterday's reading",
               "sub": "compared with the position this report kept on its last run",
               "available": false,
-              "reason": "This is the first stock position kept for this report, so nothing is compared against an earlier day. Figures describe today only.",
+              "reason": "The dashboard still reports the same position date as the last copy kept, so there is no movement to report. Figures describe that position only.",
               "window": "",
               "verdict": "",
               "verdict_tone": "neutral",

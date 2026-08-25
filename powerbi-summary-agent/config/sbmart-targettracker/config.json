@@ -7,7 +7,7 @@
   "tenant_id": "315642c5-e14a-4c12-bf77-41ee070def79",
   "workspace_id": "2829a4af-2e07-4b43-b913-0a829a06bef4",
   "dataset_id": "a07384e3-639e-47ec-a0e0-846f20c39951",
-  "output_folder": "outputs",
+  "output_folder": "outputs_sbmart_targettracker",
   "target_tracker_population": [
     "ST1",
     "ST2",

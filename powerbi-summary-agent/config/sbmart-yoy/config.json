@@ -2,7 +2,7 @@
   "tenant_id": "315642c5-e14a-4c12-bf77-41ee070def79",
   "workspace_id": "2829a4af-2e07-4b43-b913-0a829a06bef4",
   "dataset_id": "a737de5a-fcf8-46cf-94da-839d8df5e39b",
-  "output_folder": "outputs",
+  "output_folder": "outputs_sbmart_yoy",
   "summary_word_limit": 800,
   "fresh_summary_enabled": true,
   "fresh_summary_max_words": 420,
@@ -154,4 +154,3 @@
   "ai_content_multi_report_feed": true,
   "ai_content_feed_max_cards": 10
 }
-

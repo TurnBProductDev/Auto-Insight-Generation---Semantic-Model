@@ -1,0 +1,22 @@
+{
+  "detected": 94,
+  "suppressed": 0,
+  "eligible": 50,
+  "selected": 4,
+  "policy": "never_repeat",
+  "reason": "ok",
+  "memory_status": "ok",
+  "level_breakdown": {
+    "high": 50
+  },
+  "watermark": "2026-08-23",
+  "period_anchor": "2026-08",
+  "resurfaced": 0,
+  "rolling_unavailable": false,
+  "unseen": 94,
+  "cap_dropped": 44,
+  "rate_detected": 0,
+  "rate_reserved": false,
+  "rate_resurfaced": 0,
+  "reserved_relative_id": null
+}

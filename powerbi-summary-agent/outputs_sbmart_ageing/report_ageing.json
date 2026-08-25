@@ -561,10 +561,10 @@
     },
     "then": {
       "aged_value": 1800095.1057000002,
-      "aged_qty": 1550606.3013199999,
+      "aged_qty": 1550606.30132,
       "high_risk_value": 1041781.0302,
       "aged_value_share_pct": 12.861507359213164,
-      "aged_qty_share_pct": 14.904903136868345,
+      "aged_qty_share_pct": 14.904903136868347,
       "high_risk_share_pct": 7.443425819101693,
       "total_value": 13995988.6149,
       "total_qty": 10403330.28052,
@@ -585,8 +585,8 @@
         "key": "aged_qty_share",
         "label": "Aged share of units",
         "now_pct": 18.058437664205755,
-        "then_pct": 14.904903136868345,
-        "points": 3.15353452733741,
+        "then_pct": 14.904903136868347,
+        "points": 3.153534527337408,
         "direction": "worse",
         "note": "The same question counted in units instead of money."
       },
@@ -1937,12 +1937,12 @@
     "available": false,
     "lane": "day_on_day",
     "as_at": "2026-08-23",
-    "reason": "This is the first stock position kept for this report, so nothing is compared against an earlier day. Figures describe today only."
+    "reason": "The dashboard still reports the same position date as the last copy kept, so there is no movement to report. Figures describe that position only."
   },
   "trend_verdict": {
     "metric": "ageing_band",
     "comparable": false,
-    "reason_text": "This is the first stock position kept for this report, so nothing is compared against an earlier day. Figures describe today only.",
+    "reason_text": "The dashboard still reports the same position date as the last copy kept, so there is no movement to report. Figures describe that position only.",
     "history_days": 0,
     "statistical": false,
     "min_history_days": 5

@@ -2504,7 +2504,7 @@
   "trend_verdict": {
     "metric": "recommended_action_state",
     "comparable": false,
-    "reason_text": "This is the first stock position kept for this report, so nothing is compared against an earlier day. Figures describe today only.",
+    "reason_text": "The dashboard still reports the same position date as the last copy kept, so there is no movement to report. Figures describe that position only.",
     "history_days": 0,
     "statistical": false,
     "min_history_days": 5

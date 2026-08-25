@@ -1,0 +1,286 @@
+{
+  "focus_key": "focus:v2:07ef6b2147d335041757f572ef02c94aab14578f24be1e5f1eaec2ffad8bf24e",
+  "candidate_id": "summary_07ef6b2147d3",
+  "segment": "TOYS",
+  "dimension_role": "section",
+  "sections": {
+    "scorecard": {
+      "source": "targeted_dax",
+      "metrics": {
+        "revenue": {
+          "current": 703714.4919,
+          "prior": 600758.9127,
+          "change": 102955.57920000004,
+          "change_pct": 17.137586646411155
+        },
+        "quantity": {
+          "current": 196774.0,
+          "prior": 170854.0,
+          "change": 25920.0,
+          "change_pct": 15.170847624287404
+        },
+        "transactions": {
+          "current": 116254.0,
+          "prior": 100977.0,
+          "change": 15277.0,
+          "change_pct": 15.12918783485348
+        }
+      }
+    },
+    "internal_contributors": [
+      {
+        "dimension": "item_category_name",
+        "reference": "'MIS_DEEP_DIVE2'[item_category_name]",
+        "hierarchy_role": "category",
+        "discovery_source": "metadata",
+        "hierarchy_checks": {
+          "semantic_order": true,
+          "relationship_path": true,
+          "parent_filters_child": true,
+          "filter_effect_observed": true,
+          "nestedness": true,
+          "reconciles_to_parent": true,
+          "focus_total": 703714.4919,
+          "unfiltered_total": 41206710.5199
+        },
+        "rows": [
+          {
+            "item_category_name": "TOYS",
+            "revenue_current": 703714.4919,
+            "revenue_prior": 600758.9127,
+            "revenue_change": 102955.57920000004
+          }
+        ],
+        "completeness": "complete",
+        "top_positive": {
+          "member": "TOYS",
+          "change": 102955.57920000004
+        },
+        "top_negative": null
+      }
+    ],
+    "location": {
+      "dimension": "store_no",
+      "rows": [
+        {
+          "store_no": "ST1",
+          "revenue_current": 190269.1809,
+          "revenue_prior": 191829.7998,
+          "revenue_change": -1560.6189000000013,
+          "abs_sort": 1560.6189000000013
+        },
+        {
+          "store_no": "ST2",
+          "revenue_current": 77154.6735,
+          "revenue_prior": 80923.7979,
+          "revenue_change": -3769.1244000000006,
+          "abs_sort": 3769.1244000000006
+        },
+        {
+          "store_no": "ST3",
+          "revenue_current": 88686.0333,
+          "revenue_prior": 93411.7407,
+          "revenue_change": -4725.707399999999,
+          "abs_sort": 4725.707399999999
+        },
+        {
+          "store_no": "ST4",
+          "revenue_current": 311008.032,
+          "revenue_prior": 225112.5675,
+          "revenue_change": 85895.4645,
+          "abs_sort": 85895.4645
+        },
+        {
+          "store_no": "ST5",
+          "revenue_current": 36596.5722,
+          "revenue_prior": 9481.0068,
+          "revenue_change": 27115.565400000003,
+          "abs_sort": 27115.565400000003
+        }
+      ],
+      "completeness": "complete",
+      "top_positive": {
+        "member": "ST4",
+        "change": 85895.4645
+      },
+      "top_negative": {
+        "member": "ST3",
+        "change": -4725.707399999999
+      }
+    },
+    "driver_bridge": {
+      "volume_effect": 91140.21923504278,
+      "rate_mix_effect": 11815.359964957204,
+      "total_change": 102955.57920000004,
+      "reconciles": true,
+      "driver_class": "volume"
+    },
+    "period_trend": {
+      "dimension": "Month",
+      "reference": "'MIS_DEEP_DIVE2'[Month]",
+      "grain": "month",
+      "rows": [
+        {
+          "month": 1,
+          "revenue_current": 107669.4039,
+          "revenue_prior": 70622.064,
+          "revenue_change": 37047.339900000006
+        },
+        {
+          "month": 2,
+          "revenue_current": 99546.543,
+          "revenue_prior": 72863.5824,
+          "revenue_change": 26682.960600000006
+        },
+        {
+          "month": 3,
+          "revenue_current": 85871.4129,
+          "revenue_prior": 84153.6945,
+          "revenue_change": 1717.718399999998
+        },
+        {
+          "month": 4,
+          "revenue_current": 94588.4277,
+          "revenue_prior": 65970.6876,
+          "revenue_change": 28617.740099999995
+        },
+        {
+          "month": 5,
+          "revenue_current": 108224.5239,
+          "revenue_prior": 96217.605,
+          "revenue_change": 12006.918900000004
+        },
+        {
+          "month": 6,
+          "revenue_current": 72821.8998,
+          "revenue_prior": 72732.9618,
+          "revenue_change": 88.93799999999464
+        },
+        {
+          "month": 7,
+          "revenue_current": 80286.4872,
+          "revenue_prior": 74314.6704,
+          "revenue_change": 5971.8168000000005
+        },
+        {
+          "month": 8,
+          "revenue_current": 54705.7935,
+          "revenue_prior": 63883.647,
+          "revenue_change": -9177.853499999997
+        }
+      ],
+      "completeness": "complete",
+      "direction": "reversal_down"
+    },
+    "daily_trend": {
+      "status": "disabled",
+      "reason": "summary_focus_daily_trend_enabled is false"
+    },
+    "caveats": [
+      "child dimension special_product_group_name failed hierarchy validation",
+      "this deep dive repeats a recently delivered story (same contributors or driver)"
+    ]
+  },
+  "caveats": [
+    "child dimension special_product_group_name failed hierarchy validation",
+    "this deep dive repeats a recently delivered story (same contributors or driver)"
+  ],
+  "queries_attempted": 5,
+  "query_budget": 5,
+  "signature_fields": {
+    "top_pos_contributor": "TOYS",
+    "top_neg_contributor": null,
+    "leading_location": "ST4",
+    "driver_class": "volume"
+  },
+  "deep_dive_signature": "b22759ff61f830ab",
+  "signature_duplicate": true,
+  "signature_duplicate_of": "focus:v2:a04c79be6b7f74dce7f385ea0cadb41ef4d8794cd4b7cbe3ef67a9139354ae1d",
+  "signature_overlap": 0.667,
+  "facts": [
+    {
+      "fact_id": "D1",
+      "fact_kind": "deep_dive",
+      "subject": "TOYS",
+      "metric": "Revenue change",
+      "display_value": "+103.0K",
+      "raw_value": 102955.57920000004,
+      "statement": "TOYS revenue changed by +103.0K (+17.1%).",
+      "subject_role": "focus",
+      "detail_role": "focus_metric",
+      "coverage": "complete"
+    },
+    {
+      "fact_id": "D2",
+      "fact_kind": "deep_dive",
+      "subject": "TOYS",
+      "metric": "Quantity change",
+      "display_value": "+25.9K",
+      "raw_value": 25920.0,
+      "statement": "TOYS quantity changed by +25.9K.",
+      "subject_role": "focus",
+      "detail_role": "focus_metric",
+      "coverage": "complete"
+    },
+    {
+      "fact_id": "D3",
+      "fact_kind": "deep_dive",
+      "subject": "TOYS",
+      "metric": "Transactions change",
+      "display_value": "+15.3K",
+      "raw_value": 15277.0,
+      "statement": "TOYS transactions changed by +15.3K.",
+      "subject_role": "focus",
+      "detail_role": "focus_metric",
+      "coverage": "complete"
+    },
+    {
+      "fact_id": "D4",
+      "fact_kind": "deep_dive",
+      "subject": "TOYS",
+      "metric": "Revenue change in item_category_name",
+      "display_value": "+103.0K",
+      "raw_value": 102955.57920000004,
+      "statement": "Within TOYS, TOYS added +103.0K.",
+      "subject_role": "peer",
+      "detail_role": "contributor",
+      "coverage": "complete"
+    },
+    {
+      "fact_id": "D5",
+      "fact_kind": "deep_dive",
+      "subject": "ST4",
+      "metric": "Store contribution",
+      "display_value": "+85.9K",
+      "raw_value": 85895.4645,
+      "statement": "ST4 led TOYS across the stores included in the comparison at +85.9K.",
+      "subject_role": "peer",
+      "detail_role": "location",
+      "coverage": "complete"
+    },
+    {
+      "fact_id": "D6",
+      "fact_kind": "deep_dive",
+      "subject": "TOYS",
+      "metric": "Volume effect on revenue",
+      "display_value": "+91.1K",
+      "raw_value": 91140.21923504278,
+      "statement": "Within TOYS, change in units sold added revenue by +91.1K.",
+      "subject_role": "focus",
+      "detail_role": "driver",
+      "coverage": "complete"
+    },
+    {
+      "fact_id": "D7",
+      "fact_kind": "deep_dive",
+      "subject": "TOYS",
+      "metric": "Rate and mix effect on revenue",
+      "display_value": "+11.8K",
+      "raw_value": 11815.359964957204,
+      "statement": "Within TOYS, average revenue per item and mix added revenue by +11.8K.",
+      "subject_role": "focus",
+      "detail_role": "driver",
+      "coverage": "complete"
+    }
+  ]
+}

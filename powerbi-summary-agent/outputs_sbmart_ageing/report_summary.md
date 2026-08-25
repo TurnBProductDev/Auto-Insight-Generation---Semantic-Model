@@ -20,7 +20,7 @@ as at 2026-08-23
 
 ## Since the last reading of this report
 
-- This is the first stock position kept for this report, so nothing is compared against an earlier day. Figures describe today only.
+- The dashboard still reports the same position date as the last copy kept, so there is no movement to report. Figures describe that position only.
 
 ## Stat check
 

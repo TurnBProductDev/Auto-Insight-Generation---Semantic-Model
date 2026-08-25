@@ -1,0 +1,54 @@
+{
+  "enabled": true,
+  "grain": "disabled",
+  "level": "period",
+  "column": null,
+  "gated_date_tables": [
+    "meta_trend_by_mis_deep_dive2_max_date"
+  ],
+  "checks": [
+    {
+      "column": "'MIS_DEEP_DIVE2'[max_date]",
+      "grain": "date",
+      "metric": "net revenue CURRENT",
+      "max_bucket_share": 0.5868527778464706,
+      "verdict": "batch_load_date"
+    },
+    {
+      "column": "'MIS_DEEP_DIVE2'[Month]",
+      "grain": "month",
+      "metric": null,
+      "rows": 0,
+      "null_members": 8,
+      "max_bucket_share": null,
+      "reconciled": true,
+      "verdict": "too_few_periods(0<6)"
+    },
+    {
+      "column": "'MIS_BASE_FILE_MONTHLY_BRAND_TB'[Month]",
+      "grain": "month",
+      "metric": null,
+      "rows": 0,
+      "null_members": 8,
+      "max_bucket_share": null,
+      "reconciled": true,
+      "verdict": "too_few_periods(0<6)"
+    },
+    {
+      "column": "'CAT_TRANSACTIONS'[Month]",
+      "grain": "month",
+      "metric": null,
+      "rows": 0,
+      "null_members": 8,
+      "max_bucket_share": null,
+      "reconciled": true,
+      "verdict": "too_few_periods(0<6)"
+    },
+    {
+      "column": "'CAT_TABLE'[Month]",
+      "verdict": "probe_budget_exhausted"
+    }
+  ],
+  "probes_used": 3,
+  "reason": "no valid business time axis found - sub-annual monitoring disabled (only a load/posting-date column exists)"
+}

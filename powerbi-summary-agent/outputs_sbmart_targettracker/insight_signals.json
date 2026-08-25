@@ -1,0 +1,35 @@
+[
+  {
+    "candidate_id": "target_branch_below_every_period:ST2",
+    "story_key": "tt:v1:d55b2c7bd7a15aedf0909772be47d211",
+    "kind": "business",
+    "analysis_type": "target_branch_below_every_period",
+    "spine": "target_vs_actual",
+    "report_id": "target_tracker",
+    "affected_segment": "ST2",
+    "segment_members": [
+      "ST2"
+    ],
+    "dimension": "branch",
+    "metric": "Sales against target",
+    "metric_family": "revenue",
+    "direction": "decrease",
+    "impact_value": -334833.91559999855,
+    "impact_share": 11.129947650691461,
+    "score": 11.129947650691461,
+    "severity": "critical",
+    "current": 2673571.21,
+    "target": 3008405.1255999985,
+    "comparison_label": "against its target for this month so far",
+    "description": "ST2 is below target in every period reported - today 91.3%, this week 94.5%, this month 88.9%, this year 92.8%. This month so far it is 334,834 short.",
+    "question": "Which departments in ST2 are furthest below target?",
+    "attainment_by_scope": {
+      "day": 91.29161346685368,
+      "wtd": 94.48742344581753,
+      "mtd": 88.87005234930854,
+      "ytd": 92.80001108816785
+    },
+    "worst_scope": "mtd",
+    "id": "T1"
+  }
+]
