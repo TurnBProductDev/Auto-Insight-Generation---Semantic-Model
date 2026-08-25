@@ -622,13 +622,35 @@ def _kpi_good_direction(sig: Dict[str, Any], family: str) -> Optional[str]:
 # labelling a card "Company REVENUE" reads as a typo, not a scope.
 _NON_ENTITY_DIMENSIONS = {"", "company", "estate", "overall", "business"}
 
+# The legacy Sales YoY path copies `dimension`/`metric` straight from a
+# deterministic candidate (insight_signal_detector._copy_candidate_facts),
+# and there those fields are internal identifiers, not display text - a raw
+# DAX column reference for `dimension` (e.g. ["'mis_deep_dive2'[item_category_
+# name]"], a list, not even a string) and a bundle key for `metric` (e.g.
+# "mis_deep_dive2::quantity"). Target Tracker/stock-health/ageing set both by
+# hand as plain words ("branch", "Sales against target"), so the two shapes
+# genuinely differ per source - this rejects the internal shape rather than
+# assuming every domain's convention matches the hand-authored ones.
+_INTERNAL_TOKEN_RE = re.compile(r"[\[\]'\"]|::")
+_METRIC_FAMILY_LABEL = {"revenue": "Revenue", "quantity": "Quantity", "transactions": "Transactions"}
+
+
+def _kpi_readable(value: Any) -> Optional[str]:
+    if not isinstance(value, str):
+        return None
+    value = value.strip()
+    if not value or _INTERNAL_TOKEN_RE.search(value):
+        return None
+    return value
+
 
 def _kpi_label(sig: Dict[str, Any]) -> Optional[str]:
     segment = str(sig.get("affected_segment") or "").strip()
     if not segment:
         return None
-    dimension = str(sig.get("dimension") or "").strip()
-    metric_name = str(sig.get("metric") or "").strip()
+    dimension = _kpi_readable(sig.get("dimension")) or ""
+    metric_name = (_kpi_readable(sig.get("metric"))
+                   or _METRIC_FAMILY_LABEL.get(str(sig.get("metric_family") or "").casefold(), ""))
     prefix = (f"{dimension.title()} {segment}"
               if dimension.casefold() not in _NON_ENTITY_DIMENSIONS else segment)
     return f"{prefix} — {metric_name}" if metric_name else prefix

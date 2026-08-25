@@ -185,13 +185,38 @@ def test_label() -> None:
           not card["label"].lower().startswith("company company"), card["label"])
     no_metric = dict(_target_signal())
     no_metric.pop("metric")
+    no_metric.pop("metric_family")
     card = _card(no_metric, extended=True)
-    check("no metric name -> just the dimension + segment",
+    check("no metric name and no metric_family -> just the dimension + segment",
           card["label"] == "Branch ST2", card["label"])
+    family_fallback = dict(_target_signal())
+    family_fallback.pop("metric")
+    card = _card(family_fallback, extended=True)
+    check("no metric name but a declared metric_family -> falls back to it",
+          card["label"] == "Branch ST2 — Revenue", card["label"])
     no_segment = dict(_target_signal())
     no_segment["affected_segment"] = ""
     card = _card(no_segment, extended=True)
     check("no segment -> no label field at all", "label" not in card, str(card.get("label")))
+
+    # Real bug caught on a live SB Mart Sales YoY run: the legacy path copies
+    # dimension/metric straight from a deterministic candidate, where they are
+    # internal identifiers - a raw DAX column reference (a LIST, not even a
+    # string) for dimension, and a bundle key ("mis_deep_dive2::quantity") for
+    # metric. Neither may leak into a reader-facing label.
+    internal = {
+        "id": "S11", "story_key": "yoy:concentration", "affected_segment": "PROVISIONS, REFRIDGERATED GOODS",
+        "dimension": ["'mis_deep_dive2'[item_category_name]"], "metric": "mis_deep_dive2::quantity",
+        "metric_family": None, "impact_share": 53.8, "impact_value": 12_328_375.7, "kind": "business",
+        "description": "PROVISIONS and REFRIDGERATED GOODS concentrate current quantity.",
+    }
+    card = _card(internal, extended=True)
+    check("a raw DAX dimension list never reaches the label",
+          "[" not in card["label"] and "'" not in card["label"], card["label"])
+    check("an internal bundle-key metric never reaches the label",
+          "::" not in card["label"], card["label"])
+    check("falls back to the segment alone when nothing readable is available",
+          card["label"] == "PROVISIONS, REFRIDGERATED GOODS", card["label"])
 
 
 # --- 3. rawValue -------------------------------------------------------------
