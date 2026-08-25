@@ -229,11 +229,20 @@ def test_schema() -> None:
 
 # --- 6. pin against what was really published ---------------------------------
 def test_committed_payloads() -> None:
-    """LEGACY_KEYS must be what the app is actually being sent, not our idea of it.
+    """The pinned contract must be what the app is actually being sent.
 
     Every committed kpi_insights.json is checked, so a change to the card shape
     fails here against real published data rather than against a constant that
     could be edited to match.
+
+    There are two contracts, not one, and which applies is a property of the
+    payload rather than of the directory it sits in: a run made with
+    ``ai_content_multi_report_feed`` off carries the legacy key set and the
+    1..n run sequence, while a run made with it on adds ``reportId`` and
+    replaces the sequence with ``stable_card_id``'s hash. Checking every
+    committed payload against the legacy contract alone fails a flag-on
+    fixture for being correct, which is what ``outputs_sbmart_yoy`` did once a
+    real multi-report run was committed.
     """
     print("\n[6] Committed payloads agree with the pinned contract")
     import json
@@ -242,17 +251,43 @@ def test_committed_payloads() -> None:
     if not found:
         print("  [SKIP] no committed kpi_insights.json")
         return
+    seen_modes = set()
     for path in found:
         cards = json.loads(path.read_text(encoding="utf-8"))
         if not isinstance(cards, list) or not cards:
             continue
         name = path.parent.parent.name
         keys = set().union(*(set(card) for card in cards))
-        check(f"{name}: key set is exactly today's contract",
-              keys == LEGACY_KEYS, str(keys ^ LEGACY_KEYS))
         ids = [card.get("id") for card in cards]
-        check(f"{name}: ids are the 1..n run sequence",
-              ids == list(range(1, len(cards) + 1)), str(ids))
+        if "reportId" not in keys:
+            seen_modes.add("legacy")
+            check(f"{name}: key set is exactly today's contract",
+                  keys == LEGACY_KEYS, str(keys ^ LEGACY_KEYS))
+            check(f"{name}: ids are the 1..n run sequence",
+                  ids == list(range(1, len(cards) + 1)), str(ids))
+            continue
+        # A multi-report payload. Every card must be attributable: a feed
+        # holding one tagged and one untagged card cannot be merged per report,
+        # and a run-sequence id would collide with the other report's cards.
+        seen_modes.add("multi_report")
+        expected = LEGACY_KEYS | {"reportId"}
+        check(f"{name}: key set is the contract plus reportId",
+              keys == expected, str(keys ^ expected))
+        check(f"{name}: every card names its report",
+              all(str(card.get("reportId") or "").strip() for card in cards),
+              str([card.get("reportId") for card in cards]))
+        check(f"{name}: ids are hashes, not the run sequence",
+              ids != list(range(1, len(cards) + 1)), str(ids))
+        check(f"{name}: ids are unique and fit a signed 32-bit column",
+              len(set(ids)) == len(ids) and all(0 < int(i) < 2 ** 31 for i in ids),
+              str(ids))
+    # Both contracts are pinned by real published data, not by the constants
+    # above alone: losing either fixture would quietly stop testing that mode.
+    check("a legacy payload is committed to pin the off contract",
+          "legacy" in seen_modes, str(sorted(seen_modes)))
+    check("a multi-report payload is committed to pin the on contract",
+          "multi_report" in seen_modes, str(sorted(seen_modes)))
+
     # ...which is precisely why a second report cannot share this feed unchanged.
     check("two reports would collide on id today (the reason for this change)",
           True)
