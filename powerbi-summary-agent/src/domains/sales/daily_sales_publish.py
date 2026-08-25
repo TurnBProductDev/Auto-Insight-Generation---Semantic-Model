@@ -31,36 +31,35 @@ def summary_payload(page: dict, *, title: str = "Daily Sales",
     """The app-facing summary, in the shared report-summary contract."""
     from ...tools.api_payloads import ReportSummaryPayload
 
-    whole = page.get("whole") or {}
     currency = str(page.get("currency") or "")
 
+    # The KPI row the page already built: same four measures, same wording, so
+    # the app card and the page can never quote different figures for the same
+    # day. Reading the raw bundles here would mean a second formatter.
     metrics = [
-        {"label": "Net Sales", "value": whole.get("net_sales", {}).get("value", "—"), "tone": "info"},
-        {"label": "Bills", "value": whole.get("bills", {}).get("value", "—"),
-         "tone": {"crit": "critical", "good": "positive"}.get(
-             whole.get("bills", {}).get("verdict", {}).get("key"), "info")},
-        {"label": "Basket Value", "value": whole.get("basket_value", {}).get("value", "—"), "tone": "info"},
-        {"label": "Margin", "value": whole.get("margin", {}).get("value", "—"),
-         "tone": {"crit": "critical", "good": "positive"}.get(
-             whole.get("margin", {}).get("key"), "info")},
-    ]
+        {"label": entry["label"], "value": entry["value"],
+         "tone": {"crit": "critical", "good": "positive"}.get(entry.get("tone"), "info")}
+        for entry in (page.get("kpis") or [])]
+    if not metrics:
+        metrics = [{"label": "Net Sales", "value": "—", "tone": "info"}]
 
     attention_points = []
     for grain_key, label in (("departments", "department"), ("sections", "section")):
-        for row in (page.get(grain_key) or {}).get("outside", [])[:3]:
-            word = row["bills"]["verdict"]["word"] if row["bills"]["verdict"]["key"] == "crit" else \
-                row["margin"]["verdict"]["word"]
-            attention_points.append(
-                f"{row['name']} ({label}): Bills {row['bills']['value']} against "
-                f"{row['bills']['band'] or 'its band'} - {row['bills']['verdict']['word']}.")
+        grain = page.get(grain_key) or {}
+        for side, word in (("below", "below its normal band"), ("above", "above its normal band")):
+            for row in (grain.get(side) or [])[:3]:
+                attention_points.append(
+                    f"{row['name']} ({label}): {row['note']} - {row['value']} {word}.")
     if not attention_points:
-        attention_points = ["No department or section fell outside its Bills or Margin band today."]
+        attention_points = ["No department or section finished outside its Net Sales band today."]
 
-    coverage_points = [str(c) for c in (page.get("caveats") or [])]
+    coverage_points = [f"{item['lead']}{item['body']}".strip()
+                       for item in (page.get("caveats") or [])
+                       if isinstance(item, dict)]
     if currency:
         coverage_points.append(f"All figures are in {currency}.")
 
-    headline = page.get("hero", {}).get("headline") or "Daily Sales figures are available."
+    headline = (page.get("hero") or {}).get("headline") or "Daily Sales figures are available."
 
     payload = {
         "title": title,
@@ -79,13 +78,18 @@ def summary_payload(page: dict, *, title: str = "Daily Sales",
 
 def history_entry(page: dict, payload: dict, report_id: str, generated_at: datetime) -> dict:
     whole = page.get("whole") or {}
+
+    def _word(key: str) -> str | None:
+        return ((whole.get(key) or {}).get("verdict") or {}).get("word")
+
     return {
         "reportId": report_id,
         "asAt": page.get("as_at"),
         "generatedAt": _iso(generated_at),
         "headline": payload.get("headline") or "",
-        "billsVerdict": whole.get("bills", {}).get("verdict", {}).get("word"),
-        "marginVerdict": whole.get("margin", {}).get("verdict", {}).get("word"),
+        "netSalesVerdict": _word("net_sales"),
+        "billsVerdict": _word("bills"),
+        "marginVerdict": _word("margin"),
     }
 
 

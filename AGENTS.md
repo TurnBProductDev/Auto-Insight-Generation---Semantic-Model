@@ -942,6 +942,120 @@ byte-for-byte the previous four-tab page (pinned by
 - **Still open:** `inventory_llm_authoring_enabled` stays false until a live
   authored run is reviewed. The Stock Age page remains deterministic prose.
 
+#### Daily Sales: the day against its own normal band (SB Mart)
+
+SB Mart's third daily report and its **second sales report**, over a third
+semantic model (`8d111712-9ea8-4a65-9bb9-58f00e49d379`) unrelated to Sales YoY
+or Target Tracker. The model hands the report a pre-joined, pre-benchmarked
+snapshot rather than raw transactions: `storebenchmark` / `departmentbenchmark`
+/ `sectionbenchmark` / `categorybenchmark` each carry one row per (store x
+grain) per day, already paired with that day's own historical P20/P50/P80 band
+for its weekday-and-week-of-month cohort ("past Wednesdays in week 2 of the
+month"). So there is no year-on-year spine and no prior period - like Target
+Tracker and the inventory reports it sits **outside the LangGraph**, as
+`daily_sales.py` (scan + pure model), `daily_sales_dashboard.py` (page model),
+`daily_sales_html.py` (page), `daily_sales_investigator.py`,
+`daily_sales_publish.py`, run by `scripts/run_daily_sales.py`
+(`AGENT_RUNNER=daily_sales`). The approved design is
+`docs/dashboard-reference/reference_daily_sales.html`.
+
+- **Net Sales arrives on TWO scales in one model, and the report measures the
+  ratio rather than withholding the figures.** `storebenchmark[actual_sales]`
+  and `_Sparkline14[actual_sales]`/`[profit_actual]` are on the reporting
+  scale; every `sales_p20/p50/p80`, every `basket_p*`/`profit_p*`, every
+  `actual_cost`, and every `actual_sales` **below** store level are on a source
+  scale exactly `1/0.27` = 3.7037037037... times larger. `measure_scale`
+  re-derives the factor every run by two independent routes -
+  `actual_cost / (actual_sales x (1 - actual_margin/100))` from a single store
+  row, and `SUM(department actual_sales) / store actual_sales` from a different
+  table - and **refuses to rescale unless they agree**, in which case the
+  report degrades to the figures that need no rescale and says so. On the live
+  model the two agree to twelve decimal places on all 28 store-days. The proof
+  the rescale is right is that department, section AND category Net Sales then
+  each sum to the whole business exactly (69,360.3054 on 2026-08-12), each
+  returning the same 23.1816% Margin, and rescaled store costs sum to the
+  whole-business cost to the cent.
+- **An earlier reading called this a "~3.7x join fan-out" and withheld every
+  affected figure**, which cost the report its Net Sales bands at every level,
+  all below-store Net Sales, Basket Value below store level, and the whole
+  reference design that rests on them. It is not a fan-out: a fan-out cannot be
+  constant to twelve decimal places across two tables and 28 days, and it would
+  not leave Margin correct. The constant is exactly 1/0.27 - what a currency
+  conversion applied to the actuals but not the benchmarks looks like. The page
+  states what was measured and what was done about it; it does not assert the
+  cause. A model fixed upstream measures 1.0 and the rescale becomes a no-op
+  with no code change.
+- **Category is `CATEGORY_NAME_2`; `CATEGORY_NAME` is the buying group under
+  it.** The reportable grain is `(SECTION, CATEGORY_NAME_2)` - 117 categories
+  with a sale on 2026-08-12, built from 1,596 group rows. Reading the group
+  column as the category gives 218 rows of near-duplicates and loses the
+  "groups that recorded nothing today" finding entirely (557 silent groups
+  worth 6,153.41 on a matching past day).
+- **A row that recorded no sale is EXCLUDED from its parent rollup, band
+  included.** A benchmark carrying groups that could not contribute makes every
+  name read below its band. Verified against the reference on the two grains
+  where it changes a number - DELI's section band and every category band.
+- **A figure sitting exactly on its band edge is IN BAND**
+  (`daily_sales.EDGE_TOLERANCE`, 1e-9 relative). The rescale leaves a store
+  that finished level with its floor a few parts in 1e-12 under it, and without
+  the tolerance ST1 published as "Underperforming" while the page text beside
+  it read "level with its P20 floor". A gap too small to survive rounding is
+  worded ("just below its P20 floor") rather than printed as `-SAR 0.00`.
+- **Rank by money, never by percentage** - the `CF-FRESH BAKES +2166.79%`
+  failure in a new costume. Every ranked list orders by the size of the gap in
+  currency, and the page says so. Ditto the KPI-feed signals, which are now
+  built on **Net Sales, not Bills**: a Bills gap is not additive (one basket
+  touching three departments is one Bill in each), so a section's Bills gap can
+  exceed its own department's - which shipped once, as a section at -4,797
+  under a department at -620.
+- **The drill DAX must keep its filters attached to the aggregation.**
+  `CALCULATETABLE(SUMMARIZE(...), filters)` with the aggregation added *outside*
+  in `ADDCOLUMNS` looks equivalent and is not: the expressions evaluate in the
+  outer filter context, so tran_date and the member filter never reach them and
+  each row sums across every day the table holds. Measured live 2026-08-23:
+  PROVISIONS came back at -28,293.58 against its true -5,672.40, from a query
+  that returned the right member names and no error. It now summarises over a
+  scoped table **variable**, and the drilled gaps are multiplied by the run's
+  measured scale before they are shown beside figures that already are.
+- **Four layers, two views**, matching the reference: *The day* (hero with its
+  three-stat column, four KPI bullets, the Net Sales trend, the Bills x Basket
+  Value bridge, all four measures side by side, the two stores, and what the
+  figures cover), *Stores* (each store on its own band, then each store's own
+  last fourteen days), *Departments* (every department, how many baskets each
+  reached against its usual share, the ones outside their band, and the same
+  departments store by store), *Detail* (what finished below and above its band
+  at section and category level, the groups that recorded nothing, then the
+  full lists). The second view is "outside the band only"; the day and store
+  layers are unchanged there, because the whole business and each store are the
+  subject either way.
+- **Per-store daily history DOES exist** - `storebenchmark` holds one row per
+  (store x day) over the same trailing window `_Sparkline14` covers, 28 rows
+  live. An earlier note that it held "one row per store, not 14" was wrong and
+  cost the report its per-store trend. The whole store table is fetched in one
+  query, so this costs nothing over fetching a single day.
+- **An SVG with both `width="100%"` and a fixed `height` letterboxes.** The
+  browser fits the drawing inside the taller box, which put a 106px chart in
+  the middle of a 250px band of white in the half-width store cards. The trend
+  carries a viewBox sized for its column and no height attribute.
+- **Prose is deterministic**, like the inventory reports: every figure on the
+  page is a comparison against a band and the rulebook wants a number beside
+  every comparison, so there is no LLM in this path. The investigator's
+  narrative is the one exception and falls back to a grounded deterministic
+  draft.
+- **Verification.** `scripts/replay_daily_sales.py` (138 offline checks - both
+  scale routes and the refusal path, every level reconciling, silent-row
+  exclusion, the category/group grain, the edge tolerance, money-vs-percentage
+  ranking on a fixture where the two orders genuinely disagree, the bridge
+  closing and naming the right driver's share, the page skeleton, every
+  reference section, escaping, and the committed live scan) and
+  `scripts/replay_daily_sales_investigator.py`. Both offline, no auth or LLM,
+  and **mutation-tested**: eight deliberate breakages, eight caught. And
+  **render the page and look at it** - that is what caught the letterboxed
+  charts, the overlapping axis labels and the missing hero column, none of
+  which any string assertion would have seen. Accepted live on 2026-08-25
+  against the position as at 2026-08-23: 6 queries, all 8 reconciliation checks
+  passing.
+
 #### Two test failures worth remembering
 
 **A rendering failure.**

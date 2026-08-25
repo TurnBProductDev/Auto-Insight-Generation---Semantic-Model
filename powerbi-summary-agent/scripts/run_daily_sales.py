@@ -122,7 +122,8 @@ def main(argv=None) -> int:
         investigation_model = {"currency": page["currency"], "stat_signals": reportable}
         result = daily_sales_investigator.investigate(
             _executor(cfg["workspace_id"], cfg["dataset_id"], token),
-            investigation_model, cfg, rules=rules, log=print)
+            investigation_model, cfg, rules=rules, log=print,
+            scale=float((model.get("scale") or {}).get("scale") or 1.0))
         page["investigation"] = result["entries"]
         page["investigation_budget"] = result["budget"]
         print(f"Investigation budget: {result['budget']['used']}/{result['budget']['total']} "

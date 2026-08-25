@@ -7,13 +7,24 @@ second time. (A future tidy-up could promote it out of `domains/inventory`
 into `kernel`; not done here to avoid touching the already-proven Ageing/
 SKU Overview call sites for an unrelated change.)
 
-Only Bills is drilled - Margin has no meaningful "where does it
-concentrate" breakdown (it is already a ratio), and Net Sales is never
-scoped by this report at all (see `daily_sales.py`'s module docstring for
-why). A department-level finding may drill into its sections or
-categories; a section-level finding may drill into its categories; a
-whole-business finding has no single member to scope a drill by and is
-never offered here.
+Only Net Sales is drilled. Margin has no meaningful "where does it
+concentrate" breakdown - it is already a ratio - and **Bills is the wrong
+key even though it is available**: one basket touching three departments
+counts once in each, so a section's Bills gap can exceed its own
+department's. Ranked side by side that reads as nonsense, and it shipped
+that way once (a section at -4,797 under a department at -620). Net Sales
+adds up exactly at every level once the two scales are reconciled (see
+`daily_sales.measure_scale`), so it is the only additive key here.
+
+The drilled figures are on the SOURCE scale, like everything else below
+store level, so `investigate` is handed the run's measured scale and
+multiplies each gap by it before the value is shown. A drill that printed
+raw source-scale numbers beside a rescaled page would disagree with the
+page by 3.7x.
+
+A department-level finding may drill into its sections or categories; a
+section-level finding may drill into its categories; a whole-business
+finding has no single member to scope a drill by and is never offered here.
 """
 
 from __future__ import annotations
@@ -53,8 +64,8 @@ def candidates(model: dict, cfg: dict, *, max_findings: int) -> list[dict]:
         return []
     out: list[dict] = []
     for finding in model.get("stat_signals") or []:
-        if "bills" not in str(finding.get("analysis_type") or ""):
-            continue  # Margin has no drill; Net Sales is never a signal here
+        if "net_sales" not in str(finding.get("analysis_type") or ""):
+            continue  # Margin is a ratio; Bills does not add up across grains
         role = str(finding.get("dimension") or "")
         others = _DRILLABLE.get(role) or ()
         member = str(finding.get("affected_segment") or "").strip()
@@ -71,14 +82,18 @@ def build_drill_dax(cfg: dict, *, own_role: str, own_member: str, drill_role: st
     """A bounded, TREATAS-free (name-filter is exact and unambiguous - see
     module docstring on why department/section names are matched by name
     alone) breakdown of `own_member` (a department or section) by
-    `drill_role`, ranked by the size of the Bills gap against that row's own
-    P50 - the same "where does the shortfall concentrate" question the
-    inventory reports' drills answer, over the one measure this report
-    trusts at every grain."""
+    `drill_role`, ranked by the size of the Net Sales gap against that row's
+    own P50 - the same "where does the shortfall concentrate" question the
+    inventory reports' drills answer, over the one measure that adds up at
+    every grain in this model.
+
+    Rows that recorded no sale are excluded, matching `daily_sales._rollup`:
+    a benchmark carrying groups which could not contribute drags every name
+    below its own band."""
     mapping = cfg.get("daily_sales_mapping") or {}
     dept_col = mapping.get("department_col") or "DEPARTMENT"
     section_col = mapping.get("section_col") or "SECTION"
-    category_col = mapping.get("category_col") or "CATEGORY_NAME"
+    category_col = mapping.get("category_col") or "CATEGORY_NAME_2"
     esc = str(own_member).replace('"', '""')
 
     if drill_role == "section":
@@ -92,47 +107,61 @@ def build_drill_dax(cfg: dict, *, own_role: str, own_member: str, drill_role: st
     else:
         raise ValueError(f"unsupported drill_role: {drill_role!r}")
 
+    # The scope is a table VARIABLE that the aggregation is summarised over,
+    # not a CALCULATETABLE wrapped around SUMMARIZE with the aggregation added
+    # outside it. The second shape looks equivalent and is not: the ADDCOLUMNS
+    # expressions evaluate in the OUTER filter context, so the tran_date and
+    # member filters never reach them and each row is summed across every day
+    # the table holds. Measured live on 2026-08-23: PROVISIONS came back at
+    # -28,293.58 against its true -5,672.40, a five-fold overstatement on a
+    # query that returned the right member names and no error.
     return f"""EVALUATE
 VAR LatestDate = {latest}
+VAR Scoped =
+  FILTER(
+    ALL({table}),
+    {table}[tran_date] = LatestDate
+      && {table}[{scope_col}] = "{esc}"
+      && NOT ISBLANK({table}[actual_sales])
+  )
 RETURN
 TOPN({int(limit)},
-  ADDCOLUMNS(
-    CALCULATETABLE(
-      SUMMARIZE({table}, {table}[{group_col}]),
-      {table}[tran_date] = LatestDate,
-      {table}[{scope_col}] = "{esc}"
-    ),
-    "bills_actual", CALCULATE(SUM({table}[actual_bills])),
-    "gap", CALCULATE(SUM({table}[actual_bills])) - CALCULATE(SUM({table}[bills_p50]))
+  SUMMARIZE(
+    Scoped,
+    {table}[{group_col}],
+    "sales_actual", SUM({table}[actual_sales]),
+    "gap", SUM({table}[actual_sales]) - SUM({table}[sales_p50])
   ),
   ABS([gap]), DESC
 )"""
 
 
-def _normalize(cfg: dict, rows: list[dict], drill_role: str) -> list[dict]:
+def _normalize(cfg: dict, rows: list[dict], drill_role: str, scale: float = 1.0) -> list[dict]:
+    """`scale` puts the drilled gaps on the same scale as the page. They come
+    off the source-scale columns, so without it a drill disagrees with the
+    figure it is explaining by the whole factor."""
     mapping = cfg.get("daily_sales_mapping") or {}
     group_col = (mapping.get("section_col") or "SECTION") if drill_role == "section" \
-        else (mapping.get("category_col") or "CATEGORY_NAME")
+        else (mapping.get("category_col") or "CATEGORY_NAME_2")
     out = []
     for row in rows:
         name = _read(row, group_col)
         if name is None:
             continue
-        out.append({"name": str(name), "value": _num(row, "gap")})
+        out.append({"name": str(name), "value": _num(row, "gap") * scale})
     out.sort(key=lambda r: -abs(r["value"]))
     return out
 
 
-def investigate(execute: Execute, model: dict, cfg: dict, *, rules: str = "", log=None) -> dict:
-    # The shared engine formats every drilled value with `model["currency"]`
-    # (money(), built for stock-value drills elsewhere). This report's drill
-    # values are Bills GAPS - a count, not money - so currency is blanked
-    # here only, for this call, rather than touching the shared formatter.
-    drill_model = {**model, "currency": ""}
+def investigate(execute: Execute, model: dict, cfg: dict, *, rules: str = "", log=None,
+                scale: float = 1.0) -> dict:
+    """`scale` is the run's measured source-to-reporting factor (see
+    `daily_sales.measure_scale`); the drilled gaps are read straight off the
+    source-scale columns, so they are multiplied by it here."""
     return snapshot_investigator.investigate(
-        execute, drill_model, cfg, report_id="daily_sales",
+        execute, model, cfg, report_id="daily_sales",
         candidates_fn=candidates, build_dax_fn=build_drill_dax,
-        normalize_fn=lambda rows, role: _normalize(cfg, rows, role),
+        normalize_fn=lambda rows, role: _normalize(cfg, rows, role, scale),
         enabled_key="daily_sales_investigation_enabled",
         max_findings_key="daily_sales_investigation_max_findings",
         max_rounds_key="daily_sales_investigation_max_rounds",

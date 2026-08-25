@@ -19,7 +19,8 @@
     "store_col": "store_no",
     "department_col": "DEPARTMENT",
     "section_col": "SECTION",
-    "category_col": "CATEGORY_NAME"
+    "category_col": "CATEGORY_NAME_2",
+    "category_group_col": "CATEGORY_NAME"
   },
   "daily_sales_investigation_enabled": true,
 
