@@ -325,6 +325,112 @@ def publish_summary_memory(state: dict, hydration: dict | None = None) -> dict:
         return {"status": "failed", "blob": name, "error": str(exc)}
 
 
+def cloud_snapshot_memory_enabled(cfg: dict) -> bool:
+    """Same switch as `insight_memory_storage`/`summary_memory_storage`, for
+    the separate memory system single-snapshot reports use (Ageing, SKU
+    Overview, Daily Sales) - see `snapshot_memory.py`'s module docstring.
+    Takes a plain config dict, not a LangGraph `state`: these reports run
+    outside the graph entirely."""
+    mode = str(cfg.get("snapshot_memory_storage", "local") or "local").lower()
+    return mode == "azure_blob"
+
+
+def _snapshot_memory_location(cfg: dict, report_id: str, dataset_id: str) -> tuple[str, str, str]:
+    from ..kernel import scoping
+
+    account = str(cfg.get("azure_blob_account") or "").strip()
+    container = str(cfg.get("azure_blob_memory_container") or "insightstate").strip()
+    prefix = str(cfg.get("azure_blob_snapshot_memory_prefix") or "snapshot-memory").strip("/")
+    dataset_segment = scoping.safe_segment(dataset_id, "unknown_dataset")
+    report_segment = scoping.safe_segment(report_id, "unknown_report")
+    name = "/".join(part for part in (prefix, dataset_segment, "reports", report_segment, "memory.json")
+                    if part)
+    return account, container, name
+
+
+def hydrate_snapshot_memory(cfg: dict, out_dir, report_id: str, dataset_id: str) -> dict:
+    """Download the cross-run memory blob into the local scratch path
+    `snapshot_memory.store_path` resolves, before `filter_signals` reads it.
+    A missing blob is a brand-new memory, not a failure."""
+    if not cloud_snapshot_memory_enabled(cfg):
+        return {"status": "skipped", "reason": "local_memory_storage"}
+    account, container, name = _snapshot_memory_location(cfg, report_id, dataset_id)
+    if not account:
+        return {"status": "failed", "reason": "azure_blob_account_missing"}
+
+    from azure.core.exceptions import ResourceNotFoundError
+
+    from ..domains.inventory.snapshot_memory import store_path
+
+    path = store_path(out_dir, report_id, dataset_id)
+    try:
+        svc, auth = _service_client(account)
+        blob = svc.get_blob_client(container=container, blob=name)
+        downloader = blob.download_blob()
+        raw = downloader.readall()
+        props = downloader.properties
+        etag = getattr(props, "etag", None)
+        if etag is None and isinstance(props, dict):
+            etag = props.get("etag")
+        if not etag:
+            raise RuntimeError("cloud snapshot memory download did not expose an ETag")
+        _atomic_bytes(path, raw)
+        print(f"Cloud snapshot memory: hydrated {account}/{container}/{name} (auth={auth}).")
+        return {"status": "ok", "blob": name, "etag": etag, "auth": auth}
+    except ResourceNotFoundError:
+        try:
+            path.unlink()
+        except FileNotFoundError:
+            pass
+        print(f"Cloud snapshot memory: {account}/{container}/{name} does not exist; "
+             "starting from an empty memory.")
+        return {"status": "missing", "blob": name, "etag": None}
+    except Exception as exc:  # noqa: BLE001 - caller decides whether this is fatal
+        print(f"Cloud snapshot memory hydration failed ({type(exc).__name__}: {exc}).")
+        return {"status": "failed", "blob": name, "error": str(exc)}
+
+
+def publish_snapshot_memory(cfg: dict, out_dir, report_id: str, dataset_id: str,
+                            hydration: dict | None = None) -> dict:
+    """Upload the committed local memory back to blob, with the same
+    optimistic-concurrency rule as `publish_insight_memory` (refuse rather
+    than clobber if the blob changed since hydration)."""
+    if not cloud_snapshot_memory_enabled(cfg):
+        return {"status": "skipped", "reason": "local_memory_storage"}
+    account, container, name = _snapshot_memory_location(cfg, report_id, dataset_id)
+    if not account:
+        return {"status": "failed", "reason": "azure_blob_account_missing"}
+
+    from azure.core import MatchConditions
+    from azure.core.exceptions import ResourceExistsError, ResourceModifiedError
+    from azure.storage.blob import ContentSettings
+
+    from ..domains.inventory.snapshot_memory import store_path
+
+    path = store_path(out_dir, report_id, dataset_id)
+    if not path.exists():
+        return {"status": "failed", "reason": "runtime_memory_missing"}
+    etag = (hydration or {}).get("etag")
+    try:
+        svc, auth = _service_client(account)
+        blob = svc.get_blob_client(container=container, blob=name)
+        kwargs = {"data": path.read_bytes(),
+                 "content_settings": ContentSettings(content_type="application/json")}
+        if etag:
+            blob.upload_blob(overwrite=True, etag=etag,
+                            match_condition=MatchConditions.IfNotModified, **kwargs)
+        else:
+            blob.upload_blob(overwrite=False, **kwargs)
+        print(f"Cloud snapshot memory: published {account}/{container}/{name} (auth={auth}).")
+        return {"status": "ok", "blob": name, "auth": auth}
+    except (ResourceExistsError, ResourceModifiedError) as exc:
+        print("Cloud snapshot memory publish refused: another run changed the blob.")
+        return {"status": "conflict", "blob": name, "error": str(exc)}
+    except Exception as exc:  # noqa: BLE001 - best-effort, must never fail the report
+        print(f"Cloud snapshot memory publish failed ({type(exc).__name__}: {exc}).")
+        return {"status": "failed", "blob": name, "error": str(exc)}
+
+
 def initialize_insight_memory(state: dict) -> dict:
     """Create the private container and one empty memory blob, never overwrite."""
     if not cloud_memory_enabled(state):

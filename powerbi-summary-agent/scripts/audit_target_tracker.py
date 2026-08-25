@@ -13,6 +13,7 @@ from __future__ import annotations
 import json
 import re
 import sys
+from html import escape
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -31,7 +32,7 @@ def close(a, b, tol=1.0):
     return abs(float(a) - float(b)) <= tol
 
 
-def audit(folder: Path) -> int:
+def audit(folder: Path, config_path: Path | None = None) -> int:
     model_path = folder / "report_target_tracker.json"
     html_path = folder / "report_target_tracker.html"
     doc_path = folder / "report_target_tracker.md"
@@ -39,6 +40,11 @@ def audit(folder: Path) -> int:
         print(f"No report_target_tracker.json in {folder}")
         return 1
     model = json.loads(model_path.read_text(encoding="utf-8"))
+    cfg = (
+        json.loads(config_path.read_text(encoding="utf-8"))
+        if config_path is not None and config_path.is_file()
+        else {}
+    )
     page = html_path.read_text(encoding="utf-8") if html_path.is_file() else ""
     document = doc_path.read_text(encoding="utf-8") if doc_path.is_file() else ""
     p = model["periods"]
@@ -102,7 +108,10 @@ def audit(folder: Path) -> int:
           all(d["mtd"]["target"] > 0 for d in model["departments"]))
     check("no section without a target is in the tables",
           all(s_["mtd"]["target"] > 0 for s_ in model["sections"]))
-    check("CFH022 is excluded", "CFH022" not in model["population"])
+    excluded = [str(item) for item in cfg.get("target_tracker_excluded_entities", [])]
+    if excluded:
+        check("configured excluded branches are absent",
+              all(item not in model["population"] for item in excluded))
     if model["target_lag_days"]:
         check("the page explains why it is dated earlier than the newest sales",
               "no target has been set" in page or "cannot be measured" in page)
@@ -172,13 +181,16 @@ def audit(folder: Path) -> int:
         check("four layers present",
               sorted(set(re.findall(r'data-layer="(\w+)"', page)))
               == ["branches", "departments", "detail", "performance"])
-        banned = ["attainment", "month-to-date", "week-to-date", "cushion", "QAR"]
+        banned = ["attainment", "month-to-date", "week-to-date", "cushion"]
         hits = {w: page.count(w) for w in banned if w in page}
         check("no banned vocabulary", not hits, str(hits))
+        currency = str(cfg.get("target_tracker_currency") or "").strip().upper()
+        if currency:
+            check("configured currency is shown", currency in page)
         check("every branch appears on the page",
-              all(b["name"] in page for b in model["branches"]))
+              all(escape(str(b["name"])) in page for b in model["branches"]))
         check("every department appears on the page",
-              all(d["name"] in page for d in model["departments"]))
+              all(escape(str(d["name"])) in page for d in model["departments"]))
         markup = re.sub(r"<script[^>]*>.*?</script>", "", page, flags=re.S)
         unescaped = re.findall(r"&(?!amp;|lt;|gt;|quot;|#\d+;|nbsp;|middot;|minus;|mdash;|ndash;"
                                r"|ldquo;|rdquo;|rsquo;|#x27;)", markup)
@@ -196,4 +208,5 @@ def audit(folder: Path) -> int:
 
 if __name__ == "__main__":
     target = Path(sys.argv[1]) if len(sys.argv) > 1 else DEFAULT_DIR
-    sys.exit(audit(target))
+    config = Path(sys.argv[2]) if len(sys.argv) > 2 else None
+    sys.exit(audit(target, config))

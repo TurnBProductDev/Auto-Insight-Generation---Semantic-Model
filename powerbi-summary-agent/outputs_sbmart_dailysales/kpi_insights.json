@@ -1,0 +1,77 @@
+[
+  {
+    "id": 620991170,
+    "reportId": "daily_sales",
+    "severity": "critical",
+    "category": "Transactions",
+    "metric": "SPICE MARKET",
+    "value": "-33",
+    "delta": "",
+    "deltaDirection": "down",
+    "description": "SPICE MARKET finished Bills underperforming (-33.00 against its band), inside CONSUMER GOODS. The decline was concentrated in SPICE MARKET within Consumer Goods, indicating weaker transaction activity in that segment.",
+    "displayTime": "7:34 PM",
+    "isoDate": "2026-08-24",
+    "comparisonLabel": "the normal bills band for SPICE MARKET on this weekday",
+    "insight": {
+      "title": "Spice Market transaction decline",
+      "summary": "The shortfall sits in SPICE MARKET and is called out within Consumer Goods. This suggests the softer result was concentrated in that area rather than broadly spread.",
+      "stats": [
+        {
+          "label": "Transaction change",
+          "value": "-33"
+        }
+      ],
+      "action": "Review SPICE MARKET transaction activity within Consumer Goods to identify where the shortfall was concentrated."
+    }
+  },
+  {
+    "id": 1984747674,
+    "reportId": "daily_sales",
+    "severity": "critical",
+    "category": "Transactions",
+    "metric": "PERSONAL CARE",
+    "value": "-21",
+    "delta": "",
+    "deltaDirection": "down",
+    "description": "PERSONAL CARE finished Bills underperforming (-21.00 against its band), inside CONSUMER GOODS. The decline was concentrated in PERSONAL CARE within Consumer Goods, indicating weaker transaction activity in that segment.",
+    "displayTime": "7:34 PM",
+    "isoDate": "2026-08-24",
+    "comparisonLabel": "the normal bills band for PERSONAL CARE on this weekday",
+    "insight": {
+      "title": "Personal Care transaction decline",
+      "summary": "The shortfall sits in PERSONAL CARE and is highlighted within Consumer Goods. This may indicate softer shopper activity in that part of the business.",
+      "stats": [
+        {
+          "label": "Transaction change",
+          "value": "-21"
+        }
+      ],
+      "action": "Check PERSONAL CARE transaction activity within Consumer Goods to see which areas contributed most to the decline."
+    }
+  },
+  {
+    "id": 222721232,
+    "reportId": "daily_sales",
+    "severity": "critical",
+    "category": "Transactions",
+    "metric": "CONSUMER GOODS",
+    "value": "-19",
+    "delta": "",
+    "deltaDirection": "down",
+    "description": "CONSUMER GOODS finished Bills underperforming (-19.00 against its band). The decrease reflects weaker transaction activity at the Consumer Goods level.",
+    "displayTime": "7:34 PM",
+    "isoDate": "2026-08-24",
+    "comparisonLabel": "the normal bills band for CONSUMER GOODS on this weekday",
+    "insight": {
+      "title": "Consumer Goods transaction softness",
+      "summary": "The underperformance is visible at the overall Consumer Goods level. This could suggest softer activity across the category, though concentration by subsegment should be confirmed.",
+      "stats": [
+        {
+          "label": "Transaction change",
+          "value": "-19"
+        }
+      ],
+      "action": "Investigate transaction performance across Consumer Goods subsegments to confirm where the decline was concentrated."
+    }
+  }
+]

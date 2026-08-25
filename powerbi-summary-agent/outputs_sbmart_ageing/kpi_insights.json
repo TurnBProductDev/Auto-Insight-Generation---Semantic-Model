@@ -1,0 +1,101 @@
+[
+  {
+    "id": 1953389082,
+    "reportId": "inventory_ageing",
+    "severity": "critical",
+    "category": "Performance",
+    "metric": "24+ MONTHS",
+    "value": "+90.7K",
+    "delta": "",
+    "deltaDirection": "up",
+    "description": "USD 91K is in the oldest reported age band, 24+ MONTHS (1.6% of stock value). The increase sits in the oldest stock age band, indicating a larger share of value is tied up in long-held inventory.",
+    "displayTime": "7:57 PM",
+    "isoDate": "2026-08-24",
+    "comparisonLabel": "share of the current stock position",
+    "insight": {
+      "title": "24+ months stock build",
+      "summary": "The movement is concentrated in the oldest inventory segment. This suggests some value may remain tied to items that have been on hand for an extended period.",
+      "stats": [
+        {
+          "label": "Performance change",
+          "value": "+90.7K"
+        },
+        {
+          "label": "Share of performance increase",
+          "value": "1.6%"
+        },
+        {
+          "label": "Segments",
+          "value": "24+ MONTHS"
+        }
+      ],
+      "action": "Review the 24+ MONTHS inventory area to understand which items are contributing to the build."
+    }
+  },
+  {
+    "id": 779011650,
+    "reportId": "inventory_ageing",
+    "severity": "critical",
+    "category": "Performance",
+    "metric": "12-24 MONTHS",
+    "value": "+363.1K",
+    "delta": "",
+    "deltaDirection": "up",
+    "description": "USD 363K is in the high-risk age band 12-24 MONTHS (6.3% of stock value). The increase is concentrated in the high-risk aging band, pointing to more value accumulating before stock moves into the oldest bracket.",
+    "displayTime": "7:57 PM",
+    "isoDate": "2026-08-24",
+    "comparisonLabel": "share of the current stock position",
+    "insight": {
+      "title": "12-24 months risk area",
+      "summary": "The movement is centered in inventory held for between one and two years. This may suggest a growing pool of stock at risk of moving into older aging categories.",
+      "stats": [
+        {
+          "label": "Performance change",
+          "value": "+363.1K"
+        },
+        {
+          "label": "Share of performance increase",
+          "value": "6.3%"
+        },
+        {
+          "label": "Segments",
+          "value": "12-24 MONTHS"
+        }
+      ],
+      "action": "Investigate the 12-24 MONTHS inventory area to identify the items and categories driving the increase."
+    }
+  },
+  {
+    "id": 169801139,
+    "reportId": "inventory_ageing",
+    "severity": "critical",
+    "category": "Performance",
+    "metric": "Aged and non-moving",
+    "value": "+278.1K",
+    "delta": "",
+    "deltaDirection": "up",
+    "description": "USD 278K is both aged and has not sold since arrival, 3.1x the estate aged rate. The increase is centered in stock that is both aged and has not sold since arrival, highlighting a concentration in slower-moving inventory.",
+    "displayTime": "7:57 PM",
+    "isoDate": "2026-08-24",
+    "comparisonLabel": "aged rate within non-moving stock versus the whole stock position",
+    "insight": {
+      "title": "Non-moving aged stock",
+      "summary": "The movement is concentrated in items that are both old and unsold since receipt. This suggests a larger portion of value may be sitting in inventory with limited recent demand.",
+      "stats": [
+        {
+          "label": "Performance change",
+          "value": "+278.1K"
+        },
+        {
+          "label": "Share of performance increase",
+          "value": "4.9%"
+        },
+        {
+          "label": "Segments",
+          "value": "Aged and non-moving"
+        }
+      ],
+      "action": "Examine the Aged and non-moving inventory area to confirm which items have remained unsold since arrival."
+    }
+  }
+]

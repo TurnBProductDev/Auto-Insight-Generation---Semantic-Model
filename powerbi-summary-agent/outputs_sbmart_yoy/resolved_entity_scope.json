@@ -1,0 +1,34 @@
+{
+  "entity_dimension": {
+    "table": "MIS_DEEP_DIVE2",
+    "column": "store_no",
+    "reference": "'MIS_DEEP_DIVE2'[store_no]",
+    "data_type": "Text",
+    "category": "categorical",
+    "relationship_distance": 0,
+    "score": 70,
+    "entity_score": 170
+  },
+  "active_comparable_population": [
+    "ST4",
+    "ST1",
+    "ST3",
+    "ST2",
+    "ST5"
+  ],
+  "automatically_comparable": [
+    "ST4",
+    "ST1",
+    "ST3",
+    "ST2",
+    "ST5"
+  ],
+  "excluded_from_comparison": [],
+  "configured_exclusions": [],
+  "new_entities": [],
+  "prior_only_entities": [],
+  "inactive_entities": [],
+  "source": "automatic_current_prior_activity",
+  "truncated": false,
+  "warnings": []
+}

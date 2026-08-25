@@ -1,0 +1,2054 @@
+{
+  "consumer_goods_dominates_division_results": {
+    "segment": "CONSUMER GOODS",
+    "segment_members": null,
+    "segment_dimension": {
+      "table": "MIS_DEEP_DIVE2",
+      "column": "division_name",
+      "reference": "'MIS_DEEP_DIVE2'[division_name]",
+      "data_type": "Text",
+      "category": "categorical",
+      "relationship_distance": 0,
+      "score": 85
+    },
+    "filled_dimensions": [
+      "product_group_name",
+      "special_product_group_name",
+      "store_no"
+    ],
+    "evidence": {
+      "product_group_name": {
+        "rows": [
+          {
+            "product_group_name": "COOKING OILS",
+            "net revenue CURRENT": 1981839.9762,
+            "net revenue PAST": 1724051.5578,
+            "revenue Growth": 257788.41839999985,
+            "net qty CURRENT": 441632.0,
+            "net qty PAST": 411901.0,
+            "QTY Growth": 29731.0,
+            "net bills CURRENT": 371308,
+            "transactions_prior_derived": 354239,
+            "bills growth": 17069
+          },
+          {
+            "product_group_name": "FRESH DAIRY",
+            "net revenue CURRENT": 1139643.0,
+            "net revenue PAST": 947575.5651,
+            "revenue Growth": 192067.4349,
+            "net qty CURRENT": 915823.0,
+            "net qty PAST": 787239.0,
+            "QTY Growth": 128584.0,
+            "net bills CURRENT": 369175,
+            "transactions_prior_derived": 307420,
+            "bills growth": 61755
+          },
+          {
+            "product_group_name": "HEALTH AND BEAUTY CARE",
+            "net revenue CURRENT": 2179569.7917,
+            "net revenue PAST": 1989826.8219,
+            "revenue Growth": 189742.96979999985,
+            "net qty CURRENT": 1283722.0,
+            "net qty PAST": 1225327.0,
+            "QTY Growth": 58395.0,
+            "net bills CURRENT": 427278,
+            "transactions_prior_derived": 384944,
+            "bills growth": 42334
+          },
+          {
+            "product_group_name": "RICE",
+            "net revenue CURRENT": 2248167.2526,
+            "net revenue PAST": 2084413.5513,
+            "revenue Growth": 163753.70129999984,
+            "net qty CURRENT": 270839.625,
+            "net qty PAST": 235965.93500000003,
+            "QTY Growth": 34873.68999999997,
+            "net bills CURRENT": 213543,
+            "transactions_prior_derived": 195747,
+            "bills growth": 17796
+          },
+          {
+            "product_group_name": "HAIR CARE",
+            "net revenue CURRENT": 1299015.1251,
+            "net revenue PAST": 1179935.2431,
+            "revenue Growth": 119079.88199999998,
+            "net qty CURRENT": 407354.0,
+            "net qty PAST": 368223.0,
+            "QTY Growth": 39131.0,
+            "net bills CURRENT": 235835,
+            "transactions_prior_derived": 212464,
+            "bills growth": 23371
+          },
+          {
+            "product_group_name": "DRY FRUITS AND NUTS",
+            "net revenue CURRENT": 1594648.8495,
+            "net revenue PAST": 1486903.716,
+            "revenue Growth": 107745.1335,
+            "net qty CURRENT": 235796.26924000005,
+            "net qty PAST": 236069.43200000015,
+            "QTY Growth": -273.16276000009384,
+            "net bills CURRENT": 295853,
+            "transactions_prior_derived": 278428,
+            "bills growth": 17425
+          },
+          {
+            "product_group_name": "FRESH POULTRY",
+            "net revenue CURRENT": 743586.2235,
+            "net revenue PAST": 638091.9558,
+            "revenue Growth": 105494.26769999997,
+            "net qty CURRENT": 272325.0,
+            "net qty PAST": 255477.0,
+            "QTY Growth": 16848.0,
+            "net bills CURRENT": 102937,
+            "transactions_prior_derived": 111074,
+            "bills growth": -8137
+          },
+          {
+            "product_group_name": "ETHNIC FOODS",
+            "net revenue CURRENT": 597605.2506,
+            "net revenue PAST": 498005.8848,
+            "revenue Growth": 99599.36580000003,
+            "net qty CURRENT": 390114.92,
+            "net qty PAST": 337930.385,
+            "QTY Growth": 52184.534999999974,
+            "net bills CURRENT": 252118,
+            "transactions_prior_derived": 216679,
+            "bills growth": 35439
+          },
+          {
+            "product_group_name": "CONFECTIONERY",
+            "net revenue CURRENT": 1742998.5243,
+            "net revenue PAST": 1648304.1162,
+            "revenue Growth": 94694.40809999988,
+            "net qty CURRENT": 4712591.605350001,
+            "net qty PAST": 4978396.9059799975,
+            "QTY Growth": -265805.3006299967,
+            "net bills CURRENT": 324731,
+            "transactions_prior_derived": 299224,
+            "bills growth": 25507
+          },
+          {
+            "product_group_name": "SPICES AND HERBS",
+            "net revenue CURRENT": 963410.9463,
+            "net revenue PAST": 902842.3242,
+            "revenue Growth": 60568.62209999992,
+            "net qty CURRENT": 573568.9169999998,
+            "net qty PAST": 534626.705,
+            "QTY Growth": 38942.211999999825,
+            "net bills CURRENT": 379911,
+            "transactions_prior_derived": 345768,
+            "bills growth": 34143
+          },
+          {
+            "product_group_name": "SNACKS",
+            "net revenue CURRENT": 350750.6523,
+            "net revenue PAST": 292392.8415,
+            "revenue Growth": 58357.810800000036,
+            "net qty CURRENT": 365230.8190799999,
+            "net qty PAST": 307169.38443999994,
+            "QTY Growth": 58061.43463999999,
+            "net bills CURRENT": 186842,
+            "transactions_prior_derived": 161367,
+            "bills growth": 25475
+          },
+          {
+            "product_group_name": "PULSES, SPICES AND HERBS",
+            "net revenue CURRENT": 209382.2109,
+            "net revenue PAST": 154144.0017,
+            "revenue Growth": 55238.20920000001,
+            "net qty CURRENT": 17148.192229999993,
+            "net qty PAST": 12107.179,
+            "QTY Growth": 5041.013229999993,
+            "net bills CURRENT": 46705,
+            "transactions_prior_derived": 32549,
+            "bills growth": 14156
+          },
+          {
+            "product_group_name": "COFFEE AND TEA",
+            "net revenue CURRENT": 818264.0763,
+            "net revenue PAST": 769048.3278,
+            "revenue Growth": 49215.74849999999,
+            "net qty CURRENT": 311388.88,
+            "net qty PAST": 255499.09999999998,
+            "QTY Growth": 55889.78000000003,
+            "net bills CURRENT": 168267,
+            "transactions_prior_derived": 157250,
+            "bills growth": 11017
+          },
+          {
+            "product_group_name": "WASHING DETERGENT",
+            "net revenue CURRENT": 571501.6425,
+            "net revenue PAST": 522755.4834,
+            "revenue Growth": 48746.15909999993,
+            "net qty CURRENT": 161266.0,
+            "net qty PAST": 151221.0,
+            "QTY Growth": 10045.0,
+            "net bills CURRENT": 148755,
+            "transactions_prior_derived": 138024,
+            "bills growth": 10731
+          },
+          {
+            "product_group_name": "BEVERAGES COLD",
+            "net revenue CURRENT": 506736.0216,
+            "net revenue PAST": 458285.445,
+            "revenue Growth": 48450.57659999997,
+            "net qty CURRENT": 1320422.0,
+            "net qty PAST": 1018010.0,
+            "QTY Growth": 302412.0,
+            "net bills CURRENT": 372670,
+            "transactions_prior_derived": 353593,
+            "bills growth": 19077
+          },
+          {
+            "product_group_name": "CANNED FISH",
+            "net revenue CURRENT": 213925.7898,
+            "net revenue PAST": 171458.1648,
+            "revenue Growth": 42467.625,
+            "net qty CURRENT": 191609.0,
+            "net qty PAST": 149074.0,
+            "QTY Growth": 42535.0,
+            "net bills CURRENT": 80391,
+            "transactions_prior_derived": 64231,
+            "bills growth": 16160
+          },
+          {
+            "product_group_name": "COSMETICS",
+            "net revenue CURRENT": 310799.8431,
+            "net revenue PAST": 272268.5697,
+            "revenue Growth": 38531.273400000005,
+            "net qty CURRENT": 80881.0,
+            "net qty PAST": 78982.0,
+            "QTY Growth": 1899.0,
+            "net bills CURRENT": 48305,
+            "transactions_prior_derived": 47022,
+            "bills growth": 1283
+          },
+          {
+            "product_group_name": "FRESH CHEESE AND PICKLES",
+            "net revenue CURRENT": 105681.6342,
+            "net revenue PAST": 73822.9356,
+            "revenue Growth": 31858.698600000003,
+            "net qty CURRENT": 48528.0,
+            "net qty PAST": 40230.0,
+            "QTY Growth": 8298.0,
+            "net bills CURRENT": 33129,
+            "transactions_prior_derived": 26815,
+            "bills growth": 6314
+          },
+          {
+            "product_group_name": "HOME BAKING",
+            "net revenue CURRENT": 231968.1753,
+            "net revenue PAST": 201080.8449,
+            "revenue Growth": 30887.330400000006,
+            "net qty CURRENT": 136918.235,
+            "net qty PAST": 112174.475,
+            "QTY Growth": 24743.75999999998,
+            "net bills CURRENT": 89007,
+            "transactions_prior_derived": 75686,
+            "bills growth": 13321
+          },
+          {
+            "product_group_name": "HEALTH CARE",
+            "net revenue CURRENT": 724555.9755,
+            "net revenue PAST": 693965.7288,
+            "revenue Growth": 30590.2466999999,
+            "net qty CURRENT": 393780.0,
+            "net qty PAST": 355744.0,
+            "QTY Growth": 38036.0,
+            "net bills CURRENT": 116824,
+            "transactions_prior_derived": 109097,
+            "bills growth": 7727
+          }
+        ],
+        "row_count": 20,
+        "dax": "EVALUATE\nTOPN(20,\n    SUMMARIZECOLUMNS(\n        'MIS_DEEP_DIVE2'[product_group_name],\n        TREATAS({\"ST4\", \"ST1\", \"ST3\", \"ST2\", \"ST5\"}, 'MIS_DEEP_DIVE2'[store_no]),\n        TREATAS({\"CONSUMER GOODS\"}, 'MIS_DEEP_DIVE2'[division_name]),\n        \"net revenue CURRENT\", [net revenue CURRENT],\n        \"net revenue PAST\", [net revenue PAST],\n        \"revenue Growth\", [revenue Growth],\n        \"net qty CURRENT\", [net qty CURRENT],\n        \"net qty PAST\", [net qty PAST],\n        \"QTY Growth\", [QTY Growth],\n        \"net bills CURRENT\", [net bills CURRENT],\n        \"transactions_prior_derived\", [net bills CURRENT] - [bills growth],\n        \"bills growth\", [bills growth]\n    ),\n    ABS([revenue Growth]), DESC)\nORDER BY [revenue Growth] DESC",
+        "contract_hint": {
+          "source": "metadata_template",
+          "coverage_kind": "targeted_gap",
+          "grouping": [
+            {
+              "table": "MIS_DEEP_DIVE2",
+              "column": "product_group_name",
+              "reference": "'MIS_DEEP_DIVE2'[product_group_name]",
+              "data_type": "Text",
+              "category": "categorical",
+              "relationship_distance": 0,
+              "score": 85
+            }
+          ],
+          "metrics": [
+            {
+              "alias": "net revenue CURRENT",
+              "expression": "[net revenue CURRENT]",
+              "source": "measure",
+              "phase": "current",
+              "family": "revenue",
+              "bundle_id": "MIS_DEEP_DIVE2::revenue",
+              "semantic_role": "value",
+              "additive_candidate": true
+            },
+            {
+              "alias": "net revenue PAST",
+              "expression": "[net revenue PAST]",
+              "source": "measure",
+              "phase": "prior",
+              "family": "revenue",
+              "bundle_id": "MIS_DEEP_DIVE2::revenue",
+              "semantic_role": "value",
+              "additive_candidate": true
+            },
+            {
+              "alias": "revenue Growth",
+              "expression": "[revenue Growth]",
+              "source": "measure",
+              "phase": "change",
+              "family": "revenue",
+              "bundle_id": "MIS_DEEP_DIVE2::revenue",
+              "semantic_role": "value",
+              "additive_candidate": true
+            },
+            {
+              "alias": "net qty CURRENT",
+              "expression": "[net qty CURRENT]",
+              "source": "measure",
+              "phase": "current",
+              "family": "quantity",
+              "bundle_id": "MIS_DEEP_DIVE2::quantity",
+              "semantic_role": "volume",
+              "additive_candidate": true
+            },
+            {
+              "alias": "net qty PAST",
+              "expression": "[net qty PAST]",
+              "source": "measure",
+              "phase": "prior",
+              "family": "quantity",
+              "bundle_id": "MIS_DEEP_DIVE2::quantity",
+              "semantic_role": "volume",
+              "additive_candidate": true
+            },
+            {
+              "alias": "QTY Growth",
+              "expression": "[QTY Growth]",
+              "source": "measure",
+              "phase": "change",
+              "family": "quantity",
+              "bundle_id": "MIS_DEEP_DIVE2::quantity",
+              "semantic_role": "volume",
+              "additive_candidate": true
+            },
+            {
+              "alias": "net bills CURRENT",
+              "expression": "[net bills CURRENT]",
+              "source": "measure",
+              "phase": "current",
+              "family": "transactions",
+              "bundle_id": "CAT_TRANSACTIONS::transactions",
+              "semantic_role": "volume",
+              "additive_candidate": true
+            },
+            {
+              "alias": "transactions_prior_derived",
+              "expression": "[net bills CURRENT] - [bills growth]",
+              "source": "metadata_identity",
+              "phase": "prior",
+              "family": "transactions",
+              "bundle_id": "CAT_TRANSACTIONS::transactions",
+              "semantic_role": "volume",
+              "additive_candidate": true
+            },
+            {
+              "alias": "bills growth",
+              "expression": "[bills growth]",
+              "source": "measure",
+              "phase": "change",
+              "family": "transactions",
+              "bundle_id": "CAT_TRANSACTIONS::transactions",
+              "semantic_role": "volume",
+              "additive_candidate": true
+            }
+          ],
+          "population_status": "comparable",
+          "population_codes": [
+            "ST4",
+            "ST1",
+            "ST3",
+            "ST2",
+            "ST5"
+          ],
+          "entity_dimension": {
+            "table": "MIS_DEEP_DIVE2",
+            "column": "store_no",
+            "reference": "'MIS_DEEP_DIVE2'[store_no]",
+            "data_type": "Text",
+            "category": "categorical",
+            "relationship_distance": 0,
+            "score": 70,
+            "entity_score": 170
+          },
+          "topn": 20,
+          "sort": {
+            "alias": "revenue Growth",
+            "direction": "DESC"
+          },
+          "time_window": "all_available",
+          "segment_filter": {
+            "dimension": {
+              "table": "MIS_DEEP_DIVE2",
+              "column": "division_name",
+              "reference": "'MIS_DEEP_DIVE2'[division_name]",
+              "data_type": "Text",
+              "category": "categorical",
+              "relationship_distance": 0,
+              "score": 85
+            },
+            "value": "CONSUMER GOODS",
+            "values": [
+              "CONSUMER GOODS"
+            ]
+          }
+        },
+        "population_status": "comparable",
+        "completeness": "partial",
+        "cache_hit": false
+      },
+      "special_product_group_name": {
+        "rows": [
+          {
+            "special_product_group_name": "COOKING OILS",
+            "net revenue CURRENT": 1013988.6855,
+            "net revenue PAST": 680549.4774,
+            "revenue Growth": 333439.20810000005,
+            "net qty CURRENT": 249271.0,
+            "net qty PAST": 195529.0,
+            "QTY Growth": 53742.0,
+            "net bills CURRENT": 208409,
+            "transactions_prior_derived": 171195,
+            "bills growth": 37214
+          },
+          {
+            "special_product_group_name": "SNACKS",
+            "net revenue CURRENT": 1785814.5762,
+            "net revenue PAST": 1646596.1718,
+            "revenue Growth": 139218.40440000012,
+            "net qty CURRENT": 350146.08832,
+            "net qty PAST": 333962.81644,
+            "QTY Growth": 16183.271879999957,
+            "net bills CURRENT": 384585,
+            "transactions_prior_derived": 353881,
+            "bills growth": 30704
+          },
+          {
+            "special_product_group_name": "BASMATI RICE",
+            "net revenue CURRENT": 1001890.9008,
+            "net revenue PAST": 882847.7037,
+            "revenue Growth": 119043.19709999999,
+            "net qty CURRENT": 117188.40500000003,
+            "net qty PAST": 91335.585,
+            "QTY Growth": 25852.82000000002,
+            "net bills CURRENT": 95197,
+            "transactions_prior_derived": 76216,
+            "bills growth": 18981
+          },
+          {
+            "special_product_group_name": "UHT MILK",
+            "net revenue CURRENT": 581925.0438,
+            "net revenue PAST": 493179.8319,
+            "revenue Growth": 88745.2119,
+            "net qty CURRENT": 563544.0,
+            "net qty PAST": 497039.0,
+            "QTY Growth": 66505.0,
+            "net bills CURRENT": 118697,
+            "transactions_prior_derived": 99905,
+            "bills growth": 18792
+          },
+          {
+            "special_product_group_name": "SOAP",
+            "net revenue CURRENT": 958945.9131,
+            "net revenue PAST": 874476.2295,
+            "revenue Growth": 84469.68359999999,
+            "net qty CURRENT": 944539.0,
+            "net qty PAST": 914554.0,
+            "QTY Growth": 29985.0,
+            "net bills CURRENT": 215957,
+            "transactions_prior_derived": 194444,
+            "bills growth": 21513
+          },
+          {
+            "special_product_group_name": "FACE CREAM",
+            "net revenue CURRENT": 1482803.9172,
+            "net revenue PAST": 1413301.5378,
+            "revenue Growth": 69502.37939999998,
+            "net qty CURRENT": 607196.0,
+            "net qty PAST": 560255.0,
+            "QTY Growth": 46941.0,
+            "net bills CURRENT": 236408,
+            "transactions_prior_derived": 221247,
+            "bills growth": 15161
+          },
+          {
+            "special_product_group_name": "SHAMPOO",
+            "net revenue CURRENT": 631397.5569,
+            "net revenue PAST": 562214.7576,
+            "revenue Growth": 69182.79929999996,
+            "net qty CURRENT": 207014.0,
+            "net qty PAST": 186127.0,
+            "QTY Growth": 20887.0,
+            "net bills CURRENT": 120967,
+            "transactions_prior_derived": 106280,
+            "bills growth": 14687
+          },
+          {
+            "special_product_group_name": "FRESH CHICKEN PORTIONS",
+            "net revenue CURRENT": 253252.1754,
+            "net revenue PAST": 187608.9708,
+            "revenue Growth": 65643.2046,
+            "net qty CURRENT": 144264.0,
+            "net qty PAST": 112159.0,
+            "QTY Growth": 32105.0,
+            "net bills CURRENT": 71992,
+            "transactions_prior_derived": 56403,
+            "bills growth": 15589
+          },
+          {
+            "special_product_group_name": "COVRD CHOCO BARS AND TAB",
+            "net revenue CURRENT": 949525.6212,
+            "net revenue PAST": 884275.3098,
+            "revenue Growth": 65250.311400000006,
+            "net qty CURRENT": 3514125.040100001,
+            "net qty PAST": 3764508.5334199998,
+            "QTY Growth": -250383.49331999896,
+            "net bills CURRENT": 139135,
+            "transactions_prior_derived": 128174,
+            "bills growth": 10961
+          },
+          {
+            "special_product_group_name": "ETHNIC FOODS",
+            "net revenue CURRENT": 430618.4208,
+            "net revenue PAST": 365930.7543,
+            "revenue Growth": 64687.66650000005,
+            "net qty CURRENT": 284010.92,
+            "net qty PAST": 245147.385,
+            "QTY Growth": 38863.534999999974,
+            "net bills CURRENT": 161331,
+            "transactions_prior_derived": 137971,
+            "bills growth": 23360
+          },
+          {
+            "special_product_group_name": "SPICES",
+            "net revenue CURRENT": 299508.5646,
+            "net revenue PAST": 237410.325,
+            "revenue Growth": 62098.23959999997,
+            "net qty CURRENT": 110806.25123000001,
+            "net qty PAST": 101205.11699999998,
+            "QTY Growth": 9601.134230000025,
+            "net bills CURRENT": 117300,
+            "transactions_prior_derived": 100770,
+            "bills growth": 16530
+          },
+          {
+            "special_product_group_name": "FRESH WHOLE  CHICKEN",
+            "net revenue CURRENT": 533876.5782,
+            "net revenue PAST": 475638.2154,
+            "revenue Growth": 58238.3628,
+            "net qty CURRENT": 139723.0,
+            "net qty PAST": 150509.0,
+            "QTY Growth": -10786.0,
+            "net bills CURRENT": 40572,
+            "transactions_prior_derived": 60472,
+            "bills growth": -19900
+          },
+          {
+            "special_product_group_name": "FRESH MILK",
+            "net revenue CURRENT": 316306.9332,
+            "net revenue PAST": 260328.7242,
+            "revenue Growth": 55978.20900000003,
+            "net qty CURRENT": 190968.0,
+            "net qty PAST": 152685.0,
+            "QTY Growth": 38283.0,
+            "net bills CURRENT": 117129,
+            "transactions_prior_derived": 103134,
+            "bills growth": 13995
+          },
+          {
+            "special_product_group_name": "MASALA",
+            "net revenue CURRENT": 498293.1189,
+            "net revenue PAST": 448115.4603,
+            "revenue Growth": 50177.658600000024,
+            "net qty CURRENT": 298241.02999999997,
+            "net qty PAST": 267165.82,
+            "QTY Growth": 31075.209999999963,
+            "net bills CURRENT": 199495,
+            "transactions_prior_derived": 178660,
+            "bills growth": 20835
+          },
+          {
+            "special_product_group_name": "WASHING POWDER FRONT LOAD",
+            "net revenue CURRENT": 571501.6425,
+            "net revenue PAST": 522755.4834,
+            "revenue Growth": 48746.15909999993,
+            "net qty CURRENT": 161266.0,
+            "net qty PAST": 151221.0,
+            "QTY Growth": 10045.0,
+            "net bills CURRENT": 148755,
+            "transactions_prior_derived": 138024,
+            "bills growth": 10731
+          },
+          {
+            "special_product_group_name": "HAIR OIL",
+            "net revenue CURRENT": 564367.7997,
+            "net revenue PAST": 515846.178,
+            "revenue Growth": 48521.62169999996,
+            "net qty CURRENT": 167386.0,
+            "net qty PAST": 150475.0,
+            "QTY Growth": 16911.0,
+            "net bills CURRENT": 92584,
+            "transactions_prior_derived": 85289,
+            "bills growth": 7295
+          },
+          {
+            "special_product_group_name": "HOME BAKING",
+            "net revenue CURRENT": 186635.5641,
+            "net revenue PAST": 138426.9966,
+            "revenue Growth": 48208.567499999976,
+            "net qty CURRENT": 96708.235,
+            "net qty PAST": 73939.105,
+            "QTY Growth": 22769.130000000005,
+            "net bills CURRENT": 64190,
+            "transactions_prior_derived": 48936,
+            "bills growth": 15254
+          },
+          {
+            "special_product_group_name": "CANNED TUNA",
+            "net revenue CURRENT": 214078.5261,
+            "net revenue PAST": 171641.3247,
+            "revenue Growth": 42437.20139999999,
+            "net qty CURRENT": 191774.0,
+            "net qty PAST": 149258.0,
+            "QTY Growth": 42516.0,
+            "net bills CURRENT": 80518,
+            "transactions_prior_derived": 64383,
+            "bills growth": 16135
+          },
+          {
+            "special_product_group_name": "FRESH SOFT CHEESE",
+            "net revenue CURRENT": 129591.4626,
+            "net revenue PAST": 87294.8718,
+            "revenue Growth": 42296.590800000005,
+            "net qty CURRENT": 72370.0,
+            "net qty PAST": 52726.0,
+            "QTY Growth": 19644.0,
+            "net bills CURRENT": 43940,
+            "transactions_prior_derived": 31059,
+            "bills growth": 12881
+          },
+          {
+            "special_product_group_name": "SUNFLOWER OIL",
+            "net revenue CURRENT": 768200.4792,
+            "net revenue PAST": 886015.0251,
+            "revenue Growth": -117814.54590000003,
+            "net qty CURRENT": 142338.0,
+            "net qty PAST": 179943.0,
+            "QTY Growth": -37605.0,
+            "net bills CURRENT": 126123,
+            "transactions_prior_derived": 154836,
+            "bills growth": -28713
+          }
+        ],
+        "row_count": 20,
+        "dax": "EVALUATE\nTOPN(20,\n    SUMMARIZECOLUMNS(\n        'MIS_DEEP_DIVE2'[special_product_group_name],\n        TREATAS({\"ST4\", \"ST1\", \"ST3\", \"ST2\", \"ST5\"}, 'MIS_DEEP_DIVE2'[store_no]),\n        TREATAS({\"CONSUMER GOODS\"}, 'MIS_DEEP_DIVE2'[division_name]),\n        \"net revenue CURRENT\", [net revenue CURRENT],\n        \"net revenue PAST\", [net revenue PAST],\n        \"revenue Growth\", [revenue Growth],\n        \"net qty CURRENT\", [net qty CURRENT],\n        \"net qty PAST\", [net qty PAST],\n        \"QTY Growth\", [QTY Growth],\n        \"net bills CURRENT\", [net bills CURRENT],\n        \"transactions_prior_derived\", [net bills CURRENT] - [bills growth],\n        \"bills growth\", [bills growth]\n    ),\n    ABS([revenue Growth]), DESC)\nORDER BY [revenue Growth] DESC",
+        "contract_hint": {
+          "source": "metadata_template",
+          "coverage_kind": "targeted_gap",
+          "grouping": [
+            {
+              "table": "MIS_DEEP_DIVE2",
+              "column": "special_product_group_name",
+              "reference": "'MIS_DEEP_DIVE2'[special_product_group_name]",
+              "data_type": "Text",
+              "category": "categorical",
+              "relationship_distance": 0,
+              "score": 85
+            }
+          ],
+          "metrics": [
+            {
+              "alias": "net revenue CURRENT",
+              "expression": "[net revenue CURRENT]",
+              "source": "measure",
+              "phase": "current",
+              "family": "revenue",
+              "bundle_id": "MIS_DEEP_DIVE2::revenue",
+              "semantic_role": "value",
+              "additive_candidate": true
+            },
+            {
+              "alias": "net revenue PAST",
+              "expression": "[net revenue PAST]",
+              "source": "measure",
+              "phase": "prior",
+              "family": "revenue",
+              "bundle_id": "MIS_DEEP_DIVE2::revenue",
+              "semantic_role": "value",
+              "additive_candidate": true
+            },
+            {
+              "alias": "revenue Growth",
+              "expression": "[revenue Growth]",
+              "source": "measure",
+              "phase": "change",
+              "family": "revenue",
+              "bundle_id": "MIS_DEEP_DIVE2::revenue",
+              "semantic_role": "value",
+              "additive_candidate": true
+            },
+            {
+              "alias": "net qty CURRENT",
+              "expression": "[net qty CURRENT]",
+              "source": "measure",
+              "phase": "current",
+              "family": "quantity",
+              "bundle_id": "MIS_DEEP_DIVE2::quantity",
+              "semantic_role": "volume",
+              "additive_candidate": true
+            },
+            {
+              "alias": "net qty PAST",
+              "expression": "[net qty PAST]",
+              "source": "measure",
+              "phase": "prior",
+              "family": "quantity",
+              "bundle_id": "MIS_DEEP_DIVE2::quantity",
+              "semantic_role": "volume",
+              "additive_candidate": true
+            },
+            {
+              "alias": "QTY Growth",
+              "expression": "[QTY Growth]",
+              "source": "measure",
+              "phase": "change",
+              "family": "quantity",
+              "bundle_id": "MIS_DEEP_DIVE2::quantity",
+              "semantic_role": "volume",
+              "additive_candidate": true
+            },
+            {
+              "alias": "net bills CURRENT",
+              "expression": "[net bills CURRENT]",
+              "source": "measure",
+              "phase": "current",
+              "family": "transactions",
+              "bundle_id": "CAT_TRANSACTIONS::transactions",
+              "semantic_role": "volume",
+              "additive_candidate": true
+            },
+            {
+              "alias": "transactions_prior_derived",
+              "expression": "[net bills CURRENT] - [bills growth]",
+              "source": "metadata_identity",
+              "phase": "prior",
+              "family": "transactions",
+              "bundle_id": "CAT_TRANSACTIONS::transactions",
+              "semantic_role": "volume",
+              "additive_candidate": true
+            },
+            {
+              "alias": "bills growth",
+              "expression": "[bills growth]",
+              "source": "measure",
+              "phase": "change",
+              "family": "transactions",
+              "bundle_id": "CAT_TRANSACTIONS::transactions",
+              "semantic_role": "volume",
+              "additive_candidate": true
+            }
+          ],
+          "population_status": "comparable",
+          "population_codes": [
+            "ST4",
+            "ST1",
+            "ST3",
+            "ST2",
+            "ST5"
+          ],
+          "entity_dimension": {
+            "table": "MIS_DEEP_DIVE2",
+            "column": "store_no",
+            "reference": "'MIS_DEEP_DIVE2'[store_no]",
+            "data_type": "Text",
+            "category": "categorical",
+            "relationship_distance": 0,
+            "score": 70,
+            "entity_score": 170
+          },
+          "topn": 20,
+          "sort": {
+            "alias": "revenue Growth",
+            "direction": "DESC"
+          },
+          "time_window": "all_available",
+          "segment_filter": {
+            "dimension": {
+              "table": "MIS_DEEP_DIVE2",
+              "column": "division_name",
+              "reference": "'MIS_DEEP_DIVE2'[division_name]",
+              "data_type": "Text",
+              "category": "categorical",
+              "relationship_distance": 0,
+              "score": 85
+            },
+            "value": "CONSUMER GOODS",
+            "values": [
+              "CONSUMER GOODS"
+            ]
+          }
+        },
+        "population_status": "comparable",
+        "completeness": "partial",
+        "cache_hit": false
+      },
+      "store_no": {
+        "rows": [
+          {
+            "store_no": "ST5",
+            "net revenue CURRENT": 1981462.5999,
+            "net revenue PAST": 323208.7488,
+            "revenue Growth": 1658253.8511,
+            "net qty CURRENT": 1612954.818460001,
+            "net qty PAST": 283111.527,
+            "QTY Growth": 1329843.291460001,
+            "net bills CURRENT": 509580,
+            "transactions_prior_derived": 86794,
+            "bills growth": 422786
+          },
+          {
+            "store_no": "ST4",
+            "net revenue CURRENT": 5974054.6572,
+            "net revenue PAST": 5635567.008,
+            "revenue Growth": 338487.64919999987,
+            "net qty CURRENT": 4584791.448549999,
+            "net qty PAST": 4647954.208939999,
+            "QTY Growth": -63162.76039000042,
+            "net bills CURRENT": 1517199,
+            "transactions_prior_derived": 1459815,
+            "bills growth": 57384
+          },
+          {
+            "store_no": "ST3",
+            "net revenue CURRENT": 4387901.4819,
+            "net revenue PAST": 4192413.6303,
+            "revenue Growth": 195487.85160000017,
+            "net qty CURRENT": 3114397.32608,
+            "net qty PAST": 3148430.61987,
+            "QTY Growth": -34033.293790000025,
+            "net bills CURRENT": 1055169,
+            "transactions_prior_derived": 977163,
+            "bills growth": 78006
+          },
+          {
+            "store_no": "ST1",
+            "net revenue CURRENT": 6237841.2525,
+            "net revenue PAST": 6257277.0945,
+            "revenue Growth": -19435.841999999247,
+            "net qty CURRENT": 3810540.8369999994,
+            "net qty PAST": 3985377.77321,
+            "QTY Growth": -174836.93621000042,
+            "net bills CURRENT": 1520029,
+            "transactions_prior_derived": 1517809,
+            "bills growth": 2220
+          },
+          {
+            "store_no": "ST2",
+            "net revenue CURRENT": 3441559.0797,
+            "net revenue PAST": 3556545.1542,
+            "revenue Growth": -114986.0745000001,
+            "net qty CURRENT": 2312172.150009999,
+            "net qty PAST": 2442663.4214299996,
+            "QTY Growth": -130491.27142000059,
+            "net bills CURRENT": 824528,
+            "transactions_prior_derived": 883406,
+            "bills growth": -58878
+          }
+        ],
+        "row_count": 5,
+        "dax": "EVALUATE\nTOPN(20,\n    SUMMARIZECOLUMNS(\n        'MIS_DEEP_DIVE2'[store_no],\n        TREATAS({\"ST4\", \"ST1\", \"ST3\", \"ST2\", \"ST5\"}, 'MIS_DEEP_DIVE2'[store_no]),\n        TREATAS({\"CONSUMER GOODS\"}, 'MIS_DEEP_DIVE2'[division_name]),\n        \"net revenue CURRENT\", [net revenue CURRENT],\n        \"net revenue PAST\", [net revenue PAST],\n        \"revenue Growth\", [revenue Growth],\n        \"net qty CURRENT\", [net qty CURRENT],\n        \"net qty PAST\", [net qty PAST],\n        \"QTY Growth\", [QTY Growth],\n        \"net bills CURRENT\", [net bills CURRENT],\n        \"transactions_prior_derived\", [net bills CURRENT] - [bills growth],\n        \"bills growth\", [bills growth]\n    ),\n    ABS([revenue Growth]), DESC)\nORDER BY [revenue Growth] DESC",
+        "contract_hint": {
+          "source": "metadata_template",
+          "coverage_kind": "targeted_gap",
+          "grouping": [
+            {
+              "table": "MIS_DEEP_DIVE2",
+              "column": "store_no",
+              "reference": "'MIS_DEEP_DIVE2'[store_no]",
+              "data_type": "Text",
+              "category": "categorical",
+              "relationship_distance": 0,
+              "score": 70
+            }
+          ],
+          "metrics": [
+            {
+              "alias": "net revenue CURRENT",
+              "expression": "[net revenue CURRENT]",
+              "source": "measure",
+              "phase": "current",
+              "family": "revenue",
+              "bundle_id": "MIS_DEEP_DIVE2::revenue",
+              "semantic_role": "value",
+              "additive_candidate": true
+            },
+            {
+              "alias": "net revenue PAST",
+              "expression": "[net revenue PAST]",
+              "source": "measure",
+              "phase": "prior",
+              "family": "revenue",
+              "bundle_id": "MIS_DEEP_DIVE2::revenue",
+              "semantic_role": "value",
+              "additive_candidate": true
+            },
+            {
+              "alias": "revenue Growth",
+              "expression": "[revenue Growth]",
+              "source": "measure",
+              "phase": "change",
+              "family": "revenue",
+              "bundle_id": "MIS_DEEP_DIVE2::revenue",
+              "semantic_role": "value",
+              "additive_candidate": true
+            },
+            {
+              "alias": "net qty CURRENT",
+              "expression": "[net qty CURRENT]",
+              "source": "measure",
+              "phase": "current",
+              "family": "quantity",
+              "bundle_id": "MIS_DEEP_DIVE2::quantity",
+              "semantic_role": "volume",
+              "additive_candidate": true
+            },
+            {
+              "alias": "net qty PAST",
+              "expression": "[net qty PAST]",
+              "source": "measure",
+              "phase": "prior",
+              "family": "quantity",
+              "bundle_id": "MIS_DEEP_DIVE2::quantity",
+              "semantic_role": "volume",
+              "additive_candidate": true
+            },
+            {
+              "alias": "QTY Growth",
+              "expression": "[QTY Growth]",
+              "source": "measure",
+              "phase": "change",
+              "family": "quantity",
+              "bundle_id": "MIS_DEEP_DIVE2::quantity",
+              "semantic_role": "volume",
+              "additive_candidate": true
+            },
+            {
+              "alias": "net bills CURRENT",
+              "expression": "[net bills CURRENT]",
+              "source": "measure",
+              "phase": "current",
+              "family": "transactions",
+              "bundle_id": "CAT_TRANSACTIONS::transactions",
+              "semantic_role": "volume",
+              "additive_candidate": true
+            },
+            {
+              "alias": "transactions_prior_derived",
+              "expression": "[net bills CURRENT] - [bills growth]",
+              "source": "metadata_identity",
+              "phase": "prior",
+              "family": "transactions",
+              "bundle_id": "CAT_TRANSACTIONS::transactions",
+              "semantic_role": "volume",
+              "additive_candidate": true
+            },
+            {
+              "alias": "bills growth",
+              "expression": "[bills growth]",
+              "source": "measure",
+              "phase": "change",
+              "family": "transactions",
+              "bundle_id": "CAT_TRANSACTIONS::transactions",
+              "semantic_role": "volume",
+              "additive_candidate": true
+            }
+          ],
+          "population_status": "comparable",
+          "population_codes": [
+            "ST4",
+            "ST1",
+            "ST3",
+            "ST2",
+            "ST5"
+          ],
+          "entity_dimension": {
+            "table": "MIS_DEEP_DIVE2",
+            "column": "store_no",
+            "reference": "'MIS_DEEP_DIVE2'[store_no]",
+            "data_type": "Text",
+            "category": "categorical",
+            "relationship_distance": 0,
+            "score": 70,
+            "entity_score": 170
+          },
+          "topn": 20,
+          "sort": {
+            "alias": "revenue Growth",
+            "direction": "DESC"
+          },
+          "time_window": "all_available",
+          "segment_filter": {
+            "dimension": {
+              "table": "MIS_DEEP_DIVE2",
+              "column": "division_name",
+              "reference": "'MIS_DEEP_DIVE2'[division_name]",
+              "data_type": "Text",
+              "category": "categorical",
+              "relationship_distance": 0,
+              "score": 85
+            },
+            "value": "CONSUMER GOODS",
+            "values": [
+              "CONSUMER GOODS"
+            ]
+          }
+        },
+        "population_status": "comparable",
+        "completeness": "complete",
+        "cache_hit": false
+      }
+    },
+    "gap_probes_used": 3
+  },
+  "provisions_large_category_gain_with_rate_pressure_per_bill": {
+    "segment": "PROVISIONS",
+    "segment_members": null,
+    "segment_dimension": {
+      "table": "MIS_DEEP_DIVE2",
+      "column": "item_category_name",
+      "reference": "'MIS_DEEP_DIVE2'[item_category_name]",
+      "data_type": "Text",
+      "category": "categorical",
+      "relationship_distance": 0,
+      "score": 85
+    },
+    "filled_dimensions": [
+      "product_group_name",
+      "special_product_group_name",
+      "store_no"
+    ],
+    "evidence": {
+      "product_group_name": {
+        "rows": [
+          {
+            "product_group_name": "COOKING OILS",
+            "net revenue CURRENT": 1981839.9762,
+            "net revenue PAST": 1724051.5578,
+            "revenue Growth": 257788.41839999985,
+            "net qty CURRENT": 441632.0,
+            "net qty PAST": 411901.0,
+            "QTY Growth": 29731.0,
+            "net bills CURRENT": 371308,
+            "transactions_prior_derived": 354239,
+            "bills growth": 17069
+          },
+          {
+            "product_group_name": "RICE",
+            "net revenue CURRENT": 2248167.2526,
+            "net revenue PAST": 2084413.5513,
+            "revenue Growth": 163753.70129999984,
+            "net qty CURRENT": 270839.625,
+            "net qty PAST": 235965.93500000003,
+            "QTY Growth": 34873.68999999997,
+            "net bills CURRENT": 213543,
+            "transactions_prior_derived": 195747,
+            "bills growth": 17796
+          },
+          {
+            "product_group_name": "ETHNIC FOODS",
+            "net revenue CURRENT": 597605.2506,
+            "net revenue PAST": 498005.8848,
+            "revenue Growth": 99599.36580000003,
+            "net qty CURRENT": 390114.92,
+            "net qty PAST": 337930.385,
+            "QTY Growth": 52184.534999999974,
+            "net bills CURRENT": 252118,
+            "transactions_prior_derived": 216679,
+            "bills growth": 35439
+          },
+          {
+            "product_group_name": "CONFECTIONERY",
+            "net revenue CURRENT": 1467983.8035,
+            "net revenue PAST": 1385920.7595,
+            "revenue Growth": 82063.044,
+            "net qty CURRENT": 4663108.047350001,
+            "net qty PAST": 4927987.651979998,
+            "QTY Growth": -264879.60462999716,
+            "net bills CURRENT": 292001,
+            "transactions_prior_derived": 266740,
+            "bills growth": 25261
+          },
+          {
+            "product_group_name": "SPICES AND HERBS",
+            "net revenue CURRENT": 963410.9463,
+            "net revenue PAST": 902842.3242,
+            "revenue Growth": 60568.62209999992,
+            "net qty CURRENT": 573568.9169999998,
+            "net qty PAST": 534626.705,
+            "QTY Growth": 38942.211999999825,
+            "net bills CURRENT": 379911,
+            "transactions_prior_derived": 345768,
+            "bills growth": 34143
+          },
+          {
+            "product_group_name": "SNACKS",
+            "net revenue CURRENT": 342129.9924,
+            "net revenue PAST": 285216.39,
+            "revenue Growth": 56913.602399999974,
+            "net qty CURRENT": 363371.99908,
+            "net qty PAST": 305647.66644,
+            "QTY Growth": 57724.33263999998,
+            "net bills CURRENT": 182402,
+            "transactions_prior_derived": 158040,
+            "bills growth": 24362
+          },
+          {
+            "product_group_name": "COFFEE AND TEA",
+            "net revenue CURRENT": 818264.0763,
+            "net revenue PAST": 769048.3278,
+            "revenue Growth": 49215.74849999999,
+            "net qty CURRENT": 311388.88,
+            "net qty PAST": 255499.09999999998,
+            "QTY Growth": 55889.78000000003,
+            "net bills CURRENT": 168267,
+            "transactions_prior_derived": 157250,
+            "bills growth": 11017
+          },
+          {
+            "product_group_name": "CANNED FISH",
+            "net revenue CURRENT": 213925.7898,
+            "net revenue PAST": 171458.1648,
+            "revenue Growth": 42467.625,
+            "net qty CURRENT": 191609.0,
+            "net qty PAST": 149074.0,
+            "QTY Growth": 42535.0,
+            "net bills CURRENT": 80391,
+            "transactions_prior_derived": 64231,
+            "bills growth": 16160
+          },
+          {
+            "product_group_name": "HOME BAKING",
+            "net revenue CURRENT": 231968.1753,
+            "net revenue PAST": 201080.8449,
+            "revenue Growth": 30887.330400000006,
+            "net qty CURRENT": 136918.235,
+            "net qty PAST": 112174.475,
+            "QTY Growth": 24743.75999999998,
+            "net bills CURRENT": 89007,
+            "transactions_prior_derived": 75686,
+            "bills growth": 13321
+          },
+          {
+            "product_group_name": "BISCUITS",
+            "net revenue CURRENT": 315815.9787,
+            "net revenue PAST": 287703.9081,
+            "revenue Growth": 28112.070599999977,
+            "net qty CURRENT": 873030.7702,
+            "net qty PAST": 772403.52003,
+            "QTY Growth": 100627.25017000001,
+            "net bills CURRENT": 153335,
+            "transactions_prior_derived": 138365,
+            "bills growth": 14970
+          },
+          {
+            "product_group_name": "PASTA AND NOODLE",
+            "net revenue CURRENT": 276276.8844,
+            "net revenue PAST": 256711.5261,
+            "revenue Growth": 19565.358299999993,
+            "net qty CURRENT": 582832.0,
+            "net qty PAST": 558086.0,
+            "QTY Growth": 24746.0,
+            "net bills CURRENT": 140590,
+            "transactions_prior_derived": 120459,
+            "bills growth": 20131
+          },
+          {
+            "product_group_name": "LONG LIFE DAIRY PRODUCTS",
+            "net revenue CURRENT": 621272.3085,
+            "net revenue PAST": 602056.7109,
+            "revenue Growth": 19215.597600000096,
+            "net qty CURRENT": 159871.0,
+            "net qty PAST": 124029.0,
+            "QTY Growth": 35842.0,
+            "net bills CURRENT": 73670,
+            "transactions_prior_derived": 64255,
+            "bills growth": 9415
+          },
+          {
+            "product_group_name": "INSTANT DRINKS",
+            "net revenue CURRENT": 325397.6577,
+            "net revenue PAST": 310034.0556,
+            "revenue Growth": 15363.60209999996,
+            "net qty CURRENT": 145498.0,
+            "net qty PAST": 113580.0,
+            "QTY Growth": 31918.0,
+            "net bills CURRENT": 59207,
+            "transactions_prior_derived": 51516,
+            "bills growth": 7691
+          },
+          {
+            "product_group_name": "GHEE",
+            "net revenue CURRENT": 71799.0804,
+            "net revenue PAST": 60904.6479,
+            "revenue Growth": 10894.432500000003,
+            "net qty CURRENT": 17499.0,
+            "net qty PAST": 13928.0,
+            "QTY Growth": 3571.0,
+            "net bills CURRENT": 15826,
+            "transactions_prior_derived": 12915,
+            "bills growth": 2911
+          },
+          {
+            "product_group_name": "SUGAR",
+            "net revenue CURRENT": 228868.0542,
+            "net revenue PAST": 220593.5721,
+            "revenue Growth": 8274.482100000023,
+            "net qty CURRENT": 100429.0,
+            "net qty PAST": 91875.0,
+            "QTY Growth": 8554.0,
+            "net bills CURRENT": 91337,
+            "transactions_prior_derived": 83059,
+            "bills growth": 8278
+          },
+          {
+            "product_group_name": "HEALTH CARE",
+            "net revenue CURRENT": 13921.0893,
+            "net revenue PAST": 10677.1932,
+            "revenue Growth": 3243.8961,
+            "net qty CURRENT": 6770.0,
+            "net qty PAST": 5663.0,
+            "QTY Growth": 1107.0,
+            "net bills CURRENT": 5673,
+            "transactions_prior_derived": 4697,
+            "bills growth": 976
+          },
+          {
+            "product_group_name": "BROUGHT IN  BREAD AND CAKES",
+            "net revenue CURRENT": 143315.5788,
+            "net revenue PAST": 140190.3423,
+            "revenue Growth": 3125.236499999999,
+            "net qty CURRENT": 223052.927,
+            "net qty PAST": 224293.23700000002,
+            "QTY Growth": -1240.3100000000268,
+            "net bills CURRENT": 116426,
+            "transactions_prior_derived": 109607,
+            "bills growth": 6819
+          },
+          {
+            "product_group_name": "OTHER KITCHEN ACCESSORIES",
+            "net revenue CURRENT": 7616.0493,
+            "net revenue PAST": 4855.3533,
+            "revenue Growth": 2760.696,
+            "net qty CURRENT": 4406.0,
+            "net qty PAST": 3244.0,
+            "QTY Growth": 1162.0,
+            "net bills CURRENT": 2136,
+            "transactions_prior_derived": 1529,
+            "bills growth": 607
+          },
+          {
+            "product_group_name": "BABY FOOD",
+            "net revenue CURRENT": 3755.7162,
+            "net revenue PAST": 5502.0924,
+            "revenue Growth": -1746.3762000000006,
+            "net qty CURRENT": 1786.0,
+            "net qty PAST": 3352.0,
+            "QTY Growth": -1566.0,
+            "net bills CURRENT": 917,
+            "transactions_prior_derived": 1207,
+            "bills growth": -290
+          },
+          {
+            "product_group_name": "FISH",
+            "net revenue CURRENT": 24050.0772,
+            "net revenue PAST": 27739.2438,
+            "revenue Growth": -3689.1666000000005,
+            "net qty CURRENT": 14621.0,
+            "net qty PAST": 16939.0,
+            "QTY Growth": -2318.0,
+            "net bills CURRENT": 10458,
+            "transactions_prior_derived": 11850,
+            "bills growth": -1392
+          }
+        ],
+        "row_count": 20,
+        "dax": "EVALUATE\nTOPN(20,\n    SUMMARIZECOLUMNS(\n        'MIS_DEEP_DIVE2'[product_group_name],\n        TREATAS({\"ST4\", \"ST1\", \"ST3\", \"ST2\", \"ST5\"}, 'MIS_DEEP_DIVE2'[store_no]),\n        TREATAS({\"PROVISIONS\"}, 'MIS_DEEP_DIVE2'[item_category_name]),\n        \"net revenue CURRENT\", [net revenue CURRENT],\n        \"net revenue PAST\", [net revenue PAST],\n        \"revenue Growth\", [revenue Growth],\n        \"net qty CURRENT\", [net qty CURRENT],\n        \"net qty PAST\", [net qty PAST],\n        \"QTY Growth\", [QTY Growth],\n        \"net bills CURRENT\", [net bills CURRENT],\n        \"transactions_prior_derived\", [net bills CURRENT] - [bills growth],\n        \"bills growth\", [bills growth]\n    ),\n    ABS([revenue Growth]), DESC)\nORDER BY [revenue Growth] DESC",
+        "contract_hint": {
+          "source": "metadata_template",
+          "coverage_kind": "targeted_gap",
+          "grouping": [
+            {
+              "table": "MIS_DEEP_DIVE2",
+              "column": "product_group_name",
+              "reference": "'MIS_DEEP_DIVE2'[product_group_name]",
+              "data_type": "Text",
+              "category": "categorical",
+              "relationship_distance": 0,
+              "score": 85
+            }
+          ],
+          "metrics": [
+            {
+              "alias": "net revenue CURRENT",
+              "expression": "[net revenue CURRENT]",
+              "source": "measure",
+              "phase": "current",
+              "family": "revenue",
+              "bundle_id": "MIS_DEEP_DIVE2::revenue",
+              "semantic_role": "value",
+              "additive_candidate": true
+            },
+            {
+              "alias": "net revenue PAST",
+              "expression": "[net revenue PAST]",
+              "source": "measure",
+              "phase": "prior",
+              "family": "revenue",
+              "bundle_id": "MIS_DEEP_DIVE2::revenue",
+              "semantic_role": "value",
+              "additive_candidate": true
+            },
+            {
+              "alias": "revenue Growth",
+              "expression": "[revenue Growth]",
+              "source": "measure",
+              "phase": "change",
+              "family": "revenue",
+              "bundle_id": "MIS_DEEP_DIVE2::revenue",
+              "semantic_role": "value",
+              "additive_candidate": true
+            },
+            {
+              "alias": "net qty CURRENT",
+              "expression": "[net qty CURRENT]",
+              "source": "measure",
+              "phase": "current",
+              "family": "quantity",
+              "bundle_id": "MIS_DEEP_DIVE2::quantity",
+              "semantic_role": "volume",
+              "additive_candidate": true
+            },
+            {
+              "alias": "net qty PAST",
+              "expression": "[net qty PAST]",
+              "source": "measure",
+              "phase": "prior",
+              "family": "quantity",
+              "bundle_id": "MIS_DEEP_DIVE2::quantity",
+              "semantic_role": "volume",
+              "additive_candidate": true
+            },
+            {
+              "alias": "QTY Growth",
+              "expression": "[QTY Growth]",
+              "source": "measure",
+              "phase": "change",
+              "family": "quantity",
+              "bundle_id": "MIS_DEEP_DIVE2::quantity",
+              "semantic_role": "volume",
+              "additive_candidate": true
+            },
+            {
+              "alias": "net bills CURRENT",
+              "expression": "[net bills CURRENT]",
+              "source": "measure",
+              "phase": "current",
+              "family": "transactions",
+              "bundle_id": "CAT_TRANSACTIONS::transactions",
+              "semantic_role": "volume",
+              "additive_candidate": true
+            },
+            {
+              "alias": "transactions_prior_derived",
+              "expression": "[net bills CURRENT] - [bills growth]",
+              "source": "metadata_identity",
+              "phase": "prior",
+              "family": "transactions",
+              "bundle_id": "CAT_TRANSACTIONS::transactions",
+              "semantic_role": "volume",
+              "additive_candidate": true
+            },
+            {
+              "alias": "bills growth",
+              "expression": "[bills growth]",
+              "source": "measure",
+              "phase": "change",
+              "family": "transactions",
+              "bundle_id": "CAT_TRANSACTIONS::transactions",
+              "semantic_role": "volume",
+              "additive_candidate": true
+            }
+          ],
+          "population_status": "comparable",
+          "population_codes": [
+            "ST4",
+            "ST1",
+            "ST3",
+            "ST2",
+            "ST5"
+          ],
+          "entity_dimension": {
+            "table": "MIS_DEEP_DIVE2",
+            "column": "store_no",
+            "reference": "'MIS_DEEP_DIVE2'[store_no]",
+            "data_type": "Text",
+            "category": "categorical",
+            "relationship_distance": 0,
+            "score": 70,
+            "entity_score": 170
+          },
+          "topn": 20,
+          "sort": {
+            "alias": "revenue Growth",
+            "direction": "DESC"
+          },
+          "time_window": "all_available",
+          "segment_filter": {
+            "dimension": {
+              "table": "MIS_DEEP_DIVE2",
+              "column": "item_category_name",
+              "reference": "'MIS_DEEP_DIVE2'[item_category_name]",
+              "data_type": "Text",
+              "category": "categorical",
+              "relationship_distance": 0,
+              "score": 85
+            },
+            "value": "PROVISIONS",
+            "values": [
+              "PROVISIONS"
+            ]
+          }
+        },
+        "population_status": "comparable",
+        "completeness": "partial",
+        "cache_hit": false
+      },
+      "special_product_group_name": {
+        "rows": [
+          {
+            "special_product_group_name": "COOKING OILS",
+            "net revenue CURRENT": 1013988.6855,
+            "net revenue PAST": 680549.4774,
+            "revenue Growth": 333439.20810000005,
+            "net qty CURRENT": 249271.0,
+            "net qty PAST": 195529.0,
+            "QTY Growth": 53742.0,
+            "net bills CURRENT": 208409,
+            "transactions_prior_derived": 171195,
+            "bills growth": 37214
+          },
+          {
+            "special_product_group_name": "BASMATI RICE",
+            "net revenue CURRENT": 1001890.9008,
+            "net revenue PAST": 882847.7037,
+            "revenue Growth": 119043.19709999999,
+            "net qty CURRENT": 117188.40500000003,
+            "net qty PAST": 91335.585,
+            "QTY Growth": 25852.82000000002,
+            "net bills CURRENT": 95197,
+            "transactions_prior_derived": 76216,
+            "bills growth": 18981
+          },
+          {
+            "special_product_group_name": "COVRD CHOCO BARS AND TAB",
+            "net revenue CURRENT": 942447.4551,
+            "net revenue PAST": 877391.1171,
+            "revenue Growth": 65056.33799999999,
+            "net qty CURRENT": 3504541.040100001,
+            "net qty PAST": 3755414.5334199998,
+            "QTY Growth": -250873.49331999896,
+            "net bills CURRENT": 134157,
+            "transactions_prior_derived": 123425,
+            "bills growth": 10732
+          },
+          {
+            "special_product_group_name": "ETHNIC FOODS",
+            "net revenue CURRENT": 405128.3202,
+            "net revenue PAST": 345938.9445,
+            "revenue Growth": 59189.37570000003,
+            "net qty CURRENT": 270761.92,
+            "net qty PAST": 233896.385,
+            "QTY Growth": 36865.534999999974,
+            "net bills CURRENT": 151563,
+            "transactions_prior_derived": 129664,
+            "bills growth": 21899
+          },
+          {
+            "special_product_group_name": "MASALA",
+            "net revenue CURRENT": 498293.1189,
+            "net revenue PAST": 448115.4603,
+            "revenue Growth": 50177.658600000024,
+            "net qty CURRENT": 298241.02999999997,
+            "net qty PAST": 267165.82,
+            "QTY Growth": 31075.209999999963,
+            "net bills CURRENT": 199495,
+            "transactions_prior_derived": 178660,
+            "bills growth": 20835
+          },
+          {
+            "special_product_group_name": "HOME BAKING",
+            "net revenue CURRENT": 160345.6884,
+            "net revenue PAST": 114560.0442,
+            "revenue Growth": 45785.64420000001,
+            "net qty CURRENT": 84139.235,
+            "net qty PAST": 61982.104999999996,
+            "QTY Growth": 22157.130000000005,
+            "net bills CURRENT": 54957,
+            "transactions_prior_derived": 40229,
+            "bills growth": 14728
+          },
+          {
+            "special_product_group_name": "CANNED TUNA",
+            "net revenue CURRENT": 214078.5261,
+            "net revenue PAST": 171641.3247,
+            "revenue Growth": 42437.20139999999,
+            "net qty CURRENT": 191774.0,
+            "net qty PAST": 149258.0,
+            "QTY Growth": 42516.0,
+            "net bills CURRENT": 80518,
+            "transactions_prior_derived": 64383,
+            "bills growth": 16135
+          },
+          {
+            "special_product_group_name": "POTATO CHIPS",
+            "net revenue CURRENT": 246405.2994,
+            "net revenue PAST": 204912.5823,
+            "revenue Growth": 41492.71709999998,
+            "net qty CURRENT": 279039.0,
+            "net qty PAST": 231101.0,
+            "QTY Growth": 47938.0,
+            "net bills CURRENT": 120792,
+            "transactions_prior_derived": 103547,
+            "bills growth": 17245
+          },
+          {
+            "special_product_group_name": "OLIVE OIL",
+            "net revenue CURRENT": 165460.6872,
+            "net revenue PAST": 126579.2967,
+            "revenue Growth": 38881.39049999998,
+            "net qty CURRENT": 43784.0,
+            "net qty PAST": 29135.0,
+            "QTY Growth": 14649.0,
+            "net bills CURRENT": 30694,
+            "transactions_prior_derived": 21278,
+            "bills growth": 9416
+          },
+          {
+            "special_product_group_name": "BOILED RICE",
+            "net revenue CURRENT": 518516.8371,
+            "net revenue PAST": 487739.4966,
+            "revenue Growth": 30777.34049999999,
+            "net qty CURRENT": 62735.315,
+            "net qty PAST": 55850.0,
+            "QTY Growth": 6885.315000000002,
+            "net bills CURRENT": 51072,
+            "transactions_prior_derived": 48129,
+            "bills growth": 2943
+          },
+          {
+            "special_product_group_name": "SNACKS",
+            "net revenue CURRENT": 153080.2665,
+            "net revenue PAST": 125117.9757,
+            "revenue Growth": 27962.290800000002,
+            "net qty CURRENT": 103150.99907999998,
+            "net qty PAST": 88290.66644,
+            "QTY Growth": 14860.332639999979,
+            "net bills CURRENT": 76936,
+            "transactions_prior_derived": 65599,
+            "bills growth": 11337
+          },
+          {
+            "special_product_group_name": "CANDY BAGS",
+            "net revenue CURRENT": 178108.7859,
+            "net revenue PAST": 154152.0558,
+            "revenue Growth": 23956.730099999986,
+            "net qty CURRENT": 83354.924,
+            "net qty PAST": 67738.11868,
+            "QTY Growth": 15616.80532,
+            "net bills CURRENT": 49076,
+            "transactions_prior_derived": 41318,
+            "bills growth": 7758
+          },
+          {
+            "special_product_group_name": "TEA BAGS",
+            "net revenue CURRENT": 200169.3411,
+            "net revenue PAST": 176789.4444,
+            "revenue Growth": 23379.896699999983,
+            "net qty CURRENT": 63897.0,
+            "net qty PAST": 51974.08000000001,
+            "QTY Growth": 11922.919999999991,
+            "net bills CURRENT": 43904,
+            "transactions_prior_derived": 38143,
+            "bills growth": 5761
+          },
+          {
+            "special_product_group_name": "UHT MILK",
+            "net revenue CURRENT": 104201.7156,
+            "net revenue PAST": 84371.4684,
+            "revenue Growth": 19830.247199999998,
+            "net qty CURRENT": 109984.0,
+            "net qty PAST": 78615.0,
+            "QTY Growth": 31369.0,
+            "net bills CURRENT": 33548,
+            "transactions_prior_derived": 27622,
+            "bills growth": 5926
+          },
+          {
+            "special_product_group_name": "COOKIES",
+            "net revenue CURRENT": 156319.8372,
+            "net revenue PAST": 138845.9691,
+            "revenue Growth": 17473.86810000002,
+            "net qty CURRENT": 261119.08328000002,
+            "net qty PAST": 200844.74997,
+            "QTY Growth": 60274.333310000016,
+            "net bills CURRENT": 74600,
+            "transactions_prior_derived": 63211,
+            "bills growth": 11389
+          },
+          {
+            "special_product_group_name": "INSTANT COFFEE",
+            "net revenue CURRENT": 429146.7966,
+            "net revenue PAST": 413474.5278,
+            "revenue Growth": 15672.26880000002,
+            "net qty CURRENT": 192130.88,
+            "net qty PAST": 156387.01999999996,
+            "QTY Growth": 35743.860000000044,
+            "net bills CURRENT": 78260,
+            "transactions_prior_derived": 78909,
+            "bills growth": -649
+          },
+          {
+            "special_product_group_name": "OTHER RICE",
+            "net revenue CURRENT": 727759.5147,
+            "net revenue PAST": 713826.351,
+            "revenue Growth": 13933.163700000034,
+            "net qty CURRENT": 90915.905,
+            "net qty PAST": 88780.35,
+            "QTY Growth": 2135.554999999993,
+            "net bills CURRENT": 67274,
+            "transactions_prior_derived": 71402,
+            "bills growth": -4128
+          },
+          {
+            "special_product_group_name": "SWEET BISCUITS",
+            "net revenue CURRENT": 165003.5664,
+            "net revenue PAST": 152217.7677,
+            "revenue Growth": 12785.798700000014,
+            "net qty CURRENT": 602641.0,
+            "net qty PAST": 569853.66664,
+            "QTY Growth": 32787.33336000005,
+            "net bills CURRENT": 84171,
+            "transactions_prior_derived": 78580,
+            "bills growth": 5591
+          },
+          {
+            "special_product_group_name": "CHOCOLATE BAGS",
+            "net revenue CURRENT": 95288.8104,
+            "net revenue PAST": 118120.4397,
+            "revenue Growth": -22831.6293,
+            "net qty CURRENT": 29724.0,
+            "net qty PAST": 57222.0,
+            "QTY Growth": -27498.0,
+            "net bills CURRENT": 19717,
+            "transactions_prior_derived": 26428,
+            "bills growth": -6711
+          },
+          {
+            "special_product_group_name": "SUNFLOWER OIL",
+            "net revenue CURRENT": 768200.4792,
+            "net revenue PAST": 886015.0251,
+            "revenue Growth": -117814.54590000003,
+            "net qty CURRENT": 142338.0,
+            "net qty PAST": 179943.0,
+            "QTY Growth": -37605.0,
+            "net bills CURRENT": 126123,
+            "transactions_prior_derived": 154836,
+            "bills growth": -28713
+          }
+        ],
+        "row_count": 20,
+        "dax": "EVALUATE\nTOPN(20,\n    SUMMARIZECOLUMNS(\n        'MIS_DEEP_DIVE2'[special_product_group_name],\n        TREATAS({\"ST4\", \"ST1\", \"ST3\", \"ST2\", \"ST5\"}, 'MIS_DEEP_DIVE2'[store_no]),\n        TREATAS({\"PROVISIONS\"}, 'MIS_DEEP_DIVE2'[item_category_name]),\n        \"net revenue CURRENT\", [net revenue CURRENT],\n        \"net revenue PAST\", [net revenue PAST],\n        \"revenue Growth\", [revenue Growth],\n        \"net qty CURRENT\", [net qty CURRENT],\n        \"net qty PAST\", [net qty PAST],\n        \"QTY Growth\", [QTY Growth],\n        \"net bills CURRENT\", [net bills CURRENT],\n        \"transactions_prior_derived\", [net bills CURRENT] - [bills growth],\n        \"bills growth\", [bills growth]\n    ),\n    ABS([revenue Growth]), DESC)\nORDER BY [revenue Growth] DESC",
+        "contract_hint": {
+          "source": "metadata_template",
+          "coverage_kind": "targeted_gap",
+          "grouping": [
+            {
+              "table": "MIS_DEEP_DIVE2",
+              "column": "special_product_group_name",
+              "reference": "'MIS_DEEP_DIVE2'[special_product_group_name]",
+              "data_type": "Text",
+              "category": "categorical",
+              "relationship_distance": 0,
+              "score": 85
+            }
+          ],
+          "metrics": [
+            {
+              "alias": "net revenue CURRENT",
+              "expression": "[net revenue CURRENT]",
+              "source": "measure",
+              "phase": "current",
+              "family": "revenue",
+              "bundle_id": "MIS_DEEP_DIVE2::revenue",
+              "semantic_role": "value",
+              "additive_candidate": true
+            },
+            {
+              "alias": "net revenue PAST",
+              "expression": "[net revenue PAST]",
+              "source": "measure",
+              "phase": "prior",
+              "family": "revenue",
+              "bundle_id": "MIS_DEEP_DIVE2::revenue",
+              "semantic_role": "value",
+              "additive_candidate": true
+            },
+            {
+              "alias": "revenue Growth",
+              "expression": "[revenue Growth]",
+              "source": "measure",
+              "phase": "change",
+              "family": "revenue",
+              "bundle_id": "MIS_DEEP_DIVE2::revenue",
+              "semantic_role": "value",
+              "additive_candidate": true
+            },
+            {
+              "alias": "net qty CURRENT",
+              "expression": "[net qty CURRENT]",
+              "source": "measure",
+              "phase": "current",
+              "family": "quantity",
+              "bundle_id": "MIS_DEEP_DIVE2::quantity",
+              "semantic_role": "volume",
+              "additive_candidate": true
+            },
+            {
+              "alias": "net qty PAST",
+              "expression": "[net qty PAST]",
+              "source": "measure",
+              "phase": "prior",
+              "family": "quantity",
+              "bundle_id": "MIS_DEEP_DIVE2::quantity",
+              "semantic_role": "volume",
+              "additive_candidate": true
+            },
+            {
+              "alias": "QTY Growth",
+              "expression": "[QTY Growth]",
+              "source": "measure",
+              "phase": "change",
+              "family": "quantity",
+              "bundle_id": "MIS_DEEP_DIVE2::quantity",
+              "semantic_role": "volume",
+              "additive_candidate": true
+            },
+            {
+              "alias": "net bills CURRENT",
+              "expression": "[net bills CURRENT]",
+              "source": "measure",
+              "phase": "current",
+              "family": "transactions",
+              "bundle_id": "CAT_TRANSACTIONS::transactions",
+              "semantic_role": "volume",
+              "additive_candidate": true
+            },
+            {
+              "alias": "transactions_prior_derived",
+              "expression": "[net bills CURRENT] - [bills growth]",
+              "source": "metadata_identity",
+              "phase": "prior",
+              "family": "transactions",
+              "bundle_id": "CAT_TRANSACTIONS::transactions",
+              "semantic_role": "volume",
+              "additive_candidate": true
+            },
+            {
+              "alias": "bills growth",
+              "expression": "[bills growth]",
+              "source": "measure",
+              "phase": "change",
+              "family": "transactions",
+              "bundle_id": "CAT_TRANSACTIONS::transactions",
+              "semantic_role": "volume",
+              "additive_candidate": true
+            }
+          ],
+          "population_status": "comparable",
+          "population_codes": [
+            "ST4",
+            "ST1",
+            "ST3",
+            "ST2",
+            "ST5"
+          ],
+          "entity_dimension": {
+            "table": "MIS_DEEP_DIVE2",
+            "column": "store_no",
+            "reference": "'MIS_DEEP_DIVE2'[store_no]",
+            "data_type": "Text",
+            "category": "categorical",
+            "relationship_distance": 0,
+            "score": 70,
+            "entity_score": 170
+          },
+          "topn": 20,
+          "sort": {
+            "alias": "revenue Growth",
+            "direction": "DESC"
+          },
+          "time_window": "all_available",
+          "segment_filter": {
+            "dimension": {
+              "table": "MIS_DEEP_DIVE2",
+              "column": "item_category_name",
+              "reference": "'MIS_DEEP_DIVE2'[item_category_name]",
+              "data_type": "Text",
+              "category": "categorical",
+              "relationship_distance": 0,
+              "score": 85
+            },
+            "value": "PROVISIONS",
+            "values": [
+              "PROVISIONS"
+            ]
+          }
+        },
+        "population_status": "comparable",
+        "completeness": "partial",
+        "cache_hit": false
+      },
+      "store_no": {
+        "rows": [
+          {
+            "store_no": "ST5",
+            "net revenue CURRENT": 1029735.2016,
+            "net revenue PAST": 153410.571,
+            "revenue Growth": 876324.6306,
+            "net qty CURRENT": 969786.0314600001,
+            "net qty PAST": 171399.289,
+            "QTY Growth": 798386.7424600001,
+            "net bills CURRENT": 274907,
+            "transactions_prior_derived": 42961,
+            "bills growth": 231946
+          },
+          {
+            "store_no": "ST4",
+            "net revenue CURRENT": 2712542.1318,
+            "net revenue PAST": 2577736.2024,
+            "revenue Growth": 134805.92940000026,
+            "net qty CURRENT": 2842911.4454199993,
+            "net qty PAST": 2977027.11294,
+            "QTY Growth": -134115.6675200006,
+            "net bills CURRENT": 709580,
+            "transactions_prior_derived": 660860,
+            "bills growth": 48720
+          },
+          {
+            "store_no": "ST3",
+            "net revenue CURRENT": 2145973.9671,
+            "net revenue PAST": 2111272.3899,
+            "revenue Growth": 34701.577200000174,
+            "net qty CURRENT": 1931427.3320400002,
+            "net qty PAST": 2066388.5198700002,
+            "QTY Growth": -134961.18782999995,
+            "net bills CURRENT": 475427,
+            "transactions_prior_derived": 447443,
+            "bills growth": 27984
+          },
+          {
+            "store_no": "ST1",
+            "net revenue CURRENT": 3326423.6061,
+            "net revenue PAST": 3357335.0097,
+            "revenue Growth": -30911.403599999845,
+            "net qty CURRENT": 2359226.564,
+            "net qty PAST": 2504541.3292099996,
+            "QTY Growth": -145314.76520999987,
+            "net bills CURRENT": 828033,
+            "transactions_prior_derived": 839258,
+            "bills growth": -11225
+          },
+          {
+            "store_no": "ST2",
+            "net revenue CURRENT": 1691449.5465,
+            "net revenue PAST": 1756368.3222,
+            "revenue Growth": -64918.775700000115,
+            "net qty CURRENT": 1376922.9477100002,
+            "net qty PAST": 1481710.4244300001,
+            "QTY Growth": -104787.47671999992,
+            "net bills CURRENT": 413919,
+            "transactions_prior_derived": 444899,
+            "bills growth": -30980
+          }
+        ],
+        "row_count": 5,
+        "dax": "EVALUATE\nTOPN(20,\n    SUMMARIZECOLUMNS(\n        'MIS_DEEP_DIVE2'[store_no],\n        TREATAS({\"ST4\", \"ST1\", \"ST3\", \"ST2\", \"ST5\"}, 'MIS_DEEP_DIVE2'[store_no]),\n        TREATAS({\"PROVISIONS\"}, 'MIS_DEEP_DIVE2'[item_category_name]),\n        \"net revenue CURRENT\", [net revenue CURRENT],\n        \"net revenue PAST\", [net revenue PAST],\n        \"revenue Growth\", [revenue Growth],\n        \"net qty CURRENT\", [net qty CURRENT],\n        \"net qty PAST\", [net qty PAST],\n        \"QTY Growth\", [QTY Growth],\n        \"net bills CURRENT\", [net bills CURRENT],\n        \"transactions_prior_derived\", [net bills CURRENT] - [bills growth],\n        \"bills growth\", [bills growth]\n    ),\n    ABS([revenue Growth]), DESC)\nORDER BY [revenue Growth] DESC",
+        "contract_hint": {
+          "source": "metadata_template",
+          "coverage_kind": "targeted_gap",
+          "grouping": [
+            {
+              "table": "MIS_DEEP_DIVE2",
+              "column": "store_no",
+              "reference": "'MIS_DEEP_DIVE2'[store_no]",
+              "data_type": "Text",
+              "category": "categorical",
+              "relationship_distance": 0,
+              "score": 70
+            }
+          ],
+          "metrics": [
+            {
+              "alias": "net revenue CURRENT",
+              "expression": "[net revenue CURRENT]",
+              "source": "measure",
+              "phase": "current",
+              "family": "revenue",
+              "bundle_id": "MIS_DEEP_DIVE2::revenue",
+              "semantic_role": "value",
+              "additive_candidate": true
+            },
+            {
+              "alias": "net revenue PAST",
+              "expression": "[net revenue PAST]",
+              "source": "measure",
+              "phase": "prior",
+              "family": "revenue",
+              "bundle_id": "MIS_DEEP_DIVE2::revenue",
+              "semantic_role": "value",
+              "additive_candidate": true
+            },
+            {
+              "alias": "revenue Growth",
+              "expression": "[revenue Growth]",
+              "source": "measure",
+              "phase": "change",
+              "family": "revenue",
+              "bundle_id": "MIS_DEEP_DIVE2::revenue",
+              "semantic_role": "value",
+              "additive_candidate": true
+            },
+            {
+              "alias": "net qty CURRENT",
+              "expression": "[net qty CURRENT]",
+              "source": "measure",
+              "phase": "current",
+              "family": "quantity",
+              "bundle_id": "MIS_DEEP_DIVE2::quantity",
+              "semantic_role": "volume",
+              "additive_candidate": true
+            },
+            {
+              "alias": "net qty PAST",
+              "expression": "[net qty PAST]",
+              "source": "measure",
+              "phase": "prior",
+              "family": "quantity",
+              "bundle_id": "MIS_DEEP_DIVE2::quantity",
+              "semantic_role": "volume",
+              "additive_candidate": true
+            },
+            {
+              "alias": "QTY Growth",
+              "expression": "[QTY Growth]",
+              "source": "measure",
+              "phase": "change",
+              "family": "quantity",
+              "bundle_id": "MIS_DEEP_DIVE2::quantity",
+              "semantic_role": "volume",
+              "additive_candidate": true
+            },
+            {
+              "alias": "net bills CURRENT",
+              "expression": "[net bills CURRENT]",
+              "source": "measure",
+              "phase": "current",
+              "family": "transactions",
+              "bundle_id": "CAT_TRANSACTIONS::transactions",
+              "semantic_role": "volume",
+              "additive_candidate": true
+            },
+            {
+              "alias": "transactions_prior_derived",
+              "expression": "[net bills CURRENT] - [bills growth]",
+              "source": "metadata_identity",
+              "phase": "prior",
+              "family": "transactions",
+              "bundle_id": "CAT_TRANSACTIONS::transactions",
+              "semantic_role": "volume",
+              "additive_candidate": true
+            },
+            {
+              "alias": "bills growth",
+              "expression": "[bills growth]",
+              "source": "measure",
+              "phase": "change",
+              "family": "transactions",
+              "bundle_id": "CAT_TRANSACTIONS::transactions",
+              "semantic_role": "volume",
+              "additive_candidate": true
+            }
+          ],
+          "population_status": "comparable",
+          "population_codes": [
+            "ST4",
+            "ST1",
+            "ST3",
+            "ST2",
+            "ST5"
+          ],
+          "entity_dimension": {
+            "table": "MIS_DEEP_DIVE2",
+            "column": "store_no",
+            "reference": "'MIS_DEEP_DIVE2'[store_no]",
+            "data_type": "Text",
+            "category": "categorical",
+            "relationship_distance": 0,
+            "score": 70,
+            "entity_score": 170
+          },
+          "topn": 20,
+          "sort": {
+            "alias": "revenue Growth",
+            "direction": "DESC"
+          },
+          "time_window": "all_available",
+          "segment_filter": {
+            "dimension": {
+              "table": "MIS_DEEP_DIVE2",
+              "column": "item_category_name",
+              "reference": "'MIS_DEEP_DIVE2'[item_category_name]",
+              "data_type": "Text",
+              "category": "categorical",
+              "relationship_distance": 0,
+              "score": 85
+            },
+            "value": "PROVISIONS",
+            "values": [
+              "PROVISIONS"
+            ]
+          }
+        },
+        "population_status": "comparable",
+        "completeness": "complete",
+        "cache_hit": false
+      }
+    },
+    "gap_probes_used": 3
+  }
+}

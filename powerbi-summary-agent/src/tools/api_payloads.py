@@ -8,6 +8,12 @@ two exact shapes:
   * ``/kpi/insights`` -> a JSON array of cards
         {id, severity, category, metric, value, delta, deltaDirection,
          description, displayTime, isoDate, comparisonLabel, insight{...}}
+    Plus, only when ``ai_content_kpi_card_fields`` is on (see
+    ``kpi-tile-schema-proposal.md`` and ``docs/phase5-app-contract-change.md``
+    for the rollout precedent this follows): ``label``, ``rawValue``, ``unit``,
+    ``valueType``, ``goodDirection``, ``comparison{type,label,baselineValue}``,
+    ``target{value,attainmentPct}``, ``shareOfTotalPct``, ``rank`` - each
+    present only when the signal actually supports it, never a guess.
 
 Generation is LLM-driven: the model reads the run's results and *writes the words*
 (card descriptions, insight titles/summaries/actions, the summary headline, section
@@ -42,6 +48,14 @@ from ..utils.json_utils import dumps
 Severity = Literal["critical", "warning", "positive", "info"]
 Tone = Literal["positive", "critical", "warning", "info", "teal"]
 Direction = Literal["up", "down"]
+# Extended tile-schema fields (kpi-tile-schema-proposal.md), gated by
+# ai_content_kpi_card_fields -- see the KpiCard fields below.
+ValueType = Literal["currency", "count", "percent", "ratio", "days"]
+GoodDirection = Literal["up", "down", "neutral"]
+ComparisonType = Literal[
+    "target", "prior_period", "same_period_last_year", "share_of_total",
+    "threshold", "peer_comparison", "other",
+]
 
 
 # --------------------------------------------------------------------------
@@ -62,6 +76,19 @@ class InsightBack(BaseModel):
     action: str
 
 
+class KpiComparison(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    type: ComparisonType
+    label: str
+    baselineValue: Optional[float] = None
+
+
+class KpiTarget(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    value: float
+    attainmentPct: float
+
+
 class KpiCard(BaseModel):
     model_config = ConfigDict(extra="forbid")
     id: int
@@ -80,6 +107,18 @@ class KpiCard(BaseModel):
     isoDate: str
     comparisonLabel: str
     insight: InsightBack
+    # Extended tile-schema fields (kpi-tile-schema-proposal.md). Every one is
+    # absent (never an explicit null) unless ai_content_kpi_card_fields is on,
+    # so the default payload stays byte-identical -- same guard as reportId.
+    label: Optional[str] = None
+    rawValue: Optional[float] = None
+    unit: Optional[str] = None
+    valueType: Optional[ValueType] = None
+    goodDirection: Optional[GoodDirection] = None
+    comparison: Optional[KpiComparison] = None
+    target: Optional[KpiTarget] = None
+    shareOfTotalPct: Optional[float] = None
+    rank: Optional[int] = None
 
 
 class ReportMetric(BaseModel):
@@ -488,6 +527,127 @@ def _signal_severity(sig: Dict[str, Any]) -> Severity:
     return "positive"
 
 
+# --------------------------------------------------------------------------
+# Extended tile-schema fields (kpi-tile-schema-proposal.md), gated by
+# ai_content_kpi_card_fields in _assemble_kpi_card below.
+# --------------------------------------------------------------------------
+EXTENDED_CARD_KEYS = (
+    "label", "rawValue", "unit", "valueType", "goodDirection",
+    "comparison", "target", "shareOfTotalPct", "rank",
+)
+
+# Two classifiers, most-reliable first. `metric_family` is a machine field a
+# domain declares itself (target_tracker/sales_yoy: "revenue"; stock_health/
+# ageing/sku_overview: "stock_value") - trust it when present. `family` (see
+# `_signal_family`) is a fallback keyword match over free-form prose and only
+# reliably resolves Revenue/Quantity/Transactions; everything else falls
+# through to "Performance", which covers real currency figures, plain SKU
+# counts and health scores alike (the docs' own "STOCK OUT ... performance
+# increased by 17.8K" is a count, not a value, on that exact bucket). Rather
+# than guess a unit/direction for "Performance", both are left absent there -
+# a missing field the app already treats as "draw nothing", never a wrong one.
+# "stock_value" deliberately has no direction: whether more stock is good
+# depends on which measure it is (excess stock up is bad; stock on hand up
+# is not, on its own) and the signal doesn't say which - so it is guessed
+# only via the explicit `good_direction` declaration hook below, never here.
+_VALUE_TYPE_BY_METRIC_FAMILY = {"revenue": "currency", "stock_value": "currency",
+                                 "quantity": "count", "transactions": "count"}
+_GOOD_DIRECTION_BY_METRIC_FAMILY = {"revenue": "up", "quantity": "up", "transactions": "up"}
+_VALUE_TYPE_BY_FAMILY = {"Revenue": "currency", "Quantity": "count", "Transactions": "count"}
+_GOOD_DIRECTION_BY_FAMILY = {"Revenue": "up", "Quantity": "up", "Transactions": "up"}
+
+# Reports that carry their own currency config key already (config_schema.py).
+# A report with none of its own (the original Sales YoY report) falls back to
+# the generic ai_content_kpi_currency key.
+_CURRENCY_CONFIG_KEY_BY_REPORT = {
+    "target_tracker": "target_tracker_currency",
+    "inventory_ageing": "ageing_currency",
+    "stock_age_analysis": "ageing_currency",
+    "inventory_stock_health": "inventory_currency",
+    "inventory_management": "inventory_currency",
+    "daily_sales": "daily_sales_currency",
+    "sku_overview": "sku_overview_currency",
+}
+
+
+def _cfg_value(state: Optional[dict], key: str) -> Any:
+    state = state or {}
+    value = state.get(key)
+    if value is None:
+        value = (state.get("config") or {}).get(key)
+    return value
+
+
+def kpi_extended_fields(state: Optional[dict]) -> bool:
+    """Off by default: adding a card key is an app contract change (see
+    docs/phase5-app-contract-change.md for the reportId precedent)."""
+    return bool(_cfg_value(state, "ai_content_kpi_card_fields"))
+
+
+def _kpi_currency(state: Optional[dict], report_id: Optional[str]) -> str:
+    key = _CURRENCY_CONFIG_KEY_BY_REPORT.get(report_id or "")
+    value = _cfg_value(state, key) if key else None
+    if not value:
+        value = _cfg_value(state, "ai_content_kpi_currency")
+    return str(value) if value else "SAR"
+
+
+def _kpi_value_type_and_unit(
+    sig: Dict[str, Any], family: str, state: Optional[dict], report_id: Optional[str]
+) -> "tuple[Optional[str], Optional[str]]":
+    declared_type = sig.get("value_type")
+    if declared_type in ("currency", "count", "percent", "ratio", "days"):
+        return declared_type, sig.get("value_unit")
+    metric_family = str(sig.get("metric_family") or "").strip().casefold()
+    value_type = _VALUE_TYPE_BY_METRIC_FAMILY.get(metric_family) or _VALUE_TYPE_BY_FAMILY.get(family)
+    if value_type is None:
+        return None, None
+    unit = _kpi_currency(state, report_id) if value_type == "currency" else None
+    return value_type, unit
+
+
+def _kpi_good_direction(sig: Dict[str, Any], family: str) -> Optional[str]:
+    declared = sig.get("good_direction")
+    if declared in ("up", "down", "neutral"):
+        return declared
+    if sig.get("kind") == "data_quality":
+        return "neutral"
+    if _is_rate_signal(sig):
+        return "up"
+    metric_family = str(sig.get("metric_family") or "").strip().casefold()
+    return _GOOD_DIRECTION_BY_METRIC_FAMILY.get(metric_family) or _GOOD_DIRECTION_BY_FAMILY.get(family)
+
+
+# Dimension values that name the whole population rather than one entity -
+# labelling a card "Company REVENUE" reads as a typo, not a scope.
+_NON_ENTITY_DIMENSIONS = {"", "company", "estate", "overall", "business"}
+
+
+def _kpi_label(sig: Dict[str, Any]) -> Optional[str]:
+    segment = str(sig.get("affected_segment") or "").strip()
+    if not segment:
+        return None
+    dimension = str(sig.get("dimension") or "").strip()
+    metric_name = str(sig.get("metric") or "").strip()
+    prefix = (f"{dimension.title()} {segment}"
+              if dimension.casefold() not in _NON_ENTITY_DIMENSIONS else segment)
+    return f"{prefix} — {metric_name}" if metric_name else prefix
+
+
+def _kpi_target(target_value: Any, val: Any, sig: Dict[str, Any]) -> Optional[Dict[str, float]]:
+    if not isinstance(target_value, (int, float)) or not target_value:
+        return None
+    current_value = sig.get("current")
+    if not isinstance(current_value, (int, float)) and isinstance(val, (int, float)):
+        current_value = float(target_value) + float(val)
+    attainment = sig.get("attainment_pct")
+    if not isinstance(attainment, (int, float)) and isinstance(current_value, (int, float)):
+        attainment = float(current_value) / float(target_value) * 100.0
+    if not isinstance(attainment, (int, float)):
+        return None
+    return {"value": float(target_value), "attainmentPct": round(float(attainment), 1)}
+
+
 def _rate_stats(sig: Dict[str, Any], family: str) -> List[Dict[str, str]]:
     """Structured rate facts as card stats (code-owned, not LLM-estimated): the
     segment's growth, the peer median, and the statistical basis (robust z, or a
@@ -729,6 +889,9 @@ def _assemble_kpi_card(
     text: _KpiCardText,
     when: datetime,
     report_id: Optional[str] = None,
+    *,
+    extended_fields: bool = False,
+    state: Optional[dict] = None,
 ) -> Dict[str, Any]:
     family = _signal_family(sig)
     val = sig.get("impact_value")
@@ -736,24 +899,45 @@ def _assemble_kpi_card(
     category = text.category.strip() or ("Data Quality" if sig.get("kind") == "data_quality" else family)
     rw = sig.get("recent_week") or {}
     wow = rw.get("change_pct")
+    # Alongside the existing prose delta/comparison, each branch also names its
+    # own machine-readable comparison type/chip/baseline for the extended
+    # `comparison` field -- one branch per kind of baseline this pipeline
+    # actually produces, never a guess at one it doesn't.
+    comparison_type: Optional[str] = None
+    comparison_chip = ""
+    baseline_value: Optional[float] = None
+    share_total_pct: Optional[float] = None
+    target_value = sig.get("target")
     declared_comparison = str(sig.get("comparison_label") or "").strip()
     if declared_comparison:
         # A spine that is not year-on-year must name its own baseline. Without
         # this, a Target Tracker signal falls through to the share branch and is
         # published against "the prior period" - a comparison this dataset does
         # not contain at all (Non-negotiable 2).
-        target_value = sig.get("target")
         if isinstance(val, (int, float)) and isinstance(target_value, (int, float)) and target_value:
             delta = f"{abs(val / abs(target_value) * 100.0):.1f}%"
         else:
             delta = ""
         comparison = declared_comparison
+        if isinstance(target_value, (int, float)):
+            comparison_type, comparison_chip = "target", "vs target"
+            baseline_value = float(target_value)
+        else:
+            # A declared, non-target baseline (e.g. an inventory policy band or
+            # a snapshot-vs-snapshot position) whose exact kind isn't encoded
+            # anywhere on the signal - "other" rather than a specific guess.
+            comparison_type, comparison_chip = "other", "vs baseline"
     elif isinstance(wow, (int, float)):
         if rw.get("window_mode") == "rolling":
             delta = f"{abs(wow):.1f}%"
             comparison = f"vs the prior 7 days (ending {rw.get('week_end')})"
+            comparison_chip = "vs prior 7 days"
         else:
             delta, comparison = f"{abs(wow):.1f}%", f"week over week (from {rw.get('week_start')})"
+            comparison_chip = "week over week"
+        comparison_type = "prior_period"
+        prev = rw.get("previous")
+        baseline_value = float(prev) if isinstance(prev, (int, float)) else None
     elif sig.get("episode_start") is not None:
         expected = sig.get("expected_total")
         if isinstance(expected, (int, float)) and expected and isinstance(val, (int, float)):
@@ -761,18 +945,26 @@ def _assemble_kpi_card(
         else:
             delta = ""
         comparison = f"vs expected ({sig.get('episode_start')}..{sig.get('episode_end')})"
+        comparison_type, comparison_chip = "threshold", "vs expected"
+        baseline_value = float(expected) if isinstance(expected, (int, float)) else None
     elif _is_rate_signal(sig):
         growth = sig.get("reported_growth_pct")
         median = sig.get("peer_median_reported_pct")
         delta = f"{abs(growth):.1f}%" if isinstance(growth, (int, float)) else ""
         comparison = (f"vs peer median {median:+.1f}%"
                       if isinstance(median, (int, float)) else "relative to peers")
+        comparison_type, comparison_chip = "peer_comparison", "vs peer median"
+        baseline_value = float(median) if isinstance(median, (int, float)) else None
     elif isinstance(sig.get("current"), (int, float)) and isinstance(sig.get("prior"), (int, float)):
         period_pct = _period_change_pct(sig.get("current"), sig.get("prior"))
         delta = f"{abs(period_pct):.1f}%" if period_pct is not None else ""
         comparison = "vs the prior period"
+        comparison_type, comparison_chip = "same_period_last_year", "vs last year"
+        baseline_value = float(sig["prior"])
     elif share is not None:
         delta, comparison, _ = _share_details(sig, family)
+        comparison_type, comparison_chip = "share_of_total", "share of total"
+        share_total_pct = abs(float(share))
     else:
         delta, comparison = "", "current period"
     card = {
@@ -800,11 +992,32 @@ def _assemble_kpi_card(
             "action": _sentence(_plain_business_text(text.insight_action)),
         },
     }
+    if extended_fields:
+        value_type, unit = _kpi_value_type_and_unit(sig, family, state, report_id)
+        card["label"] = _kpi_label(sig)
+        card["rawValue"] = float(val) if isinstance(val, (int, float)) else None
+        card["unit"] = unit
+        card["valueType"] = value_type
+        card["goodDirection"] = _kpi_good_direction(sig, family)
+        card["target"] = _kpi_target(target_value, val, sig)
+        card["shareOfTotalPct"] = round(share_total_pct, 1) if share_total_pct is not None else None
+        card["rank"] = idx
+        card["comparison"] = (
+            {"type": comparison_type, "label": comparison_chip, "baselineValue": baseline_value}
+            if comparison_type else None
+        )
     dumped = KpiCard(**card).model_dump()  # strict validation
     if dumped.get("reportId") is None:
         # Single-report mode must emit the exact key set the app renders today,
         # so the field is removed rather than published as an explicit null.
         dumped.pop("reportId", None)
+    for key in EXTENDED_CARD_KEYS:
+        # Off by default, and even when on, a field with nothing to say (no
+        # target, an unclassified family, ...) is dropped rather than
+        # published as an explicit null - the proposal's own compatibility
+        # rule: absent means "draw nothing", never "draw a wrong thing".
+        if not extended_fields or dumped.get(key) is None:
+            dumped.pop(key, None)
     return dumped
 
 
@@ -821,12 +1034,16 @@ def generate_kpi_insights_payload(
     when = _now(generated_at)
     texts = _author_kpi_texts([_signal_facts(s) for s in signals], state)
     report_id = feed_report_id(state) if multi_report_feed(state) else None
+    extended_fields = kpi_extended_fields(state)
     cards: List[Dict[str, Any]] = []
     for idx, sig in enumerate(signals, start=1):
         text = texts.get(sig.get("id"))
         if text is None:
             raise RuntimeError(f"LLM returned no card text for signal id {sig.get('id')!r}")
-        cards.append(_assemble_kpi_card(idx, sig, text, when, report_id=report_id))
+        cards.append(_assemble_kpi_card(
+            idx, sig, text, when, report_id=report_id,
+            extended_fields=extended_fields, state=state,
+        ))
     return cards
 
 

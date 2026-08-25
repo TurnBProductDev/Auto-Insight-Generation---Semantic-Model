@@ -1,0 +1,760 @@
+{
+  "status": "ok",
+  "metric_family": "revenue",
+  "value_aliases": {
+    "current": "net revenue CURRENT",
+    "prior": "net revenue PAST",
+    "change": "revenue Growth"
+  },
+  "thresholds": {
+    "material_change_pct": 10.0,
+    "material_share_pct": 5.0,
+    "headline_min_impact_pct": 0.05,
+    "magnitude_ceiling_pct": 100.0
+  },
+  "weights": {
+    "impact": 0.4,
+    "magnitude": 0.35,
+    "unexpectedness": 0.25
+  },
+  "levels": [
+    {
+      "role": "division",
+      "group_ref": "'MIS_DEEP_DIVE2'[division_name]",
+      "column": "division_name",
+      "level": 10,
+      "coverage_only": false,
+      "metric_family": "revenue",
+      "peer_median_change_pct": 9.026205553623576,
+      "pool_capped": false,
+      "diagnostics_reconciled": true,
+      "counts": {
+        "total": 6,
+        "comparable": 6,
+        "current_only": 0,
+        "up": 5,
+        "down": 1,
+        "flat": 0,
+        "critical": 2,
+        "watch": 3,
+        "steady": 1,
+        "no_material_change": 1
+      },
+      "rows": [
+        {
+          "member": "CONSUMER GOODS",
+          "hierarchy_path": [
+            "CONSUMER GOODS"
+          ],
+          "current": 22022819.0712,
+          "prior": 19965011.6358,
+          "change": 2057807.435399998,
+          "change_pct": 10.307068550413803,
+          "business_share_pct": 53.44473944496128,
+          "global_impact_pct": 4.993864857050938,
+          "direction": "up",
+          "comparable": true,
+          "severity": "critical",
+          "vs_peer_median_pts": 1.2808629967902263,
+          "rank_score": 0.6838207075995285,
+          "rank": 1
+        },
+        {
+          "member": "LIFESTYLE",
+          "hierarchy_path": [
+            "LIFESTYLE"
+          ],
+          "current": 6885784.7037,
+          "prior": 6251912.9478,
+          "change": 633871.7559000002,
+          "change_pct": 10.138844881438324,
+          "business_share_pct": 16.71034794290275,
+          "global_impact_pct": 1.5382731305229616,
+          "direction": "up",
+          "comparable": true,
+          "severity": "critical",
+          "vs_peer_median_pts": 1.1126393278147475,
+          "rank_score": 0.20979583523372236,
+          "rank": 2
+        },
+        {
+          "member": "FRESH FOOD",
+          "hierarchy_path": [
+            "FRESH FOOD"
+          ],
+          "current": 7610470.2468,
+          "prior": 7052375.8161,
+          "change": 558094.4306999994,
+          "change_pct": 7.91356622580883,
+          "business_share_pct": 18.469006991287664,
+          "global_impact_pct": 1.3543775362279364,
+          "direction": "up",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 1.1126393278147466,
+          "rank_score": 0.18447581688369724,
+          "rank": 3
+        },
+        {
+          "member": "TECHNOLOGY",
+          "hierarchy_path": [
+            "TECHNOLOGY"
+          ],
+          "current": 1964026.4022,
+          "prior": 1727975.7027,
+          "change": 236050.69949999987,
+          "change_pct": 13.660533486157558,
+          "business_share_pct": 4.7662780586465665,
+          "global_impact_pct": 0.5728452878712648,
+          "direction": "up",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 4.6343279325339815,
+          "rank_score": 0.08346714830692649,
+          "rank": 4
+        },
+        {
+          "member": "HOME & LIVING",
+          "hierarchy_path": [
+            "HOME & LIVING"
+          ],
+          "current": 2712332.3796,
+          "prior": 2582917.092,
+          "change": 129415.28759999992,
+          "change_pct": 5.010431345273699,
+          "business_share_pct": 6.582258921857233,
+          "global_impact_pct": 0.3140636220828675,
+          "direction": "up",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 4.015774208349877,
+          "rank_score": 0.04858897731925342,
+          "rank": 5
+        },
+        {
+          "member": "OTHER",
+          "hierarchy_path": [
+            "OTHER"
+          ],
+          "current": 11277.7164,
+          "prior": 12152.0439,
+          "change": -874.3275000000012,
+          "change_pct": -7.194900768915105,
+          "business_share_pct": 0.027368640344522625,
+          "global_impact_pct": 0.0021218085330489108,
+          "direction": "down",
+          "comparable": true,
+          "severity": "steady",
+          "vs_peer_median_pts": 16.22110632253868,
+          "rank_score": 0.0003923766154938349,
+          "rank": 6
+        }
+      ]
+    },
+    {
+      "role": "section",
+      "group_ref": "'CAT_TABLE'[sec]",
+      "column": "sec",
+      "level": 25,
+      "coverage_only": false,
+      "metric_family": "revenue",
+      "peer_median_change_pct": 8.615394677907602,
+      "pool_capped": false,
+      "diagnostics_reconciled": true,
+      "counts": {
+        "total": 23,
+        "comparable": 23,
+        "current_only": 0,
+        "up": 19,
+        "down": 4,
+        "flat": 0,
+        "critical": 2,
+        "watch": 12,
+        "steady": 9,
+        "no_material_change": 9
+      },
+      "rows": [
+        {
+          "member": "PROVISIONS",
+          "hierarchy_path": [
+            "CONSUMER GOODS",
+            "CONSUMER GOODS",
+            "PROVISIONS"
+          ],
+          "current": 10906124.4531,
+          "prior": 9956122.4952,
+          "change": 950001.9578999989,
+          "change_pct": 9.541886998256695,
+          "business_share_pct": 26.466865021494723,
+          "global_impact_pct": 2.3054544900913974,
+          "direction": "up",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 0.9264923203490927,
+          "rank_score": 0.4357128352947712,
+          "rank": 1
+        },
+        {
+          "member": "REFRIDGERATED GOODS",
+          "hierarchy_path": [
+            "CONSUMER GOODS",
+            "CONSUMER GOODS",
+            "REFRIDGERATED GOODS"
+          ],
+          "current": 2951592.102,
+          "prior": 2501469.0,
+          "change": 450123.10199999996,
+          "change_pct": 17.99435059958768,
+          "business_share_pct": 7.162891831840312,
+          "global_impact_pct": 1.0923538819790566,
+          "direction": "up",
+          "comparable": true,
+          "severity": "critical",
+          "vs_peer_median_pts": 9.378955921680078,
+          "rank_score": 0.21291556802842115,
+          "rank": 2
+        },
+        {
+          "member": "PERSONAL CARE",
+          "hierarchy_path": [
+            "CONSUMER GOODS",
+            "CONSUMER GOODS",
+            "PERSONAL CARE"
+          ],
+          "current": 5300622.4554,
+          "prior": 4893097.5531,
+          "change": 407524.9023000002,
+          "change_pct": 8.328566881766227,
+          "business_share_pct": 12.863493320681748,
+          "global_impact_pct": 0.9889770310668058,
+          "direction": "up",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 0.28682779614137566,
+          "rank_score": 0.18610514055586577,
+          "rank": 3
+        },
+        {
+          "member": "MEAT SHOP",
+          "hierarchy_path": [
+            "FRESH FOOD",
+            "FRESH FOOD",
+            "MEAT SHOP"
+          ],
+          "current": 2626577.7282,
+          "prior": 2242434.6477,
+          "change": 384143.0804999997,
+          "change_pct": 17.130625451850026,
+          "business_share_pct": 6.374150460109025,
+          "global_impact_pct": 0.9322342784787082,
+          "direction": "up",
+          "comparable": true,
+          "severity": "critical",
+          "vs_peer_median_pts": 8.515230773942424,
+          "rank_score": 0.18131083452093316,
+          "rank": 4
+        },
+        {
+          "member": "MENS APPAREL",
+          "hierarchy_path": [
+            "LIFESTYLE",
+            "LIFESTYLE",
+            "MENS APPAREL"
+          ],
+          "current": 2056034.7018,
+          "prior": 1816656.7491,
+          "change": 239377.95270000002,
+          "change_pct": 13.176839973681961,
+          "business_share_pct": 4.989562806298447,
+          "global_impact_pct": 0.5809198299980702,
+          "direction": "up",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 4.561445295774359,
+          "rank_score": 0.11163472484613479,
+          "rank": 5
+        },
+        {
+          "member": "ENTERTAINMENTS",
+          "hierarchy_path": [
+            "TECHNOLOGY",
+            "TECHNOLOGY",
+            "ENTERTAINMENTS"
+          ],
+          "current": 1961006.5251,
+          "prior": 1726931.6775,
+          "change": 234074.84759999998,
+          "change_pct": 13.554378013313151,
+          "business_share_pct": 4.758949453519152,
+          "global_impact_pct": 0.5680503118222892,
+          "direction": "up",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 4.938983335405549,
+          "rank_score": 0.10930793842267475,
+          "rank": 6
+        },
+        {
+          "member": "LADIES APPAREL",
+          "hierarchy_path": [
+            "LIFESTYLE",
+            "LIFESTYLE",
+            "LADIES APPAREL"
+          ],
+          "current": 2439159.2478,
+          "prior": 2238238.1592,
+          "change": 200921.0885999999,
+          "change_pct": 8.976751994605163,
+          "business_share_pct": 5.9193253162541435,
+          "global_impact_pct": 0.4875931275877235,
+          "direction": "up",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 0.36135731669756055,
+          "rank_score": 0.09182701307216928,
+          "rank": 7
+        },
+        {
+          "member": "GREEN GROCERIES",
+          "hierarchy_path": [
+            "FRESH FOOD",
+            "FRESH FOOD",
+            "GREEN GROCERIES"
+          ],
+          "current": 4793795.7462,
+          "prior": 4610725.2108,
+          "change": 183070.5354000004,
+          "change_pct": 3.9705366733021186,
+          "business_share_pct": 11.633531737227427,
+          "global_impact_pct": 0.44427359789272663,
+          "direction": "up",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 4.644858004605483,
+          "rank_score": 0.08829468350305406,
+          "rank": 8
+        },
+        {
+          "member": "SPICE MARKET",
+          "hierarchy_path": [
+            "CONSUMER GOODS",
+            "CONSUMER GOODS",
+            "SPICE MARKET"
+          ],
+          "current": 2087666.4411,
+          "prior": 1910607.5259,
+          "change": 177058.91519999993,
+          "change_pct": 9.267152609827367,
+          "business_share_pct": 5.066326369564979,
+          "global_impact_pct": 0.4296846629252114,
+          "direction": "up",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 0.6517579319197644,
+          "rank_score": 0.0810716318179231,
+          "rank": 9
+        },
+        {
+          "member": "TOYS",
+          "hierarchy_path": [
+            "LIFESTYLE",
+            "LIFESTYLE",
+            "TOYS"
+          ],
+          "current": 703714.4919,
+          "prior": 600758.9127,
+          "change": 102955.57920000004,
+          "change_pct": 17.137586646411155,
+          "business_share_pct": 1.7077667278492283,
+          "global_impact_pct": 0.24985148753934044,
+          "direction": "up",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 8.522191968503552,
+          "rank_score": 0.04859465026827706,
+          "rank": 10
+        },
+        {
+          "member": "CLEANING ESSENSTIALS",
+          "hierarchy_path": [
+            "CONSUMER GOODS",
+            "CONSUMER GOODS",
+            "CLEANING ESSENSTIALS"
+          ],
+          "current": 776813.6196,
+          "prior": 703715.0616,
+          "change": 73098.55799999996,
+          "change_pct": 10.38752216469541,
+          "business_share_pct": 1.8851629013795037,
+          "global_impact_pct": 0.17739479098846872,
+          "direction": "up",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 1.7721274867878076,
+          "rank_score": 0.033683398801506954,
+          "rank": 11
+        },
+        {
+          "member": "CULINARY SUPPLIES",
+          "hierarchy_path": [
+            "HOME & LIVING",
+            "HOME & LIVING",
+            "CULINARY SUPPLIES"
+          ],
+          "current": 1336367.9619,
+          "prior": 1268825.9769,
+          "change": 67541.9850000001,
+          "change_pct": 5.323187437021026,
+          "business_share_pct": 3.2430833353092483,
+          "global_impact_pct": 0.16391015965077335,
+          "direction": "up",
+          "comparable": true,
+          "severity": "steady",
+          "vs_peer_median_pts": 3.292207240886576,
+          "rank_score": 0.03173013267861344,
+          "rank": 12
+        },
+        {
+          "member": "FOOTWEAR",
+          "hierarchy_path": [
+            "LIFESTYLE",
+            "LIFESTYLE",
+            "FOOTWEAR"
+          ],
+          "current": 675254.6478,
+          "prior": 610040.5002,
+          "change": 65214.147600000026,
+          "change_pct": 10.6901341105418,
+          "business_share_pct": 1.6387006855931843,
+          "global_impact_pct": 0.1582609889923295,
+          "direction": "up",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 2.074739432634198,
+          "rank_score": 0.030096262015754112,
+          "rank": 13
+        },
+        {
+          "member": "HOME TEXTILES",
+          "hierarchy_path": [
+            "HOME & LIVING",
+            "HOME & LIVING",
+            "HOME TEXTILES"
+          ],
+          "current": 572986.0917,
+          "prior": 537254.7183,
+          "change": 35731.37340000004,
+          "change_pct": 6.650732358956753,
+          "business_share_pct": 1.3905164582921201,
+          "global_impact_pct": 0.08671251101867074,
+          "direction": "up",
+          "comparable": true,
+          "severity": "steady",
+          "vs_peer_median_pts": 1.9646623189508494,
+          "rank_score": 0.016525763307753107,
+          "rank": 14
+        },
+        {
+          "member": "OFFICE SUPPLIES",
+          "hierarchy_path": [
+            "HOME & LIVING",
+            "HOME & LIVING",
+            "OFFICE SUPPLIES"
+          ],
+          "current": 751677.2055,
+          "prior": 723737.7972,
+          "change": 27939.40830000001,
+          "change_pct": 3.860432384227011,
+          "business_share_pct": 1.8241621231498004,
+          "global_impact_pct": 0.06780305427803368,
+          "direction": "up",
+          "comparable": true,
+          "severity": "steady",
+          "vs_peer_median_pts": 4.754962293680592,
+          "rank_score": 0.013514493778931672,
+          "rank": 15
+        },
+        {
+          "member": "TRAVEL",
+          "hierarchy_path": [
+            "LIFESTYLE",
+            "LIFESTYLE",
+            "TRAVEL"
+          ],
+          "current": 689176.0287,
+          "prior": 676011.9708,
+          "change": 13164.057900000014,
+          "change_pct": 1.947311359652629,
+          "business_share_pct": 1.672484942391059,
+          "global_impact_pct": 0.03194639352161508,
+          "direction": "up",
+          "comparable": true,
+          "severity": "steady",
+          "vs_peer_median_pts": 6.668083318254974,
+          "rank_score": 0.007026856191681198,
+          "rank": 16
+        },
+        {
+          "member": "DELI",
+          "hierarchy_path": [
+            "FRESH FOOD",
+            "FRESH FOOD",
+            "DELI"
+          ],
+          "current": 190096.7724,
+          "prior": 199215.9576,
+          "change": -9119.185200000007,
+          "change_pct": -4.577537517506583,
+          "business_share_pct": 0.4613247939512093,
+          "global_impact_pct": 0.022130340143496942,
+          "direction": "down",
+          "comparable": true,
+          "severity": "steady",
+          "vs_peer_median_pts": 13.192932195414185,
+          "rank_score": 0.0046937972935222685,
+          "rank": 17
+        },
+        {
+          "member": "KIDS FASHION",
+          "hierarchy_path": [
+            "LIFESTYLE",
+            "LIFESTYLE",
+            "KIDS FASHION"
+          ],
+          "current": 236776.7187,
+          "prior": 230470.8309,
+          "change": 6305.887799999997,
+          "change_pct": 2.73608932435189,
+          "business_share_pct": 0.5746071834238095,
+          "global_impact_pct": 0.015303060400695385,
+          "direction": "up",
+          "comparable": true,
+          "severity": "steady",
+          "vs_peer_median_pts": 5.879305353555712,
+          "rank_score": 0.003182116813591449,
+          "rank": 18
+        },
+        {
+          "member": "SPORTING GOODS",
+          "hierarchy_path": [
+            "LIFESTYLE",
+            "LIFESTYLE",
+            "SPORTING GOODS"
+          ],
+          "current": 84651.9363,
+          "prior": 77937.3279,
+          "change": 6714.608399999997,
+          "change_pct": 8.615394677907602,
+          "business_share_pct": 0.20543240465438015,
+          "global_impact_pct": 0.016294939138025356,
+          "direction": "up",
+          "comparable": true,
+          "severity": "steady",
+          "vs_peer_median_pts": 0.0,
+          "rank_score": 0.0030612482618364877,
+          "rank": 19
+        },
+        {
+          "member": "CONSUMER DEVICES",
+          "hierarchy_path": [
+            "TECHNOLOGY",
+            "TECHNOLOGY",
+            "CONSUMER DEVICES"
+          ],
+          "current": 3019.8771,
+          "prior": 1044.0252,
+          "change": 1975.8519000000001,
+          "change_pct": 189.2532766450465,
+          "business_share_pct": 0.007328605127413914,
+          "global_impact_pct": 0.004794976048975809,
+          "direction": "up",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 180.6378819671389,
+          "rank_score": 0.000998074345240353,
+          "rank": 20
+        },
+        {
+          "member": "GLASS ITEMS",
+          "hierarchy_path": [
+            "HOME & LIVING",
+            "HOME & LIVING",
+            "GLASS ITEMS"
+          ],
+          "current": 51301.1205,
+          "prior": 53098.5996,
+          "change": -1797.479100000004,
+          "change_pct": -3.3851723275956305,
+          "business_share_pct": 0.12449700510606178,
+          "global_impact_pct": 0.004362102864609747,
+          "direction": "down",
+          "comparable": true,
+          "severity": "steady",
+          "vs_peer_median_pts": 12.000567005503232,
+          "rank_score": 0.0009536869447230587,
+          "rank": 21
+        },
+        {
+          "member": "OTHER",
+          "hierarchy_path": [
+            "OTHER",
+            "OTHER",
+            "OTHER"
+          ],
+          "current": 11277.7164,
+          "prior": 12152.0439,
+          "change": -874.3275000000012,
+          "change_pct": -7.194900768915105,
+          "business_share_pct": 0.027368640344522622,
+          "global_impact_pct": 0.0021218085330489103,
+          "direction": "down",
+          "comparable": true,
+          "severity": "steady",
+          "vs_peer_median_pts": 15.810295446822707,
+          "rank_score": 0.0004350497455556467,
+          "rank": 22
+        },
+        {
+          "member": "BABY CLOTHING",
+          "hierarchy_path": [
+            "LIFESTYLE",
+            "LIFESTYLE",
+            "BABY CLOTHING"
+          ],
+          "current": 1016.9307,
+          "prior": 1798.497,
+          "change": -781.5663000000001,
+          "change_pct": -43.45663629130324,
+          "business_share_pct": 0.0024678764384963286,
+          "global_impact_pct": 0.001896696654838676,
+          "direction": "down",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 52.07203096921084,
+          "rank_score": 0.0003554006281867505,
+          "rank": 23
+        }
+      ]
+    },
+    {
+      "role": "store",
+      "group_ref": "'MIS_DEEP_DIVE2'[store_no]",
+      "column": "store_no",
+      "level": null,
+      "coverage_only": true,
+      "metric_family": "revenue",
+      "peer_median_change_pct": 2.4033141182671836,
+      "pool_capped": false,
+      "diagnostics_reconciled": true,
+      "counts": {
+        "total": 5,
+        "comparable": 5,
+        "current_only": 0,
+        "up": 3,
+        "down": 2,
+        "flat": 0,
+        "critical": 2,
+        "watch": 3,
+        "steady": 0,
+        "no_material_change": 0
+      },
+      "rows": [
+        {
+          "member": "ST5",
+          "hierarchy_path": [
+            "ST5"
+          ],
+          "current": 3214635.1092,
+          "prior": 577733.6664,
+          "change": 2636901.4428,
+          "change_pct": 456.42163442389966,
+          "business_share_pct": 7.801241760483532,
+          "global_impact_pct": 6.399203939189851,
+          "direction": "up",
+          "comparable": true,
+          "severity": "critical",
+          "vs_peer_median_pts": 454.01832030563247,
+          "rank_score": 0.5561008184367694,
+          "rank": 1
+        },
+        {
+          "member": "ST4",
+          "hierarchy_path": [
+            "ST4"
+          ],
+          "current": 12355995.8547,
+          "prior": 11154890.3004,
+          "change": 1201105.554299999,
+          "change_pct": 10.76752457401512,
+          "business_share_pct": 29.98539727827317,
+          "global_impact_pct": 2.914829985567394,
+          "direction": "up",
+          "comparable": true,
+          "severity": "critical",
+          "vs_peer_median_pts": 8.364210455747937,
+          "rank_score": 0.2407963990449709,
+          "rank": 2
+        },
+        {
+          "member": "ST2",
+          "hierarchy_path": [
+            "ST2"
+          ],
+          "current": 6292992.8322,
+          "prior": 6660387.216,
+          "change": -367394.38379999995,
+          "change_pct": -5.516111479486089,
+          "business_share_pct": 15.271767032121911,
+          "global_impact_pct": 0.8915887222363303,
+          "direction": "down",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 7.919425597753272,
+          "rank_score": 0.07564764670258409,
+          "rank": 3
+        },
+        {
+          "member": "ST3",
+          "hierarchy_path": [
+            "ST3"
+          ],
+          "current": 7538479.6338,
+          "prior": 7361558.2647,
+          "change": 176921.36909999978,
+          "change_pct": 2.4033141182671836,
+          "business_share_pct": 18.29430094925785,
+          "global_impact_pct": 0.42935086753541984,
+          "direction": "up",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 0.0,
+          "rank_score": 0.03196974315517676,
+          "rank": 4
+        },
+        {
+          "member": "ST1",
+          "hierarchy_path": [
+            "ST1"
+          ],
+          "current": 11804607.09,
+          "prior": 11837775.7908,
+          "change": -33168.70079999976,
+          "change_pct": -0.2801936899816736,
+          "business_share_pct": 28.647292979863533,
+          "global_impact_pct": 0.08049344483341266,
+          "direction": "down",
+          "comparable": true,
+          "severity": "watch",
+          "vs_peer_median_pts": 2.6835078082488573,
+          "rank_score": 0.012377770457742337,
+          "rank": 5
+        }
+      ]
+    }
+  ],
+  "skipped_roles": {},
+  "mirrored_roles": {
+    "department": "division",
+    "category": "section"
+  }
+}

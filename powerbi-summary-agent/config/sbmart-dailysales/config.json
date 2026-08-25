@@ -1,0 +1,54 @@
+{
+  "tenant_id": "315642c5-e14a-4c12-bf77-41ee070def79",
+  "workspace_id": "2829a4af-2e07-4b43-b913-0a829a06bef4",
+  "dataset_id": "8d111712-9ea8-4a65-9bb9-58f00e49d379",
+  "report_id": "daily_sales",
+  "report_name": "SB Mart Daily Sales",
+  "report_domain": "sales",
+  "report_cadence": "daily",
+  "chain_id": "sb_mart_sales",
+  "output_folder": "outputs_sbmart_dailysales",
+  "daily_sales_currency": "USD",
+  "daily_sales_mapping": {
+    "store_table": "storebenchmark",
+    "department_table": "departmentbenchmark",
+    "section_table": "sectionbenchmark",
+    "category_table": "categorybenchmark",
+    "sparkline_table": "_Sparkline14",
+    "store_dim": "Dim_Store",
+    "store_col": "store_no",
+    "department_col": "DEPARTMENT",
+    "section_col": "SECTION",
+    "category_col": "CATEGORY_NAME_2",
+    "category_group_col": "CATEGORY_NAME"
+  },
+  "daily_sales_investigation_enabled": true,
+
+  "powerbi_auth_mode": "auto",
+  "powerbi_query_api": "auto",
+  "fabric_definitions": false,
+
+  "ai_provider": "azure_openai",
+  "model": "claude-sonnet-5",
+  "azure_openai_api_key_env": "AZURE_OPENAI_API_KEY",
+  "openai_api_key_env": "OPENAI_API_KEY",
+  "anthropic_api_key_env": "ANTHROPIC_API_KEY",
+  "max_tokens": 8192,
+
+  "azure_blob_upload": true,
+  "azure_blob_account": "turnbtestblobstorage",
+  "azure_blob_container": "insightgen",
+  "azure_blob_prefix": "sb-mart/daily-sales",
+  "snapshot_memory_storage": "azure_blob",
+
+  "ai_content_publish_enabled": true,
+  "ai_content_client": "sb-mart",
+  "ai_content_report_ids": ["6ddd2afa-a1b4-443c-854d-e1ec4ad88e77"],
+  "ai_content_ttl_hours": 24,
+  "api_summary_title": "SB Mart Daily Sales",
+
+  "ai_content_multi_report_feed": true,
+  "ai_content_feed_max_cards": 10,
+  "insight_max_new_per_run": 3,
+  "ai_content_alert_days": 7
+}

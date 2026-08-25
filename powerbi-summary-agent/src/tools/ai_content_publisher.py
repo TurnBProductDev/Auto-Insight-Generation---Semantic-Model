@@ -239,6 +239,14 @@ def _card_report(card: dict) -> str:
     return str(card.get("reportId") or "")
 
 
+def _card_identity(card: dict) -> tuple[str, str] | None:
+    """Stable app identity, namespaced for legacy and multi-report feeds."""
+    card_id = card.get("id")
+    if card_id is None:
+        return None
+    return _card_report(card), str(card_id)
+
+
 def merge_alerts(
     previous: list[dict],
     today: list[dict],
@@ -259,6 +267,11 @@ def merge_alerts(
     wrote yesterday - today's behaviour exactly - while in multi-report mode a
     run matches only its own tagged cards and leaves untagged legacy cards to
     age out of the window naturally.
+
+    Stable ids are render identities, not event ids. If upstream memory misses a
+    commit and republishes the same story on a later day, the newest instance
+    wins across the rolling window. Without this final coalesce the app receives
+    duplicate keys and can silently reuse the wrong card component.
     """
     cutoff = run_date - timedelta(days=max(1, int(days)) - 1)
     own = str(report_id or "")
@@ -272,7 +285,16 @@ def merge_alerts(
     merged.extend(card for card in today if isinstance(card, dict))
     indexed = list(enumerate(merged))
     indexed.sort(key=lambda pair: (_card_date(pair[1]) or date.min, -pair[0]), reverse=True)
-    return [card for _, card in indexed]
+    deduped = []
+    seen: set[tuple[str, str]] = set()
+    for _, card in indexed:
+        identity = _card_identity(card)
+        if identity is not None:
+            if identity in seen:
+                continue
+            seen.add(identity)
+        deduped.append(card)
+    return deduped
 
 
 def _read_json(path: Path) -> Any:

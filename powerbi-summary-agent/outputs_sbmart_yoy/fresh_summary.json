@@ -1,0 +1,318 @@
+{
+  "summary_type": "new_data",
+  "heading": "July 2026 revenue increased by +3.6M to 41.2M, with quantity up +1.4M and transactions up +888.7K across ST4, ST1, ST3, ST2 and ST5.",
+  "paragraphs": [
+    "For July 2026, across ST4, ST1, ST3, ST2 and ST5, revenue increased by +3.6M (9.6%) to 41.2M from 37.6M in the same period last year. Quantity increased by +1.4M (6.4%) to 22.9M from 21.5M, and transactions increased by +888.7K (9.6%) to 10.2M from 9.3M. The revenue increase was supported by both more units sold, which added +2.4M, and average revenue per item and mix, which added +1.2M.",
+    "In July 2026, TECHNOLOGY revenue increased by +236.1K (+13.7%). Quantity increased by +26.8K and transactions increased by +23.2K. Within TECHNOLOGY, ENTERTAINMENTS added +234.1K, making it the largest positive contributor returned for this area. ST4 provided the strongest store evidence at +175.6K across the stores included in this comparison. More units sold added +325.9K to revenue, while average revenue per item and mix reduced revenue by -89.9K.",
+    "In July 2026, CULINARY SUPPLIES revenue increased by +67.5K (+5.3%). Quantity increased by +27.3K and transactions increased by +23.5K. Within this section, CULINARY SUPPLIES added +67.5K. ST5 led store performance at +67.1K across the stores included in this comparison. More units sold added +82.3K to revenue, while average revenue per item and mix reduced revenue by -14.8K."
+  ],
+  "content_blocks": [
+    {
+      "kind": "paragraph",
+      "heading": "Overall Performance",
+      "text": "For July 2026, across ST4, ST1, ST3, ST2 and ST5, revenue increased by +3.6M (9.6%) to 41.2M from 37.6M in the same period last year. Quantity increased by +1.4M (6.4%) to 22.9M from 21.5M, and transactions increased by +888.7K (9.6%) to 10.2M from 9.3M. The revenue increase was supported by both more units sold, which added +2.4M, and average revenue per item and mix, which added +1.2M.",
+      "points": []
+    },
+    {
+      "kind": "chart",
+      "heading": "Revenue change by month",
+      "text": "",
+      "points": [],
+      "chart": {
+        "source_id": "summary_0bbc7910253d:trend:change",
+        "type": "waterfall",
+        "title": "Revenue change by month",
+        "value_label": "Revenue change",
+        "labels": [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August"
+        ],
+        "values": [
+          1231761.5811,
+          1097865.7298999997,
+          32946.86070000008,
+          1120010.7303,
+          794332.3346999995,
+          -160695.61379999947,
+          130219.89300000016,
+          -632076.2343000001
+        ],
+        "x_label": "",
+        "y_label": "",
+        "size_label": "",
+        "x_values": [],
+        "y_values": [],
+        "size_values": [],
+        "series": [],
+        "highlight": null
+      }
+    },
+    {
+      "kind": "paragraph",
+      "heading": "TECHNOLOGY",
+      "text": "In July 2026, TECHNOLOGY revenue increased by +236.1K (+13.7%). Quantity increased by +26.8K and transactions increased by +23.2K. Within TECHNOLOGY, ENTERTAINMENTS added +234.1K, making it the largest positive contributor returned for this area. ST4 provided the strongest store evidence at +175.6K across the stores included in this comparison. More units sold added +325.9K to revenue, while average revenue per item and mix reduced revenue by -89.9K.",
+      "points": []
+    },
+    {
+      "kind": "chart",
+      "heading": "TECHNOLOGY revenue change by section",
+      "text": "",
+      "points": [],
+      "chart": {
+        "source_id": "summary_661a933e0108:contributor:0",
+        "type": "horizontal_bar",
+        "title": "TECHNOLOGY revenue change by section",
+        "value_label": "Revenue change",
+        "labels": [
+          "CONSUMER DEVICES",
+          "ENTERTAINMENTS"
+        ],
+        "values": [
+          1975.8519000000001,
+          234074.84759999998
+        ],
+        "x_label": "",
+        "y_label": "",
+        "size_label": "",
+        "x_values": [],
+        "y_values": [],
+        "size_values": [],
+        "series": [],
+        "highlight": null
+      }
+    },
+    {
+      "kind": "paragraph",
+      "heading": "CULINARY SUPPLIES",
+      "text": "In July 2026, CULINARY SUPPLIES revenue increased by +67.5K (+5.3%). Quantity increased by +27.3K and transactions increased by +23.5K. Within this section, CULINARY SUPPLIES added +67.5K. ST5 led store performance at +67.1K across the stores included in this comparison. More units sold added +82.3K to revenue, while average revenue per item and mix reduced revenue by -14.8K.",
+      "points": []
+    },
+    {
+      "kind": "chart",
+      "heading": "CULINARY SUPPLIES revenue change by store",
+      "text": "",
+      "points": [],
+      "chart": {
+        "source_id": "summary_b801fc430e44:location",
+        "type": "horizontal_bar",
+        "title": "CULINARY SUPPLIES revenue change by store",
+        "value_label": "Revenue change",
+        "labels": [
+          "ST3",
+          "ST2",
+          "ST1",
+          "ST5",
+          "ST4"
+        ],
+        "values": [
+          -8914.368599999987,
+          -11658.896999999997,
+          -25965.665099999984,
+          67146.70499999999,
+          46934.210699999996
+        ],
+        "x_label": "",
+        "y_label": "",
+        "size_label": "",
+        "x_values": [],
+        "y_values": [],
+        "size_values": [],
+        "series": [],
+        "highlight": null
+      }
+    }
+  ],
+  "sections": [
+    {
+      "heading": "Overall Performance",
+      "tone": "teal",
+      "points": [
+        "For July 2026, across ST4, ST1, ST3, ST2 and ST5, revenue increased by +3.6M (9.6%) to 41.2M from 37.6M in the same period last year. Quantity increased by +1.4M (6.4%) to 22.9M from 21.5M, and transactions increased by +888.7K (9.6%) to 10.2M from 9.3M. The revenue increase was supported by both more units sold, which added +2.4M, and average revenue per item and mix, which added +1.2M."
+      ]
+    },
+    {
+      "heading": "TECHNOLOGY",
+      "tone": "teal",
+      "points": [
+        "In July 2026, TECHNOLOGY revenue increased by +236.1K (+13.7%). Quantity increased by +26.8K and transactions increased by +23.2K. Within TECHNOLOGY, ENTERTAINMENTS added +234.1K, making it the largest positive contributor returned for this area. ST4 provided the strongest store evidence at +175.6K across the stores included in this comparison. More units sold added +325.9K to revenue, while average revenue per item and mix reduced revenue by -89.9K."
+      ]
+    },
+    {
+      "heading": "CULINARY SUPPLIES",
+      "tone": "teal",
+      "points": [
+        "In July 2026, CULINARY SUPPLIES revenue increased by +67.5K (+5.3%). Quantity increased by +27.3K and transactions increased by +23.5K. Within this section, CULINARY SUPPLIES added +67.5K. ST5 led store performance at +67.1K across the stores included in this comparison. More units sold added +82.3K to revenue, while average revenue per item and mix reduced revenue by -14.8K."
+      ]
+    }
+  ],
+  "covered_candidate_ids": [
+    "summary_0bbc7910253d",
+    "summary_661a933e0108",
+    "summary_b801fc430e44"
+  ],
+  "covered_summary_keys": [
+    "summary:v1:0bbc7910253d6e909b41933bcf410b25ddba73a3cd8a2cd982da1d1a1c17f64b",
+    "summary:v1:3ccf83b86190f92dfcf52e0cc87437e06aa49e89745ebd4713c3654eacd781d3",
+    "summary:v1:299eb64c6bbcd9e401b636843307ce5b2eda3f2c988e421d68ae5c860f14d9e7"
+  ],
+  "metrics": [],
+  "visual": null,
+  "data_as_of": "2026-08-23",
+  "grain": "month",
+  "freshness_status": "current",
+  "period_anchor": "2026-07",
+  "validation_status": "validated",
+  "authoring_mode": "llm",
+  "overall_performance": {
+    "status": "ok",
+    "families": {
+      "revenue": {
+        "current": 41206710.5199,
+        "prior": 37592345.2383,
+        "change": 3614365.2815999985,
+        "change_pct": 9.614631007159389,
+        "comparison": "the same period last year"
+      },
+      "quantity": {
+        "current": 22864064.02351,
+        "prior": 21489300.60046,
+        "change": 1374763.4230500013,
+        "change_pct": 6.397432138952783,
+        "comparison": "the same period last year"
+      },
+      "transactions": {
+        "current": 10158927.0,
+        "prior": 9270273.0,
+        "change": 888654.0,
+        "change_pct": 9.586060734133719,
+        "comparison": "the same period last year"
+      }
+    },
+    "primary_family": "revenue",
+    "bridge": {
+      "volume_effect": 2404944.77606109,
+      "rate_mix_effect": 1209420.5055389078,
+      "total": 3614365.281599998,
+      "revenue_change": 3614365.2815999985,
+      "reconciles": true,
+      "note": "Rate/mix reflects price and mix together, not pure price."
+    },
+    "comparison": "the same period last year",
+    "data_as_of": "2026-08-23",
+    "grain": "month",
+    "freshness_status": "current",
+    "reconciled": true,
+    "coverage": "complete",
+    "visual": {
+      "type": "bar",
+      "title": "Revenue: prior versus current",
+      "labels": [
+        "Prior",
+        "Current"
+      ],
+      "values": [
+        37592345.2383,
+        41206710.5199
+      ],
+      "value_label": "Revenue"
+    },
+    "metrics": [
+      {
+        "label": "Revenue change",
+        "value": "+3.6M",
+        "tone": "teal"
+      },
+      {
+        "label": "Quantity change",
+        "value": "+1.4M",
+        "tone": "teal"
+      },
+      {
+        "label": "Transactions change",
+        "value": "+888.7K",
+        "tone": "teal"
+      }
+    ],
+    "trend": {
+      "dimension": "Month",
+      "grain": "month",
+      "rows": [
+        {
+          "month": 1,
+          "revenue_current": 6282680.2227,
+          "revenue_prior": 5050918.6416,
+          "revenue_change": 1231761.5811
+        },
+        {
+          "month": 2,
+          "revenue_current": 5743381.9365,
+          "revenue_prior": 4645516.2066,
+          "revenue_change": 1097865.7298999997
+        },
+        {
+          "month": 3,
+          "revenue_current": 5611613.5125,
+          "revenue_prior": 5578666.6518,
+          "revenue_change": 32946.86070000008
+        },
+        {
+          "month": 4,
+          "revenue_current": 5193002.988,
+          "revenue_prior": 4072992.2577,
+          "revenue_change": 1120010.7303
+        },
+        {
+          "month": 5,
+          "revenue_current": 5962941.9918,
+          "revenue_prior": 5168609.6571,
+          "revenue_change": 794332.3346999995
+        },
+        {
+          "month": 6,
+          "revenue_current": 4313923.9659,
+          "revenue_prior": 4474619.5797,
+          "revenue_change": -160695.61379999947
+        },
+        {
+          "month": 7,
+          "revenue_current": 4769148.4857,
+          "revenue_prior": 4638928.5927,
+          "revenue_change": 130219.89300000016
+        },
+        {
+          "month": 8,
+          "revenue_current": 3330017.4168,
+          "revenue_prior": 3962093.6511,
+          "revenue_change": -632076.2343000001
+        }
+      ],
+      "completeness": "complete",
+      "direction": "decelerating",
+      "value_aliases": {
+        "current": "revenue_current",
+        "prior": "revenue_prior",
+        "change": "revenue_change"
+      }
+    }
+  },
+  "focuses": [
+    {
+      "focus_key": "focus:v2:b801fc430e44f7038556ecfee1207245590dbe7ed77497ecb290a81fc10ad984",
+      "segment": "CULINARY SUPPLIES",
+      "dimension_role": "section",
+      "lens": "composition"
+    },
+    {
+      "focus_key": "focus:v2:661a933e0108f9d416e886a523e24d524b36a994c99ba25931a52cdb8c3ab810",
+      "segment": "TECHNOLOGY",
+      "dimension_role": "division",
+      "lens": "performance"
+    }
+  ]
+}

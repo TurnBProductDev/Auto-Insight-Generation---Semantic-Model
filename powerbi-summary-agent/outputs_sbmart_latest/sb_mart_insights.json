@@ -1,0 +1,177 @@
+{
+  "schemaVersion": 1,
+  "client": "sb-mart",
+  "generatedFor": "client",
+  "generatedAt": "2026-08-20T11:11:57Z",
+  "expiresAt": "2026-08-21T11:11:57Z",
+  "sourceDatasets": [
+    "a737de5a-fcf8-46cf-94da-839d8df5e39b"
+  ],
+  "payload": [
+    {
+      "id": 1130446137,
+      "reportId": "target_tracker",
+      "severity": "critical",
+      "category": "Performance",
+      "metric": "ST2",
+      "value": "-334.8K",
+      "delta": "11.1%",
+      "deltaDirection": "down",
+      "description": "ST2 performance decreased by 334.8K, accounting for about 11.1% of the total decline in performance. The shortfall is broad-based, with ST2 tracking below target across all reported time views and the largest gap showing in the month-to-date view.",
+      "displayTime": "11:08 AM",
+      "isoDate": "2026-08-20",
+      "comparisonLabel": "against its target for this month so far",
+      "insight": {
+        "title": "ST2 target gap focus",
+        "summary": "The underperformance appears concentrated in the month-to-date picture rather than a single isolated period. This suggests the department review should focus on which areas within ST2 are contributing most to the ongoing gap versus target.",
+        "stats": [
+          {
+            "label": "Performance change",
+            "value": "-334.8K"
+          },
+          {
+            "label": "Share of performance decline",
+            "value": "11.1%"
+          },
+          {
+            "label": "Segments",
+            "value": "ST2"
+          }
+        ],
+        "action": "Review ST2 departments against target in the month-to-date view to identify which departments are furthest below plan."
+      }
+    },
+    {
+      "id": 356989147,
+      "reportId": "sales_yoy",
+      "severity": "positive",
+      "category": "Revenue",
+      "metric": "ST5",
+      "value": "+2.71M",
+      "delta": "537.4%",
+      "deltaDirection": "up",
+      "description": "ST5 revenue increased by 2.71M (537.4%), from 504.4K to 3.21M versus the prior period, representing about 73.6% of the total increase in revenue. The increase came mainly from more units being sold, while average revenue per item was broadly stable.",
+      "displayTime": "11:11 AM",
+      "isoDate": "2026-08-20",
+      "comparisonLabel": "vs the prior period",
+      "insight": {
+        "title": "ST5 growth concentration",
+        "summary": "The gain is concentrated in ST5 and the analyst focus is which special product groups within its assortment contributed most. This suggests the store’s growth was led more by sales volume than by changes in average revenue per item.",
+        "stats": [
+          {
+            "label": "Revenue change",
+            "value": "+2.71M"
+          },
+          {
+            "label": "Share of revenue increase",
+            "value": "73.6%"
+          },
+          {
+            "label": "Change from units sold",
+            "value": "+2.72M"
+          }
+        ],
+        "action": "Investigate ST5 special product groups to see which assortment areas account for most of the revenue gain."
+      }
+    },
+    {
+      "id": 310558343,
+      "reportId": "sales_yoy",
+      "severity": "positive",
+      "category": "Revenue",
+      "metric": "CONSUMER GOODS",
+      "value": "+2.09M",
+      "delta": "10.7%",
+      "deltaDirection": "up",
+      "description": "CONSUMER GOODS revenue increased by 2.09M (10.7%), from 19.58M to 21.68M versus the prior period, representing about 56.8% of the total increase in revenue. The increase was supported by both more units sold and a higher average revenue per item.",
+      "displayTime": "11:11 AM",
+      "isoDate": "2026-08-20",
+      "comparisonLabel": "vs the prior period",
+      "insight": {
+        "title": "Consumer Goods growth focus",
+        "summary": "The change is centered in the CONSUMER GOODS division, and the next cut is which sections or product groups hold most of that uplift. This may indicate the division’s growth is spread across both sales volume and the mix of products sold.",
+        "stats": [
+          {
+            "label": "Revenue change",
+            "value": "+2.09M"
+          },
+          {
+            "label": "Share of revenue increase",
+            "value": "56.8%"
+          },
+          {
+            "label": "Change from units sold",
+            "value": "+1.34M"
+          }
+        ],
+        "action": "Review CONSUMER GOODS sections and product groups to identify where the revenue gain is most concentrated."
+      }
+    },
+    {
+      "id": 562718102,
+      "reportId": "sales_yoy",
+      "severity": "positive",
+      "category": "Revenue",
+      "metric": "ST4",
+      "value": "+1.19M",
+      "delta": "10.9%",
+      "deltaDirection": "up",
+      "description": "ST4 revenue increased by 1.19M (10.9%), from 10.93M to 12.12M versus the prior period, representing about 32.4% of the total increase in revenue. The increase was associated more with a higher average revenue per item than with additional units sold.",
+      "displayTime": "11:11 AM",
+      "isoDate": "2026-08-20",
+      "comparisonLabel": "vs the prior period",
+      "insight": {
+        "title": "ST4 mix-led increase",
+        "summary": "The movement sits in ST4, where merchandise areas with stronger average revenue per item appear to matter more than broad unit expansion. This could suggest a shift toward higher-value sales within the store.",
+        "stats": [
+          {
+            "label": "Revenue change",
+            "value": "+1.19M"
+          },
+          {
+            "label": "Share of revenue increase",
+            "value": "32.4%"
+          },
+          {
+            "label": "Change from revenue per item",
+            "value": "+1.05M"
+          }
+        ],
+        "action": "Compare ST4 merchandise areas to identify where the revenue increase is strongest relative to unit growth."
+      }
+    },
+    {
+      "id": 1184781211,
+      "reportId": "sales_yoy",
+      "severity": "positive",
+      "category": "Revenue",
+      "metric": "PROVISIONS",
+      "value": "+966.8K",
+      "delta": "9.9%",
+      "deltaDirection": "up",
+      "description": "PROVISIONS revenue increased by 966.8K (9.9%), from 9.78M to 10.74M versus the prior period, representing about 26.3% of the total increase in revenue. The increase was supported by more units sold, with a larger contribution from a higher average revenue per item.",
+      "displayTime": "11:11 AM",
+      "isoDate": "2026-08-20",
+      "comparisonLabel": "vs the prior period",
+      "insight": {
+        "title": "Provisions growth areas",
+        "summary": "The uplift is concentrated in PROVISIONS, and the key follow-up is which lower-level product groups within the section carry most of it. This may suggest the section benefited from both broader sales and a more favorable mix of products sold.",
+        "stats": [
+          {
+            "label": "Revenue change",
+            "value": "+966.8K"
+          },
+          {
+            "label": "Share of revenue increase",
+            "value": "26.3%"
+          },
+          {
+            "label": "Change from revenue per item",
+            "value": "+628.0K"
+          }
+        ],
+        "action": "Examine lower-level product groups within PROVISIONS to see where the revenue and quantity gains are concentrated."
+      }
+    }
+  ]
+}

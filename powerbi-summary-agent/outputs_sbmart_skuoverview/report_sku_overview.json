@@ -1,0 +1,2522 @@
+{
+  "report_id": "sku_overview",
+  "report_name": "SB Mart SKU Overview",
+  "as_at": "2026-08-23",
+  "period_label": "as at 2026-08-23",
+  "currency": "USD",
+  "header": {
+    "total_stock_value": 4819671.6147,
+    "total_excess_value": 1821506.4837,
+    "excess_share_pct": 37.79316578632463,
+    "total_pending_value": 38399.509600000005,
+    "total_opp_loss": 48998.58,
+    "skus": 44467.0,
+    "locations": 5.0,
+    "rows": 120391
+  },
+  "states": [
+    {
+      "action": "OVERSTOCK",
+      "rows": 25085,
+      "stock_value": 2092552.9713,
+      "excess_value": 1216797.1956,
+      "pending_value": 7842.9122,
+      "opp_loss": 0.0
+    },
+    {
+      "action": "STOCK AVAILABLE",
+      "rows": 16857,
+      "stock_value": 1282636.9872,
+      "excess_value": 0.0,
+      "pending_value": 11293.1928,
+      "opp_loss": 0.0
+    },
+    {
+      "action": "NON MOVING",
+      "rows": 32340,
+      "stock_value": 828682.1964,
+      "excess_value": 551557.0557,
+      "pending_value": 1696.1453,
+      "opp_loss": 0.0
+    },
+    {
+      "action": "NA",
+      "rows": 6944,
+      "stock_value": 266544.1134,
+      "excess_value": 0.0,
+      "pending_value": 0.0,
+      "opp_loss": 0.0
+    },
+    {
+      "action": "IN STOCK BUT NO SALES",
+      "rows": 8617,
+      "stock_value": 201297.4416,
+      "excess_value": 53152.2324,
+      "pending_value": 420.99749999999995,
+      "opp_loss": 0.0
+    },
+    {
+      "action": "STOCK AVAILABLE - REORDER LEVEL UNKNOW",
+      "rows": 769,
+      "stock_value": 67583.0196,
+      "excess_value": 0.0,
+      "pending_value": 456.84000000000003,
+      "opp_loss": 0.0
+    },
+    {
+      "action": "ON THE VERGE OF STOCK OUT - AVAILABLE IN WAREHOUSE",
+      "rows": 1084,
+      "stock_value": 34184.7918,
+      "excess_value": 0.0,
+      "pending_value": 936.765,
+      "opp_loss": 0.0
+    },
+    {
+      "action": "NEW LISTED SKU",
+      "rows": 518,
+      "stock_value": 27008.5806,
+      "excess_value": 0.0,
+      "pending_value": 8511.0913,
+      "opp_loss": 0.0
+    },
+    {
+      "action": "ON THE VERGE OF STOCK OUT - PLACE ORDER",
+      "rows": 1764,
+      "stock_value": 17347.9779,
+      "excess_value": 0.0,
+      "pending_value": 0.0,
+      "opp_loss": 0.0
+    },
+    {
+      "action": "ON THE VERGE OF STOCK OUT - ORDER PLACED",
+      "rows": 26,
+      "stock_value": 1833.5349,
+      "excess_value": 0.0,
+      "pending_value": 3796.6966000000007,
+      "opp_loss": 0.0
+    },
+    {
+      "action": "STOCK OUT - PLACE ORDER",
+      "rows": 12952,
+      "stock_value": 0.0,
+      "excess_value": 0.0,
+      "pending_value": 0.0,
+      "opp_loss": 30718.230000000007
+    },
+    {
+      "action": "STOCK OUT - ORDER PLACED",
+      "rows": 29,
+      "stock_value": 0.0,
+      "excess_value": 0.0,
+      "pending_value": 2844.6520000000005,
+      "opp_loss": 184.49999999999997
+    },
+    {
+      "action": "STOCK OUT - AVAILABLE IN WAREHOUSE",
+      "rows": 5514,
+      "stock_value": 0.0,
+      "excess_value": 0.0,
+      "pending_value": 526.5,
+      "opp_loss": 18095.85
+    },
+    {
+      "action": "NOT ACTIVE",
+      "rows": 7892,
+      "stock_value": 0.0,
+      "excess_value": 0.0,
+      "pending_value": 73.71690000000001,
+      "opp_loss": 0.0
+    }
+  ],
+  "dimensions": {
+    "department": [
+      {
+        "name": "CONSUMER GOODS",
+        "stock_value": 2421563.2479,
+        "excess_value": 857945.1933,
+        "opp_loss": 28261.989999999994
+      },
+      {
+        "name": "TECHNOLOGY",
+        "stock_value": 363020.4837,
+        "excess_value": 156559.5513,
+        "opp_loss": 2697.960000000001
+      },
+      {
+        "name": "HOME & LIVING",
+        "stock_value": 666908.3133,
+        "excess_value": 320100.6735,
+        "opp_loss": 1999.3399999999979
+      },
+      {
+        "name": "LIFESTYLE",
+        "stock_value": 1368179.5698,
+        "excess_value": 486901.0656,
+        "opp_loss": 16039.28999999998
+      }
+    ],
+    "section": [
+      {
+        "name": "PROVISIONS",
+        "stock_value": 1304596.7325,
+        "excess_value": 530183.7126,
+        "opp_loss": 15820.560000000009
+      },
+      {
+        "name": "REFRIDGERATED GOODS",
+        "stock_value": 268175.2374,
+        "excess_value": 88942.8708,
+        "opp_loss": 6176.600000000001
+      },
+      {
+        "name": "SPICE MARKET",
+        "stock_value": 142609.4856,
+        "excess_value": 28560.7512,
+        "opp_loss": 1802.7900000000004
+      },
+      {
+        "name": "PERSONAL CARE",
+        "stock_value": 614280.1887,
+        "excess_value": 182332.9359,
+        "opp_loss": 3185.030000000001
+      },
+      {
+        "name": "ENTERTAINMENTS",
+        "stock_value": 362668.0851,
+        "excess_value": 156300.7644,
+        "opp_loss": 2647.8100000000013
+      },
+      {
+        "name": "OFFICE SUPPLIES",
+        "stock_value": 217508.6115,
+        "excess_value": 116861.7429,
+        "opp_loss": 304.93000000000006
+      },
+      {
+        "name": "TOYS",
+        "stock_value": 97389.8316,
+        "excess_value": 39095.8002,
+        "opp_loss": 1922.8100000000009
+      },
+      {
+        "name": "FOOTWEAR",
+        "stock_value": 213032.7702,
+        "excess_value": 0.0,
+        "opp_loss": 1847.7099999999994
+      },
+      {
+        "name": "TRAVEL",
+        "stock_value": 65940.7797,
+        "excess_value": 27925.7463,
+        "opp_loss": 10854.409999999993
+      },
+      {
+        "name": "CULINARY SUPPLIES",
+        "stock_value": 351983.7423,
+        "excess_value": 160894.5039,
+        "opp_loss": 1253.9499999999996
+      },
+      {
+        "name": "GLASS ITEMS",
+        "stock_value": 21231.6201,
+        "excess_value": 12467.4093,
+        "opp_loss": 91.03000000000002
+      },
+      {
+        "name": "SPORTING GOODS",
+        "stock_value": 20148.9498,
+        "excess_value": 12097.3068,
+        "opp_loss": 113.24
+      },
+      {
+        "name": "MENS APPAREL",
+        "stock_value": 321358.2444,
+        "excess_value": 124340.6268,
+        "opp_loss": 253.04000000000002
+      },
+      {
+        "name": "LADIES APPAREL",
+        "stock_value": 564195.4236,
+        "excess_value": 243465.9471,
+        "opp_loss": 922.7199999999998
+      },
+      {
+        "name": "KIDS FASHION",
+        "stock_value": 85183.2639,
+        "excess_value": 39316.2714,
+        "opp_loss": 125.36000000000003
+      },
+      {
+        "name": "HOME TEXTILES",
+        "stock_value": 76184.3394,
+        "excess_value": 29877.0174,
+        "opp_loss": 349.43000000000006
+      },
+      {
+        "name": "CLEANING ESSENSTIALS",
+        "stock_value": 91901.6037,
+        "excess_value": 27924.9228,
+        "opp_loss": 1277.0100000000007
+      },
+      {
+        "name": "CONSUMER DEVICES",
+        "stock_value": 348.7428,
+        "excess_value": 258.7869,
+        "opp_loss": 50.15
+      },
+      {
+        "name": "BABY CLOTHING",
+        "stock_value": 930.3066,
+        "excess_value": 659.367,
+        "opp_loss": 0.0
+      },
+      {
+        "name": "CF-COMPUTER ACC",
+        "stock_value": 3.6558,
+        "excess_value": 0.0,
+        "opp_loss": 0.0
+      }
+    ],
+    "location": [
+      {
+        "name": "ST2",
+        "stock_value": 1018940.6799,
+        "excess_value": 451136.9898,
+        "opp_loss": 8161.759999999996
+      },
+      {
+        "name": "ST3",
+        "stock_value": 963248.9382,
+        "excess_value": 348952.1364,
+        "opp_loss": 4183.529999999999
+      },
+      {
+        "name": "ST1",
+        "stock_value": 1199571.5871,
+        "excess_value": 411320.1681,
+        "opp_loss": 8553.649999999998
+      },
+      {
+        "name": "ST5",
+        "stock_value": 62472.6945,
+        "excess_value": 34778.4624,
+        "opp_loss": 18403.489999999998
+      },
+      {
+        "name": "ST4",
+        "stock_value": 1575437.715,
+        "excess_value": 575318.727,
+        "opp_loss": 9696.149999999998
+      }
+    ],
+    "category": [
+      {
+        "name": "INSTANT DRINKS",
+        "stock_value": 7894.908,
+        "excess_value": 4584.5163,
+        "opp_loss": 58.459999999999994
+      },
+      {
+        "name": "HOME BAKING",
+        "stock_value": 32666.5197,
+        "excess_value": 19275.786,
+        "opp_loss": 259.70000000000005
+      },
+      {
+        "name": "SNACKS",
+        "stock_value": 129000.4164,
+        "excess_value": 28303.4682,
+        "opp_loss": 1981.9600000000003
+      },
+      {
+        "name": "UHT MILK",
+        "stock_value": 54236.3688,
+        "excess_value": 14557.1175,
+        "opp_loss": 552.6500000000001
+      },
+      {
+        "name": "SWEET BISCUITS",
+        "stock_value": 30858.0624,
+        "excess_value": 14585.9481,
+        "opp_loss": 353.53000000000003
+      },
+      {
+        "name": "BABY MILK POWDER AND FORMULA",
+        "stock_value": 1586.7657,
+        "excess_value": 678.4614,
+        "opp_loss": 5.46
+      },
+      {
+        "name": "BROUGHT IN BREAD",
+        "stock_value": 25025.8464,
+        "excess_value": 13557.618,
+        "opp_loss": 521.1499999999999
+      },
+      {
+        "name": "APPLES",
+        "stock_value": 2112.5691,
+        "excess_value": 1062.8577,
+        "opp_loss": 11.459999999999999
+      },
+      {
+        "name": "VEGETABLES",
+        "stock_value": 9790.1622,
+        "excess_value": 2512.4796,
+        "opp_loss": 212.48999999999998
+      },
+      {
+        "name": "FRESH SOFT CHEESE",
+        "stock_value": 21564.8001,
+        "excess_value": 11623.1355,
+        "opp_loss": 343.98
+      },
+      {
+        "name": "PULSES",
+        "stock_value": 28938.2787,
+        "excess_value": 7476.1218,
+        "opp_loss": 159.67000000000002
+      },
+      {
+        "name": "FRESH JUICE",
+        "stock_value": 28631.9691,
+        "excess_value": 13400.3646,
+        "opp_loss": 741.0999999999999
+      },
+      {
+        "name": "FRESH HARD CHEESE",
+        "stock_value": 9553.4316,
+        "excess_value": 6139.746,
+        "opp_loss": 319.44
+      },
+      {
+        "name": "FRESH MILK",
+        "stock_value": 12241.0251,
+        "excess_value": 2589.327,
+        "opp_loss": 412.4200000000001
+      },
+      {
+        "name": "BABY DIAPERS",
+        "stock_value": 13894.5753,
+        "excess_value": 8330.0049,
+        "opp_loss": 71.49000000000001
+      },
+      {
+        "name": "GENARAL ELECTRONICS ITEMS",
+        "stock_value": 126816.6807,
+        "excess_value": 49229.1648,
+        "opp_loss": 1965.5400000000004
+      },
+      {
+        "name": "COSMETICS",
+        "stock_value": 272534.1282,
+        "excess_value": 123466.7907,
+        "opp_loss": 444.66000000000014
+      },
+      {
+        "name": "OTHER",
+        "stock_value": 146514.7683,
+        "excess_value": 68884.4142,
+        "opp_loss": 1292.9599999999996
+      },
+      {
+        "name": "SCOOTERS",
+        "stock_value": 1277.0703,
+        "excess_value": 883.4778,
+        "opp_loss": 3.07
+      },
+      {
+        "name": "MENS SPORTS SHOES",
+        "stock_value": 99505.9458,
+        "excess_value": 0.0,
+        "opp_loss": 1277.2099999999998
+      },
+      {
+        "name": "LADIES CASUAL SHOES",
+        "stock_value": 28313.091,
+        "excess_value": 0.0,
+        "opp_loss": 76.17
+      },
+      {
+        "name": "MENS CASUAL SHOES",
+        "stock_value": 64983.7512,
+        "excess_value": 1068.5385,
+        "opp_loss": 438.09999999999985
+      },
+      {
+        "name": "TRAVEL BAGS",
+        "stock_value": 30137.1786,
+        "excess_value": 12359.9925,
+        "opp_loss": 376.47999999999996
+      },
+      {
+        "name": "STEEL OTHER UTENSILS",
+        "stock_value": 21340.2249,
+        "excess_value": 10562.2569,
+        "opp_loss": 110.53
+      },
+      {
+        "name": "WATER GLASS",
+        "stock_value": 24322.4424,
+        "excess_value": 13685.3793,
+        "opp_loss": 89.83000000000001
+      },
+      {
+        "name": "FITNESS ACCESSORIES",
+        "stock_value": 16856.8236,
+        "excess_value": 9713.9142,
+        "opp_loss": 65.46
+      },
+      {
+        "name": "COOKING POT NON STICK TEFLON",
+        "stock_value": 68320.9593,
+        "excess_value": 31923.7038,
+        "opp_loss": 496.61
+      },
+      {
+        "name": "SOFT TROLLEY",
+        "stock_value": 44419.0095,
+        "excess_value": 17743.7574,
+        "opp_loss": 10673.319999999992
+      },
+      {
+        "name": "BOOKS ,NOTE BOOK AND PAPERS",
+        "stock_value": 45470.9133,
+        "excess_value": 25243.6014,
+        "opp_loss": 82.62
+      },
+      {
+        "name": "MENS T SHIRT ROUND NECK SS",
+        "stock_value": 47958.7608,
+        "excess_value": 13199.9787,
+        "opp_loss": 94.15
+      },
+      {
+        "name": "LADIES T SHIRT SS",
+        "stock_value": 17351.4231,
+        "excess_value": 8389.8828,
+        "opp_loss": 7.6899999999999995
+      },
+      {
+        "name": "MENS VESTS",
+        "stock_value": 18183.9384,
+        "excess_value": 5186.5326,
+        "opp_loss": 44.57
+      },
+      {
+        "name": "MENS TROUSERS CASUAL",
+        "stock_value": 64863.1962,
+        "excess_value": 27903.3795,
+        "opp_loss": 6.94
+      },
+      {
+        "name": "MENS JEANS COMFORT FIT",
+        "stock_value": 64182.3669,
+        "excess_value": 26734.9572,
+        "opp_loss": 14.88
+      },
+      {
+        "name": "LADIES BRA",
+        "stock_value": 16944.4899,
+        "excess_value": 6631.659,
+        "opp_loss": 27.6
+      },
+      {
+        "name": "BOYS T SHIRTS SS",
+        "stock_value": 31464.4824,
+        "excess_value": 15165.4707,
+        "opp_loss": 32.900000000000006
+      },
+      {
+        "name": "LADIES PANTIES",
+        "stock_value": 6797.9736,
+        "excess_value": 1370.1366,
+        "opp_loss": 74.56
+      },
+      {
+        "name": "LADIES LEGGING",
+        "stock_value": 23426.3583,
+        "excess_value": 9528.138,
+        "opp_loss": 42.989999999999995
+      },
+      {
+        "name": "GIRLS FROCKS PARTY LS",
+        "stock_value": 19539.522,
+        "excess_value": 8212.8087,
+        "opp_loss": 13.530000000000001
+      },
+      {
+        "name": "LADIES ARABIC DRESSES",
+        "stock_value": 27536.5062,
+        "excess_value": 11083.0707,
+        "opp_loss": 20.88
+      },
+      {
+        "name": "BOYS TOYS",
+        "stock_value": 81149.985,
+        "excess_value": 30196.4895,
+        "opp_loss": 978.8100000000003
+      },
+      {
+        "name": "DISHWASH LIQUID",
+        "stock_value": 30177.171,
+        "excess_value": 11605.2183,
+        "opp_loss": 210.16
+      },
+      {
+        "name": "SMART WATCHES",
+        "stock_value": 251235.4995,
+        "excess_value": 109435.0635,
+        "opp_loss": 403.97999999999996
+      },
+      {
+        "name": "SOAP",
+        "stock_value": 107474.9904,
+        "excess_value": 24051.7026,
+        "opp_loss": 670.8599999999999
+      },
+      {
+        "name": "KITCHEN TOWEL",
+        "stock_value": 1208.6847,
+        "excess_value": 521.073,
+        "opp_loss": 0.45
+      },
+      {
+        "name": "WEIGHING MACHINE",
+        "stock_value": 4619.8404,
+        "excess_value": 2488.5954,
+        "opp_loss": 0.72
+      },
+      {
+        "name": "BALL POINT PEN",
+        "stock_value": 41001.0363,
+        "excess_value": 21083.8977,
+        "opp_loss": 23.029999999999994
+      },
+      {
+        "name": "DEODORANT MEN",
+        "stock_value": 39216.636,
+        "excess_value": 15181.5843,
+        "opp_loss": 255.51000000000008
+      },
+      {
+        "name": "FACE CREAM",
+        "stock_value": 150498.2025,
+        "excess_value": 34083.774,
+        "opp_loss": 365.92000000000013
+      },
+      {
+        "name": "WASHING POWDER FRONT LOAD",
+        "stock_value": 56935.332,
+        "excess_value": 13768.7472,
+        "opp_loss": 1049.88
+      },
+      {
+        "name": "HOME LINEN PRODUCTS",
+        "stock_value": 72641.1051,
+        "excess_value": 28258.8102,
+        "opp_loss": 361.34000000000003
+      },
+      {
+        "name": "CUTTING BOARD PLASTIC",
+        "stock_value": 25987.2246,
+        "excess_value": 14727.5118,
+        "opp_loss": 213.50000000000003
+      },
+      {
+        "name": "SHAMPOO",
+        "stock_value": 59556.9726,
+        "excess_value": 16769.8917,
+        "opp_loss": 493.61999999999995
+      },
+      {
+        "name": "TORCHES",
+        "stock_value": 73489.4694,
+        "excess_value": 28638.1791,
+        "opp_loss": 218.2
+      },
+      {
+        "name": "MENS TRIMMERS",
+        "stock_value": 51371.8551,
+        "excess_value": 22875.9903,
+        "opp_loss": 77.4
+      },
+      {
+        "name": "KITCHEN KNIFE",
+        "stock_value": 76010.8536,
+        "excess_value": 39285.3942,
+        "opp_loss": 102.68999999999997
+      },
+      {
+        "name": "HAIR OIL",
+        "stock_value": 74197.6848,
+        "excess_value": 21820.9761,
+        "opp_loss": 95.00000000000001
+      },
+      {
+        "name": "ALKALINE AA",
+        "stock_value": 2570.4972,
+        "excess_value": 1090.881,
+        "opp_loss": 7.699999999999999
+      },
+      {
+        "name": "FACE WASH",
+        "stock_value": 25147.8891,
+        "excess_value": 10206.5481,
+        "opp_loss": 156.85000000000002
+      },
+      {
+        "name": "POTATO CHIPS",
+        "stock_value": 33057.8685,
+        "excess_value": 12041.7516,
+        "opp_loss": 465.08
+      },
+      {
+        "name": "OLIVE OIL",
+        "stock_value": 26444.0889,
+        "excess_value": 11575.2915,
+        "opp_loss": 41.94
+      },
+      {
+        "name": "POWDERED MILK",
+        "stock_value": 44635.5306,
+        "excess_value": 14758.1163,
+        "opp_loss": 422.96
+      },
+      {
+        "name": "MASALA",
+        "stock_value": 101343.1365,
+        "excess_value": 56886.5241,
+        "opp_loss": 486.32999999999987
+      },
+      {
+        "name": "INSTANT COFFEE",
+        "stock_value": 45038.8755,
+        "excess_value": 13673.1483,
+        "opp_loss": 292.83000000000004
+      },
+      {
+        "name": "TEA BAGS",
+        "stock_value": 47240.0802,
+        "excess_value": 24902.4915,
+        "opp_loss": 196.08000000000004
+      },
+      {
+        "name": "ETHNIC FOODS",
+        "stock_value": 79716.1149,
+        "excess_value": 38303.091,
+        "opp_loss": 1069.6300000000006
+      },
+      {
+        "name": "INSTANT NOODLE",
+        "stock_value": 15794.5437,
+        "excess_value": 5827.7745,
+        "opp_loss": 116.76999999999998
+      },
+      {
+        "name": "COOKING OILS",
+        "stock_value": 89667.5427,
+        "excess_value": 25780.5612,
+        "opp_loss": 2610.4
+      },
+      {
+        "name": "CANDY BAGS",
+        "stock_value": 24548.2029,
+        "excess_value": 12237.7122,
+        "opp_loss": 469.88
+      },
+      {
+        "name": "BOXED CHOCOLATE",
+        "stock_value": 16586.6967,
+        "excess_value": 3396.6918,
+        "opp_loss": 493.61999999999995
+      },
+      {
+        "name": "FRESH CHICKEN PORTIONS",
+        "stock_value": 28856.7387,
+        "excess_value": 12811.5405,
+        "opp_loss": 1185.05
+      },
+      {
+        "name": "HEALTH AND ISOTONIC DRINKS",
+        "stock_value": 9712.9557,
+        "excess_value": 2245.2309,
+        "opp_loss": 73.55999999999999
+      },
+      {
+        "name": "CHOCOLATE BAGS",
+        "stock_value": 33943.2363,
+        "excess_value": 9591.5043,
+        "opp_loss": 289.48
+      },
+      {
+        "name": "COLA CAN AND BOTTLE",
+        "stock_value": 14583.4371,
+        "excess_value": 3470.283,
+        "opp_loss": 451.0899999999999
+      },
+      {
+        "name": "FRESH WHOLE  CHICKEN",
+        "stock_value": 35386.3701,
+        "excess_value": 4400.4411,
+        "opp_loss": 735.87
+      },
+      {
+        "name": "COVRD CHOCO BARS AND TAB",
+        "stock_value": 117332.0694,
+        "excess_value": 39162.5955,
+        "opp_loss": 623.3199999999998
+      },
+      {
+        "name": "COCONUT OIL",
+        "stock_value": 22713.7419,
+        "excess_value": 15087.006,
+        "opp_loss": 107.67
+      },
+      {
+        "name": "SPICES",
+        "stock_value": 30304.5597,
+        "excess_value": 12276.0576,
+        "opp_loss": 291.81
+      },
+      {
+        "name": "TEA GLASS",
+        "stock_value": 4222.6731,
+        "excess_value": 2539.1259,
+        "opp_loss": 8.07
+      },
+      {
+        "name": "BOYS JEANS",
+        "stock_value": 7939.8684,
+        "excess_value": 3982.1895,
+        "opp_loss": 1.98
+      },
+      {
+        "name": "TOOTHBRUSH ADULT",
+        "stock_value": 8497.8882,
+        "excess_value": 2340.0252,
+        "opp_loss": 35.38
+      },
+      {
+        "name": "BODY LOTION",
+        "stock_value": 40178.3085,
+        "excess_value": 11318.4864,
+        "opp_loss": 200.97000000000003
+      },
+      {
+        "name": "TOOTH PASTE",
+        "stock_value": 38198.7252,
+        "excess_value": 13706.3097,
+        "opp_loss": 294.48
+      },
+      {
+        "name": "LADIES SPORTS SHOES",
+        "stock_value": 9701.559,
+        "excess_value": 0.0,
+        "opp_loss": 20.859999999999996
+      },
+      {
+        "name": "FRY PAN NON STICK TEFLON",
+        "stock_value": 12859.7733,
+        "excess_value": 4895.748,
+        "opp_loss": 29.240000000000002
+      },
+      {
+        "name": "PRESSURE COOKER ALUMINIUM",
+        "stock_value": 12880.6038,
+        "excess_value": 5309.8956,
+        "opp_loss": 1.94
+      },
+      {
+        "name": "TAWA NON STICK TEFLON",
+        "stock_value": 4168.9944,
+        "excess_value": 1811.9916,
+        "opp_loss": 3.4
+      },
+      {
+        "name": "INSECT KILLER SPRAY",
+        "stock_value": 3841.5897,
+        "excess_value": 1478.871,
+        "opp_loss": 0.82
+      },
+      {
+        "name": "DOLLS AND STROLLERS",
+        "stock_value": 11222.1585,
+        "excess_value": 4757.4135,
+        "opp_loss": 827.1899999999999
+      },
+      {
+        "name": "GEL PEN AND ROLLER BALLS",
+        "stock_value": 1739.7666,
+        "excess_value": 1040.094,
+        "opp_loss": 3.56
+      },
+      {
+        "name": "SOCKETS AND PLUGS",
+        "stock_value": 4602.528,
+        "excess_value": 1685.2428,
+        "opp_loss": 37.6
+      },
+      {
+        "name": "AIR FRESHENER",
+        "stock_value": 8673.2424,
+        "excess_value": 4039.5807,
+        "opp_loss": 25.859999999999996
+      },
+      {
+        "name": "MENS FORMAL SHOES",
+        "stock_value": 12143.0583,
+        "excess_value": 0.0,
+        "opp_loss": 39.03
+      },
+      {
+        "name": "RAZORS DISPOSABLE",
+        "stock_value": 17953.1073,
+        "excess_value": 7545.9519,
+        "opp_loss": 21.2
+      },
+      {
+        "name": "SHAVERS",
+        "stock_value": 41644.1088,
+        "excess_value": 19097.8209,
+        "opp_loss": 89.40999999999998
+      },
+      {
+        "name": "HAIR COLOR",
+        "stock_value": 13044.2373,
+        "excess_value": 5898.7359,
+        "opp_loss": 290.85999999999996
+      },
+      {
+        "name": "EMERGENCY LAMPS",
+        "stock_value": 54328.6575,
+        "excess_value": 31733.6778,
+        "opp_loss": 189.79
+      },
+      {
+        "name": "BASMATI RICE",
+        "stock_value": 107761.833,
+        "excess_value": 38361.3759,
+        "opp_loss": 583.5699999999999
+      },
+      {
+        "name": "WHITE SUGAR",
+        "stock_value": 17257.8492,
+        "excess_value": 4644.2808,
+        "opp_loss": 108.57
+      },
+      {
+        "name": "COOKIES",
+        "stock_value": 25297.3125,
+        "excess_value": 11991.9582,
+        "opp_loss": 221.92000000000002
+      },
+      {
+        "name": "CANNED TUNA",
+        "stock_value": 46518.5727,
+        "excess_value": 25585.4241,
+        "opp_loss": 538.6000000000001
+      },
+      {
+        "name": "FLOUR",
+        "stock_value": 19480.0707,
+        "excess_value": 8616.0024,
+        "opp_loss": 223.36999999999998
+      },
+      {
+        "name": "OTHER RICE",
+        "stock_value": 44107.119,
+        "excess_value": 11978.0721,
+        "opp_loss": 1085.1599999999999
+      },
+      {
+        "name": "PURE GHEE",
+        "stock_value": 16288.2549,
+        "excess_value": 9202.8528,
+        "opp_loss": 179.07
+      },
+      {
+        "name": "PENCIL",
+        "stock_value": 5412.4227,
+        "excess_value": 2351.673,
+        "opp_loss": 4.48
+      },
+      {
+        "name": "VANITY BAGS",
+        "stock_value": 8447.4819,
+        "excess_value": 3992.895,
+        "opp_loss": 7.03
+      },
+      {
+        "name": "LED BULB",
+        "stock_value": 1845.8253,
+        "excess_value": 317.8629,
+        "opp_loss": 0.0
+      },
+      {
+        "name": "MENS SHIRT CASUAL LS",
+        "stock_value": 89240.1732,
+        "excess_value": 40748.7186,
+        "opp_loss": 11.370000000000001
+      },
+      {
+        "name": "SOFT TOYS",
+        "stock_value": 1028.6406,
+        "excess_value": 321.3027,
+        "opp_loss": 5.52
+      },
+      {
+        "name": "POWDERED DRINK",
+        "stock_value": 24011.3349,
+        "excess_value": 7985.2986,
+        "opp_loss": 375.81000000000006
+      },
+      {
+        "name": "PASTA",
+        "stock_value": 12705.3252,
+        "excess_value": 5549.3883,
+        "opp_loss": 362.57
+      },
+      {
+        "name": "BOILED RICE",
+        "stock_value": 37270.5867,
+        "excess_value": 11583.8856,
+        "opp_loss": 1628.2700000000004
+      },
+      {
+        "name": "INDIAN SAVOURIES",
+        "stock_value": 1315.1835,
+        "excess_value": 672.5268,
+        "opp_loss": 2.49
+      },
+      {
+        "name": "MINERAL WATERS",
+        "stock_value": 6239.0925,
+        "excess_value": 1063.6326,
+        "opp_loss": 65.66000000000001
+      },
+      {
+        "name": "FRESH BEEF OTHER",
+        "stock_value": 19560.3417,
+        "excess_value": 8996.1732,
+        "opp_loss": 222.57999999999996
+      },
+      {
+        "name": "WATER BOTTLE",
+        "stock_value": 5819.9202,
+        "excess_value": 1788.2073,
+        "opp_loss": 126.49000000000001
+      },
+      {
+        "name": "WORKING TOOLS & ACCESSORIES",
+        "stock_value": 13903.0938,
+        "excess_value": 8507.9079,
+        "opp_loss": 1.9000000000000001
+      },
+      {
+        "name": "MENS TRACK PANT",
+        "stock_value": 12522.5217,
+        "excess_value": 2923.9191,
+        "opp_loss": 34.0
+      },
+      {
+        "name": "GIRLS T SHIRT SS",
+        "stock_value": 1797.957,
+        "excess_value": 1011.987,
+        "opp_loss": 0.0
+      },
+      {
+        "name": "BOX TISSUE",
+        "stock_value": 4059.855,
+        "excess_value": 562.7826,
+        "opp_loss": 15.01
+      },
+      {
+        "name": "TEDDY BEAR",
+        "stock_value": 6453.27,
+        "excess_value": 2924.9721,
+        "opp_loss": 82.91000000000001
+      },
+      {
+        "name": "CAT FOOD",
+        "stock_value": 3125.8602,
+        "excess_value": 1807.515,
+        "opp_loss": 66.07
+      },
+      {
+        "name": "FRESH LABAN",
+        "stock_value": 5105.1519,
+        "excess_value": 1271.4246,
+        "opp_loss": 76.26000000000002
+      },
+      {
+        "name": "PLAIN YOGHURT",
+        "stock_value": 6195.555,
+        "excess_value": 1060.2171,
+        "opp_loss": 181.92000000000002
+      },
+      {
+        "name": "FRESH MUTTON OTHER",
+        "stock_value": 911.9223,
+        "excess_value": 277.4898,
+        "opp_loss": 10.82
+      },
+      {
+        "name": "CHEESE AND MARGARINES",
+        "stock_value": 2680.5222,
+        "excess_value": 1958.877,
+        "opp_loss": 60.220000000000006
+      },
+      {
+        "name": "PACKED DRY FISH",
+        "stock_value": 8588.3301,
+        "excess_value": 3876.0174,
+        "opp_loss": 296.55999999999995
+      },
+      {
+        "name": "PORTION CHEESE",
+        "stock_value": 1544.481,
+        "excess_value": 750.708,
+        "opp_loss": 26.07
+      },
+      {
+        "name": "LOOSE TEA",
+        "stock_value": 22459.9149,
+        "excess_value": 11090.2095,
+        "opp_loss": 145.68
+      },
+      {
+        "name": "EXTENSION",
+        "stock_value": 106.5636,
+        "excess_value": 86.0085,
+        "opp_loss": 0.95
+      },
+      {
+        "name": "MENS BOXER SHORTS",
+        "stock_value": 11257.5042,
+        "excess_value": 4110.9471,
+        "opp_loss": 16.4
+      },
+      {
+        "name": "MECHANICAL SCALE",
+        "stock_value": 3124.5858,
+        "excess_value": 1575.7254,
+        "opp_loss": 1.29
+      },
+      {
+        "name": "MAXI ROLL",
+        "stock_value": 1086.2829,
+        "excess_value": 275.0247,
+        "opp_loss": 4.49
+      },
+      {
+        "name": "FOOTBALL",
+        "stock_value": 6323.7753,
+        "excess_value": 3372.9588,
+        "opp_loss": 62.21000000000001
+      },
+      {
+        "name": "MEN SLEEPWEAR",
+        "stock_value": 29.6649,
+        "excess_value": 0.0,
+        "opp_loss": 0.0
+      },
+      {
+        "name": "SANITARY NAPKINS",
+        "stock_value": 4481.8353,
+        "excess_value": 1625.2137,
+        "opp_loss": 69.17
+      },
+      {
+        "name": "MENS SOCKS",
+        "stock_value": 5551.2054,
+        "excess_value": 738.6039,
+        "opp_loss": 1.57
+      },
+      {
+        "name": "CHEWING GUMS",
+        "stock_value": 13858.2009,
+        "excess_value": 7245.1449,
+        "opp_loss": 39.78
+      },
+      {
+        "name": "MENS BRIEFS",
+        "stock_value": 9019.3932,
+        "excess_value": 3660.0282,
+        "opp_loss": 20.32
+      },
+      {
+        "name": "OTHER PLASTIC ARTICLES",
+        "stock_value": 4626.4932,
+        "excess_value": 1009.9809,
+        "opp_loss": 16.45
+      },
+      {
+        "name": "STEEL JUGS & MUGS",
+        "stock_value": 2854.7694,
+        "excess_value": 696.5811,
+        "opp_loss": 3.72
+      },
+      {
+        "name": "LADIES TROUSER CASUAL",
+        "stock_value": 8753.2218,
+        "excess_value": 3260.2473,
+        "opp_loss": 0.15
+      },
+      {
+        "name": "BOYS SHIRTS LS",
+        "stock_value": 4280.8716,
+        "excess_value": 1877.7204,
+        "opp_loss": 0.42000000000000004
+      },
+      {
+        "name": "SOAP CASE & HOLDERS",
+        "stock_value": 664.2729,
+        "excess_value": 250.2981,
+        "opp_loss": 2.87
+      },
+      {
+        "name": "SUNFLOWER OIL",
+        "stock_value": 60118.2999,
+        "excess_value": 13410.9378,
+        "opp_loss": 0.0
+      },
+      {
+        "name": "PRESSURE COOKER STEEL",
+        "stock_value": 5326.5276,
+        "excess_value": 2802.9699,
+        "opp_loss": 0.0
+      },
+      {
+        "name": " CAMISOLE W/SHORT",
+        "stock_value": 68.4126,
+        "excess_value": 63.4068,
+        "opp_loss": 0.0
+      },
+      {
+        "name": "PLASTIC COOKWARE",
+        "stock_value": 27.486,
+        "excess_value": 27.486,
+        "opp_loss": 0.0
+      },
+      {
+        "name": "BOYS TRACK PANTS",
+        "stock_value": 749.2743,
+        "excess_value": 354.9231,
+        "opp_loss": 0.0
+      },
+      {
+        "name": "DEEWAN SET",
+        "stock_value": 10.0143,
+        "excess_value": 10.0143,
+        "opp_loss": 0.0
+      },
+      {
+        "name": "MENS SHIRT FORMAL LS",
+        "stock_value": 1612.2753,
+        "excess_value": 1284.363,
+        "opp_loss": 0.0
+      },
+      {
+        "name": "LADIES CHURIDHAR LS",
+        "stock_value": 5502.7863,
+        "excess_value": 3302.5995,
+        "opp_loss": 0.0
+      },
+      {
+        "name": "BICYCLES",
+        "stock_value": 204.3063,
+        "excess_value": 204.3063,
+        "opp_loss": 0.0
+      },
+      {
+        "name": "CHESS AND BOARD GAMES",
+        "stock_value": 818.3862,
+        "excess_value": 560.0907,
+        "opp_loss": 0.0
+      },
+      {
+        "name": "LADIES JEANS",
+        "stock_value": 967.2588,
+        "excess_value": 335.0484,
+        "opp_loss": 0.0
+      },
+      {
+        "name": "HARD TROLLEY",
+        "stock_value": 989.0991,
+        "excess_value": 503.6445,
+        "opp_loss": 0.0
+      },
+      {
+        "name": "GIRLS PANTIES",
+        "stock_value": 1358.64,
+        "excess_value": 426.9726,
+        "opp_loss": 0.0
+      },
+      {
+        "name": "LADIES HAND KERCHIEFS",
+        "stock_value": 1.35,
+        "excess_value": 1.35,
+        "opp_loss": 0.0
+      },
+      {
+        "name": "INFANT CAP",
+        "stock_value": 3.9528,
+        "excess_value": 3.9528,
+        "opp_loss": 0.0
+      },
+      {
+        "name": "KHALBATTA",
+        "stock_value": 16.2,
+        "excess_value": 16.2,
+        "opp_loss": 0.0
+      },
+      {
+        "name": "CD POUCHES",
+        "stock_value": 1.2474,
+        "excess_value": 1.2474,
+        "opp_loss": 0.0
+      },
+      {
+        "name": "MENS TOP WEAR",
+        "stock_value": 16.2,
+        "excess_value": 16.2,
+        "opp_loss": 0.0
+      },
+      {
+        "name": "WINDOW CURTAIN",
+        "stock_value": 10.881,
+        "excess_value": 10.881,
+        "opp_loss": 0.0
+      },
+      {
+        "name": "ENERGY SAVING LAMP",
+        "stock_value": 0.27,
+        "excess_value": 0.27,
+        "opp_loss": 0.0
+      },
+      {
+        "name": "ALBUMS",
+        "stock_value": 2.9781,
+        "excess_value": 2.9781,
+        "opp_loss": 0.0
+      },
+      {
+        "name": "MENS SUITS",
+        "stock_value": 14.58,
+        "excess_value": 14.58,
+        "opp_loss": 0.0
+      },
+      {
+        "name": "RAIN WEAR",
+        "stock_value": 9.7227,
+        "excess_value": 9.7227,
+        "opp_loss": 0.0
+      },
+      {
+        "name": "GENERAL ELECTRONICS PRODUCTS",
+        "stock_value": 14.823,
+        "excess_value": 14.823,
+        "opp_loss": 0.0
+      },
+      {
+        "name": "CHURIDAR MATERIAL",
+        "stock_value": 11.799,
+        "excess_value": 11.799,
+        "opp_loss": 0.0
+      },
+      {
+        "name": "SAREE",
+        "stock_value": 20.736,
+        "excess_value": 5.2353,
+        "opp_loss": 0.0
+      },
+      {
+        "name": "FLOWER VASES",
+        "stock_value": 3.1806,
+        "excess_value": 3.1806,
+        "opp_loss": 0.0
+      },
+      {
+        "name": "MEN LYCRA PANT",
+        "stock_value": 517.5846,
+        "excess_value": 0.0,
+        "opp_loss": 0.0
+      },
+      {
+        "name": "CF-COMPUTER OTHER ACC",
+        "stock_value": 3.6558,
+        "excess_value": 0.0,
+        "opp_loss": 0.0
+      },
+      {
+        "name": "WATER DISPENSER",
+        "stock_value": 0.0,
+        "excess_value": 0.0,
+        "opp_loss": 0.0
+      },
+      {
+        "name": "KIDS SMART WATCHES",
+        "stock_value": 0.0,
+        "excess_value": 0.0,
+        "opp_loss": 0.0
+      }
+    ]
+  },
+  "deep_dives": [
+    {
+      "analysis": "lowest_burnout",
+      "title": "Fastest-emptying SKUs",
+      "unit": "days",
+      "rows": [
+        {
+          "sku": "0100000978",
+          "description": "JOHNSONS BABY LOTION 500ML MILDNESS/12PCS",
+          "location": "ST4",
+          "value": 1.0
+        },
+        {
+          "sku": "0100000741",
+          "description": "AJAY TOOTH BRUSH COMPLETE 1PCS S/M/H/12PCS",
+          "location": "ST3",
+          "value": 1.0
+        },
+        {
+          "sku": "0100000891",
+          "description": "PONDS TALC 200G DREAM FLOWER PINK/48PCS",
+          "location": "ST1",
+          "value": 1.0
+        },
+        {
+          "sku": "0100000275",
+          "description": "PARACHUTE HAIR OIL 150ML SAMPOORNA/60PCS",
+          "location": "ST3",
+          "value": 1.0
+        },
+        {
+          "sku": "0100000261",
+          "description": "VATIKA HAIR OIL 300ML CACTUS/24PCS",
+          "location": "ST1",
+          "value": 1.0
+        },
+        {
+          "sku": "0100000255",
+          "description": "VATIKA HAIR OIL 300ML ALMOND/24PCS",
+          "location": "ST1",
+          "value": 1.0
+        },
+        {
+          "sku": "0100000829",
+          "description": "ENCHANTEUR TALC 250G CHARMING/24PCS",
+          "location": "ST4",
+          "value": 1.0
+        },
+        {
+          "sku": "0100000010",
+          "description": "HEAD&SHOULDERS SHAMPOO 190ML EXTRA VOLUME/48PCS",
+          "location": "ST4",
+          "value": 1.0
+        }
+      ]
+    },
+    {
+      "analysis": "highest_opp_loss",
+      "title": "Largest Opportunity Loss SKUs",
+      "unit": "money",
+      "rows": [
+        {
+          "sku": "0101664250",
+          "description": "ROYAL GOLD FRAGRANT JASMINE RICE 5KG C8",
+          "location": "",
+          "value": 453.71000000000004
+        },
+        {
+          "sku": "0101583581",
+          "description": "DOLL POLY BAG 1725/1680/22104_39 HTN/AMN/OR",
+          "location": "",
+          "value": 613.85
+        },
+        {
+          "sku": "0101643281",
+          "description": "CLEARANCE GROCERY FOOD SR 3",
+          "location": "",
+          "value": 464.17
+        },
+        {
+          "sku": "0101657113",
+          "description": "SKECHERS-25 MENS SPORTS SHOES 118075 BLK(12P)",
+          "location": "",
+          "value": 704.82
+        },
+        {
+          "sku": "0100018793",
+          "description": "DOUX WHOLE CHICKEN 1300GM C10",
+          "location": "",
+          "value": 630.45
+        },
+        {
+          "sku": "0100033922",
+          "description": "R VILLAGE",
+          "location": "",
+          "value": 1309.44
+        },
+        {
+          "sku": "0100026710",
+          "description": "SUNLIFE COOKING OIL 1.5LTR C6",
+          "location": "",
+          "value": 553.56
+        },
+        {
+          "sku": "0100022592",
+          "description": "DALAL VEGETABLE OIL 17LTR",
+          "location": "",
+          "value": 1395.65
+        }
+      ]
+    },
+    {
+      "analysis": "highest_excess",
+      "title": "Largest Excess Stock SKUs",
+      "unit": "money",
+      "rows": [
+        {
+          "sku": "0101653559",
+          "description": "PRAN XXXL 1121 BASMATI RICE 5KG C4",
+          "location": "",
+          "value": 3152.1609
+        },
+        {
+          "sku": "0101606741",
+          "description": "ALITEA GINGER TEA 20GM 20+5FREE C24",
+          "location": "",
+          "value": 3274.7976
+        },
+        {
+          "sku": "0100023198",
+          "description": "EASTERN COCONUT OIL 1LTR C15",
+          "location": "",
+          "value": 3742.4457
+        },
+        {
+          "sku": "0101642115",
+          "description": "FREEZONE MENS CASUAL F/S SHIRT STRIPE&CHECK 251",
+          "location": "",
+          "value": 3502.9638
+        },
+        {
+          "sku": "0101642114",
+          "description": "FREEZONE MENS CASUAL F/S SHIRT PRINT 251",
+          "location": "",
+          "value": 6753.5154
+        },
+        {
+          "sku": "0100074965",
+          "description": "WORLD TIME MENS WATCH STRAP CASIO MDL",
+          "location": "",
+          "value": 3945.5991
+        },
+        {
+          "sku": "0101644837",
+          "description": "WISME SMART WATCH LADIES X-61",
+          "location": "",
+          "value": 4116.0663
+        },
+        {
+          "sku": "0100015823",
+          "description": "AL RABIE ORANGE JUICE 250ML C30",
+          "location": "",
+          "value": 4286.9817
+        }
+      ]
+    }
+  ],
+  "checks": {
+    "states_cover_every_row": true,
+    "excess_within_stock_value": true
+  },
+  "caveats": [
+    "This is a single stock position; it supports distribution and outlier findings, not YoY or trend claims.",
+    "44,467 SKUs across 5 locations, 120,391 Loc-SKU rows."
+  ],
+  "stat_check": {
+    "method": "single_snapshot_sku_overview_v1",
+    "report_id": "sku_overview",
+    "anchor": "2026-08-23",
+    "overall": {
+      "total_stock_value": 4819671.6147,
+      "total_excess_value": 1821506.4837,
+      "excess_share_pct": 37.79316578632463,
+      "total_opp_loss": 48998.58
+    },
+    "dimensions": {
+      "department": {
+        "hotspots": [
+          {
+            "role": "department",
+            "member": "HOME & LIVING",
+            "stock_value": 666908.3133,
+            "excess_value": 320100.6735,
+            "excess_rate_pct": 47.99770329988477,
+            "rest_of_estate_rate_pct": 36.15437965592305,
+            "rate_gap_pct_points": 11.843323643961718,
+            "rate_ratio": 1.3275764584172989,
+            "expected_excess_at_baseline": 241116.5635473948,
+            "surplus_excess_value": 78984.10995260518,
+            "member_stock_share_pct": 13.837214785877308
+          }
+        ]
+      },
+      "section": {
+        "hotspots": [
+          {
+            "role": "section",
+            "member": "OFFICE SUPPLIES",
+            "stock_value": 217508.6115,
+            "excess_value": 116861.7429,
+            "excess_rate_pct": 53.727409730625766,
+            "rest_of_estate_rate_pct": 37.04007745085773,
+            "rate_gap_pct_points": 16.687332279768036,
+            "rate_ratio": 1.4505209877573193,
+            "expected_excess_at_baseline": 80565.35816188525,
+            "surplus_excess_value": 36296.38473811475,
+            "member_stock_share_pct": 4.512934259599734
+          },
+          {
+            "role": "section",
+            "member": "CULINARY SUPPLIES",
+            "stock_value": 351983.7423,
+            "excess_value": 160894.5039,
+            "excess_rate_pct": 45.710777108241466,
+            "rest_of_estate_rate_pct": 37.169382177719925,
+            "rate_gap_pct_points": 8.541394930521541,
+            "rate_ratio": 1.2297965268747841,
+            "expected_excess_at_baseline": 130830.18237892783,
+            "surplus_excess_value": 30064.321521072183,
+            "member_stock_share_pct": 7.303064823471571
+          }
+        ]
+      },
+      "location": {
+        "hotspots": [
+          {
+            "role": "location",
+            "member": "ST2",
+            "stock_value": 1018940.6799,
+            "excess_value": 451136.9898,
+            "excess_rate_pct": 44.27509851155173,
+            "rest_of_estate_rate_pct": 36.055419797089925,
+            "rate_gap_pct_points": 8.219678714461807,
+            "rate_ratio": 1.2279734575472958,
+            "expected_excess_at_baseline": 367383.3396212672,
+            "surplus_excess_value": 83753.65017873276,
+            "member_stock_share_pct": 21.141288480987598
+          }
+        ]
+      },
+      "category": {
+        "hotspots": [
+          {
+            "role": "category",
+            "member": "COSMETICS",
+            "stock_value": 272534.1282,
+            "excess_value": 123466.7907,
+            "excess_rate_pct": 45.30324019067202,
+            "rest_of_estate_rate_pct": 37.343047093722404,
+            "rate_gap_pct_points": 7.960193096949617,
+            "rate_ratio": 1.213163994811976,
+            "expected_excess_at_baseline": 101772.54784019178,
+            "surplus_excess_value": 21694.24285980822,
+            "member_stock_share_pct": 5.6546202726503365
+          }
+        ]
+      }
+    },
+    "quality": {
+      "reconciled": true,
+      "failed_checks": []
+    }
+  },
+  "stat_signals": [
+    {
+      "candidate_id": "sku_overview_segment_a_stockout:estate:",
+      "story_key": "skuins:v1:7a3b3eb97c9e96b0e407faad49c4516a",
+      "report_id": "sku_overview",
+      "analysis_type": "sku_overview_segment_a_stockout",
+      "dimension": "estate",
+      "affected_segment": "Segment A stockouts",
+      "metric": "Segment A Loc-SKUs out of stock",
+      "current": 2439,
+      "impact_value": 25872.17,
+      "impact_share": 2.0258989459344967,
+      "score": 502.0258989459345,
+      "severity": "critical",
+      "comparison_label": "share of all Loc-SKU rows in the five shops",
+      "description": "2,439 Segment A Loc-SKUs are out of stock in the shops, an estimated 25,872 of Opportunity Loss (from rows where the model estimates one).",
+      "id": "I1",
+      "novelty": {
+        "report": false,
+        "reason": "unchanged since it was last reported 0 day(s) ago",
+        "kind": "unchanged",
+        "days_in_state": 0
+      }
+    },
+    {
+      "candidate_id": "sku_overview_verge_stockout_fixable:estate:",
+      "story_key": "skuins:v1:b505e16e4cd08aee11faec30843cbdda",
+      "report_id": "sku_overview",
+      "analysis_type": "sku_overview_verge_stockout_fixable",
+      "dimension": "estate",
+      "affected_segment": "Verge of stockout, fixable today",
+      "metric": "Loc-SKUs on the verge of stockout with warehouse stock available",
+      "current": 10,
+      "impact_value": 890656.89,
+      "impact_share": null,
+      "score": 400.0,
+      "severity": "warning",
+      "comparison_label": "3-month sales value of the affected Loc-SKUs",
+      "description": "10 Loc-SKUs are on the verge of stockout with stock already sitting in a warehouse - a same-day transfer, not a purchase order, would fix them.",
+      "id": "I2",
+      "novelty": {
+        "report": false,
+        "reason": "unchanged since it was last reported 0 day(s) ago",
+        "kind": "unchanged",
+        "days_in_state": 0
+      }
+    },
+    {
+      "candidate_id": "sku_overview_non_moving_pending:estate:",
+      "story_key": "skuins:v1:8bcec7a20b5e2e9c51b3b4ee3be7d7ff",
+      "report_id": "sku_overview",
+      "analysis_type": "sku_overview_non_moving_pending",
+      "dimension": "estate",
+      "affected_segment": "Non-moving with stock on order",
+      "metric": "Pending Orders Value on non-moving Loc-SKUs",
+      "current": 25,
+      "impact_value": 1678.5142999999998,
+      "impact_share": null,
+      "score": 300.0,
+      "severity": "warning",
+      "comparison_label": "total Pending Orders Value on these Loc-SKUs",
+      "description": "25 Loc-SKUs are not moving and still have 1,679 of stock on order - worth cancelling or deferring.",
+      "id": "I3",
+      "novelty": {
+        "report": false,
+        "reason": "unchanged since it was last reported 0 day(s) ago",
+        "kind": "unchanged",
+        "days_in_state": 0
+      }
+    },
+    {
+      "candidate_id": "sku_overview_overstock_pending:estate:",
+      "story_key": "skuins:v1:d1052b3b93a2145ea385f48ec6f6473a",
+      "report_id": "sku_overview",
+      "analysis_type": "sku_overview_overstock_pending",
+      "dimension": "estate",
+      "affected_segment": "Overstocked with more on order",
+      "metric": "Excess Stock Value already held on overstocked Loc-SKUs",
+      "current": 10,
+      "impact_value": 1948.7088,
+      "impact_share": null,
+      "score": 250.0,
+      "severity": "warning",
+      "comparison_label": "Excess Stock Value already held",
+      "description": "10 Loc-SKUs are already overstocked and have more stock on order, 1,949 of Excess Stock Value already sitting there.",
+      "id": "I4",
+      "novelty": {
+        "report": false,
+        "reason": "unchanged since it was last reported 0 day(s) ago",
+        "kind": "unchanged",
+        "days_in_state": 0
+      }
+    }
+  ],
+  "insights": {
+    "rules": {
+      "top_performers": [
+        {
+          "department": "CONSUMER GOODS",
+          "sku_code": "0100152142",
+          "description": "BABUL INDIAN MAZZA SELLA RICE 10KG C4",
+          "category": "OTHER RICE",
+          "sales_1m": 104757.38999999998,
+          "qty_1m": 2890.0,
+          "rank": 1
+        },
+        {
+          "department": "CONSUMER GOODS",
+          "sku_code": "0100141300",
+          "description": "FARAYED 1121 BASMATI STEAM RICE INDIA 10KG C4",
+          "category": "BASMATI RICE",
+          "sales_1m": 95825.17,
+          "qty_1m": 1735.0,
+          "rank": 2
+        },
+        {
+          "department": "CONSUMER GOODS",
+          "sku_code": "0100128623",
+          "description": "SHALAN PUNJABI GREEN ANBAR RICE 10KG  C4",
+          "category": "OTHER RICE",
+          "sales_1m": 92299.8,
+          "qty_1m": 1692.0,
+          "rank": 3
+        },
+        {
+          "department": "HOME & LIVING",
+          "sku_code": "0101602793",
+          "description": "ALFA/RIVERA 6KG 2PLY  BLANKET 200*240",
+          "category": "HOME LINEN PRODUCTS",
+          "sales_1m": 48535.93000000001,
+          "qty_1m": 540.0,
+          "rank": 1
+        },
+        {
+          "department": "HOME & LIVING",
+          "sku_code": "0101628250",
+          "description": "NAJMA EMBOSSED MUSALLA PRINT 70X120",
+          "category": "HOME LINEN PRODUCTS",
+          "sales_1m": 10941.87,
+          "qty_1m": 1312.0,
+          "rank": 2
+        },
+        {
+          "department": "HOME & LIVING",
+          "sku_code": "0101622310",
+          "description": "FALCON DOUBLE BLANKET 3KG",
+          "category": "HOME LINEN PRODUCTS",
+          "sales_1m": 8011.790000000001,
+          "qty_1m": 115.0,
+          "rank": 3
+        },
+        {
+          "department": "LIFESTYLE",
+          "sku_code": "0101651576",
+          "description": "HEMLET MENS TRACKPANT JVT11",
+          "category": "MENS TRACK PANT",
+          "sales_1m": 21050.91,
+          "qty_1m": 2155.0,
+          "rank": 1
+        },
+        {
+          "department": "LIFESTYLE",
+          "sku_code": "0100036302",
+          "description": "RYD EK MENS SOCKS PO3",
+          "category": "MENS SOCKS",
+          "sales_1m": 19290.120000000003,
+          "qty_1m": 3592.0,
+          "rank": 2
+        },
+        {
+          "department": "LIFESTYLE",
+          "sku_code": "0100069555",
+          "description": "FIGHTER JET DRONE 2998/G29/E69/10712-59 MLQ/KL/LQ",
+          "category": "BOYS TOYS",
+          "sales_1m": 17694.66,
+          "qty_1m": 399.0,
+          "rank": 3
+        },
+        {
+          "department": "TECHNOLOGY",
+          "sku_code": "0100086002",
+          "description": "GEEPAS R/C LED FLASHLIGHT 3IN1 GFL4622",
+          "category": "TORCHES",
+          "sales_1m": 32211.52,
+          "qty_1m": 320.0,
+          "rank": 1
+        },
+        {
+          "department": "TECHNOLOGY",
+          "sku_code": "0101652201",
+          "description": "ELISION ZOOMABLELED FLASH LIGHT 3PCS EL-8018/19",
+          "category": "TORCHES",
+          "sales_1m": 19307.64,
+          "qty_1m": 262.0,
+          "rank": 2
+        },
+        {
+          "department": "TECHNOLOGY",
+          "sku_code": "0100081638",
+          "description": "GEEPAS HAND TORCH 2PCS COMBO GFL4637",
+          "category": "TORCHES",
+          "sales_1m": 16230.69,
+          "qty_1m": 241.0,
+          "rank": 3
+        }
+      ],
+      "rank_movers": {
+        "available": false,
+        "reason": "The model computes each SKU's current category rank (SKU_RANK_IN_CATEGORY_V2_FINAL) but keeps no snapshot of what that rank was in a prior period. Comparing requires two points in time, and only one exists today.",
+        "action": "Set up a weekly (or daily) snapshot export of SKU_RANK_IN_CATEGORY_V2_FINAL per SKU-location-category, appended to a history table, before this insight can run."
+      },
+      "best_day_yesterday": [
+        {
+          "sku": "0101618218",
+          "location": "ST1",
+          "sales_value": 167.4,
+          "sales_qty": 2.0
+        },
+        {
+          "sku": "0101661611",
+          "location": "ST4",
+          "sales_value": 127.953,
+          "sales_qty": 32.0
+        },
+        {
+          "sku": "0100139796",
+          "location": "ST2",
+          "sales_value": 107.406,
+          "sales_qty": 22.0
+        },
+        {
+          "sku": "0101669970",
+          "location": "ST4",
+          "sales_value": 96.39,
+          "sales_qty": 3.0
+        },
+        {
+          "sku": "0100019883",
+          "location": "ST1",
+          "sales_value": 79.65,
+          "sales_qty": 1.0
+        },
+        {
+          "sku": "0100011353",
+          "location": "ST3",
+          "sales_value": 76.95,
+          "sales_qty": 17.0
+        },
+        {
+          "sku": "0101545909",
+          "location": "ST2",
+          "sales_value": 73.6749,
+          "sales_qty": 13.65
+        },
+        {
+          "sku": "0100076334",
+          "location": "ST1",
+          "sales_value": 66.15,
+          "sales_qty": 1.0
+        },
+        {
+          "sku": "0101653811",
+          "location": "ST1",
+          "sales_value": 64.26,
+          "sales_qty": 2.0
+        },
+        {
+          "sku": "0101663106",
+          "location": "ST1",
+          "sales_value": 62.1,
+          "sales_qty": 2.0
+        }
+      ],
+      "segment_a_stockouts": {
+        "count": 2439,
+        "opp_loss_total": 25872.17,
+        "top": [
+          {
+            "sku_code": "0100018793",
+            "description": "DOUX WHOLE CHICKEN 1300GM C10",
+            "category": "FRESH WHOLE  CHICKEN",
+            "location": "ST2",
+            "sales_3m": 53174.07,
+            "opp_loss": 630.45
+          },
+          {
+            "sku_code": "0100014006",
+            "description": "NESTLE NIDO MILK POWDER 2250GM C6",
+            "category": "POWDERED MILK",
+            "location": "ST3",
+            "sales_3m": 20102.170000000002,
+            "opp_loss": 268.14
+          },
+          {
+            "sku_code": "0101643352",
+            "description": "DOLPHIN MENS POLO F/S TSHIRT JV",
+            "category": "MENS T SHIRT ROUND NECK SS",
+            "location": "ST1",
+            "sales_3m": 12792.619999999999,
+            "opp_loss": null
+          },
+          {
+            "sku_code": "0101643352",
+            "description": "DOLPHIN MENS POLO F/S TSHIRT JV",
+            "category": "MENS T SHIRT ROUND NECK SS",
+            "location": "ST4",
+            "sales_3m": 11827.46,
+            "opp_loss": null
+          },
+          {
+            "sku_code": "0101646507",
+            "description": "HEMLET MENS SOCKS PO3 MS-1400",
+            "category": "MENS SOCKS",
+            "location": "ST1",
+            "sales_3m": 11734.550000000001,
+            "opp_loss": null
+          },
+          {
+            "sku_code": "0101608397",
+            "description": "HORLICKS MALT DRINK 500GM SP C24",
+            "category": "POWDERED DRINK",
+            "location": "ST3",
+            "sales_3m": 10449.980000000001,
+            "opp_loss": 107.58
+          },
+          {
+            "sku_code": "0101667177",
+            "description": "TOURISTO BACK PACK BAG CFBG-2373",
+            "category": "TRAVEL BAGS",
+            "location": "ST4",
+            "sales_3m": 10215.74,
+            "opp_loss": null
+          },
+          {
+            "sku_code": "0101600918",
+            "description": "KAMAL BUKHARI MAZZA BASMATI RICE 10KG C4",
+            "category": "BASMATI RICE",
+            "location": "ST2",
+            "sales_3m": 9748.21,
+            "opp_loss": 126.02
+          },
+          {
+            "sku_code": "0101667690",
+            "description": "CADBURY DAIRY MILK MINIS SELECTION CHOCOL 500GM C6",
+            "category": "BOXED CHOCOLATE",
+            "location": "ST2",
+            "sales_3m": 9543.07,
+            "opp_loss": 112.95
+          },
+          {
+            "sku_code": "0101660442",
+            "description": "SABLE CASUAL SHIRT CHECK SM261",
+            "category": "MENS SHIRT CASUAL LS",
+            "location": "ST3",
+            "sales_3m": 9522.88,
+            "opp_loss": null
+          }
+        ]
+      },
+      "verge_stockout_in_warehouse": [
+        {
+          "sku_code": "0100128102",
+          "description": "BABUL PAKISTANI SELLA RICE10KG C4",
+          "category": "BOILED RICE",
+          "location": "ST1",
+          "sales_3m": 214817.84,
+          "current_stock": 125.83
+        },
+        {
+          "sku_code": "0100152142",
+          "description": "BABUL INDIAN MAZZA SELLA RICE 10KG C4",
+          "category": "OTHER RICE",
+          "location": "ST1",
+          "sales_3m": 131883.34999999998,
+          "current_stock": 164.0
+        },
+        {
+          "sku_code": "0100128623",
+          "description": "SHALAN PUNJABI GREEN ANBAR RICE 10KG  C4",
+          "category": "OTHER RICE",
+          "location": "ST1",
+          "sales_3m": 109500.0,
+          "current_stock": 80.0
+        },
+        {
+          "sku_code": "0100108001",
+          "description": "HAYAT COOKING AND FRYING OIL 1.5LTR C6",
+          "category": "COOKING OILS",
+          "location": "ST1",
+          "sales_3m": 96076.41,
+          "current_stock": 241.99999999999997
+        },
+        {
+          "sku_code": "0101601343",
+          "description": "ZAHRATI PURE SUNFLOWER OIL 1.5LTR C6",
+          "category": "SUNFLOWER OIL",
+          "location": "ST1",
+          "sales_3m": 69734.8,
+          "current_stock": 201.0
+        },
+        {
+          "sku_code": "0100018091",
+          "description": "ALMOND MEDIUM USA",
+          "category": "SNACKS",
+          "location": "ST1",
+          "sales_3m": 58771.29,
+          "current_stock": 0.0
+        },
+        {
+          "sku_code": "0100008118",
+          "description": "AXE BRAND UNIVERSAL OIL 3ML/600PCS",
+          "category": "FACE CREAM",
+          "location": "ST4",
+          "sales_3m": 54884.0,
+          "current_stock": 1150.0
+        },
+        {
+          "sku_code": "0101663430",
+          "description": "NOORA PAKISTANI MAZZA SELLA RICE 10KG C4",
+          "category": "BOILED RICE",
+          "location": "ST1",
+          "sales_3m": 54860.829999999994,
+          "current_stock": 52.0
+        },
+        {
+          "sku_code": "0100012557",
+          "description": "DOVE SOAP 125G PINK BEAUTY/72PCS",
+          "category": "SOAP",
+          "location": "ST4",
+          "sales_3m": 52361.13,
+          "current_stock": 926.0
+        },
+        {
+          "sku_code": "0100018091",
+          "description": "ALMOND MEDIUM USA",
+          "category": "SNACKS",
+          "location": "ST4",
+          "sales_3m": 47767.24,
+          "current_stock": 40.809999999999995
+        }
+      ],
+      "non_moving_pending_order": [
+        {
+          "sku_code": "0101644354",
+          "description": "GEEPAS PROFESSIONAL TRIMMER GTR57510",
+          "category": "MENS TRIMMERS",
+          "location": "ST4",
+          "pending_qty": 12.0,
+          "pending_value": 249.48,
+          "days_no_sale": 109.0
+        },
+        {
+          "sku_code": "0101544794",
+          "description": "EASTERN CHICKEN MASALA 150GM C40",
+          "category": "MASALA",
+          "location": "ST3",
+          "pending_qty": 80.0,
+          "pending_value": 183.6,
+          "days_no_sale": 41.0
+        },
+        {
+          "sku_code": "0101664996",
+          "description": "GEEPAS DIGITAL ZOOMABLE FLASHLIGHT GFL3874Z",
+          "category": "TORCHES",
+          "location": "ST1",
+          "pending_qty": 6.0,
+          "pending_value": 160.38,
+          "days_no_sale": 43.0
+        },
+        {
+          "sku_code": "0100096909",
+          "description": "STRONG LITE HAND TORCH SRL3200LED",
+          "category": "TORCHES",
+          "location": "ST2",
+          "pending_qty": 6.0,
+          "pending_value": 111.78,
+          "days_no_sale": 0.0
+        },
+        {
+          "sku_code": "0101610346",
+          "description": "STRONG LITE INFRARED COOKER SLC118",
+          "category": "COOKING POT NON STICK TEFLON",
+          "location": "ST4",
+          "pending_qty": 3.0,
+          "pending_value": 104.49,
+          "days_no_sale": 48.0
+        },
+        {
+          "sku_code": "0101601597",
+          "description": "PRAN PUFFED RICE 2X500GM C5",
+          "category": "OTHER RICE",
+          "location": "ST3",
+          "pending_qty": 50.0,
+          "pending_value": 102.6,
+          "days_no_sale": 0.0
+        },
+        {
+          "sku_code": "0100016191",
+          "description": "STRONG LUX DRY IRON KL21NIX",
+          "category": "GENARAL ELECTRONICS ITEMS",
+          "location": "ST2",
+          "pending_qty": 6.0,
+          "pending_value": 95.58,
+          "days_no_sale": 43.0
+        },
+        {
+          "sku_code": "0101650265",
+          "description": "VIJAY GHEE 100ML C48",
+          "category": "PURE GHEE",
+          "location": "ST3",
+          "pending_qty": 48.0,
+          "pending_value": 72.9648,
+          "days_no_sale": 60.0
+        },
+        {
+          "sku_code": "0100131542",
+          "description": "STRONG LITE 3IN1 650W BLENDER SRJ1786 FU",
+          "category": "GENARAL ELECTRONICS ITEMS",
+          "location": "ST1",
+          "pending_qty": 2.0,
+          "pending_value": 64.26,
+          "days_no_sale": 93.0
+        },
+        {
+          "sku_code": "0100125703",
+          "description": "GEEPAS R/C BOX FAN 12\" GF989",
+          "category": "GENARAL ELECTRONICS ITEMS",
+          "location": "ST4",
+          "pending_qty": 1.0,
+          "pending_value": 62.1,
+          "days_no_sale": 0.0
+        },
+        {
+          "sku_code": "0101634118",
+          "description": "STRONG LITE FLASH LIGHT SRL8700LED",
+          "category": "TORCHES",
+          "location": "ST1",
+          "pending_qty": 3.0,
+          "pending_value": 60.75,
+          "days_no_sale": 53.0
+        },
+        {
+          "sku_code": "0100007877",
+          "description": "GEEPAS R/C LED FLASH LIGHT GFL3827",
+          "category": "TORCHES",
+          "location": "ST2",
+          "pending_qty": 5.0,
+          "pending_value": 58.05,
+          "days_no_sale": 153.0
+        },
+        {
+          "sku_code": "0101576151",
+          "description": "STRONG LITE 2.1 MULTIMEDIA SPEAKER SL285MS",
+          "category": "GENARAL ELECTRONICS ITEMS",
+          "location": "ST4",
+          "pending_qty": 1.0,
+          "pending_value": 55.35,
+          "days_no_sale": 121.0
+        },
+        {
+          "sku_code": "0100016210",
+          "description": "STRONG LITE HAND TORCH LIGHT SRL6100LED",
+          "category": "TORCHES",
+          "location": "ST2",
+          "pending_qty": 4.0,
+          "pending_value": 44.28,
+          "days_no_sale": 41.0
+        },
+        {
+          "sku_code": "0101545635",
+          "description": "GEEPAS HAND MIXER 150W GHM43012",
+          "category": "GENARAL ELECTRONICS ITEMS",
+          "location": "ST1",
+          "pending_qty": 3.0,
+          "pending_value": 34.02,
+          "days_no_sale": 53.0
+        },
+        {
+          "sku_code": "0101577741",
+          "description": "GEEPAS R/C LED HEAD LAMP GHL51085",
+          "category": "LED BULB",
+          "location": "ST1",
+          "pending_qty": 3.0,
+          "pending_value": 29.97,
+          "days_no_sale": 180.0
+        },
+        {
+          "sku_code": "0101616741",
+          "description": "DRINKO FLOAT PNEAPLE JUICE W COCONT JELLY 250M C24",
+          "category": "FRESH JUICE",
+          "location": "ST3",
+          "pending_qty": 72.0,
+          "pending_value": 28.7873,
+          "days_no_sale": 77.0
+        },
+        {
+          "sku_code": "0100105022",
+          "description": "VIJAY JEERAKASHALA RICE 1KG C12",
+          "category": "OTHER RICE",
+          "location": "ST3",
+          "pending_qty": 12.0,
+          "pending_value": 27.1512,
+          "days_no_sale": 81.0
+        },
+        {
+          "sku_code": "0101659712",
+          "description": "GEEPAS ELECTRIC BUG KILLER GBK25604",
+          "category": "GENARAL ELECTRONICS ITEMS",
+          "location": "ST4",
+          "pending_qty": 1.0,
+          "pending_value": 26.46,
+          "days_no_sale": 80.0
+        },
+        {
+          "sku_code": "0101641473",
+          "description": "STRONG LITE HIGH POWER HEAD LIGHT SRL 455HL",
+          "category": "TORCHES",
+          "location": "ST1",
+          "pending_qty": 3.0,
+          "pending_value": 23.49,
+          "days_no_sale": 32.0
+        },
+        {
+          "sku_code": "0100128511",
+          "description": "VIJAY PAR BOILD JAYA RICE 10KG",
+          "category": "BASMATI RICE",
+          "location": "ST3",
+          "pending_qty": 2.0,
+          "pending_value": 21.6,
+          "days_no_sale": 132.0
+        },
+        {
+          "sku_code": "0100131598",
+          "description": "GEEPAS COFFEE MAKER 1.5L GCM6103",
+          "category": "GENARAL ELECTRONICS ITEMS",
+          "location": "ST1",
+          "pending_qty": 1.0,
+          "pending_value": 17.55,
+          "days_no_sale": 0.0
+        },
+        {
+          "sku_code": "0101546164",
+          "description": "HALDIRAMS BHELPURI 200GM",
+          "category": "POTATO CHIPS",
+          "location": "ST3",
+          "pending_qty": 10.0,
+          "pending_value": 17.361,
+          "days_no_sale": 61.0
+        },
+        {
+          "sku_code": "0100120556",
+          "description": "PRAN SPECIAL DRY CAKE(RUSK) 130GM",
+          "category": "BROUGHT IN BREAD",
+          "location": "ST3",
+          "pending_qty": 36.0,
+          "pending_value": 13.77,
+          "days_no_sale": 48.0
+        },
+        {
+          "sku_code": "0100053374",
+          "description": "GEEPAS SANWICH GRILL MAKER GGT686",
+          "category": "GENARAL ELECTRONICS ITEMS",
+          "location": "ST1",
+          "pending_qty": 1.0,
+          "pending_value": 12.69,
+          "days_no_sale": 0.0
+        }
+      ],
+      "overstock_pending_order": [
+        {
+          "sku_code": "0101541591",
+          "description": "VIJAY COCONUT OIL 2LTR",
+          "category": "COCONUT OIL",
+          "location": "ST3",
+          "excess_value": 313.875,
+          "pending_qty": 36.0,
+          "pending_value": 361.584
+        },
+        {
+          "sku_code": "0100009896",
+          "description": "GEEPAS DRY IRON GDI2771-BS",
+          "category": "GENARAL ELECTRONICS ITEMS",
+          "location": "ST1",
+          "excess_value": 309.825,
+          "pending_qty": 6.0,
+          "pending_value": 137.7
+        },
+        {
+          "sku_code": "0100086002",
+          "description": "GEEPAS R/C LED FLASHLIGHT 3IN1 GFL4622",
+          "category": "TORCHES",
+          "location": "ST2",
+          "excess_value": 228.42,
+          "pending_qty": 15.0,
+          "pending_value": 380.7
+        },
+        {
+          "sku_code": "0101603430",
+          "description": "VIJAY KASHMIRI CHILLY POWDER 750GM C20",
+          "category": "MASALA",
+          "location": "ST3",
+          "excess_value": 215.2467,
+          "pending_qty": 40.0,
+          "pending_value": 261.9
+        },
+        {
+          "sku_code": "0100096373",
+          "description": "VIJAY SAMBAR POWDER POUCH 1KG",
+          "category": "MASALA",
+          "location": "ST3",
+          "excess_value": 186.381,
+          "pending_qty": 12.0,
+          "pending_value": 51.4755
+        },
+        {
+          "sku_code": "0100123362",
+          "description": "VIJAY CHILLI POWDER KASHMIRI 200GM",
+          "category": "MASALA",
+          "location": "ST3",
+          "excess_value": 149.391,
+          "pending_qty": 96.0,
+          "pending_value": 151.1136
+        },
+        {
+          "sku_code": "0100015013",
+          "description": "VIJAY TURMERIC POWDER 400GM C48",
+          "category": "MASALA",
+          "location": "ST3",
+          "excess_value": 145.8,
+          "pending_qty": 48.0,
+          "pending_value": 77.76
+        },
+        {
+          "sku_code": "0100015005",
+          "description": "JAY CHILLY POWDER 400GM C48",
+          "category": "MASALA",
+          "location": "ST3",
+          "excess_value": 140.3325,
+          "pending_qty": 96.0,
+          "pending_value": 210.7296
+        },
+        {
+          "sku_code": "0100096379",
+          "description": "VIJAY TURMERIC POWDER POUCH 1KG",
+          "category": "MASALA",
+          "location": "ST3",
+          "excess_value": 131.6385,
+          "pending_qty": 12.0,
+          "pending_value": 51.84
+        },
+        {
+          "sku_code": "0101639702",
+          "description": "PRAN BIRYANI MASALA 50G C24",
+          "category": "MASALA",
+          "location": "ST3",
+          "excess_value": 127.7991,
+          "pending_qty": 120.0,
+          "pending_value": 102.708
+        }
+      ],
+      "at_price_floor": [
+        {
+          "sku_code": "0100048199",
+          "description": "KIDS WATCH SPORTS",
+          "category": "SMART WATCHES",
+          "location": "ST4",
+          "price": 6.0,
+          "min_price_90d": 6.0,
+          "max_price_90d": 8.0,
+          "sales_3m": 13196.81
+        },
+        {
+          "sku_code": "0101602445",
+          "description": "PERDIX WHOLE CHICKEN 1100GM C10",
+          "category": "FRESH WHOLE  CHICKEN",
+          "location": "ST3",
+          "price": 15.95,
+          "min_price_90d": 15.95,
+          "max_price_90d": 17.95,
+          "sales_3m": 13065.26
+        },
+        {
+          "sku_code": "0100101583",
+          "description": "GEEPAS LED EMERGENCY GE5553",
+          "category": "LED BULB",
+          "location": "ST4",
+          "price": 98.0,
+          "min_price_90d": 98.0,
+          "max_price_90d": 109.0,
+          "sales_3m": 9034.220000000001
+        },
+        {
+          "sku_code": "0100018792",
+          "description": "DOUX WHOLE CHICKEN 1200GM",
+          "category": "FRESH WHOLE  CHICKEN",
+          "location": "ST1",
+          "price": 20.95,
+          "min_price_90d": 20.95,
+          "max_price_90d": 22.5,
+          "sales_3m": 8290.82
+        },
+        {
+          "sku_code": "0100029128",
+          "description": "SAUDIA WHOLE MILK FF 2LTR C6",
+          "category": "FRESH MILK",
+          "location": "ST2",
+          "price": 11.5,
+          "min_price_90d": 11.495833,
+          "max_price_90d": 11.85909,
+          "sales_3m": 7527.110000000001
+        },
+        {
+          "sku_code": "0100015269",
+          "description": "GALAXY BEST OF MINIS CHOCOLATE 500GM C18",
+          "category": "COVRD CHOCO BARS AND TAB",
+          "location": "ST3",
+          "price": 16.95,
+          "min_price_90d": 16.95,
+          "max_price_90d": 24.95,
+          "sales_3m": 7307.889999999999
+        },
+        {
+          "sku_code": "0100134223",
+          "description": "PRAN CURRY POWDER 200GM C24",
+          "category": "MASALA",
+          "location": "ST1",
+          "price": 5.95,
+          "min_price_90d": 5.95,
+          "max_price_90d": 6.95,
+          "sales_3m": 7118.23
+        },
+        {
+          "sku_code": "0101544463",
+          "description": "AL KHIER DRY FIG 450GM",
+          "category": "SNACKS",
+          "location": "ST3",
+          "price": 13.95,
+          "min_price_90d": 13.95,
+          "max_price_90d": 15.95,
+          "sales_3m": 6830.77
+        },
+        {
+          "sku_code": "0100017590",
+          "description": "AL KABEER GREEN PEAS 400G C20",
+          "category": "VEGETABLES",
+          "location": "ST1",
+          "price": 5.95,
+          "min_price_90d": 5.95,
+          "max_price_90d": 6.95,
+          "sales_3m": 6769.509999999999
+        },
+        {
+          "sku_code": "0101630366",
+          "description": "PURPLE HS CARROM BOARD 48x48 HC-48X3_430",
+          "category": "FITNESS ACCESSORIES",
+          "location": "ST4",
+          "price": 430.0,
+          "min_price_90d": 430.0,
+          "max_price_90d": 460.0,
+          "sales_3m": 6756.6
+        }
+      ]
+    },
+    "errors": {},
+    "seg_a_only": false
+  },
+  "trend_verdict": {
+    "metric": "recommended_action_state",
+    "comparable": false,
+    "reason_text": "The dashboard still reports the same position date as the last copy kept, so there is no movement to report. Figures describe that position only.",
+    "history_days": 0,
+    "statistical": false,
+    "min_history_days": 5
+  },
+  "stat_signals_reportable": [],
+  "investigation": [],
+  "investigation_budget": {
+    "total": 9,
+    "used": 0,
+    "remaining": 9,
+    "per_finding_cap": 3,
+    "queries": 0,
+    "ledger": []
+  }
+}

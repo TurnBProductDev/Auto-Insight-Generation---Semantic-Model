@@ -1,0 +1,1469 @@
+{
+  "status": "ok",
+  "metric_family": "revenue",
+  "value_aliases": {
+    "current": "net revenue CURRENT",
+    "prior": "net revenue PAST",
+    "change": "revenue Growth"
+  },
+  "roles": {
+    "division": {
+      "role": "division",
+      "group_ref": "'MIS_DEEP_DIVE2'[division_name]",
+      "parent_refs": [],
+      "column": "division_name",
+      "level": 10,
+      "source": "universe_scan",
+      "status": "ok",
+      "metric_family": "revenue",
+      "members": [
+        {
+          "member": "OTHER",
+          "hierarchy_path": [
+            "OTHER"
+          ],
+          "current": 11277.7164,
+          "prior": 12152.0439,
+          "change": -874.3275000000012,
+          "change_pct": -7.194900768915105,
+          "overall_current": 41206710.519899994,
+          "gross_sibling_change": 3616113.9365999973,
+          "signed_sibling_change": 3614365.281599997,
+          "parent_change": 3614365.281599991,
+          "full_member_count": 6.0,
+          "global_impact_pct": 0.0021218085330489108,
+          "business_share_pct": 0.027368640344522625,
+          "sibling_movement_impact_pct": 0.02417864910589836,
+          "reconciled": true
+        },
+        {
+          "member": "TECHNOLOGY",
+          "hierarchy_path": [
+            "TECHNOLOGY"
+          ],
+          "current": 1964026.4022,
+          "prior": 1727975.7027,
+          "change": 236050.69949999987,
+          "change_pct": 13.660533486157558,
+          "overall_current": 41206710.519899994,
+          "gross_sibling_change": 3616113.9365999973,
+          "signed_sibling_change": 3614365.281599997,
+          "parent_change": 3614365.281599991,
+          "full_member_count": 6.0,
+          "global_impact_pct": 0.5728452878712648,
+          "business_share_pct": 4.7662780586465665,
+          "sibling_movement_impact_pct": 6.527745077688104,
+          "reconciled": true
+        },
+        {
+          "member": "HOME & LIVING",
+          "hierarchy_path": [
+            "HOME & LIVING"
+          ],
+          "current": 2712332.3796,
+          "prior": 2582917.092,
+          "change": 129415.28759999992,
+          "change_pct": 5.010431345273699,
+          "overall_current": 41206710.519899994,
+          "gross_sibling_change": 3616113.9365999973,
+          "signed_sibling_change": 3614365.281599997,
+          "parent_change": 3614365.281599991,
+          "full_member_count": 6.0,
+          "global_impact_pct": 0.3140636220828675,
+          "business_share_pct": 6.582258921857233,
+          "sibling_movement_impact_pct": 3.578849833522694,
+          "reconciled": true
+        },
+        {
+          "member": "CONSUMER GOODS",
+          "hierarchy_path": [
+            "CONSUMER GOODS"
+          ],
+          "current": 22022819.0712,
+          "prior": 19965011.6358,
+          "change": 2057807.435399998,
+          "change_pct": 10.307068550413803,
+          "overall_current": 41206710.519899994,
+          "gross_sibling_change": 3616113.9365999973,
+          "signed_sibling_change": 3614365.281599997,
+          "parent_change": 3614365.281599991,
+          "full_member_count": 6.0,
+          "global_impact_pct": 4.993864857050938,
+          "business_share_pct": 53.44473944496128,
+          "sibling_movement_impact_pct": 56.906598394817834,
+          "reconciled": true
+        },
+        {
+          "member": "LIFESTYLE",
+          "hierarchy_path": [
+            "LIFESTYLE"
+          ],
+          "current": 6885784.7037,
+          "prior": 6251912.9478,
+          "change": 633871.7559000002,
+          "change_pct": 10.138844881438324,
+          "overall_current": 41206710.519899994,
+          "gross_sibling_change": 3616113.9365999973,
+          "signed_sibling_change": 3614365.281599997,
+          "parent_change": 3614365.281599991,
+          "full_member_count": 6.0,
+          "global_impact_pct": 1.5382731305229616,
+          "business_share_pct": 16.71034794290275,
+          "sibling_movement_impact_pct": 17.529086942874088,
+          "reconciled": true
+        },
+        {
+          "member": "FRESH FOOD",
+          "hierarchy_path": [
+            "FRESH FOOD"
+          ],
+          "current": 7610470.2468,
+          "prior": 7052375.8161,
+          "change": 558094.4306999994,
+          "change_pct": 7.91356622580883,
+          "overall_current": 41206710.519899994,
+          "gross_sibling_change": 3616113.9365999973,
+          "signed_sibling_change": 3614365.281599997,
+          "parent_change": 3614365.281599991,
+          "full_member_count": 6.0,
+          "global_impact_pct": 1.3543775362279364,
+          "business_share_pct": 18.469006991287664,
+          "sibling_movement_impact_pct": 15.433541101991388,
+          "reconciled": true
+        }
+      ],
+      "returned_member_count": 6,
+      "max_siblings_per_parent": 6,
+      "pool_capped": false,
+      "diagnostics_reconciled": true,
+      "scope": {
+        "population_status": "comparable",
+        "comparable_entities": [
+          "ST4",
+          "ST1",
+          "ST3",
+          "ST2",
+          "ST5"
+        ]
+      }
+    },
+    "department": {
+      "role": "department",
+      "group_ref": "'CAT_TABLE'[dep]",
+      "parent_refs": [
+        "'MIS_DEEP_DIVE2'[division_name]"
+      ],
+      "column": "dep",
+      "level": 20,
+      "source": "universe_scan",
+      "status": "ok",
+      "metric_family": "revenue",
+      "members": [
+        {
+          "member": "OTHER",
+          "hierarchy_path": [
+            "OTHER",
+            "OTHER"
+          ],
+          "current": 11277.7164,
+          "prior": 12152.0439,
+          "change": -874.3275000000012,
+          "change_pct": -7.194900768915105,
+          "overall_current": 41206710.519899994,
+          "gross_sibling_change": 874.3275000000012,
+          "signed_sibling_change": -874.3275000000012,
+          "parent_change": -874.3275000000012,
+          "full_member_count": 1.0,
+          "global_impact_pct": 0.0021218085330489108,
+          "business_share_pct": 0.027368640344522625,
+          "sibling_movement_impact_pct": 100.0,
+          "reconciled": true
+        },
+        {
+          "member": "TECHNOLOGY",
+          "hierarchy_path": [
+            "TECHNOLOGY",
+            "TECHNOLOGY"
+          ],
+          "current": 1964026.4022,
+          "prior": 1727975.7027,
+          "change": 236050.69949999987,
+          "change_pct": 13.660533486157558,
+          "overall_current": 41206710.519899994,
+          "gross_sibling_change": 236050.69949999987,
+          "signed_sibling_change": 236050.69949999987,
+          "parent_change": 236050.69949999987,
+          "full_member_count": 1.0,
+          "global_impact_pct": 0.5728452878712648,
+          "business_share_pct": 4.7662780586465665,
+          "sibling_movement_impact_pct": 100.0,
+          "reconciled": true
+        },
+        {
+          "member": "HOME & LIVING",
+          "hierarchy_path": [
+            "HOME & LIVING",
+            "HOME & LIVING"
+          ],
+          "current": 2712332.3796,
+          "prior": 2582917.092,
+          "change": 129415.28759999992,
+          "change_pct": 5.010431345273699,
+          "overall_current": 41206710.519899994,
+          "gross_sibling_change": 129415.28759999992,
+          "signed_sibling_change": 129415.28759999992,
+          "parent_change": 129415.28759999992,
+          "full_member_count": 1.0,
+          "global_impact_pct": 0.3140636220828675,
+          "business_share_pct": 6.582258921857233,
+          "sibling_movement_impact_pct": 100.0,
+          "reconciled": true
+        },
+        {
+          "member": "CONSUMER GOODS",
+          "hierarchy_path": [
+            "CONSUMER GOODS",
+            "CONSUMER GOODS"
+          ],
+          "current": 22022819.0712,
+          "prior": 19965011.6358,
+          "change": 2057807.435399998,
+          "change_pct": 10.307068550413803,
+          "overall_current": 41206710.519899994,
+          "gross_sibling_change": 2057807.435399998,
+          "signed_sibling_change": 2057807.435399998,
+          "parent_change": 2057807.435399998,
+          "full_member_count": 1.0,
+          "global_impact_pct": 4.993864857050938,
+          "business_share_pct": 53.44473944496128,
+          "sibling_movement_impact_pct": 100.0,
+          "reconciled": true
+        },
+        {
+          "member": "LIFESTYLE",
+          "hierarchy_path": [
+            "LIFESTYLE",
+            "LIFESTYLE"
+          ],
+          "current": 6885784.7037,
+          "prior": 6251912.9478,
+          "change": 633871.7559000002,
+          "change_pct": 10.138844881438324,
+          "overall_current": 41206710.519899994,
+          "gross_sibling_change": 633871.7559000002,
+          "signed_sibling_change": 633871.7559000002,
+          "parent_change": 633871.7559000002,
+          "full_member_count": 1.0,
+          "global_impact_pct": 1.5382731305229616,
+          "business_share_pct": 16.71034794290275,
+          "sibling_movement_impact_pct": 100.0,
+          "reconciled": true
+        },
+        {
+          "member": "FRESH FOOD",
+          "hierarchy_path": [
+            "FRESH FOOD",
+            "FRESH FOOD"
+          ],
+          "current": 7610470.2468,
+          "prior": 7052375.8161,
+          "change": 558094.4306999994,
+          "change_pct": 7.91356622580883,
+          "overall_current": 41206710.519899994,
+          "gross_sibling_change": 558094.4306999994,
+          "signed_sibling_change": 558094.4306999994,
+          "parent_change": 558094.4306999994,
+          "full_member_count": 1.0,
+          "global_impact_pct": 1.3543775362279364,
+          "business_share_pct": 18.469006991287664,
+          "sibling_movement_impact_pct": 100.0,
+          "reconciled": true
+        }
+      ],
+      "returned_member_count": 6,
+      "max_siblings_per_parent": 1,
+      "pool_capped": false,
+      "diagnostics_reconciled": true,
+      "scope": {
+        "population_status": "comparable",
+        "comparable_entities": [
+          "ST4",
+          "ST1",
+          "ST3",
+          "ST2",
+          "ST5"
+        ]
+      }
+    },
+    "section": {
+      "role": "section",
+      "group_ref": "'CAT_TABLE'[sec]",
+      "parent_refs": [
+        "'MIS_DEEP_DIVE2'[division_name]",
+        "'CAT_TABLE'[dep]"
+      ],
+      "column": "sec",
+      "level": 25,
+      "source": "universe_scan",
+      "status": "ok",
+      "metric_family": "revenue",
+      "members": [
+        {
+          "member": "BABY CLOTHING",
+          "hierarchy_path": [
+            "LIFESTYLE",
+            "LIFESTYLE",
+            "BABY CLOTHING"
+          ],
+          "current": 1016.9307,
+          "prior": 1798.497,
+          "change": -781.5663000000001,
+          "change_pct": -43.45663629130324,
+          "overall_current": 41206710.5199,
+          "gross_sibling_change": 635434.8885,
+          "signed_sibling_change": 633871.7559000001,
+          "parent_change": 633871.7559000002,
+          "full_member_count": 8.0,
+          "global_impact_pct": 0.001896696654838676,
+          "business_share_pct": 0.0024678764384963286,
+          "sibling_movement_impact_pct": 0.12299707084780254,
+          "reconciled": true
+        },
+        {
+          "member": "OTHER",
+          "hierarchy_path": [
+            "OTHER",
+            "OTHER",
+            "OTHER"
+          ],
+          "current": 11277.7164,
+          "prior": 12152.0439,
+          "change": -874.3275000000012,
+          "change_pct": -7.194900768915105,
+          "overall_current": 41206710.5199,
+          "gross_sibling_change": 874.3275000000012,
+          "signed_sibling_change": -874.3275000000012,
+          "parent_change": -874.3275000000012,
+          "full_member_count": 1.0,
+          "global_impact_pct": 0.0021218085330489103,
+          "business_share_pct": 0.027368640344522622,
+          "sibling_movement_impact_pct": 100.0,
+          "reconciled": true
+        },
+        {
+          "member": "CONSUMER DEVICES",
+          "hierarchy_path": [
+            "TECHNOLOGY",
+            "TECHNOLOGY",
+            "CONSUMER DEVICES"
+          ],
+          "current": 3019.8771,
+          "prior": 1044.0252,
+          "change": 1975.8519000000001,
+          "change_pct": 189.2532766450465,
+          "overall_current": 41206710.5199,
+          "gross_sibling_change": 236050.6995,
+          "signed_sibling_change": 236050.6995,
+          "parent_change": 236050.69949999987,
+          "full_member_count": 2.0,
+          "global_impact_pct": 0.004794976048975809,
+          "business_share_pct": 0.007328605127413914,
+          "sibling_movement_impact_pct": 0.8370455602060185,
+          "reconciled": true
+        },
+        {
+          "member": "OFFICE SUPPLIES",
+          "hierarchy_path": [
+            "HOME & LIVING",
+            "HOME & LIVING",
+            "OFFICE SUPPLIES"
+          ],
+          "current": 751677.2055,
+          "prior": 723737.7972,
+          "change": 27939.40830000001,
+          "change_pct": 3.860432384227011,
+          "overall_current": 41206710.5199,
+          "gross_sibling_change": 133010.24580000015,
+          "signed_sibling_change": 129415.28760000016,
+          "parent_change": 129415.28760000085,
+          "full_member_count": 4.0,
+          "global_impact_pct": 0.06780305427803368,
+          "business_share_pct": 1.8241621231498004,
+          "sibling_movement_impact_pct": 21.005455731591454,
+          "reconciled": true
+        },
+        {
+          "member": "GLASS ITEMS",
+          "hierarchy_path": [
+            "HOME & LIVING",
+            "HOME & LIVING",
+            "GLASS ITEMS"
+          ],
+          "current": 51301.1205,
+          "prior": 53098.5996,
+          "change": -1797.479100000004,
+          "change_pct": -3.3851723275956305,
+          "overall_current": 41206710.5199,
+          "gross_sibling_change": 133010.24580000015,
+          "signed_sibling_change": 129415.28760000016,
+          "parent_change": 129415.28760000085,
+          "full_member_count": 4.0,
+          "global_impact_pct": 0.004362102864609747,
+          "business_share_pct": 0.12449700510606178,
+          "sibling_movement_impact_pct": 1.3513839397776695,
+          "reconciled": true
+        },
+        {
+          "member": "CLEANING ESSENSTIALS",
+          "hierarchy_path": [
+            "CONSUMER GOODS",
+            "CONSUMER GOODS",
+            "CLEANING ESSENSTIALS"
+          ],
+          "current": 776813.6196,
+          "prior": 703715.0616,
+          "change": 73098.55799999996,
+          "change_pct": 10.38752216469541,
+          "overall_current": 41206710.5199,
+          "gross_sibling_change": 2057807.435399999,
+          "signed_sibling_change": 2057807.435399999,
+          "parent_change": 2057807.4354000017,
+          "full_member_count": 5.0,
+          "global_impact_pct": 0.17739479098846872,
+          "business_share_pct": 1.8851629013795037,
+          "sibling_movement_impact_pct": 3.5522545376453545,
+          "reconciled": true
+        },
+        {
+          "member": "DELI",
+          "hierarchy_path": [
+            "FRESH FOOD",
+            "FRESH FOOD",
+            "DELI"
+          ],
+          "current": 190096.7724,
+          "prior": 199215.9576,
+          "change": -9119.185200000007,
+          "change_pct": -4.577537517506583,
+          "overall_current": 41206710.5199,
+          "gross_sibling_change": 576332.8011,
+          "signed_sibling_change": 558094.4307000001,
+          "parent_change": 558094.4306999994,
+          "full_member_count": 3.0,
+          "global_impact_pct": 0.022130340143496942,
+          "business_share_pct": 0.4613247939512093,
+          "sibling_movement_impact_pct": 1.5822776671039638,
+          "reconciled": true
+        },
+        {
+          "member": "SPICE MARKET",
+          "hierarchy_path": [
+            "CONSUMER GOODS",
+            "CONSUMER GOODS",
+            "SPICE MARKET"
+          ],
+          "current": 2087666.4411,
+          "prior": 1910607.5259,
+          "change": 177058.91519999993,
+          "change_pct": 9.267152609827367,
+          "overall_current": 41206710.5199,
+          "gross_sibling_change": 2057807.435399999,
+          "signed_sibling_change": 2057807.435399999,
+          "parent_change": 2057807.4354000017,
+          "full_member_count": 5.0,
+          "global_impact_pct": 0.4296846629252114,
+          "business_share_pct": 5.066326369564979,
+          "sibling_movement_impact_pct": 8.604250920377446,
+          "reconciled": true
+        },
+        {
+          "member": "FOOTWEAR",
+          "hierarchy_path": [
+            "LIFESTYLE",
+            "LIFESTYLE",
+            "FOOTWEAR"
+          ],
+          "current": 675254.6478,
+          "prior": 610040.5002,
+          "change": 65214.147600000026,
+          "change_pct": 10.6901341105418,
+          "overall_current": 41206710.5199,
+          "gross_sibling_change": 635434.8885,
+          "signed_sibling_change": 633871.7559000001,
+          "parent_change": 633871.7559000002,
+          "full_member_count": 8.0,
+          "global_impact_pct": 0.1582609889923295,
+          "business_share_pct": 1.6387006855931843,
+          "sibling_movement_impact_pct": 10.26291580463008,
+          "reconciled": true
+        },
+        {
+          "member": "HOME TEXTILES",
+          "hierarchy_path": [
+            "HOME & LIVING",
+            "HOME & LIVING",
+            "HOME TEXTILES"
+          ],
+          "current": 572986.0917,
+          "prior": 537254.7183,
+          "change": 35731.37340000004,
+          "change_pct": 6.650732358956753,
+          "overall_current": 41206710.5199,
+          "gross_sibling_change": 133010.24580000015,
+          "signed_sibling_change": 129415.28760000016,
+          "parent_change": 129415.28760000085,
+          "full_member_count": 4.0,
+          "global_impact_pct": 0.08671251101867074,
+          "business_share_pct": 1.3905164582921201,
+          "sibling_movement_impact_pct": 26.863624817089093,
+          "reconciled": true
+        },
+        {
+          "member": "KIDS FASHION",
+          "hierarchy_path": [
+            "LIFESTYLE",
+            "LIFESTYLE",
+            "KIDS FASHION"
+          ],
+          "current": 236776.7187,
+          "prior": 230470.8309,
+          "change": 6305.887799999997,
+          "change_pct": 2.73608932435189,
+          "overall_current": 41206710.5199,
+          "gross_sibling_change": 635434.8885,
+          "signed_sibling_change": 633871.7559000001,
+          "parent_change": 633871.7559000002,
+          "full_member_count": 8.0,
+          "global_impact_pct": 0.015303060400695385,
+          "business_share_pct": 0.5746071834238095,
+          "sibling_movement_impact_pct": 0.9923735561460278,
+          "reconciled": true
+        },
+        {
+          "member": "REFRIDGERATED GOODS",
+          "hierarchy_path": [
+            "CONSUMER GOODS",
+            "CONSUMER GOODS",
+            "REFRIDGERATED GOODS"
+          ],
+          "current": 2951592.102,
+          "prior": 2501469.0,
+          "change": 450123.10199999996,
+          "change_pct": 17.99435059958768,
+          "overall_current": 41206710.5199,
+          "gross_sibling_change": 2057807.435399999,
+          "signed_sibling_change": 2057807.435399999,
+          "parent_change": 2057807.4354000017,
+          "full_member_count": 5.0,
+          "global_impact_pct": 1.0923538819790566,
+          "business_share_pct": 7.162891831840312,
+          "sibling_movement_impact_pct": 21.873917561800653,
+          "reconciled": true
+        },
+        {
+          "member": "ENTERTAINMENTS",
+          "hierarchy_path": [
+            "TECHNOLOGY",
+            "TECHNOLOGY",
+            "ENTERTAINMENTS"
+          ],
+          "current": 1961006.5251,
+          "prior": 1726931.6775,
+          "change": 234074.84759999998,
+          "change_pct": 13.554378013313151,
+          "overall_current": 41206710.5199,
+          "gross_sibling_change": 236050.6995,
+          "signed_sibling_change": 236050.6995,
+          "parent_change": 236050.69949999987,
+          "full_member_count": 2.0,
+          "global_impact_pct": 0.5680503118222892,
+          "business_share_pct": 4.758949453519152,
+          "sibling_movement_impact_pct": 99.16295443979398,
+          "reconciled": true
+        },
+        {
+          "member": "GREEN GROCERIES",
+          "hierarchy_path": [
+            "FRESH FOOD",
+            "FRESH FOOD",
+            "GREEN GROCERIES"
+          ],
+          "current": 4793795.7462,
+          "prior": 4610725.2108,
+          "change": 183070.5354000004,
+          "change_pct": 3.9705366733021186,
+          "overall_current": 41206710.5199,
+          "gross_sibling_change": 576332.8011,
+          "signed_sibling_change": 558094.4307000001,
+          "parent_change": 558094.4306999994,
+          "full_member_count": 3.0,
+          "global_impact_pct": 0.44427359789272663,
+          "business_share_pct": 11.633531737227427,
+          "sibling_movement_impact_pct": 31.764726049009944,
+          "reconciled": true
+        },
+        {
+          "member": "TRAVEL",
+          "hierarchy_path": [
+            "LIFESTYLE",
+            "LIFESTYLE",
+            "TRAVEL"
+          ],
+          "current": 689176.0287,
+          "prior": 676011.9708,
+          "change": 13164.057900000014,
+          "change_pct": 1.947311359652629,
+          "overall_current": 41206710.5199,
+          "gross_sibling_change": 635434.8885,
+          "signed_sibling_change": 633871.7559000001,
+          "parent_change": 633871.7559000002,
+          "full_member_count": 8.0,
+          "global_impact_pct": 0.03194639352161508,
+          "business_share_pct": 1.672484942391059,
+          "sibling_movement_impact_pct": 2.0716611785473305,
+          "reconciled": true
+        },
+        {
+          "member": "PROVISIONS",
+          "hierarchy_path": [
+            "CONSUMER GOODS",
+            "CONSUMER GOODS",
+            "PROVISIONS"
+          ],
+          "current": 10906124.4531,
+          "prior": 9956122.4952,
+          "change": 950001.9578999989,
+          "change_pct": 9.541886998256695,
+          "overall_current": 41206710.5199,
+          "gross_sibling_change": 2057807.435399999,
+          "signed_sibling_change": 2057807.435399999,
+          "parent_change": 2057807.4354000017,
+          "full_member_count": 5.0,
+          "global_impact_pct": 2.3054544900913974,
+          "business_share_pct": 26.466865021494723,
+          "sibling_movement_impact_pct": 46.16573648035908,
+          "reconciled": true
+        },
+        {
+          "member": "MENS APPAREL",
+          "hierarchy_path": [
+            "LIFESTYLE",
+            "LIFESTYLE",
+            "MENS APPAREL"
+          ],
+          "current": 2056034.7018,
+          "prior": 1816656.7491,
+          "change": 239377.95270000002,
+          "change_pct": 13.176839973681961,
+          "overall_current": 41206710.5199,
+          "gross_sibling_change": 635434.8885,
+          "signed_sibling_change": 633871.7559000001,
+          "parent_change": 633871.7559000002,
+          "full_member_count": 8.0,
+          "global_impact_pct": 0.5809198299980702,
+          "business_share_pct": 4.989562806298447,
+          "sibling_movement_impact_pct": 37.67151552932083,
+          "reconciled": true
+        },
+        {
+          "member": "MEAT SHOP",
+          "hierarchy_path": [
+            "FRESH FOOD",
+            "FRESH FOOD",
+            "MEAT SHOP"
+          ],
+          "current": 2626577.7282,
+          "prior": 2242434.6477,
+          "change": 384143.0804999997,
+          "change_pct": 17.130625451850026,
+          "overall_current": 41206710.5199,
+          "gross_sibling_change": 576332.8011,
+          "signed_sibling_change": 558094.4307000001,
+          "parent_change": 558094.4306999994,
+          "full_member_count": 3.0,
+          "global_impact_pct": 0.9322342784787082,
+          "business_share_pct": 6.374150460109025,
+          "sibling_movement_impact_pct": 66.6529962838861,
+          "reconciled": true
+        },
+        {
+          "member": "TOYS",
+          "hierarchy_path": [
+            "LIFESTYLE",
+            "LIFESTYLE",
+            "TOYS"
+          ],
+          "current": 703714.4919,
+          "prior": 600758.9127,
+          "change": 102955.57920000004,
+          "change_pct": 17.137586646411155,
+          "overall_current": 41206710.5199,
+          "gross_sibling_change": 635434.8885,
+          "signed_sibling_change": 633871.7559000001,
+          "parent_change": 633871.7559000002,
+          "full_member_count": 8.0,
+          "global_impact_pct": 0.24985148753934044,
+          "business_share_pct": 1.7077667278492283,
+          "sibling_movement_impact_pct": 16.202380615744243,
+          "reconciled": true
+        },
+        {
+          "member": "PERSONAL CARE",
+          "hierarchy_path": [
+            "CONSUMER GOODS",
+            "CONSUMER GOODS",
+            "PERSONAL CARE"
+          ],
+          "current": 5300622.4554,
+          "prior": 4893097.5531,
+          "change": 407524.9023000002,
+          "change_pct": 8.328566881766227,
+          "overall_current": 41206710.5199,
+          "gross_sibling_change": 2057807.435399999,
+          "signed_sibling_change": 2057807.435399999,
+          "parent_change": 2057807.4354000017,
+          "full_member_count": 5.0,
+          "global_impact_pct": 0.9889770310668058,
+          "business_share_pct": 12.863493320681748,
+          "sibling_movement_impact_pct": 19.80384049981747,
+          "reconciled": true
+        },
+        {
+          "member": "LADIES APPAREL",
+          "hierarchy_path": [
+            "LIFESTYLE",
+            "LIFESTYLE",
+            "LADIES APPAREL"
+          ],
+          "current": 2439159.2478,
+          "prior": 2238238.1592,
+          "change": 200921.0885999999,
+          "change_pct": 8.976751994605163,
+          "overall_current": 41206710.5199,
+          "gross_sibling_change": 635434.8885,
+          "signed_sibling_change": 633871.7559000001,
+          "parent_change": 633871.7559000002,
+          "full_member_count": 8.0,
+          "global_impact_pct": 0.4875931275877235,
+          "business_share_pct": 5.9193253162541435,
+          "sibling_movement_impact_pct": 31.6194612911941,
+          "reconciled": true
+        },
+        {
+          "member": "CULINARY SUPPLIES",
+          "hierarchy_path": [
+            "HOME & LIVING",
+            "HOME & LIVING",
+            "CULINARY SUPPLIES"
+          ],
+          "current": 1336367.9619,
+          "prior": 1268825.9769,
+          "change": 67541.9850000001,
+          "change_pct": 5.323187437021026,
+          "overall_current": 41206710.5199,
+          "gross_sibling_change": 133010.24580000015,
+          "signed_sibling_change": 129415.28760000016,
+          "parent_change": 129415.28760000085,
+          "full_member_count": 4.0,
+          "global_impact_pct": 0.16391015965077335,
+          "business_share_pct": 3.2430833353092483,
+          "sibling_movement_impact_pct": 50.779535511541795,
+          "reconciled": true
+        },
+        {
+          "member": "SPORTING GOODS",
+          "hierarchy_path": [
+            "LIFESTYLE",
+            "LIFESTYLE",
+            "SPORTING GOODS"
+          ],
+          "current": 84651.9363,
+          "prior": 77937.3279,
+          "change": 6714.608399999997,
+          "change_pct": 8.615394677907602,
+          "overall_current": 41206710.5199,
+          "gross_sibling_change": 635434.8885,
+          "signed_sibling_change": 633871.7559000001,
+          "parent_change": 633871.7559000002,
+          "full_member_count": 8.0,
+          "global_impact_pct": 0.016294939138025356,
+          "business_share_pct": 0.20543240465438015,
+          "sibling_movement_impact_pct": 1.0566949535695815,
+          "reconciled": true
+        }
+      ],
+      "returned_member_count": 23,
+      "max_siblings_per_parent": 8,
+      "pool_capped": false,
+      "diagnostics_reconciled": true,
+      "scope": {
+        "population_status": "comparable",
+        "comparable_entities": [
+          "ST4",
+          "ST1",
+          "ST3",
+          "ST2",
+          "ST5"
+        ]
+      }
+    },
+    "category": {
+      "role": "category",
+      "group_ref": "'MIS_DEEP_DIVE2'[item_category_name]",
+      "parent_refs": [
+        "'MIS_DEEP_DIVE2'[division_name]",
+        "'CAT_TABLE'[dep]",
+        "'CAT_TABLE'[sec]"
+      ],
+      "column": "item_category_name",
+      "level": 30,
+      "source": "universe_scan",
+      "status": "ok",
+      "metric_family": "revenue",
+      "members": [
+        {
+          "member": "BABY CLOTHING",
+          "hierarchy_path": [
+            "LIFESTYLE",
+            "LIFESTYLE",
+            "BABY CLOTHING",
+            "BABY CLOTHING"
+          ],
+          "current": 1016.9307,
+          "prior": 1798.497,
+          "change": -781.5663000000001,
+          "change_pct": -43.45663629130324,
+          "overall_current": 41206710.519899994,
+          "gross_sibling_change": 781.5663000000001,
+          "signed_sibling_change": -781.5663000000001,
+          "parent_change": -781.5663000000001,
+          "full_member_count": 1.0,
+          "global_impact_pct": 0.0018966966548386761,
+          "business_share_pct": 0.0024678764384963286,
+          "sibling_movement_impact_pct": 100.0,
+          "reconciled": true
+        },
+        {
+          "member": "OTHER",
+          "hierarchy_path": [
+            "OTHER",
+            "OTHER",
+            "OTHER",
+            "OTHER"
+          ],
+          "current": 11277.7164,
+          "prior": 12152.0439,
+          "change": -874.3275000000012,
+          "change_pct": -7.194900768915105,
+          "overall_current": 41206710.519899994,
+          "gross_sibling_change": 874.3275000000012,
+          "signed_sibling_change": -874.3275000000012,
+          "parent_change": -874.3275000000012,
+          "full_member_count": 1.0,
+          "global_impact_pct": 0.0021218085330489108,
+          "business_share_pct": 0.027368640344522625,
+          "sibling_movement_impact_pct": 100.0,
+          "reconciled": true
+        },
+        {
+          "member": "SPORTING GOODS",
+          "hierarchy_path": [
+            "LIFESTYLE",
+            "LIFESTYLE",
+            "SPORTING GOODS",
+            "SPORTING GOODS"
+          ],
+          "current": 84651.9363,
+          "prior": 77937.3279,
+          "change": 6714.608399999997,
+          "change_pct": 8.615394677907602,
+          "overall_current": 41206710.519899994,
+          "gross_sibling_change": 6714.608399999997,
+          "signed_sibling_change": 6714.608399999997,
+          "parent_change": 6714.608399999997,
+          "full_member_count": 1.0,
+          "global_impact_pct": 0.01629493913802536,
+          "business_share_pct": 0.2054324046543802,
+          "sibling_movement_impact_pct": 100.0,
+          "reconciled": true
+        },
+        {
+          "member": "CONSUMER DEVICES",
+          "hierarchy_path": [
+            "TECHNOLOGY",
+            "TECHNOLOGY",
+            "CONSUMER DEVICES",
+            "CONSUMER DEVICES"
+          ],
+          "current": 3019.8771,
+          "prior": 1044.0252,
+          "change": 1975.8519000000001,
+          "change_pct": 189.2532766450465,
+          "overall_current": 41206710.519899994,
+          "gross_sibling_change": 1975.8519000000001,
+          "signed_sibling_change": 1975.8519000000001,
+          "parent_change": 1975.8519000000001,
+          "full_member_count": 1.0,
+          "global_impact_pct": 0.00479497604897581,
+          "business_share_pct": 0.0073286051274139155,
+          "sibling_movement_impact_pct": 100.0,
+          "reconciled": true
+        },
+        {
+          "member": "GLASS ITEMS",
+          "hierarchy_path": [
+            "HOME & LIVING",
+            "HOME & LIVING",
+            "GLASS ITEMS",
+            "GLASS ITEMS"
+          ],
+          "current": 51301.1205,
+          "prior": 53098.5996,
+          "change": -1797.479100000004,
+          "change_pct": -3.3851723275956305,
+          "overall_current": 41206710.519899994,
+          "gross_sibling_change": 1797.479100000004,
+          "signed_sibling_change": -1797.479100000004,
+          "parent_change": -1797.479100000004,
+          "full_member_count": 1.0,
+          "global_impact_pct": 0.004362102864609748,
+          "business_share_pct": 0.12449700510606179,
+          "sibling_movement_impact_pct": 100.0,
+          "reconciled": true
+        },
+        {
+          "member": "FOOTWEAR",
+          "hierarchy_path": [
+            "LIFESTYLE",
+            "LIFESTYLE",
+            "FOOTWEAR",
+            "FOOTWEAR"
+          ],
+          "current": 675254.6478,
+          "prior": 610040.5002,
+          "change": 65214.147600000026,
+          "change_pct": 10.6901341105418,
+          "overall_current": 41206710.519899994,
+          "gross_sibling_change": 65214.147600000026,
+          "signed_sibling_change": 65214.147600000026,
+          "parent_change": 65214.147600000026,
+          "full_member_count": 1.0,
+          "global_impact_pct": 0.15826098899232954,
+          "business_share_pct": 1.6387006855931845,
+          "sibling_movement_impact_pct": 100.0,
+          "reconciled": true
+        },
+        {
+          "member": "TRAVEL",
+          "hierarchy_path": [
+            "LIFESTYLE",
+            "LIFESTYLE",
+            "TRAVEL",
+            "TRAVEL"
+          ],
+          "current": 689176.0287,
+          "prior": 676011.9708,
+          "change": 13164.057900000014,
+          "change_pct": 1.947311359652629,
+          "overall_current": 41206710.519899994,
+          "gross_sibling_change": 13164.057900000014,
+          "signed_sibling_change": 13164.057900000014,
+          "parent_change": 13164.057900000014,
+          "full_member_count": 1.0,
+          "global_impact_pct": 0.03194639352161509,
+          "business_share_pct": 1.6724849423910595,
+          "sibling_movement_impact_pct": 100.0,
+          "reconciled": true
+        },
+        {
+          "member": "LADIES APPAREL",
+          "hierarchy_path": [
+            "LIFESTYLE",
+            "LIFESTYLE",
+            "LADIES APPAREL",
+            "LADIES APPAREL"
+          ],
+          "current": 2439159.2478,
+          "prior": 2238238.1592,
+          "change": 200921.0885999999,
+          "change_pct": 8.976751994605163,
+          "overall_current": 41206710.519899994,
+          "gross_sibling_change": 200921.0885999999,
+          "signed_sibling_change": 200921.0885999999,
+          "parent_change": 200921.0885999999,
+          "full_member_count": 1.0,
+          "global_impact_pct": 0.4875931275877236,
+          "business_share_pct": 5.919325316254144,
+          "sibling_movement_impact_pct": 100.0,
+          "reconciled": true
+        },
+        {
+          "member": "HOME TEXTILES",
+          "hierarchy_path": [
+            "HOME & LIVING",
+            "HOME & LIVING",
+            "HOME TEXTILES",
+            "HOME TEXTILES"
+          ],
+          "current": 572986.0917,
+          "prior": 537254.7183,
+          "change": 35731.37340000004,
+          "change_pct": 6.650732358956753,
+          "overall_current": 41206710.519899994,
+          "gross_sibling_change": 35731.37340000004,
+          "signed_sibling_change": 35731.37340000004,
+          "parent_change": 35731.37340000004,
+          "full_member_count": 1.0,
+          "global_impact_pct": 0.08671251101867075,
+          "business_share_pct": 1.3905164582921203,
+          "sibling_movement_impact_pct": 100.0,
+          "reconciled": true
+        },
+        {
+          "member": "OFFICE SUPPLIES",
+          "hierarchy_path": [
+            "HOME & LIVING",
+            "HOME & LIVING",
+            "OFFICE SUPPLIES",
+            "OFFICE SUPPLIES"
+          ],
+          "current": 751677.2055,
+          "prior": 723737.7972,
+          "change": 27939.40830000001,
+          "change_pct": 3.860432384227011,
+          "overall_current": 41206710.519899994,
+          "gross_sibling_change": 27939.40830000001,
+          "signed_sibling_change": 27939.40830000001,
+          "parent_change": 27939.40830000001,
+          "full_member_count": 1.0,
+          "global_impact_pct": 0.0678030542780337,
+          "business_share_pct": 1.8241621231498009,
+          "sibling_movement_impact_pct": 100.0,
+          "reconciled": true
+        },
+        {
+          "member": "KIDS FASHION",
+          "hierarchy_path": [
+            "LIFESTYLE",
+            "LIFESTYLE",
+            "KIDS FASHION",
+            "KIDS FASHION"
+          ],
+          "current": 236776.7187,
+          "prior": 230470.8309,
+          "change": 6305.887799999997,
+          "change_pct": 2.73608932435189,
+          "overall_current": 41206710.519899994,
+          "gross_sibling_change": 6305.887799999997,
+          "signed_sibling_change": 6305.887799999997,
+          "parent_change": 6305.887799999997,
+          "full_member_count": 1.0,
+          "global_impact_pct": 0.015303060400695387,
+          "business_share_pct": 0.5746071834238096,
+          "sibling_movement_impact_pct": 100.0,
+          "reconciled": true
+        },
+        {
+          "member": "REFRIDGERATED GOODS",
+          "hierarchy_path": [
+            "CONSUMER GOODS",
+            "CONSUMER GOODS",
+            "REFRIDGERATED GOODS",
+            "REFRIDGERATED GOODS"
+          ],
+          "current": 2951592.102,
+          "prior": 2501469.0,
+          "change": 450123.10199999996,
+          "change_pct": 17.99435059958768,
+          "overall_current": 41206710.519899994,
+          "gross_sibling_change": 450123.10199999996,
+          "signed_sibling_change": 450123.10199999996,
+          "parent_change": 450123.10199999996,
+          "full_member_count": 1.0,
+          "global_impact_pct": 1.0923538819790568,
+          "business_share_pct": 7.162891831840314,
+          "sibling_movement_impact_pct": 100.0,
+          "reconciled": true
+        },
+        {
+          "member": "CLEANING ESSENSTIALS",
+          "hierarchy_path": [
+            "CONSUMER GOODS",
+            "CONSUMER GOODS",
+            "CLEANING ESSENSTIALS",
+            "CLEANING ESSENSTIALS"
+          ],
+          "current": 776813.6196,
+          "prior": 703715.0616,
+          "change": 73098.55799999996,
+          "change_pct": 10.38752216469541,
+          "overall_current": 41206710.519899994,
+          "gross_sibling_change": 73098.55799999996,
+          "signed_sibling_change": 73098.55799999996,
+          "parent_change": 73098.55799999996,
+          "full_member_count": 1.0,
+          "global_impact_pct": 0.17739479098846875,
+          "business_share_pct": 1.885162901379504,
+          "sibling_movement_impact_pct": 100.0,
+          "reconciled": true
+        },
+        {
+          "member": "GREEN GROCERIES",
+          "hierarchy_path": [
+            "FRESH FOOD",
+            "FRESH FOOD",
+            "GREEN GROCERIES",
+            "GREEN GROCERIES"
+          ],
+          "current": 4793795.7462,
+          "prior": 4610725.2108,
+          "change": 183070.5354000004,
+          "change_pct": 3.9705366733021186,
+          "overall_current": 41206710.519899994,
+          "gross_sibling_change": 183070.5354000004,
+          "signed_sibling_change": 183070.5354000004,
+          "parent_change": 183070.5354000004,
+          "full_member_count": 1.0,
+          "global_impact_pct": 0.4442735978927267,
+          "business_share_pct": 11.63353173722743,
+          "sibling_movement_impact_pct": 100.0,
+          "reconciled": true
+        },
+        {
+          "member": "TOYS",
+          "hierarchy_path": [
+            "LIFESTYLE",
+            "LIFESTYLE",
+            "TOYS",
+            "TOYS"
+          ],
+          "current": 703714.4919,
+          "prior": 600758.9127,
+          "change": 102955.57920000004,
+          "change_pct": 17.137586646411155,
+          "overall_current": 41206710.519899994,
+          "gross_sibling_change": 102955.57920000004,
+          "signed_sibling_change": 102955.57920000004,
+          "parent_change": 102955.57920000004,
+          "full_member_count": 1.0,
+          "global_impact_pct": 0.24985148753934047,
+          "business_share_pct": 1.7077667278492286,
+          "sibling_movement_impact_pct": 100.0,
+          "reconciled": true
+        },
+        {
+          "member": "PROVISIONS",
+          "hierarchy_path": [
+            "CONSUMER GOODS",
+            "CONSUMER GOODS",
+            "PROVISIONS",
+            "PROVISIONS"
+          ],
+          "current": 10906124.4531,
+          "prior": 9956122.4952,
+          "change": 950001.9578999989,
+          "change_pct": 9.541886998256695,
+          "overall_current": 41206710.519899994,
+          "gross_sibling_change": 950001.9578999989,
+          "signed_sibling_change": 950001.9578999989,
+          "parent_change": 950001.9578999989,
+          "full_member_count": 1.0,
+          "global_impact_pct": 2.305454490091398,
+          "business_share_pct": 26.46686502149473,
+          "sibling_movement_impact_pct": 100.0,
+          "reconciled": true
+        },
+        {
+          "member": "MENS APPAREL",
+          "hierarchy_path": [
+            "LIFESTYLE",
+            "LIFESTYLE",
+            "MENS APPAREL",
+            "MENS APPAREL"
+          ],
+          "current": 2056034.7018,
+          "prior": 1816656.7491,
+          "change": 239377.95270000002,
+          "change_pct": 13.176839973681961,
+          "overall_current": 41206710.519899994,
+          "gross_sibling_change": 239377.95270000002,
+          "signed_sibling_change": 239377.95270000002,
+          "parent_change": 239377.95270000002,
+          "full_member_count": 1.0,
+          "global_impact_pct": 0.5809198299980703,
+          "business_share_pct": 4.989562806298448,
+          "sibling_movement_impact_pct": 100.0,
+          "reconciled": true
+        },
+        {
+          "member": "ENTERTAINMENTS",
+          "hierarchy_path": [
+            "TECHNOLOGY",
+            "TECHNOLOGY",
+            "ENTERTAINMENTS",
+            "ENTERTAINMENTS"
+          ],
+          "current": 1961006.5251,
+          "prior": 1726931.6775,
+          "change": 234074.84759999998,
+          "change_pct": 13.554378013313151,
+          "overall_current": 41206710.519899994,
+          "gross_sibling_change": 234074.84759999998,
+          "signed_sibling_change": 234074.84759999998,
+          "parent_change": 234074.84759999998,
+          "full_member_count": 1.0,
+          "global_impact_pct": 0.5680503118222893,
+          "business_share_pct": 4.758949453519152,
+          "sibling_movement_impact_pct": 100.0,
+          "reconciled": true
+        },
+        {
+          "member": "SPICE MARKET",
+          "hierarchy_path": [
+            "CONSUMER GOODS",
+            "CONSUMER GOODS",
+            "SPICE MARKET",
+            "SPICE MARKET"
+          ],
+          "current": 2087666.4411,
+          "prior": 1910607.5259,
+          "change": 177058.91519999993,
+          "change_pct": 9.267152609827367,
+          "overall_current": 41206710.519899994,
+          "gross_sibling_change": 177058.91519999993,
+          "signed_sibling_change": 177058.91519999993,
+          "parent_change": 177058.91519999993,
+          "full_member_count": 1.0,
+          "global_impact_pct": 0.4296846629252114,
+          "business_share_pct": 5.06632636956498,
+          "sibling_movement_impact_pct": 100.0,
+          "reconciled": true
+        },
+        {
+          "member": "MEAT SHOP",
+          "hierarchy_path": [
+            "FRESH FOOD",
+            "FRESH FOOD",
+            "MEAT SHOP",
+            "MEAT SHOP"
+          ],
+          "current": 2626577.7282,
+          "prior": 2242434.6477,
+          "change": 384143.0804999997,
+          "change_pct": 17.130625451850026,
+          "overall_current": 41206710.519899994,
+          "gross_sibling_change": 384143.0804999997,
+          "signed_sibling_change": 384143.0804999997,
+          "parent_change": 384143.0804999997,
+          "full_member_count": 1.0,
+          "global_impact_pct": 0.9322342784787083,
+          "business_share_pct": 6.374150460109025,
+          "sibling_movement_impact_pct": 100.0,
+          "reconciled": true
+        },
+        {
+          "member": "CULINARY SUPPLIES",
+          "hierarchy_path": [
+            "HOME & LIVING",
+            "HOME & LIVING",
+            "CULINARY SUPPLIES",
+            "CULINARY SUPPLIES"
+          ],
+          "current": 1336367.9619,
+          "prior": 1268825.9769,
+          "change": 67541.9850000001,
+          "change_pct": 5.323187437021026,
+          "overall_current": 41206710.519899994,
+          "gross_sibling_change": 67541.9850000001,
+          "signed_sibling_change": 67541.9850000001,
+          "parent_change": 67541.9850000001,
+          "full_member_count": 1.0,
+          "global_impact_pct": 0.16391015965077335,
+          "business_share_pct": 3.243083335309249,
+          "sibling_movement_impact_pct": 100.0,
+          "reconciled": true
+        },
+        {
+          "member": "PERSONAL CARE",
+          "hierarchy_path": [
+            "CONSUMER GOODS",
+            "CONSUMER GOODS",
+            "PERSONAL CARE",
+            "PERSONAL CARE"
+          ],
+          "current": 5300622.4554,
+          "prior": 4893097.5531,
+          "change": 407524.9023000002,
+          "change_pct": 8.328566881766227,
+          "overall_current": 41206710.519899994,
+          "gross_sibling_change": 407524.9023000002,
+          "signed_sibling_change": 407524.9023000002,
+          "parent_change": 407524.9023000002,
+          "full_member_count": 1.0,
+          "global_impact_pct": 0.988977031066806,
+          "business_share_pct": 12.863493320681751,
+          "sibling_movement_impact_pct": 100.0,
+          "reconciled": true
+        },
+        {
+          "member": "DELI",
+          "hierarchy_path": [
+            "FRESH FOOD",
+            "FRESH FOOD",
+            "DELI",
+            "DELI"
+          ],
+          "current": 190096.7724,
+          "prior": 199215.9576,
+          "change": -9119.185200000007,
+          "change_pct": -4.577537517506583,
+          "overall_current": 41206710.519899994,
+          "gross_sibling_change": 9119.185200000007,
+          "signed_sibling_change": -9119.185200000007,
+          "parent_change": -9119.185200000007,
+          "full_member_count": 1.0,
+          "global_impact_pct": 0.022130340143496945,
+          "business_share_pct": 0.4613247939512094,
+          "sibling_movement_impact_pct": 100.0,
+          "reconciled": true
+        }
+      ],
+      "returned_member_count": 23,
+      "max_siblings_per_parent": 1,
+      "pool_capped": false,
+      "diagnostics_reconciled": true,
+      "scope": {
+        "population_status": "comparable",
+        "comparable_entities": [
+          "ST4",
+          "ST1",
+          "ST3",
+          "ST2",
+          "ST5"
+        ]
+      }
+    },
+    "store": {
+      "role": "store",
+      "group_ref": "'MIS_DEEP_DIVE2'[store_no]",
+      "parent_refs": [],
+      "column": "store_no",
+      "level": null,
+      "coverage_only": true,
+      "source": "universe_scan",
+      "status": "ok",
+      "metric_family": "revenue",
+      "members": [
+        {
+          "member": "ST1",
+          "hierarchy_path": [
+            "ST1"
+          ],
+          "current": 11804607.09,
+          "prior": 11837775.7908,
+          "change": -33168.70079999976,
+          "change_pct": -0.2801936899816736,
+          "overall_current": 41206710.5199,
+          "gross_sibling_change": 4415491.450799998,
+          "signed_sibling_change": 3614365.281599999,
+          "parent_change": 3614365.2815999985,
+          "full_member_count": 5.0,
+          "global_impact_pct": 0.08049344483341266,
+          "business_share_pct": 28.647292979863533,
+          "sibling_movement_impact_pct": 0.7511893334996778,
+          "reconciled": true
+        },
+        {
+          "member": "ST2",
+          "hierarchy_path": [
+            "ST2"
+          ],
+          "current": 6292992.8322,
+          "prior": 6660387.216,
+          "change": -367394.38379999995,
+          "change_pct": -5.516111479486089,
+          "overall_current": 41206710.5199,
+          "gross_sibling_change": 4415491.450799998,
+          "signed_sibling_change": 3614365.281599999,
+          "parent_change": 3614365.2815999985,
+          "full_member_count": 5.0,
+          "global_impact_pct": 0.8915887222363303,
+          "business_share_pct": 15.271767032121911,
+          "sibling_movement_impact_pct": 8.32057740103733,
+          "reconciled": true
+        },
+        {
+          "member": "ST3",
+          "hierarchy_path": [
+            "ST3"
+          ],
+          "current": 7538479.6338,
+          "prior": 7361558.2647,
+          "change": 176921.36909999978,
+          "change_pct": 2.4033141182671836,
+          "overall_current": 41206710.5199,
+          "gross_sibling_change": 4415491.450799998,
+          "signed_sibling_change": 3614365.281599999,
+          "parent_change": 3614365.2815999985,
+          "full_member_count": 5.0,
+          "global_impact_pct": 0.42935086753541984,
+          "business_share_pct": 18.29430094925785,
+          "sibling_movement_impact_pct": 4.006833012165502,
+          "reconciled": true
+        },
+        {
+          "member": "ST5",
+          "hierarchy_path": [
+            "ST5"
+          ],
+          "current": 3214635.1092,
+          "prior": 577733.6664,
+          "change": 2636901.4428,
+          "change_pct": 456.42163442389966,
+          "overall_current": 41206710.5199,
+          "gross_sibling_change": 4415491.450799998,
+          "signed_sibling_change": 3614365.281599999,
+          "parent_change": 3614365.2815999985,
+          "full_member_count": 5.0,
+          "global_impact_pct": 6.399203939189851,
+          "business_share_pct": 7.801241760483532,
+          "sibling_movement_impact_pct": 59.71931940491577,
+          "reconciled": true
+        },
+        {
+          "member": "ST4",
+          "hierarchy_path": [
+            "ST4"
+          ],
+          "current": 12355995.8547,
+          "prior": 11154890.3004,
+          "change": 1201105.554299999,
+          "change_pct": 10.76752457401512,
+          "overall_current": 41206710.5199,
+          "gross_sibling_change": 4415491.450799998,
+          "signed_sibling_change": 3614365.281599999,
+          "parent_change": 3614365.2815999985,
+          "full_member_count": 5.0,
+          "global_impact_pct": 2.914829985567394,
+          "business_share_pct": 29.98539727827317,
+          "sibling_movement_impact_pct": 27.202080848381733,
+          "reconciled": true
+        }
+      ],
+      "returned_member_count": 5,
+      "max_siblings_per_parent": 5,
+      "pool_capped": false,
+      "diagnostics_reconciled": true,
+      "scope": {
+        "population_status": "comparable",
+        "comparable_entities": [
+          "ST4",
+          "ST1",
+          "ST3",
+          "ST2",
+          "ST5"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,88 @@
+{
+  "charts": [
+    {
+      "source_id": "summary_0bbc7910253d:trend:change",
+      "type": "waterfall",
+      "title": "Revenue change by month",
+      "value_label": "Revenue change",
+      "labels": [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August"
+      ],
+      "values": [
+        1231761.5811,
+        1097865.7298999997,
+        32946.86070000008,
+        1120010.7303,
+        794332.3346999995,
+        -160695.61379999947,
+        130219.89300000016,
+        -632076.2343000001
+      ],
+      "x_label": "",
+      "y_label": "",
+      "size_label": "",
+      "x_values": [],
+      "y_values": [],
+      "size_values": [],
+      "series": [],
+      "highlight": null
+    },
+    {
+      "source_id": "summary_661a933e0108:contributor:0",
+      "type": "horizontal_bar",
+      "title": "TECHNOLOGY revenue change by section",
+      "value_label": "Revenue change",
+      "labels": [
+        "CONSUMER DEVICES",
+        "ENTERTAINMENTS"
+      ],
+      "values": [
+        1975.8519000000001,
+        234074.84759999998
+      ],
+      "x_label": "",
+      "y_label": "",
+      "size_label": "",
+      "x_values": [],
+      "y_values": [],
+      "size_values": [],
+      "series": [],
+      "highlight": null
+    },
+    {
+      "source_id": "summary_b801fc430e44:location",
+      "type": "horizontal_bar",
+      "title": "CULINARY SUPPLIES revenue change by store",
+      "value_label": "Revenue change",
+      "labels": [
+        "ST3",
+        "ST2",
+        "ST1",
+        "ST5",
+        "ST4"
+      ],
+      "values": [
+        -8914.368599999987,
+        -11658.896999999997,
+        -25965.665099999984,
+        67146.70499999999,
+        46934.210699999996
+      ],
+      "x_label": "",
+      "y_label": "",
+      "size_label": "",
+      "x_values": [],
+      "y_values": [],
+      "size_values": [],
+      "series": [],
+      "highlight": null
+    }
+  ]
+}

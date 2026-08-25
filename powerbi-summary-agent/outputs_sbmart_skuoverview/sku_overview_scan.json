@@ -1,0 +1,1519 @@
+{
+  "queries": {
+    "snapshot": "EVALUATE ROW(\n  \"as_at\", MAX('REP_SSR_STOCK_STATUS_REPORTV3'[UPDATED_ON]),\n  \"snapshot_cardinality\", DISTINCTCOUNT('REP_SSR_STOCK_STATUS_REPORTV3'[UPDATED_ON]),\n  \"rows\", CALCULATE(COUNTROWS('REP_SSR_STOCK_STATUS_REPORTV3'), 'REP_SSR_STOCK_STATUS_REPORTV3'[LOC_CODE] IN {\"ST1\", \"ST2\", \"ST3\", \"ST4\", \"ST5\"}),\n  \"skus\", CALCULATE(DISTINCTCOUNT('REP_SSR_STOCK_STATUS_REPORTV3'[SKU_CODE]), 'REP_SSR_STOCK_STATUS_REPORTV3'[LOC_CODE] IN {\"ST1\", \"ST2\", \"ST3\", \"ST4\", \"ST5\"}),\n  \"locations\", CALCULATE(DISTINCTCOUNT('REP_SSR_STOCK_STATUS_REPORTV3'[LOC_CODE]), 'REP_SSR_STOCK_STATUS_REPORTV3'[LOC_CODE] IN {\"ST1\", \"ST2\", \"ST3\", \"ST4\", \"ST5\"}),\n  \"total_stock_value\", CALCULATE(SUM('REP_SSR_STOCK_STATUS_REPORTV3'[SKU_STOCK_VALUE]), 'REP_SSR_STOCK_STATUS_REPORTV3'[LOC_CODE] IN {\"ST1\", \"ST2\", \"ST3\", \"ST4\", \"ST5\"}),\n  \"total_excess_value\", CALCULATE(SUM('REP_SSR_STOCK_STATUS_REPORTV3'[EXCESS_STOCK_VALUE]), 'REP_SSR_STOCK_STATUS_REPORTV3'[LOC_CODE] IN {\"ST1\", \"ST2\", \"ST3\", \"ST4\", \"ST5\"}),\n  \"total_pending_value\", CALCULATE(SUM('REP_SSR_STOCK_STATUS_REPORTV3'[PENDING_ORDERS_VALUE]), 'REP_SSR_STOCK_STATUS_REPORTV3'[LOC_CODE] IN {\"ST1\", \"ST2\", \"ST3\", \"ST4\", \"ST5\"}),\n  \"total_opp_loss\", CALCULATE(SUM('REP_SSR_STOCK_STATUS_REPORTV3'[OPP_LOSS_DUE_TO_STOCKOUT]), 'REP_SSR_STOCK_STATUS_REPORTV3'[LOC_CODE] IN {\"ST1\", \"ST2\", \"ST3\", \"ST4\", \"ST5\"})\n)",
+    "states": "EVALUATE\nCALCULATETABLE(\n  SUMMARIZECOLUMNS(\n    'REP_SSR_STOCK_STATUS_REPORTV3'[RECOMMENDED_ACTION],\n    \"rows\", COUNTROWS('REP_SSR_STOCK_STATUS_REPORTV3'),\n    \"stock_value\", SUM('REP_SSR_STOCK_STATUS_REPORTV3'[SKU_STOCK_VALUE]),\n    \"excess_value\", SUM('REP_SSR_STOCK_STATUS_REPORTV3'[EXCESS_STOCK_VALUE]),\n    \"pending_value\", SUM('REP_SSR_STOCK_STATUS_REPORTV3'[PENDING_ORDERS_VALUE]),\n    \"opp_loss\", SUM('REP_SSR_STOCK_STATUS_REPORTV3'[OPP_LOSS_DUE_TO_STOCKOUT])\n  ),\n  'REP_SSR_STOCK_STATUS_REPORTV3'[LOC_CODE] IN {\"ST1\", \"ST2\", \"ST3\", \"ST4\", \"ST5\"}\n)",
+    "dimension__department": "EVALUATE\nTOPN(\n  30,\n  CALCULATETABLE(\n    SUMMARIZECOLUMNS(\n      'REP_SSR_STOCK_STATUS_REPORTV3'[DEPARTMENT],\n      \"stock_value\", SUM('REP_SSR_STOCK_STATUS_REPORTV3'[SKU_STOCK_VALUE]),\n      \"excess_value\", SUM('REP_SSR_STOCK_STATUS_REPORTV3'[EXCESS_STOCK_VALUE]),\n      \"opp_loss\", SUM('REP_SSR_STOCK_STATUS_REPORTV3'[OPP_LOSS_DUE_TO_STOCKOUT])\n    ),\n    'REP_SSR_STOCK_STATUS_REPORTV3'[LOC_CODE] IN {\"ST1\", \"ST2\", \"ST3\", \"ST4\", \"ST5\"}\n  ),\n  SUM('REP_SSR_STOCK_STATUS_REPORTV3'[EXCESS_STOCK_VALUE]), DESC\n)",
+    "dimension__section": "EVALUATE\nTOPN(\n  30,\n  CALCULATETABLE(\n    SUMMARIZECOLUMNS(\n      'REP_SSR_STOCK_STATUS_REPORTV3'[SECTION],\n      \"stock_value\", SUM('REP_SSR_STOCK_STATUS_REPORTV3'[SKU_STOCK_VALUE]),\n      \"excess_value\", SUM('REP_SSR_STOCK_STATUS_REPORTV3'[EXCESS_STOCK_VALUE]),\n      \"opp_loss\", SUM('REP_SSR_STOCK_STATUS_REPORTV3'[OPP_LOSS_DUE_TO_STOCKOUT])\n    ),\n    'REP_SSR_STOCK_STATUS_REPORTV3'[LOC_CODE] IN {\"ST1\", \"ST2\", \"ST3\", \"ST4\", \"ST5\"}\n  ),\n  SUM('REP_SSR_STOCK_STATUS_REPORTV3'[EXCESS_STOCK_VALUE]), DESC\n)",
+    "dimension__location": "EVALUATE\nTOPN(\n  30,\n  CALCULATETABLE(\n    SUMMARIZECOLUMNS(\n      'REP_SSR_STOCK_STATUS_REPORTV3'[LOC_CODE],\n      \"stock_value\", SUM('REP_SSR_STOCK_STATUS_REPORTV3'[SKU_STOCK_VALUE]),\n      \"excess_value\", SUM('REP_SSR_STOCK_STATUS_REPORTV3'[EXCESS_STOCK_VALUE]),\n      \"opp_loss\", SUM('REP_SSR_STOCK_STATUS_REPORTV3'[OPP_LOSS_DUE_TO_STOCKOUT])\n    ),\n    'REP_SSR_STOCK_STATUS_REPORTV3'[LOC_CODE] IN {\"ST1\", \"ST2\", \"ST3\", \"ST4\", \"ST5\"}\n  ),\n  SUM('REP_SSR_STOCK_STATUS_REPORTV3'[EXCESS_STOCK_VALUE]), DESC\n)",
+    "dimension__category": "EVALUATE\nTOPN(\n  30,\n  CALCULATETABLE(\n    SUMMARIZECOLUMNS(\n      'REP_SSR_STOCK_STATUS_REPORTV3'[CATEGORY_NAME],\n      \"stock_value\", SUM('REP_SSR_STOCK_STATUS_REPORTV3'[SKU_STOCK_VALUE]),\n      \"excess_value\", SUM('REP_SSR_STOCK_STATUS_REPORTV3'[EXCESS_STOCK_VALUE]),\n      \"opp_loss\", SUM('REP_SSR_STOCK_STATUS_REPORTV3'[OPP_LOSS_DUE_TO_STOCKOUT])\n    ),\n    'REP_SSR_STOCK_STATUS_REPORTV3'[LOC_CODE] IN {\"ST1\", \"ST2\", \"ST3\", \"ST4\", \"ST5\"}\n  ),\n  SUM('REP_SSR_STOCK_STATUS_REPORTV3'[EXCESS_STOCK_VALUE]), DESC\n)",
+    "deep__lowest_burnout": "EVALUATE\nTOPN(8,\n  FILTER(\n    CALCULATETABLE(\n      SUMMARIZECOLUMNS(\n        'REP_SSR_STOCK_STATUS_REPORTV3'[SKU_CODE], 'REP_SSR_STOCK_STATUS_REPORTV3'[PART_DESCRIPTION], 'REP_SSR_STOCK_STATUS_REPORTV3'[LOC_CODE],\n        \"burnout\", MIN('REP_SSR_STOCK_STATUS_REPORTV3'[EXPECTED_BURNOUT_DAYS]),\n        \"value\", SUM('REP_SSR_STOCK_STATUS_REPORTV3'[SKU_STOCK_VALUE])\n      ),\n      'REP_SSR_STOCK_STATUS_REPORTV3'[LOC_CODE] IN {\"ST1\", \"ST2\", \"ST3\", \"ST4\", \"ST5\"}\n    ),\n    [burnout] > 0 && [burnout] < 1000 && [value] > 0\n  ),\n  [burnout], ASC, 'REP_SSR_STOCK_STATUS_REPORTV3'[SKU_CODE], ASC)",
+    "deep__highest_opp_loss": "EVALUATE\nTOPN(8,\n  FILTER(\n    CALCULATETABLE(SUMMARIZECOLUMNS('REP_SSR_STOCK_STATUS_REPORTV3'[SKU_CODE], 'REP_SSR_STOCK_STATUS_REPORTV3'[PART_DESCRIPTION], \"value\", SUM('REP_SSR_STOCK_STATUS_REPORTV3'[OPP_LOSS_DUE_TO_STOCKOUT])), 'REP_SSR_STOCK_STATUS_REPORTV3'[LOC_CODE] IN {\"ST1\", \"ST2\", \"ST3\", \"ST4\", \"ST5\"}),\n    [value] > 0),\n  [value], DESC, 'REP_SSR_STOCK_STATUS_REPORTV3'[SKU_CODE], ASC)",
+    "deep__highest_excess": "EVALUATE\nTOPN(8,\n  FILTER(\n    CALCULATETABLE(SUMMARIZECOLUMNS('REP_SSR_STOCK_STATUS_REPORTV3'[SKU_CODE], 'REP_SSR_STOCK_STATUS_REPORTV3'[PART_DESCRIPTION], \"value\", SUM('REP_SSR_STOCK_STATUS_REPORTV3'[EXCESS_STOCK_VALUE])), 'REP_SSR_STOCK_STATUS_REPORTV3'[LOC_CODE] IN {\"ST1\", \"ST2\", \"ST3\", \"ST4\", \"ST5\"}),\n    [value] > 0),\n  [value], DESC, 'REP_SSR_STOCK_STATUS_REPORTV3'[SKU_CODE], ASC)"
+  },
+  "states": [
+    {
+      "REP_SSR_STOCK_STATUS_REPORTV3[RECOMMENDED_ACTION]": "STOCK OUT - PLACE ORDER",
+      "[rows]": 12952,
+      "[stock_value]": 0.0,
+      "[excess_value]": 0.0,
+      "[pending_value]": 0.0,
+      "[opp_loss]": 30718.230000000007
+    },
+    {
+      "REP_SSR_STOCK_STATUS_REPORTV3[RECOMMENDED_ACTION]": "STOCK OUT - ORDER PLACED",
+      "[rows]": 29,
+      "[stock_value]": 0.0,
+      "[excess_value]": 0.0,
+      "[pending_value]": 2844.6520000000005,
+      "[opp_loss]": 184.49999999999997
+    },
+    {
+      "REP_SSR_STOCK_STATUS_REPORTV3[RECOMMENDED_ACTION]": "STOCK OUT - AVAILABLE IN WAREHOUSE",
+      "[rows]": 5514,
+      "[stock_value]": 0.0,
+      "[excess_value]": 0.0,
+      "[pending_value]": 526.5,
+      "[opp_loss]": 18095.85
+    },
+    {
+      "REP_SSR_STOCK_STATUS_REPORTV3[RECOMMENDED_ACTION]": "NEW LISTED SKU",
+      "[rows]": 518,
+      "[stock_value]": 27008.5806,
+      "[excess_value]": 0.0,
+      "[pending_value]": 8511.0913,
+      "[opp_loss]": 0.0
+    },
+    {
+      "REP_SSR_STOCK_STATUS_REPORTV3[RECOMMENDED_ACTION]": "STOCK AVAILABLE",
+      "[rows]": 16857,
+      "[stock_value]": 1282636.9872,
+      "[excess_value]": 0.0,
+      "[pending_value]": 11293.1928,
+      "[opp_loss]": null
+    },
+    {
+      "REP_SSR_STOCK_STATUS_REPORTV3[RECOMMENDED_ACTION]": "ON THE VERGE OF STOCK OUT - AVAILABLE IN WAREHOUSE",
+      "[rows]": 1084,
+      "[stock_value]": 34184.7918,
+      "[excess_value]": 0.0,
+      "[pending_value]": 936.765,
+      "[opp_loss]": null
+    },
+    {
+      "REP_SSR_STOCK_STATUS_REPORTV3[RECOMMENDED_ACTION]": "ON THE VERGE OF STOCK OUT - ORDER PLACED",
+      "[rows]": 26,
+      "[stock_value]": 1833.5349,
+      "[excess_value]": 0.0,
+      "[pending_value]": 3796.6966000000007,
+      "[opp_loss]": null
+    },
+    {
+      "REP_SSR_STOCK_STATUS_REPORTV3[RECOMMENDED_ACTION]": "NON MOVING",
+      "[rows]": 32340,
+      "[stock_value]": 828682.1964,
+      "[excess_value]": 551557.0557,
+      "[pending_value]": 1696.1453,
+      "[opp_loss]": null
+    },
+    {
+      "REP_SSR_STOCK_STATUS_REPORTV3[RECOMMENDED_ACTION]": "IN STOCK BUT NO SALES",
+      "[rows]": 8617,
+      "[stock_value]": 201297.4416,
+      "[excess_value]": 53152.2324,
+      "[pending_value]": 420.99749999999995,
+      "[opp_loss]": null
+    },
+    {
+      "REP_SSR_STOCK_STATUS_REPORTV3[RECOMMENDED_ACTION]": "STOCK AVAILABLE - REORDER LEVEL UNKNOW",
+      "[rows]": 769,
+      "[stock_value]": 67583.0196,
+      "[excess_value]": 0.0,
+      "[pending_value]": 456.84000000000003,
+      "[opp_loss]": null
+    },
+    {
+      "REP_SSR_STOCK_STATUS_REPORTV3[RECOMMENDED_ACTION]": "NOT ACTIVE",
+      "[rows]": 7892,
+      "[stock_value]": 0.0,
+      "[excess_value]": 0.0,
+      "[pending_value]": 73.71690000000001,
+      "[opp_loss]": null
+    },
+    {
+      "REP_SSR_STOCK_STATUS_REPORTV3[RECOMMENDED_ACTION]": "OVERSTOCK",
+      "[rows]": 25085,
+      "[stock_value]": 2092552.9713,
+      "[excess_value]": 1216797.1956,
+      "[pending_value]": 7842.9122,
+      "[opp_loss]": null
+    },
+    {
+      "REP_SSR_STOCK_STATUS_REPORTV3[RECOMMENDED_ACTION]": "ON THE VERGE OF STOCK OUT - PLACE ORDER",
+      "[rows]": 1764,
+      "[stock_value]": 17347.9779,
+      "[excess_value]": 0.0,
+      "[pending_value]": 0.0,
+      "[opp_loss]": null
+    },
+    {
+      "REP_SSR_STOCK_STATUS_REPORTV3[RECOMMENDED_ACTION]": "NA",
+      "[rows]": 6944,
+      "[stock_value]": 266544.1134,
+      "[excess_value]": 0.0,
+      "[pending_value]": 0.0,
+      "[opp_loss]": null
+    }
+  ],
+  "dimensions": {
+    "department": [
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[DEPARTMENT]": "CONSUMER GOODS",
+        "[stock_value]": 2421563.2479,
+        "[excess_value]": 857945.1933,
+        "[opp_loss]": 28261.989999999994
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[DEPARTMENT]": "TECHNOLOGY",
+        "[stock_value]": 363020.4837,
+        "[excess_value]": 156559.5513,
+        "[opp_loss]": 2697.960000000001
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[DEPARTMENT]": "HOME & LIVING",
+        "[stock_value]": 666908.3133,
+        "[excess_value]": 320100.6735,
+        "[opp_loss]": 1999.3399999999979
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[DEPARTMENT]": "LIFESTYLE",
+        "[stock_value]": 1368179.5698,
+        "[excess_value]": 486901.0656,
+        "[opp_loss]": 16039.28999999998
+      }
+    ],
+    "section": [
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[SECTION]": "PROVISIONS",
+        "[stock_value]": 1304596.7325,
+        "[excess_value]": 530183.7126,
+        "[opp_loss]": 15820.560000000009
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[SECTION]": "REFRIDGERATED GOODS",
+        "[stock_value]": 268175.2374,
+        "[excess_value]": 88942.8708,
+        "[opp_loss]": 6176.600000000001
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[SECTION]": "SPICE MARKET",
+        "[stock_value]": 142609.4856,
+        "[excess_value]": 28560.7512,
+        "[opp_loss]": 1802.7900000000004
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[SECTION]": "PERSONAL CARE",
+        "[stock_value]": 614280.1887,
+        "[excess_value]": 182332.9359,
+        "[opp_loss]": 3185.030000000001
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[SECTION]": "ENTERTAINMENTS",
+        "[stock_value]": 362668.0851,
+        "[excess_value]": 156300.7644,
+        "[opp_loss]": 2647.8100000000013
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[SECTION]": "OFFICE SUPPLIES",
+        "[stock_value]": 217508.6115,
+        "[excess_value]": 116861.7429,
+        "[opp_loss]": 304.93000000000006
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[SECTION]": "TOYS",
+        "[stock_value]": 97389.8316,
+        "[excess_value]": 39095.8002,
+        "[opp_loss]": 1922.8100000000009
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[SECTION]": "FOOTWEAR",
+        "[stock_value]": 213032.7702,
+        "[excess_value]": 0.0,
+        "[opp_loss]": 1847.7099999999994
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[SECTION]": "TRAVEL",
+        "[stock_value]": 65940.7797,
+        "[excess_value]": 27925.7463,
+        "[opp_loss]": 10854.409999999993
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[SECTION]": "CULINARY SUPPLIES",
+        "[stock_value]": 351983.7423,
+        "[excess_value]": 160894.5039,
+        "[opp_loss]": 1253.9499999999996
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[SECTION]": "GLASS ITEMS",
+        "[stock_value]": 21231.6201,
+        "[excess_value]": 12467.4093,
+        "[opp_loss]": 91.03000000000002
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[SECTION]": "SPORTING GOODS",
+        "[stock_value]": 20148.9498,
+        "[excess_value]": 12097.3068,
+        "[opp_loss]": 113.24
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[SECTION]": "MENS APPAREL",
+        "[stock_value]": 321358.2444,
+        "[excess_value]": 124340.6268,
+        "[opp_loss]": 253.04000000000002
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[SECTION]": "LADIES APPAREL",
+        "[stock_value]": 564195.4236,
+        "[excess_value]": 243465.9471,
+        "[opp_loss]": 922.7199999999998
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[SECTION]": "KIDS FASHION",
+        "[stock_value]": 85183.2639,
+        "[excess_value]": 39316.2714,
+        "[opp_loss]": 125.36000000000003
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[SECTION]": "HOME TEXTILES",
+        "[stock_value]": 76184.3394,
+        "[excess_value]": 29877.0174,
+        "[opp_loss]": 349.43000000000006
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[SECTION]": "CLEANING ESSENSTIALS",
+        "[stock_value]": 91901.6037,
+        "[excess_value]": 27924.9228,
+        "[opp_loss]": 1277.0100000000007
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[SECTION]": "CONSUMER DEVICES",
+        "[stock_value]": 348.7428,
+        "[excess_value]": 258.7869,
+        "[opp_loss]": 50.15
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[SECTION]": "BABY CLOTHING",
+        "[stock_value]": 930.3066,
+        "[excess_value]": 659.367,
+        "[opp_loss]": null
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[SECTION]": "CF-COMPUTER ACC",
+        "[stock_value]": 3.6558,
+        "[excess_value]": 0.0,
+        "[opp_loss]": null
+      }
+    ],
+    "location": [
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[LOC_CODE]": "ST2",
+        "[stock_value]": 1018940.6799,
+        "[excess_value]": 451136.9898,
+        "[opp_loss]": 8161.759999999996
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[LOC_CODE]": "ST3",
+        "[stock_value]": 963248.9382,
+        "[excess_value]": 348952.1364,
+        "[opp_loss]": 4183.529999999999
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[LOC_CODE]": "ST1",
+        "[stock_value]": 1199571.5871,
+        "[excess_value]": 411320.1681,
+        "[opp_loss]": 8553.649999999998
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[LOC_CODE]": "ST5",
+        "[stock_value]": 62472.6945,
+        "[excess_value]": 34778.4624,
+        "[opp_loss]": 18403.489999999998
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[LOC_CODE]": "ST4",
+        "[stock_value]": 1575437.715,
+        "[excess_value]": 575318.727,
+        "[opp_loss]": 9696.149999999998
+      }
+    ],
+    "category": [
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "INSTANT DRINKS",
+        "[stock_value]": 7894.908,
+        "[excess_value]": 4584.5163,
+        "[opp_loss]": 58.459999999999994
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "HOME BAKING",
+        "[stock_value]": 32666.5197,
+        "[excess_value]": 19275.786,
+        "[opp_loss]": 259.70000000000005
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "SNACKS",
+        "[stock_value]": 129000.4164,
+        "[excess_value]": 28303.4682,
+        "[opp_loss]": 1981.9600000000003
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "UHT MILK",
+        "[stock_value]": 54236.3688,
+        "[excess_value]": 14557.1175,
+        "[opp_loss]": 552.6500000000001
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "SWEET BISCUITS",
+        "[stock_value]": 30858.0624,
+        "[excess_value]": 14585.9481,
+        "[opp_loss]": 353.53000000000003
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "BABY MILK POWDER AND FORMULA",
+        "[stock_value]": 1586.7657,
+        "[excess_value]": 678.4614,
+        "[opp_loss]": 5.46
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "BROUGHT IN BREAD",
+        "[stock_value]": 25025.8464,
+        "[excess_value]": 13557.618,
+        "[opp_loss]": 521.1499999999999
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "APPLES",
+        "[stock_value]": 2112.5691,
+        "[excess_value]": 1062.8577,
+        "[opp_loss]": 11.459999999999999
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "VEGETABLES",
+        "[stock_value]": 9790.1622,
+        "[excess_value]": 2512.4796,
+        "[opp_loss]": 212.48999999999998
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "FRESH SOFT CHEESE",
+        "[stock_value]": 21564.8001,
+        "[excess_value]": 11623.1355,
+        "[opp_loss]": 343.98
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "PULSES",
+        "[stock_value]": 28938.2787,
+        "[excess_value]": 7476.1218,
+        "[opp_loss]": 159.67000000000002
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "FRESH JUICE",
+        "[stock_value]": 28631.9691,
+        "[excess_value]": 13400.3646,
+        "[opp_loss]": 741.0999999999999
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "FRESH HARD CHEESE",
+        "[stock_value]": 9553.4316,
+        "[excess_value]": 6139.746,
+        "[opp_loss]": 319.44
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "FRESH MILK",
+        "[stock_value]": 12241.0251,
+        "[excess_value]": 2589.327,
+        "[opp_loss]": 412.4200000000001
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "BABY DIAPERS",
+        "[stock_value]": 13894.5753,
+        "[excess_value]": 8330.0049,
+        "[opp_loss]": 71.49000000000001
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "GENARAL ELECTRONICS ITEMS",
+        "[stock_value]": 126816.6807,
+        "[excess_value]": 49229.1648,
+        "[opp_loss]": 1965.5400000000004
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "COSMETICS",
+        "[stock_value]": 272534.1282,
+        "[excess_value]": 123466.7907,
+        "[opp_loss]": 444.66000000000014
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "OTHER",
+        "[stock_value]": 146514.7683,
+        "[excess_value]": 68884.4142,
+        "[opp_loss]": 1292.9599999999996
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "SCOOTERS",
+        "[stock_value]": 1277.0703,
+        "[excess_value]": 883.4778,
+        "[opp_loss]": 3.07
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "MENS SPORTS SHOES",
+        "[stock_value]": 99505.9458,
+        "[excess_value]": 0.0,
+        "[opp_loss]": 1277.2099999999998
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "LADIES CASUAL SHOES",
+        "[stock_value]": 28313.091,
+        "[excess_value]": 0.0,
+        "[opp_loss]": 76.17
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "MENS CASUAL SHOES",
+        "[stock_value]": 64983.7512,
+        "[excess_value]": 1068.5385,
+        "[opp_loss]": 438.09999999999985
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "TRAVEL BAGS",
+        "[stock_value]": 30137.1786,
+        "[excess_value]": 12359.9925,
+        "[opp_loss]": 376.47999999999996
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "STEEL OTHER UTENSILS",
+        "[stock_value]": 21340.2249,
+        "[excess_value]": 10562.2569,
+        "[opp_loss]": 110.53
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "WATER GLASS",
+        "[stock_value]": 24322.4424,
+        "[excess_value]": 13685.3793,
+        "[opp_loss]": 89.83000000000001
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "FITNESS ACCESSORIES",
+        "[stock_value]": 16856.8236,
+        "[excess_value]": 9713.9142,
+        "[opp_loss]": 65.46
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "COOKING POT NON STICK TEFLON",
+        "[stock_value]": 68320.9593,
+        "[excess_value]": 31923.7038,
+        "[opp_loss]": 496.61
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "SOFT TROLLEY",
+        "[stock_value]": 44419.0095,
+        "[excess_value]": 17743.7574,
+        "[opp_loss]": 10673.319999999992
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "BOOKS ,NOTE BOOK AND PAPERS",
+        "[stock_value]": 45470.9133,
+        "[excess_value]": 25243.6014,
+        "[opp_loss]": 82.62
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "MENS T SHIRT ROUND NECK SS",
+        "[stock_value]": 47958.7608,
+        "[excess_value]": 13199.9787,
+        "[opp_loss]": 94.15
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "LADIES T SHIRT SS",
+        "[stock_value]": 17351.4231,
+        "[excess_value]": 8389.8828,
+        "[opp_loss]": 7.6899999999999995
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "MENS VESTS",
+        "[stock_value]": 18183.9384,
+        "[excess_value]": 5186.5326,
+        "[opp_loss]": 44.57
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "MENS TROUSERS CASUAL",
+        "[stock_value]": 64863.1962,
+        "[excess_value]": 27903.3795,
+        "[opp_loss]": 6.94
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "MENS JEANS COMFORT FIT",
+        "[stock_value]": 64182.3669,
+        "[excess_value]": 26734.9572,
+        "[opp_loss]": 14.88
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "LADIES BRA",
+        "[stock_value]": 16944.4899,
+        "[excess_value]": 6631.659,
+        "[opp_loss]": 27.6
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "BOYS T SHIRTS SS",
+        "[stock_value]": 31464.4824,
+        "[excess_value]": 15165.4707,
+        "[opp_loss]": 32.900000000000006
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "LADIES PANTIES",
+        "[stock_value]": 6797.9736,
+        "[excess_value]": 1370.1366,
+        "[opp_loss]": 74.56
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "LADIES LEGGING",
+        "[stock_value]": 23426.3583,
+        "[excess_value]": 9528.138,
+        "[opp_loss]": 42.989999999999995
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "GIRLS FROCKS PARTY LS",
+        "[stock_value]": 19539.522,
+        "[excess_value]": 8212.8087,
+        "[opp_loss]": 13.530000000000001
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "LADIES ARABIC DRESSES",
+        "[stock_value]": 27536.5062,
+        "[excess_value]": 11083.0707,
+        "[opp_loss]": 20.88
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "BOYS TOYS",
+        "[stock_value]": 81149.985,
+        "[excess_value]": 30196.4895,
+        "[opp_loss]": 978.8100000000003
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "DISHWASH LIQUID",
+        "[stock_value]": 30177.171,
+        "[excess_value]": 11605.2183,
+        "[opp_loss]": 210.16
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "SMART WATCHES",
+        "[stock_value]": 251235.4995,
+        "[excess_value]": 109435.0635,
+        "[opp_loss]": 403.97999999999996
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "SOAP",
+        "[stock_value]": 107474.9904,
+        "[excess_value]": 24051.7026,
+        "[opp_loss]": 670.8599999999999
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "KITCHEN TOWEL",
+        "[stock_value]": 1208.6847,
+        "[excess_value]": 521.073,
+        "[opp_loss]": 0.45
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "WEIGHING MACHINE",
+        "[stock_value]": 4619.8404,
+        "[excess_value]": 2488.5954,
+        "[opp_loss]": 0.72
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "BALL POINT PEN",
+        "[stock_value]": 41001.0363,
+        "[excess_value]": 21083.8977,
+        "[opp_loss]": 23.029999999999994
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "DEODORANT MEN",
+        "[stock_value]": 39216.636,
+        "[excess_value]": 15181.5843,
+        "[opp_loss]": 255.51000000000008
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "FACE CREAM",
+        "[stock_value]": 150498.2025,
+        "[excess_value]": 34083.774,
+        "[opp_loss]": 365.92000000000013
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "WASHING POWDER FRONT LOAD",
+        "[stock_value]": 56935.332,
+        "[excess_value]": 13768.7472,
+        "[opp_loss]": 1049.88
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "HOME LINEN PRODUCTS",
+        "[stock_value]": 72641.1051,
+        "[excess_value]": 28258.8102,
+        "[opp_loss]": 361.34000000000003
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "CUTTING BOARD PLASTIC",
+        "[stock_value]": 25987.2246,
+        "[excess_value]": 14727.5118,
+        "[opp_loss]": 213.50000000000003
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "SHAMPOO",
+        "[stock_value]": 59556.9726,
+        "[excess_value]": 16769.8917,
+        "[opp_loss]": 493.61999999999995
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "TORCHES",
+        "[stock_value]": 73489.4694,
+        "[excess_value]": 28638.1791,
+        "[opp_loss]": 218.2
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "MENS TRIMMERS",
+        "[stock_value]": 51371.8551,
+        "[excess_value]": 22875.9903,
+        "[opp_loss]": 77.4
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "KITCHEN KNIFE",
+        "[stock_value]": 76010.8536,
+        "[excess_value]": 39285.3942,
+        "[opp_loss]": 102.68999999999997
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "HAIR OIL",
+        "[stock_value]": 74197.6848,
+        "[excess_value]": 21820.9761,
+        "[opp_loss]": 95.00000000000001
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "ALKALINE AA",
+        "[stock_value]": 2570.4972,
+        "[excess_value]": 1090.881,
+        "[opp_loss]": 7.699999999999999
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "FACE WASH",
+        "[stock_value]": 25147.8891,
+        "[excess_value]": 10206.5481,
+        "[opp_loss]": 156.85000000000002
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "POTATO CHIPS",
+        "[stock_value]": 33057.8685,
+        "[excess_value]": 12041.7516,
+        "[opp_loss]": 465.08
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "OLIVE OIL",
+        "[stock_value]": 26444.0889,
+        "[excess_value]": 11575.2915,
+        "[opp_loss]": 41.94
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "POWDERED MILK",
+        "[stock_value]": 44635.5306,
+        "[excess_value]": 14758.1163,
+        "[opp_loss]": 422.96
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "MASALA",
+        "[stock_value]": 101343.1365,
+        "[excess_value]": 56886.5241,
+        "[opp_loss]": 486.32999999999987
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "INSTANT COFFEE",
+        "[stock_value]": 45038.8755,
+        "[excess_value]": 13673.1483,
+        "[opp_loss]": 292.83000000000004
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "TEA BAGS",
+        "[stock_value]": 47240.0802,
+        "[excess_value]": 24902.4915,
+        "[opp_loss]": 196.08000000000004
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "ETHNIC FOODS",
+        "[stock_value]": 79716.1149,
+        "[excess_value]": 38303.091,
+        "[opp_loss]": 1069.6300000000006
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "INSTANT NOODLE",
+        "[stock_value]": 15794.5437,
+        "[excess_value]": 5827.7745,
+        "[opp_loss]": 116.76999999999998
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "COOKING OILS",
+        "[stock_value]": 89667.5427,
+        "[excess_value]": 25780.5612,
+        "[opp_loss]": 2610.4
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "CANDY BAGS",
+        "[stock_value]": 24548.2029,
+        "[excess_value]": 12237.7122,
+        "[opp_loss]": 469.88
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "BOXED CHOCOLATE",
+        "[stock_value]": 16586.6967,
+        "[excess_value]": 3396.6918,
+        "[opp_loss]": 493.61999999999995
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "FRESH CHICKEN PORTIONS",
+        "[stock_value]": 28856.7387,
+        "[excess_value]": 12811.5405,
+        "[opp_loss]": 1185.05
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "HEALTH AND ISOTONIC DRINKS",
+        "[stock_value]": 9712.9557,
+        "[excess_value]": 2245.2309,
+        "[opp_loss]": 73.55999999999999
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "CHOCOLATE BAGS",
+        "[stock_value]": 33943.2363,
+        "[excess_value]": 9591.5043,
+        "[opp_loss]": 289.48
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "COLA CAN AND BOTTLE",
+        "[stock_value]": 14583.4371,
+        "[excess_value]": 3470.283,
+        "[opp_loss]": 451.0899999999999
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "FRESH WHOLE  CHICKEN",
+        "[stock_value]": 35386.3701,
+        "[excess_value]": 4400.4411,
+        "[opp_loss]": 735.87
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "COVRD CHOCO BARS AND TAB",
+        "[stock_value]": 117332.0694,
+        "[excess_value]": 39162.5955,
+        "[opp_loss]": 623.3199999999998
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "COCONUT OIL",
+        "[stock_value]": 22713.7419,
+        "[excess_value]": 15087.006,
+        "[opp_loss]": 107.67
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "SPICES",
+        "[stock_value]": 30304.5597,
+        "[excess_value]": 12276.0576,
+        "[opp_loss]": 291.81
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "TEA GLASS",
+        "[stock_value]": 4222.6731,
+        "[excess_value]": 2539.1259,
+        "[opp_loss]": 8.07
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "BOYS JEANS",
+        "[stock_value]": 7939.8684,
+        "[excess_value]": 3982.1895,
+        "[opp_loss]": 1.98
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "TOOTHBRUSH ADULT",
+        "[stock_value]": 8497.8882,
+        "[excess_value]": 2340.0252,
+        "[opp_loss]": 35.38
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "BODY LOTION",
+        "[stock_value]": 40178.3085,
+        "[excess_value]": 11318.4864,
+        "[opp_loss]": 200.97000000000003
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "TOOTH PASTE",
+        "[stock_value]": 38198.7252,
+        "[excess_value]": 13706.3097,
+        "[opp_loss]": 294.48
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "LADIES SPORTS SHOES",
+        "[stock_value]": 9701.559,
+        "[excess_value]": 0.0,
+        "[opp_loss]": 20.859999999999996
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "FRY PAN NON STICK TEFLON",
+        "[stock_value]": 12859.7733,
+        "[excess_value]": 4895.748,
+        "[opp_loss]": 29.240000000000002
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "PRESSURE COOKER ALUMINIUM",
+        "[stock_value]": 12880.6038,
+        "[excess_value]": 5309.8956,
+        "[opp_loss]": 1.94
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "TAWA NON STICK TEFLON",
+        "[stock_value]": 4168.9944,
+        "[excess_value]": 1811.9916,
+        "[opp_loss]": 3.4
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "INSECT KILLER SPRAY",
+        "[stock_value]": 3841.5897,
+        "[excess_value]": 1478.871,
+        "[opp_loss]": 0.82
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "DOLLS AND STROLLERS",
+        "[stock_value]": 11222.1585,
+        "[excess_value]": 4757.4135,
+        "[opp_loss]": 827.1899999999999
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "GEL PEN AND ROLLER BALLS",
+        "[stock_value]": 1739.7666,
+        "[excess_value]": 1040.094,
+        "[opp_loss]": 3.56
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "SOCKETS AND PLUGS",
+        "[stock_value]": 4602.528,
+        "[excess_value]": 1685.2428,
+        "[opp_loss]": 37.6
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "AIR FRESHENER",
+        "[stock_value]": 8673.2424,
+        "[excess_value]": 4039.5807,
+        "[opp_loss]": 25.859999999999996
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "MENS FORMAL SHOES",
+        "[stock_value]": 12143.0583,
+        "[excess_value]": 0.0,
+        "[opp_loss]": 39.03
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "RAZORS DISPOSABLE",
+        "[stock_value]": 17953.1073,
+        "[excess_value]": 7545.9519,
+        "[opp_loss]": 21.2
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "SHAVERS",
+        "[stock_value]": 41644.1088,
+        "[excess_value]": 19097.8209,
+        "[opp_loss]": 89.40999999999998
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "HAIR COLOR",
+        "[stock_value]": 13044.2373,
+        "[excess_value]": 5898.7359,
+        "[opp_loss]": 290.85999999999996
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "EMERGENCY LAMPS",
+        "[stock_value]": 54328.6575,
+        "[excess_value]": 31733.6778,
+        "[opp_loss]": 189.79
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "BASMATI RICE",
+        "[stock_value]": 107761.833,
+        "[excess_value]": 38361.3759,
+        "[opp_loss]": 583.5699999999999
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "WHITE SUGAR",
+        "[stock_value]": 17257.8492,
+        "[excess_value]": 4644.2808,
+        "[opp_loss]": 108.57
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "COOKIES",
+        "[stock_value]": 25297.3125,
+        "[excess_value]": 11991.9582,
+        "[opp_loss]": 221.92000000000002
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "CANNED TUNA",
+        "[stock_value]": 46518.5727,
+        "[excess_value]": 25585.4241,
+        "[opp_loss]": 538.6000000000001
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "FLOUR",
+        "[stock_value]": 19480.0707,
+        "[excess_value]": 8616.0024,
+        "[opp_loss]": 223.36999999999998
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "OTHER RICE",
+        "[stock_value]": 44107.119,
+        "[excess_value]": 11978.0721,
+        "[opp_loss]": 1085.1599999999999
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "PURE GHEE",
+        "[stock_value]": 16288.2549,
+        "[excess_value]": 9202.8528,
+        "[opp_loss]": 179.07
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "PENCIL",
+        "[stock_value]": 5412.4227,
+        "[excess_value]": 2351.673,
+        "[opp_loss]": 4.48
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "VANITY BAGS",
+        "[stock_value]": 8447.4819,
+        "[excess_value]": 3992.895,
+        "[opp_loss]": 7.03
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "LED BULB",
+        "[stock_value]": 1845.8253,
+        "[excess_value]": 317.8629,
+        "[opp_loss]": 0.0
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "MENS SHIRT CASUAL LS",
+        "[stock_value]": 89240.1732,
+        "[excess_value]": 40748.7186,
+        "[opp_loss]": 11.370000000000001
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "SOFT TOYS",
+        "[stock_value]": 1028.6406,
+        "[excess_value]": 321.3027,
+        "[opp_loss]": 5.52
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "POWDERED DRINK",
+        "[stock_value]": 24011.3349,
+        "[excess_value]": 7985.2986,
+        "[opp_loss]": 375.81000000000006
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "PASTA",
+        "[stock_value]": 12705.3252,
+        "[excess_value]": 5549.3883,
+        "[opp_loss]": 362.57
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "BOILED RICE",
+        "[stock_value]": 37270.5867,
+        "[excess_value]": 11583.8856,
+        "[opp_loss]": 1628.2700000000004
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "INDIAN SAVOURIES",
+        "[stock_value]": 1315.1835,
+        "[excess_value]": 672.5268,
+        "[opp_loss]": 2.49
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "MINERAL WATERS",
+        "[stock_value]": 6239.0925,
+        "[excess_value]": 1063.6326,
+        "[opp_loss]": 65.66000000000001
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "FRESH BEEF OTHER",
+        "[stock_value]": 19560.3417,
+        "[excess_value]": 8996.1732,
+        "[opp_loss]": 222.57999999999996
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "WATER BOTTLE",
+        "[stock_value]": 5819.9202,
+        "[excess_value]": 1788.2073,
+        "[opp_loss]": 126.49000000000001
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "WORKING TOOLS & ACCESSORIES",
+        "[stock_value]": 13903.0938,
+        "[excess_value]": 8507.9079,
+        "[opp_loss]": 1.9000000000000001
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "MENS TRACK PANT",
+        "[stock_value]": 12522.5217,
+        "[excess_value]": 2923.9191,
+        "[opp_loss]": 34.0
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "GIRLS T SHIRT SS",
+        "[stock_value]": 1797.957,
+        "[excess_value]": 1011.987,
+        "[opp_loss]": null
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "BOX TISSUE",
+        "[stock_value]": 4059.855,
+        "[excess_value]": 562.7826,
+        "[opp_loss]": 15.01
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "TEDDY BEAR",
+        "[stock_value]": 6453.27,
+        "[excess_value]": 2924.9721,
+        "[opp_loss]": 82.91000000000001
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "CAT FOOD",
+        "[stock_value]": 3125.8602,
+        "[excess_value]": 1807.515,
+        "[opp_loss]": 66.07
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "FRESH LABAN",
+        "[stock_value]": 5105.1519,
+        "[excess_value]": 1271.4246,
+        "[opp_loss]": 76.26000000000002
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "PLAIN YOGHURT",
+        "[stock_value]": 6195.555,
+        "[excess_value]": 1060.2171,
+        "[opp_loss]": 181.92000000000002
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "FRESH MUTTON OTHER",
+        "[stock_value]": 911.9223,
+        "[excess_value]": 277.4898,
+        "[opp_loss]": 10.82
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "CHEESE AND MARGARINES",
+        "[stock_value]": 2680.5222,
+        "[excess_value]": 1958.877,
+        "[opp_loss]": 60.220000000000006
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "PACKED DRY FISH",
+        "[stock_value]": 8588.3301,
+        "[excess_value]": 3876.0174,
+        "[opp_loss]": 296.55999999999995
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "PORTION CHEESE",
+        "[stock_value]": 1544.481,
+        "[excess_value]": 750.708,
+        "[opp_loss]": 26.07
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "LOOSE TEA",
+        "[stock_value]": 22459.9149,
+        "[excess_value]": 11090.2095,
+        "[opp_loss]": 145.68
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "EXTENSION",
+        "[stock_value]": 106.5636,
+        "[excess_value]": 86.0085,
+        "[opp_loss]": 0.95
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "MENS BOXER SHORTS",
+        "[stock_value]": 11257.5042,
+        "[excess_value]": 4110.9471,
+        "[opp_loss]": 16.4
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "MECHANICAL SCALE",
+        "[stock_value]": 3124.5858,
+        "[excess_value]": 1575.7254,
+        "[opp_loss]": 1.29
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "MAXI ROLL",
+        "[stock_value]": 1086.2829,
+        "[excess_value]": 275.0247,
+        "[opp_loss]": 4.49
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "FOOTBALL",
+        "[stock_value]": 6323.7753,
+        "[excess_value]": 3372.9588,
+        "[opp_loss]": 62.21000000000001
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "MEN SLEEPWEAR",
+        "[stock_value]": 29.6649,
+        "[excess_value]": 0.0,
+        "[opp_loss]": null
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "SANITARY NAPKINS",
+        "[stock_value]": 4481.8353,
+        "[excess_value]": 1625.2137,
+        "[opp_loss]": 69.17
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "MENS SOCKS",
+        "[stock_value]": 5551.2054,
+        "[excess_value]": 738.6039,
+        "[opp_loss]": 1.57
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "CHEWING GUMS",
+        "[stock_value]": 13858.2009,
+        "[excess_value]": 7245.1449,
+        "[opp_loss]": 39.78
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "MENS BRIEFS",
+        "[stock_value]": 9019.3932,
+        "[excess_value]": 3660.0282,
+        "[opp_loss]": 20.32
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "OTHER PLASTIC ARTICLES",
+        "[stock_value]": 4626.4932,
+        "[excess_value]": 1009.9809,
+        "[opp_loss]": 16.45
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "STEEL JUGS & MUGS",
+        "[stock_value]": 2854.7694,
+        "[excess_value]": 696.5811,
+        "[opp_loss]": 3.72
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "LADIES TROUSER CASUAL",
+        "[stock_value]": 8753.2218,
+        "[excess_value]": 3260.2473,
+        "[opp_loss]": 0.15
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "BOYS SHIRTS LS",
+        "[stock_value]": 4280.8716,
+        "[excess_value]": 1877.7204,
+        "[opp_loss]": 0.42000000000000004
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "SOAP CASE & HOLDERS",
+        "[stock_value]": 664.2729,
+        "[excess_value]": 250.2981,
+        "[opp_loss]": 2.87
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "SUNFLOWER OIL",
+        "[stock_value]": 60118.2999,
+        "[excess_value]": 13410.9378,
+        "[opp_loss]": null
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "PRESSURE COOKER STEEL",
+        "[stock_value]": 5326.5276,
+        "[excess_value]": 2802.9699,
+        "[opp_loss]": null
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": " CAMISOLE W/SHORT",
+        "[stock_value]": 68.4126,
+        "[excess_value]": 63.4068,
+        "[opp_loss]": null
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "PLASTIC COOKWARE",
+        "[stock_value]": 27.486,
+        "[excess_value]": 27.486,
+        "[opp_loss]": null
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "BOYS TRACK PANTS",
+        "[stock_value]": 749.2743,
+        "[excess_value]": 354.9231,
+        "[opp_loss]": null
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "DEEWAN SET",
+        "[stock_value]": 10.0143,
+        "[excess_value]": 10.0143,
+        "[opp_loss]": null
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "MENS SHIRT FORMAL LS",
+        "[stock_value]": 1612.2753,
+        "[excess_value]": 1284.363,
+        "[opp_loss]": null
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "LADIES CHURIDHAR LS",
+        "[stock_value]": 5502.7863,
+        "[excess_value]": 3302.5995,
+        "[opp_loss]": null
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "BICYCLES",
+        "[stock_value]": 204.3063,
+        "[excess_value]": 204.3063,
+        "[opp_loss]": null
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "CHESS AND BOARD GAMES",
+        "[stock_value]": 818.3862,
+        "[excess_value]": 560.0907,
+        "[opp_loss]": null
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "LADIES JEANS",
+        "[stock_value]": 967.2588,
+        "[excess_value]": 335.0484,
+        "[opp_loss]": null
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "HARD TROLLEY",
+        "[stock_value]": 989.0991,
+        "[excess_value]": 503.6445,
+        "[opp_loss]": null
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "GIRLS PANTIES",
+        "[stock_value]": 1358.64,
+        "[excess_value]": 426.9726,
+        "[opp_loss]": null
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "LADIES HAND KERCHIEFS",
+        "[stock_value]": 1.35,
+        "[excess_value]": 1.35,
+        "[opp_loss]": null
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "INFANT CAP",
+        "[stock_value]": 3.9528,
+        "[excess_value]": 3.9528,
+        "[opp_loss]": null
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "KHALBATTA",
+        "[stock_value]": 16.2,
+        "[excess_value]": 16.2,
+        "[opp_loss]": null
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "CD POUCHES",
+        "[stock_value]": 1.2474,
+        "[excess_value]": 1.2474,
+        "[opp_loss]": null
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "MENS TOP WEAR",
+        "[stock_value]": 16.2,
+        "[excess_value]": 16.2,
+        "[opp_loss]": null
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "WINDOW CURTAIN",
+        "[stock_value]": 10.881,
+        "[excess_value]": 10.881,
+        "[opp_loss]": null
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "ENERGY SAVING LAMP",
+        "[stock_value]": 0.27,
+        "[excess_value]": 0.27,
+        "[opp_loss]": null
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "ALBUMS",
+        "[stock_value]": 2.9781,
+        "[excess_value]": 2.9781,
+        "[opp_loss]": null
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "MENS SUITS",
+        "[stock_value]": 14.58,
+        "[excess_value]": 14.58,
+        "[opp_loss]": null
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "RAIN WEAR",
+        "[stock_value]": 9.7227,
+        "[excess_value]": 9.7227,
+        "[opp_loss]": null
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "GENERAL ELECTRONICS PRODUCTS",
+        "[stock_value]": 14.823,
+        "[excess_value]": 14.823,
+        "[opp_loss]": null
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "CHURIDAR MATERIAL",
+        "[stock_value]": 11.799,
+        "[excess_value]": 11.799,
+        "[opp_loss]": null
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "SAREE",
+        "[stock_value]": 20.736,
+        "[excess_value]": 5.2353,
+        "[opp_loss]": null
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "FLOWER VASES",
+        "[stock_value]": 3.1806,
+        "[excess_value]": 3.1806,
+        "[opp_loss]": null
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "MEN LYCRA PANT",
+        "[stock_value]": 517.5846,
+        "[excess_value]": 0.0,
+        "[opp_loss]": null
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "CF-COMPUTER OTHER ACC",
+        "[stock_value]": 3.6558,
+        "[excess_value]": 0.0,
+        "[opp_loss]": null
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "WATER DISPENSER",
+        "[stock_value]": 0.0,
+        "[excess_value]": 0.0,
+        "[opp_loss]": null
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[CATEGORY_NAME]": "KIDS SMART WATCHES",
+        "[stock_value]": 0.0,
+        "[excess_value]": 0.0,
+        "[opp_loss]": null
+      }
+    ]
+  },
+  "deep_dives": {
+    "lowest_burnout": [
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[SKU_CODE]": "0100000978",
+        "REP_SSR_STOCK_STATUS_REPORTV3[PART_DESCRIPTION]": "JOHNSONS BABY LOTION 500ML MILDNESS/12PCS",
+        "REP_SSR_STOCK_STATUS_REPORTV3[LOC_CODE]": "ST4",
+        "[burnout]": 1.0,
+        "[value]": 8.8155
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[SKU_CODE]": "0100000741",
+        "REP_SSR_STOCK_STATUS_REPORTV3[PART_DESCRIPTION]": "AJAY TOOTH BRUSH COMPLETE 1PCS S/M/H/12PCS",
+        "REP_SSR_STOCK_STATUS_REPORTV3[LOC_CODE]": "ST3",
+        "[burnout]": 1.0,
+        "[value]": 0.2511
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[SKU_CODE]": "0100000891",
+        "REP_SSR_STOCK_STATUS_REPORTV3[PART_DESCRIPTION]": "PONDS TALC 200G DREAM FLOWER PINK/48PCS",
+        "REP_SSR_STOCK_STATUS_REPORTV3[LOC_CODE]": "ST1",
+        "[burnout]": 1.0,
+        "[value]": 1.0503
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[SKU_CODE]": "0100000275",
+        "REP_SSR_STOCK_STATUS_REPORTV3[PART_DESCRIPTION]": "PARACHUTE HAIR OIL 150ML SAMPOORNA/60PCS",
+        "REP_SSR_STOCK_STATUS_REPORTV3[LOC_CODE]": "ST3",
+        "[burnout]": 1.0,
+        "[value]": 1.1259
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[SKU_CODE]": "0100000261",
+        "REP_SSR_STOCK_STATUS_REPORTV3[PART_DESCRIPTION]": "VATIKA HAIR OIL 300ML CACTUS/24PCS",
+        "REP_SSR_STOCK_STATUS_REPORTV3[LOC_CODE]": "ST1",
+        "[burnout]": 1.0,
+        "[value]": 2.3193
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[SKU_CODE]": "0100000255",
+        "REP_SSR_STOCK_STATUS_REPORTV3[PART_DESCRIPTION]": "VATIKA HAIR OIL 300ML ALMOND/24PCS",
+        "REP_SSR_STOCK_STATUS_REPORTV3[LOC_CODE]": "ST1",
+        "[burnout]": 1.0,
+        "[value]": 14.5773
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[SKU_CODE]": "0100000829",
+        "REP_SSR_STOCK_STATUS_REPORTV3[PART_DESCRIPTION]": "ENCHANTEUR TALC 250G CHARMING/24PCS",
+        "REP_SSR_STOCK_STATUS_REPORTV3[LOC_CODE]": "ST4",
+        "[burnout]": 1.0,
+        "[value]": 3.4182
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[SKU_CODE]": "0100000010",
+        "REP_SSR_STOCK_STATUS_REPORTV3[PART_DESCRIPTION]": "HEAD&SHOULDERS SHAMPOO 190ML EXTRA VOLUME/48PCS",
+        "REP_SSR_STOCK_STATUS_REPORTV3[LOC_CODE]": "ST4",
+        "[burnout]": 1.0,
+        "[value]": 1.296
+      }
+    ],
+    "highest_opp_loss": [
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[SKU_CODE]": "0101664250",
+        "REP_SSR_STOCK_STATUS_REPORTV3[PART_DESCRIPTION]": "ROYAL GOLD FRAGRANT JASMINE RICE 5KG C8",
+        "[value]": 453.71000000000004
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[SKU_CODE]": "0101583581",
+        "REP_SSR_STOCK_STATUS_REPORTV3[PART_DESCRIPTION]": "DOLL POLY BAG 1725/1680/22104_39 HTN/AMN/OR",
+        "[value]": 613.85
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[SKU_CODE]": "0101643281",
+        "REP_SSR_STOCK_STATUS_REPORTV3[PART_DESCRIPTION]": "CLEARANCE GROCERY FOOD SR 3",
+        "[value]": 464.17
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[SKU_CODE]": "0101657113",
+        "REP_SSR_STOCK_STATUS_REPORTV3[PART_DESCRIPTION]": "SKECHERS-25 MENS SPORTS SHOES 118075 BLK(12P)",
+        "[value]": 704.82
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[SKU_CODE]": "0100018793",
+        "REP_SSR_STOCK_STATUS_REPORTV3[PART_DESCRIPTION]": "DOUX WHOLE CHICKEN 1300GM C10",
+        "[value]": 630.45
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[SKU_CODE]": "0100033922",
+        "REP_SSR_STOCK_STATUS_REPORTV3[PART_DESCRIPTION]": "R VILLAGE",
+        "[value]": 1309.44
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[SKU_CODE]": "0100026710",
+        "REP_SSR_STOCK_STATUS_REPORTV3[PART_DESCRIPTION]": "SUNLIFE COOKING OIL 1.5LTR C6",
+        "[value]": 553.56
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[SKU_CODE]": "0100022592",
+        "REP_SSR_STOCK_STATUS_REPORTV3[PART_DESCRIPTION]": "DALAL VEGETABLE OIL 17LTR",
+        "[value]": 1395.65
+      }
+    ],
+    "highest_excess": [
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[SKU_CODE]": "0101653559",
+        "REP_SSR_STOCK_STATUS_REPORTV3[PART_DESCRIPTION]": "PRAN XXXL 1121 BASMATI RICE 5KG C4",
+        "[value]": 3152.1609
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[SKU_CODE]": "0101606741",
+        "REP_SSR_STOCK_STATUS_REPORTV3[PART_DESCRIPTION]": "ALITEA GINGER TEA 20GM 20+5FREE C24",
+        "[value]": 3274.7976
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[SKU_CODE]": "0100023198",
+        "REP_SSR_STOCK_STATUS_REPORTV3[PART_DESCRIPTION]": "EASTERN COCONUT OIL 1LTR C15",
+        "[value]": 3742.4457
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[SKU_CODE]": "0101642115",
+        "REP_SSR_STOCK_STATUS_REPORTV3[PART_DESCRIPTION]": "FREEZONE MENS CASUAL F/S SHIRT STRIPE&CHECK 251",
+        "[value]": 3502.9638
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[SKU_CODE]": "0101642114",
+        "REP_SSR_STOCK_STATUS_REPORTV3[PART_DESCRIPTION]": "FREEZONE MENS CASUAL F/S SHIRT PRINT 251",
+        "[value]": 6753.5154
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[SKU_CODE]": "0100074965",
+        "REP_SSR_STOCK_STATUS_REPORTV3[PART_DESCRIPTION]": "WORLD TIME MENS WATCH STRAP CASIO MDL",
+        "[value]": 3945.5991
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[SKU_CODE]": "0101644837",
+        "REP_SSR_STOCK_STATUS_REPORTV3[PART_DESCRIPTION]": "WISME SMART WATCH LADIES X-61",
+        "[value]": 4116.0663
+      },
+      {
+        "REP_SSR_STOCK_STATUS_REPORTV3[SKU_CODE]": "0100015823",
+        "REP_SSR_STOCK_STATUS_REPORTV3[PART_DESCRIPTION]": "AL RABIE ORANGE JUICE 250ML C30",
+        "[value]": 4286.9817
+      }
+    ]
+  },
+  "currency": "USD",
+  "snapshot": [
+    {
+      "[as_at]": "2026-08-23T00:00:00",
+      "[snapshot_cardinality]": 1,
+      "[rows]": 120391,
+      "[skus]": 44467,
+      "[locations]": 5,
+      "[total_stock_value]": 4819671.6147,
+      "[total_excess_value]": 1821506.4837,
+      "[total_pending_value]": 38399.509600000005,
+      "[total_opp_loss]": 48998.58
+    }
+  ]
+}

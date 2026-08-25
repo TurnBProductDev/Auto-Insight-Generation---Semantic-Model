@@ -1,0 +1,134 @@
+[
+  {
+    "id": 356989147,
+    "reportId": "sales_yoy",
+    "severity": "positive",
+    "category": "Revenue",
+    "metric": "ST5",
+    "value": "+2.64M",
+    "delta": "456.4%",
+    "deltaDirection": "up",
+    "description": "ST5 revenue increased by 2.64M (456.4%), from 577.7K to 3.21M versus the prior period, representing about 73.0% of the total increase in revenue. The increase came mainly from more units being sold, with customer activity also much higher in this store.",
+    "displayTime": "2:49 AM",
+    "isoDate": "2026-08-25",
+    "comparisonLabel": "vs the prior period",
+    "insight": {
+      "title": "ST5 growth concentration",
+      "summary": "The uplift was concentrated in ST5 within the stores compared year on year. The analyst question points to special product groups as the place to look next, which may show whether the gain was concentrated in a small part of the range or spread more broadly.",
+      "stats": [
+        {
+          "label": "Revenue change",
+          "value": "+2.64M"
+        },
+        {
+          "label": "Share of revenue increase",
+          "value": "73.0%"
+        },
+        {
+          "label": "Change from units sold",
+          "value": "+2.60M"
+        }
+      ],
+      "action": "Investigate ST5 special product groups, especially COVRD CHOCO BARS AND TAB, to see where the added sales were concentrated."
+    }
+  },
+  {
+    "id": 310558343,
+    "reportId": "sales_yoy",
+    "severity": "positive",
+    "category": "Quantity",
+    "metric": "CONSUMER GOODS",
+    "value": "+2.06M",
+    "delta": "10.3%",
+    "deltaDirection": "up",
+    "description": "CONSUMER GOODS sold 2.06M more units (10.3%), from 19.97M to 22.02M versus the prior period, representing about 56.9% of the total increase in unit sales. This was the largest contributor to the overall rise in units sold, making Consumer Goods the main area behind the broader uplift.",
+    "displayTime": "2:49 AM",
+    "isoDate": "2026-08-25",
+    "comparisonLabel": "vs the prior period",
+    "insight": {
+      "title": "Consumer Goods unit driver",
+      "summary": "The increase in units sold was concentrated in Consumer Goods across the stores in scope. The analyst question highlights Provisions, Refridgerated Goods, and Personal Care as the key areas to examine, which may indicate whether demand was broad based or led by a few sections.",
+      "stats": [
+        {
+          "label": "Unit sales change",
+          "value": "+2.06M"
+        },
+        {
+          "label": "Share of unit sales increase",
+          "value": "56.9%"
+        },
+        {
+          "label": "Change from units sold",
+          "value": "+1.28M"
+        }
+      ],
+      "action": "Review Consumer Goods sections, especially PROVISIONS, REFRIDGERATED GOODS, and PERSONAL CARE, to identify where the added unit sales were concentrated."
+    }
+  },
+  {
+    "id": 562718102,
+    "reportId": "sales_yoy",
+    "severity": "positive",
+    "category": "Revenue",
+    "metric": "ST4",
+    "value": "+1.20M",
+    "delta": "10.8%",
+    "deltaDirection": "up",
+    "description": "ST4 revenue increased by 1.20M (10.8%), from 11.15M to 12.36M versus the prior period, representing about 33.2% of the total increase in revenue. The revenue gain was associated more with higher average revenue per item than with a large increase in units sold.",
+    "displayTime": "2:49 AM",
+    "isoDate": "2026-08-25",
+    "comparisonLabel": "vs the prior period",
+    "insight": {
+      "title": "ST4 rate-led growth",
+      "summary": "The change sits in ST4 and was not concentrated in a large rise in units sold. This suggests the growth may be tied more to the mix of products sold or to where higher revenue per item was recorded across divisions or categories.",
+      "stats": [
+        {
+          "label": "Revenue change",
+          "value": "+1.20M"
+        },
+        {
+          "label": "Share of revenue increase",
+          "value": "33.2%"
+        },
+        {
+          "label": "Change from revenue per item",
+          "value": "+1.08M"
+        }
+      ],
+      "action": "Compare ST4 divisions and categories to find where average revenue per item moved most versus the prior period."
+    }
+  },
+  {
+    "id": 1184781211,
+    "reportId": "sales_yoy",
+    "severity": "positive",
+    "category": "Revenue",
+    "metric": "PROVISIONS",
+    "value": "+950.0K",
+    "delta": "9.5%",
+    "deltaDirection": "up",
+    "description": "PROVISIONS revenue increased by 950.0K (9.5%), from 9.96M to 10.91M versus the prior period, representing about 26.3% of the total increase in revenue. Sales growth was supported by more purchasing activity, while average revenue per transaction was under pressure.",
+    "displayTime": "2:49 AM",
+    "isoDate": "2026-08-25",
+    "comparisonLabel": "vs the prior period",
+    "insight": {
+      "title": "Provisions transaction rate pressure",
+      "summary": "The gain was concentrated in PROVISIONS within the stores compared year on year. The pattern suggests added sales came through higher activity, while the value captured per transaction weakened in some part of the category.",
+      "stats": [
+        {
+          "label": "Revenue change",
+          "value": "+950.0K"
+        },
+        {
+          "label": "Share of revenue increase",
+          "value": "26.3%"
+        },
+        {
+          "label": "Change from revenue per item",
+          "value": "+647.9K"
+        }
+      ],
+      "action": "Examine PROVISIONS products to locate where transaction activity increased and where average revenue per transaction softened."
+    }
+  }
+]

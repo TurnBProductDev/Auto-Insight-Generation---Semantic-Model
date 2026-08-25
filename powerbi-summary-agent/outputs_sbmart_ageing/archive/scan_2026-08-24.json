@@ -1,0 +1,1751 @@
+{
+  "queries": {
+    "snapshot": "EVALUATE ROW(\n  \"as_at\", MAX('REP_SSR_SAG'[UPDATED_ON]),\n  \"snapshot_cardinality\", DISTINCTCOUNT('REP_SSR_SAG'[UPDATED_ON]),\n  \"total_value\", [STOCK VALUE],\n  \"aged_value\", CALCULATE([STOCK VALUE], KEEPFILTERS('REP_SSR_SAG'[NEW AGE] IN {\"09-12 MONTHS\", \"12-24 MONTHS\", \"24+ MONTHS\"})),\n  \"high_risk_value\", CALCULATE([STOCK VALUE], KEEPFILTERS('REP_SSR_SAG'[NEW AGE] IN {\"12-24 MONTHS\", \"24+ MONTHS\"})),\n  \"oldest_value\", CALCULATE([STOCK VALUE], KEEPFILTERS('REP_SSR_SAG'[NEW AGE] = \"24+ MONTHS\")),\n  \"skus\", DISTINCTCOUNT('REP_SSR_SAG'[ITEM]),\n  \"aged_skus\", CALCULATE(DISTINCTCOUNT('REP_SSR_SAG'[ITEM]), KEEPFILTERS('REP_SSR_SAG'[NEW AGE] IN {\"09-12 MONTHS\", \"12-24 MONTHS\", \"24+ MONTHS\"})),\n  \"locations\", DISTINCTCOUNT('REP_SSR_SAG'[LOC_CODE]),\n  \"total_qty\", SUM('REP_SSR_SAG'[QTY]),\n  \"aged_qty\", CALCULATE(SUM('REP_SSR_SAG'[QTY]), KEEPFILTERS('REP_SSR_SAG'[NEW AGE] IN {\"09-12 MONTHS\", \"12-24 MONTHS\", \"24+ MONTHS\"})),\n  \"source_aged_share\", [aged stock share],\n  \"source_aged_numerator\", SUM('REP_SSR_SAG'[agingstock])\n)",
+    "bands": "EVALUATE\nSUMMARIZECOLUMNS(\n  'REP_SSR_SAG'[NEW AGE],\n  \"value\", [STOCK VALUE],\n  \"aged\", CALCULATE([STOCK VALUE], KEEPFILTERS('REP_SSR_SAG'[NEW AGE] IN {\"09-12 MONTHS\", \"12-24 MONTHS\", \"24+ MONTHS\"})),\n  \"skus\", DISTINCTCOUNT('REP_SSR_SAG'[ITEM]),\n  \"qty\", SUM('REP_SSR_SAG'[QTY])\n)",
+    "risk_split": "EVALUATE\nSUMMARIZECOLUMNS(\n  'REP_SSR_SAG'[non_moving_status],\n  \"value\", [STOCK VALUE],\n  \"aged\", CALCULATE([STOCK VALUE], KEEPFILTERS('REP_SSR_SAG'[NEW AGE] IN {\"09-12 MONTHS\", \"12-24 MONTHS\", \"24+ MONTHS\"}))\n)",
+    "dimension__division": "EVALUATE\nTOPN(\n  15,\n  FILTER(\n    SUMMARIZECOLUMNS(\n      'REP_SSR_SAG'[DEPARTMENT],\n      \"value\", [STOCK VALUE],\n      \"aged\", CALCULATE([STOCK VALUE], KEEPFILTERS('REP_SSR_SAG'[NEW AGE] IN {\"09-12 MONTHS\", \"12-24 MONTHS\", \"24+ MONTHS\"})),\n      \"high_risk\", CALCULATE([STOCK VALUE], KEEPFILTERS('REP_SSR_SAG'[NEW AGE] IN {\"12-24 MONTHS\", \"24+ MONTHS\"})),\n      \"qty\", SUM('REP_SSR_SAG'[QTY]),\n      \"aged_qty\", CALCULATE(SUM('REP_SSR_SAG'[QTY]), KEEPFILTERS('REP_SSR_SAG'[NEW AGE] IN {\"09-12 MONTHS\", \"12-24 MONTHS\", \"24+ MONTHS\"}))\n    ),\n    [value] <> 0\n  ),\n  [aged], DESC,\n  'REP_SSR_SAG'[DEPARTMENT], ASC\n)",
+    "dimension__section": "EVALUATE\nTOPN(\n  15,\n  FILTER(\n    SUMMARIZECOLUMNS(\n      'LINK TABLE'[SECTION],\n      \"value\", [STOCK VALUE],\n      \"aged\", CALCULATE([STOCK VALUE], KEEPFILTERS('REP_SSR_SAG'[NEW AGE] IN {\"09-12 MONTHS\", \"12-24 MONTHS\", \"24+ MONTHS\"})),\n      \"high_risk\", CALCULATE([STOCK VALUE], KEEPFILTERS('REP_SSR_SAG'[NEW AGE] IN {\"12-24 MONTHS\", \"24+ MONTHS\"})),\n      \"qty\", SUM('REP_SSR_SAG'[QTY]),\n      \"aged_qty\", CALCULATE(SUM('REP_SSR_SAG'[QTY]), KEEPFILTERS('REP_SSR_SAG'[NEW AGE] IN {\"09-12 MONTHS\", \"12-24 MONTHS\", \"24+ MONTHS\"}))\n    ),\n    [value] <> 0\n  ),\n  [aged], DESC,\n  'LINK TABLE'[SECTION], ASC\n)",
+    "dimension__location": "EVALUATE\nTOPN(\n  15,\n  FILTER(\n    SUMMARIZECOLUMNS(\n      'REP_SSR_SAG'[LOC_CODE],\n      \"value\", [STOCK VALUE],\n      \"aged\", CALCULATE([STOCK VALUE], KEEPFILTERS('REP_SSR_SAG'[NEW AGE] IN {\"09-12 MONTHS\", \"12-24 MONTHS\", \"24+ MONTHS\"})),\n      \"high_risk\", CALCULATE([STOCK VALUE], KEEPFILTERS('REP_SSR_SAG'[NEW AGE] IN {\"12-24 MONTHS\", \"24+ MONTHS\"})),\n      \"qty\", SUM('REP_SSR_SAG'[QTY]),\n      \"aged_qty\", CALCULATE(SUM('REP_SSR_SAG'[QTY]), KEEPFILTERS('REP_SSR_SAG'[NEW AGE] IN {\"09-12 MONTHS\", \"12-24 MONTHS\", \"24+ MONTHS\"}))\n    ),\n    [value] <> 0\n  ),\n  [aged], DESC,\n  'REP_SSR_SAG'[LOC_CODE], ASC\n)",
+    "dimension__sku_type": "EVALUATE\nTOPN(\n  15,\n  FILTER(\n    SUMMARIZECOLUMNS(\n      'REP_SSR_SAG'[skutype],\n      \"value\", [STOCK VALUE],\n      \"aged\", CALCULATE([STOCK VALUE], KEEPFILTERS('REP_SSR_SAG'[NEW AGE] IN {\"09-12 MONTHS\", \"12-24 MONTHS\", \"24+ MONTHS\"})),\n      \"high_risk\", CALCULATE([STOCK VALUE], KEEPFILTERS('REP_SSR_SAG'[NEW AGE] IN {\"12-24 MONTHS\", \"24+ MONTHS\"})),\n      \"qty\", SUM('REP_SSR_SAG'[QTY]),\n      \"aged_qty\", CALCULATE(SUM('REP_SSR_SAG'[QTY]), KEEPFILTERS('REP_SSR_SAG'[NEW AGE] IN {\"09-12 MONTHS\", \"12-24 MONTHS\", \"24+ MONTHS\"}))\n    ),\n    [value] <> 0\n  ),\n  [aged], DESC,\n  'REP_SSR_SAG'[skutype], ASC\n)",
+    "history_snapshot": "EVALUATE ROW(\n  \"as_at\", MAX('REP_SSR_SAG_HIST'[UPDATED_ON]),\n  \"total_value\", SUM('REP_SSR_SAG_HIST'[VALUE]),\n  \"snapshot_cardinality\", DISTINCTCOUNT('REP_SSR_SAG_HIST'[UPDATED_ON]),\n  \"total_qty\", SUM('REP_SSR_SAG_HIST'[QTY]),\n  \"aged_value\", CALCULATE(SUM('REP_SSR_SAG_HIST'[VALUE]), KEEPFILTERS('REP_SSR_SAG_HIST'[NEW_AGE] IN {\"09-12 MONTHS\", \"12-24 MONTHS\", \"24+ MONTHS\"})),\n  \"aged_qty\", CALCULATE(SUM('REP_SSR_SAG_HIST'[QTY]), KEEPFILTERS('REP_SSR_SAG_HIST'[NEW_AGE] IN {\"09-12 MONTHS\", \"12-24 MONTHS\", \"24+ MONTHS\"})),\n  \"skus\", DISTINCTCOUNT('REP_SSR_SAG_HIST'[ITEM])\n)",
+    "history_bands": "EVALUATE\nSUMMARIZECOLUMNS(\n  'REP_SSR_SAG_HIST'[NEW_AGE],\n  \"value\", SUM('REP_SSR_SAG_HIST'[VALUE]),\n  \"qty\", SUM('REP_SSR_SAG_HIST'[QTY]),\n  \"skus\", DISTINCTCOUNT('REP_SSR_SAG_HIST'[ITEM])\n)",
+    "history_dimension__location": "EVALUATE\nSUMMARIZECOLUMNS(\n  'REP_SSR_SAG_HIST'[LOC_CODE],\n  \"value\", SUM('REP_SSR_SAG_HIST'[VALUE]),\n  \"qty\", SUM('REP_SSR_SAG_HIST'[QTY]),\n  \"aged\", CALCULATE(SUM('REP_SSR_SAG_HIST'[VALUE]), KEEPFILTERS('REP_SSR_SAG_HIST'[NEW_AGE] IN {\"09-12 MONTHS\", \"12-24 MONTHS\", \"24+ MONTHS\"})),\n  \"aged_qty\", CALCULATE(SUM('REP_SSR_SAG_HIST'[QTY]), KEEPFILTERS('REP_SSR_SAG_HIST'[NEW_AGE] IN {\"09-12 MONTHS\", \"12-24 MONTHS\", \"24+ MONTHS\"}))\n)",
+    "history_dimension__division": "EVALUATE\nSUMMARIZECOLUMNS(\n  'REP_SSR_SAG_HIST'[DEPARTMENT],\n  \"value\", SUM('REP_SSR_SAG_HIST'[VALUE]),\n  \"qty\", SUM('REP_SSR_SAG_HIST'[QTY]),\n  \"aged\", CALCULATE(SUM('REP_SSR_SAG_HIST'[VALUE]), KEEPFILTERS('REP_SSR_SAG_HIST'[NEW_AGE] IN {\"09-12 MONTHS\", \"12-24 MONTHS\", \"24+ MONTHS\"})),\n  \"aged_qty\", CALCULATE(SUM('REP_SSR_SAG_HIST'[QTY]), KEEPFILTERS('REP_SSR_SAG_HIST'[NEW_AGE] IN {\"09-12 MONTHS\", \"12-24 MONTHS\", \"24+ MONTHS\"}))\n)",
+    "clearance": "EVALUATE\nSUMMARIZECOLUMNS(\n  'LINK TABLE'[DEPARTMENT],\n  \"aged_qty\", CALCULATE(SUM('REP_SSR_SAG'[QTY]), KEEPFILTERS('REP_SSR_SAG'[NEW AGE] IN {\"09-12 MONTHS\", \"12-24 MONTHS\", \"24+ MONTHS\"})),\n  \"aged_value\", CALCULATE([STOCK VALUE], KEEPFILTERS('REP_SSR_SAG'[NEW AGE] IN {\"09-12 MONTHS\", \"12-24 MONTHS\", \"24+ MONTHS\"})),\n  \"total_value\", [STOCK VALUE],\n  \"daily_qty\", SUM('REP_SSR_STOCK_STATUS'[AVG_DAILY_SALES_QTY])\n)",
+    "categories": "EVALUATE\nFILTER(\n  SUMMARIZECOLUMNS(\n    'LINK TABLE'[CATEGORY_NAME],\n    \"total\", [STOCK VALUE],\n    \"aged\", CALCULATE([STOCK VALUE], KEEPFILTERS('REP_SSR_SAG'[NEW AGE] IN {\"09-12 MONTHS\", \"12-24 MONTHS\", \"24+ MONTHS\"}))\n  ),\n  [total] > 0\n)",
+    "risk_lines": "EVALUATE\nTOPN(\n  10,\n  FILTER(\n    SUMMARIZECOLUMNS(\n      'REP_SSR_STOCK_STATUS'[PART_NUMBER_SUP],\n      'REP_SSR_STOCK_STATUS'[LOC_CODE],\n      'REP_SSR_STOCK_STATUS'[CATEGORY_NAME],\n      'REP_SSR_STOCK_STATUS'[SKU_STOCK_STATUS],\n      \"risk_score\", CALCULATE(MIN('REP_SSR_STOCK_STATUS'[AGING RISK SCORE])),\n      \"value\", SUM('REP_SSR_STOCK_STATUS'[SKU_STOCK_VALUE]),\n      \"qty\", SUM('REP_SSR_STOCK_STATUS'[CURRENT_STOCK]),\n      \"daily_qty\", SUM('REP_SSR_STOCK_STATUS'[AVG_DAILY_SALES_QTY])\n    ),\n    [risk_score] <= -70.0\n    && [value] >= 500.0\n    && 'REP_SSR_STOCK_STATUS'[SKU_STOCK_STATUS] IN {\"EXCESS STOCK\", \"STOCK AVAILABLE BUT NO SALES\"}\n  ),\n  [value], DESC\n)\nORDER BY [value] DESC",
+    "risk_total": "EVALUATE ROW(\n  \"risk_lines\", CALCULATE(COUNTROWS('REP_SSR_STOCK_STATUS'), KEEPFILTERS('REP_SSR_STOCK_STATUS'[AGING RISK SCORE] <= -70.0)),\n  \"all_lines\", COUNTROWS('REP_SSR_STOCK_STATUS')\n)",
+    "deep__oldest_items": "EVALUATE\nTOPN(5,\n  FILTER(SUMMARIZECOLUMNS('REP_SSR_SAG'[ITEM], \"value\", CALCULATE([STOCK VALUE], KEEPFILTERS('REP_SSR_SAG'[NEW AGE] = \"24+ MONTHS\"))), [value] > 0),\n  [value], DESC, 'REP_SSR_SAG'[ITEM], ASC)\nORDER BY [value] DESC",
+    "deep__aged_non_moving_items": "EVALUATE\nTOPN(5,\n  FILTER(SUMMARIZECOLUMNS(\n    'REP_SSR_SAG'[ITEM],\n    \"value\", CALCULATE([STOCK VALUE], 'REP_SSR_SAG'[NEW AGE] IN {\"09-12 MONTHS\", \"12-24 MONTHS\", \"24+ MONTHS\"}, 'REP_SSR_SAG'[non_moving_status] = \"YES\")\n  ), [value] > 0),\n  [value], DESC, 'REP_SSR_SAG'[ITEM], ASC)\nORDER BY [value] DESC"
+  },
+  "dimensions": {
+    "division": [
+      {
+        "REP_SSR_SAG[DEPARTMENT]": "HOME & LIVING",
+        "[value]": 1164133.729,
+        "[aged]": 365334.4867,
+        "[high_risk]": 212716.1294,
+        "[qty]": 4588377.4500400005,
+        "[aged_qty]": 1548073.05004
+      },
+      {
+        "REP_SSR_SAG[DEPARTMENT]": "LIFESTYLE",
+        "[value]": 1964357.4462,
+        "[aged]": 368859.4199,
+        "[high_risk]": 192104.7202,
+        "[qty]": 4635211.0,
+        "[aged_qty]": 1142115.0
+      },
+      {
+        "REP_SSR_SAG[DEPARTMENT]": "CONSUMER GOODS",
+        "[value]": 2312537.35,
+        "[aged]": 61337.2256,
+        "[high_risk]": 32751.5961,
+        "[qty]": 6705664.232939998,
+        "[aged_qty]": 183603.2703
+      },
+      {
+        "REP_SSR_SAG[DEPARTMENT]": "TECHNOLOGY",
+        "[value]": 291471.0222,
+        "[aged]": 46789.6169,
+        "[high_risk]": 16205.3631,
+        "[qty]": 187027.0,
+        "[aged_qty]": 36557.0
+      }
+    ],
+    "section": [
+      {
+        "LINK TABLE[SECTION]": "CLEANING ESSENSTIALS",
+        "[value]": 119961.7648,
+        "[aged]": 4586.9099,
+        "[high_risk]": 2349.3486,
+        "[qty]": 195595.0,
+        "[aged_qty]": 6333.0
+      },
+      {
+        "LINK TABLE[SECTION]": "TRAVEL",
+        "[value]": 119740.2567,
+        "[aged]": 20898.8123,
+        "[high_risk]": 12581.2419,
+        "[qty]": 68812.0,
+        "[aged_qty]": 19348.0
+      },
+      {
+        "LINK TABLE[SECTION]": "GLASS ITEMS",
+        "[value]": 25179.7385,
+        "[aged]": 5354.5484,
+        "[high_risk]": 3577.5836,
+        "[qty]": 162735.0,
+        "[aged_qty]": 25428.0
+      },
+      {
+        "LINK TABLE[SECTION]": "ENTERTAINMENTS",
+        "[value]": 288068.4789,
+        "[aged]": 46761.0014,
+        "[high_risk]": 16200.3738,
+        "[qty]": 182415.0,
+        "[aged_qty]": 36525.0
+      },
+      {
+        "LINK TABLE[SECTION]": "FOOTWEAR",
+        "[value]": 238600.2987,
+        "[aged]": 56854.3069,
+        "[high_risk]": 33202.7934,
+        "[qty]": 310417.0,
+        "[aged_qty]": 64421.0
+      },
+      {
+        "LINK TABLE[SECTION]": "SPORTING GOODS",
+        "[value]": 50382.8361,
+        "[aged]": 19976.9478,
+        "[high_risk]": 19113.4328,
+        "[qty]": 160985.0,
+        "[aged_qty]": 68511.0
+      },
+      {
+        "LINK TABLE[SECTION]": "KIDS FASHION",
+        "[value]": 121748.3533,
+        "[aged]": 34954.3481,
+        "[high_risk]": 13405.5102,
+        "[qty]": 207434.0,
+        "[aged_qty]": 75437.0
+      },
+      {
+        "LINK TABLE[SECTION]": "LADIES APPAREL",
+        "[value]": 731297.0988,
+        "[aged]": 132254.328,
+        "[high_risk]": 68773.7311,
+        "[qty]": 2661379.0,
+        "[aged_qty]": 764753.0
+      },
+      {
+        "LINK TABLE[SECTION]": "OFFICE SUPPLIES",
+        "[value]": 416848.235,
+        "[aged]": 111495.9371,
+        "[high_risk]": 82398.4643,
+        "[qty]": 2580174.00004,
+        "[aged_qty]": 843366.0000400001
+      },
+      {
+        "LINK TABLE[SECTION]": "CULINARY SUPPLIES",
+        "[value]": 591650.31,
+        "[aged]": 210956.5073,
+        "[high_risk]": 113855.7547,
+        "[qty]": 1657507.45,
+        "[aged_qty]": 631911.05
+      },
+      {
+        "LINK TABLE[SECTION]": "MENS APPAREL",
+        "[value]": 466528.571,
+        "[aged]": 66055.278,
+        "[high_risk]": 25658.4964,
+        "[qty]": 700757.0,
+        "[aged_qty]": 75061.0
+      },
+      {
+        "LINK TABLE[SECTION]": "PROVISIONS",
+        "[value]": 948162.4323,
+        "[aged]": 27402.5122,
+        "[high_risk]": 13931.2485,
+        "[qty]": 3785765.4538600035,
+        "[aged_qty]": 60889.4223
+      },
+      {
+        "LINK TABLE[SECTION]": "PERSONAL CARE",
+        "[value]": 868814.0642,
+        "[aged]": 25838.4684,
+        "[high_risk]": 14554.1564,
+        "[qty]": 2024270.0,
+        "[aged_qty]": 108513.0
+      },
+      {
+        "LINK TABLE[SECTION]": "TOYS",
+        "[value]": 235365.3801,
+        "[aged]": 37202.7067,
+        "[high_risk]": 18796.4873,
+        "[qty]": 524492.0,
+        "[aged_qty]": 73679.0
+      },
+      {
+        "LINK TABLE[SECTION]": "HOME TEXTILES",
+        "[value]": 130455.4455,
+        "[aged]": 37527.4939,
+        "[high_risk]": 12884.3268,
+        "[qty]": 187961.0,
+        "[aged_qty]": 47368.0
+      }
+    ],
+    "location": [
+      {
+        "REP_SSR_SAG[LOC_CODE]": "ST2",
+        "[value]": 275114.1597,
+        "[aged]": 42754.1497,
+        "[high_risk]": 25978.7451,
+        "[qty]": 597827.9596000001,
+        "[aged_qty]": 76748.7325
+      },
+      {
+        "REP_SSR_SAG[LOC_CODE]": "ST1",
+        "[value]": 323884.4521,
+        "[aged]": 28472.681,
+        "[high_risk]": 16036.4334,
+        "[qty]": 705705.1438900001,
+        "[aged_qty]": 57474.44098
+      },
+      {
+        "REP_SSR_SAG[LOC_CODE]": "ST3",
+        "[value]": 260077.3469,
+        "[aged]": 31863.8531,
+        "[high_risk]": 21994.2991,
+        "[qty]": 585145.1532799999,
+        "[aged_qty]": 58867.263000000006
+      },
+      {
+        "REP_SSR_SAG[LOC_CODE]": "ST4",
+        "[value]": 425368.3316,
+        "[aged]": 37357.4337,
+        "[high_risk]": 24777.5438,
+        "[qty]": 973357.08673,
+        "[aged_qty]": 95552.18882000001
+      },
+      {
+        "REP_SSR_SAG[LOC_CODE]": "WH1",
+        "[value]": 3570579.272,
+        "[aged]": 689062.6078,
+        "[high_risk]": 360079.9818,
+        "[qty]": 10280860.00004,
+        "[aged_qty]": 2588440.0000400003
+      },
+      {
+        "REP_SSR_SAG[LOC_CODE]": "ST5",
+        "[value]": 16867.6363,
+        "[aged]": 4183.4488,
+        "[high_risk]": 1279.779,
+        "[qty]": 79838.25944000001,
+        "[aged_qty]": 24638.995000000003
+      },
+      {
+        "REP_SSR_SAG[LOC_CODE]": "WH2",
+        "[value]": 860608.3488,
+        "[aged]": 8626.575,
+        "[high_risk]": 3631.0266,
+        "[qty]": 2893546.08,
+        "[aged_qty]": 8626.7
+      }
+    ],
+    "sku_type": [
+      {
+        "REP_SSR_SAG[skutype]": "OVERSEAS",
+        "[value]": 2212277.747,
+        "[aged]": 656676.5223,
+        "[high_risk]": 335960.7287,
+        "[qty]": 7052456.8,
+        "[aged_qty]": 2437845.5
+      },
+      {
+        "REP_SSR_SAG[skutype]": "LOCAL",
+        "[value]": 3520221.8004,
+        "[aged]": 185644.2268,
+        "[high_risk]": 117817.0801,
+        "[qty]": 9063822.882980002,
+        "[aged_qty]": 472502.82034000003
+      }
+    ]
+  },
+  "deep_dives": {
+    "oldest_items": [
+      {
+        "REP_SSR_SAG[ITEM]": "0101574527 - CF PAD LOCK GOLDEN 264",
+        "[value]": 2180.0162
+      },
+      {
+        "REP_SSR_SAG[ITEM]": "0101640088 - SPICE KITCHEN KNIFE P.HANDLE 7 CFKT-0657",
+        "[value]": 1838.2318
+      },
+      {
+        "REP_SSR_SAG[ITEM]": "0101624997 - CF MAX FRESH STEEL HOT POT 3PCS SET 3.5/5/8.5 LTR",
+        "[value]": 1719.5172
+      },
+      {
+        "REP_SSR_SAG[ITEM]": "0101571330 - LIBERO MENS SATIN SILKY PLAIN JEANS BLACK 1601",
+        "[value]": 1651.9008
+      },
+      {
+        "REP_SSR_SAG[ITEM]": "0101584782 - SPICE STEEL DEEP MIXING BOWL 36CM 22133",
+        "[value]": 1594.7568
+      }
+    ],
+    "aged_non_moving_items": [
+      {
+        "REP_SSR_SAG[ITEM]": "0101637144 - SPICE STEEL FLASK RED 1.2L CFTM-7010",
+        "[value]": 3897.8201
+      },
+      {
+        "REP_SSR_SAG[ITEM]": "0101657351 - MEN FLEECE JOGGER PMX254 W25",
+        "[value]": 3801.3588
+      },
+      {
+        "REP_SSR_SAG[ITEM]": "0101637145 - SPICE STEEL FLASK RED 1.5L CFTM-7011/4715",
+        "[value]": 3131.0405
+      },
+      {
+        "REP_SSR_SAG[ITEM]": "0101639353 - SPICE GRANITE FRY PAN 26CM CFCK-1458/12",
+        "[value]": 3075.457
+      },
+      {
+        "REP_SSR_SAG[ITEM]": "0101653358 - LIBERO MENS PUFFER S/L HDY JKT BLACK W25",
+        "[value]": 2839.264
+      }
+    ]
+  },
+  "history_dimensions": {
+    "location": [
+      {
+        "name": "ST4",
+        "value": 1633191.1416,
+        "qty": 1013076.5373300003,
+        "aged": 137874.9654,
+        "aged_qty": 94537.16882
+      },
+      {
+        "name": "ST3",
+        "value": 965514.2355,
+        "qty": 578904.43193,
+        "aged": 116243.0622,
+        "aged_qty": 57456.505000000005
+      },
+      {
+        "name": "WH1",
+        "value": 7198620.2631,
+        "qty": 5431855.00002,
+        "aged": 1228881.6504,
+        "aged_qty": 1222493.0000200002
+      },
+      {
+        "name": "ST2",
+        "value": 1063704.933,
+        "qty": 632292.16029,
+        "aged": 179015.9724,
+        "aged_qty": 91658.5825
+      },
+      {
+        "name": "ST1",
+        "value": 1266745.4406,
+        "qty": 757552.9715099998,
+        "aged": 106155.036,
+        "aged_qty": 55534.09498
+      },
+      {
+        "name": "ST5",
+        "value": 62472.6945,
+        "qty": 79838.25943999998,
+        "aged": 14643.7092,
+        "aged_qty": 23752.85
+      },
+      {
+        "name": "WH2",
+        "value": 1805739.9066,
+        "qty": 1909810.9200000004,
+        "aged": 17280.7101,
+        "aged_qty": 5174.1
+      }
+    ],
+    "division": [
+      {
+        "name": "HOME & LIVING",
+        "value": 2622640.4478,
+        "qty": 2620467.4500200003,
+        "aged": 740847.4542,
+        "aged_qty": 847005.05002
+      },
+      {
+        "name": "CONSUMER GOODS",
+        "value": 6058688.1444,
+        "qty": 5053211.830499998,
+        "aged": 183550.4793,
+        "aged_qty": 139788.2513
+      },
+      {
+        "name": "LIFESTYLE",
+        "value": 4533455.9655,
+        "qty": 2607359.0,
+        "aged": 757298.6271,
+        "aged_qty": 540866.0
+      },
+      {
+        "name": "TECHNOLOGY",
+        "value": 781204.0572,
+        "qty": 122292.0,
+        "aged": 118398.5451,
+        "aged_qty": 22947.0
+      }
+    ]
+  },
+  "currency": "USD",
+  "snapshot": [
+    {
+      "[as_at]": "2026-08-23T00:00:00",
+      "[snapshot_cardinality]": 1,
+      "[total_value]": 5732499.5474,
+      "[aged_value]": 842320.7491,
+      "[high_risk_value]": 453777.8088,
+      "[oldest_value]": 90713.9685,
+      "[skus]": 41674,
+      "[aged_skus]": 19468,
+      "[locations]": 7,
+      "[total_qty]": 16116279.682980003,
+      "[aged_qty]": 2910348.32034,
+      "[source_aged_share]": 2.1404875026227033,
+      "[source_aged_numerator]": 12270343.640000002
+    }
+  ],
+  "bands": [
+    {
+      "[NEW AGE]": "09-12 MONTHS",
+      "[value]": 388542.9403,
+      "[aged]": 388542.9403,
+      "[skus]": 10214.0,
+      "[qty]": 1063064.34298
+    },
+    {
+      "[NEW AGE]": "06-09 MONTHS",
+      "[value]": 576336.5578,
+      "[aged]": 0.0,
+      "[skus]": 11705.0,
+      "[qty]": 1707645.92904
+    },
+    {
+      "[NEW AGE]": "24+ MONTHS",
+      "[value]": 90713.9685,
+      "[aged]": 90713.9685,
+      "[skus]": 4998.0,
+      "[qty]": 276657.70879
+    },
+    {
+      "[NEW AGE]": "12-24 MONTHS",
+      "[value]": 363063.8403,
+      "[aged]": 363063.8403,
+      "[skus]": 10249.0,
+      "[qty]": 1570626.26857
+    },
+    {
+      "[NEW AGE]": "03-06 MONTHS",
+      "[value]": 898651.9649,
+      "[aged]": 0.0,
+      "[skus]": 15477.0,
+      "[qty]": 2457723.57349
+    },
+    {
+      "[NEW AGE]": "0-03 MONTHS",
+      "[value]": 3415190.2756,
+      "[aged]": 0.0,
+      "[skus]": 24068.0,
+      "[qty]": 9040561.860109998
+    }
+  ],
+  "risk_split": [
+    {
+      "[non_moving_status]": "YES",
+      "[value]": 606757.3525,
+      "[aged]": 278109.2302
+    },
+    {
+      "[non_moving_status]": "NO",
+      "[value]": 5125742.1949,
+      "[aged]": 564211.5189
+    }
+  ],
+  "history_snapshot": [
+    {
+      "[as_at]": "2026-08-14T00:00:00",
+      "[total_value]": 13995988.6149,
+      "[snapshot_cardinality]": 1,
+      "[total_qty]": 10403330.28052,
+      "[aged_value]": 1800095.1057,
+      "[aged_qty]": 1550606.30132,
+      "[skus]": 41939
+    }
+  ],
+  "history_bands": [
+    {
+      "name": "09-12 MONTHS",
+      "value": 758314.0755,
+      "qty": 505554.61648,
+      "skus": 10348.0
+    },
+    {
+      "name": "12-24 MONTHS",
+      "value": 828696.1149,
+      "qty": 891046.2690699999,
+      "skus": 10684.0
+    },
+    {
+      "name": "06-09 MONTHS",
+      "value": 1278865.1061,
+      "qty": 926118.1600400001,
+      "skus": 11871.0
+    },
+    {
+      "name": "24+ MONTHS",
+      "value": 213084.9153,
+      "qty": 154005.41577,
+      "skus": 5088.0
+    },
+    {
+      "name": "03-06 MONTHS",
+      "value": 2148614.586,
+      "qty": 1593180.5595199997,
+      "skus": 15488.0
+    },
+    {
+      "name": "0-03 MONTHS",
+      "value": 8768413.8171,
+      "qty": 6333425.259640001,
+      "skus": 23739.0
+    }
+  ],
+  "clearance": [
+    {
+      "name": "CONSUMER GOODS",
+      "aged_qty": 183603.2703,
+      "aged_value": 61337.2256,
+      "total_value": 2312537.35,
+      "daily_qty": 155800.409999998
+    },
+    {
+      "name": "HOME & LIVING",
+      "aged_qty": 1548073.05004,
+      "aged_value": 365334.4867,
+      "total_value": 1164133.729,
+      "daily_qty": 23936.970000000132
+    },
+    {
+      "name": "LIFESTYLE",
+      "aged_qty": 1142115.0,
+      "aged_value": 368859.4199,
+      "total_value": 1964357.4462,
+      "daily_qty": 30811.620000000166
+    },
+    {
+      "name": "TECHNOLOGY",
+      "aged_qty": 36557.0,
+      "aged_value": 46789.6169,
+      "total_value": 291471.0222,
+      "daily_qty": 3460.35000000001
+    },
+    {
+      "name": null,
+      "aged_qty": 0.0,
+      "aged_value": 0.0,
+      "total_value": 0.0,
+      "daily_qty": 72380.55999999911
+    }
+  ],
+  "categories": [
+    {
+      "name": "HOME BAKING",
+      "total": 23894.4204,
+      "aged": 1440.4765
+    },
+    {
+      "name": "FRESH BEEF OTHER",
+      "total": 14546.966,
+      "aged": 235.6785
+    },
+    {
+      "name": "MASALA",
+      "total": 31933.2068,
+      "aged": 2014.5549
+    },
+    {
+      "name": "SPICES",
+      "total": 25182.4221,
+      "aged": 631.4359
+    },
+    {
+      "name": "FRESH JUICE",
+      "total": 10178.6843,
+      "aged": 211.47
+    },
+    {
+      "name": "INSTANT DRINKS",
+      "total": 2180.8231,
+      "aged": 155.4425
+    },
+    {
+      "name": "ETHNIC FOODS",
+      "total": 28544.2595,
+      "aged": 2457.5033
+    },
+    {
+      "name": "CANNED TUNA",
+      "total": 21726.9248,
+      "aged": 3089.5794
+    },
+    {
+      "name": "OTHER",
+      "total": 240923.1104,
+      "aged": 74110.9366
+    },
+    {
+      "name": "PACKED DRY FISH",
+      "total": 2321.0362,
+      "aged": 351.9488
+    },
+    {
+      "name": "BABY MILK POWDER AND FORMULA",
+      "total": 778.8718,
+      "aged": 26.4153
+    },
+    {
+      "name": "WHITE SUGAR",
+      "total": 12641.8299,
+      "aged": 682.7939
+    },
+    {
+      "name": "VEGETABLES",
+      "total": 6538.8674,
+      "aged": 46.0124
+    },
+    {
+      "name": "INDIAN SAVOURIES",
+      "total": 355.1003,
+      "aged": 38.9753
+    },
+    {
+      "name": "POTATO CHIPS",
+      "total": 11126.7154,
+      "aged": 249.7061
+    },
+    {
+      "name": "PURE GHEE",
+      "total": 11515.123,
+      "aged": 177.3505
+    },
+    {
+      "name": "POWDERED DRINK",
+      "total": 35341.9604,
+      "aged": 113.7904
+    },
+    {
+      "name": "CAT FOOD",
+      "total": 843.9837,
+      "aged": 80.0838
+    },
+    {
+      "name": "POWDERED MILK",
+      "total": 31939.8656,
+      "aged": 232.2228
+    },
+    {
+      "name": "UHT MILK",
+      "total": 20624.7283,
+      "aged": 285.1761
+    },
+    {
+      "name": "SNACKS",
+      "total": 195534.1164,
+      "aged": 1460.8934
+    },
+    {
+      "name": "SUNFLOWER OIL",
+      "total": 61376.4733,
+      "aged": 32.8635
+    },
+    {
+      "name": "COCONUT OIL",
+      "total": 8120.5922,
+      "aged": 233.5151
+    },
+    {
+      "name": "COOKING OILS",
+      "total": 96130.9805,
+      "aged": 417.176
+    },
+    {
+      "name": "OLIVE OIL",
+      "total": 23693.9924,
+      "aged": 1987.4866
+    },
+    {
+      "name": "PASTA",
+      "total": 6953.5354,
+      "aged": 169.2201
+    },
+    {
+      "name": "INSTANT NOODLE",
+      "total": 6153.4747,
+      "aged": 73.9653
+    },
+    {
+      "name": "INSTANT COFFEE",
+      "total": 35690.0692,
+      "aged": 509.8835
+    },
+    {
+      "name": "TEA BAGS",
+      "total": 26073.983,
+      "aged": 1591.4879
+    },
+    {
+      "name": "LOOSE TEA",
+      "total": 16571.5118,
+      "aged": 265.9074
+    },
+    {
+      "name": "BROUGHT IN BREAD",
+      "total": 6921.672,
+      "aged": 444.6555
+    },
+    {
+      "name": "COOKIES",
+      "total": 12945.0806,
+      "aged": 214.2416
+    },
+    {
+      "name": "SWEET BISCUITS",
+      "total": 20062.5646,
+      "aged": 521.1814
+    },
+    {
+      "name": "FLOUR",
+      "total": 11453.2663,
+      "aged": 280.794
+    },
+    {
+      "name": "OTHER RICE",
+      "total": 56166.8813,
+      "aged": 1433.7481
+    },
+    {
+      "name": "BOILED RICE",
+      "total": 43953.6084,
+      "aged": 1253.0571
+    },
+    {
+      "name": "BASMATI RICE",
+      "total": 107040.7022,
+      "aged": 2460.7115
+    },
+    {
+      "name": "PULSES",
+      "total": 19988.0151,
+      "aged": 393.5515
+    },
+    {
+      "name": "BOXED CHOCOLATE",
+      "total": 8959.3432,
+      "aged": 156.4019
+    },
+    {
+      "name": "CHOCOLATE BAGS",
+      "total": 62450.3674,
+      "aged": 288.4351
+    },
+    {
+      "name": "CHEWING GUMS",
+      "total": 10897.9591,
+      "aged": 247.9864
+    },
+    {
+      "name": "CANDY BAGS",
+      "total": 11379.4163,
+      "aged": 1512.4067
+    },
+    {
+      "name": "COVRD CHOCO BARS AND TAB",
+      "total": 106523.7824,
+      "aged": 1170.4261
+    },
+    {
+      "name": "COSMETICS",
+      "total": 382843.8139,
+      "aged": 31281.5076
+    },
+    {
+      "name": "OTHER PLASTIC ARTICLES",
+      "total": 4291.4066,
+      "aged": 131.8754
+    },
+    {
+      "name": "DISHWASH LIQUID",
+      "total": 49481.3545,
+      "aged": 4747.9556
+    },
+    {
+      "name": "SOAP",
+      "total": 209309.1689,
+      "aged": 12744.577
+    },
+    {
+      "name": "KITCHEN KNIFE",
+      "total": 118084.4913,
+      "aged": 38908.5106
+    },
+    {
+      "name": "STEEL OTHER UTENSILS",
+      "total": 43404.7662,
+      "aged": 9940.3725
+    },
+    {
+      "name": "STEEL JUGS & MUGS",
+      "total": 9621.8571,
+      "aged": 382.2028
+    },
+    {
+      "name": "COOKING POT NON STICK TEFLON",
+      "total": 98530.4819,
+      "aged": 37390.0995
+    },
+    {
+      "name": "BOX TISSUE",
+      "total": 3876.897,
+      "aged": 156.0245
+    },
+    {
+      "name": "MAXI ROLL",
+      "total": 1234.9223,
+      "aged": 317.1056
+    },
+    {
+      "name": "TAWA NON STICK TEFLON",
+      "total": 7440.6094,
+      "aged": 5994.3929
+    },
+    {
+      "name": "WATER GLASS",
+      "total": 44102.3899,
+      "aged": 13674.4612
+    },
+    {
+      "name": "KHALBATTA",
+      "total": 4.374,
+      "aged": 4.374
+    },
+    {
+      "name": "MENS TOP WEAR",
+      "total": 4.374,
+      "aged": 4.374
+    },
+    {
+      "name": "FRY PAN NON STICK TEFLON",
+      "total": 33289.8499,
+      "aged": 23214.4924
+    },
+    {
+      "name": "CUTTING BOARD PLASTIC",
+      "total": 69567.4268,
+      "aged": 29727.3528
+    },
+    {
+      "name": "SOAP CASE & HOLDERS",
+      "total": 1455.1311,
+      "aged": 502.346
+    },
+    {
+      "name": "WATER BOTTLE",
+      "total": 5456.1194,
+      "aged": 2101.7541
+    },
+    {
+      "name": "ALBUMS",
+      "total": 0.8041,
+      "aged": 0.8041
+    },
+    {
+      "name": "DOLLS AND STROLLERS",
+      "total": 31366.488,
+      "aged": 5362.9558
+    },
+    {
+      "name": "GENARAL ELECTRONICS ITEMS",
+      "total": 106023.0831,
+      "aged": 15010.7212
+    },
+    {
+      "name": "PENCIL",
+      "total": 8284.4588,
+      "aged": 1241.988
+    },
+    {
+      "name": "ALKALINE AA",
+      "total": 5364.7028,
+      "aged": 613.1307
+    },
+    {
+      "name": "BALL POINT PEN",
+      "total": 71652.3371,
+      "aged": 9724.0228
+    },
+    {
+      "name": "BOOKS ,NOTE BOOK AND PAPERS",
+      "total": 90090.9185,
+      "aged": 20870.7553
+    },
+    {
+      "name": "CD POUCHES",
+      "total": 0.3368,
+      "aged": 0.3368
+    },
+    {
+      "name": "GEL PEN AND ROLLER BALLS",
+      "total": 4344.9978,
+      "aged": 1362.9613
+    },
+    {
+      "name": "WORKING TOOLS & ACCESSORIES",
+      "total": 20016.4851,
+      "aged": 10990.4331
+    },
+    {
+      "name": "HOME LINEN PRODUCTS",
+      "total": 121581.1455,
+      "aged": 37534.7095
+    },
+    {
+      "name": "WEIGHING MACHINE",
+      "total": 3820.2556,
+      "aged": 941.0033
+    },
+    {
+      "name": "MENS CASUAL SHOES",
+      "total": 104117.3356,
+      "aged": 25816.0758
+    },
+    {
+      "name": "RAIN WEAR",
+      "total": 2.6251,
+      "aged": 2.6251
+    },
+    {
+      "name": "SMART WATCHES",
+      "total": 184836.7853,
+      "aged": 22914.8528
+    },
+    {
+      "name": "BOYS TOYS",
+      "total": 186512.4193,
+      "aged": 26559.1865
+    },
+    {
+      "name": "FRESH LABAN",
+      "total": 1378.3914,
+      "aged": 15.8506
+    },
+    {
+      "name": "FRESH SOFT CHEESE",
+      "total": 10777.9639,
+      "aged": 98.4492
+    },
+    {
+      "name": "PLAIN YOGHURT",
+      "total": 1672.8027,
+      "aged": 24.8166
+    },
+    {
+      "name": "FRESH MILK",
+      "total": 4718.9305,
+      "aged": 248.2062
+    },
+    {
+      "name": "CHEESE AND MARGARINES",
+      "total": 723.7405,
+      "aged": 0.0
+    },
+    {
+      "name": "FRESH HARD CHEESE",
+      "total": 2813.1962,
+      "aged": 65.9358
+    },
+    {
+      "name": "PORTION CHEESE",
+      "total": 549.496,
+      "aged": 0.729
+    },
+    {
+      "name": "FRESH CHICKEN PORTIONS",
+      "total": 18580.3169,
+      "aged": 708.2962
+    },
+    {
+      "name": "FRESH WHOLE  CHICKEN",
+      "total": 16466.844,
+      "aged": 14.1521
+    },
+    {
+      "name": "MINERAL WATERS",
+      "total": 3969.2617,
+      "aged": 44.6731
+    },
+    {
+      "name": "COLA CAN AND BOTTLE",
+      "total": 11345.7514,
+      "aged": 83.9338
+    },
+    {
+      "name": "FRESH MUTTON OTHER",
+      "total": 246.2187,
+      "aged": 0.8347
+    },
+    {
+      "name": "APPLES",
+      "total": 593.7227,
+      "aged": 97.9498
+    },
+    {
+      "name": "HEALTH AND ISOTONIC DRINKS",
+      "total": 3575.8304,
+      "aged": 24.4165
+    },
+    {
+      "name": "SOFT TROLLEY",
+      "total": 73312.8493,
+      "aged": 7020.3357
+    },
+    {
+      "name": "VANITY BAGS",
+      "total": 19936.528,
+      "aged": 3531.7089
+    },
+    {
+      "name": "TRAVEL BAGS",
+      "total": 69611.5652,
+      "aged": 10989.4549
+    },
+    {
+      "name": "MENS SPORTS SHOES",
+      "total": 71270.2896,
+      "aged": 11147.8346
+    },
+    {
+      "name": "CF-COMPUTER OTHER ACC",
+      "total": 0.9871,
+      "aged": 0.9871
+    },
+    {
+      "name": "SHAVERS",
+      "total": 31323.2303,
+      "aged": 2449.9201
+    },
+    {
+      "name": "TEDDY BEAR",
+      "total": 24085.9118,
+      "aged": 2136.4743
+    },
+    {
+      "name": "HAIR OIL",
+      "total": 218779.0413,
+      "aged": 59138.7284
+    },
+    {
+      "name": "FOOTBALL",
+      "total": 16613.8813,
+      "aged": 8405.9189
+    },
+    {
+      "name": "TEA GLASS",
+      "total": 2315.9234,
+      "aged": 542.944
+    },
+    {
+      "name": "FITNESS ACCESSORIES",
+      "total": 38521.2634,
+      "aged": 11619.9266
+    },
+    {
+      "name": "LADIES BRA",
+      "total": 11691.4771,
+      "aged": 4021.6718
+    },
+    {
+      "name": "BODY LOTION",
+      "total": 59072.4704,
+      "aged": 1052.7756
+    },
+    {
+      "name": "FACE CREAM",
+      "total": 209606.9205,
+      "aged": 2480.3626
+    },
+    {
+      "name": "HAIR COLOR",
+      "total": 19188.4695,
+      "aged": 456.2756
+    },
+    {
+      "name": "SHAMPOO",
+      "total": 97671.1934,
+      "aged": 953.2403
+    },
+    {
+      "name": "TOOTHBRUSH ADULT",
+      "total": 13216.5478,
+      "aged": 933.9648
+    },
+    {
+      "name": "DEODORANT MEN",
+      "total": 56185.2288,
+      "aged": 1642.624
+    },
+    {
+      "name": "GIRLS T SHIRT SS",
+      "total": 4243.3389,
+      "aged": 2625.8899
+    },
+    {
+      "name": "BOYS SHIRTS LS",
+      "total": 11677.2141,
+      "aged": 6133.3887
+    },
+    {
+      "name": "BOYS T SHIRTS SS",
+      "total": 42567.3515,
+      "aged": 16049.9861
+    },
+    {
+      "name": "BOYS TRACK PANTS",
+      "total": 2777.1429,
+      "aged": 33.0651
+    },
+    {
+      "name": "BOYS JEANS",
+      "total": 8124.029,
+      "aged": 1098.967
+    },
+    {
+      "name": "CHESS AND BOARD GAMES",
+      "total": 1684.4318,
+      "aged": 1296.4826
+    },
+    {
+      "name": "SOFT TOYS",
+      "total": 10306.462,
+      "aged": 286.0466
+    },
+    {
+      "name": "SCOOTERS",
+      "total": 963.8614,
+      "aged": 612.0671
+    },
+    {
+      "name": "HARD TROLLEY",
+      "total": 437.1572,
+      "aged": 125.0687
+    },
+    {
+      "name": "MENS SHIRT CASUAL LS",
+      "total": 162846.0353,
+      "aged": 27150.4117
+    },
+    {
+      "name": "GIRLS FROCKS PARTY LS",
+      "total": 19331.8301,
+      "aged": 5315.7357
+    },
+    {
+      "name": "LADIES CASUAL SHOES",
+      "total": 51468.2323,
+      "aged": 12675.2754
+    },
+    {
+      "name": "LADIES ARABIC DRESSES",
+      "total": 19637.0491,
+      "aged": 1241.9354
+    },
+    {
+      "name": "KITCHEN TOWEL",
+      "total": 3285.7373,
+      "aged": 18.3112
+    },
+    {
+      "name": "INSECT KILLER SPRAY",
+      "total": 4008.1128,
+      "aged": 111.7667
+    },
+    {
+      "name": "WASHING POWDER FRONT LOAD",
+      "total": 73770.6491,
+      "aged": 2082.6109
+    },
+    {
+      "name": "EXTENSION",
+      "total": 555.6309,
+      "aged": 22.3569
+    },
+    {
+      "name": "TORCHES",
+      "total": 40665.169,
+      "aged": 3473.7746
+    },
+    {
+      "name": "EMERGENCY LAMPS",
+      "total": 53307.9411,
+      "aged": 17969.4983
+    },
+    {
+      "name": "WINDOW CURTAIN",
+      "total": 2.9379,
+      "aged": 2.9379
+    },
+    {
+      "name": "SANITARY NAPKINS",
+      "total": 3343.4142,
+      "aged": 339.9563
+    },
+    {
+      "name": "BABY DIAPERS",
+      "total": 11274.412,
+      "aged": 2268.9387
+    },
+    {
+      "name": "MENS TRIMMERS",
+      "total": 36512.5996,
+      "aged": 1936.2183
+    },
+    {
+      "name": "RAZORS DISPOSABLE",
+      "total": 15068.3473,
+      "aged": 1270.8242
+    },
+    {
+      "name": "TOOTH PASTE",
+      "total": 45337.0835,
+      "aged": 628.4154
+    },
+    {
+      "name": "FACE WASH",
+      "total": 30814.1208,
+      "aged": 2556.0901
+    },
+    {
+      "name": "BICYCLES",
+      "total": 156.448,
+      "aged": 156.448
+    },
+    {
+      "name": "MENS T SHIRT ROUND NECK SS",
+      "total": 73408.5124,
+      "aged": 6111.7106
+    },
+    {
+      "name": "MENS VESTS",
+      "total": 44680.3365,
+      "aged": 3481.9415
+    },
+    {
+      "name": " CAMISOLE W/SHORT",
+      "total": 28.9689,
+      "aged": 0.0
+    },
+    {
+      "name": "INFANT CAP",
+      "total": 1.0672,
+      "aged": 1.0672
+    },
+    {
+      "name": "LADIES LEGGING",
+      "total": 25742.0499,
+      "aged": 5303.6265
+    },
+    {
+      "name": "GIRLS PANTIES",
+      "total": 964.6059,
+      "aged": 37.8133
+    },
+    {
+      "name": "LADIES JEANS",
+      "total": 1694.8596,
+      "aged": 6.007
+    },
+    {
+      "name": "LADIES TROUSER CASUAL",
+      "total": 13572.1829,
+      "aged": 6687.1731
+    },
+    {
+      "name": "LADIES SPORTS SHOES",
+      "total": 6122.8436,
+      "aged": 2525.5716
+    },
+    {
+      "name": "MENS FORMAL SHOES",
+      "total": 7635.0794,
+      "aged": 4877.9578
+    },
+    {
+      "name": "MENS TROUSERS CASUAL",
+      "total": 54359.4971,
+      "aged": 10267.9156
+    },
+    {
+      "name": "MENS JEANS COMFORT FIT",
+      "total": 65265.2422,
+      "aged": 10988.8232
+    },
+    {
+      "name": "MENS TRACK PANT",
+      "total": 37065.0055,
+      "aged": 1071.4194
+    },
+    {
+      "name": "MENS SHIRT FORMAL LS",
+      "total": 1448.1063,
+      "aged": 821.6719
+    },
+    {
+      "name": "MENS BRIEFS",
+      "total": 9009.0572,
+      "aged": 2851.8395
+    },
+    {
+      "name": "MENS SUITS",
+      "total": 3.9366,
+      "aged": 3.9366
+    },
+    {
+      "name": "MEN SLEEPWEAR",
+      "total": 8.0095,
+      "aged": 0.0
+    },
+    {
+      "name": "MENS SOCKS",
+      "total": 13413.6689,
+      "aged": 1703.1534
+    },
+    {
+      "name": "MENS BOXER SHORTS",
+      "total": 6997.9871,
+      "aged": 1896.5469
+    },
+    {
+      "name": "MEN LYCRA PANT",
+      "total": 185.2375,
+      "aged": 0.0
+    },
+    {
+      "name": "LADIES T SHIRT SS",
+      "total": 19698.4389,
+      "aged": 7867.589
+    },
+    {
+      "name": "LADIES HAND KERCHIEFS",
+      "total": 0.3645,
+      "aged": 0.3645
+    },
+    {
+      "name": "LADIES PANTIES",
+      "total": 23176.2748,
+      "aged": 18294.0899
+    },
+    {
+      "name": "CHURIDAR MATERIAL",
+      "total": 3.1857,
+      "aged": 3.1857
+    },
+    {
+      "name": "SAREE",
+      "total": 551.8619,
+      "aged": 5.5987
+    },
+    {
+      "name": "LADIES CHURIDHAR LS",
+      "total": 3596.9055,
+      "aged": 1.9071
+    },
+    {
+      "name": "PLASTIC COOKWARE",
+      "total": 7.4212,
+      "aged": 3.7106
+    },
+    {
+      "name": "PRESSURE COOKER STEEL",
+      "total": 14479.8961,
+      "aged": 12913.9784
+    },
+    {
+      "name": "PRESSURE COOKER ALUMINIUM",
+      "total": 13032.4196,
+      "aged": 2119.2351
+    },
+    {
+      "name": "ENERGY SAVING LAMP",
+      "total": 0.0729,
+      "aged": 0.0729
+    },
+    {
+      "name": "LED BULB",
+      "total": 835.1487,
+      "aged": 98.1362
+    },
+    {
+      "name": "SOCKETS AND PLUGS",
+      "total": 1684.7618,
+      "aged": 136.2734
+    },
+    {
+      "name": "MECHANICAL SCALE",
+      "total": 11801.6731,
+      "aged": 10197.4876
+    },
+    {
+      "name": "AIR FRESHENER",
+      "total": 9839.4194,
+      "aged": 678.3353
+    },
+    {
+      "name": "GENERAL ELECTRONICS PRODUCTS",
+      "total": 4.0022,
+      "aged": 4.0022
+    },
+    {
+      "name": "DEEWAN SET",
+      "total": 2.7039,
+      "aged": 0.0
+    },
+    {
+      "name": "FLOWER VASES",
+      "total": 0.8588,
+      "aged": 0.8588
+    }
+  ],
+  "risk_lines": [
+    {
+      "sku": "0101657844",
+      "location": "WH1",
+      "category": "SMART WATCHES",
+      "status": "EXCESS STOCK",
+      "risk_score": -100.0,
+      "value": 26548.8111,
+      "qty": 14047.0,
+      "daily_qty": 56.67
+    },
+    {
+      "sku": "0100109445",
+      "location": "WH2",
+      "category": "COVRD CHOCO BARS AND TAB",
+      "status": "EXCESS STOCK",
+      "risk_score": -100.0,
+      "value": 19354.1454,
+      "qty": 7800.0,
+      "daily_qty": 79.2
+    },
+    {
+      "sku": "0101659739",
+      "location": "WH1",
+      "category": "MENS VESTS",
+      "status": "EXCESS STOCK",
+      "risk_score": -100.0,
+      "value": 16835.8743,
+      "qty": 10878.0,
+      "daily_qty": 12.27
+    },
+    {
+      "sku": "0100007855",
+      "location": "WH1",
+      "category": "COSMETICS",
+      "status": "EXCESS STOCK",
+      "risk_score": -100.0,
+      "value": 16163.6418,
+      "qty": 4804.0,
+      "daily_qty": 31.57
+    },
+    {
+      "sku": "0101662608",
+      "location": "WH1",
+      "category": "COSMETICS",
+      "status": "EXCESS STOCK",
+      "risk_score": -100.0,
+      "value": 15223.14,
+      "qty": 9397.0,
+      "daily_qty": 73.53
+    },
+    {
+      "sku": "0101622482",
+      "location": "WH1",
+      "category": "MENS JEANS COMFORT FIT",
+      "status": "EXCESS STOCK",
+      "risk_score": -100.0,
+      "value": 15140.2959,
+      "qty": 6178.999999999999,
+      "daily_qty": 8.4
+    },
+    {
+      "sku": "0101622483",
+      "location": "WH1",
+      "category": "MENS JEANS COMFORT FIT",
+      "status": "EXCESS STOCK",
+      "risk_score": -100.0,
+      "value": 14635.2825,
+      "qty": 5970.0,
+      "daily_qty": 15.8
+    },
+    {
+      "sku": "0101667714",
+      "location": "WH1",
+      "category": "COSMETICS",
+      "status": "EXCESS STOCK",
+      "risk_score": -100.0,
+      "value": 13357.7478,
+      "qty": 4993.0,
+      "daily_qty": 39.07
+    },
+    {
+      "sku": "0100128190",
+      "location": "WH1",
+      "category": "COOKING POT NON STICK TEFLON",
+      "status": "EXCESS STOCK",
+      "risk_score": -100.0,
+      "value": 13309.272,
+      "qty": 2622.0,
+      "daily_qty": 1.24
+    },
+    {
+      "sku": "0100000413",
+      "location": "WH1",
+      "category": "COSMETICS",
+      "status": "EXCESS STOCK",
+      "risk_score": -100.0,
+      "value": 13087.6263,
+      "qty": 2288.0,
+      "daily_qty": 21.2
+    }
+  ],
+  "risk_total": [
+    {
+      "[risk_lines]": 40769,
+      "[all_lines]": 139200
+    }
+  ],
+  "divisions": [
+    {
+      "[DEPARTMENT]": "HOME & LIVING",
+      "[value]": 1164133.729,
+      "[aged]": 365334.4867,
+      "[high_risk]": 212716.1294,
+      "[qty]": 4588377.4500400005,
+      "[aged_qty]": 1548073.05004
+    },
+    {
+      "[DEPARTMENT]": "LIFESTYLE",
+      "[value]": 1964357.4462,
+      "[aged]": 368859.4199,
+      "[high_risk]": 192104.7202,
+      "[qty]": 4635211.0,
+      "[aged_qty]": 1142115.0
+    },
+    {
+      "[DEPARTMENT]": "CONSUMER GOODS",
+      "[value]": 2312537.35,
+      "[aged]": 61337.2256,
+      "[high_risk]": 32751.5961,
+      "[qty]": 6705664.232939998,
+      "[aged_qty]": 183603.2703
+    },
+    {
+      "[DEPARTMENT]": "TECHNOLOGY",
+      "[value]": 291471.0222,
+      "[aged]": 46789.6169,
+      "[high_risk]": 16205.3631,
+      "[qty]": 187027.0,
+      "[aged_qty]": 36557.0
+    }
+  ],
+  "locations": [
+    {
+      "[LOC_CODE]": "ST2",
+      "[value]": 275114.1597,
+      "[aged]": 42754.1497,
+      "[high_risk]": 25978.7451,
+      "[qty]": 597827.9596000001,
+      "[aged_qty]": 76748.7325
+    },
+    {
+      "[LOC_CODE]": "ST1",
+      "[value]": 323884.4521,
+      "[aged]": 28472.681,
+      "[high_risk]": 16036.4334,
+      "[qty]": 705705.1438900001,
+      "[aged_qty]": 57474.44098
+    },
+    {
+      "[LOC_CODE]": "ST3",
+      "[value]": 260077.3469,
+      "[aged]": 31863.8531,
+      "[high_risk]": 21994.2991,
+      "[qty]": 585145.1532799999,
+      "[aged_qty]": 58867.263000000006
+    },
+    {
+      "[LOC_CODE]": "ST4",
+      "[value]": 425368.3316,
+      "[aged]": 37357.4337,
+      "[high_risk]": 24777.5438,
+      "[qty]": 973357.08673,
+      "[aged_qty]": 95552.18882000001
+    },
+    {
+      "[LOC_CODE]": "WH1",
+      "[value]": 3570579.272,
+      "[aged]": 689062.6078,
+      "[high_risk]": 360079.9818,
+      "[qty]": 10280860.00004,
+      "[aged_qty]": 2588440.0000400003
+    },
+    {
+      "[LOC_CODE]": "ST5",
+      "[value]": 16867.6363,
+      "[aged]": 4183.4488,
+      "[high_risk]": 1279.779,
+      "[qty]": 79838.25944000001,
+      "[aged_qty]": 24638.995000000003
+    },
+    {
+      "[LOC_CODE]": "WH2",
+      "[value]": 860608.3488,
+      "[aged]": 8626.575,
+      "[high_risk]": 3631.0266,
+      "[qty]": 2893546.08,
+      "[aged_qty]": 8626.7
+    }
+  ],
+  "sections_high_risk": [
+    {
+      "[SECTION]": "CLEANING ESSENSTIALS",
+      "[value]": 119961.7648,
+      "[aged]": 4586.9099,
+      "[high_risk]": 2349.3486,
+      "[qty]": 195595.0,
+      "[aged_qty]": 6333.0
+    },
+    {
+      "[SECTION]": "TRAVEL",
+      "[value]": 119740.2567,
+      "[aged]": 20898.8123,
+      "[high_risk]": 12581.2419,
+      "[qty]": 68812.0,
+      "[aged_qty]": 19348.0
+    },
+    {
+      "[SECTION]": "GLASS ITEMS",
+      "[value]": 25179.7385,
+      "[aged]": 5354.5484,
+      "[high_risk]": 3577.5836,
+      "[qty]": 162735.0,
+      "[aged_qty]": 25428.0
+    },
+    {
+      "[SECTION]": "ENTERTAINMENTS",
+      "[value]": 288068.4789,
+      "[aged]": 46761.0014,
+      "[high_risk]": 16200.3738,
+      "[qty]": 182415.0,
+      "[aged_qty]": 36525.0
+    },
+    {
+      "[SECTION]": "FOOTWEAR",
+      "[value]": 238600.2987,
+      "[aged]": 56854.3069,
+      "[high_risk]": 33202.7934,
+      "[qty]": 310417.0,
+      "[aged_qty]": 64421.0
+    },
+    {
+      "[SECTION]": "SPORTING GOODS",
+      "[value]": 50382.8361,
+      "[aged]": 19976.9478,
+      "[high_risk]": 19113.4328,
+      "[qty]": 160985.0,
+      "[aged_qty]": 68511.0
+    },
+    {
+      "[SECTION]": "KIDS FASHION",
+      "[value]": 121748.3533,
+      "[aged]": 34954.3481,
+      "[high_risk]": 13405.5102,
+      "[qty]": 207434.0,
+      "[aged_qty]": 75437.0
+    },
+    {
+      "[SECTION]": "LADIES APPAREL",
+      "[value]": 731297.0988,
+      "[aged]": 132254.328,
+      "[high_risk]": 68773.7311,
+      "[qty]": 2661379.0,
+      "[aged_qty]": 764753.0
+    },
+    {
+      "[SECTION]": "OFFICE SUPPLIES",
+      "[value]": 416848.235,
+      "[aged]": 111495.9371,
+      "[high_risk]": 82398.4643,
+      "[qty]": 2580174.00004,
+      "[aged_qty]": 843366.0000400001
+    },
+    {
+      "[SECTION]": "CULINARY SUPPLIES",
+      "[value]": 591650.31,
+      "[aged]": 210956.5073,
+      "[high_risk]": 113855.7547,
+      "[qty]": 1657507.45,
+      "[aged_qty]": 631911.05
+    },
+    {
+      "[SECTION]": "MENS APPAREL",
+      "[value]": 466528.571,
+      "[aged]": 66055.278,
+      "[high_risk]": 25658.4964,
+      "[qty]": 700757.0,
+      "[aged_qty]": 75061.0
+    },
+    {
+      "[SECTION]": "PROVISIONS",
+      "[value]": 948162.4323,
+      "[aged]": 27402.5122,
+      "[high_risk]": 13931.2485,
+      "[qty]": 3785765.4538600035,
+      "[aged_qty]": 60889.4223
+    },
+    {
+      "[SECTION]": "PERSONAL CARE",
+      "[value]": 868814.0642,
+      "[aged]": 25838.4684,
+      "[high_risk]": 14554.1564,
+      "[qty]": 2024270.0,
+      "[aged_qty]": 108513.0
+    },
+    {
+      "[SECTION]": "TOYS",
+      "[value]": 235365.3801,
+      "[aged]": 37202.7067,
+      "[high_risk]": 18796.4873,
+      "[qty]": 524492.0,
+      "[aged_qty]": 73679.0
+    },
+    {
+      "[SECTION]": "HOME TEXTILES",
+      "[value]": 130455.4455,
+      "[aged]": 37527.4939,
+      "[high_risk]": 12884.3268,
+      "[qty]": 187961.0,
+      "[aged_qty]": 47368.0
+    }
+  ],
+  "skutype": [
+    {
+      "[skutype]": "OVERSEAS",
+      "[value]": 2212277.747,
+      "[aged]": 656676.5223,
+      "[high_risk]": 335960.7287,
+      "[qty]": 7052456.8,
+      "[aged_qty]": 2437845.5
+    },
+    {
+      "[skutype]": "LOCAL",
+      "[value]": 3520221.8004,
+      "[aged]": 185644.2268,
+      "[high_risk]": 117817.0801,
+      "[qty]": 9063822.882980002,
+      "[aged_qty]": 472502.82034000003
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "timezone": "Asia/Kolkata",
+  "history": [
+    {
+      "date": "2026-08-25",
+      "runs": [
+        {
+          "time": "02:49:30",
+          "status": "completed",
+          "insights": [
+            {
+              "heading": "ST5 revenue rose by 2.6M (456.4%), from 577.7K to 3.2M compared with the same period last year.",
+              "content": "It made up 73.0% of the overall increase. Units sold rose by 1.7M (450.8%), from 383.6K to 2.1M. This added 2.6M to revenue. Revenue per item rose 1.0%, from 1.51 to 1.52. This added 32.2K to the gain. Check ST5 by product and branch to find where the change happened."
+            },
+            {
+              "heading": "CONSUMER GOODS revenue rose by 2.1M (10.3%), from 20.0M to 22.0M compared with the same period last year.",
+              "content": "It made up 56.9% of the overall increase. Units sold rose by 927.3K (6.4%), from 14.5M to 15.4M. This added 1.3M to revenue. Revenue per item rose 3.7%, from 1.38 to 1.43. This added 781.6K to the gain. Check CONSUMER GOODS by product and branch to find where the change happened."
+            },
+            {
+              "heading": "ST4 revenue rose by 1.2M (10.8%), from 11.2M to 12.4M compared with the same period last year.",
+              "content": "It made up 33.2% of the overall increase. Units sold rose by 77.0K (1.1%), from 6.9M to 7.0M. This added 124.1K to revenue. Revenue per item rose 9.5%, from 1.61 to 1.77. This added 1.1M to the gain. Check ST4 by product and branch to find where the change happened."
+            },
+            {
+              "heading": "PROVISIONS revenue rose by 950.0K (9.5%), from 10.0M to 10.9M compared with the same period last year.",
+              "content": "It made up 26.3% of the overall increase. Units sold rose by 279.2K (3.0%), from 9.2M to 9.5M. This added 302.1K to revenue. Revenue per item rose 6.3%, from 1.08 to 1.15. This added 647.9K to the gain. Check PROVISIONS by product and branch to find where the change happened."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

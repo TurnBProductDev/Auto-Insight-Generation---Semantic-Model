@@ -215,6 +215,12 @@ def main() -> int:
     check("no banned vocabulary on the page", not found, str(found))
     check("currency is SAR", "SAR" in page and "QAR" not in page)
     check("escaped", "<img" not in html.render({**m, "report_name": "<img src=x onerror=1>"}))
+    sb_page = html.render(m, currency="QAR", title="SB Mart Target Tracker",
+                          eyebrow="Sales · SB Mart")
+    check("client branding is configurable",
+          "SB Mart Target Tracker" in sb_page and "City Flower" not in sb_page)
+    check("QAR uses the correct currency name",
+          "Qatari riyals (QAR)" in sb_page and "Saudi riyals" not in sb_page)
 
     print("\nbusiness document")
     document = doc.render(m)
@@ -228,30 +234,43 @@ def main() -> int:
     check("branch table present", "| Branch |" in document)
 
     print("\napp payload")
-    # These assertions used to pin this report's OWN invented shape - reportId,
-    # points, dataAsOf - which is precisely why the mismatch with the app went
-    # unnoticed: the test agreed with the bug. They now pin the SHARED contract
-    # the app actually reads. See replay_target_tracker_signals.py [6] for the
-    # full check, including that no fact was lost in the move.
+    from datetime import datetime, timezone
     from src.tools.api_payloads import ReportSummaryPayload
 
-    payload = pub.summary_payload(m)
-    check("payload is exactly the shared report-summary contract",
+    generated = datetime(2026, 8, 21, 5, 30, tzinfo=timezone.utc)
+    payload = pub.summary_payload(m, title="SB Mart Target Tracker", currency="QAR",
+                                  generated_at=generated)
+    check("payload uses the exact app summary contract",
           set(payload) == {"title", "generatedAt", "headline", "metrics", "sections"},
           str(sorted(payload)))
-    check("payload validates against the shared model",
-          ReportSummaryPayload(**payload) is not None)
+    check("payload passes the app's strict schema", bool(ReportSummaryPayload(**payload)))
+    check("payload carries all four target periods", len(payload["metrics"]) == 4)
+    check("payload uses the configured client title and currency",
+          payload["title"] == "SB Mart Target Tracker"
+          and all("QAR" in point for point in payload["sections"][0]["points"]))
+    check("payload generation date follows the published run",
+          payload["generatedAt"] == "2026-08-21")
+    check("payload keeps Target Tracker context",
+          payload["sections"][0]["heading"] == "Performance against target"
+          and "no prior-year comparison" in payload["sections"][2]["points"][1])
     check("headline is under 'headline' (the name the app reads)",
           bool(str(payload["headline"]).strip()))
-    check("payload carries four period metrics", len(payload["metrics"]) == 4)
     check("the anchor is stated in the prose",
-          m["anchor"] in " ".join(pt for s in payload["sections"] for pt in s["points"]))
-    # Two decimals is the compact money format ("SAR 17.66M"); three or more is
-    # the over-precise raw float the rulebook rejects.
+          m["anchor"] in " ".join(pt for section in payload["sections"]
+                                   for pt in section["points"]))
     check("no payload figure is printed with more than two decimals",
           not re.search(r"\d+\.\d{3,}", " ".join(
-              [x["value"] for x in payload["metrics"]]
-              + [pt for s in payload["sections"] for pt in s["points"]])))
+              [metric["value"] for metric in payload["metrics"]]
+              + [pt for section in payload["sections"] for pt in section["points"]])))
+
+    one_warn = {**m, "branches": [dict(branch) for branch in m["branches"]]}
+    one_warn["branches"][0] = {
+        **one_warn["branches"][0],
+        "mtd": {**one_warn["branches"][0]["mtd"], "variance": -1.0, "band": "warn"},
+    }
+    warn_payload = pub.summary_payload(one_warn, generated_at=generated)
+    check("every below-target branch is surfaced, including watch-band branches",
+          one_warn["branches"][0]["name"] in warn_payload["sections"][1]["points"][0])
 
     print("\nforced anchor is described honestly")
     forced_model = tt.build(synthetic(forced=True))

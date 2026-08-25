@@ -215,9 +215,8 @@ def age_columns(bands: Sequence[dict]) -> str:
 
     return (_legend([("Not yet aged", SERIES_CALM), ("Aged", SERIES_FLAG)])
             + _stage(svg,
-                     "The 06-09 month band is only partly aged because food "
-                     "crosses the aged threshold at six months and every other "
-                     "division at nine."))
+                     "The aged portion follows the configured policy threshold; "
+                     "the high-risk flag is a separate 12+ month classification."))
 
 
 def cumulative_curve(bands: Sequence[dict]) -> str:
@@ -270,8 +269,14 @@ def cumulative_curve(bands: Sequence[dict]) -> str:
             f'data-value="{_safe(_pct(values[index]))} of all stock">'
             f'<title>{_safe(name)} or older: {_safe(_pct(values[index]))}</title>'
             '</circle>')
+        # The first and last points sit ON the plot edges, so a centred label
+        # there has half of itself outside the viewBox and is clipped: the live
+        # page showed "MONTHS" and "24+ MON" where "0-03 MONTHS" and
+        # "24+ MONTHS" belonged. Anchor the ends inwards instead.
+        axis_anchor = ("start" if index == 0
+                       else "end" if index == len(coords) - 1 else "middle")
         parts.append(
-            f'<text x="{x:.1f}" y="{base_y + 16:.1f}" text-anchor="middle" '
+            f'<text x="{x:.1f}" y="{base_y + 16:.1f}" text-anchor="{axis_anchor}" '
             f'class="dz-axis">{_safe(name)}</text>')
     # Label the two ends only; the rest are on hover.
     for index in (0, len(coords) - 1):
@@ -619,3 +624,167 @@ def composition_donut(parts: Sequence[dict], center_top: str,
     legend = _legend([(str(p.get("label")), str(p.get("color") or TEAL))
                       for p in usable])
     return f'<div class="donut-wrap">{svg}{legend}</div>'
+
+
+# --- Comparing two stock positions --------------------------------------------
+
+def shift_dumbbells(rows: Sequence[dict], then_label: str, now_label: str) -> str:
+    """Three readings, each shown as where it was and where it is now.
+
+    A dumbbell rather than two bars per reading, because the quantity the reader
+    needs is the GAP, and a dumbbell draws the gap as a line while paired bars
+    make it something to estimate by eye. Every reading here is a share of the
+    same whole, so one 0-100 scale is honest for all three.
+
+    The direction word is written on every row. Higher is worse on this page,
+    which is the opposite of most charts a reader sees, so it can never be left
+    to colour or to the direction of travel alone.
+    """
+    usable = [r for r in rows or []
+              if _num(r.get("then_pct")) is not None and _num(r.get("now_pct")) is not None]
+    if not usable:
+        return ""
+    peak = max(max(_num(r["then_pct"]), _num(r["now_pct"])) for r in usable) or 1.0
+    scale = max(peak * 1.25, 5.0)
+
+    body = ""
+    for row in usable:
+        then_pct, now_pct = _num(row["then_pct"]), _num(row["now_pct"])
+        then_x, now_x = then_pct / scale * 100.0, now_pct / scale * 100.0
+        left, right = min(then_x, now_x), max(then_x, now_x)
+        tone = str(row.get("tone") or "neutral")
+        colour = TONE_FILL.get(tone, FAINT)
+        body += (
+            '<div class="db-row">'
+            f'<div class="db-lab">{_safe(row.get("label"))}'
+            f'<small>{_safe(row.get("note"))}</small></div>'
+            '<div class="db-track">'
+            f'<span class="db-bar" style="left:{left:.2f}%;width:{max(right - left, 0.4):.2f}%;'
+            f'background:{colour}"></span>'
+            f'<span class="db-dot db-then data-point" tabindex="0" '
+            f'style="left:{then_x:.2f}%" data-label="{_safe(then_label)}" '
+            f'data-value="{_safe(_pct(then_pct))}"></span>'
+            f'<span class="db-dot db-now data-point" tabindex="0" '
+            f'style="left:{now_x:.2f}%;background:{colour}" '
+            f'data-label="{_safe(now_label)}" data-value="{_safe(_pct(now_pct))}"></span>'
+            '</div>'
+            f'<div class="db-val">{_safe(_pct(now_pct))}'
+            f'<small class="db-{tone}">{_safe(row.get("movement"))}</small>'
+            '</div></div>')
+    legend = _legend([(then_label, FAINT), (now_label, AMBER)])
+    return (f'<div class="chart-stage"><div class="dumbbells">{body}</div>'
+            f'<span class="chart-tooltip" role="status"></span></div>{legend}')
+
+
+def band_share_pairs(bands: Sequence[dict], then_label: str, now_label: str) -> str:
+    """Each age band's share of all units, on both dates.
+
+    Shares rather than unit counts, deliberately. The totals on the two dates are
+    not the same size, so two raw counts side by side would show mostly "there is
+    more stock now" and hide the thing worth seeing - which is that the mix moved
+    towards the older bands. A share removes the size difference for free.
+    """
+    usable = [b for b in bands or []
+              if _num(b.get("qty_share_then_pct")) is not None
+              and _num(b.get("qty_share_now_pct")) is not None]
+    if not usable:
+        return ""
+    peak = max(max(_num(b["qty_share_then_pct"]), _num(b["qty_share_now_pct"]))
+               for b in usable) or 1.0
+
+    body = ""
+    for band in usable:
+        then_pct = _num(band["qty_share_then_pct"])
+        now_pct = _num(band["qty_share_now_pct"])
+        points = now_pct - then_pct
+        word = ("no real change" if abs(points) < 0.2
+                else f"{abs(points):.1f} points {'more' if points > 0 else 'less'}")
+        flag = ('<span class="bp-flag">over a year old</span>'
+                if band.get("high_risk") else "")
+        body += (
+            '<div class="bp-row">'
+            f'<div class="bp-lab">{_safe(band.get("name"))}{flag}</div>'
+            '<div class="bp-bars">'
+            f'<span class="bp-bar bp-then data-point" tabindex="0" '
+            f'style="width:{then_pct / peak * 100:.2f}%" '
+            f'data-label="{_safe(then_label)}" data-value="{_safe(_pct(then_pct))}"></span>'
+            f'<span class="bp-bar bp-now data-point" tabindex="0" '
+            f'style="width:{now_pct / peak * 100:.2f}%" '
+            f'data-label="{_safe(now_label)}" data-value="{_safe(_pct(now_pct))}"></span>'
+            '</div>'
+            f'<div class="bp-val">{_safe(_pct(now_pct))}<small>{_safe(word)}</small>'
+            '</div></div>')
+    return (f'<div class="chart-stage"><div class="band-pairs">{body}</div>'
+            f'<span class="chart-tooltip" role="status"></span></div>'
+            + _legend([(then_label, FAINT), (now_label, AMBER)]))
+
+
+# --- What to do about it ------------------------------------------------------
+
+def clearance_bars(rows: Sequence[dict], horizon_days: int) -> str:
+    """How much of each division's aged stock would sell within the window.
+
+    Ordered slowest first, because the slow ones are the work. The bar is the
+    share that clears and the caption is how long the whole pile would take, so
+    a division that clears half in a month and one that clears half in a week
+    cannot look the same.
+    """
+    usable = [r for r in rows or [] if _num(r.get("cleared_pct")) is not None]
+    if not usable:
+        return ""
+    body = ""
+    for row in usable:
+        cleared = _num(row["cleared_pct"]) or 0.0
+        tone = str(row.get("tone") or "neutral")
+        # An estimate above 100% means the division sells its whole aged pile
+        # inside the window with room to spare. Showing 140% would invite the
+        # reader to wonder what the extra 40% is, so the bar stops at full and
+        # the words carry the meaning.
+        capped = ("clears with room to spare" if row.get("capped") else "")
+        body += (
+            '<div class="cl-row">'
+            f'<div class="cl-lab">{_safe(row.get("name"))}'
+            f'<small>{_safe(row.get("qty_display"))} sitting aged</small></div>'
+            '<div class="cl-track">'
+            f'<span class="cl-fill data-point" tabindex="0" '
+            f'style="width:{cleared:.2f}%;background:{TONE_FILL.get(tone, FAINT)}" '
+            f'data-label="{_safe(row.get("name"))}" '
+            f'data-value="{_safe(_pct(cleared))} clears in {int(horizon_days)} days">'
+            '</span></div>'
+            f'<div class="cl-val">{_safe(_pct(cleared))}'
+            f'<small>{_safe(row.get("days_display"))} to clear it all</small>'
+            + (f'<small class="cl-cap">{_safe(capped)}</small>' if capped else "")
+            + '</div></div>')
+    return (f'<div class="chart-stage"><div class="clearance">{body}</div>'
+            f'<span class="chart-tooltip" role="status"></span></div>'
+            f'<p class="chart-note">The bar is how much of the aged stock in '
+            f'that division would sell in the next {int(horizon_days)} days at '
+            f'the rate it is selling now. Slowest first.</p>')
+
+
+def category_bars(rows: Sequence[dict], threshold_pct: float) -> str:
+    """Categories over the review line, ordered by money stuck rather than by share."""
+    usable = [r for r in rows or [] if (_num(r.get("aged")) or 0.0) > 0]
+    if not usable:
+        return ""
+    peak = max(_num(r["aged"]) or 0.0 for r in usable) or 1.0
+    body = ""
+    for row in usable:
+        aged = _num(row["aged"]) or 0.0
+        share = _num(row.get("aged_share_pct")) or 0.0
+        body += (
+            '<div class="cat-row">'
+            f'<div class="cat-lab">{_safe(row.get("name"))}</div>'
+            '<div class="cat-track">'
+            f'<span class="cat-fill data-point" tabindex="0" '
+            f'style="width:{aged / peak * 100:.2f}%" '
+            f'data-label="{_safe(row.get("name"))}" '
+            f'data-value="{_safe(_sar(aged))} aged"></span></div>'
+            f'<div class="cat-val">{_safe(_sar(aged))}'
+            f'<small>{_safe(_pct(share))} of its own stock</small>'
+            '</div></div>')
+    return (f'<div class="chart-stage"><div class="cat-bars">{body}</div>'
+            f'<span class="chart-tooltip" role="status"></span></div>'
+            f'<p class="chart-note">Every category shown is above the '
+            f'{threshold_pct:.0f}% review line. Ordered by how much money is '
+            f'stuck, so the biggest problems come first.</p>')

@@ -1,0 +1,61 @@
+{
+  "tenant_id": "315642c5-e14a-4c12-bf77-41ee070def79",
+  "workspace_id": "2829a4af-2e07-4b43-b913-0a829a06bef4",
+  "dataset_id": "867a2a79-8360-44e5-856e-2543e5ab0d6e",
+  "report_id": "sku_overview",
+  "report_name": "SB Mart SKU Overview",
+  "report_domain": "inventory",
+  "report_cadence": "daily",
+  "chain_id": "sb_mart_inventory",
+  "output_folder": "outputs_sbmart_skuoverview",
+  "sku_overview_currency": "USD",
+  "sku_overview_top_members": 30,
+  "sku_overview_deep_dive_members": 8,
+  "sku_overview_investigation_enabled": true,
+  "sku_overview_mapping": {
+    "table": "REP_SSR_STOCK_STATUS_REPORTV3",
+    "stock_value": "'REP_SSR_STOCK_STATUS_REPORTV3'[SKU_STOCK_VALUE]",
+    "excess_value": "'REP_SSR_STOCK_STATUS_REPORTV3'[EXCESS_STOCK_VALUE]",
+    "pending_value": "'REP_SSR_STOCK_STATUS_REPORTV3'[PENDING_ORDERS_VALUE]",
+    "opp_loss": "'REP_SSR_STOCK_STATUS_REPORTV3'[OPP_LOSS_DUE_TO_STOCKOUT]",
+    "burnout_days": "'REP_SSR_STOCK_STATUS_REPORTV3'[EXPECTED_BURNOUT_DAYS]",
+    "recommended_action": "'REP_SSR_STOCK_STATUS_REPORTV3'[RECOMMENDED_ACTION]",
+    "snapshot": "'REP_SSR_STOCK_STATUS_REPORTV3'[UPDATED_ON]",
+    "sku": "'REP_SSR_STOCK_STATUS_REPORTV3'[SKU_CODE]",
+    "sku_description": "'REP_SSR_STOCK_STATUS_REPORTV3'[PART_DESCRIPTION]",
+    "location": "'REP_SSR_STOCK_STATUS_REPORTV3'[LOC_CODE]",
+    "dimensions": {
+      "department": "'REP_SSR_STOCK_STATUS_REPORTV3'[DEPARTMENT]",
+      "section": "'REP_SSR_STOCK_STATUS_REPORTV3'[SECTION]",
+      "location": "'REP_SSR_STOCK_STATUS_REPORTV3'[LOC_CODE]",
+      "category": "'REP_SSR_STOCK_STATUS_REPORTV3'[CATEGORY_NAME]"
+    }
+  },
+  "powerbi_auth_mode": "auto",
+  "powerbi_query_api": "auto",
+  "fabric_definitions": false,
+
+  "ai_provider": "azure_openai",
+  "model": "claude-sonnet-5",
+  "azure_openai_api_key_env": "AZURE_OPENAI_API_KEY",
+  "openai_api_key_env": "OPENAI_API_KEY",
+  "anthropic_api_key_env": "ANTHROPIC_API_KEY",
+  "max_tokens": 8192,
+
+  "azure_blob_upload": true,
+  "azure_blob_account": "turnbtestblobstorage",
+  "azure_blob_container": "insightgen",
+  "azure_blob_prefix": "sb-mart/sku-overview",
+  "snapshot_memory_storage": "azure_blob",
+
+  "ai_content_publish_enabled": true,
+  "ai_content_client": "sb-mart",
+  "ai_content_report_ids": ["47003525-99b7-4121-8ecb-5f0b67b62d8b"],
+  "ai_content_ttl_hours": 24,
+  "api_summary_title": "SB Mart SKU Overview",
+
+  "ai_content_multi_report_feed": true,
+  "ai_content_feed_max_cards": 10,
+  "insight_max_new_per_run": 3,
+  "ai_content_alert_days": 7
+}

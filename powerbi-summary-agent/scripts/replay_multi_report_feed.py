@@ -155,6 +155,36 @@ def test_merge_is_report_aware() -> None:
     check("a card outside the retention window is dropped",
           99 not in {c["id"] for c in aged}, str({c["id"] for c in aged}))
 
+    # A missed upstream memory commit can republish the same stable story id on
+    # consecutive dates. The app keys cards by id, so the rolling feed must keep
+    # only the newest instance instead of handing it duplicate render keys.
+    repeated_yesterday = [{
+        "id": 44, "reportId": "sales_yoy", "isoDate": "2026-08-17",
+        "description": "older wording",
+    }]
+    repeated_today = [{
+        "id": 44, "reportId": "sales_yoy", "isoDate": "2026-08-18",
+        "description": "newer wording",
+    }]
+    coalesced = pub.merge_alerts(
+        repeated_yesterday, repeated_today, run_date, 7, report_id="sales_yoy"
+    )
+    check("a stable id appears only once across the rolling window",
+          len(coalesced) == 1, str(coalesced))
+    check("the newest copy of a repeated stable id wins",
+          coalesced[0]["isoDate"] == "2026-08-18"
+          and coalesced[0]["description"] == "newer wording", str(coalesced))
+
+    same_id_other_report = pub.merge_alerts(
+        repeated_yesterday,
+        [{"id": 44, "reportId": "target_tracker", "isoDate": "2026-08-18"}],
+        run_date,
+        7,
+        report_id="target_tracker",
+    )
+    check("the same numeric id remains valid for a different report",
+          len(same_id_other_report) == 2, str(same_id_other_report))
+
 
 # --- 4. shared feed cap -------------------------------------------------------
 def test_feed_cap() -> None:

@@ -36,6 +36,34 @@ LAYER_TITLES = {
     "detail": "Full detail",
 }
 
+#: Two tabs join the Stock Age page once the source model keeps an earlier
+#: position and exposes selling rates. They sit where they answer a reader's
+#: questions in order: what is the position, what changed, where is it, whose is
+#: it, what do we do, and then the complete evidence.
+#:
+#: They are ADDED rather than substituted, and only when their inputs exist -
+#: a client whose model has neither history nor a stock-status table still gets
+#: exactly the four-layer page, which is what keeps the older config working.
+AGEING_EXTRA_LAYERS = {
+    "change": "What changed",
+    "outlook": "Where to act",
+}
+AGEING_LAYER_ORDER = ("overview", "change", "entities", "areas", "outlook", "detail")
+
+
+def _ageing_layers(report: dict) -> tuple[tuple[str, ...], dict]:
+    """Which tabs this run's data can actually fill, in reading order."""
+    present = {"overview", "entities", "areas", "detail"}
+    if (report.get("comparison") or {}).get("available") or             (report.get("day_movement") or {}).get("available"):
+        present.add("change")
+    if ((report.get("clearance") or {}).get("available")
+            or (report.get("categories") or {}).get("available")
+            or (report.get("stuck_lines") or {}).get("available")):
+        present.add("outlook")
+    order = tuple(k for k in AGEING_LAYER_ORDER if k in present)
+    titles = {**LAYER_TITLES, **AGEING_EXTRA_LAYERS}
+    return order, {k: titles[k] for k in order}
+
 # --- Section headings and column labels ---------------------------------------
 # These belong to the REPORT, not to the renderer, and that is the whole point.
 # They were originally hard-coded in `dashboard_html`, which both inventory
@@ -122,8 +150,23 @@ def _kpi(label: str, value: Any, *, sub: str = "", tone: str = "neutral",
     }
 
 
-def _entity_cards(rows: Sequence[dict], total_aged: float) -> list[dict]:
+#: Where a location stops being healthy and starts being a watch, then a
+#: problem. Judged against the location's OWN stock (BR-23), so a small store
+#: and a large warehouse sit on the same scale. These are a business judgement
+#: rather than a value in the source model, which is why they are configurable -
+#: see `ageing_location_watch_pct` and `ageing_location_critical_pct`.
+LOCATION_WATCH_PCT = 12.0
+LOCATION_CRITICAL_PCT = 20.0
+
+
+def _entity_cards(rows: Sequence[dict], total_aged: float,
+                  bands: dict | None = None) -> list[dict]:
     """One card per location, ranked by how much aged stock it holds."""
+    bands = bands or {}
+    warn = _num(bands.get("watch_pct"))
+    critical = _num(bands.get("critical_pct"))
+    warn = LOCATION_WATCH_PCT if warn is None else warn
+    critical = LOCATION_CRITICAL_PCT if critical is None else critical
     cards = []
     for row in rows:
         aged = _num(row.get("value")) or 0.0          # aged stock at this location
@@ -142,7 +185,7 @@ def _entity_cards(rows: Sequence[dict], total_aged: float) -> list[dict]:
                      f"{_pct(own_share)} of this location's own stock."),
             "share_of_group_pct": _share(aged, total_aged),
             "own_share_pct": own_share,
-            "tone": _tone_for_share(own_share, warn=12.0, critical=20.0),
+            "tone": _tone_for_share(own_share, warn=warn, critical=critical),
         })
     return cards
 
@@ -158,10 +201,12 @@ def build(report: dict) -> dict:
     aged_nm = _num(header.get("aged_non_moving")) or 0.0
     oldest = next((b for b in bands if str(b.get("name", "")).upper().startswith("24+")), None)
 
+    layer_order, layer_titles = _ageing_layers(report)
     views = [
         _all_stock_view(report, header, bands, split, total, aged, high_risk,
-                        aged_nm, oldest),
-        _high_risk_view(report, header, bands, total, high_risk, oldest),
+                        aged_nm, oldest, layer_order),
+        _high_risk_view(report, header, bands, total, high_risk, oldest,
+                        layer_order),
     ]
 
     caveats = list(report.get("caveats") or [])
@@ -172,48 +217,97 @@ def build(report: dict) -> dict:
         "This report shows how old stock is and which aged stock is not "
         "selling. It does not say why stock is ageing, or what to do about it.")
 
-    return {
+    page = {
         "status": "ok",
+        "currency": str(report.get("currency") or "SAR"),
         "title": report.get("report_name") or "Stock Age Analysis",
         "subtitle": f"Stock position {report.get('period_label')}",
-        "layers": list(LAYERS),
-        "layer_titles": dict(LAYER_TITLES),
+        "layers": list(layer_order),
+        "layer_titles": dict(layer_titles),
         "default_view": "all",
         "views": [v for v in views if v],
         "caveats": [c for c in caveats if c],
         "checks": report.get("checks") or {},
+        # Says where the money figures come from without asserting a costing
+        # convention the model does not state - see `render`'s note.
+        "value_basis_note": (
+            f"All values are {str(report.get('currency') or 'SAR')} and are the "
+            f"stock value held in the source report."),
     }
+    currency = str(report.get("currency") or "SAR").strip() or "SAR"
+    return _replace_currency(page, currency)
+
+
+def _replace_currency(node, currency: str):
+    """Translate display strings while leaving all numeric evidence untouched."""
+    if currency == "SAR":
+        return node
+    if isinstance(node, dict):
+        return {key: _replace_currency(value, currency) for key, value in node.items()}
+    if isinstance(node, list):
+        return [_replace_currency(value, currency) for value in node]
+    if isinstance(node, str):
+        return node.replace("SAR ", f"{currency} ")
+    return node
 
 
 def _all_stock_view(report, header, bands, split, total, aged, high_risk,
-                    aged_nm, oldest) -> dict:
+                    aged_nm, oldest, layer_order: tuple = ()) -> dict:
     aged_share = _share(aged, total)
     hr_share = _share(high_risk, total)
     not_selling = _num(split.get("non_moving_total")) or 0.0
 
+    # Six cards, and the two most important carry their own movement. Putting
+    # the change on the card the reader is already looking at is worth more than
+    # a seventh card: "aged stock is 14.7%" and "aged stock is 1.8 points worse
+    # than it was" are the same sentence, and splitting them across the page
+    # makes the reader do the joining.
+    comparison = report.get("comparison") or {}
+    quantity = report.get("quantity") or {}
+    categories = report.get("categories") or {}
+    aged_skus = _num(quantity.get("aged_skus"))
+    all_skus = _num(header.get("skus"))
+
     kpis = [
         _kpi("Stock value", total, sub="Held across all locations."),
         _kpi("Aged stock", aged,
-             sub=f"{_pct(aged_share)} of stock value. Food ages at six months, "
-                 f"everything else at nine.",
-             tone=_tone_for_share(aged_share, warn=10.0, critical=15.0)),
-        _kpi("High-risk, over a year", high_risk,
-             sub=f"{_pct(hr_share)} of stock value.",
-             tone=_tone_for_share(hr_share, warn=5.0, critical=8.0)),
+             sub=f"{_pct(aged_share)} of stock value, nine months old or more.",
+             tone=_tone_for_share(aged_share, warn=10.0, critical=15.0),
+             change_display=_movement_badge(comparison, "aged_value_share")),
+        _kpi("Over a year old", high_risk,
+             sub=f"{_pct(hr_share)} of stock value. The hardest to sell.",
+             tone=_tone_for_share(hr_share, warn=5.0, critical=8.0),
+             change_display=_movement_badge(comparison, "high_risk_share")),
         _kpi("Aged and not selling", aged_nm,
              sub="Old stock with no recorded sales. The highest-risk combination.",
              tone=_tone_for_share(_share(aged_nm, total), warn=3.0, critical=5.0),
              caution="Not added to the aged total - the two measures overlap."),
-        _kpi("Over two years old", (oldest or {}).get("value"),
-             sub="The most likely write-off candidate.",
-             tone="critical" if (_num((oldest or {}).get("value")) or 0)
-                  >= buckets.HIGH_RISK_CALL_OUT_SAR else "warn"),
-        _kpi("Not selling, any age", not_selling,
-             sub="Stock with no recorded sales since it arrived.",
-             tone=_tone_for_share(_share(not_selling, total), warn=8.0, critical=12.0)),
+        _kpi("Products holding aged stock",
+             f"{aged_skus:,.0f}" if aged_skus else "-",
+             sub=(f"of {all_skus:,.0f} products stocked anywhere - "
+                  f"{_pct(_share(aged_skus, all_skus))}."
+                  if aged_skus and all_skus else "Counted once per product."),
+             tone=_tone_for_share(_share(aged_skus, all_skus), warn=30.0, critical=45.0)),
+        _kpi("Categories over the review line",
+             f"{categories.get('over'):,}" if categories.get("available") else "-",
+             sub=(f"of {categories.get('carried'):,} categories carried. Each is "
+                  f"measured against its own stock."
+                  if categories.get("available") else "No category breakdown was returned."),
+             tone=_tone_for_share(categories.get("over_share_pct"),
+                                  warn=10.0, critical=20.0)),
     ]
 
     signals = []
+    if oldest and (_num(oldest.get("value")) or 0.0) > 0:
+        signals.append({
+            "label": "Over two years old", "value": _sar(oldest.get("value")),
+            "note": "The most likely write-off. Reported on its own because age "
+                    "at this end is a decision, not a trend."})
+    if not_selling:
+        signals.append({
+            "label": "Not selling, any age", "value": _sar(not_selling),
+            "note": "Stock with no recorded sales since it arrived, whether it "
+                    "is old or not."})
     migration = report.get("migration") or {}
     if not migration.get("available"):
         signals.append({"label": "No movement over time",
@@ -242,19 +336,19 @@ def _all_stock_view(report, header, bands, split, total, aged, high_risk,
         "labels": dict(AGEING_LABELS),
         "owns_breakdowns": True,
         "period": {"data_as_of": report.get("as_at"), "grain": "snapshot"},
-        "hero": {
-            "headline": _headline(oldest, high_risk, hr_share, aged_nm),
-            "narrative": (report.get("narrative") or [""])[0],
-        },
+        "hero": _hero(report, oldest, high_risk, hr_share, aged_nm, aged_share),
         "kpis": kpis,
         "signals": signals,
         "tldr": _tldr(report, oldest, aged_nm, locations, divisions),
         "layers": {
             "overview": True,
+            **({"change": _change_layer(report)} if "change" in layer_order else {}),
+            **({"outlook": _outlook_layer(report)} if "outlook" in layer_order else {}),
             "entities": {
                 "available": bool(locations),
                 "role": "location",
-                "cards": _entity_cards(locations, aged or 1.0),
+                "cards": _entity_cards(locations, aged or 1.0,
+                                       report.get("location_bands")),
                 "caption": "Each location's aged stock, and what share of its "
                            "own stock that is.",
                 "rate_unit": "aged",
@@ -279,7 +373,8 @@ def _all_stock_view(report, header, bands, split, total, aged, high_risk,
     }
 
 
-def _high_risk_view(report, header, bands, total, high_risk, oldest) -> dict | None:
+def _high_risk_view(report, header, bands, total, high_risk, oldest,
+                    layer_order: tuple = ()) -> dict | None:
     """Everything, filtered to stock over a year old."""
     if not high_risk:
         return None
@@ -319,6 +414,19 @@ def _high_risk_view(report, header, bands, total, high_risk, oldest) -> dict | N
         "tldr": [],
         "layers": {
             "overview": True,
+            # Deferred, not hidden. Both compare or forecast the WHOLE position;
+            # showing the all-stock rows here would put figures on a page whose
+            # every other number is scoped to stock over a year old, and the
+            # reader has no way to tell which is which.
+            **({"change": {"available": False, "pointer": (
+                "What changed is measured across all stock, so it is shown in "
+                "the all-stock view rather than repeated here.")}}
+               if "change" in layer_order else {}),
+            **({"outlook": {"available": False, "pointer": (
+                "Clearance and the stuck-product list cover all aged stock, so "
+                "they are shown in the all-stock view rather than repeated "
+                "here.")}}
+               if "outlook" in layer_order else {}),
             "entities": {
                 "available": bool(locations),
                 "role": "location",
@@ -349,6 +457,170 @@ def _high_risk_view(report, header, bands, total, high_risk, oldest) -> dict | N
             "the all-stock view."],
     }
 
+
+# --- The two layers added once the model started keeping history ---------------
+# Both are built from the report model and add no arithmetic of their own: the
+# comparison is `ageing_history`, the outlook is `ageing_outlook`. What happens
+# here is presentation - which figures earn a row, and in what order.
+
+
+def _date_text(value: Any) -> str:
+    """`2026-08-14` -> `14 August`. Display only; the model keeps the stamp."""
+    import datetime as _dt
+
+    try:
+        day = _dt.date.fromisoformat(str(value)[:10])
+    except (TypeError, ValueError):
+        return str(value or "")
+    return f"{day.day} {day.strftime('%B')}"
+
+
+def _movement_badge(comparison: dict, key: str) -> str:
+    """One reading's movement, written for the KPI card's badge.
+
+    Points, never a percentage of a percentage: "aged share rose 1.8 points"
+    is a statement a reader can check against the two figures; "aged share rose
+    14%" is the same movement expressed in a way that invites them to subtract
+    it from the wrong number.
+    """
+    if not (comparison or {}).get("available"):
+        return ""
+    match = next((h for h in comparison.get("headlines") or []
+                  if h.get("key") == key), None)
+    points = _num((match or {}).get("points"))
+    if points is None or abs(points) < 0.05:
+        return f"No change since {_date_text(comparison.get('prior_as_at'))}"
+    sign = "+" if points > 0 else "-"
+    return (f"{sign}{abs(points):.1f} points since "
+            f"{_date_text(comparison.get('prior_as_at'))}")
+
+
+def _change_layer(report: dict) -> dict:
+    """What moved since the last kept position, and since yesterday.
+
+    Two lanes, kept visibly apart. The reference lane compares against the
+    position the source system froze, whose window is however long ago that was.
+    The day-on-day lane compares against the scan this pipeline kept on its last
+    run. Merging them would produce one comparison whose window silently changes
+    length, which is the thing a reader can least afford to be wrong about.
+    """
+    reference = report.get("comparison") or {}
+    day = report.get("day_movement") or {}
+
+    lanes = []
+    for lane, title, sub in (
+        (reference, "Since the last stock position",
+         "compared with the position kept in the source report"),
+        (day, "Since yesterday's reading",
+         "compared with the position this report kept on its last run"),
+    ):
+        if not lane:
+            continue
+        lanes.append({
+            "title": title,
+            "sub": sub,
+            "available": bool(lane.get("available")),
+            "reason": lane.get("reason") or "",
+            "window": _window_text(lane),
+            "verdict": lane.get("verdict") or "",
+            "verdict_tone": _verdict_tone(lane.get("verdict")),
+            "agreement": (lane.get("agreement") or {}).get("text") or "",
+            "headlines": [_shift_row(h) for h in lane.get("headlines") or []],
+            "bands": [b for b in lane.get("bands") or []],
+            "members": [m for m in (lane.get("locations") or []) if m.get("comparable")],
+            "value_comparable": bool(lane.get("value_comparable")),
+            "value_note": ((lane.get("basis") or {}).get("reason") or ""),
+            "skus_now": (lane.get("now") or {}).get("skus"),
+            "skus_then": (lane.get("then") or {}).get("skus"),
+        })
+
+    available = any(lane["available"] for lane in lanes)
+    return {
+        "available": available,
+        "lanes": lanes,
+        "caption": ("Ageing is judged on shares rather than totals, because a "
+                    "share compares two figures taken on the same day and is "
+                    "not affected by anything that rescales them."),
+        "reason": ("No earlier stock position was available, so nothing can be "
+                   "compared yet." if not available else ""),
+    }
+
+
+def _window_text(lane: dict) -> str:
+    if not lane.get("available"):
+        return ""
+    days = lane.get("days")
+    span = (f"{_date_text(lane.get('prior_as_at'))} to "
+            f"{_date_text(lane.get('as_at'))}")
+    if not days:
+        return span
+    return f"{span} - {days} day{'s' if days != 1 else ''}"
+
+
+def _verdict_tone(verdict: Any) -> str:
+    text = str(verdict or "").lower()
+    if "worse" in text:
+        return "critical"
+    if "improved" in text:
+        return "positive"
+    return "neutral"
+
+
+def _shift_row(headline: dict) -> dict:
+    """One before-and-after reading, with its movement written out in words."""
+    points = _num(headline.get("points"))
+    direction = str(headline.get("direction") or "flat")
+    if points is None:
+        movement = "no comparable reading"
+    elif direction == "flat":
+        movement = "about the same"
+    else:
+        movement = (f"{abs(points):.1f} points "
+                    f"{'higher' if points > 0 else 'lower'}")
+    return {
+        "label": headline.get("label"),
+        "note": headline.get("note"),
+        "then_pct": headline.get("then_pct"),
+        "now_pct": headline.get("now_pct"),
+        "points": points,
+        "movement": movement,
+        "direction": direction,
+        "tone": {"worse": "critical", "better": "positive"}.get(direction, "neutral"),
+    }
+
+
+def _outlook_layer(report: dict) -> dict:
+    """What to do about the old stock: how fast it clears, and what is stuck.
+
+    Ordered slowest-first and money-first rather than by size, because both
+    sections exist to answer "where does a buyer spend the morning" and the
+    largest number is rarely the answer to that.
+    """
+    clearance = report.get("clearance") or {}
+    categories = report.get("categories") or {}
+    stuck = report.get("stuck_lines") or {}
+    rows = []
+    for row in clearance.get("rows") or []:
+        rows.append({
+            **row,
+            "cleared_display": _pct(row.get("cleared_pct")),
+            "aged_display": _sar(row.get("aged_value")),
+            "share_display": _pct(row.get("aged_share_pct")),
+            "qty_display": f"{_num(row.get('aged_qty')) or 0:,.0f} units",
+            "daily_display": f"{_num(row.get('daily_qty')) or 0:,.0f} units a day",
+        })
+    return {
+        "available": bool(rows or categories.get("available") or stuck.get("available")),
+        "clearance": {
+            "available": bool(rows),
+            "horizon_days": clearance.get("horizon_days"),
+            "rows": rows,
+            "caveats": clearance.get("caveats") or [],
+            "reason": clearance.get("reason") or "",
+        },
+        "categories": categories,
+        "stuck": stuck,
+    }
 
 def _high_risk_cards(rows: Sequence[dict]) -> list[dict]:
     total = sum(_num(r.get("high_risk")) or 0.0 for r in rows) or 1.0
@@ -804,6 +1076,54 @@ def _stock_health_tldr(report, doubles, excess, unwanted) -> list[dict]:
     return items
 
 
+def _hero(report, oldest, high_risk, hr_share, aged_nm, aged_share) -> dict:
+    """The one line, and the paragraph under it.
+
+    When there is a comparable earlier position the headline is the MOVEMENT,
+    because on a report that runs every day the direction is the news and the
+    level is the context. BR-28's order still governs the ranked findings list
+    below, which is what that rule is about; it does not require the one-line
+    verdict to lead on the oldest band when something more important happened.
+
+    With no earlier position the headline falls back to exactly what it was.
+    """
+    comparison = report.get("comparison") or {}
+    aged_move = next((h for h in comparison.get("headlines") or []
+                      if h.get("key") == "aged_value_share"), None)
+    points = _num((aged_move or {}).get("points"))
+    if comparison.get("available") and points is not None and abs(points) >= 0.2:
+        worse = points > 0
+        direction = "risen to" if worse else "fallen to"
+        headline = (f"Aged stock has {direction} {_pct(aged_share)} of the value "
+                    f"on the shelf, {abs(points):.1f} points "
+                    f"{'higher' if worse else 'lower'} than on "
+                    f"{_date_text(comparison.get('prior_as_at'))}")
+        narrative = _hero_narrative(report, comparison, aged_move)
+        return {"headline": headline, "narrative": narrative}
+    return {"headline": _headline(oldest, high_risk, hr_share, aged_nm),
+            "narrative": (report.get("narrative") or [""])[0]}
+
+
+def _hero_narrative(report, comparison, aged_move) -> str:
+    """Why the headline can be trusted, in the plainest words available."""
+    units = next((h for h in comparison.get("headlines") or []
+                  if h.get("key") == "aged_qty_share"), None)
+    parts = []
+    if units and _num(units.get("points")) is not None:
+        parts.append(
+            f"Counted in units rather than money the picture is the same: "
+            f"{_pct(units.get('then_pct'))} of units were nine months old or "
+            f"more on {_date_text(comparison.get('prior_as_at'))}, and "
+            f"{_pct(units.get('now_pct'))} are now.")
+    if not comparison.get("value_comparable"):
+        parts.append(
+            "Totals are not compared between the two dates, because stock value "
+            "is worked out differently on each of them. Shares are, because a "
+            "share compares two figures taken on the same day.")
+    parts.append((report.get("narrative") or [""])[0])
+    return " ".join(part for part in parts if part)
+
+
 def _headline(oldest, high_risk, hr_share, aged_nm) -> str:
     oldest_value = _num((oldest or {}).get("value")) or 0.0
     if oldest_value >= buckets.HIGH_RISK_CALL_OUT_SAR:
@@ -842,4 +1162,21 @@ def _tldr(report, oldest, aged_nm, locations, divisions) -> list[dict]:
             "to": "Divisions",
             "text": f"{worst.get('name')} holds {_sar(worst.get('value'))} of "
                     f"aged stock."})
+    slowest = ((report.get("clearance") or {}).get("rows") or [None])[0]
+    if slowest and _num(slowest.get("cleared_pct")) is not None             and slowest["cleared_pct"] < 100.0:
+        items.append({
+            "rank": len(items) + 1,
+            "tone": "critical" if slowest["cleared_pct"] < 50.0 else "warn",
+            "layer": "outlook", "to": "Where to act",
+            "text": f"{slowest['name']} is the slowest to clear - about "
+                    f"{slowest['cleared_pct']:.0f}% of its aged stock would "
+                    f"move in the next {(report.get('clearance') or {}).get('horizon_days', 30)} days."})
+    categories = report.get("categories") or {}
+    if categories.get("available") and categories.get("over"):
+        items.append({
+            "rank": len(items) + 1, "tone": "warn", "layer": "outlook",
+            "to": "Where to act",
+            "text": f"{categories['over']} of {categories['carried']} categories "
+                    f"have more than {categories['threshold_pct']:.0f}% of their "
+                    f"own stock aged."})
     return items
