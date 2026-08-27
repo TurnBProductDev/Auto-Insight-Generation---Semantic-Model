@@ -227,7 +227,7 @@ def summary_payload(model: dict, score: dict | None = None, *,
         ],
     }
     # Fail loudly here rather than have the app discard the file in silence.
-    return ReportSummaryPayload(**payload).model_dump()
+    return ReportSummaryPayload(**payload).model_dump(exclude_none=True)
 
 
 def history_entry(model: dict, payload: dict, report_id: str,
@@ -236,6 +236,14 @@ def history_entry(model: dict, payload: dict, report_id: str,
     return {
         "reportId": report_id,
         "asAt": model.get("as_at"),
+        # The app reads `dataAsOf` off the index row to say how current a
+        # summary is; `asAt` is this report's own key for the same date and
+        # nothing downstream reads it. Publishing only asAt meant Home had no
+        # data date for this report at all - and with Target Tracker the only
+        # publisher emitting dataAsOf, its anchor ended up labelling the whole
+        # page ("data to 31 Jul" beside content a month newer).
+        "dataAsOf": model.get("as_at"),
+        "grain": "day",
         "generatedAt": _iso(generated_at),
         "headline": payload.get("headline") or "",
         "stockValue": header.get("stock_value"),

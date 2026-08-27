@@ -112,6 +112,13 @@ def _signal(*, finding: str, member: str, segment: str, dimension: str,
         # `prior` is absent, not None-valued: this model holds one stock
         # position and no prior, and an explicit absence cannot be misread.
         "current": current,
+        # ...and because there is no prior, impact_value is a LEVEL - how much
+        # is in this state right now - not a movement. Downstream had no way to
+        # tell, so it signed the figure and published "+17.2K" for a count of
+        # 17,215 Loc-SKUs that had not gone up by anything. Stated explicitly
+        # here rather than inferred from the absence of `prior`, because a
+        # reader of the card should not have to reconstruct that.
+        "value_kind": "level",
         "comparison_label": comparison_label,
         "description": description,
         "question": question,
@@ -176,7 +183,11 @@ def double_warning_states(model: dict, score: dict | None = None) -> list[dict]:
             current=lines,
             score_override=DOUBLE_WARNING_BOOST + share,
             double_warning=True,
-            comparison_label="of all Loc-SKUs in the stock position",
+            # The share belongs IN the clause. Published without it, the card
+            # showed "of all Loc-SKUs in the stock position" directly beneath
+            # the count, so the tile asserted that 17.2K was the share - a
+            # false sentence assembled from two true halves.
+            comparison_label=f"{share:.1f}% of all Loc-SKUs in the stock position",
             description=(
                 f"{_fmt(lines)} Loc-SKUs are in {action}, "
                 f"{share:.1f}% of the {_fmt(total_rows)} in the position. "
@@ -241,7 +252,7 @@ def excess_stock_share(model: dict, score: dict | None = None) -> list[dict]:
         metric="Excess Stock",
         impact_value=excess, base=stock, as_at=str(model.get("as_at") or ""),
         current=excess,
-        comparison_label="of total Stock Value",
+        comparison_label=f"{share:.1f}% of total Stock Value",
         description=(
             f"{_fmt(excess)} is held above the agreed cover, {share:.1f}% of "
             f"the {_fmt(stock)} Stock Value. That is the portion held above "

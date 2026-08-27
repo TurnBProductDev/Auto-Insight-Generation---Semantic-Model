@@ -13,6 +13,118 @@ Everything stated here was verified against the agent code on 2026-08-25, from
 
 ---
 
+## Amendment, 2026-08-25: five source fixes
+
+Enabled on a live client, the tiles were unreadable. The worst one:
+
+```
+STOCK OUT - PLACE ORDER              Performance
++17.2K
+of all Loc-SKUs in the stock position
+```
+
+Nobody could say what +17.2K was. The card's own `description` could:
+*"17,215 Loc-SKUs are in STOCK OUT - PLACE ORDER, 12.4% of the 139,200 in the
+position."* Every fact needed was computed; the card published none of them in a
+form the tile could use, and three of the four it did publish were wrong.
+
+| # | Defect | Fix |
+|---|---|---|
+| 1 | **A level published as a change.** `impact_value` is a count of what is in a state right now; `_compact_number(val, signed=True)` made it `+17.2K`, a rise of 17.2K that never happened. | Signals that are snapshots declare `value_kind: "level"` (`inventory/stock_health_signals._signal`, where the docstring already said there is no prior). A level is rendered unsigned. |
+| 2 | **A comparison clause with its subject amputated.** `comparison_label` was `"of all Loc-SKUs in the stock position"` — the tail of `"12.4% of …"`. Printed under the count, the tile asserted 17.2K *was* the share: a false sentence from two true halves. | The share is part of the clause. Both sites in `stock_health_signals` now emit it. |
+| 3 | **`metric` holds the segment, never the measure**, and fell back to the literal string `"Segment"` — which headed a tile on this client's home page. The measure name was on the signal (`"Loc-SKUs in a double-warning state"`) and discarded. | `_kpi_label` now reaches every card that has a segment, is capped at 48 characters, and drops the measure rather than the segment when only one fits. Classification dimensions (`recommended_action`, `status`, `bucket`, …) are no longer prefixed — `"Recommended Action STOCK OUT - PLACE ORDER"` is scaffolding. The `"Segment"` fallback is now `""`. |
+| 4 | **A currency nobody configured.** `_kpi_currency` could not return "no currency"; it ended `return … else "SAR"`, and `ai_content_kpi_currency` was catalogued with default `"SAR"`. Only seven reports have their own key. | `_kpi_currency` returns `Optional[str]`; the catalogue default is now `""`. A report with no configured currency publishes no `unit`. |
+| 5 | **A level claiming `"vs baseline"`.** A snapshot has no prior, no target and nothing it was measured against, but fell into the `"other"` branch and got a chip saying it did. | A level with a share is `share_of_total` and carries `shareOfTotalPct`; a level without one gets no `comparison` at all. |
+
+The same card now:
+
+```
+Loc-SKUs in a double-warning state
+17.2K                                    share of total
+STOCK OUT - PLACE ORDER · 12.4% of all Loc-SKUs in the stock position
+```
+
+`scripts/replay_kpi_card_fields.py` passes, with two assertions inverted because
+they encoded defect 4 (`"the currency default is SAR"`, `"no report-specific
+currency and no generic override -> SAR default"`). `replay_config_schema` and
+`replay_inventory_scan` pass unchanged. `replay_ai_content_publish` fails on an
+Azure container-name argument both before and after these edits.
+
+### The published summary now carries what a tile needs
+
+Separate from the KPI card work, and the more useful of the two: the app's
+"What changed today" strip is driven by the **Daily Sales scorecard** rather than
+by the findings feed, because a block a reader scans every morning cannot change
+what it measures from day to day.
+
+`summary_payload` flattened each report KPI to `{label, value, tone}` — enough to
+print "USD 55.3K" and nothing else. The page had already worked out that the
+figure was 17.7K under its benchmark, that the verdict was Underperforming, and
+where it sat inside its band; all three were dropped at the door.
+
+`ReportMetric` is now additively extended with:
+
+| Field | Meaning |
+|---|---|
+| `note` | "−USD 17.7K against the benchmark USD 73.0K" |
+| `verdict` | "Underperforming" / "In band" / "On target" |
+| `band` | `{actual, floor, benchmark?, ceiling}` — Daily Sales |
+| `target` | `{value, attainmentPct}` — Target Tracker |
+
+`band` travels as four numbers rather than as `daily_sales_dashboard.bullet`'s
+geometry, which is computed for a 214px chart in this report's own HTML and means
+nothing to a consumer rendering at another width. A card carries `band` **or**
+`target`, never both — a target has no floor, and inventing one to fill the shape
+would be a judgement the data does not support.
+
+`target_tracker_publish` emits the same three on each period row, and the app
+takes only "Today".
+
+### Daily Sales cards were not tile-shaped
+
+The Home strip is scoped to the two reports that describe a period — Daily Sales
+and Target Tracker — and against that scope the Target Tracker card was well
+formed and the Daily Sales cards were not. Three more fixes, same file pattern:
+
+| Defect | Fix |
+|---|---|
+| **No delta.** `_assemble_kpi_card` computes one only from a target, so every declared-baseline card published `delta: ""`. A bare "-7.1K" cannot be read without knowing the base — it is a different day at a business turning 55K than at one turning 5M. | Signals may declare `delta_pct`. Daily Sales computes it from the band edge it missed (`_band_gap_pct`): 7.1K under a 62.4K floor is 11.4%. |
+| **`"other"` / `"vs baseline"`.** A band is a threshold and the enum already has the name; "vs baseline" is true of anything. | Signals may declare `comparison_type` + `comparison_chip`, validated against `COMPARISON_TYPES`. Daily Sales declares `threshold` / `"vs normal band"`. |
+| **No `unit`, no `goodDirection`,** because the signals carried no `metric_family` and the classifier will not guess. | Net Sales → `revenue`, Bills → `transactions`. Margin is left unset on purpose: it is a percentage and there is no honest entry for one. |
+
+Plus `_kpi_label` no longer returns None when a signal has no segment. A
+whole-business finding has none by design, and the measure name is a perfectly
+good name on its own — "Net Sales vs its normal band" says what the number is,
+where before the tile got nothing at all.
+
+The card, before and after:
+
+```
+before   Segment                    after   Net Sales vs its normal band
+         -7.1K                              -7.1K          ↓11.4%  vs normal band
+         the normal net sales band          below the normal net sales band
+         for the business on this           for the business on this weekday
+         weekday
+```
+
+### Still open on this side
+
+- **`valueType` on a quantity.** `ST1 — Quantity` was published as
+  `valueType: "currency"`. Both classification tables map quantity to `count`,
+  so that signal arrives with a revenue `metric_family` while its own metric
+  name says Quantity. Not fixed here — it is upstream of this file, in whatever
+  builds the Sales YoY signal.
+- **`category` is `"Performance"` on nine of ten cards**, which is the catch-all
+  bucket. It is why `valueType` is withheld on those cards, and it is a
+  classification problem rather than a card problem.
+- **Extended fields are per-report config.** On the run that prompted this, Sales
+  YoY and Target Tracker had `ai_content_kpi_card_fields` on and Inventory Stock
+  Health and Daily Sales did not, so one feed carried two contracts. That is
+  legitimate and the app handles it, but it means `rank` is absent on some cards
+  and the app falls back to severity ordering for the whole strip.
+
+---
+
 ## What's new
 
 Nine additive, optional fields on every card, each present **only when the underlying

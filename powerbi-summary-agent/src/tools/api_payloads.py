@@ -37,7 +37,7 @@ from __future__ import annotations
 import hashlib
 import re
 from datetime import datetime
-from typing import Any, Dict, List, Literal, Optional, Sequence
+from typing import Any, get_args, Dict, List, Literal, Optional, Sequence
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -56,6 +56,10 @@ ComparisonType = Literal[
     "target", "prior_period", "same_period_last_year", "share_of_total",
     "threshold", "peer_comparison", "other",
 ]
+# The same names as a runtime set, for validating what a signal declares. Read
+# off the Literal rather than retyped, so a value added above cannot be
+# silently rejected here.
+COMPARISON_TYPES = frozenset(get_args(ComparisonType))
 
 
 # --------------------------------------------------------------------------
@@ -121,11 +125,40 @@ class KpiCard(BaseModel):
     rank: Optional[int] = None
 
 
+class MetricBand(BaseModel):
+    """Where a measure landed relative to its own normal band.
+
+    The numbers, not the drawing. The report page computes pixel geometry for
+    its own 214px bullet chart (`daily_sales_dashboard.bullet`), which is no use
+    to a consumer rendering at a different width - so the band travels as four
+    figures and every surface draws its own.
+    """
+    model_config = ConfigDict(extra="forbid")
+    actual: float
+    floor: float
+    benchmark: Optional[float] = None
+    ceiling: float
+
+
 class ReportMetric(BaseModel):
     model_config = ConfigDict(extra="forbid")
     label: str
     value: str
     tone: Tone
+    # Everything below is optional and additive, for a consumer that draws a
+    # measure against its band rather than as a bare figure. Publishing used to
+    # flatten a Daily Sales KPI down to label/value/tone, which threw away the
+    # note, the verdict word and the band - the three things that turn "USD
+    # 55.3K" into "USD 55.3K, 17.7K under the benchmark, underperforming".
+    note: Optional[str] = None
+    verdict: Optional[str] = None
+    # A measure is read against ONE of these. Daily Sales measures sit inside a
+    # band; a Target Tracker period is measured against a single target, which
+    # has no floor or ceiling to draw - so the consumer picks its meter from
+    # whichever arrived rather than being handed a band that was invented to
+    # fill the shape.
+    band: Optional[MetricBand] = None
+    target: Optional[KpiTarget] = None
 
 
 class ReportSection(BaseModel):
@@ -584,12 +617,30 @@ def kpi_extended_fields(state: Optional[dict]) -> bool:
     return bool(_cfg_value(state, "ai_content_kpi_card_fields"))
 
 
-def _kpi_currency(state: Optional[dict], report_id: Optional[str]) -> str:
+def _kpi_currency(state: Optional[dict], report_id: Optional[str]) -> Optional[str]:
+    """The report's configured currency, or None.
+
+    None is a real answer here. This used to end `return str(value) if value
+    else "SAR"`, so a report with no currency of its own was stamped with one
+    anyway - and only seven reports have their own key, which does not include
+    the original Sales YoY report. On a live client that put "SAR +406.3K" and
+    "SAR +383.7K" beside "USD -334.8K" on one Home strip, for a client in
+    neither country: two currencies in one glance, one of them invented.
+
+    A wrong currency on a financial figure is not a display bug, it is a false
+    statement about money, and it is worse than no currency at all - an
+    unqualified "+406.3K" is merely incomplete. So the fallback chain still
+    runs (a client CAN set ai_content_kpi_currency and mean it), but it ends in
+    nothing rather than in a guess. `unit` is optional precisely so that absent
+    can mean "draw nothing", which is the rule every other extended field on
+    the card already follows.
+    """
     key = _CURRENCY_CONFIG_KEY_BY_REPORT.get(report_id or "")
     value = _cfg_value(state, key) if key else None
     if not value:
         value = _cfg_value(state, "ai_content_kpi_currency")
-    return str(value) if value else "SAR"
+    text = str(value).strip() if value else ""
+    return text or None
 
 
 def _kpi_value_type_and_unit(
@@ -620,18 +671,47 @@ def _kpi_good_direction(sig: Dict[str, Any], family: str) -> Optional[str]:
 
 # Dimension values that name the whole population rather than one entity -
 # labelling a card "Company REVENUE" reads as a typo, not a scope.
-_NON_ENTITY_DIMENSIONS = {"", "company", "estate", "overall", "business"}
+# Dimensions that are a CLASSIFICATION rather than a thing with a name. A
+# branch is an entity and reads well as "Branch ST2"; a recommended action is a
+# bucket, and "Recommended Action STOCK OUT - PLACE ORDER" is three words of
+# scaffolding in front of a status that already says what it is.
+_NON_ENTITY_DIMENSIONS = {"", "company", "estate", "overall", "business",
+                          "recommended action", "recommended_action",
+                          "status", "state", "bucket", "classification"}
+
+# A tile name, not a sentence. The proposal asks for ~40 characters; past this
+# the tile clamps and cuts the end, which is where the measure sits.
+_LABEL_MAX = 48
 
 
 def _kpi_label(sig: Dict[str, Any]) -> Optional[str]:
     segment = str(sig.get("affected_segment") or "").strip()
     if not segment:
-        return None
+        # No segment does not mean no name. A whole-business finding carries no
+        # segment by design - it is about everything - and returning None here
+        # left the tile with nothing but the card's `metric`, which for that
+        # same card is also empty. The measure is a perfectly good name on its
+        # own: "Net Sales vs its normal band" says what the number is.
+        return str(sig.get("metric") or "").strip() or None
     dimension = str(sig.get("dimension") or "").strip()
     metric_name = str(sig.get("metric") or "").strip()
+    # "recommended_action" -> "Recommended Action". .title() alone leaves the
+    # underscore in place and prints "Recommended_Action" on the tile.
+    dimension = dimension.replace("_", " ").strip()
     prefix = (f"{dimension.title()} {segment}"
               if dimension.casefold() not in _NON_ENTITY_DIMENSIONS else segment)
-    return f"{prefix} — {metric_name}" if metric_name else prefix
+    if not metric_name:
+        return prefix
+
+    label = f"{prefix} — {metric_name}"
+    if len(label) <= _LABEL_MAX:
+        return label
+
+    # Too long to be a name. The measure is the half a reader cannot get
+    # anywhere else - the segment is on the card as `metric` and every surface
+    # already shows it - so when only one half fits, keep that one rather than
+    # publishing a composite the tile will truncate mid-measure.
+    return metric_name if len(metric_name) <= _LABEL_MAX else prefix
 
 
 def _kpi_target(target_value: Any, val: Any, sig: Dict[str, Any]) -> Optional[Dict[str, float]]:
@@ -916,12 +996,40 @@ def _assemble_kpi_card(
         # not contain at all (Non-negotiable 2).
         if isinstance(val, (int, float)) and isinstance(target_value, (int, float)) and target_value:
             delta = f"{abs(val / abs(target_value) * 100.0):.1f}%"
+        elif isinstance(sig.get("delta_pct"), (int, float)):
+            # A signal that has worked out its own percentage says so. Without
+            # this, every declared-baseline card published an empty delta and
+            # the tile showed a bare figure with nothing to size it against:
+            # "-7.1K" is a different day at a business turning 55K than at one
+            # turning 5M, and only the percentage says which.
+            delta = f"{abs(float(sig['delta_pct'])):.1f}%"
         else:
             delta = ""
         comparison = declared_comparison
-        if isinstance(target_value, (int, float)):
+
+        # A signal that knows what KIND of baseline it declared says so too,
+        # rather than being filed under "other" with everything else.
+        declared_type = str(sig.get("comparison_type") or "").strip()
+        declared_chip = str(sig.get("comparison_chip") or "").strip()
+        if declared_type in COMPARISON_TYPES and declared_chip:
+            comparison_type, comparison_chip = declared_type, declared_chip
+        elif isinstance(target_value, (int, float)):
             comparison_type, comparison_chip = "target", "vs target"
             baseline_value = float(target_value)
+        elif str(sig.get("value_kind") or "").strip().casefold() == "level":
+            # A LEVEL has no baseline. It is a reading of one position - "17,215
+            # Loc-SKUs are in this state" - and there is no prior, no target and
+            # nothing it was measured against. Publishing "other"/"vs baseline"
+            # put a chip reading "vs baseline" on a card that compares itself to
+            # nothing, which is a claim, not a caption.
+            #
+            # What it does have is its share of the whole, and the declared
+            # clause already states it ("12.4% of all Loc-SKUs in the stock
+            # position"), so that is the comparison such a card actually makes.
+            if isinstance(sig.get("impact_share"), (int, float)):
+                comparison_type, comparison_chip = "share_of_total", "share of total"
+                share_total_pct = abs(float(sig["impact_share"]))
+            # else: no chip at all rather than an invented one.
         else:
             # A declared, non-target baseline (e.g. an inventory policy band or
             # a snapshot-vs-snapshot position) whose exact kind isn't encoded
@@ -967,13 +1075,27 @@ def _assemble_kpi_card(
         share_total_pct = abs(float(share))
     else:
         delta, comparison = "", "current period"
+    # A LEVEL is not a movement, and signing one says it is.
+    #
+    # A snapshot signal - "17,215 Loc-SKUs are in STOCK OUT - PLACE ORDER" -
+    # carries a count of what is in that state right now. Published through
+    # signed=True it became "+17.2K", which reads as a rise of 17.2K, and the
+    # card had no delta to contradict it. Signals that know they are levels now
+    # say so (see the inventory _signal helper); everything else keeps the sign,
+    # because for a genuine change the direction is the point.
+    is_level = str(sig.get("value_kind") or "").strip().casefold() == "level"
+
     card = {
         "id": stable_card_id(report_id, sig.get("story_key"), idx) if report_id else idx,
         "reportId": report_id or None,
         "severity": _signal_severity(sig),
         "category": category,
-        "metric": sig.get("affected_segment") or "Segment",
-        "value": _compact_number(val, signed=True),
+        # affected_segment, when there is one. The old fallback was the literal
+        # string "Segment", which is not a name and reached a customer's home
+        # page as the heading of a tile; an absent segment is better carried as
+        # an empty string, which every consumer already treats as "no segment".
+        "metric": sig.get("affected_segment") or "",
+        "value": _compact_number(val, signed=not is_level),
         "delta": delta,
         "deltaDirection": "up" if (val or 0) >= 0 else "down",
         "description": " ".join(
@@ -1173,7 +1295,7 @@ def generate_fresh_report_summary_payload(
         "metrics": metrics,
         "sections": sections,
     }
-    result = ReportSummaryPayload(**payload).model_dump()
+    result = ReportSummaryPayload(**payload).model_dump(exclude_none=True)
     # R3 (coordinated UI/API release): expose the selected daily focus as an
     # additive, code-owned field. Off by default so the shipped contract is
     # unchanged until the UI opts in with summary_focus_public_metadata.

@@ -825,13 +825,19 @@ _PUBLISHING: tuple[ConfigKey, ...] = (
        "kpi-tile-schema-proposal.md and docs/phase5-app-contract-change.md for the rollout pattern "
        "this follows.",
        tier="expert"),
-    _k("ai_content_kpi_currency", "string", "SAR", "publishing",
+    _k("ai_content_kpi_currency", "string", "", "publishing",
        "Currency for KPI tiles with no report-specific currency set",
        "The currency code shown on a KPI card's raw figure, for a report that has no currency "
        "setting of its own (Target Tracker, Ageing, Inventory Management, Daily Sales and SKU "
-       "Overview already have one each). Only used when ai_content_kpi_card_fields is on.",
+       "Overview already have one each). Leave it empty unless you know the answer: empty means "
+       "the tile shows the figure without a currency, which is the honest reading. Only used "
+       "when ai_content_kpi_card_fields is on.",
        "Fallback read by api_payloads._kpi_currency when report_id has no entry in "
-       "_CURRENCY_CONFIG_KEY_BY_REPORT - currently just the original Sales YoY report.",
+       "_CURRENCY_CONFIG_KEY_BY_REPORT - currently just the original Sales YoY report. "
+       "Defaulted to SAR until 2026-08-25, which stamped that currency onto every unmapped "
+       "report: a live client saw SAR beside a configured USD on one Home strip, in neither "
+       "of those two countries. A guessed currency on a money figure is a false statement, "
+       "not a missing label, so the default is now empty and _kpi_currency may return None.",
        tier="expert"),
     _k("api_summary_title", "string", "AI Summary", "publishing",
        "Title shown above the summary",

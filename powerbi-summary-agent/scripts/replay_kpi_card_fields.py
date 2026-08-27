@@ -188,10 +188,21 @@ def test_label() -> None:
     card = _card(no_metric, extended=True)
     check("no metric name -> just the dimension + segment",
           card["label"] == "Branch ST2", card["label"])
+    # A whole-business finding carries no segment by design. The measure name
+    # still names the number, and the tile has nothing else to fall back on -
+    # `metric` is empty on that same card - so the label is the measure alone.
     no_segment = dict(_target_signal())
     no_segment["affected_segment"] = ""
     card = _card(no_segment, extended=True)
-    check("no segment -> no label field at all", "label" not in card, str(card.get("label")))
+    check("no segment -> the measure name stands alone as the label",
+          card.get("label") == "Sales against target", str(card.get("label")))
+
+    no_either = dict(_target_signal())
+    no_either["affected_segment"] = ""
+    no_either.pop("metric")
+    card = _card(no_either, extended=True)
+    check("no segment and no measure -> no label field at all",
+          "label" not in card, str(card.get("label")))
 
 
 # --- 3. rawValue -------------------------------------------------------------
@@ -218,9 +229,15 @@ def test_unit_and_value_type() -> None:
     check("ageing currency resolves via its own config key", card["unit"] == "USD", card.get("unit"))
     check("stock_value carries no assumed direction", "goodDirection" not in card, str(card.get("goodDirection")))
 
+    # The rule that matters most on this field: a currency nobody configured is
+    # not published. It used to default to SAR here, which put that currency on
+    # every unmapped report - a live client saw it beside a configured USD on
+    # one Home strip, in neither country.
     card = _card(_target_signal(), extended=True, state=None, report_id=None)
-    check("no report-specific currency and no generic override -> SAR default",
-          card["unit"] == "SAR", card.get("unit"))
+    check("no report-specific currency and no generic override -> no unit at all",
+          "unit" not in card, str(card.get("unit")))
+    check("...and valueType still says what kind of number it is",
+          card.get("valueType") == "currency", card.get("valueType"))
     card = _card(_target_signal(), extended=True,
                  state={"config": {"ai_content_kpi_currency": "AED"}}, report_id=None)
     check("generic ai_content_kpi_currency is the fallback for an unmapped report",
@@ -343,12 +360,15 @@ def test_schema() -> None:
     check("ai_content_kpi_card_fields is catalogued", "ai_content_kpi_card_fields" in catalogued)
     check("ai_content_kpi_currency is catalogued", "ai_content_kpi_currency" in catalogued)
     check("the flag defaults to OFF", catalogued["ai_content_kpi_card_fields"].default is False)
-    check("the currency default is SAR", catalogued["ai_content_kpi_currency"].default == "SAR")
+    check("the currency default is empty, not a guess",
+          catalogued["ai_content_kpi_currency"].default == "")
     defaults = config_schema.state_defaults({})
     check("the flag is threaded into state", "ai_content_kpi_card_fields" in defaults)
     check("a config that predates the flag resolves to OFF",
           defaults["ai_content_kpi_card_fields"] is False)
-    check("the currency key is threaded into state too", defaults.get("ai_content_kpi_currency") == "SAR")
+    check("the currency key is threaded into state too", "ai_content_kpi_currency" in defaults)
+    check("...and threads through as empty rather than as a currency",
+          defaults.get("ai_content_kpi_currency") == "")
 
 
 def main() -> int:

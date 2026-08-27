@@ -69,12 +69,29 @@ def summary_payload(
     performance = []
     for key in ("day", "wtd", "mtd", "ytd"):
         q = p[key]
-        metrics.append({
+        metric = {
             "label": q["name"],
             "value": (f"{pc(q['attainment'])} of target"
                       if q.get("attainment") is not None else "No target set"),
             "tone": tone(q),
-        })
+        }
+        # What the attainment is actually made of, so a consumer can show the
+        # figure against its target rather than only the percentage. Published
+        # for the same reason Daily Sales publishes its band: a percentage with
+        # nothing behind it cannot be checked, and "124% of target" reads very
+        # differently once you can see it is 1.36M against 1.09M.
+        if q.get("target") is not None and q.get("actual") is not None:
+            metric["note"] = (
+                f"{currency} {money(q['actual'])} against a target of "
+                f"{currency} {money(q['target'])}")
+            # KpiTarget needs both halves; a target with no attainment is not
+            # a meter, so the note carries it and nothing is drawn.
+            if q.get("attainment") is not None:
+                metric["target"] = {"value": float(q["target"]),
+                                    "attainmentPct": round(float(q["attainment"]), 1)}
+        if q.get("status"):
+            metric["verdict"] = q["status"]
+        metrics.append(metric)
         performance.append(
             f"{q['name']} ({q['elapsed']}): {currency} {money(q['actual'])} against a "
             f"target of {currency} {money(q['target'])} — {pc(q['attainment'])} of target, "
@@ -146,7 +163,7 @@ def summary_payload(
             },
         ],
     }
-    return ReportSummaryPayload(**payload).model_dump()
+    return ReportSummaryPayload(**payload).model_dump(exclude_none=True)
 
 
 def history_entry(model: dict, payload: dict, report_id: str, generated_at: datetime) -> dict:

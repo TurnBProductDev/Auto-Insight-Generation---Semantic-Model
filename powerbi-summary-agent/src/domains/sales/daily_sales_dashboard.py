@@ -966,6 +966,29 @@ def _story_key(kind: str, anchor: str, name: str) -> str:
     return "dsins:v1:" + hashlib.sha256(blob.encode("utf-8")).hexdigest()[:32]
 
 
+# Only the measures whose family is unambiguous. `margin` is not here on
+# purpose - see the note at the use site.
+_METRIC_FAMILY = {"net_sales": "revenue", "bills": "transactions"}
+
+
+def _band_gap_pct(gap: Any, actual: Any) -> float | None:
+    """How far outside its band a measure landed, as a percent of the edge.
+
+    `gap` is the distance from the band edge and `actual` is where the measure
+    finished, so the edge it missed is `actual - gap` at either end: 55.3K
+    finishing 7.1K under a floor puts the floor at 62.4K, and 7.1/62.4 is the
+    11.4% the tile prints. Returns None rather than a zero when the edge is
+    zero or missing - a percentage of nothing is not a fact about the day.
+    """
+    try:
+        edge = float(actual) - float(gap)
+    except (TypeError, ValueError):
+        return None
+    if not edge:
+        return None
+    return round(abs(float(gap)) / abs(edge) * 100.0, 1)
+
+
 def to_signals(page: dict) -> list[dict]:
     """Whole-business, store, department and section findings outside their
     band, ranked by the size of the gap in money.
@@ -995,12 +1018,37 @@ def to_signals(page: dict) -> list[dict]:
             "analysis_type": f"daily_sales_{grain}_{measure_key}_band",
             "dimension": grain, "affected_segment": name,
             "metric": f"{label} vs its normal band",
+            # What kind of number this is, so the card can carry a currency and
+            # a direction instead of withholding both. Net Sales is money and
+            # up is good; Bills are transactions and up is good. Margin is
+            # deliberately absent - it is a percentage, the classifier has no
+            # entry for one, and a guessed currency on a percentage is exactly
+            # the failure the unit field exists to avoid.
+            **({"metric_family": _METRIC_FAMILY[measure_key]}
+               if measure_key in _METRIC_FAMILY else {}),
             "current": measure.get("actual"),
             "impact_value": gap, "impact_share": None,
             "score": abs(gap) * weight if measure_key != "margin" else abs(gap) * weight * 1000.0,
             "severity": "critical" if verdict.get("key") == "crit" else "info",
-            "comparison_label": (f"the normal {label.lower()} band for "
+            # "below"/"above", not just "the band".
+            #
+            # The clause used to start at "the normal ... band", which is a
+            # phrase, not a statement: on a KPI tile it printed directly under
+            # the figure as "-7.1K / the normal net sales band for the business
+            # on this weekday", which says the gap IS the band. The direction is
+            # the whole finding and it was the one word missing.
+            "comparison_label": (f"{'below' if gap < 0 else 'above'} the normal "
+                                 f"{label.lower()} band for "
                                  f"{name or 'the business'} on this weekday"),
+            # How far outside the band, as a percentage of the edge it missed.
+            # The money gap alone cannot be compared between a store turning
+            # 21.9K and a business turning 55.3K; "11.4% below the floor" can.
+            "delta_pct": _band_gap_pct(gap, measure.get("actual")),
+            # A band is a threshold, and the enum already has that name. Without
+            # it the card fell through to "other"/"vs baseline", which is true of
+            # anything and tells a reader nothing.
+            "comparison_type": "threshold",
+            "comparison_chip": "vs normal band",
             "description": (
                 f"{who} finished {label} {(verdict.get('word') or '').lower()} "
                 f"({fmt.signed(gap)} against its band, {fmt.value(measure.get('actual'))} "

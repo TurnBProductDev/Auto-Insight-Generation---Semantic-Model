@@ -36,10 +36,7 @@ def summary_payload(page: dict, *, title: str = "Daily Sales",
     # The KPI row the page already built: same four measures, same wording, so
     # the app card and the page can never quote different figures for the same
     # day. Reading the raw bundles here would mean a second formatter.
-    metrics = [
-        {"label": entry["label"], "value": entry["value"],
-         "tone": {"crit": "critical", "good": "positive"}.get(entry.get("tone"), "info")}
-        for entry in (page.get("kpis") or [])]
+    metrics = [_metric(entry, page) for entry in (page.get("kpis") or [])]
     if not metrics:
         metrics = [{"label": "Net Sales", "value": "—", "tone": "info"}]
 
@@ -73,7 +70,43 @@ def summary_payload(page: dict, *, title: str = "Daily Sales",
              "points": coverage_points},
         ],
     }
-    return ReportSummaryPayload(**payload).model_dump()
+    return ReportSummaryPayload(**payload).model_dump(exclude_none=True)
+
+
+def _metric(entry: dict, page: dict) -> dict:
+    """One published KPI: the figure, and what it should be read against.
+
+    This used to keep only label/value/tone, which is enough to print "USD
+    55.3K" and nothing else. The page had already worked out that the figure
+    was 17.7K under its benchmark, that the verdict was Underperforming, and
+    where it sat inside its band - and all three were dropped at the door, so
+    every consumer downstream showed a number with no way to judge it.
+
+    The band travels as four numbers rather than as this page's own bullet
+    geometry: that geometry is computed for a 214px chart in this report's HTML
+    and means nothing to a consumer rendering at another width.
+    """
+    metric = {
+        "label": entry["label"],
+        "value": entry["value"],
+        "tone": {"crit": "critical", "good": "positive"}.get(entry.get("tone"), "info"),
+    }
+    if entry.get("note"):
+        metric["note"] = entry["note"]
+    if entry.get("word"):
+        metric["verdict"] = entry["word"]
+
+    # Only where the day actually has a band. A measure with no comparable past
+    # days has no floor to be under, and an invented one would be a judgement
+    # the data does not support.
+    measure = (page.get("whole") or {}).get(entry.get("key") or "") or {}
+    actual, p20, p80 = measure.get("actual"), measure.get("p20"), measure.get("p80")
+    if entry.get("has_band") and None not in (actual, p20, p80):
+        band = {"actual": float(actual), "floor": float(p20), "ceiling": float(p80)}
+        if measure.get("p50") is not None:
+            band["benchmark"] = float(measure["p50"])
+        metric["band"] = band
+    return metric
 
 
 def history_entry(page: dict, payload: dict, report_id: str, generated_at: datetime) -> dict:
@@ -85,6 +118,14 @@ def history_entry(page: dict, payload: dict, report_id: str, generated_at: datet
     return {
         "reportId": report_id,
         "asAt": page.get("as_at"),
+        # The app reads `dataAsOf` off the index row to say how current a
+        # summary is; `asAt` is this report's own key for the same date and
+        # nothing downstream reads it. Publishing only asAt meant Home had no
+        # data date for this report at all - and with Target Tracker the only
+        # publisher emitting dataAsOf, its anchor ended up labelling the whole
+        # page ("data to 31 Jul" beside content a month newer).
+        "dataAsOf": page.get("as_at"),
+        "grain": "day",
         "generatedAt": _iso(generated_at),
         "headline": payload.get("headline") or "",
         "netSalesVerdict": _word("net_sales"),
