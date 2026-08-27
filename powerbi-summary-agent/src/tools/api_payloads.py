@@ -702,18 +702,53 @@ _NON_ENTITY_DIMENSIONS = {"", "company", "estate", "overall", "business",
 # the tile clamps and cuts the end, which is where the measure sits.
 _LABEL_MAX = 48
 
+# The legacy Sales YoY path copies `dimension`/`metric` straight from a
+# deterministic candidate (insight_signal_detector._copy_candidate_facts),
+# and there those fields are internal identifiers, not display text - a raw
+# DAX column reference for `dimension` (e.g. ["'mis_deep_dive2'[item_category_
+# name]"], a list, not even a string) and a bundle key for `metric` (e.g.
+# "mis_deep_dive2::quantity"). Target Tracker/stock-health/ageing set both by
+# hand as plain words ("branch", "Sales against target"), so the two shapes
+# genuinely differ per source - this rejects the internal shape rather than
+# assuming every domain's convention matches the hand-authored ones.
+_INTERNAL_TOKEN_RE = re.compile(r"[\[\]'\"]|::")
+_METRIC_FAMILY_LABEL = {"revenue": "Revenue", "quantity": "Quantity", "transactions": "Transactions"}
+
+
+def _kpi_readable(value: Any) -> Optional[str]:
+    if not isinstance(value, str):
+        return None
+    value = value.strip()
+    if not value or _INTERNAL_TOKEN_RE.search(value):
+        return None
+    return value
+
 
 def _kpi_label(sig: Dict[str, Any]) -> Optional[str]:
     segment = str(sig.get("affected_segment") or "").strip()
+    metric_name = (_kpi_readable(sig.get("metric"))
+                   or _METRIC_FAMILY_LABEL.get(
+                       str(sig.get("metric_family") or "").casefold(), ""))
     if not segment:
         # No segment does not mean no name. A whole-business finding carries no
-        # segment by design - it is about everything - and returning None here
-        # left the tile with nothing but the card's `metric`, which for that
-        # same card is also empty. The measure is a perfectly good name on its
-        # own: "Net Sales vs its normal band" says what the number is.
-        return str(sig.get("metric") or "").strip() or None
-    dimension = str(sig.get("dimension") or "").strip()
-    metric_name = str(sig.get("metric") or "").strip()
+        # segment by design - it is about everything - and returning None left
+        # the tile with nothing but the card's `metric`, which for that same
+        # card is also empty. The measure names it perfectly well on its own.
+        #
+        # It is read through `_kpi_readable` for the same reason the branch
+        # below is: on the legacy Sales YoY path `metric` is a bundle key
+        # ("mis_deep_dive2::quantity"), so an unchecked fallback would have put
+        # an internal identifier on a customer's tile - the exact leak the
+        # other half of this merge exists to close.
+        #
+        # The metric_family fallback is deliberately NOT used here. A real
+        # measure name ("Sales against target") names the tile; the bare family
+        # word ("Revenue") is already published as the card's `category`, so a
+        # label repeating it adds a heading that says what the card already
+        # says. Absent is the honest answer, which is what the field's own
+        # compatibility rule asks for.
+        return _kpi_readable(sig.get("metric")) or None
+    dimension = _kpi_readable(sig.get("dimension")) or ""
     # "recommended_action" -> "Recommended Action". .title() alone leaves the
     # underscore in place and prints "Recommended_Action" on the tile.
     dimension = dimension.replace("_", " ").strip()

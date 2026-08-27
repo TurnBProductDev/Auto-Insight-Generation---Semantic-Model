@@ -102,6 +102,7 @@
   "ai_content_ttl_hours": 24,
   "api_summary_title": "SB Mart Stock Age Analysis",
   "ai_content_multi_report_feed": true,
+  "ai_content_kpi_card_fields": true,
   "ai_content_feed_max_cards": 10,
   "insight_max_new_per_run": 3,
   "ai_content_alert_days": 7

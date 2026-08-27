@@ -152,5 +152,7 @@
   "chain_id": "sb_mart_sales",
   "summary_focus_timezone": "Asia/Kolkata",
   "ai_content_multi_report_feed": true,
+  "ai_content_kpi_card_fields": true,
+  "ai_content_kpi_currency": "USD",
   "ai_content_feed_max_cards": 10
 }
