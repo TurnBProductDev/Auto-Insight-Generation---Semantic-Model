@@ -1,0 +1,93 @@
+[
+  {
+    "id": 1576624536,
+    "reportId": "inventory_stock_health",
+    "severity": "critical",
+    "category": "Damage",
+    "metric": "All Locations",
+    "value": "209.3K",
+    "delta": "",
+    "deltaDirection": "up",
+    "description": "Damage in August 2026 was 275,371, 317.0% above the 66,038 average of the previous 3 months. Damage is far above the recent monthly pattern and needs a clear check on where the losses sit.",
+    "displayTime": "1:36 PM",
+    "isoDate": "2026-08-27",
+    "comparisonLabel": "against the average of the previous 3 months",
+    "insight": {
+      "title": "Damage far above recent norm",
+      "summary": "Damage reached 275,371 in August 2026, versus 66,038 across the previous 3 months. This puts extra cost into the business and can quickly erode margin. Most of the change is the gap of 209.3K above that recent level.",
+      "stats": [
+        {
+          "label": "Damage above the usual level",
+          "value": "209.3K"
+        },
+        {
+          "label": "Above the 3-month average",
+          "value": "317.0%"
+        },
+        {
+          "label": "Month",
+          "value": "August 2026"
+        }
+      ],
+      "action": "Review the sections, stores, suppliers, and product types holding the most damage."
+    }
+  },
+  {
+    "id": 1982099834,
+    "reportId": "inventory_stock_health",
+    "severity": "critical",
+    "category": "Stock Outs",
+    "metric": "STOCK OUT - PLACE ORDER",
+    "value": "18.3K",
+    "delta": "",
+    "deltaDirection": "up",
+    "description": "18,344 Loc-SKUs are in STOCK OUT - PLACE ORDER, 13.2% of the 139,388 in the position. Place an emergency purchase order. A meaningful share of products in stores are sitting in a stock-out status that needs immediate checking.",
+    "displayTime": "1:36 PM",
+    "isoDate": "2026-08-27",
+    "comparisonLabel": "13.2% of all Loc-SKUs in the stock position",
+    "insight": {
+      "title": "Stock-out backlog needs attention",
+      "summary": "There are 18,344 products in stores in STOCK OUT - PLACE ORDER, which is 13.2% of the 139,388 in this position. This puts sales at risk where stock is unavailable and not yet resolved. The priority is the parts of the business holding most of those 18,344 products.",
+      "stats": [
+        {
+          "label": "Products in stores affected",
+          "value": "18.3K"
+        },
+        {
+          "label": "Share of all products in stores",
+          "value": "13.2%"
+        }
+      ],
+      "action": "Check the divisions and stores with the most products in STOCK OUT - PLACE ORDER and confirm reordering status."
+    }
+  },
+  {
+    "id": 1469289222,
+    "reportId": "inventory_stock_health",
+    "severity": "critical",
+    "category": "Stock",
+    "metric": "All Locations",
+    "value": "5.73M",
+    "delta": "",
+    "deltaDirection": "up",
+    "description": "5,732,924 is held above the agreed cover, 42.4% of the 13,528,863 Stock Value. That is the portion held above cover only, not the whole value of the overstocked Loc-SKUs. A large share of stock value is sitting above the stock level we planned to hold.",
+    "displayTime": "1:36 PM",
+    "isoDate": "2026-08-27",
+    "comparisonLabel": "42.4% of total Stock Value",
+    "insight": {
+      "title": "Too much stock above plan",
+      "summary": "Stock held above the planned level is 5,732,924, equal to 42.4% of total stock value of 13,528,863. This ties up cash in stock we did not plan to hold and raises the risk of markdowns or write-offs. Most of the opportunity will be in the divisions and sections carrying the highest value above plan.",
+      "stats": [
+        {
+          "label": "Stock above the planned level",
+          "value": "5.73M"
+        },
+        {
+          "label": "Share of total stock value",
+          "value": "42.4%"
+        }
+      ],
+      "action": "Investigate the divisions and sections with the most stock above the planned level and validate whether the planned stock settings are still right."
+    }
+  }
+]
