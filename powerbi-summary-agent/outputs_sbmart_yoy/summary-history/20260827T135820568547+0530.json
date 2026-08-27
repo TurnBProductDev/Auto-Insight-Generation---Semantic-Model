@@ -1,141 +1,26 @@
 {
-  "summary_type": "new_data",
-  "heading": "July 2026 revenue increased by +3.5M year on year across ST1, ST2, ST3, ST4 and ST5.",
+  "schemaVersion": 2,
+  "datasetId": "a737de5a-fcf8-46cf-94da-839d8df5e39b",
+  "runId": "20260827T135820568547+0530",
+  "date": {
+    "iso": "2026-08-27",
+    "display": "27 August 2026",
+    "timezone": "Asia/Kolkata"
+  },
+  "runAt": "2026-08-27T13:58:20+05:30",
+  "status": "completed",
+  "summaryType": "new_data",
+  "dataAsOf": "2026-08-26",
+  "grain": "month",
+  "freshnessStatus": "current",
+  "headline": "July 2026 revenue increased by +3.5M year on year across ST1, ST2, ST3, ST4 and ST5.",
   "paragraphs": [
     "For July 2026, across ST1, ST2, ST3, ST4 and ST5, revenue increased by +3.5M (9.3%), from 37.9M to 41.4M compared with the same period last year. Quantity increased by +1.3M (6.0%), from 21.7M to 23.0M, transactions changed by +859.7K, and quantity per transaction changed by -0.07. Change in quantity added revenue by +2.3M versus the same period last year, while average revenue per item and mix added revenue by +1.2M. Rate increased by +0.003 (0.1%), from 4.1 to 4.1 compared with the same period last year.",
     "In July 2026 across the branches included in this comparison, HOME & LIVING revenue changed by +120.7K (+4.6%). Quantity changed by +39.4K and transactions changed by +39.0K. Within HOME & LIVING, change in units sold added revenue by +100.5K, while average revenue per item and mix added revenue by +20.2K. The largest positive contributor returned here was CULINARY SUPPLIES at +63.6K, while GLASS ITEMS reduced revenue by -2.0K. ST5 led HOME & LIVING across the stores included in the comparison at +135.3K.",
     "In July 2026 across the branches included in this comparison, TOYS revenue changed by +101.2K (+16.7%). Quantity changed by +25.5K and transactions changed by +15.0K. Within TOYS, change in units sold added revenue by +89.5K, while average revenue per item and mix added revenue by +11.7K. ST4 led TOYS across the stores included in the comparison at +86.0K.",
     "In July 2026 across the branches included in this comparison, SPICE MARKET revenue changed by +170.6K (+8.9%). Quantity changed by +3.2K and transactions changed by +31.9K. Within SPICE MARKET, change in units sold added revenue by +20.3K, while average revenue per item and mix added revenue by +150.4K. ST5 led SPICE MARKET across the stores included in the comparison at +164.5K."
   ],
-  "content_blocks": [
-    {
-      "kind": "paragraph",
-      "heading": "Overall Performance",
-      "text": "For July 2026, across ST1, ST2, ST3, ST4 and ST5, revenue increased by +3.5M (9.3%), from 37.9M to 41.4M compared with the same period last year. Quantity increased by +1.3M (6.0%), from 21.7M to 23.0M, transactions changed by +859.7K, and quantity per transaction changed by -0.07. Change in quantity added revenue by +2.3M versus the same period last year, while average revenue per item and mix added revenue by +1.2M. Rate increased by +0.003 (0.1%), from 4.1 to 4.1 compared with the same period last year.",
-      "points": []
-    },
-    {
-      "kind": "chart",
-      "heading": "Revenue change by month",
-      "text": "",
-      "points": [],
-      "chart": {
-        "source_id": "summary_0bbc7910253d:trend:change",
-        "type": "waterfall",
-        "title": "Revenue change by month",
-        "value_label": "Revenue change",
-        "labels": [
-          "January",
-          "February",
-          "March",
-          "April",
-          "May",
-          "June",
-          "July",
-          "August"
-        ],
-        "values": [
-          1231761.5811,
-          1097865.7298999997,
-          32946.86070000008,
-          1120010.7303,
-          794332.3346999995,
-          -160695.61379999947,
-          130219.89300000016,
-          -733771.6181999999
-        ],
-        "x_label": "",
-        "y_label": "",
-        "size_label": "",
-        "x_values": [],
-        "y_values": [],
-        "size_values": [],
-        "series": [],
-        "highlight": null
-      }
-    },
-    {
-      "kind": "paragraph",
-      "heading": "HOME & LIVING",
-      "text": "In July 2026 across the branches included in this comparison, HOME & LIVING revenue changed by +120.7K (+4.6%). Quantity changed by +39.4K and transactions changed by +39.0K. Within HOME & LIVING, change in units sold added revenue by +100.5K, while average revenue per item and mix added revenue by +20.2K. The largest positive contributor returned here was CULINARY SUPPLIES at +63.6K, while GLASS ITEMS reduced revenue by -2.0K. ST5 led HOME & LIVING across the stores included in the comparison at +135.3K.",
-      "points": []
-    },
-    {
-      "kind": "chart",
-      "heading": "HOME & LIVING revenue change by item category",
-      "text": "",
-      "points": [],
-      "chart": {
-        "source_id": "summary_a99a0ffc3e62:contributor:0",
-        "type": "waterfall",
-        "title": "HOME & LIVING revenue change by item category",
-        "value_label": "Revenue change",
-        "labels": [
-          "GLASS ITEMS",
-          "OFFICE SUPPLIES",
-          "HOME TEXTILES",
-          "CULINARY SUPPLIES"
-        ],
-        "values": [
-          -2015.1990000000005,
-          25216.6446,
-          33956.35830000008,
-          63556.12349999999
-        ],
-        "x_label": "",
-        "y_label": "",
-        "size_label": "",
-        "x_values": [],
-        "y_values": [],
-        "size_values": [],
-        "series": [],
-        "highlight": null
-      }
-    },
-    {
-      "kind": "bullets",
-      "heading": "Selected section performance",
-      "text": "",
-      "points": [
-        "In July 2026 across the branches included in this comparison, TOYS revenue changed by +101.2K (+16.7%). Quantity changed by +25.5K and transactions changed by +15.0K. Within TOYS, change in units sold added revenue by +89.5K, while average revenue per item and mix added revenue by +11.7K. ST4 led TOYS across the stores included in the comparison at +86.0K.",
-        "In July 2026 across the branches included in this comparison, SPICE MARKET revenue changed by +170.6K (+8.9%). Quantity changed by +3.2K and transactions changed by +31.9K. Within SPICE MARKET, change in units sold added revenue by +20.3K, while average revenue per item and mix added revenue by +150.4K. ST5 led SPICE MARKET across the stores included in the comparison at +164.5K."
-      ]
-    },
-    {
-      "kind": "chart",
-      "heading": "TOYS revenue change by store",
-      "text": "",
-      "points": [],
-      "chart": {
-        "source_id": "summary_07ef6b2147d3:location",
-        "type": "waterfall",
-        "title": "TOYS revenue change by store",
-        "value_label": "Revenue change",
-        "labels": [
-          "ST1",
-          "ST3",
-          "ST2",
-          "ST4",
-          "ST5"
-        ],
-        "values": [
-          -2319.407999999996,
-          -4916.154599999994,
-          -4268.373299999992,
-          86000.67809999999,
-          26717.9553
-        ],
-        "x_label": "",
-        "y_label": "",
-        "size_label": "",
-        "x_values": [],
-        "y_values": [],
-        "size_values": [],
-        "series": [],
-        "highlight": null
-      }
-    }
-  ],
+  "metrics": [],
   "sections": [
     {
       "heading": "Overall Performance",
@@ -160,27 +45,29 @@
       ]
     }
   ],
-  "covered_candidate_ids": [
-    "summary_0bbc7910253d",
-    "summary_a99a0ffc3e62",
-    "summary_07ef6b2147d3",
-    "summary_304daa704e98"
-  ],
-  "covered_summary_keys": [
-    "summary:v1:0bbc7910253d6e909b41933bcf410b25ddba73a3cd8a2cd982da1d1a1c17f64b",
-    "summary:v1:dd29057554c06dcffedf26a2f17659716a82b50a70447c2975d72114b0ea341c",
-    "summary:v1:ba11460fa11fd850bf06c0f9780d2cff9bc458a8dae2680a39765405d80a6f73",
-    "summary:v1:cc72e50773c0357112690680a7832ed231dbb34dc94a8c80d55913aff6b84169"
-  ],
-  "metrics": [],
   "visual": null,
-  "data_as_of": "2026-08-26",
-  "grain": "month",
-  "freshness_status": "current",
-  "period_anchor": "2026-07",
-  "validation_status": "validated",
-  "authoring_mode": "llm",
-  "overall_performance": {
+  "focus": null,
+  "focuses": [
+    {
+      "focus_key": "focus:v2:07ef6b2147d335041757f572ef02c94aab14578f24be1e5f1eaec2ffad8bf24e",
+      "segment": "TOYS",
+      "dimension_role": "section",
+      "lens": "composition"
+    },
+    {
+      "focus_key": "focus:v2:304daa704e98d17d0923ee4bffe3200b9ce7a3df2427adc9842a277b0ded3a7f",
+      "segment": "SPICE MARKET",
+      "dimension_role": "section",
+      "lens": "composition"
+    },
+    {
+      "focus_key": "focus:v2:a99a0ffc3e620541364d955c301ba67f909b9525d2076a37bf6d4c3fd2fce986",
+      "segment": "HOME & LIVING",
+      "dimension_role": "division",
+      "lens": "performance"
+    }
+  ],
+  "overall": {
     "status": "ok",
     "families": {
       "revenue": {
@@ -311,25 +198,5 @@
         "change": "revenue_change"
       }
     }
-  },
-  "focuses": [
-    {
-      "focus_key": "focus:v2:07ef6b2147d335041757f572ef02c94aab14578f24be1e5f1eaec2ffad8bf24e",
-      "segment": "TOYS",
-      "dimension_role": "section",
-      "lens": "composition"
-    },
-    {
-      "focus_key": "focus:v2:304daa704e98d17d0923ee4bffe3200b9ce7a3df2427adc9842a277b0ded3a7f",
-      "segment": "SPICE MARKET",
-      "dimension_role": "section",
-      "lens": "composition"
-    },
-    {
-      "focus_key": "focus:v2:a99a0ffc3e620541364d955c301ba67f909b9525d2076a37bf6d4c3fd2fce986",
-      "segment": "HOME & LIVING",
-      "dimension_role": "division",
-      "lens": "performance"
-    }
-  ]
+  }
 }

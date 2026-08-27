@@ -1,14 +1,20 @@
 {
   "focuses": [
     {
-      "focus_key": "focus:v2:b801fc430e44f7038556ecfee1207245590dbe7ed77497ecb290a81fc10ad984",
-      "segment": "CULINARY SUPPLIES",
+      "focus_key": "focus:v2:07ef6b2147d335041757f572ef02c94aab14578f24be1e5f1eaec2ffad8bf24e",
+      "segment": "TOYS",
       "role": "section",
       "queries_attempted": 5
     },
     {
-      "focus_key": "focus:v2:661a933e0108f9d416e886a523e24d524b36a994c99ba25931a52cdb8c3ab810",
-      "segment": "TECHNOLOGY",
+      "focus_key": "focus:v2:304daa704e98d17d0923ee4bffe3200b9ce7a3df2427adc9842a277b0ded3a7f",
+      "segment": "SPICE MARKET",
+      "role": "section",
+      "queries_attempted": 5
+    },
+    {
+      "focus_key": "focus:v2:a99a0ffc3e620541364d955c301ba67f909b9525d2076a37bf6d4c3fd2fce986",
+      "segment": "HOME & LIVING",
       "role": "division",
       "queries_attempted": 5
     }

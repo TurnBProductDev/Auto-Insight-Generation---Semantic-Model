@@ -1,29 +1,29 @@
 {
-  "focus_key": "focus:v2:07ef6b2147d335041757f572ef02c94aab14578f24be1e5f1eaec2ffad8bf24e",
-  "candidate_id": "summary_07ef6b2147d3",
-  "segment": "TOYS",
-  "dimension_role": "section",
+  "focus_key": "focus:v2:a99a0ffc3e620541364d955c301ba67f909b9525d2076a37bf6d4c3fd2fce986",
+  "candidate_id": "summary_a99a0ffc3e62",
+  "segment": "HOME & LIVING",
+  "dimension_role": "division",
   "sections": {
     "scorecard": {
       "source": "targeted_dax",
       "metrics": {
         "revenue": {
-          "current": 703714.4919,
-          "prior": 600758.9127,
-          "change": 102955.57920000004,
-          "change_pct": 17.137586646411155
+          "current": 2726442.2529,
+          "prior": 2605728.3255,
+          "change": 120713.9274000004,
+          "change_pct": 4.632636726502837
         },
         "quantity": {
-          "current": 196774.0,
-          "prior": 170854.0,
-          "change": 25920.0,
-          "change_pct": 15.170847624287404
+          "current": 1061388.65,
+          "prior": 1021957.9,
+          "change": 39430.74999999988,
+          "change_pct": 3.858353656251386
         },
         "transactions": {
-          "current": 116254.0,
-          "prior": 100977.0,
-          "change": 15277.0,
-          "change_pct": 15.12918783485348
+          "current": 710849.0,
+          "prior": 671835.0,
+          "change": 39014.0,
+          "change_pct": 5.807080607589661
         }
       }
     },
@@ -40,78 +40,99 @@
           "filter_effect_observed": true,
           "nestedness": true,
           "reconciles_to_parent": true,
-          "focus_total": 703714.4919,
-          "unfiltered_total": 41206710.5199
+          "focus_total": 2726442.2528999997,
+          "unfiltered_total": 41429409.3063
         },
         "rows": [
           {
-            "item_category_name": "TOYS",
-            "revenue_current": 703714.4919,
-            "revenue_prior": 600758.9127,
-            "revenue_change": 102955.57920000004
+            "item_category_name": "GLASS ITEMS",
+            "revenue_current": 51570.1512,
+            "revenue_prior": 53585.3502,
+            "revenue_change": -2015.1990000000005
+          },
+          {
+            "item_category_name": "OFFICE SUPPLIES",
+            "revenue_current": 756041.8392,
+            "revenue_prior": 730825.1946,
+            "revenue_change": 25216.6446
+          },
+          {
+            "item_category_name": "HOME TEXTILES",
+            "revenue_current": 575470.6047,
+            "revenue_prior": 541514.2464,
+            "revenue_change": 33956.35830000008
+          },
+          {
+            "item_category_name": "CULINARY SUPPLIES",
+            "revenue_current": 1343359.6578,
+            "revenue_prior": 1279803.5343,
+            "revenue_change": 63556.12349999999
           }
         ],
         "completeness": "complete",
         "top_positive": {
-          "member": "TOYS",
-          "change": 102955.57920000004
+          "member": "CULINARY SUPPLIES",
+          "change": 63556.12349999999
         },
-        "top_negative": null
+        "top_negative": {
+          "member": "GLASS ITEMS",
+          "change": -2015.1990000000005
+        }
       }
     ],
     "location": {
       "dimension": "store_no",
       "rows": [
         {
+          "store_no": "ST3",
+          "revenue_current": 474614.8695,
+          "revenue_prior": 486146.8476,
+          "revenue_change": -11531.978100000008,
+          "abs_sort": 11531.978100000008
+        },
+        {
           "store_no": "ST1",
-          "revenue_current": 190269.1809,
-          "revenue_prior": 191829.7998,
-          "revenue_change": -1560.6189000000013,
-          "abs_sort": 1560.6189000000013
+          "revenue_current": 720367.5924,
+          "revenue_prior": 790303.9374,
+          "revenue_change": -69936.34500000009,
+          "abs_sort": 69936.34500000009
         },
         {
           "store_no": "ST2",
-          "revenue_current": 77154.6735,
-          "revenue_prior": 80923.7979,
-          "revenue_change": -3769.1244000000006,
-          "abs_sort": 3769.1244000000006
-        },
-        {
-          "store_no": "ST3",
-          "revenue_current": 88686.0333,
-          "revenue_prior": 93411.7407,
-          "revenue_change": -4725.707399999999,
-          "abs_sort": 4725.707399999999
+          "revenue_current": 354028.7898,
+          "revenue_prior": 389983.2993,
+          "revenue_change": -35954.509499999986,
+          "abs_sort": 35954.509499999986
         },
         {
           "store_no": "ST4",
-          "revenue_current": 311008.032,
-          "revenue_prior": 225112.5675,
-          "revenue_change": 85895.4645,
-          "abs_sort": 85895.4645
+          "revenue_current": 996735.2994,
+          "revenue_prior": 893935.7694,
+          "revenue_change": 102799.53000000003,
+          "abs_sort": 102799.53000000003
         },
         {
           "store_no": "ST5",
-          "revenue_current": 36596.5722,
-          "revenue_prior": 9481.0068,
-          "revenue_change": 27115.565400000003,
-          "abs_sort": 27115.565400000003
+          "revenue_current": 180695.7018,
+          "revenue_prior": 45358.4718,
+          "revenue_change": 135337.23,
+          "abs_sort": 135337.23
         }
       ],
       "completeness": "complete",
       "top_positive": {
-        "member": "ST4",
-        "change": 85895.4645
+        "member": "ST5",
+        "change": 135337.23
       },
       "top_negative": {
-        "member": "ST3",
-        "change": -4725.707399999999
+        "member": "ST1",
+        "change": -69936.34500000009
       }
     },
     "driver_bridge": {
-      "volume_effect": 91140.21923504278,
-      "rate_mix_effect": 11815.359964957204,
-      "total_change": 102955.57920000004,
+      "volume_effect": 100538.21411890726,
+      "rate_mix_effect": 20175.713281093536,
+      "total_change": 120713.9274000004,
       "reconciles": true,
       "driver_class": "volume"
     },
@@ -122,90 +143,90 @@
       "rows": [
         {
           "month": 1,
-          "revenue_current": 107669.4039,
-          "revenue_prior": 70622.064,
-          "revenue_change": 37047.339900000006
+          "revenue_current": 468295.3548,
+          "revenue_prior": 367406.766,
+          "revenue_change": 100888.58879999997
         },
         {
           "month": 2,
-          "revenue_current": 99546.543,
-          "revenue_prior": 72863.5824,
-          "revenue_change": 26682.960600000006
+          "revenue_current": 397297.3428,
+          "revenue_prior": 332644.9599,
+          "revenue_change": 64652.38289999997
         },
         {
           "month": 3,
-          "revenue_current": 85871.4129,
-          "revenue_prior": 84153.6945,
-          "revenue_change": 1717.718399999998
+          "revenue_current": 342373.9266,
+          "revenue_prior": 362132.3133,
+          "revenue_change": -19758.386699999974
         },
         {
           "month": 4,
-          "revenue_current": 94588.4277,
-          "revenue_prior": 65970.6876,
-          "revenue_change": 28617.740099999995
+          "revenue_current": 326726.8974,
+          "revenue_prior": 286889.85,
+          "revenue_change": 39837.04740000004
         },
         {
           "month": 5,
-          "revenue_current": 108224.5239,
-          "revenue_prior": 96217.605,
-          "revenue_change": 12006.918900000004
+          "revenue_current": 378498.1122,
+          "revenue_prior": 344661.561,
+          "revenue_change": 33836.55119999999
         },
         {
           "month": 6,
-          "revenue_current": 72821.8998,
-          "revenue_prior": 72732.9618,
-          "revenue_change": 88.93799999999464
+          "revenue_current": 270948.9069,
+          "revenue_prior": 301472.9145,
+          "revenue_change": -30524.00760000001
         },
         {
           "month": 7,
-          "revenue_current": 80286.4872,
-          "revenue_prior": 74314.6704,
-          "revenue_change": 5971.8168000000005
+          "revenue_current": 310460.364,
+          "revenue_prior": 316341.5067,
+          "revenue_change": -5881.142700000026
         },
         {
           "month": 8,
-          "revenue_current": 54705.7935,
-          "revenue_prior": 63883.647,
-          "revenue_change": -9177.853499999997
+          "revenue_current": 231841.3482,
+          "revenue_prior": 294178.4541,
+          "revenue_change": -62337.105899999966
         }
       ],
       "completeness": "complete",
-      "direction": "reversal_down"
+      "direction": "deepening_decline"
     },
     "daily_trend": {
       "status": "disabled",
       "reason": "summary_focus_daily_trend_enabled is false"
     },
     "caveats": [
-      "child dimension special_product_group_name failed hierarchy validation",
+      "child dimension product_group_name failed hierarchy validation",
       "this deep dive repeats a recently delivered story (same contributors or driver)"
     ]
   },
   "caveats": [
-    "child dimension special_product_group_name failed hierarchy validation",
+    "child dimension product_group_name failed hierarchy validation",
     "this deep dive repeats a recently delivered story (same contributors or driver)"
   ],
   "queries_attempted": 5,
   "query_budget": 5,
   "signature_fields": {
-    "top_pos_contributor": "TOYS",
-    "top_neg_contributor": null,
-    "leading_location": "ST4",
+    "top_pos_contributor": "CULINARY SUPPLIES",
+    "top_neg_contributor": "GLASS ITEMS",
+    "leading_location": "ST5",
     "driver_class": "volume"
   },
-  "deep_dive_signature": "b22759ff61f830ab",
+  "deep_dive_signature": "f3c76359ed04fc29",
   "signature_duplicate": true,
-  "signature_duplicate_of": "focus:v2:a04c79be6b7f74dce7f385ea0cadb41ef4d8794cd4b7cbe3ef67a9139354ae1d",
-  "signature_overlap": 0.667,
+  "signature_duplicate_of": "focus:v2:a99a0ffc3e620541364d955c301ba67f909b9525d2076a37bf6d4c3fd2fce986",
+  "signature_overlap": 1.0,
   "facts": [
     {
       "fact_id": "D1",
       "fact_kind": "deep_dive",
-      "subject": "TOYS",
+      "subject": "HOME & LIVING",
       "metric": "Revenue change",
-      "display_value": "+103.0K",
-      "raw_value": 102955.57920000004,
-      "statement": "TOYS revenue changed by +103.0K (+17.1%).",
+      "display_value": "+120.7K",
+      "raw_value": 120713.9274000004,
+      "statement": "HOME & LIVING revenue changed by +120.7K (+4.6%).",
       "subject_role": "focus",
       "detail_role": "focus_metric",
       "coverage": "complete"
@@ -213,11 +234,11 @@
     {
       "fact_id": "D2",
       "fact_kind": "deep_dive",
-      "subject": "TOYS",
+      "subject": "HOME & LIVING",
       "metric": "Quantity change",
-      "display_value": "+25.9K",
-      "raw_value": 25920.0,
-      "statement": "TOYS quantity changed by +25.9K.",
+      "display_value": "+39.4K",
+      "raw_value": 39430.74999999988,
+      "statement": "HOME & LIVING quantity changed by +39.4K.",
       "subject_role": "focus",
       "detail_role": "focus_metric",
       "coverage": "complete"
@@ -225,11 +246,11 @@
     {
       "fact_id": "D3",
       "fact_kind": "deep_dive",
-      "subject": "TOYS",
+      "subject": "HOME & LIVING",
       "metric": "Transactions change",
-      "display_value": "+15.3K",
-      "raw_value": 15277.0,
-      "statement": "TOYS transactions changed by +15.3K.",
+      "display_value": "+39.0K",
+      "raw_value": 39014.0,
+      "statement": "HOME & LIVING transactions changed by +39.0K.",
       "subject_role": "focus",
       "detail_role": "focus_metric",
       "coverage": "complete"
@@ -237,11 +258,11 @@
     {
       "fact_id": "D4",
       "fact_kind": "deep_dive",
-      "subject": "TOYS",
+      "subject": "CULINARY SUPPLIES",
       "metric": "Revenue change in item_category_name",
-      "display_value": "+103.0K",
-      "raw_value": 102955.57920000004,
-      "statement": "Within TOYS, TOYS added +103.0K.",
+      "display_value": "+63.6K",
+      "raw_value": 63556.12349999999,
+      "statement": "Within HOME & LIVING, CULINARY SUPPLIES added +63.6K.",
       "subject_role": "peer",
       "detail_role": "contributor",
       "coverage": "complete"
@@ -249,35 +270,47 @@
     {
       "fact_id": "D5",
       "fact_kind": "deep_dive",
-      "subject": "ST4",
-      "metric": "Store contribution",
-      "display_value": "+85.9K",
-      "raw_value": 85895.4645,
-      "statement": "ST4 led TOYS across the stores included in the comparison at +85.9K.",
+      "subject": "GLASS ITEMS",
+      "metric": "Revenue change in item_category_name",
+      "display_value": "-2.0K",
+      "raw_value": -2015.1990000000005,
+      "statement": "Within HOME & LIVING, GLASS ITEMS reduced revenue by -2.0K.",
       "subject_role": "peer",
-      "detail_role": "location",
+      "detail_role": "contributor",
       "coverage": "complete"
     },
     {
       "fact_id": "D6",
       "fact_kind": "deep_dive",
-      "subject": "TOYS",
-      "metric": "Volume effect on revenue",
-      "display_value": "+91.1K",
-      "raw_value": 91140.21923504278,
-      "statement": "Within TOYS, change in units sold added revenue by +91.1K.",
-      "subject_role": "focus",
-      "detail_role": "driver",
+      "subject": "ST5",
+      "metric": "Store contribution",
+      "display_value": "+135.3K",
+      "raw_value": 135337.23,
+      "statement": "ST5 led HOME & LIVING across the stores included in the comparison at +135.3K.",
+      "subject_role": "peer",
+      "detail_role": "location",
       "coverage": "complete"
     },
     {
       "fact_id": "D7",
       "fact_kind": "deep_dive",
-      "subject": "TOYS",
+      "subject": "HOME & LIVING",
+      "metric": "Volume effect on revenue",
+      "display_value": "+100.5K",
+      "raw_value": 100538.21411890726,
+      "statement": "Within HOME & LIVING, change in units sold added revenue by +100.5K.",
+      "subject_role": "focus",
+      "detail_role": "driver",
+      "coverage": "complete"
+    },
+    {
+      "fact_id": "D8",
+      "fact_kind": "deep_dive",
+      "subject": "HOME & LIVING",
       "metric": "Rate and mix effect on revenue",
-      "display_value": "+11.8K",
-      "raw_value": 11815.359964957204,
-      "statement": "Within TOYS, average revenue per item and mix added revenue by +11.8K.",
+      "display_value": "+20.2K",
+      "raw_value": 20175.713281093536,
+      "statement": "Within HOME & LIVING, average revenue per item and mix added revenue by +20.2K.",
       "subject_role": "focus",
       "detail_role": "driver",
       "coverage": "complete"

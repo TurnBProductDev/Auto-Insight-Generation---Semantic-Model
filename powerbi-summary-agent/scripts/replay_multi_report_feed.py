@@ -270,9 +270,18 @@ def test_committed_payloads() -> None:
         # holding one tagged and one untagged card cannot be merged per report,
         # and a run-sequence id would collide with the other report's cards.
         seen_modes.add("multi_report")
+        # ...and a third mode now exists: multi-report WITH the extended tile
+        # fields, which SB Mart enabled once its app had shipped the migration.
+        # An extended field with nothing to say is dropped rather than published
+        # as null, so the set is a range, not a fixed list: every contract key
+        # must be present, and nothing outside the documented extension may be.
+        from src.tools.api_payloads import EXTENDED_CARD_KEYS
         expected = LEGACY_KEYS | {"reportId"}
-        check(f"{name}: key set is the contract plus reportId",
-              keys == expected, str(keys ^ expected))
+        allowed = expected | set(EXTENDED_CARD_KEYS)
+        check(f"{name}: every contract key is present",
+              expected <= keys, str(expected - keys))
+        check(f"{name}: no key outside the documented extension",
+              keys <= allowed, str(keys - allowed))
         check(f"{name}: every card names its report",
               all(str(card.get("reportId") or "").strip() for card in cards),
               str([card.get("reportId") for card in cards]))

@@ -209,6 +209,18 @@ def test_label() -> None:
     card = _card(leaky, extended=True)
     check("no segment + an internal metric identifier -> no label, never a leak",
           card.get("label") is None, str(card.get("label")))
+    # Both found on the live SB Mart tiles by publishing and then reading them.
+    from src.tools.api_payloads import _kpi_label
+    dated = _kpi_label({"affected_segment": "All Locations", "dimension": "month",
+                        "metric": "Damage Value"})
+    check("a period is never prefixed to a name as if it were an entity",
+          dated is not None and not dated.lower().startswith("month "), str(dated))
+    leaky_label = _kpi_label({"affected_segment": "STOCK OUT - PLACE ORDER",
+                              "dimension": "recommended_action",
+                              "metric": "Loc-SKUs in a double-warning state"})
+    check("internal vocabulary never reaches the label either",
+          leaky_label is not None and "loc-sku" not in leaky_label.lower(),
+          str(leaky_label))
 
     no_either = dict(_target_signal())
     no_either["affected_segment"] = ""
@@ -496,6 +508,35 @@ def test_summary_is_grounded() -> None:
               DAMAGE_SIG, "Performance", good).startswith("Damage written off"))
 
 
+def test_no_raw_values() -> None:
+    print(chr(10) + "[raw values never quoted]")
+    from src.tools.api_payloads import _is_display_figure
+    # Every one of these reached a live SB Mart tile on 2026-08-27.
+    for raw in ("1705150.8499", "640871.0", "13103971.9744", "71.9266%"):
+        check(f"{raw} is not offered as a quotable figure",
+              not _is_display_figure(raw))
+    for good in ("264.6K", "400.6%", "66,053", "5.81M", "42.1%", "1,234.56"):
+        check(f"{good} still is", _is_display_figure(good))
+
+    # ...and a signal whose description carries raw floats offers none of them.
+    sig = dict(DAMAGE_SIG)
+    sig["description"] = ("Revenue rose by 1705150.8499 units across 640871.0 "
+                          "transactions, a 71.9266% share.")
+    offered = api_payloads._quotable_figures(sig, "Revenue")
+    check("a description full of raw floats offers no raw float",
+          all(_is_display_figure(f) for f in offered), str(offered))
+
+    # A stat label must not carry an internal identifier: on the legacy path
+    # `dimension` is a LIST holding a DAX column reference.
+    leaky = dict(DAMAGE_SIG)
+    leaky["dimension"] = ["'Mis Deep Dive2'[Store No]"]
+    leaky["affected_segment"] = "ST1, ST4"
+    leaky["segment_members"] = ["ST1", "ST4"]
+    labels = [x["label"] for x in api_payloads._insight_stats(leaky, "Revenue")]
+    check("a raw DAX reference never becomes a stat label",
+          not any("[" in l or "'" in l for l in labels), str(labels))
+
+
 def test_retail_vocabulary() -> None:
     print('\n' + "[retail vocabulary]")
     out = api_payloads._plain_business_text(
@@ -527,6 +568,7 @@ def main() -> int:
     test_card_stats()
     test_summary_is_grounded()
     test_retail_vocabulary()
+    test_no_raw_values()
     print("\n" + "=" * 72)
     if FAILURES:
         print(f"FAILED ({len(FAILURES)}):")

@@ -1,101 +1,97 @@
-[02:44:06] Node 1: config loaded.
-[02:44:06]   workspace=2829a4af-2e07-4b43-b913-0a829a06bef4 dataset=a737de5a-fcf8-46cf-94da-839d8df5e39b provider=azure_openai model=claude-sonnet-5 exec_mode=python
-[02:44:06]   business rules loaded and snapshotted (51 lines).
-[02:44:06] Node 2: reading semantic model metadata via INFO.VIEW DAX...
-[02:44:09]   tables: 17 rows
-[02:44:09]   columns: 149 rows
-[02:44:10]   measures: 56 rows
-[02:44:11]   relationships: 13 rows
-[02:44:21]   Fabric TMSL getDefinition: enriched 56/56 measure expressions.
-[02:44:21] Metadata assembled: 17 tables, 56 measures, 5 date fields.
-[02:44:21] Metadata profile: deriving measures, dimensions and relationships...
-[02:44:21] Metadata profile: primary=revenue; fact=MIS_DEEP_DIVE2; entity='MIS_DEEP_DIVE2'[store_no]; 24 drill dimensions; 7 time dimensions.
-[02:44:21] Baseline: discovering entity comparison scope from metadata-selected objects...
-[02:44:22] Baseline scope: 5 comparable, 0 current-only, 0 prior-only; source=automatic_current_prior_activity.
-[02:44:22] Shared baseline: executing metadata-driven diagnostic coverage pre-fork...
-[02:44:30] Shared metadata coverage: 10/10 queries succeeded pre-fork.
-[02:44:30] Node 3: understanding the report/model...
-[02:44:40] Domain: 'Sales / Retail'; 11 key measures; time summary possible: True.
-[02:44:40] Insight branch: normalizing raw scan results...
-[02:44:40] Insight scan normalized 12 results (12 successful).
-[02:44:40] Node 4: planning DAX queries automatically...
-[02:44:58] Planned 7 queries: comparable_monthly_yoy_summary, latest_load_dates, store_comparable_ranking, store_month_matrix, division_contribution_ranking, section_contribution_ranking, store_by_division_cross
-[02:44:58] Node 5: generating DAX for each planned query (LLM)...
-[02:45:04]   comparable_monthly_yoy_summary: generated.
-[02:45:08]   latest_load_dates: generated.
-[02:45:14]   store_comparable_ranking: generated.
-[02:45:19]   store_month_matrix: generated.
-[02:45:24]   division_contribution_ranking: generated.
-[02:45:29]   section_contribution_ranking: generated.
-[02:45:35]   store_by_division_cross: generated.
-[02:45:35] Generated 7 DAX statements.
-[02:45:02] Temporal gate: no valid business time grain; period level disabled (gated 1 load-date table(s)). Report will carry the caveat.
-[02:45:35] Business-day source: disabled - both recent-week and daily monitoring disabled by config.
-[02:45:35] Node 6: validating generated DAX against metadata...
-[02:45:35] 7 of 7 queries passed validation (0 eligible for repair).
-[02:45:35] Node 7: executing 7 DAX queries (mode=python)...
-[02:45:40] Executed queries: 7/7 succeeded.
-[02:45:35] Recent-week gate: disabled - recent-week monitoring disabled by config.
-[02:45:40] Daily anomaly gate: disabled - daily anomaly monitoring disabled by config.
-[02:45:40] Node 8: normalizing raw Power BI results...
-[02:45:40] Normalized 7 results (7 successful).
-[02:45:40] Evidence catalog: 12 contracts (11 construction-time).
-[02:45:40] Summary period: grain=month data_as_of=2026-08-23 anchor=2026-07 freshness=current.
-[02:45:40] Insight branch: computing deterministic stat candidates...
-[02:45:40] Stat candidates: 94 business, 0 data-quality.
-[02:45:40]   [125.8] change_contribution: ST5: QTY Growth of 1.7M (from 383.6K to 2.1M), 125.8% of the total change
-[02:45:40]   [73.1] change_contribution: ST5: bills growth of 649.7K (from 144.6K to 794.3K), 73.1% of the total change
-[02:45:40]   [73.0] change_contribution: ST5: revenue Growth of 2.6M (from 577.7K to 3.2M), 73.0% of the total change; split: volume 2.6M / rate 32.2K (per QTY Growth)
-[02:45:40]   [67.5] change_contribution: CONSUMER GOODS: QTY Growth of 927.3K (from 14.5M to 15.4M), 67.5% of the total change
-[02:45:40]   [56.9] change_contribution: CONSUMER GOODS: revenue Growth of 2.1M (from 20.0M to 22.0M), 56.9% of the total change; split: volume 1.3M / rate 781.6K (per QTY Growth)
-[02:45:41] Focus universe: division -> 6 member(s), reconciled=True, pool_capped=False.
-[02:45:41] Focus universe: department -> 6 member(s), reconciled=True, pool_capped=False.
-[02:45:42] Focus universe: section -> 23 member(s), reconciled=True, pool_capped=False.
-[02:45:43] Focus universe: category -> 23 member(s), reconciled=True, pool_capped=False.
-[02:45:44] Focus universe: store -> 5 member(s), reconciled=True, pool_capped=False.
-[02:45:44] Coverage: division=6, section=23, store=5.
-[02:45:44] Novelty filter: detected=94 suppressed=0 unseen=94 eligible=50 cap_dropped=44 (status=ok, policy=never_repeat, levels={'high': 50}).
-[02:45:44] Summary candidates: 128 perspective(s) from summary-owned evidence.
-[02:45:44] Insight branch: detecting notable signals in scan results...
-[02:46:01] Detected 4 signals: st5_drove_comparable_growth[business], consumer_goods_dominates_division_results[business], st4_revenue_growth_led_by_higher_revenue_per_unit[business], provisions_large_category_gain_with_rate_pressure_per_bill[business]
-[02:45:44] Overall Performance: status=ok bridge=yes trend=yes contribution=no.
-[02:46:01] Insight branch: assembling evidence briefs (deterministic reuse pass)...
-[02:46:01] Evidence briefs: 4 signals; 0 drill-dimensions answered by reuse, 12 gaps flagged for probing.
-[02:46:01] Coverage matrix: 26 dimensions, 2 with trusted (complete+comparable) coverage.
-[02:46:01] Summary portfolio: detected=128 selected=3 type=new_data reason=portfolio.
-[02:46:01] Insight branch: targeted gap scan from metadata-compatible dimensions...
-[02:46:03]   gap scan 'consumer_goods_dominates_division_results': 3 REST calls, filled ['product_group_name', 'special_product_group_name', 'store_no'].
-[02:46:05]   gap scan 'provisions_large_category_gain_with_rate_pressure_per_bill': 3 REST calls, filled ['product_group_name', 'special_product_group_name', 'store_no'].
-[02:46:05] Gap scan complete: 6 REST calls; global budget remaining=24.
-[02:46:12] Multi-focus evidence: TOYS was an emergent duplicate; publishing fewer focuses.
-[02:46:12] Multi-focus evidence: 2 focus(es) deep-dived over 15/15 shared quer(y/ies), 0 replacement(s).
-[02:46:22] Fresh summary (R4): Overall Performance + 2 focus block-group(s) (mode=llm).
-[02:46:12] Insight branch: investigating 4 signals (tool-calling agent)...
-[02:46:12]   investigating signal 'st5_drove_comparable_growth': What changed within ST5's assortment and customer activity to produce 2636901.4428 of revenue Growth, especially in the special product groups with the largest gains such as COVRD CHOCO BARS AND TAB?
-[02:46:22]     probe 1/3 for 'st5_drove_comparable_growth': 20 rows.
-[02:46:23]     probe 2/3 for 'st5_drove_comparable_growth': 20 rows.
-[02:46:24]     probe 3/3 for 'st5_drove_comparable_growth': 20 rows.
-[02:46:36]   'st5_drove_comparable_growth': 3/3 investigator probes (+0 gap-scan), concluded=True.
-[02:46:36]   investigating signal 'consumer_goods_dominates_division_results': Which categories inside CONSUMER GOODS contributed most to the 2057807.4354 revenue increase and how much of that lift sits in PROVISIONS, REFRIDGERATED GOODS, and PERSONAL CARE?
-[02:46:48]   'consumer_goods_dominates_division_results': 0/0 investigator probes (+3 gap-scan), concluded=True.
-[02:46:48]   investigating signal 'st4_revenue_growth_led_by_higher_revenue_per_unit': Which divisions or categories within ST4 are associated with the 1077042.3849 rate_effect in revenue Growth despite modest quantity growth?
-[02:46:56]     probe 1/3 for 'st4_revenue_growth_led_by_higher_revenue_per_unit': 20 rows.
-[02:47:00]     probe 2/3 for 'st4_revenue_growth_led_by_higher_revenue_per_unit': 20 rows.
-[02:47:06]   'st4_revenue_growth_led_by_higher_revenue_per_unit': 2/3 investigator probes (+0 gap-scan), concluded=True.
-[02:47:06]   investigating signal 'provisions_large_category_gain_with_rate_pressure_per_bill': Which products within PROVISIONS drove the added bills and quantity, and where did the negative rate_effect of -139238.4889 per bill emerge?
-[02:47:14]   'provisions_large_category_gain_with_rate_pressure_per_bill': 0/0 investigator probes (+3 gap-scan), concluded=True.
-[02:47:14] Investigations complete for 4 signals.
-[02:47:14] Thesis linker: disabled (insight_thesis_linking_enabled=false).
-[02:47:15] Dashboard entity levers resolved for 5 store(s).
-[02:47:16] Dashboard period scan: 0 month(s), 0 with a reconciled store breakdown, 3 measure family(ies).
-[02:47:44] Dashboard page built: status=ok views=['primary'] entity_role=store levers=yes mode=llm.
-[02:47:44] Dashboard HTML written (1 view(s), mode=llm, also published as report_summary.html).
-[02:47:44] Fresh flexible summary validated and rendered (3 narrative block(s), 3 interactive chart(s)).
-[02:47:44] Insight branch: synthesizing the insight report...
-[02:48:20] Insight report clarity check requested a rewrite (19 issue(s)).
-[02:48:50] Insight report clarity check requested a rewrite (8 issue(s)).
-[02:49:21] Insight report used deterministic quantified wording for manager-facing finding(s) that still failed the LLM clarity check.
-[02:49:21] Insight report written (1631 words).
-[02:49:21] === insight branch finished ===
-[02:49:21] === summary branch finished ===
+[13:53:05] Node 1: config loaded.
+[13:53:05]   workspace=2829a4af-2e07-4b43-b913-0a829a06bef4 dataset=a737de5a-fcf8-46cf-94da-839d8df5e39b provider=azure_openai model=claude-sonnet-5 exec_mode=python
+[13:53:05]   business rules loaded and snapshotted (51 lines).
+[13:53:05] Node 2: reading semantic model metadata via INFO.VIEW DAX...
+[13:53:08]   tables: 17 rows
+[13:53:08]   columns: 149 rows
+[13:53:09]   measures: 56 rows
+[13:53:10]   relationships: 13 rows
+[13:53:20]   Fabric TMSL getDefinition: enriched 56/56 measure expressions.
+[13:53:20] Metadata assembled: 17 tables, 56 measures, 5 date fields.
+[13:53:20] Metadata profile: deriving measures, dimensions and relationships...
+[13:53:20] Metadata profile: primary=revenue; fact=MIS_DEEP_DIVE2; entity='MIS_DEEP_DIVE2'[store_no]; 24 drill dimensions; 7 time dimensions.
+[13:53:20] Baseline: discovering entity comparison scope from metadata-selected objects...
+[13:53:21] Baseline scope: 5 comparable, 0 current-only, 0 prior-only; source=automatic_current_prior_activity.
+[13:53:21] Shared baseline: executing metadata-driven diagnostic coverage pre-fork...
+[13:53:27] Shared metadata coverage: 10/10 queries succeeded pre-fork.
+[13:53:27] Node 3: understanding the report/model...
+[13:53:41] Domain: 'Sales / Retail'; 20 key measures; time summary possible: True.
+[13:53:41] Insight branch: normalizing raw scan results...
+[13:53:41] Insight scan normalized 12 results (12 successful).
+[13:53:41] Node 4: planning DAX queries automatically...
+[13:54:01] Planned 7 queries: grand_totals_comparable, latest_complete_month_by_month_number, store_comparison_comparable, division_breakdown_comparable, section_breakdown_comparable, store_by_division_cross, store_by_section_cross
+[13:54:01] Node 5: generating DAX for each planned query (LLM)...
+[13:54:07]   grand_totals_comparable: generated.
+[13:54:13]   latest_complete_month_by_month_number: generated.
+[13:54:19]   store_comparison_comparable: generated.
+[13:54:26]   division_breakdown_comparable: generated.
+[13:54:32]   section_breakdown_comparable: generated.
+[13:54:38]   store_by_division_cross: generated.
+[13:54:43]   store_by_section_cross: generated.
+[13:54:43] Generated 7 DAX statements.
+[13:54:03] Temporal gate: no valid business time grain; period level disabled (gated 1 load-date table(s)). Report will carry the caveat.
+[13:54:43] Business-day source: disabled - both recent-week and daily monitoring disabled by config.
+[13:54:43] Node 6: validating generated DAX against metadata...
+[13:54:43] 7 of 7 queries passed validation (0 eligible for repair).
+[13:54:43] Node 7: executing 7 DAX queries (mode=python)...
+[13:54:49] Executed queries: 7/7 succeeded.
+[13:54:44] Recent-week gate: disabled - recent-week monitoring disabled by config.
+[13:54:49] Daily anomaly gate: disabled - daily anomaly monitoring disabled by config.
+[13:54:49] Node 8: normalizing raw Power BI results...
+[13:54:49] Normalized 7 results (7 successful).
+[13:54:49] Evidence catalog: 12 contracts (11 construction-time).
+[13:54:49] Summary period: grain=month data_as_of=2026-08-26 anchor=2026-07 freshness=current.
+[13:54:49] Insight branch: computing deterministic stat candidates...
+[13:54:49] Stat candidates: 95 business, 0 data-quality.
+[13:54:49]   [130.7] change_contribution: ST5: QTY Growth of 1.7M (from 407.9K to 2.1M), 130.7% of the total change
+[13:54:49]   [74.5] change_contribution: ST5: bills growth of 640.9K (from 153.4K to 794.3K), 74.5% of the total change
+[13:54:49]   [74.2] change_contribution: ST5: revenue Growth of 2.6M (from 607.0K to 3.2M), 74.2% of the total change; split: volume 2.5M / rate 70.1K (per QTY Growth)
+[13:54:49]   [67.1] change_contribution: CONSUMER GOODS: QTY Growth of 875.0K (from 14.6M to 15.5M), 67.1% of the total change
+[13:54:49]   [57.1] change_contribution: CONSUMER GOODS: revenue Growth of 2.0M (from 20.1M to 22.1M), 57.1% of the total change; split: volume 1.2M / rate 801.6K (per QTY Growth)
+[13:54:50] Focus universe: division -> 6 member(s), reconciled=True, pool_capped=False.
+[13:54:50] Focus universe: department -> 6 member(s), reconciled=True, pool_capped=False.
+[13:54:51] Focus universe: section -> 23 member(s), reconciled=True, pool_capped=False.
+[13:54:52] Focus universe: category -> 23 member(s), reconciled=True, pool_capped=False.
+[13:54:53] Focus universe: store -> 5 member(s), reconciled=True, pool_capped=False.
+[13:54:53] Coverage: division=6, section=23, store=5.
+[13:54:53] Novelty filter: detected=95 suppressed=0 unseen=95 eligible=50 cap_dropped=45 (status=ok, policy=never_repeat, levels={'high': 50}).
+[13:54:53] Summary candidates: 129 perspective(s) from summary-owned evidence.
+[13:54:53] Insight branch: detecting notable signals in scan results...
+[13:55:09] Detected 4 signals: st5_dominates_comparable_growth[business], consumer_goods_leads_division_growth_and_scale[business], st1_st4_concentrate_store_sales_base[business], st4_growth_is_revenue_led[business]
+[13:54:54] Overall Performance: status=ok bridge=yes trend=yes contribution=no.
+[13:55:09] Insight branch: assembling evidence briefs (deterministic reuse pass)...
+[13:55:09] Evidence briefs: 4 signals; 0 drill-dimensions answered by reuse, 12 gaps flagged for probing.
+[13:55:09] Coverage matrix: 26 dimensions, 2 with trusted (complete+comparable) coverage.
+[13:55:09] Summary portfolio: detected=129 selected=3 type=new_data reason=same_day_recovery.
+[13:55:09] Insight branch: targeted gap scan from metadata-compatible dimensions...
+[13:55:12]   gap scan 'consumer_goods_leads_division_growth_and_scale': 3 REST calls, filled ['product_group_name', 'special_product_group_name', 'store_no'].
+[13:55:13]   gap scan 'st1_st4_concentrate_store_sales_base': 2 REST calls, filled ['item_category_name', 'product_group_name'].
+[13:55:13] Gap scan complete: 5 REST calls; global budget remaining=25.
+[13:55:20] Multi-focus evidence: 3 focus(es) deep-dived over 15/15 shared quer(y/ies), 0 replacement(s).
+[13:55:45] Fresh summary (R4): Overall Performance + 3 focus block-group(s) (mode=llm).
+[13:55:20] Insight branch: investigating 4 signals (tool-calling agent)...
+[13:55:20]   investigating signal 'st5_dominates_comparable_growth': What changed within ST5 to produce 2607588.7038 of revenue Growth alongside 1705150.8499 of QTY Growth and 640871.0 bills growth in the comparable base?
+[13:55:29]     probe 1/3 for 'st5_dominates_comparable_growth': 20 rows.
+[13:55:36]   'st5_dominates_comparable_growth': 1/3 investigator probes (+0 gap-scan), concluded=True.
+[13:55:36]   investigating signal 'consumer_goods_leads_division_growth_and_scale': Which sections or product groups inside CONSUMER GOODS account for the 2004495.2523 revenue increase and its accompanying quantity and bills gains?
+[13:55:45]   'consumer_goods_leads_division_growth_and_scale': 0/0 investigator probes (+3 gap-scan), concluded=True.
+[13:55:45]   investigating signal 'st1_st4_concentrate_store_sales_base': How much of current business concentration in ST1 and ST4 comes from specific merchandise areas, and are the same areas also driving their bills and quantity concentration?
+[13:55:55]   'st1_st4_concentrate_store_sales_base': 0/1 investigator probes (+2 gap-scan), concluded=True.
+[13:55:55]   investigating signal 'st4_growth_is_revenue_led': Which merchandise areas in ST4 explain its 1186833.168 revenue increase despite a much smaller quantity gain of 62080.6472?
+[13:56:02]     probe 1/3 for 'st4_growth_is_revenue_led': 20 rows.
+[13:56:09]   'st4_growth_is_revenue_led': 1/3 investigator probes (+0 gap-scan), concluded=True.
+[13:56:09] Investigations complete for 4 signals.
+[13:56:09] Thesis linker: disabled (insight_thesis_linking_enabled=false).
+[13:56:10] Dashboard entity levers resolved for 5 store(s).
+[13:56:10] Dashboard period scan: 0 month(s), 0 with a reconciled store breakdown, 3 measure family(ies).
+[13:56:25] Dashboard page built: status=ok views=['primary'] entity_role=store levers=yes mode=llm.
+[13:56:25] Dashboard HTML written (1 view(s), mode=llm, also published as report_summary.html).
+[13:56:25] Fresh flexible summary validated and rendered (3 narrative block(s), 3 interactive chart(s)).
+[13:56:25] Insight branch: synthesizing the insight report...
+[13:57:06] Insight report clarity check requested a rewrite (29 issue(s)).
+[13:57:36] Insight report clarity check requested a rewrite (7 issue(s)).
+[13:58:08] Insight report used deterministic quantified wording for manager-facing finding(s) that still failed the LLM clarity check.
+[13:58:08] Insight report written (1450 words).
+[13:58:08] === insight branch finished ===
+[13:58:08] === summary branch finished ===
 [save] wrote outputs to /outputs_sbmart_yoy

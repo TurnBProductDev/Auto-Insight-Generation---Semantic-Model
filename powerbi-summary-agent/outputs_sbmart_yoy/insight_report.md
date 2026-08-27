@@ -1,81 +1,72 @@
 # Key Insights
-These comparisons include only branches with both current and last-year data: ST1, ST2, ST3, ST4 and ST5.
+These comparisons include only branches with both current and last-year data: ST1, ST2, ST3, ST4, and ST5.
 
-**ST5 revenue rose by 2.6M (456.4%), from 577.7K to 3.2M compared with the same period last year.** It made up 73.0% of the overall increase. Units sold rose by 1.7M (450.8%), from 383.6K to 2.1M. This added 2.6M to revenue. Revenue per item rose 1.0%, from 1.51 to 1.52. This added 32.2K to the gain. Check ST5 by product and branch to find where the change happened.
+**ST5 revenue rose by 2.6M (429.6%), from 607.0K to 3.2M compared with the same period last year.** It made up 74.2% of the overall increase. Units sold rose by 1.7M (418.0%), from 407.9K to 2.1M. This added 2.5M to revenue. Revenue per item rose 2.2%, from 1.49 to 1.52. This added 70.1K to the gain. Check ST5 by product and branch to find where the change happened.
 
-**CONSUMER GOODS revenue rose by 2.1M (10.3%), from 20.0M to 22.0M compared with the same period last year.** It made up 56.9% of the overall increase. Units sold rose by 927.3K (6.4%), from 14.5M to 15.4M. This added 1.3M to revenue. Revenue per item rose 3.7%, from 1.38 to 1.43. This added 781.6K to the gain. Check CONSUMER GOODS by product and branch to find where the change happened.
+**CONSUMER GOODS revenue rose by 2.0M (10.0%), from 20.1M to 22.1M compared with the same period last year.** It made up 57.1% of the overall increase. Units sold rose by 875.0K (6.0%), from 14.6M to 15.5M. This added 1.2M to revenue. Revenue per item rose 3.8%, from 1.37 to 1.43. This added 801.6K to the gain. Check CONSUMER GOODS by product and branch to find where the change happened.
 
-**ST4 revenue rose by 1.2M (10.8%), from 11.2M to 12.4M compared with the same period last year.** It made up 33.2% of the overall increase. Units sold rose by 77.0K (1.1%), from 6.9M to 7.0M. This added 124.1K to revenue. Revenue per item rose 9.5%, from 1.61 to 1.77. This added 1.1M to the gain. Check ST4 by product and branch to find where the change happened.
+**ST1 and ST4 generated 24.3M in revenue.** That was 58.7% of all revenue. Check the complete branch and product breakdown before ranking the areas inside this total.
 
-**PROVISIONS revenue rose by 950.0K (9.5%), from 10.0M to 10.9M compared with the same period last year.** It made up 26.3% of the overall increase. Units sold rose by 279.2K (3.0%), from 9.2M to 9.5M. This added 302.1K to revenue. Revenue per item rose 6.3%, from 1.08 to 1.15. This added 647.9K to the gain. Check PROVISIONS by product and branch to find where the change happened.
+**ST4 revenue rose by 1.2M (10.6%), from 11.2M to 12.4M compared with the same period last year.** It made up 33.8% of the overall increase. Units sold rose by 62.1K (0.9%), from 7.0M to 7.0M. This added 100.0K to revenue. Revenue per item rose 9.6%, from 1.61 to 1.77. This added 1.1M to the gain. Check ST4 by product and branch to find where the change happened.
 
 # Data Quality Watch-outs
-- Some supporting detail is incomplete because several hierarchy views returned only partial top rows. Check whether the report owner can extract full ranked outputs for item, product and special product groups.
-- The labels PROVISIONS, REFRIDGERATED GOODS and PERSONAL CARE could not be confirmed inside the CONSUMER GOODS drill. Check how those business labels map to the available hierarchy members before using them as exact sub-division totals.
-- PROVISIONS shows a fall in revenue per purchase, but the percentage display is labelled as positive in the manager-ready output. Check the sign handling for that percentage label.
+- No clear data-quality issue was flagged in the selected findings. Check that any follow-up product-group or section views use full results, because some supporting merchandise cuts were only partial ranked slices.
 
 # Evidence Trail
-- ST5 store finding `st5_drove_comparable_growth`
-  - Baseline signal: ST5 `revenue Growth` = 2,636,901.4428, from `net revenue PAST` 577,733.6664 to `net revenue CURRENT` 3,214,635.1092; share of total = 72.9561%.
-  - Decomposition by `QTY Growth`: `net qty PAST` 383,603.204 to `net qty CURRENT` 2,113,071.8729, change 1,729,468.6689; `volume_effect` 2,604,702.6317 and `rate_effect` 32,198.8111; reconciled = true.
-  - Decomposition by `bills growth`: 144,551 to 794,252, change 649,701; `volume_effect` 2,596,690.0318 and `rate_effect` 40,211.4110; reconciled = true.
-  - Probe on `'MIS_DEEP_DIVE2'[item_category_name]` for ST5 succeeded. Largest returned `revenue Growth` rows included PROVISIONS 876,324.6306, REFRIDGERATED GOODS 334,497.1437, GREEN GROCERIES 290,223.3321, PERSONAL CARE 223,411.0599, SPICE MARKET 165,923.4780.
-  - Same probe showed corresponding ST5 growth in quantity and bills, including PROVISIONS `QTY Growth` 798,386.74246 and `bills growth` 231,946; REFRIDGERATED GOODS `QTY Growth` 388,079.975 and `bills growth` 100,439.
-  - Probe on `'MIS_DEEP_DIVE2'[product_group_name]` for ST5 succeeded but returned partial top rows only. Largest visible rows included SNACKS 37,270.2033, BISCUITS 35,210.9673, WASHING DETERGENT 40,854.2157, INSTANT DRINKS 32,288.7222.
-  - Probe on `'MIS_DEEP_DIVE2'[special_product_group_name]` for ST5 succeeded but returned partial top rows only. Visible rows included SOAP 50,028.9399, WASHING POWDER FRONT LOAD 40,854.2157, MASALA 31,313.5092, POTATO CHIPS 26,357.8320, FRESH MILK 27,888.3567.
-  - Investigation explanation references COVRD CHOCO BARS AND TAB at 71,319.5388 revenue growth, 279,292.08325 quantity growth and 13,950 bills growth, but that row was not present in the returned probe rows shown here.
-  - Conclusion status: accepted.
+- `st5_dominates_comparable_growth`
+  - Baseline signal on `'MIS_DEEP_DIVE2'[store_no]` identified ST5 as contributing `revenue Growth = 2607588.7038`, from `net revenue PAST = 607046.4054` to `net revenue CURRENT = 3214635.1092`; impact share `74.2338%`.
+  - Decomposition by `QTY Growth` reconciled: `driver_prior = 407921.023`, `driver_current = 2113071.8729`, `driver_change = 1705150.8499` (`418.01%`); revenue change split into `volume_effect = 2537514.9495` (`97.3127%`) and `rate_effect = 70073.7543` (`2.6873%`); rate `net revenue CURRENT / net qty CURRENT` moved from `1.4881` to `1.5213`.
+  - Decomposition by `bills growth` reconciled: `driver_prior = 153381.0`, `driver_current = 794252.0`, `driver_change = 640871.0` (`417.8295%`); revenue split `volume_effect = 2536418.7016` (`97.2707%`) and `rate_effect = 71170.0022` (`2.7293%`); rate `net revenue CURRENT / net bills CURRENT` moved from `3.9578` to `4.0474`.
+  - Executed DAX on `'MIS_DEEP_DIVE2'[item_category_name]` for `TREATAS({"ST5"}, 'MIS_DEEP_DIVE2'[store_no])`; query succeeded.
+  - Top returned category gains in ST5: `PROVISIONS +867279.1959`, `REFRIDGERATED GOODS +330959.1285`, `GREEN GROCERIES +286236.9279`, `PERSONAL CARE +220522.2516`, `SPICE MARKET +164524.176`.
+  - Supporting ST5 category quantities and bills from the same query included: `PROVISIONS QTY Growth +785815.05646, bills growth +228930`; `REFRIDGERATED GOODS QTY Growth +383560.975, bills growth +98999`; `GREEN GROCERIES QTY Growth +220323.8474, bills growth +111084`.
+  - Investigation concluded and accepted after 1 executed query.
 
-- CONSUMER GOODS division finding `consumer_goods_dominates_division_results`
-  - Baseline signal: CONSUMER GOODS `revenue Growth` = 2,057,807.4354, from `net revenue PAST` 19,965,011.6358 to `net revenue CURRENT` 22,022,819.0712; share of total = 56.9341%.
-  - Decomposition by `QTY Growth`: 14,507,537.5504 to 15,434,856.5801, change 927,319.0296; `volume_effect` 1,276,159.7309 and `rate_effect` 781,647.7045; reconciled = true.
-  - Decomposition by `bills growth`: 4,924,987 to 5,426,505, change 501,518; `volume_effect` 2,033,063.7838 and `rate_effect` 24,743.6516; reconciled = true.
-  - No new DAX drill was run in this investigation; accepted by reuse of prior evidence.
-  - Investigation explanation states visible category or subgroup contributors included COOKING OILS 257,788.4184, FRESH DAIRY 192,067.4349, HEALTH AND BEAUTY CARE 189,742.9698, RICE 163,753.7013; and special-product-group contributors COOKING OILS 333,439.2081, SNACKS 139,218.4044, BASMATI RICE 119,043.1971.
-  - Investigation explanation also states ST5 contributed 1,658,253.8511 of CONSUMER GOODS growth, about 80.6% of the division increase.
-  - Investigation explanation notes PROVISIONS, REFRIDGERATED GOODS and PERSONAL CARE were not confirmed as available dimension values in the reused rows.
-  - Conclusion status: accepted.
+- `consumer_goods_leads_division_growth_and_scale`
+  - Baseline signal on `'MIS_DEEP_DIVE2'[division_name]` identified `CONSUMER GOODS` with `revenue Growth = 2004495.2523`, from `20134207.8378` to `22138703.0901`; impact share `57.0647%`.
+  - Decomposition by `QTY Growth` reconciled: `14645940.6988` to `15520937.4861`, change `874996.7873` (`5.9743%`); revenue split into `volume_effect = 1202883.9618` (`60.0093%`) and `rate_effect = 801611.2905` (`39.9907%`); revenue per item moved `1.3747` to `1.4264`.
+  - Decomposition by `bills growth` reconciled: `4970945.0` to `5456676.0`, change `485731.0` (`9.7714%`); revenue split `1967394.3098` (`98.1491%`) from more transactions and `37100.9425` (`1.8509%`) from higher revenue per purchase; rate moved `4.0504` to `4.0572`.
+  - No new DAX query was executed in this investigation; conclusion relied on prior scan outputs and partial ranked merchandise cuts referenced in the investigation summary.
+  - Investigation summary reported store contributions within `CONSUMER GOODS`: `ST5 +1640544.3999`, `ST4 +331057.9404`, `ST3 +188089.1037`; `ST1` and `ST2` declined, but exact decline amounts were not supplied here.
+  - Investigation summary also cited partial product-level positives: `COOKING OILS +256169.5065`, `FRESH DAIRY +189487.0179`, `HEALTH AND BEAUTY CARE +184513.1886`, `RICE +159017.6097`; special product groups `COOKING OILS +333468.6813`, `SNACKS +134709.7851`, `BASMATI RICE +116960.7951`.
+  - Coverage matrix marks `'MIS_DEEP_DIVE2'[product_group_name]`, `'MIS_DEEP_DIVE2'[special_product_group_name]`, and `'MIS_DEEP_DIVE2'[item_category_name]` as `partial` and `trusted_coverage = false` for these merchandise cuts.
+  - Investigation concluded and accepted with no additional executed query.
 
-- ST4 store finding `st4_revenue_growth_led_by_higher_revenue_per_unit`
-  - Baseline signal: ST4 `revenue Growth` = 1,201,105.5543, from `net revenue PAST` 11,154,890.3004 to `net revenue CURRENT` 12,355,995.8547; share of total = 33.2314%.
-  - Decomposition by `QTY Growth`: `net qty PAST` 6,919,700.7812 to `net qty CURRENT` 6,996,660.7501, change 76,959.9689; `volume_effect` 124,063.1694 and `rate_effect` 1,077,042.3849; reconciled = true.
-  - Decomposition by `bills growth`: 2,841,926 to 3,032,568, change 190,642; `volume_effect` 748,292.0374 and `rate_effect` 452,813.5169; reconciled = true.
-  - Probe on `'MIS_DEEP_DIVE2'[item_category_name]` for ST4 succeeded. Largest returned positive `revenue Growth` rows included PERSONAL CARE 190,096.6725, LADIES APPAREL 186,022.2429, ENTERTAINMENTS 175,587.4287, PROVISIONS 134,805.9294, TOYS 85,895.4645.
-  - Same probe showed mixed quantity patterns: PROVISIONS `QTY Growth` -134,115.66752 with positive `revenue Growth` 134,805.9294; CLEANING ESSENSTIALS `QTY Growth` -1,459 with positive `revenue Growth` 10,957.1589.
-  - Probe on `'MIS_DEEP_DIVE2'[product_group_name]` for ST4 succeeded but returned partial top rows only. Visible rows included HOME LINEN PRODUCTS 37,437.2037, BROUGHT IN BREAD AND CAKES 17,052.1308, LONG LIFE DAIRY PRODUCTS 15,066.8532, BISCUITS 15,299.3205.
-  - Investigation explanation concludes the strongest evidenced answer is at item-category level because product-group output was truncated.
-  - Conclusion status: accepted.
+- `st1_st4_concentrate_store_sales_base`
+  - Baseline concentration signal on `'MIS_DEEP_DIVE2'[store_no]` identified `ST1` and `ST4` with `net revenue CURRENT = 24303873.5037`, share of current total `58.6633%`.
+  - Same signal reported `net bills CURRENT = 5988292.0` and `net qty CURRENT = 13103971.9744` for ST1 and ST4 together.
+  - No new DAX query was executed in this investigation; conclusion relied on previously available concentration cuts described in the investigation summary.
+  - Investigation summary cited current item-category revenue within ST1 and ST4: `PROVISIONS 6074365.3704`, `PERSONAL CARE 3256780.0734`, `GREEN GROCERIES 3058478.1522`; combined `12389623.596`, about `51.0%` of the ST1+ST4 revenue stake.
+  - Same summary cited category transaction and quantity context: `PROVISIONS bills 1546570, qty 5234244.14275`; `PERSONAL CARE bills 656680, qty 1574930`; `GREEN GROCERIES bills 1358908, qty 2185284.21856`.
+  - Product-group examples from the same summary: `VEGETABLES revenue 1431445.2948, bills 817674`; `HEALTH AND BEAUTY CARE revenue 1335201.9885, bills 259458`; `COOKING OILS revenue 1134567.6642, bills 220737`; `FRESH POULTRY revenue 1041464.7468, bills 249377`.
+  - Coverage matrix marks product-group and item-category concentration views as partial or top-ranked rather than complete, so the cited merchandise concentration is indicative but not exhaustive.
+  - Investigation concluded and accepted with no additional executed query.
 
-- PROVISIONS category finding `provisions_large_category_gain_with_rate_pressure_per_bill`
-  - Baseline signal: PROVISIONS `revenue Growth` = 950,001.9579, from `net revenue PAST` 9,956,122.4952 to `net revenue CURRENT` 10,906,124.4531; share of total = 26.2841%.
-  - Decomposition by `QTY Growth`: 9,201,066.6754 to 9,480,274.3206, change 279,207.6452; `volume_effect` 302,119.9188 and `rate_effect` 647,882.0391; reconciled = true.
-  - Decomposition by `bills growth`: 2,435,421 to 2,701,866, change 266,445; `volume_effect` 1,089,240.4468 and `rate_effect` -139,238.4889; reconciled = true.
-  - No new DAX drill was run in this investigation; accepted by reuse of prior evidence.
-  - Investigation explanation states product-group contributors included COOKING OILS 257,788.4184 with 17.1K more bills and 29.7K more quantity, RICE 163,753.7013 with 17.8K more bills and 34.9K more quantity, ETHNIC FOODS 99.6K with 35.4K more bills and 52.2K more quantity.
-  - Investigation explanation states special-product-group contributors included COOKING OILS 333,439.2081 with 37.2K more bills and BASMATI RICE 119,043.1971 with 19.0K more bills.
-  - Investigation explanation states store concentration was high: ST5 contributed 876.3K of the 950.0K PROVISIONS increase, with 231.9K of the 266.4K bills increase and 798.4K of the 279.2K quantity increase; ST1 and ST2 declined.
-  - Manager fact brief for transactions shows `rate_change_pct` raw value -1.2606 but display string "1.3%", indicating a sign-label issue in the supplied brief.
-  - Conclusion status: accepted.
-
-- Shared scope and coverage
-  - `resolved_entity_scope.active_comparable_population` = ST4, ST1, ST3, ST2, ST5; `excluded_from_comparison` = none; `new_entities` = none; `prior_only_entities` = none.
-  - `temporal.reason`: no valid business time axis found; sub-annual monitoring disabled because only a load/posting-date column exists.
-  - Coverage matrix marks `'MIS_DEEP_DIVE2'[store_no]` as trusted and complete/partial depending on query; division, item category, product group and special product group coverage are partial, with product and special product group not trusted for full coverage.
+- `st4_growth_is_revenue_led`
+  - Baseline signal on `'MIS_DEEP_DIVE2'[store_no]` identified ST4 with `revenue Growth = 1186833.168`, from `11236228.3863` to `12423061.5543`; impact share `33.7872%`.
+  - Decomposition by `QTY Growth` reconciled: `6973097.3419` to `7035177.9891`, change `62080.6472` (`0.8903%`); revenue split `volume_effect = 100034.7903` (`8.4287%`) and `rate_effect = 1086798.3777` (`91.5713%`); revenue per item moved from `1.6114` to `1.7658`.
+  - Decomposition by `bills growth` reconciled: `2865206.0` to `3049579.0`, change `184373.0` (`6.4349%`); revenue split `volume_effect = 723039.5079` (`60.9217%`) and `rate_effect = 463793.6601` (`39.0783%`); revenue per purchase moved from `3.9216` to `4.0737`.
+  - Executed DAX on `'MIS_DEEP_DIVE2'[item_category_name]` for `TREATAS({"ST4"}, 'MIS_DEEP_DIVE2'[store_no])`; query succeeded.
+  - Largest positive ST4 category gains returned: `MENS APPAREL +217209.2436`, `PERSONAL CARE +188853.0795`, `LADIES APPAREL +185630.3541`, `ENTERTAINMENTS +175617.8118`, `PROVISIONS +130864.6125`.
+  - Quantity context from the same query: `MENS APPAREL +47572`, `PERSONAL CARE +58309`, `LADIES APPAREL +61079`, `ENTERTAINMENTS +15239`, while `PROVISIONS QTY Growth = -141067.30419`.
+  - Additional returned negatives/small offsets included `GLASS ITEMS -3408.5529`, `OTHER -707.7618`, `CONSUMER DEVICES -4.2282`, `BABY CLOTHING -31.4739`.
+  - Investigation concluded and accepted after 1 executed query.
 
 # Confidence & Caveats
-- ST5 insight: high confidence on the size of the increase and the unit-driven breakdown, supported by the baseline signal plus three successful drills. Confidence is lower on the exact special product group ranking because the returned rows were partial.
-- CONSUMER GOODS insight: moderate confidence on the division increase and its transaction-led profile from the manager brief and baseline signal. Confidence is lower on named internal contributors because this investigation relied on reused evidence and did not run a fresh drill here.
-- ST4 insight: high confidence on the store increase and the stronger revenue-per-item contribution, supported by the baseline signal and two successful drills. Confidence is moderate on which lower levels explain it because the product-group output was truncated.
-- PROVISIONS insight: moderate confidence on the category increase and the fall in revenue per purchase, supported by reconciled decomposition. Confidence is lower on the exact lines behind that pressure because the investigation reused prior evidence and no fresh drill was run in this step.
-- General limits: hierarchy coverage is partial for division, item category, product group and special product group. No daily or weekly analysis was available, and load-date fields were not used for trading-period interpretation.
+- ST5 insight: high confidence. Supported by the baseline store result, two reconciled decompositions, and one successful category drilldown. The category breakdown is still a ranked output rather than a guaranteed full merchandise census.
+- CONSUMER GOODS insight: medium confidence. The main division movement is well supported by the baseline result and two reconciled decompositions, but the merchandise explanation relied on partial ranked cuts and no fresh query in this investigation.
+- ST1 and ST4 concentration insight: medium confidence. The store-level concentration is directly supported, but the merchandise concentration detail came from partial top-ranked views without a new complete decomposition.
+- ST4 insight: high confidence. Supported by the baseline store result, two reconciled decompositions, and one successful category drilldown. Sub-category detail below item category was not checked.
+- Time caveat: sub-annual trend monitoring was disabled because no valid business time axis was found by the scan, even though business rules reference `MIS_DEEP_DIVE2[Month]`. This run therefore supports the supplied year-on-year comparisons, not month-by-month sequencing.
+- Coverage caveat: several merchandise dimensions in the coverage matrix are marked `partial` and `trusted_coverage = false`, especially product-group and special-product-group views.
+- Query caveat: no probe failed in the selected investigations.
 
 # Suggested Follow-ups
-- For ST5: Which `special_product_group_name` members account for most of ST5's 2.6M increase, and what are their current, prior and change values for revenue, quantity and transactions?
-- For ST5: Which ST5 categories had the largest changes in revenue per item versus items purchased per transaction?
-- For CONSUMER GOODS: Which exact `item_category_name` and `product_group_name` members inside CONSUMER GOODS contributed most to the 2.1M increase?
-- For CONSUMER GOODS: How do the business labels PROVISIONS, REFRIDGERATED GOODS and PERSONAL CARE map to the available model hierarchy members before reporting sub-division contributors?
-- For ST4: Which `special_product_group_name` members inside ST4 PROVISIONS and PERSONAL CARE had the largest increases in revenue per item?
-- For ST4: Where did revenue rise while quantity fell inside ST4, and was that pattern concentrated in a few lines or spread widely?
-- For PROVISIONS: Which `product_group_name` or `special_product_group_name` members had lower revenue per purchase than last year while transactions increased?
-- For PROVISIONS: Which stores besides ST5 reduced the category result, and which PROVISIONS lines explain those declines?
-- Outside this model: Were there assortment, pricing, or operational changes by store that align with these movements? That would need source data beyond the sales model.
+- For ST5: Which `MIS_DEEP_DIVE2[product_group_name]` values inside PROVISIONS, REFRIDGERATED GOODS, and GREEN GROCERIES account for most of ST5’s increase?
+- For ST5: Did the rise come from more items per transaction or simply more transactions? The model can test this with `QUANTITY PER TRANSACTION CURRENT YEAR`, `QUANTITY PER TRANSACTION PAST YEAR`, and related store filters.
+- For CONSUMER GOODS: Which full sections within the division increased or declined across ST1-ST5, not just the top-ranked product groups?
+- For CONSUMER GOODS: How much of the division increase came specifically from ST5 within each major product group? This can be answered inside the current model with a cross-filtered store-by-product-group query.
+- For ST1 and ST4 concentration: What share of total current revenue, transactions, and units does each major category contribute for these two stores versus the full five-store base?
+- For ST1 and ST4 concentration: Is the concentration stable month to month on the business month axis `MIS_DEEP_DIVE2[Month]`? That would require a valid month-enabled query path in the model for this report run.
+- For ST4: Which `MIS_DEEP_DIVE2[product_group_name]` values inside PROVISIONS, MENS APPAREL, and LADIES APPAREL explain the higher revenue per item?
+- For ST4: Did average revenue per item rise because of a different mix of products being sold? Product-level checks may help, but confirming price-list or promotion effects would need data outside this model.

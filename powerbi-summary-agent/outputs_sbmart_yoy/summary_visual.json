@@ -23,7 +23,7 @@
         794332.3346999995,
         -160695.61379999947,
         130219.89300000016,
-        -632076.2343000001
+        -733771.6181999999
       ],
       "x_label": "",
       "y_label": "",
@@ -35,17 +35,21 @@
       "highlight": null
     },
     {
-      "source_id": "summary_661a933e0108:contributor:0",
-      "type": "horizontal_bar",
-      "title": "TECHNOLOGY revenue change by section",
+      "source_id": "summary_a99a0ffc3e62:contributor:0",
+      "type": "waterfall",
+      "title": "HOME & LIVING revenue change by item category",
       "value_label": "Revenue change",
       "labels": [
-        "CONSUMER DEVICES",
-        "ENTERTAINMENTS"
+        "GLASS ITEMS",
+        "OFFICE SUPPLIES",
+        "HOME TEXTILES",
+        "CULINARY SUPPLIES"
       ],
       "values": [
-        1975.8519000000001,
-        234074.84759999998
+        -2015.1990000000005,
+        25216.6446,
+        33956.35830000008,
+        63556.12349999999
       ],
       "x_label": "",
       "y_label": "",
@@ -57,23 +61,23 @@
       "highlight": null
     },
     {
-      "source_id": "summary_b801fc430e44:location",
-      "type": "horizontal_bar",
-      "title": "CULINARY SUPPLIES revenue change by store",
+      "source_id": "summary_07ef6b2147d3:location",
+      "type": "waterfall",
+      "title": "TOYS revenue change by store",
       "value_label": "Revenue change",
       "labels": [
+        "ST1",
         "ST3",
         "ST2",
-        "ST1",
-        "ST5",
-        "ST4"
+        "ST4",
+        "ST5"
       ],
       "values": [
-        -8914.368599999987,
-        -11658.896999999997,
-        -25965.665099999984,
-        67146.70499999999,
-        46934.210699999996
+        -2319.407999999996,
+        -4916.154599999994,
+        -4268.373299999992,
+        86000.67809999999,
+        26717.9553
       ],
       "x_label": "",
       "y_label": "",

@@ -11,7 +11,7 @@
       "column": "'MIS_DEEP_DIVE2'[max_date]",
       "grain": "date",
       "metric": "net revenue CURRENT",
-      "max_bucket_share": 0.5868527778464706,
+      "max_bucket_share": 0.9055275388398382,
       "verdict": "batch_load_date"
     },
     {

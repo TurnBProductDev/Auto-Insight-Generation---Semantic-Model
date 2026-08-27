@@ -2,38 +2,38 @@
   "status": "ok",
   "families": {
     "revenue": {
-      "current": 41206710.5199,
-      "prior": 37592345.2383,
-      "change": 3614365.2815999985,
-      "change_pct": 9.614631007159389,
+      "current": 41429409.3063,
+      "prior": 37916739.4086,
+      "change": 3512669.897699997,
+      "change_pct": 9.264166572569998,
       "comparison": "the same period last year"
     },
     "quantity": {
-      "current": 22864064.02351,
-      "prior": 21489300.60046,
-      "change": 1374763.4230500013,
-      "change_pct": 6.397432138952783,
+      "current": 22997033.898500003,
+      "prior": 21692376.527809992,
+      "change": 1304657.3706900105,
+      "change_pct": 6.014358864817867,
       "comparison": "the same period last year"
     },
-    "transactions": {
-      "current": 10158927.0,
-      "prior": 9270273.0,
-      "change": 888654.0,
-      "change_pct": 9.586060734133719,
+    "rate": {
+      "current": 4.054518768960871,
+      "prior": 4.05163624083535,
+      "change": 0.0028825281255207003,
+      "change_pct": 0.07114479075067193,
       "comparison": "the same period last year"
     }
   },
   "primary_family": "revenue",
   "bridge": {
-    "volume_effect": 2404944.77606109,
-    "rate_mix_effect": 1209420.5055389078,
-    "total": 3614365.281599998,
-    "revenue_change": 3614365.2815999985,
+    "volume_effect": 2280448.777871024,
+    "rate_mix_effect": 1232221.1198289741,
+    "total": 3512669.8976999978,
+    "revenue_change": 3512669.897699997,
     "reconciles": true,
     "note": "Rate/mix reflects price and mix together, not pure price."
   },
   "comparison": "the same period last year",
-  "data_as_of": "2026-08-23",
+  "data_as_of": "2026-08-26",
   "grain": "month",
   "freshness_status": "current",
   "reconciled": true,
@@ -46,25 +46,25 @@
       "Current"
     ],
     "values": [
-      37592345.2383,
-      41206710.5199
+      37916739.4086,
+      41429409.3063
     ],
     "value_label": "Revenue"
   },
   "metrics": [
     {
       "label": "Revenue change",
-      "value": "+3.6M",
+      "value": "+3.5M",
       "tone": "teal"
     },
     {
       "label": "Quantity change",
-      "value": "+1.4M",
+      "value": "+1.3M",
       "tone": "teal"
     },
     {
-      "label": "Transactions change",
-      "value": "+888.7K",
+      "label": "Quantity per transaction change",
+      "value": "-0.07",
       "tone": "teal"
     }
   ],
@@ -116,9 +116,9 @@
       },
       {
         "month": 8,
-        "revenue_current": 3330017.4168,
-        "revenue_prior": 3962093.6511,
-        "revenue_change": -632076.2343000001
+        "revenue_current": 3552716.2032,
+        "revenue_prior": 4286487.8214,
+        "revenue_change": -733771.6181999999
       }
     ],
     "completeness": "complete",

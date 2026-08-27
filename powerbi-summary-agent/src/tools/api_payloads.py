@@ -696,7 +696,15 @@ def _kpi_good_direction(sig: Dict[str, Any], family: str) -> Optional[str]:
 # scaffolding in front of a status that already says what it is.
 _NON_ENTITY_DIMENSIONS = {"", "company", "estate", "overall", "business",
                           "recommended action", "recommended_action",
-                          "status", "state", "bucket", "classification"}
+                          "status", "state", "bucket", "classification",
+                          # A PERIOD is not a thing that can be prefixed to a
+                          # name. The Damage card is dimensioned by month, and
+                          # the live tile read "Month All Locations - Damage
+                          # Value": the period is already carried as its own
+                          # stat, and reading it as an entity produced three
+                          # words of nonsense in front of the measure.
+                          "month", "week", "quarter", "year", "day", "date",
+                          "period"}
 
 # A tile name, not a sentence. The proposal asks for ~40 characters; past this
 # the tile clamps and cuts the end, which is where the measure sits.
@@ -726,9 +734,14 @@ def _kpi_readable(value: Any) -> Optional[str]:
 
 def _kpi_label(sig: Dict[str, Any]) -> Optional[str]:
     segment = str(sig.get("affected_segment") or "").strip()
-    metric_name = (_kpi_readable(sig.get("metric"))
-                   or _METRIC_FAMILY_LABEL.get(
-                       str(sig.get("metric_family") or "").casefold(), ""))
+    # ...through the same plain-English layer every other manager-facing string
+    # on the card already uses. Without it the live tile published "Loc-SKUs in
+    # a double-warning state" - a label is read by the same person as the
+    # sentence beneath it, so it cannot keep vocabulary the sentence bans.
+    metric_name = _plain_business_text(
+        _kpi_readable(sig.get("metric"))
+        or _METRIC_FAMILY_LABEL.get(
+            str(sig.get("metric_family") or "").casefold(), ""))
     if not segment:
         # No segment does not mean no name. A whole-business finding carries no
         # segment by design - it is about everything - and returning None left
@@ -747,7 +760,7 @@ def _kpi_label(sig: Dict[str, Any]) -> Optional[str]:
         # label repeating it adds a heading that says what the card already
         # says. Absent is the honest answer, which is what the field's own
         # compatibility rule asks for.
-        return _kpi_readable(sig.get("metric")) or None
+        return _plain_business_text(_kpi_readable(sig.get("metric"))) or None
     dimension = _kpi_readable(sig.get("dimension")) or ""
     # "recommended_action" -> "Recommended Action". .title() alone leaves the
     # underscore in place and prints "Recommended_Action" on the tile.
@@ -906,7 +919,7 @@ def _insight_stats(sig: Dict[str, Any], family: str) -> List[Dict[str, str]]:
         shown = [str(m).strip() for m in members if str(m).strip()]
         segment = str(sig.get("affected_segment") or "").strip()
         if shown and shown != [segment]:
-            dimension = str(sig.get("dimension") or "").replace("_", " ").strip()
+            dimension = (_kpi_readable(sig.get("dimension")) or "").replace("_", " ").strip()
             stats.append({
                 "label": dimension.title() if dimension else "Segments",
                 "value": ", ".join(_readable_member(m) for m in shown),
@@ -967,6 +980,29 @@ def _invoke(state: dict, schema, system: str, user: str):
 # --------------------------------------------------------------------------
 # /kpi/insights
 # --------------------------------------------------------------------------
+# A figure a person would write, as opposed to a raw model value. The summary
+# dashboard learned this the same way: "copy the figure exactly" let a live
+# draft through with "+2.7147647284841927%". Here the candidate `description`
+# carries unrounded floats, so offering it verbatim put "1705150.8499 more
+# units sold" and "71.9266% share" on a customer's tile - every digit correct
+# and none of it readable.
+_MAX_QUOTED_DECIMALS = 2
+
+
+def _is_display_figure(token: str) -> bool:
+    text = token.strip()
+    if "." not in text:
+        return True                      # an integer, grouped or not
+    decimals = len(text.split(".")[-1].rstrip("KMB%").strip())
+    if decimals > _MAX_QUOTED_DECIMALS:
+        return False
+    if text[-1] in "KMB%":
+        return True                      # 264.6K, 400.6%
+    # A bare float is a raw value: code prints money grouped ("1,234.56"),
+    # never as "640871.0".
+    return "," in text
+
+
 def _quotable_figures(sig: Dict[str, Any], family: str) -> List[str]:
     """The exact display strings the LLM may copy into its prose.
 
@@ -988,7 +1024,7 @@ def _quotable_figures(sig: Dict[str, Any], family: str) -> List[str]:
     def add(text: Any) -> None:
         for token in _FIG_RE.finditer(str(text or "")):
             value = token.group(0).strip()
-            if value not in out:
+            if value not in out and _is_display_figure(value):
                 out.append(value)
 
     # Whatever the grounded sentences already state - these carry the real

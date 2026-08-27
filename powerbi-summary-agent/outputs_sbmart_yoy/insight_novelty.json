@@ -1,5 +1,5 @@
 {
-  "detected": 94,
+  "detected": 95,
   "suppressed": 0,
   "eligible": 50,
   "selected": 4,
@@ -9,12 +9,12 @@
   "level_breakdown": {
     "high": 50
   },
-  "watermark": "2026-08-23",
+  "watermark": "2026-08-26",
   "period_anchor": "2026-08",
   "resurfaced": 0,
   "rolling_unavailable": false,
-  "unseen": 94,
-  "cap_dropped": 44,
+  "unseen": 95,
+  "cap_dropped": 45,
   "rate_detected": 0,
   "rate_reserved": false,
   "rate_resurfaced": 0,

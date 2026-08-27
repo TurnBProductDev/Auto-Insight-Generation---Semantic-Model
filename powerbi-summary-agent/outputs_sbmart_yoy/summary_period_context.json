@@ -1,57 +1,24 @@
 {
   "grain": "month",
   "axis": "'MIS_DEEP_DIVE2'[Month]",
-  "data_as_of": "2026-08-23",
+  "data_as_of": "2026-08-26",
   "period_anchor": "2026-07",
   "freshness_status": "current",
   "age_in_grain_periods": 0,
-  "today": "2026-08-25",
+  "today": "2026-08-27",
   "reason": "metadata fallback after rejecting batch/load date evidence",
   "checks": [
-    {
-      "query": "latest_load_dates",
-      "column": "MIS_DEEP_DIVE2 max_date",
-      "grain": "date",
-      "periods": 1,
-      "data_start": "2026-08-23",
-      "data_as_of": "2026-08-23",
-      "span_days": 1,
-      "max_bucket_share": null,
-      "verdict": "insufficient_periods"
-    },
-    {
-      "query": "latest_load_dates",
-      "column": "MIS_BASE_FILE_MONTHLY_BRAND_TB max_date",
-      "grain": "date",
-      "periods": 1,
-      "data_start": "2026-08-23",
-      "data_as_of": "2026-08-23",
-      "span_days": 1,
-      "max_bucket_share": null,
-      "verdict": "insufficient_periods"
-    },
-    {
-      "query": "latest_load_dates",
-      "column": "Latest_Refresh_Table MaxRefreshDate",
-      "grain": "date",
-      "periods": 1,
-      "data_start": "2026-08-23",
-      "data_as_of": "2026-08-23",
-      "span_days": 1,
-      "max_bucket_share": null,
-      "verdict": "insufficient_periods"
-    },
     {
       "query": "meta_trend_by_mis_deep_dive2_max_date",
       "column": "max_date",
       "grain": "day",
       "periods": 24,
-      "data_start": "2026-07-31",
-      "data_as_of": "2026-08-23",
+      "data_start": "2026-08-03",
+      "data_as_of": "2026-08-26",
       "span_days": 24,
-      "max_bucket_share": 0.5868527778464706,
+      "max_bucket_share": 0.9055275388398382,
       "verdict": "batch_date"
     }
   ],
-  "data_signature": "8fac724d1e478931b8f13f7c31a1a161b7734c9a717ea48d3fe738686cba4345"
+  "data_signature": "0c4078dd07ea264add6480e60214cb6588c88294589e808d6a7101f00932093e"
 }

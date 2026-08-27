@@ -2,41 +2,29 @@
   "status": "ok",
   "mode": "portfolio",
   "memory_status": "ok",
-  "detected": 128,
+  "detected": 129,
   "eligible": 3,
   "summary_type": "new_data",
-  "recovered_same_day": false,
+  "recovered_same_day": true,
   "selected_areas": [
-    "area:v1:4969b0007483b03995463c3b6ae66dcef2557ab791f0a21ca3f4bb65855a05d6",
-    "area:v1:337797ce59a3db071048c5d878f5f3a8d351cbbbfbc28e74559e957f4caaee84",
-    "area:v1:a1169cd1c5c98976140aeb3c6ab226bb0374924fa5616c7d14cb6f2b2911ec82"
+    "area:v1:a1169cd1c5c98976140aeb3c6ab226bb0374924fa5616c7d14cb6f2b2911ec82",
+    "area:v1:73c652028baaaf2767000397483b0233596a26ceb330bbea90528fe593c96b5e",
+    "area:v1:62afb81b063c9f7c26b15f15d31b8f34eba78a82625799c1bdd385913d9dfa65"
   ],
   "selected_segments": [
-    "CULINARY SUPPLIES",
-    "TECHNOLOGY",
-    "TOYS"
+    "TOYS",
+    "SPICE MARKET",
+    "HOME & LIVING"
   ],
   "selected_roles": [
     "section",
-    "division",
-    "section"
+    "section",
+    "division"
   ],
-  "reason": "portfolio",
+  "reason": "same_day_recovery",
   "audit": {
-    "detected": 128,
-    "today": "2026-08-25",
-    "dropped": {
-      "role": 43,
-      "invalid": 0,
-      "evidence": 19,
-      "collapsed_hierarchy": 30,
-      "materiality": 9,
-      "repeat_gap": 2
-    },
-    "eligible": 17,
-    "seeds": 1,
-    "selected": 3,
-    "reserves": 14,
-    "reason": "portfolio"
+    "reason": "same_day_recovery",
+    "recovered": true,
+    "pinned": 3
   }
 }

@@ -2,6 +2,205 @@
   "timezone": "Asia/Kolkata",
   "history": [
     {
+      "date": "2026-08-27",
+      "runs": [
+        {
+          "time": "13:58:20",
+          "status": "completed",
+          "summaryType": "new_data",
+          "dataAsOf": "2026-08-26",
+          "grain": "month",
+          "freshnessStatus": "current",
+          "headline": "July 2026 revenue increased by +3.5M year on year across ST1, ST2, ST3, ST4 and ST5.",
+          "paragraphs": [
+            "For July 2026, across ST1, ST2, ST3, ST4 and ST5, revenue increased by +3.5M (9.3%), from 37.9M to 41.4M compared with the same period last year. Quantity increased by +1.3M (6.0%), from 21.7M to 23.0M, transactions changed by +859.7K, and quantity per transaction changed by -0.07. Change in quantity added revenue by +2.3M versus the same period last year, while average revenue per item and mix added revenue by +1.2M. Rate increased by +0.003 (0.1%), from 4.1 to 4.1 compared with the same period last year.",
+            "In July 2026 across the branches included in this comparison, HOME & LIVING revenue changed by +120.7K (+4.6%). Quantity changed by +39.4K and transactions changed by +39.0K. Within HOME & LIVING, change in units sold added revenue by +100.5K, while average revenue per item and mix added revenue by +20.2K. The largest positive contributor returned here was CULINARY SUPPLIES at +63.6K, while GLASS ITEMS reduced revenue by -2.0K. ST5 led HOME & LIVING across the stores included in the comparison at +135.3K.",
+            "In July 2026 across the branches included in this comparison, TOYS revenue changed by +101.2K (+16.7%). Quantity changed by +25.5K and transactions changed by +15.0K. Within TOYS, change in units sold added revenue by +89.5K, while average revenue per item and mix added revenue by +11.7K. ST4 led TOYS across the stores included in the comparison at +86.0K.",
+            "In July 2026 across the branches included in this comparison, SPICE MARKET revenue changed by +170.6K (+8.9%). Quantity changed by +3.2K and transactions changed by +31.9K. Within SPICE MARKET, change in units sold added revenue by +20.3K, while average revenue per item and mix added revenue by +150.4K. ST5 led SPICE MARKET across the stores included in the comparison at +164.5K."
+          ],
+          "metrics": [],
+          "sections": [
+            {
+              "heading": "Overall Performance",
+              "tone": "teal",
+              "points": [
+                "For July 2026, across ST1, ST2, ST3, ST4 and ST5, revenue increased by +3.5M (9.3%), from 37.9M to 41.4M compared with the same period last year. Quantity increased by +1.3M (6.0%), from 21.7M to 23.0M, transactions changed by +859.7K, and quantity per transaction changed by -0.07. Change in quantity added revenue by +2.3M versus the same period last year, while average revenue per item and mix added revenue by +1.2M. Rate increased by +0.003 (0.1%), from 4.1 to 4.1 compared with the same period last year."
+              ]
+            },
+            {
+              "heading": "HOME & LIVING",
+              "tone": "teal",
+              "points": [
+                "In July 2026 across the branches included in this comparison, HOME & LIVING revenue changed by +120.7K (+4.6%). Quantity changed by +39.4K and transactions changed by +39.0K. Within HOME & LIVING, change in units sold added revenue by +100.5K, while average revenue per item and mix added revenue by +20.2K. The largest positive contributor returned here was CULINARY SUPPLIES at +63.6K, while GLASS ITEMS reduced revenue by -2.0K. ST5 led HOME & LIVING across the stores included in the comparison at +135.3K."
+              ]
+            },
+            {
+              "heading": "Selected section performance",
+              "tone": "teal",
+              "points": [
+                "In July 2026 across the branches included in this comparison, TOYS revenue changed by +101.2K (+16.7%). Quantity changed by +25.5K and transactions changed by +15.0K. Within TOYS, change in units sold added revenue by +89.5K, while average revenue per item and mix added revenue by +11.7K. ST4 led TOYS across the stores included in the comparison at +86.0K.",
+                "In July 2026 across the branches included in this comparison, SPICE MARKET revenue changed by +170.6K (+8.9%). Quantity changed by +3.2K and transactions changed by +31.9K. Within SPICE MARKET, change in units sold added revenue by +20.3K, while average revenue per item and mix added revenue by +150.4K. ST5 led SPICE MARKET across the stores included in the comparison at +164.5K."
+              ]
+            }
+          ],
+          "visual": null,
+          "focus": null,
+          "focuses": [
+            {
+              "focus_key": "focus:v2:07ef6b2147d335041757f572ef02c94aab14578f24be1e5f1eaec2ffad8bf24e",
+              "segment": "TOYS",
+              "dimension_role": "section",
+              "lens": "composition"
+            },
+            {
+              "focus_key": "focus:v2:304daa704e98d17d0923ee4bffe3200b9ce7a3df2427adc9842a277b0ded3a7f",
+              "segment": "SPICE MARKET",
+              "dimension_role": "section",
+              "lens": "composition"
+            },
+            {
+              "focus_key": "focus:v2:a99a0ffc3e620541364d955c301ba67f909b9525d2076a37bf6d4c3fd2fce986",
+              "segment": "HOME & LIVING",
+              "dimension_role": "division",
+              "lens": "performance"
+            }
+          ],
+          "overall": {
+            "status": "ok",
+            "families": {
+              "revenue": {
+                "current": 41429409.3063,
+                "prior": 37916739.4086,
+                "change": 3512669.897699997,
+                "change_pct": 9.264166572569998,
+                "comparison": "the same period last year"
+              },
+              "quantity": {
+                "current": 22997033.898500003,
+                "prior": 21692376.527809992,
+                "change": 1304657.3706900105,
+                "change_pct": 6.014358864817867,
+                "comparison": "the same period last year"
+              },
+              "rate": {
+                "current": 4.054518768960871,
+                "prior": 4.05163624083535,
+                "change": 0.0028825281255207003,
+                "change_pct": 0.07114479075067193,
+                "comparison": "the same period last year"
+              }
+            },
+            "primary_family": "revenue",
+            "bridge": {
+              "volume_effect": 2280448.777871024,
+              "rate_mix_effect": 1232221.1198289741,
+              "total": 3512669.8976999978,
+              "revenue_change": 3512669.897699997,
+              "reconciles": true,
+              "note": "Rate/mix reflects price and mix together, not pure price."
+            },
+            "comparison": "the same period last year",
+            "data_as_of": "2026-08-26",
+            "grain": "month",
+            "freshness_status": "current",
+            "reconciled": true,
+            "coverage": "complete",
+            "visual": {
+              "type": "bar",
+              "title": "Revenue: prior versus current",
+              "labels": [
+                "Prior",
+                "Current"
+              ],
+              "values": [
+                37916739.4086,
+                41429409.3063
+              ],
+              "value_label": "Revenue"
+            },
+            "metrics": [
+              {
+                "label": "Revenue change",
+                "value": "+3.5M",
+                "tone": "teal"
+              },
+              {
+                "label": "Quantity change",
+                "value": "+1.3M",
+                "tone": "teal"
+              },
+              {
+                "label": "Quantity per transaction change",
+                "value": "-0.07",
+                "tone": "teal"
+              }
+            ],
+            "trend": {
+              "dimension": "Month",
+              "grain": "month",
+              "rows": [
+                {
+                  "month": 1,
+                  "revenue_current": 6282680.2227,
+                  "revenue_prior": 5050918.6416,
+                  "revenue_change": 1231761.5811
+                },
+                {
+                  "month": 2,
+                  "revenue_current": 5743381.9365,
+                  "revenue_prior": 4645516.2066,
+                  "revenue_change": 1097865.7298999997
+                },
+                {
+                  "month": 3,
+                  "revenue_current": 5611613.5125,
+                  "revenue_prior": 5578666.6518,
+                  "revenue_change": 32946.86070000008
+                },
+                {
+                  "month": 4,
+                  "revenue_current": 5193002.988,
+                  "revenue_prior": 4072992.2577,
+                  "revenue_change": 1120010.7303
+                },
+                {
+                  "month": 5,
+                  "revenue_current": 5962941.9918,
+                  "revenue_prior": 5168609.6571,
+                  "revenue_change": 794332.3346999995
+                },
+                {
+                  "month": 6,
+                  "revenue_current": 4313923.9659,
+                  "revenue_prior": 4474619.5797,
+                  "revenue_change": -160695.61379999947
+                },
+                {
+                  "month": 7,
+                  "revenue_current": 4769148.4857,
+                  "revenue_prior": 4638928.5927,
+                  "revenue_change": 130219.89300000016
+                },
+                {
+                  "month": 8,
+                  "revenue_current": 3552716.2032,
+                  "revenue_prior": 4286487.8214,
+                  "revenue_change": -733771.6181999999
+                }
+              ],
+              "completeness": "complete",
+              "direction": "decelerating",
+              "value_aliases": {
+                "current": "revenue_current",
+                "prior": "revenue_prior",
+                "change": "revenue_change"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
       "date": "2026-08-25",
       "runs": [
         {

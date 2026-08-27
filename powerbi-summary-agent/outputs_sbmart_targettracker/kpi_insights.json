@@ -1,35 +1,130 @@
 [
   {
-    "id": 1130446137,
+    "id": 1965626293,
     "reportId": "target_tracker",
     "severity": "critical",
-    "category": "Performance",
+    "category": "Target",
     "metric": "ST2",
-    "value": "-334.8K",
-    "delta": "11.1%",
+    "value": "-826.9K",
+    "delta": "27.1%",
     "deltaDirection": "down",
-    "description": "ST2 is below target in every period reported - today 91.3%, this week 94.5%, this month 88.9%, this year 92.8%. This month so far it is 334,834 short. The shortfall is broad-based, with ST2 below target across all reported timeframes, and the month-to-date gap is the clearest area to examine by department.",
-    "displayTime": "2:43 AM",
-    "isoDate": "2026-08-25",
+    "description": "ST2 is below target in every period reported - today 0.0%, this week 0.0%, this month 72.9%, this year 90.5%. This month so far it is 826,947 short. ST2 is behind plan across every reported period, with the biggest gap in the month so far.",
+    "displayTime": "1:52 PM",
+    "isoDate": "2026-08-27",
     "comparisonLabel": "against its target for this month so far",
     "insight": {
-      "title": "ST2 target shortfall focus",
-      "summary": "ST2 is tracking below target in each reported period rather than in a single isolated window. This suggests the department-level gap this month may help show where the overall underperformance is most concentrated.",
+      "title": "ST2 below target throughout",
+      "summary": "ST2 is short by 826,947 this month so far and is running at 72.9% of target for the month. This keeps revenue behind plan and accounts for 27.1% of the total decline. The shortfall is present in every reported period, including 90.5% for the year.",
       "stats": [
         {
           "label": "Performance change",
-          "value": "-334.8K"
+          "value": "-826.9K"
         },
         {
           "label": "Share of performance decline",
-          "value": "11.1%"
-        },
-        {
-          "label": "Segments",
-          "value": "ST2"
+          "value": "27.1%"
         }
       ],
-      "action": "Review ST2 departments with the largest month-to-date target gaps."
-    }
+      "action": "Review which departments in ST2 are furthest below target this month."
+    },
+    "label": "Branch ST2 \u2014 Sales against target",
+    "rawValue": -826946.9680000041,
+    "unit": "USD",
+    "valueType": "currency",
+    "goodDirection": "up",
+    "comparison": {
+      "type": "target",
+      "label": "vs target",
+      "baselineValue": 3046219.438000001
+    },
+    "target": {
+      "value": 3046219.438000001,
+      "attainmentPct": 72.9
+    },
+    "rank": 1
+  },
+  {
+    "id": 1449879103,
+    "reportId": "target_tracker",
+    "severity": "critical",
+    "category": "Target",
+    "metric": "Whole business",
+    "value": "-4.53M",
+    "delta": "",
+    "deltaDirection": "down",
+    "description": "Sales finished below target on 25 days in a row, from 2026-08-07 to 2026-08-31, giving back 4,532,999 in total. Sales have missed plan every day in this period, leaving a large gap to recover.",
+    "displayTime": "1:52 PM",
+    "isoDate": "2026-08-27",
+    "comparisonLabel": "against the daily target",
+    "insight": {
+      "title": "25 straight days below target",
+      "summary": "The business finished below target for 25 days in a row, giving back 4,532,999 in total. This leaves a significant revenue gap and makes up 25.7% of the total decline. The issue is happening across the business rather than in one store alone.",
+      "stats": [
+        {
+          "label": "Performance change",
+          "value": "-4.53M"
+        },
+        {
+          "label": "Share of performance decline",
+          "value": "25.7%"
+        }
+      ],
+      "action": "Check which branches contributed most to the shortfall over these 25 days."
+    },
+    "label": "Whole business \u2014 Sales against target",
+    "rawValue": -4532999.1794958245,
+    "unit": "USD",
+    "valueType": "currency",
+    "goodDirection": "up",
+    "comparison": {
+      "type": "other",
+      "label": "vs baseline",
+      "baselineValue": null
+    },
+    "rank": 2
+  },
+  {
+    "id": 337431685,
+    "reportId": "target_tracker",
+    "severity": "critical",
+    "category": "Target",
+    "metric": "ST1",
+    "value": "-1.42M",
+    "delta": "25.3%",
+    "deltaDirection": "down",
+    "description": "ST1 is below target in every period reported - today 0.0%, this week 0.0%, this month 74.7%, this year 98.3%. This month so far it is 1,422,431 short. ST1 is behind plan across every reported period, with the largest gap in the month so far.",
+    "displayTime": "1:52 PM",
+    "isoDate": "2026-08-27",
+    "comparisonLabel": "against its target for this month so far",
+    "insight": {
+      "title": "ST1 below target throughout",
+      "summary": "ST1 is short by 1,422,431 this month so far and is running at 74.7% of target for the month. This keeps revenue behind plan and accounts for 25.3% of the total decline. The shortfall is present in every reported period, including 98.3% for the year.",
+      "stats": [
+        {
+          "label": "Performance change",
+          "value": "-1.42M"
+        },
+        {
+          "label": "Share of performance decline",
+          "value": "25.3%"
+        }
+      ],
+      "action": "Review which departments in ST1 are furthest below target this month."
+    },
+    "label": "Branch ST1 \u2014 Sales against target",
+    "rawValue": -1422431.2092000032,
+    "unit": "USD",
+    "valueType": "currency",
+    "goodDirection": "up",
+    "comparison": {
+      "type": "target",
+      "label": "vs target",
+      "baselineValue": 5627423.169200006
+    },
+    "target": {
+      "value": 5627423.169200006,
+      "attainmentPct": 74.7
+    },
+    "rank": 3
   }
 ]

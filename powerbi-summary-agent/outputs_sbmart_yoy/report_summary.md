@@ -1,10 +1,10 @@
-# July 2026 revenue increased by +3.6M to 41.2M, with quantity up +1.4M and transactions up +888.7K across ST4, ST1, ST3, ST2 and ST5.
+# July 2026 revenue increased by +3.5M year on year across ST1, ST2, ST3, ST4 and ST5.
 
-*Data through 2026-08-23 · month grain · current*
+*Data through 2026-08-26 · month grain · current*
 
 ## Overall Performance
 
-For July 2026, across ST4, ST1, ST3, ST2 and ST5, revenue increased by +3.6M (9.6%) to 41.2M from 37.6M in the same period last year. Quantity increased by +1.4M (6.4%) to 22.9M from 21.5M, and transactions increased by +888.7K (9.6%) to 10.2M from 9.3M. The revenue increase was supported by both more units sold, which added +2.4M, and average revenue per item and mix, which added +1.2M.
+For July 2026, across ST1, ST2, ST3, ST4 and ST5, revenue increased by +3.5M (9.3%), from 37.9M to 41.4M compared with the same period last year. Quantity increased by +1.3M (6.0%), from 21.7M to 23.0M, transactions changed by +859.7K, and quantity per transaction changed by -0.07. Change in quantity added revenue by +2.3M versus the same period last year, while average revenue per item and mix added revenue by +1.2M. Rate increased by +0.003 (0.1%), from 4.1 to 4.1 compared with the same period last year.
 
 ## Revenue change by month
 
@@ -15,25 +15,28 @@ For July 2026, across ST4, ST1, ST3, ST2 and ST5, revenue increased by +3.6M (9.
 - May: +794.3K Revenue change
 - June: -160.7K Revenue change
 - July: +130.2K Revenue change
-- August: -632.1K Revenue change
+- August: -733.8K Revenue change
 
-## TECHNOLOGY
+## HOME & LIVING
 
-In July 2026, TECHNOLOGY revenue increased by +236.1K (+13.7%). Quantity increased by +26.8K and transactions increased by +23.2K. Within TECHNOLOGY, ENTERTAINMENTS added +234.1K, making it the largest positive contributor returned for this area. ST4 provided the strongest store evidence at +175.6K across the stores included in this comparison. More units sold added +325.9K to revenue, while average revenue per item and mix reduced revenue by -89.9K.
+In July 2026 across the branches included in this comparison, HOME & LIVING revenue changed by +120.7K (+4.6%). Quantity changed by +39.4K and transactions changed by +39.0K. Within HOME & LIVING, change in units sold added revenue by +100.5K, while average revenue per item and mix added revenue by +20.2K. The largest positive contributor returned here was CULINARY SUPPLIES at +63.6K, while GLASS ITEMS reduced revenue by -2.0K. ST5 led HOME & LIVING across the stores included in the comparison at +135.3K.
 
-## TECHNOLOGY revenue change by section
+## HOME & LIVING revenue change by item category
 
-- CONSUMER DEVICES: +2.0K Revenue change
-- ENTERTAINMENTS: +234.1K Revenue change
+- GLASS ITEMS: -2.0K Revenue change
+- OFFICE SUPPLIES: +25.2K Revenue change
+- HOME TEXTILES: +34.0K Revenue change
+- CULINARY SUPPLIES: +63.6K Revenue change
 
-## CULINARY SUPPLIES
+## Selected section performance
 
-In July 2026, CULINARY SUPPLIES revenue increased by +67.5K (+5.3%). Quantity increased by +27.3K and transactions increased by +23.5K. Within this section, CULINARY SUPPLIES added +67.5K. ST5 led store performance at +67.1K across the stores included in this comparison. More units sold added +82.3K to revenue, while average revenue per item and mix reduced revenue by -14.8K.
+- In July 2026 across the branches included in this comparison, TOYS revenue changed by +101.2K (+16.7%). Quantity changed by +25.5K and transactions changed by +15.0K. Within TOYS, change in units sold added revenue by +89.5K, while average revenue per item and mix added revenue by +11.7K. ST4 led TOYS across the stores included in the comparison at +86.0K.
+- In July 2026 across the branches included in this comparison, SPICE MARKET revenue changed by +170.6K (+8.9%). Quantity changed by +3.2K and transactions changed by +31.9K. Within SPICE MARKET, change in units sold added revenue by +20.3K, while average revenue per item and mix added revenue by +150.4K. ST5 led SPICE MARKET across the stores included in the comparison at +164.5K.
 
-## CULINARY SUPPLIES revenue change by store
+## TOYS revenue change by store
 
-- ST3: -8.9K Revenue change
-- ST2: -11.7K Revenue change
-- ST1: -26.0K Revenue change
-- ST5: +67.1K Revenue change
-- ST4: +46.9K Revenue change
+- ST1: -2.3K Revenue change
+- ST3: -4.9K Revenue change
+- ST2: -4.3K Revenue change
+- ST4: +86.0K Revenue change
+- ST5: +26.7K Revenue change
