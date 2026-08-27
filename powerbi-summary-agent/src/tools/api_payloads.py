@@ -286,6 +286,25 @@ def _plain_business_text(text: Any) -> str:
         (r"\bsell-through\b", "sales"),
         (r"\bbills\b", "transactions"),
         (r"\bbill\b", "transaction"),
+        # Retail plain English. The prompt bans these, but a prompt is
+        # guidance and this is enforcement: a store manager reading on a
+        # phone does not know what a Loc-SKU is, and "the position" is not
+        # a thing anyone says about stock on a shop floor. The hedge pairs
+        # Hedge-stripping is deliberately NOT done here: removing "may"
+        # turns a careful sentence into an asserted cause, which this
+        # branch is forbidden to make. That habit is the prompt's to fix.
+        (r"\blocation[- ]SKUs\b", "products in stores"),
+        (r"\blocation[- ]SKU\b", "product in a store"),
+        (r"\bLoc-SKUs\b", "products in stores"),
+        (r"\bLoc-SKU\b", "product in a store"),
+        (r"\bSKUs\b", "products"),
+        (r"\bSKU\b", "product"),
+        (r"\bdays of cover\b", "days of stock"),
+        (r"\bagreed cover\b", "planned stock level"),
+        (r"\babove cover\b", "above the planned stock level"),
+        (r"\breplenishment flow\b", "reordering"),
+        (r"\bassortment\b", "product range"),
+        (r"\bbroad-based\b", "widespread"),
     )
     for pattern, replacement in replacements:
         value = re.sub(pattern, replacement, value, flags=re.IGNORECASE)
@@ -749,20 +768,81 @@ def _rate_stats(sig: Dict[str, Any], family: str) -> List[Dict[str, str]]:
     return stats[:3]
 
 
+def _grounded_summary(sig: Dict[str, Any], family: str, authored: Any) -> str:
+    """The back-of-card summary, held to the figures code actually measured.
+
+    Two failure modes, one fallback. A summary quoting a figure that is not on
+    the allowed list is not trustworthy, and a summary carrying no figure at all
+    is the vague restatement this field shipped for months ("The movement
+    relates to damage across all locations..."). Both are replaced by the
+    code-owned sentence, which is grounded by construction and is the sentence
+    the reader needed in the first place.
+    """
+    summary = _sentence(_plain_business_text(authored))
+    allowed = {f.replace(",", "").replace(" ", "") for f in _quotable_figures(sig, family)}
+    if not allowed:
+        # Nothing measured to quote (a rate outlier carries its facts as stats),
+        # so hold the model to its words alone rather than to an empty list.
+        return summary
+    written = _figures(summary)
+    if written and written <= allowed:
+        return summary
+    grounded = _sentence(_lead_sentence(sig, family))
+    return grounded or summary
+
+
+_ISO_DATE_RE = re.compile(r"^(\d{4})-(\d{2})-(\d{2})$")
+_MONTHS = ("January", "February", "March", "April", "May", "June", "July",
+           "August", "September", "October", "November", "December")
+
+
+def _readable_member(value: str) -> str:
+    """A month a manager recognises, not the ISO date the model stores it as."""
+    m = _ISO_DATE_RE.match(value.strip())
+    if not m:
+        return value
+    year, month, day = (int(g) for g in m.groups())
+    if not 1 <= month <= 12:
+        return value
+    name = f"{_MONTHS[month - 1]} {year}"
+    return name if day == 1 else f"{day} {_MONTHS[month - 1]} {year}"
+
+
 def _insight_stats(sig: Dict[str, Any], family: str) -> List[Dict[str, str]]:
     if _is_rate_signal(sig):
         return _rate_stats(sig, family)
     val = sig.get("impact_value")
     share = sig.get("impact_share")
-    measure_label = {
-        "Quantity": "Unit sales change",
-        "Transactions": "Transaction change",
-    }.get(family, f"{family} change")
+    # A LEVEL is not a change, and labelling it one states a movement that did
+    # not happen: a count of 18,344 products sitting in a stock-out state
+    # published as "Performance change  +18.3K". A signal that knows what its
+    # figure is says so; everything else keeps the change wording.
+    is_level = str(sig.get("value_kind") or "").strip().casefold() == "level"
+    declared_value_label = str(sig.get("value_label") or "").strip()
+    if declared_value_label:
+        measure_label = declared_value_label
+    elif is_level:
+        measure_label = str(sig.get("metric") or "").strip() or family
+    else:
+        measure_label = {
+            "Quantity": "Unit sales change",
+            "Transactions": "Transaction change",
+        }.get(family, f"{family} change")
     stats: List[Dict[str, str]] = [
-        {"label": measure_label, "value": _compact_number(val, signed=True)}
+        {"label": measure_label, "value": _compact_number(val, signed=not is_level)}
     ]
     if share is not None:
-        _, _, stat_label = _share_details(sig, family)
+        # `impact_share` is not always a share. On a snapshot spine it carries
+        # whatever that report measured its percentage against - for Damage it
+        # is 317.0%, the amount ABOVE a three-month average, and calling that a
+        # "Share of performance increase" published an impossible figure: no
+        # share exceeds 100%. A signal that declares what its percentage means
+        # is believed; only the year-on-year spine keeps the share wording.
+        declared_share_label = str(sig.get("share_label") or "").strip()
+        if declared_share_label:
+            stat_label = declared_share_label
+        else:
+            _, _, stat_label = _share_details(sig, family)
         stats.append({"label": stat_label, "value": f"{abs(float(share)):.1f}%"})
     else:
         # Recent-week/rolling signals carry a WoW/rolling % (not a share of an
@@ -782,7 +862,20 @@ def _insight_stats(sig: Dict[str, Any], family: str) -> List[Dict[str, str]]:
         if main_stat:
             stats.append(main_stat)
     elif members:
-        stats.append({"label": "Segments", "value": ", ".join(str(m) for m in members)})
+        # Two ways this shipped nonsense. The Damage signal's "member" is the
+        # month it covers, so the card published `Segments: 2026-08-01` - a raw
+        # ISO date under a label promising a business area. And a state signal's
+        # member IS its segment, so the stat repeated the card's own heading
+        # back at the reader. Publish it only when it adds something, name it
+        # after the dimension it came from, and render a date as a date.
+        shown = [str(m).strip() for m in members if str(m).strip()]
+        segment = str(sig.get("affected_segment") or "").strip()
+        if shown and shown != [segment]:
+            dimension = str(sig.get("dimension") or "").replace("_", " ").strip()
+            stats.append({
+                "label": dimension.title() if dimension else "Segments",
+                "value": ", ".join(_readable_member(m) for m in shown),
+            })
     return stats[:3]
 
 
@@ -839,6 +932,45 @@ def _invoke(state: dict, schema, system: str, user: str):
 # --------------------------------------------------------------------------
 # /kpi/insights
 # --------------------------------------------------------------------------
+def _quotable_figures(sig: Dict[str, Any], family: str) -> List[str]:
+    """The exact display strings the LLM may copy into its prose.
+
+    The prompt used to forbid figures outright, which is why every
+    `insight_summary` read like "The movement relates to damage across all
+    locations" - a restatement of the title followed by a guess at what an
+    analysis might show. A summary with no number cannot carry a finding, and
+    the modal shows the summary rather than the code-owned `description`, so
+    the one specific sentence on the card never reached the reader.
+
+    Letting the model write numbers freely is the other failure, so this is the
+    same contract `report_summary` already uses for its bullets: the model may
+    quote, and only quote, figures that appear here, and `_figures` re-checks
+    the returned text against this set. A figure that is not on the list means
+    the sentence is dropped for a grounded one, never published.
+    """
+    out: List[str] = []
+
+    def add(text: Any) -> None:
+        for token in _FIG_RE.finditer(str(text or "")):
+            value = token.group(0).strip()
+            if value not in out:
+                out.append(value)
+
+    # Whatever the grounded sentences already state - these carry the real
+    # before/after values (e.g. "275,371", "66,038", "317.0%").
+    add(_lead_sentence(sig, family))
+    add(sig.get("description"))
+    # ...plus the compact forms code itself prints on the card face.
+    val = sig.get("impact_value")
+    if isinstance(val, (int, float)):
+        add(_compact_number(val, signed=True))
+        add(_compact_number(val, signed=False))
+    share = sig.get("impact_share")
+    if isinstance(share, (int, float)):
+        add(f"{abs(float(share)):.1f}%")
+    return out
+
+
 def _signal_facts(sig: Dict[str, Any]) -> Dict[str, Any]:
     val = sig.get("impact_value")
     rw = sig.get("recent_week") or {}
@@ -876,6 +1008,8 @@ def _signal_facts(sig: Dict[str, Any]) -> Dict[str, Any]:
         "decomposition": sig.get("decomposition"),
         "analyst_question": sig.get("question"),
         "raw_finding": sig.get("description"),
+        # The ONLY figures the model may write. See _quotable_figures.
+        "quote_these_display_values": _quotable_figures(sig, family),
     }
 
 
@@ -1109,7 +1243,7 @@ def _assemble_kpi_card(
         "comparisonLabel": comparison,
         "insight": {
             "title": _plain_business_text(text.insight_title),
-            "summary": _sentence(_plain_business_text(text.insight_summary)),
+            "summary": _grounded_summary(sig, family, text.insight_summary),
             "stats": _insight_stats(sig, family),
             "action": _sentence(_plain_business_text(text.insight_action)),
         },

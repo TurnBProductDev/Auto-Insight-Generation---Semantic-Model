@@ -89,7 +89,8 @@ def _signal(*, finding: str, member: str, segment: str, dimension: str,
             metric: str, impact_value: Any, base: Any, as_at: str,
             comparison_label: str, description: str, question: str,
             current: Any = None, score_override: float | None = None,
-            double_warning: bool = False, extra: dict | None = None) -> dict:
+            double_warning: bool = False, value_label: str = "",
+            share_label: str = "", extra: dict | None = None) -> dict:
     share = _pct(impact_value, base)
     score = float(score_override) if score_override is not None else (share or 0.0)
     signal = {
@@ -120,6 +121,13 @@ def _signal(*, finding: str, member: str, segment: str, dimension: str,
         # reader of the card should not have to reconstruct that.
         "value_kind": "level",
         "comparison_label": comparison_label,
+        # What the card's two figures actually MEAN, named by the report that
+        # computed them. Without these the shared assembler falls back to its
+        # year-on-year wording and published "Performance change +18.3K" for a
+        # count of products, and "Share of performance increase 317.0%" for a
+        # percentage above a three-month average - a share over 100%.
+        "value_label": value_label,
+        "share_label": share_label,
         "description": description,
         "question": question,
         "as_at": as_at,
@@ -179,6 +187,8 @@ def double_warning_states(model: dict, score: dict | None = None) -> list[dict]:
             finding="inventory_double_warning",
             member=action, segment=action, dimension="recommended_action",
             metric="Loc-SKUs in a double-warning state",
+            value_label="Products in stores affected",
+            share_label="Share of all products in stores",
             impact_value=lines, base=total_rows, as_at=as_at,
             current=lines,
             score_override=DOUBLE_WARNING_BOOST + share,
@@ -214,6 +224,8 @@ def urgent_state_never_reported(model: dict, score: dict | None = None) -> list[
             finding="inventory_urgent_state_absent",
             member=state, segment=state, dimension="recommended_action",
             metric="Loc-SKUs in a double-warning state",
+            value_label="Products in stores affected",
+            share_label="Share of all products in stores",
             impact_value=0.0, base=None, as_at=as_at, current=0,
             score_override=CRITICAL_SCORE,
             comparison_label="against the states the rules say to expect",
@@ -250,6 +262,8 @@ def excess_stock_share(model: dict, score: dict | None = None) -> list[dict]:
         finding="inventory_excess_share",
         member="", segment="All Locations", dimension="company",
         metric="Excess Stock",
+        value_label="Stock above the planned level",
+        share_label="Share of total stock value",
         impact_value=excess, base=stock, as_at=str(model.get("as_at") or ""),
         current=excess,
         comparison_label=f"{share:.1f}% of total Stock Value",
@@ -395,6 +409,8 @@ def damage_against_trend(model: dict, score: dict | None = None) -> list[dict]:
         impact_value=excess, base=baseline,
         as_at=str(model.get("as_at") or ""), current=value,
         comparison_label=f"against the average of the previous {len(earlier)} months",
+        value_label="Damage above the usual level",
+        share_label=f"Above the {len(earlier)}-month average",
         description=(
             f"Damage in {_month_name(latest.get('month'))} was {_fmt(value)}, "
             f"{share:.1f}% "
@@ -471,6 +487,8 @@ def state_changes(model: dict, score: dict | None = None) -> list[dict]:
             finding=f"inventory_state_{kind}",
             member=action, segment=action, dimension="recommended_action",
             metric="Loc-SKUs in a Recommended Action state",
+            value_label="Products in stores affected",
+            share_label="Share of all products in stores",
             impact_value=delta, base=total_rows, as_at=as_at,
             current=_num(change.get("current")),
             double_warning=bool(change.get("double_warning")),

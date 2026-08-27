@@ -371,6 +371,113 @@ def test_schema() -> None:
           defaults.get("ai_content_kpi_currency") == "")
 
 
+# --------------------------------------------------------------------------
+# Card PROSE and STATS: what a store manager actually reads.
+#
+# Every case below is a card that shipped live to SB Mart on 2026-08-27 and was
+# either meaningless or false. The signals are reproduced exactly as
+# stock_health_signals emits them.
+# --------------------------------------------------------------------------
+DAMAGE_SIG = {
+    "affected_segment": "All Locations", "segment_members": ["2026-08-01"],
+    "dimension": "month", "metric": "Damage Value", "metric_family": "stock_value",
+    "impact_value": 209333.0, "impact_share": 317.0, "value_kind": "level",
+    "value_label": "Damage above the usual level",
+    "share_label": "Above the 3-month average",
+    "comparison_label": "against the average of the previous 3 months",
+    "description": ("Damage in August 2026 was 275,371, 317.0% above the 66,038 "
+                    "average of the previous 3 months."),
+}
+STOCKOUT_SIG = {
+    "affected_segment": "STOCK OUT - PLACE ORDER",
+    "segment_members": ["STOCK OUT - PLACE ORDER"],
+    "dimension": "recommended_action",
+    "metric": "Loc-SKUs in a double-warning state", "metric_family": "stock_value",
+    "impact_value": 18344.0, "impact_share": 13.2, "value_kind": "level",
+    "value_label": "Products in stores affected",
+    "share_label": "Share of all products in stores",
+    "comparison_label": "13.2% of all Loc-SKUs in the stock position",
+    "description": ("18,344 Loc-SKUs are in STOCK OUT - PLACE ORDER, 13.2% of "
+                    "the 139,388 in the position."),
+}
+
+
+def test_card_stats() -> None:
+    print('\n' + "[card stats]")
+    stats = {s["label"]: s["value"]
+             for s in api_payloads._insight_stats(DAMAGE_SIG, "Performance")}
+
+    # Shipped as `Segments: 2026-08-01` - a raw ISO date under a label
+    # promising a business area.
+    check("a date is never published under 'Segments'", "Segments" not in stats)
+    check("the month is named after its own dimension", "Month" in stats)
+    check("...and rendered as a month a manager recognises",
+          stats.get("Month") == "August 2026", str(stats))
+
+    # Shipped as `Share of performance increase: 317.0%`. No share exceeds 100%.
+    check("a non-share percentage is not called a share",
+          not any("Share" in k for k in stats), str(stats))
+    check("it is named for what it measures",
+          "Above the 3-month average" in stats, str(stats))
+
+    # Shipped as `Performance change +209.3K` for a level.
+    check("a level is not labelled a change",
+          not any("change" in k.lower() for k in stats), str(stats))
+    check("a level is published unsigned",
+          stats.get("Damage above the usual level") == "209.3K", str(stats))
+
+    out = {s["label"]: s["value"]
+           for s in api_payloads._insight_stats(STOCKOUT_SIG, "Performance")}
+    # Shipped as `Segments: STOCK OUT - PLACE ORDER` - the card's own heading.
+    check("a segment stat repeating the card heading is dropped",
+          "Recommended Action" not in out and "Segments" not in out, str(out))
+    check("a genuine share keeps share wording",
+          out.get("Share of all products in stores") == "13.2%", str(out))
+    check("a count of products is named as such",
+          out.get("Products in stores affected") == "18.3K", str(out))
+
+
+def test_summary_is_grounded() -> None:
+    print('\n' + "[card summary]")
+    allowed = api_payloads._quotable_figures(DAMAGE_SIG, "Performance")
+    check("the model is offered the real figures to quote",
+          {"275,371", "66,038", "317.0%"} <= set(allowed), str(allowed))
+    check("...and they reach the LLM with the signal facts",
+          "quote_these_display_values" in api_payloads._signal_facts(DAMAGE_SIG))
+
+    # The exact summary that shipped: no figure, so it carries no finding.
+    shipped = ("The movement relates to damage across all locations. A breakdown "
+               "by section and location should show where it was concentrated.")
+    out = api_payloads._grounded_summary(DAMAGE_SIG, "Performance", shipped)
+    check("a summary carrying no figure is replaced by the grounded sentence",
+          "275,371" in out, out)
+
+    invented = "Damage reached 999,999 this month, the highest on record."
+    out = api_payloads._grounded_summary(DAMAGE_SIG, "Performance", invented)
+    check("a summary quoting an invented figure is rejected",
+          "999,999" not in out, out)
+
+    good = ("Damage written off in August 2026 reached 275,371, more than four "
+            "times the 66,038 monthly average of the last three months.")
+    check("a grounded summary is kept verbatim",
+          api_payloads._grounded_summary(
+              DAMAGE_SIG, "Performance", good).startswith("Damage written off"))
+
+
+def test_retail_vocabulary() -> None:
+    print('\n' + "[retail vocabulary]")
+    out = api_payloads._plain_business_text(
+        "18,344 Loc-SKUs are in STOCK OUT. The assortment may suggest a "
+        "broad-based issue with days of cover and stock above agreed cover.")
+    for banned in ("Loc-SKU", "assortment", "broad-based", "days of cover"):
+        check(banned + " never reaches a card", banned.lower() not in out.lower(), out)
+    check("no doubled article from a blunt substitution", " the the " not in out, out)
+    # Removing a hedge asserts a cause, which this branch may not do.
+    check("a careful hedge is preserved, not stripped",
+          "may suggest" in api_payloads._plain_business_text(
+              "Concentration by division may suggest constrained reordering."))
+
+
 def main() -> int:
     print("=" * 72)
     print("REPLAY: extended KPI tile fields (kpi-tile-schema-proposal.md)")
@@ -385,6 +492,9 @@ def main() -> int:
     test_target()
     test_rank()
     test_schema()
+    test_card_stats()
+    test_summary_is_grounded()
+    test_retail_vocabulary()
     print("\n" + "=" * 72)
     if FAILURES:
         print(f"FAILED ({len(FAILURES)}):")
