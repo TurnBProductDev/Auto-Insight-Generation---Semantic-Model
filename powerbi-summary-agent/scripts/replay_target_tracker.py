@@ -121,6 +121,98 @@ def synthetic(anchor="2026-07-16", days=JULY, forced=False, month_full_target=16
     }
 
 
+def test_anchor_both_directions() -> None:
+    """The anchor is where BOTH feeds reach - in either direction.
+
+    Live on 2026-08-27 SB Mart published "31 days of 31", "the month is complete",
+    a run of 25 days below target and a today of USD 0 against a full target,
+    because targets are loaded to month end while sales lagged to the 26th. The
+    year read 99.4% and "below target" when the elapsed truth was 101.5% and above
+    it - a direction, not just a magnitude.
+    """
+    import datetime as _d
+    print('\n' + "[anchor: both feeds]")
+
+    def fake(targeted: str, sold: str | None):
+        def execute(_dax: str):
+            return [{"[with_target]": targeted, "[with_sales]": sold}]
+        return execute
+
+    # SB Mart's shape: targets ahead of sales. The anchor must fall back to sales.
+    a, sold, targeted, forced = tt.resolve_anchor(fake("2026-08-31", "2026-08-26"), ["ST1"])
+    check("targets ahead of sales -> anchor is the last SOLD day",
+          a == _d.date(2026, 8, 26), str(a))
+    check("...and both watermarks are returned",
+          sold == _d.date(2026, 8, 26) and targeted == _d.date(2026, 8, 31),
+          f"{sold} / {targeted}")
+    check("...and it is not marked forced", forced is False)
+
+    # The original shape this rule was written for: sales ahead of targets.
+    # Behaviour must be unchanged - the other live client is in this state.
+    a2, sold2, targeted2, _ = tt.resolve_anchor(fake("2026-07-31", "2026-08-19"), ["CFH014"])
+    check("sales ahead of targets -> anchor is the last TARGETED day (unchanged)",
+          a2 == _d.date(2026, 7, 31), str(a2))
+
+    # A model with targets and no sales at all still resolves.
+    a3, sold3, _, _ = tt.resolve_anchor(fake("2026-08-31", None), ["ST1"])
+    check("no sales anywhere -> the target date is all there is",
+          a3 == _d.date(2026, 8, 31) and sold3 is None, str(a3))
+
+    # An override still wins, and is reported as forced.
+    a4, _, _, forced4 = tt.resolve_anchor(fake("2026-08-31", "2026-08-26"), ["ST1"],
+                                          override="2026-08-20")
+    check("an override still wins and says so",
+          a4 == _d.date(2026, 8, 20) and forced4 is True, str(a4))
+    # An override equal to what would have been resolved is not "forced".
+    _, _, _, forced5 = tt.resolve_anchor(fake("2026-08-31", "2026-08-26"), ["ST1"],
+                                         override="2026-08-26")
+    check("an override matching the resolved date is not reported as forced",
+          forced5 is False)
+
+
+def test_lag_is_symmetric() -> None:
+    print('\n' + "[lag: both directions]")
+    scan_ahead = synthetic(anchor="2026-07-16")          # sold_through 2026-08-17
+    m = tt.build(scan_ahead)
+    check("sales ahead of targets -> target_lag_days is set",
+          m["target_lag_days"] > 0 and m["sales_lag_days"] == 0,
+          f"{m['target_lag_days']}/{m['sales_lag_days']}")
+
+    scan_behind = {**synthetic(anchor="2026-07-16"),
+                   "sold_through": "2026-07-16", "targeted_through": "2026-07-31"}
+    m2 = tt.build(scan_behind)
+    check("targets ahead of sales -> sales_lag_days is set",
+          m2["sales_lag_days"] == 15 and m2["target_lag_days"] == 0,
+          f"{m2['target_lag_days']}/{m2['sales_lag_days']}")
+
+    # The context line must name the gap, not deny it. This is the sentence that
+    # shipped: "Actual sales and targets are both measured through 2026-08-31."
+    from src.domains.sales import target_tracker_publish as pub
+    payload = pub.summary_payload(m2)
+    ctx = " ".join(p for s in payload["sections"] for p in s["points"])
+    check("the reverse gap is stated on the page",
+          "2026-07-31" in ctx and "not traded" in ctx.lower(), ctx[-190:])
+    check("...and it never claims both feeds reach the same date",
+          "both measured through" not in ctx.lower(), ctx[-190:])
+
+
+def test_month_done_needs_real_sales() -> None:
+    from src.domains.sales import target_tracker_author as author
+    print('\n' + "[month complete: counter AND data]")
+    # A forced anchor on month end, with sales stopping earlier, must NOT be
+    # called complete - the counter says 31 of 31 but five days never traded.
+    m = tt.build({**synthetic(anchor="2026-07-16"), "sold_through": "2026-07-16"})
+    m = {**m, "days_elapsed": m["days_in_month"]}        # what a forced anchor produces
+    errs = author.validate({"headline": "The month is complete at 95.1% of target.",
+                            "narrative": "Today reached 95.1% of target.",
+                            "today_note": "One branch missed target today.",
+                            "month_note": "The month is complete."}, m)
+    check("a forced month-end anchor with earlier sales is not 'complete'",
+          any("calls the month complete" in e for e in errs), str(errs[:2]))
+    check("...and the reason names the sales watermark, not '0 days remain'",
+          any("only recorded to" in e for e in errs), str(errs[:2]))
+
+
 def main() -> int:
     print("Target Tracker replay\n")
 
@@ -390,6 +482,10 @@ def main() -> int:
         check("live document renders", len(doc.render(lm)) > 1500)
     else:
         print("\nlive scan replay: skipped (no committed scan)")
+
+    test_anchor_both_directions()
+    test_lag_is_symmetric()
+    test_month_done_needs_real_sales()
 
     print(f"\n{len(PASS)} passed, {len(FAIL)} failed")
     if FAIL:

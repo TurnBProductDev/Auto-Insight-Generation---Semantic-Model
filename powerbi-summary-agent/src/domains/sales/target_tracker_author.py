@@ -21,6 +21,7 @@ The grounded fallback is verified against the same rules by
 
 from __future__ import annotations
 
+import datetime as _dt
 import re
 from typing import Any
 
@@ -220,14 +221,35 @@ def validate(prose: dict, model: dict) -> list[str]:
         errors.append("prose: says a branch missed today, but every branch reached its target "
                       "(rulebook 13)")
 
+    # BOTH conditions, and each is load-bearing.
+    #
+    # The window must cover the month - that alone is the original test, and it is
+    # right: a report anchored mid-month because targets stop there has not seen the
+    # month out, even if sales were later recorded into the next one.
+    #
+    # And the sales must actually REACH month end. Without that, an anchor sitting on
+    # month end while trade stopped days earlier made the counter read 31 of 31, so
+    # the guardrail ENFORCED the false claim - it permitted "the month is complete"
+    # and would have rejected correct prose naming the days still to trade. Fixing
+    # the anchor cures the normal path; this keeps it true when an anchor is forced.
     month_done = model["days_elapsed"] >= model["days_in_month"]
+    sold_through = model.get("sold_through")
+    if month_done and sold_through:
+        month_end = _dt.date.fromisoformat(model["anchor"]).replace(
+            day=model["days_in_month"])
+        month_done = _dt.date.fromisoformat(sold_through) >= month_end
     if month_done and re.search(r"\b(days? (are |is )?left|remaining days|rest of the month)\b",
                                 joined):
         errors.append("prose: talks about days left, but the month is complete (rulebook 13)")
     if not month_done and re.search(r"\bthe month (is|has) (complete|finished|closed|over)\b",
                                     joined):
-        errors.append(f"prose: calls the month complete, but "
-                      f"{model['days_in_month'] - model['days_elapsed']} days remain (rulebook 13)")
+        # Say WHICH of the two conditions failed. Reporting "0 days remain" when
+        # the counter is full but trade stopped early is a confusing non-reason,
+        # and the author cannot act on it.
+        left = model["days_in_month"] - model["days_elapsed"]
+        reason = (f"{left} days remain" if left > 0
+                  else f"sales are only recorded to {model.get('sold_through')}")
+        errors.append(f"prose: calls the month complete, but {reason} (rulebook 13)")
 
     run = model["run"]["length"]
     # every mention, not just the first - a correct headline followed by a wrong

@@ -131,11 +131,30 @@ def _run(execute: Callable[[str], list[dict]], label: str, dax: str, log) -> lis
 
 
 def resolve_anchor(execute: Callable[[str], list[dict]], population: Sequence[str],
-                   override: str = "") -> tuple[_dt.date, _dt.date | None]:
-    """The latest date carrying a target, and the latest date carrying sales.
+                   override: str = "") -> tuple[_dt.date, _dt.date | None, _dt.date, bool]:
+    """The date to report on, the latest sales date, the latest target date, and whether forced.
 
-    Returning both is deliberate: when they differ the page has to say so, and a caller
-    that only knew the anchor could not.
+    The anchor is the latest date where BOTH a target and sales exist - in practice
+    `min(latest_target, latest_sales)`, because each feed is contiguous up to its own
+    watermark.
+
+    This used to be the latest date carrying a TARGET alone, written for a model whose
+    sales ran ahead of its targets (sales to 17 August, targets stopping at 31 July);
+    anchoring on sales there produced a page of blank comparisons. SB Mart is the exact
+    reverse - targets are loaded to month end while sales lag a few days - and the same
+    rule then counted five unsold future days as elapsed. The live page reported
+    "31 days of 31", "the month is complete", a run of 25 days below target, and a
+    today of USD 0 against a full target, on 27 August. The year read 99.4% and
+    "below target" when the elapsed truth was 101.5% and above it: a direction, not
+    just a magnitude.
+
+    `min` is right rather than "the latest day carrying both" because this is about each
+    feed's WATERMARK, not per-day presence. A genuinely closed day with no sales, sitting
+    before the watermark, is still an elapsed day the business missed its target on, and
+    must keep counting; testing per-day presence would silently skip past it.
+
+    Both dates are returned because when they differ the page has to say so - in either
+    direction - and a caller that only knew the anchor could not.
     """
     pop = _pop_filter(population)
     rows = execute(f"""EVALUATE CALCULATETABLE(ROW(
@@ -145,20 +164,22 @@ def resolve_anchor(execute: Callable[[str], list[dict]], population: Sequence[st
     row = rows[0] if rows else {}
     targeted = _date(_cell(row, "with_target"))
     sold = _date(_cell(row, "with_sales"))
-    forced = _date(override) if override else None
-    resolved = targeted
-    if forced:
-        targeted = forced
     if targeted is None:
         raise RuntimeError("no date in the Target Tracker model carries a sales target")
-    return targeted, sold, (forced is not None and forced != resolved)
+    # The reportable date is where both feeds reach. `sold` may be absent on a model
+    # that carries targets and no sales at all, and there the target date is all there is.
+    resolved = min(targeted, sold) if sold else targeted
+    forced = _date(override) if override else None
+    anchor = forced or resolved
+    return anchor, sold, targeted, (forced is not None and forced != resolved)
 
 
 def scan(execute: Callable[[str], list[dict]], population: Sequence[str],
          *, anchor_override: str = "", log=None) -> dict:
     """Every row the report needs. Bounded: nine queries, none unfiltered."""
     pop = _pop_filter(population)
-    anchor, sold_through, forced = resolve_anchor(execute, population, anchor_override)
+    anchor, sold_through, targeted_through, forced = resolve_anchor(
+        execute, population, anchor_override)
     wk_start = week_start(anchor)
     mo_start, mo_end = month_bounds(anchor)
     yr_start = anchor.replace(month=1, day=1)
@@ -166,13 +187,17 @@ def scan(execute: Callable[[str], list[dict]], population: Sequence[str],
     ME = _dax_date(mo_end)
     WE = _dax_date(wk_start + _dt.timedelta(days=6))
     if log:
-        log(f"Anchor {anchor} (latest date with a target); sales run to {sold_through}")
+        how = ("forced by configuration" if forced
+               else "latest date carrying both a target and sales")
+        log(f"Anchor {anchor} ({how}); targets run to {targeted_through}, "
+            f"sales run to {sold_through}")
 
     def scoped(extra: str = "") -> str:
         return f"{pop}{(', ' + extra) if extra else ''}"
 
     out: dict[str, Any] = {
         "anchor": anchor.isoformat(),
+        "targeted_through": targeted_through.isoformat(),
         "sold_through": sold_through.isoformat() if sold_through else None,
         "anchor_forced": forced,
         "week_start": wk_start.isoformat(),
@@ -395,8 +420,18 @@ def build(scanned: dict) -> dict:
         "report_name": "Target Tracker",
         "anchor": anchor.isoformat(),
         "sold_through": sold_through.isoformat() if sold_through else None,
+        "targeted_through": scanned.get("targeted_through"),
         "anchor_forced": bool(scanned.get("anchor_forced")),
+        # TWO gaps, not one signed number. `target_lag_days` keeps its meaning -
+        # sales recorded beyond the last target - so every existing consumer is
+        # untouched; `sales_lag_days` is the reverse, targets set beyond the last
+        # sale, which had no field at all and so was reported as "both measured
+        # through <target date>" while five unsold days were counted as elapsed.
         "target_lag_days": (sold_through - anchor).days if (sold_through and sold_through > anchor) else 0,
+        "sales_lag_days": ((_dt.date.fromisoformat(scanned["targeted_through"]) - sold_through).days
+                           if (sold_through and scanned.get("targeted_through")
+                               and _dt.date.fromisoformat(scanned["targeted_through"]) > sold_through)
+                           else 0),
         "population": scanned.get("population") or [],
         "periods": {"day": day_p, "wtd": wtd_p, "mtd": mtd_p, "ytd": ytd_p},
         "days": days,

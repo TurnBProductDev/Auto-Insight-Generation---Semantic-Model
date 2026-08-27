@@ -117,12 +117,25 @@ def summary_payload(
         branch_points = ["Every branch is at or above target for the month."]
         branch_tone = "positive"
 
+    # Both directions. The else-branch used to claim the two feeds were "both
+    # measured through <anchor>", which on a model whose targets are loaded to
+    # month end was flatly untrue - the anchor was five days beyond the last
+    # recorded sale, and the sentence hid exactly the gap it should have named.
     lag = int(model.get("target_lag_days") or 0)
+    sales_lag = int(model.get("sales_lag_days") or 0)
     if lag:
         context = (
             f"Targets are available through {model['anchor']}; sales are available through "
             f"{model['sold_through']}. The further {lag} sales "
             f"{'day is' if lag == 1 else 'days are'} excluded because no target is set."
+        )
+    elif sales_lag:
+        context = (
+            f"Sales are recorded through {model['sold_through']}, and this report measures "
+            f"to that date. Targets are set a further {sales_lag} "
+            f"{'day' if sales_lag == 1 else 'days'} ahead, to "
+            f"{model.get('targeted_through')}; those days have not traded yet and are "
+            f"excluded, so every percentage is against the target for the days elapsed."
         )
     else:
         context = f"Actual sales and targets are both measured through {model['anchor']}."

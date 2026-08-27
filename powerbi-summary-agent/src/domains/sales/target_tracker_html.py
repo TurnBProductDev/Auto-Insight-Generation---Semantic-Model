@@ -683,12 +683,27 @@ def caveats(r: _R, model: dict) -> str:
         "target for the whole period. Full-period targets are used only in the "
         "&ldquo;what is needed to catch up&rdquo; figures, which say so.",
     ]
+    if model.get("sales_lag_days"):
+        # The reverse gap, which had no caveat at all: targets loaded ahead of
+        # trade. Stated first because it changes what every percentage on the
+        # page means.
+        n = int(model["sales_lag_days"])
+        items.insert(0, (
+            f"<b>This report is dated "
+            f"{fmt_date(_dt.date.fromisoformat(model['anchor']), 'medium')} "
+            f"{_dt.date.fromisoformat(model['anchor']).year}"
+            + ("</b>, the date this run was asked to report on. " if model.get("anchor_forced")
+               else ", the most recent day that has both a target and recorded sales.</b> ")
+            + f"Targets are set a further {n} {'day' if n == 1 else 'days'} ahead, to "
+            f"{fmt_date(_dt.date.fromisoformat(model['targeted_through']), 'medium')}. "
+            f"Those days have not traded yet, so they are excluded rather than counted "
+            f"as elapsed with no sales against them."))
     if model["target_lag_days"]:
         items.insert(0, (
             f"<b>This report is dated {fmt_date(_dt.date.fromisoformat(model['anchor']), 'medium')} "
             f"{_dt.date.fromisoformat(model['anchor']).year}"
             + ("</b>, the date this run was asked to report on. " if model.get("anchor_forced")
-               else ", which is the most recent day that has a sales target.</b> ")
+               else ", the most recent day that has both a target and recorded sales.</b> ")
             + f"Sales have been recorded for a further "
             f"{model['target_lag_days']} days, up to "
             f"{fmt_date(_dt.date.fromisoformat(model['sold_through']), 'medium')}, but no target has "
