@@ -282,9 +282,13 @@ def render(model: dict, *, currency: str = "SAR") -> str:
         "are used only in the catch-up figures, which say so.",
         "Projections continue a stated rate. They are arithmetic, not forecasts.",
     ]
-    if "CFH022" not in model["population"]:
-        notes.append("Branch CFH022 is not included, matching how the Sales performance report "
-                     "treats it.")
+    # Per-client configuration, not a hardcoded branch code - see target_tracker_html.
+    excluded = [str(c) for c in (model.get("excluded_entities") or [])
+                if str(c) not in model["population"]]
+    if excluded:
+        many = len(excluded) > 1
+        notes.append(f"Branch{'es' if many else ''} {', '.join(excluded)} "
+                     f"{'are' if many else 'is'} not included in any figure here.")
     for note in notes:
         lines.append(f"- {note}")
     lines.append("")

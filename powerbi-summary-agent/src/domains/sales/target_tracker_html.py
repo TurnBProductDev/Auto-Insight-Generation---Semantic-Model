@@ -708,10 +708,16 @@ def caveats(r: _R, model: dict) -> str:
             f"{model['target_lag_days']} days, up to "
             f"{fmt_date(_dt.date.fromisoformat(model['sold_through']), 'medium')}, but no target has "
             f"been set for them yet, so they cannot be measured against one."))
-    excluded = [c for c in ("CFH022",) if c not in model["population"]]
+    # Which branches are left out is per-client configuration, stamped onto the model by
+    # the runner. This was a hardcoded CityFlower branch code, so every other client's page
+    # named a branch that does not exist in its model and stayed silent about its own.
+    # The reason differs per client (new branch vs stopped trading), so none is asserted.
+    excluded = [str(c) for c in (model.get("excluded_entities") or [])
+                if str(c) not in model["population"]]
     if excluded:
-        items.append(f"<b>Branch {', '.join(excluded)} is not included</b>, matching how the Sales "
-                     f"performance report treats it.")
+        many = len(excluded) > 1
+        items.append(f"<b>Branch{'es' if many else ''} {', '.join(excluded)} "
+                     f"{'are' if many else 'is'} not included</b> in any figure on this page.")
     items.append("<b>Projections carry a current rate forward.</b> They are arithmetic, not "
                  "forecasts, and they assume the remaining days keep the targets they already have.")
     return ('<div class="caveats"><h3>Important things to know about these numbers</h3><ul>'

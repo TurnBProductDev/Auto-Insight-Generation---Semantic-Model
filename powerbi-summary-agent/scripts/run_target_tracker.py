@@ -90,6 +90,11 @@ def main(argv=None) -> int:
         return 0
 
     model = tt.build(scanned)
+    # Which branches the client leaves out is configuration; the renderers state it as a
+    # limitation. Stamped here so the saved model records the scope it was built under.
+    model["excluded_entities"] = [
+        str(e) for e in (cfg.get("target_tracker_excluded_entities") or [])
+    ]
     (out_dir / "report_target_tracker.json").write_text(
         json.dumps(model, indent=2, default=str), encoding="utf-8")
 
