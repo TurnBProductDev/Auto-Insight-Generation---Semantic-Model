@@ -18,7 +18,8 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.domains.inventory import (ageing_history, ageing_html,  # noqa: E402
+from src.domains.inventory import (ageing_flow, ageing_history,  # noqa: E402
+                                   ageing_html,
                                    ageing_outlook, buckets, dashboard,
                                    dashboard_html)
 from src.domains.inventory.reports import ageing  # noqa: E402
@@ -826,6 +827,70 @@ def test_new_layers_render() -> None:
           "<script>alert" not in dashboard_html.render(
               dashboard.build({**model, "report_name": "<script>alert(1)</script>"})))
 
+def _which_query(cfg: dict, dax: str) -> str:
+    '''Recover a query's name from its text, for the fake executor below.'''
+    for name, text in ageing_flow.build_queries(cfg).items():
+        if text == dax:
+            return name
+    return ""
+
+
+def test_optional_query_refused() -> None:
+    '''A model fault in an optional section must not cost the whole report.
+
+    The live case, 2026-08-31: the `clearance` query was rejected because the
+    model's REP_SSR_STOCK_STATUS / LINK TABLE relationship was not in a valid
+    state, and the run aborted - throwing away the bands, locations and
+    divisions it had already read successfully.
+    '''
+    print()
+    print("[optional query refused]")
+
+    cfg = json.loads((PROJECT_ROOT / "config/sbmart-ageing/config.json").read_text(encoding="utf-8"))
+    fault = ("Power BI rejected an Ageing query: the query referenced a relationship "
+             "between 'REP_SSR_STOCK_STATUS'[KEY H] and 'LINK TABLE'[KEY H], which "
+             "depends on a column that is not in a valid state")
+
+    def executor(fail_on: str):
+        def execute(dax: str) -> list:
+            if _which_query(cfg, dax) == fail_on:
+                raise RuntimeError(fault)
+            return []
+        return execute
+
+    scanned = ageing_flow.scan(executor("clearance"), cfg)
+    check("an optional query's failure does not raise", isinstance(scanned, dict))
+    check("the failure is recorded, not swallowed",
+          "clearance" in (scanned.get("query_errors") or {}))
+    check("the recorded reason carries the model's own words",
+          "not in a valid state" in scanned["query_errors"]["clearance"])
+    check("a refused query is not filed as a successful one",
+          "clearance" not in (scanned.get("queries") or {}))
+    check("the sections that had already been read survive",
+          "snapshot" in (scanned.get("queries") or {}))
+
+    section = ageing._clearance_section(scanned, cfg)
+    empty = ageing._clearance_section({"clearance": []}, cfg)
+    check("the section is unavailable rather than empty-looking",
+          section.get("available") is False)
+    check("...and says the figures could not be READ",
+          "could not be read" in section.get("reason", ""), section.get("reason", ""))
+    check("...a different sentence from genuinely having no rows",
+          section.get("reason") != empty.get("reason"))
+
+    for name in ("categories", "risk_lines"):
+        other = ageing_flow.scan(executor(name), cfg)
+        check(f"{name} degrades the same way",
+              name in (other.get("query_errors") or {}))
+
+    raised = False
+    try:
+        ageing_flow.scan(executor("snapshot"), cfg)
+    except RuntimeError:
+        raised = True
+    check("a CORE query's failure still aborts the run", raised)
+
+
 def main() -> int:
     print("=" * 72)
     print("WP5 Stock Age Analysis")
@@ -849,6 +914,7 @@ def main() -> int:
     test_stuck_lines()
     test_optional_everywhere()
     test_new_layers_render()
+    test_optional_query_refused()
 
     print("\n" + "=" * 72)
     if _failures:

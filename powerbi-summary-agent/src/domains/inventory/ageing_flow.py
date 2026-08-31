@@ -317,16 +317,37 @@ ORDER BY [value] DESC"""
 )"""
     return queries
 
+#: Queries whose section already stands behind its own ``available`` flag, so
+#: losing one costs that section and nothing else. On 2026-08-31 a rejected
+#: `clearance` query - the model's `REP_SSR_STOCK_STATUS`/`LINK TABLE`
+#: relationship was not in a valid state - cost the whole Stock Age report,
+#: including the bands, locations and divisions that had already been read.
+#: A core query still aborts: a stock position missing its snapshot is not a
+#: report, and publishing one would be the lie the rulebook forbids.
+OPTIONAL_QUERIES = ("clearance", "categories", "risk_lines", "risk_total")
+
+
 def scan(execute: Execute, cfg: dict, *, log: Callable[[str], None] | None = None) -> dict:
     queries = build_queries(cfg)
     mapping = cfg.get("ageing_mapping") or {}
     result: dict = {"queries": {}, "dimensions": {}, "deep_dives": {},
-                    "history_dimensions": {},
+                    "history_dimensions": {}, "query_errors": {},
                     "currency": cfg.get("ageing_currency", "")}
     for name, dax in queries.items():
         if log:
             log(f"  {name}")
-        rows = execute(dax)
+        try:
+            rows = execute(dax)
+        except Exception as exc:  # noqa: BLE001 - the reason is carried, not swallowed
+            if name not in OPTIONAL_QUERIES:
+                raise
+            # Recorded, never silent: a section the model refused and a section
+            # with genuinely nothing in it read identically on the page, and
+            # only one of them is good news.
+            result["query_errors"][name] = f"{type(exc).__name__}: {exc}"[:400]
+            if log:
+                log(f"    skipped, this section only: {str(exc)[:150]}")
+            continue
         result["queries"][name] = dax
         if name.startswith("dimension__"):
             result["dimensions"][name.split("__", 1)[1]] = rows

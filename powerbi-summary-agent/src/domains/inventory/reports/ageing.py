@@ -223,6 +223,13 @@ def build(scan: dict, cfg: dict | None = None) -> dict:
             "Stock value is calculated differently on the two dates being "
             "compared, so this report compares units and shares only. "
             + str((comparison.get("basis") or {}).get("reason") or ""))
+    # A section the model refused is dropped from the page like any unavailable
+    # one, which would leave the reader unable to tell "nothing to report" from
+    # "this could not be read". Only a refusal is promoted to a caveat; a
+    # genuinely empty section still says nothing, because there is nothing.
+    for key in ("clearance", "categories", "stuck_lines"):
+        if _refused(scan, _SECTION_QUERY[key]):
+            report["caveats"].append(str((report.get(key) or {}).get("reason") or ""))
     report["stat_check"] = ageing_stats.analyze(report)
     report["stat_signals"] = ageing_stats.detect(report)
     return report
@@ -277,7 +284,27 @@ def _current_position(report: dict, qty_by_band: dict) -> dict:
     }
 
 
+#: Which scan query stands behind each optional section, so a refusal can be
+#: named on the page rather than silently shrinking it.
+_SECTION_QUERY = {"clearance": "clearance", "categories": "categories",
+                  "stuck_lines": "risk_lines"}
+
+
+def _refused(scan: dict, name: str) -> bool:
+    """Did the model reject this query, as opposed to returning nothing?
+
+    The two are not the same finding and must not print the same sentence.
+    """
+    return bool((scan.get("query_errors") or {}).get(name))
+
+
 def _clearance_section(scan: dict, cfg: dict) -> dict:
+    if _refused(scan, "clearance"):
+        return {"available": False,
+                "reason": "The selling-rate figures could not be read from the "
+                          "model, so how fast the aged stock is likely to clear "
+                          "cannot be estimated. Every other figure on this page "
+                          "is unaffected."}
     rows = scan.get("clearance") or []
     if not rows:
         return {"available": False,
@@ -298,6 +325,11 @@ def _clearance_section(scan: dict, cfg: dict) -> dict:
 
 
 def _category_section(scan: dict, cfg: dict) -> dict:
+    if _refused(scan, "categories"):
+        return {"available": False,
+                "reason": "The category breakdown could not be read from the "
+                          "model, so the category review check was not run. "
+                          "Every other figure on this page is unaffected."}
     rows = scan.get("categories") or []
     if not rows:
         return {"available": False,
@@ -311,6 +343,11 @@ def _category_section(scan: dict, cfg: dict) -> dict:
 
 
 def _stuck_section(scan: dict, cfg: dict) -> dict:
+    if _refused(scan, "risk_lines"):
+        return {"available": False,
+                "reason": "The individual product lines could not be read from "
+                          "the model, so the stuck-lines table was not built. "
+                          "Every other figure on this page is unaffected."}
     rows = scan.get("risk_lines") or []
     if not rows:
         return {"available": False,
