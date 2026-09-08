@@ -154,5 +154,15 @@
   "ai_content_multi_report_feed": true,
   "ai_content_kpi_card_fields": true,
   "ai_content_kpi_currency": "USD",
-  "ai_content_feed_max_cards": 10
+  "ai_content_feed_max_cards": 10,
+
+  "plan_cache_enabled": true,
+  "plan_cache_folder": "outputs/.runtime/plan_cache",
+  "plan_cache_max_age_days": 7,
+  "plan_cache_storage": "azure_blob",
+  "adaptive_investigation_enabled": true,
+  "adaptive_investigation_min_score": 0.0,
+  "node_model_overrides": {
+    "insight_signal_detector": "gpt-5.4-mini"
+  }
 }
