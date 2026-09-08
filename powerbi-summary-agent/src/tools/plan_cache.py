@@ -106,12 +106,30 @@ def _prompt_digest() -> str:
     return h.hexdigest()[:16]
 
 
+def report_of(state: dict) -> str:
+    """Which report this run produces, read so it survives the graph.
+
+    `report_id` is NOT a declared channel on `SummaryAgentState`, so LangGraph
+    drops it: a node sees it as absent, and so does the state returned by
+    `invoke`. Reading it bare therefore gave one answer before the graph and a
+    different one after, which put the cloud lane's publish and hydrate in two
+    different folders and meant the cache could never hit in production - the
+    exact failure the cloud lane exists to remove, reintroduced one level down.
+
+    `config` IS a declared channel and carries the identity through unchanged,
+    including a `--report` override, which main.py folds into the config before
+    the state is built. So it is the reliable source on both sides.
+    """
+    cfg = state.get("config") or {}
+    return str(state.get("report_id") or cfg.get("report_id") or "sales_yoy")
+
+
 def cache_key(state: dict) -> str:
     """Stable identity for "the plan this model and rulebook imply"."""
     payload = {
         "v": PLAN_CACHE_VERSION,
         "dataset": str(state.get("dataset_id") or ""),
-        "report": str(state.get("report_id") or "sales_yoy"),
+        "report": report_of(state),
         "shape": _shape(state.get("model_metadata")),
         "rules": hashlib.sha256(
             (state.get("business_rules") or "").encode("utf-8")).hexdigest()[:16],

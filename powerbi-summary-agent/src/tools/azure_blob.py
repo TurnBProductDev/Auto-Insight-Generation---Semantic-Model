@@ -468,13 +468,17 @@ def cloud_plan_cache_enabled(state: dict) -> bool:
 
 def _plan_cache_location(state: dict) -> tuple[str, str, str]:
     from ..kernel import scoping
+    from . import plan_cache
 
     cfg = state.get("config", {}) or {}
     account = str(cfg.get("azure_blob_account") or "").strip()
     container = str(cfg.get("azure_blob_memory_container") or "insightstate").strip()
     prefix = str(cfg.get("azure_blob_plan_cache_prefix") or "plan-cache").strip("/")
     dataset_segment = scoping.safe_segment(state.get("dataset_id"), "unknown_dataset")
-    report_segment = scoping.safe_segment(state.get("report_id"), "unknown_report")
+    # Via plan_cache.report_of, because `report_id` is not a declared state
+    # channel: read bare, this resolves before the graph and not after, so
+    # hydrate and publish address different folders. See report_of's docstring.
+    report_segment = scoping.safe_segment(plan_cache.report_of(state), "unknown_report")
     folder = "/".join(part for part in
                       (prefix, dataset_segment, "reports", report_segment) if part)
     return account, container, folder

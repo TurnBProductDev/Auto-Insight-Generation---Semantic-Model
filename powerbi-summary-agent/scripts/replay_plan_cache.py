@@ -680,6 +680,42 @@ def test_reports_do_not_read_each_others_plans() -> None:
               sorted(service.data[container]))
 
 
+def test_hydrate_and_publish_agree_after_the_graph() -> None:
+    print("\n=== the folder must not move between hydrate and publish ===")
+
+    # `report_id` is not a declared channel on SummaryAgentState, so LangGraph
+    # drops it: main.py hydrates from the state it built (report_id present)
+    # and publishes from the state `invoke` returned (report_id gone). Reading
+    # it bare put those in `reports/sales_yoy/` and `reports/unknown_report/`,
+    # so the plan was filed where the next run would never look and the cache
+    # could never hit - caught by a live run, not by a test, which is why this
+    # one exists. `config` survives the graph, and carries the identity.
+    before = cloud_state(Path("/nonexistent"), report_id="sales_yoy")
+    before["config"] = {**before["config"], "report_id": "sales_yoy"}
+    after = {k: v for k, v in before.items() if k != "report_id"}
+
+    check("the graph does drop report_id from the returned state",
+          "report_id" in before and "report_id" not in after)
+    check("hydrate and publish still resolve the SAME folder",
+          azure_blob._plan_cache_location(before)
+          == azure_blob._plan_cache_location(after),
+          (azure_blob._plan_cache_location(before)[2],
+           azure_blob._plan_cache_location(after)[2]))
+    check("and that folder names the report rather than 'unknown_report'",
+          "sales_yoy" in azure_blob._plan_cache_location(after)[2]
+          and "unknown_report" not in azure_blob._plan_cache_location(after)[2],
+          azure_blob._plan_cache_location(after)[2])
+
+    # The same read is what keeps the cache KEY per-report. Inside the graph
+    # every node sees report_id as absent, so without this two reports over one
+    # model would compute one key and silently share a plan.
+    other = dict(after, config={**after["config"], "report_id": "target_tracker"})
+    check("the cache key is still per report inside the graph",
+          plan_cache.cache_key(after) != plan_cache.cache_key(other))
+    check("a --report override reaches both, because main.py folds it into config",
+          "target_tracker" in azure_blob._plan_cache_location(other)[2])
+
+
 def test_only_real_cache_files_move() -> None:
     print("\n=== anything else in the folder or the prefix is ignored ===")
 
@@ -727,6 +763,7 @@ def main() -> int:
     test_eviction_reaches_the_cloud()
     test_a_network_blip_does_not_wipe_the_stored_plan()
     test_reports_do_not_read_each_others_plans()
+    test_hydrate_and_publish_agree_after_the_graph()
     test_only_real_cache_files_move()
 
     print("\n" + "=" * 72)
