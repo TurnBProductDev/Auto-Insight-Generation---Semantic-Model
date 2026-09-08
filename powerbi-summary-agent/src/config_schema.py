@@ -355,6 +355,26 @@ _CONNECTION: tuple[ConfigKey, ...] = (
        "Where the reused plan is stored",
        "A folder for the saved query plan. Relative paths sit under the project.",
        tier="expert"),
+    _k("plan_cache_storage", "enum", "auto", "connection",
+       "Where the reused query plan is kept",
+       "'Follow the report's own storage' keeps it wherever the report already publishes. "
+       "A scheduled job gets a fresh machine every run, so a plan kept only on that machine "
+       "is thrown away overnight and every run pays to work the questions out again - which "
+       "is the whole cost reusing the plan is meant to remove.",
+       "'auto' follows azure_blob_upload (or cloud insight memory); hydrate/publish live in "
+       "azure_blob.py and are best-effort in both directions, "
+       "because an absent plan costs a re-plan and never correctness. Reached only when "
+       "plan_cache_enabled is true, so it cannot change any existing config.",
+       tier="expert", in_state=False,
+       choices=("auto", "local", "azure_blob"),
+       choice_labels=(("auto", "Follow the report's own storage"),
+                      ("local", "On this computer"),
+                      ("azure_blob", "Cloud storage"))),
+    _k("azure_blob_plan_cache_prefix", "string", "plan-cache", "connection",
+       "Folder for the kept query plan",
+       "Where the reused query plan is kept in cloud storage. It is filed under the dashboard "
+       "and report it belongs to, so two reports cannot read each other's plan.",
+       tier="expert", in_state=False),
     _k("plan_cache_max_age_days", "int", 7, "connection",
        "Rebuild the plan at least this often",
        "Forces a fresh plan on a schedule even when nothing looks wrong, so a plan cannot "

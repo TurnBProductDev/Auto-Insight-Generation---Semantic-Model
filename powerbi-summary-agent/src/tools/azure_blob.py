@@ -14,11 +14,20 @@ Auth resolution order (first available wins):
 
 import json
 import os
+import re
 from pathlib import Path
 from uuid import uuid4
 
 # .../powerbi-summary-agent/src/tools/azure_blob.py -> parents[2] == project root
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
+
+
+#: A plan-cache file is named for its own cache key - 32 hex characters from
+#: `plan_cache.cache_key`. Matching that shape on both legs of the sync keeps
+#: anything else that lands in the folder or the prefix out of the cache, and
+#: means a downloaded blob can only ever be reunited with the key the planning
+#: nodes will compute.
+_PLAN_CACHE_LEAF = re.compile(r"^[0-9a-f]{32}\.json$")
 
 
 def _service_client(account: str):
@@ -429,6 +438,152 @@ def publish_snapshot_memory(cfg: dict, out_dir, report_id: str, dataset_id: str,
     except Exception as exc:  # noqa: BLE001 - best-effort, must never fail the report
         print(f"Cloud snapshot memory publish failed ({type(exc).__name__}: {exc}).")
         return {"status": "failed", "blob": name, "error": str(exc)}
+
+
+def cloud_plan_cache_enabled(state: dict) -> bool:
+    """Whether the reused query plan survives between container runs.
+
+    Defaults to "auto" rather than to "local" like the memory switches, because
+    a lane nobody remembers to switch on is inert on exactly the deployment
+    that needs it - which is how the plan cache came to be write-only in
+    production in the first place. The cache matters precisely where the run is
+    a scheduled job whose filesystem is discarded, and `azure_blob_upload` is
+    what marks a config as publishing from such a job.
+
+    This cannot change any existing config's behaviour, because it is reached
+    only when `plan_cache_enabled` is itself true, and that is false by default
+    and set by no committed config. Turning the cache on is the deliberate act;
+    once taken, keeping it is what the operator meant.
+    """
+    if not state.get("plan_cache_enabled"):
+        return False
+    cfg = state.get("config", {}) or {}
+    mode = str(cfg.get("plan_cache_storage", "auto") or "auto").lower()
+    if mode == "azure_blob":
+        return True
+    if mode == "local":
+        return False
+    return bool(cfg.get("azure_blob_upload") or cloud_memory_enabled(state))
+
+
+def _plan_cache_location(state: dict) -> tuple[str, str, str]:
+    from ..kernel import scoping
+
+    cfg = state.get("config", {}) or {}
+    account = str(cfg.get("azure_blob_account") or "").strip()
+    container = str(cfg.get("azure_blob_memory_container") or "insightstate").strip()
+    prefix = str(cfg.get("azure_blob_plan_cache_prefix") or "plan-cache").strip("/")
+    dataset_segment = scoping.safe_segment(state.get("dataset_id"), "unknown_dataset")
+    report_segment = scoping.safe_segment(state.get("report_id"), "unknown_report")
+    folder = "/".join(part for part in
+                      (prefix, dataset_segment, "reports", report_segment) if part)
+    return account, container, folder
+
+
+def hydrate_plan_cache(state: dict) -> dict:
+    """Download the stored query plan before the planning nodes read it.
+
+    Without this the plan cache is write-only in production and every scheduled
+    run is a cold one: a Container Apps Job gets a fresh filesystem, so the
+    three planning nodes re-derive the same plan from the same unchanged schema
+    every morning at full price - which is the entire cost the cache exists to
+    remove. Measured, that is the difference between a run costing USD 1.20 and
+    one costing USD 0.68.
+
+    Deliberately NOT fatal, which is where this departs from
+    `hydrate_insight_memory`. Starting from an empty *memory* would re-announce
+    every finding the reader has already seen, so main.py stops the pipeline
+    there. Starting from an empty *cache* costs money and nothing else, so a
+    failure here degrades to the cold run the pipeline does today.
+    """
+    if not cloud_plan_cache_enabled(state):
+        return {"status": "skipped", "reason": "local_plan_cache_storage"}
+    account, container, folder = _plan_cache_location(state)
+    if not account:
+        return {"status": "failed", "reason": "azure_blob_account_missing"}
+
+    from . import plan_cache
+
+    directory = plan_cache._root(state)
+    try:
+        svc, auth = _service_client(account)
+        client = svc.get_container_client(container)
+        pulled = []
+        for blob in client.list_blobs(name_starts_with=f"{folder}/"):
+            leaf = str(blob.name).rsplit("/", 1)[-1]
+            # The local file name IS the cache key, so only a well-formed one
+            # can be reunited with the key `plan_cache.load` will compute.
+            if not _PLAN_CACHE_LEAF.match(leaf):
+                continue
+            raw = client.get_blob_client(blob.name).download_blob().readall()
+            _atomic_bytes(directory / leaf, raw)
+            pulled.append(leaf)
+        print(f"Cloud plan cache: hydrated {len(pulled)} plan(s) from "
+              f"{account}/{container}/{folder} (auth={auth}).")
+        return {"status": "ok", "folder": folder, "pulled": pulled, "auth": auth}
+    except Exception as exc:  # noqa: BLE001 - a cold run is the correct fallback
+        print(f"Cloud plan cache hydration failed ({type(exc).__name__}: {exc}); "
+              f"this run will re-plan.")
+        return {"status": "failed", "folder": folder, "error": str(exc)}
+
+
+def publish_plan_cache(state: dict, hydration: dict | None = None) -> dict:
+    """Upload the verified plan back, and evict what the run discarded.
+
+    No ETag, unlike every memory lane here, and that is a judgement not an
+    omission. Memory uses optimistic concurrency because a lost write silently
+    re-announces findings the reader has already been shown. This is a derived
+    cache: the loser of a race re-plans tomorrow, which costs money and cannot
+    cost correctness. Adding a conflict path would make a cheap, harmless
+    outcome look like a failure.
+
+    Pruning is what carries the two local evictions - `record_execution`
+    deleting a plan whose queries stopped working, and a schema change minting
+    a new key - out to the blob, so the folder holds the live plan rather than
+    every plan this model has ever had. It is skipped when hydration failed,
+    because a network blip that emptied the local view must not be mistaken for
+    a deliberate eviction and wipe the stored plan.
+    """
+    if not cloud_plan_cache_enabled(state):
+        return {"status": "skipped", "reason": "local_plan_cache_storage"}
+    account, container, folder = _plan_cache_location(state)
+    if not account:
+        return {"status": "failed", "reason": "azure_blob_account_missing"}
+
+    from azure.storage.blob import ContentSettings
+
+    from . import plan_cache
+
+    directory = plan_cache._root(state)
+    local = {p.name: p for p in directory.glob("*.json")
+             if _PLAN_CACHE_LEAF.match(p.name)} if directory.exists() else {}
+    hydrated_cleanly = (hydration or {}).get("status") in ("ok", None)
+    try:
+        svc, auth = _service_client(account)
+        client = svc.get_container_client(container)
+        pushed, pruned = [], []
+        for leaf, path in sorted(local.items()):
+            client.get_blob_client(f"{folder}/{leaf}").upload_blob(
+                path.read_bytes(), overwrite=True,
+                content_settings=ContentSettings(content_type="application/json"))
+            pushed.append(leaf)
+        if hydrated_cleanly:
+            for blob in client.list_blobs(name_starts_with=f"{folder}/"):
+                leaf = str(blob.name).rsplit("/", 1)[-1]
+                # Only ever delete a file this cache could have written. A
+                # prefix is a shared namespace, and a lane that deletes
+                # whatever it does not recognise destroys someone else's data
+                # the first time the two are pointed at one folder.
+                if _PLAN_CACHE_LEAF.match(leaf) and leaf not in local:
+                    client.delete_blob(blob.name)
+                    pruned.append(leaf)
+        print(f"Cloud plan cache: published {len(pushed)} plan(s), pruned "
+              f"{len(pruned)} to {account}/{container}/{folder} (auth={auth}).")
+        return {"status": "ok", "folder": folder, "pushed": pushed,
+                "pruned": pruned, "auth": auth}
+    except Exception as exc:  # noqa: BLE001 - best-effort, same as the archive
+        print(f"Cloud plan cache publish failed ({type(exc).__name__}: {exc}).")
+        return {"status": "failed", "folder": folder, "error": str(exc)}
 
 
 def initialize_insight_memory(state: dict) -> dict:

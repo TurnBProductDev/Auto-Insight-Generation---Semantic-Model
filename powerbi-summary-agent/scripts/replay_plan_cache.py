@@ -31,15 +31,20 @@ from __future__ import annotations
 import json
 import shutil
 import sys
+import tempfile
 import time
 from pathlib import Path
+from types import SimpleNamespace
+from unittest.mock import patch
+
+from azure.core.exceptions import ResourceExistsError, ResourceNotFoundError
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from src.agents import dax_generator, dax_planner, dax_validator  # noqa: E402
 from src.agents import report_understanding  # noqa: E402
-from src.tools import plan_cache  # noqa: E402
+from src.tools import azure_blob, plan_cache  # noqa: E402
 
 OUT_DIR = "outputs_replay/plan_cache"
 CACHE_DIR = PROJECT_ROOT / OUT_DIR / "cache"
@@ -102,9 +107,15 @@ def base_state(**over) -> dict:
 
 
 def fresh_cache() -> None:
-    if CACHE_DIR.exists():
-        shutil.rmtree(CACHE_DIR)
+    # Empty the directory rather than remove it: on Windows a synced folder can
+    # hold a handle on the directory itself, and rmtree then fails on a test
+    # that has nothing to do with the code under test.
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    for stale in CACHE_DIR.iterdir():
+        if stale.is_file():
+            stale.unlink()
+        else:
+            shutil.rmtree(stale, ignore_errors=True)
 
 
 def _explode(*_a, **_k):
@@ -414,6 +425,289 @@ def test_the_age_limit_expires_it_regardless() -> None:
     check("an entry with no stored slots is a miss", plan_cache.load(empty) is None)
 
 
+# ------------------------------------ 4. it has to survive a wiped machine
+
+
+class _Downloader:
+    def __init__(self, data: bytes):
+        self._data = data
+        self.properties = SimpleNamespace(etag='"etag"')
+
+    def readall(self):
+        return self._data
+
+
+class _Blob:
+    def __init__(self, service, container, name):
+        self.service, self.container, self.name = service, container, name
+
+    def download_blob(self):
+        try:
+            return _Downloader(self.service.data[self.container][self.name])
+        except KeyError as exc:
+            raise ResourceNotFoundError("missing") from exc
+
+    def upload_blob(self, data, overwrite=False, **_kw):
+        store = self.service.data.setdefault(self.container, {})
+        if self.name in store and not overwrite:
+            raise ResourceExistsError("exists")
+        store[self.name] = bytes(data)
+
+
+class _Container:
+    def __init__(self, service, container):
+        self.service, self.container = service, container
+
+    def list_blobs(self, name_starts_with=""):
+        for name in sorted(self.service.data.get(self.container, {})):
+            if name.startswith(name_starts_with):
+                yield SimpleNamespace(name=name)
+
+    def get_blob_client(self, name):
+        return _Blob(self.service, self.container, name)
+
+    def delete_blob(self, name):
+        self.service.data.get(self.container, {}).pop(name, None)
+
+
+class _Service:
+    def __init__(self):
+        self.data: dict = {}
+
+    def get_blob_client(self, container, blob):
+        return _Blob(self, container, blob)
+
+    def get_container_client(self, container):
+        return _Container(self, container)
+
+
+def cloud_state(machine: Path, **over) -> dict:
+    """A run whose plan cache lives on an ephemeral machine, as in a job."""
+    state = base_state(plan_cache_folder=str(machine / ".runtime" / "plan_cache"))
+    state["config"] = {"azure_blob_account": "turnbtestblobstorage",
+                       "azure_blob_upload": True}
+    state.update(over)
+    return state
+
+
+def test_the_switch_is_off_until_the_cache_is_on() -> None:
+    print("\n=== the cloud lane cannot change any existing config ===")
+
+    with tempfile.TemporaryDirectory() as tmp:
+        machine = Path(tmp)
+
+        off = cloud_state(machine, plan_cache_enabled=False)
+        check("the cache being off means the cloud lane is off too",
+              not azure_blob.cloud_plan_cache_enabled(off))
+        check("and hydration reports itself skipped rather than acting",
+              azure_blob.hydrate_plan_cache(off)["status"] == "skipped")
+
+        # No committed config sets plan_cache_enabled, so this is every config
+        # that exists today.
+        legacy = base_state(plan_cache_enabled=False)
+        legacy["config"] = {"azure_blob_upload": True, "azure_blob_account": "acct"}
+        check("a config that predates this work is untouched",
+              not azure_blob.cloud_plan_cache_enabled(legacy))
+
+        on = cloud_state(machine)
+        check("with the cache on, 'auto' follows the report's own storage",
+              azure_blob.cloud_plan_cache_enabled(on))
+
+        local = cloud_state(machine)
+        local["config"] = {**local["config"], "plan_cache_storage": "local"}
+        check("'local' overrides auto in the off direction",
+              not azure_blob.cloud_plan_cache_enabled(local))
+
+        forced = cloud_state(machine)
+        forced["config"] = {"azure_blob_account": "acct",
+                            "plan_cache_storage": "azure_blob"}
+        check("'azure_blob' overrides auto in the on direction, with no upload set",
+              azure_blob.cloud_plan_cache_enabled(forced))
+
+        no_account = cloud_state(machine)
+        no_account["config"] = {"azure_blob_upload": True}
+        check("a missing storage account is reported, not guessed",
+              azure_blob.hydrate_plan_cache(no_account)["reason"]
+              == "azure_blob_account_missing")
+
+
+def test_the_plan_survives_a_wiped_machine() -> None:
+    print("\n=== the whole point: a fresh machine still hits the cache ===")
+
+    service = _Service()
+    with tempfile.TemporaryDirectory() as tmp, patch.object(
+            azure_blob, "_service_client", return_value=(service, "fake")):
+
+        # --- Day 1, on one machine ---
+        day1 = Path(tmp) / "machine_1"
+        state1 = cloud_state(day1)
+
+        first = azure_blob.hydrate_plan_cache(state1)
+        check("the first run finds nothing stored, and says so rather than failing",
+              first["status"] == "ok" and first["pulled"] == [], first)
+        check("so the first run genuinely re-plans", plan_cache.load(state1) is None)
+
+        plan_cache.save(state1, dax_plan={"queries": [{"name": "totals"}]},
+                        generated_dax=[{"name": "totals", "dax": "EVALUATE ROW(1,1)"}])
+        published = azure_blob.publish_plan_cache(state1, first)
+        check("day 1 publishes the verified plan",
+              published["status"] == "ok" and len(published["pushed"]) == 1, published)
+
+        # --- Day 2, on a BRAND NEW machine, exactly as a scheduled job gets ---
+        day2 = Path(tmp) / "machine_2"
+        state2 = cloud_state(day2)
+        check("the new machine starts with nothing on disk",
+              plan_cache.load(state2) is None)
+
+        pulled = azure_blob.hydrate_plan_cache(state2)
+        check("hydration pulls the stored plan down", pulled["status"] == "ok"
+              and len(pulled["pulled"]) == 1, pulled)
+
+        hit = plan_cache.load(state2)
+        check("and the planning nodes now HIT on a machine that never planned",
+              hit is not None and hit.get("dax_plan") == {"queries": [{"name": "totals"}]},
+              hit)
+        check("the executed DAX came back too, so Node 5 is skipped as well",
+              hit is not None and hit.get("generated_dax"))
+
+        # The key is content-derived, so the same model on any machine resolves
+        # to the same file name - that is what makes the blob reunitable at all.
+        check("both machines computed the same cache key",
+              plan_cache.cache_key(state1) == plan_cache.cache_key(state2))
+
+
+def test_eviction_reaches_the_cloud() -> None:
+    print("\n=== a dropped plan is dropped everywhere, not just locally ===")
+
+    service = _Service()
+    with tempfile.TemporaryDirectory() as tmp, patch.object(
+            azure_blob, "_service_client", return_value=(service, "fake")):
+        machine = Path(tmp) / "machine"
+        state = cloud_state(machine)
+        state["plan_cache_hit"] = True
+
+        # Seed the store as an earlier run would have left it.
+        seed = azure_blob.hydrate_plan_cache(state)
+        plan_cache.save(state, generated_dax=[{"name": "totals", "dax": "EVALUATE ROW(1,1)"}])
+        azure_blob.publish_plan_cache(state, seed)
+        _account, container, _folder = azure_blob._plan_cache_location(state)
+        check("the plan is in the blob store", len(service.data[container]) == 1)
+
+        # Now one whole run, in main.py's order: hydrate once before the graph,
+        # publish once after it. Ordering is the load-bearing part - a hydrate
+        # placed after the eviction re-downloads the plan that was just dropped
+        # and the eviction never leaves the machine.
+        machine2 = Path(tmp) / "machine_2"
+        run = cloud_state(machine2)
+        run["plan_cache_hit"] = True
+        hydration = azure_blob.hydrate_plan_cache(run)
+        check("the run starts by pulling the stored plan",
+              len(hydration["pulled"]) == 1, hydration)
+
+        # Mid-run, the queries stop working and Node 7 drops the plan.
+        dropped = plan_cache.record_execution(run, 1, 10)
+        check("the failing plan is dropped locally", dropped is not None)
+
+        result = azure_blob.publish_plan_cache(run, hydration)
+        check("and the eviction is carried out to the blob",
+              result["pruned"] and not service.data[container], result)
+
+        # Otherwise a plan that stopped working would be pulled down every
+        # morning and dropped again every morning, forever.
+        check("so the next run cannot pull the broken plan back down",
+              azure_blob.hydrate_plan_cache(cloud_state(Path(tmp) / "m3"))["pulled"] == [])
+
+
+def test_a_network_blip_does_not_wipe_the_stored_plan() -> None:
+    print("\n=== a failed download must not read as a deliberate eviction ===")
+
+    service = _Service()
+    with tempfile.TemporaryDirectory() as tmp, patch.object(
+            azure_blob, "_service_client", return_value=(service, "fake")):
+        seeded = cloud_state(Path(tmp) / "machine_1")
+        plan_cache.save(seeded, dax_plan={"queries": [{"name": "totals"}]})
+        azure_blob.publish_plan_cache(seeded, azure_blob.hydrate_plan_cache(seeded))
+        _account, container, _folder = azure_blob._plan_cache_location(seeded)
+        check("a plan is stored", len(service.data[container]) == 1)
+
+        # A fresh machine whose hydration failed: local is empty, but not
+        # because anything was evicted. Pruning here would destroy the plan.
+        blank = cloud_state(Path(tmp) / "machine_2")
+        blip = {"status": "failed", "error": "connection reset"}
+        result = azure_blob.publish_plan_cache(blank, blip)
+        check("nothing is pruned after a failed hydration",
+              result["pruned"] == [], result)
+        check("the stored plan is still there", len(service.data[container]) == 1)
+
+        # And the run that hit the blip simply re-plans, which is the pipeline's
+        # behaviour today - never a stopped run.
+        with patch.object(azure_blob, "_service_client",
+                          side_effect=RuntimeError("connection reset")):
+            failed = azure_blob.hydrate_plan_cache(blank)
+        check("a hydration failure is reported, not raised",
+              failed["status"] == "failed", failed)
+        check("and it degrades to a cold run", plan_cache.load(blank) is None)
+
+
+def test_reports_do_not_read_each_others_plans() -> None:
+    print("\n=== one folder per dataset and report ===")
+
+    service = _Service()
+    with tempfile.TemporaryDirectory() as tmp, patch.object(
+            azure_blob, "_service_client", return_value=(service, "fake")):
+        yoy = cloud_state(Path(tmp) / "m1", report_id="sales_yoy")
+        plan_cache.save(yoy, dax_plan={"queries": [{"name": "yoy"}]})
+        azure_blob.publish_plan_cache(yoy, azure_blob.hydrate_plan_cache(yoy))
+
+        other = cloud_state(Path(tmp) / "m2", report_id="target_tracker")
+        pulled = azure_blob.hydrate_plan_cache(other)
+        check("a second report over the same model pulls nothing",
+              pulled["pulled"] == [], pulled)
+
+        _a, _c, yoy_folder = azure_blob._plan_cache_location(yoy)
+        _a, _c, other_folder = azure_blob._plan_cache_location(other)
+        check("their folders are different", yoy_folder != other_folder)
+        check("and both name the dataset and the report",
+              "sales_yoy" in yoy_folder and "target_tracker" in other_folder
+              and yoy["dataset_id"] in yoy_folder, (yoy_folder, other_folder))
+
+        # Publishing from the second report must not prune the first's plan,
+        # which a shared folder would have made happen silently.
+        azure_blob.publish_plan_cache(other, pulled)
+        _account, container, _f = azure_blob._plan_cache_location(yoy)
+        check("publishing one report never prunes another's plan",
+              any(name.startswith(yoy_folder) for name in service.data[container]),
+              sorted(service.data[container]))
+
+
+def test_only_real_cache_files_move() -> None:
+    print("\n=== anything else in the folder or the prefix is ignored ===")
+
+    service = _Service()
+    with tempfile.TemporaryDirectory() as tmp, patch.object(
+            azure_blob, "_service_client", return_value=(service, "fake")):
+        machine = Path(tmp) / "machine"
+        state = cloud_state(machine)
+        _account, container, folder = azure_blob._plan_cache_location(state)
+
+        service.data.setdefault(container, {})[f"{folder}/notes.txt"] = b"hello"
+        service.data[container][f"{folder}/README.json"] = b"{}"
+        pulled = azure_blob.hydrate_plan_cache(state)
+        check("a blob that is not a cache key is not pulled",
+              pulled["pulled"] == [], pulled)
+
+        directory = plan_cache._root(state)
+        directory.mkdir(parents=True, exist_ok=True)
+        (directory / "scratch.json").write_text("{}", encoding="utf-8")
+        plan_cache.save(state, dax_plan={"queries": [{"name": "totals"}]})
+        result = azure_blob.publish_plan_cache(state, pulled)
+        check("only the real cache file is published",
+              result["pushed"] == [plan_cache.cache_key(state) + ".json"], result)
+        check("and the foreign blobs are left alone, not pruned",
+              f"{folder}/notes.txt" in service.data[container],
+              sorted(service.data[container]))
+
+
 def main() -> int:
     print("=" * 72)
     print("Plan cache: reuse, invalidation, and the safety net it may not skip")
@@ -428,6 +722,12 @@ def main() -> int:
     test_a_cached_plan_is_still_validated()
     test_a_broken_plan_is_dropped()
     test_the_age_limit_expires_it_regardless()
+    test_the_switch_is_off_until_the_cache_is_on()
+    test_the_plan_survives_a_wiped_machine()
+    test_eviction_reaches_the_cloud()
+    test_a_network_blip_does_not_wipe_the_stored_plan()
+    test_reports_do_not_read_each_others_plans()
+    test_only_real_cache_files_move()
 
     print("\n" + "=" * 72)
     if _failures:

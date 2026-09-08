@@ -345,8 +345,10 @@ def main(argv=None) -> int:
         cloud_memory_enabled,
         cloud_summary_memory_enabled,
         hydrate_insight_memory,
+        hydrate_plan_cache,
         hydrate_summary_memory,
         publish_insight_memory,
+        publish_plan_cache,
         publish_summary_memory,
         upload_api_payloads,
         upload_insight_history,
@@ -360,6 +362,11 @@ def main(argv=None) -> int:
 
     summary_memory_hydration = hydrate_summary_memory(state)
     state["summary_memory_hydration"] = summary_memory_hydration
+
+    # Must precede the graph: `report_understanding` reads the cache, and it is
+    # the first LLM node to run. Unlike the memory hydration above, a failure
+    # here is not fatal - an absent plan costs a re-plan, never correctness.
+    plan_cache_hydration = hydrate_plan_cache(state)
 
     app = build_graph()
     final = app.invoke(state)
@@ -506,6 +513,16 @@ def main(argv=None) -> int:
         }
     else:
         memory_publish = {"status": "skipped", "reason": "local_memory_storage"}
+
+    # Deliberately not gated on delivery, unlike the two memory publishes. Those
+    # must not record a finding as "seen" that the reader never received; this
+    # stores DAX that the model already executed successfully, which is just as
+    # reusable tomorrow whether or not the page reached the client.
+    plan_cache_publish = publish_plan_cache(final, plan_cache_hydration)
+    if plan_cache_publish.get("status") == "failed":
+        # Visible, never fatal: the cost of this is that tomorrow re-plans.
+        print("Note: the reused query plan was not stored, so the next run will "
+              "re-plan at full price. The report itself is unaffected.")
 
     summary_path = out / "report_summary.md"
     if summary_path.exists():
