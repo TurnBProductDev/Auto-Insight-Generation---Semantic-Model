@@ -7,6 +7,7 @@ self-repair loop to fix a query that failed validation or execution.
 
 from ..tools import file_io
 from ..tools.llm import get_llm
+from ..tools import plan_cache
 from ..utils.json_utils import dumps
 from ..utils.logger import RunLogger
 from ..utils.model_context import llm_model_context
@@ -51,6 +52,21 @@ def run(state: dict) -> dict:
     max_rows = state.get("max_rows_per_query", 15)
     available = _available_objects(md)
 
+    # One LLM call per planned query, and the DAX is a function of the model's
+    # structure alone - so a cached set for an unchanged schema is reused whole.
+    # It is still handed to the validator below exactly as fresh DAX would be.
+    cached = plan_cache.load(state)
+    if cached and cached.get("generated_dax"):
+        generated = cached["generated_dax"]
+        planned = {q["name"] for q in state["dax_plan"]["queries"]}
+        if planned == {g.get("name") for g in generated}:
+            file_io.write_json(state, "generated_dax_queries.json", generated)
+            log.info(f"Node 5: reused {len(generated)} cached DAX statement(s) "
+                     f"- no LLM calls.")
+            return {"generated_dax_queries": generated,
+                    "plan_cache_hit": True, **log.updates()}
+        log.info("Node 5: cached DAX does not match the current plan; regenerating.")
+
     generated = []
     for q in state["dax_plan"]["queries"]:
         content = (
@@ -69,6 +85,10 @@ def run(state: dict) -> dict:
         })
         log.info(f"  {q['name']}: generated.")
 
+    # Deliberately NOT cached here: this DAX has not been validated or executed
+    # yet. Caching at generation time persists a plan that may be rejected
+    # moments later, and every later run then reuses the broken plan. The cache
+    # is written after execution instead, from what actually worked.
     file_io.write_json(state, "generated_dax_queries.json", generated)
     log.info(f"Generated {len(generated)} DAX statements.")
     return {"generated_dax_queries": generated, **log.updates()}

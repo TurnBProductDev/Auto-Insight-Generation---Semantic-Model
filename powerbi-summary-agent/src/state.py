@@ -127,6 +127,27 @@ class SummaryAgentState(TypedDict, total=False):
     business_rules: str                     # config/business_rules.md text (loaded by Node 1)
     config: Dict[str, Any]
 
+    # --- cost controls ---
+    # These MUST be declared here to have any effect. The state is a TypedDict
+    # and LangGraph propagates only declared channels, so a config key that
+    # reaches build_initial_state but not this class is silently dropped before
+    # any node sees it - the feature then reads as "off" with no error anywhere.
+    node_model_overrides: Dict[str, Any]   # node label -> Azure deployment
+    plan_cache_enabled: bool
+    plan_cache_folder: str
+    plan_cache_max_age_days: int
+    plan_cache_hit: bool                   # set by whichever planning node reused a plan
+    adaptive_investigation_enabled: bool
+    adaptive_investigation_min_score: float
+    insight_escalation: Dict[str, Any]     # the tier and budgets the day's news bought
+
+    # Catalogued as in_state and read by fresh_summary_generator and
+    # summary_dashboard_builder via a bare state.get(..., True), but never
+    # declared here - so setting it in config did nothing and LLM authoring
+    # could not be turned off. No committed config sets it, so declaring it
+    # restores the documented behaviour without changing any current output.
+    summary_llm_authoring_enabled: bool
+
     # --- insight branch config ---
     insight_max_signals: int
     insight_max_investigation_rounds: int

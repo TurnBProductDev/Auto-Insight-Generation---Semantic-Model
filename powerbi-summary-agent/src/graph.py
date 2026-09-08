@@ -33,6 +33,7 @@ from langgraph.graph import END, START, StateGraph
 
 from .state import SummaryAgentState
 from .tools import file_io
+from .tools import plan_cache
 from .tools import html_report
 from .tools import insight_memory
 from .tools import powerbi_executor as pbi
@@ -189,6 +190,25 @@ def execute_dax(state: dict) -> dict:
     for name, v in raw.items():
         if v.get("status") != "success":
             log.error(f"  query '{name}' failed: {str(v.get('error'))[:200]}")
+
+    # Cache only what survived validation AND execution, so tomorrow reuses a
+    # plan that is known to work rather than one that merely parsed. A cached
+    # plan whose queries have stopped executing is dropped here too, so drift
+    # costs one degraded run instead of every run thereafter.
+    if plan_cache.enabled(state):
+        dropped = plan_cache.record_execution(state, ok, len(raw))
+        if dropped:
+            log.error(f"  {dropped}")
+        elif ok and ok == len(raw):
+            # The executed text lives under "query", not "dax" - a repaired
+            # query's working DAX is only there, so reading "dax" would cache
+            # the broken version that had just been repaired away.
+            survivors = [dict(e, dax=(raw.get(e["name"], {}) or {}).get("query") or e.get("dax"))
+                         for e in (state.get("generated_dax_queries") or [])
+                         if raw.get(e["name"], {}).get("status") == "success"]
+            if survivors:
+                plan_cache.save(state, generated_dax=survivors)
+                log.info(f"  plan cache: stored {len(survivors)} verified quer(y/ies).")
     return {"raw_pbi_results": raw, **log.updates()}
 
 

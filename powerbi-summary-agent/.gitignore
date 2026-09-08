@@ -19,3 +19,10 @@ __pycache__/
 .ruff_cache/
 .pytest_cache/
 .mypy_cache/
+
+# Cost benchmark runs (real business data); the distilled baseline is in
+# tests/bench/ and IS tracked.
+outputs_bench_baseline/
+outputs_bench_optimized/
+outputs_bench_results/
+outputs_bench_state/

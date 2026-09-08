@@ -393,6 +393,15 @@ def run(state: dict) -> dict:
     cap = int(state.get("insight_max_new_per_run", 3)) if memory_enabled \
         else int(state.get("insight_max_signals", 5))
 
+    # A zero cap means the escalation gate found nothing unreported worth
+    # explaining. Return before the LLM call rather than paying for a selection
+    # that would then be capped away to nothing. The summary branch is
+    # untouched, so the descriptive report still publishes in full.
+    if cap <= 0:
+        tier = (state.get("insight_escalation") or {}).get("tier", "quiet")
+        return _finish(state, log, [], novelty,
+                       f"no investigation bought this run (escalation tier={tier})")
+
     # In memory mode the novelty filter already suppressed seen findings; work from
     # its eligible (unseen) shortlist. Otherwise fall back to the full stat list.
     eligible = state.get("insight_eligible_candidates") if memory_enabled else None

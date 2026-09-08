@@ -10,6 +10,7 @@ from pydantic import BaseModel, Field
 
 from ..tools import file_io
 from ..tools.llm import get_llm
+from ..tools import plan_cache
 from ..utils.json_utils import dumps
 from ..utils.logger import RunLogger
 from ..utils.model_context import llm_model_context
@@ -54,6 +55,14 @@ def run(state: dict) -> dict:
     task = file_io.read_prompt("dax_planner_prompt.md")
     max_rows = state.get("max_rows_per_query", 15)
 
+    cached = plan_cache.load(state)
+    if cached and cached.get("dax_plan"):
+        plan_dict = cached["dax_plan"]
+        file_io.write_json(state, "generated_dax_plan.json", plan_dict)
+        log.info(f"Node 4: reused cached plan of {len(plan_dict['queries'])} "
+                 f"quer(y/ies) - no LLM call.")
+        return {"dax_plan": plan_dict, "plan_cache_hit": True, **log.updates()}
+
     llm = get_llm(state, structured_schema=DaxPlan)
     messages = [
         {"role": "system", "content": rules + file_io.business_rules_block(state)
@@ -67,6 +76,7 @@ def run(state: dict) -> dict:
     plan: DaxPlan = llm.invoke(messages)
     plan_dict = plan.model_dump()
 
+    plan_cache.save(state, dax_plan=plan_dict)
     file_io.write_json(state, "generated_dax_plan.json", plan_dict)
     log.info(f"Planned {len(plan_dict['queries'])} queries: "
              + ", ".join(q["name"] for q in plan_dict["queries"]))

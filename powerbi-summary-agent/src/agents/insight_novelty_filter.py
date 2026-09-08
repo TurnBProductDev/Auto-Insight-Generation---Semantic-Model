@@ -16,6 +16,7 @@ commit is refused so the damaged store is preserved.
 from __future__ import annotations
 
 from ..tools import file_io
+from ..tools import escalation
 from ..tools import insight_memory as mem
 from ..utils.logger import RunLogger
 
@@ -324,4 +325,15 @@ def run(state: dict) -> dict:
               **log.updates()}
     if rolling_observation_update is not None:
         updates["insight_rolling_observation"] = rolling_observation_update
+
+    # Buy investigation in proportion to what actually survived suppression.
+    # This is the earliest point at which "how eventful was today" is known and
+    # nothing has been spent on explaining it yet. Budgets can only go down.
+    if escalation.enabled(state):
+        plan = escalation.decide(state, eligible_payload)
+        updates["insight_escalation"] = plan
+        updates["insight_max_new_per_run"] = plan["insight_max_new_per_run"]
+        updates["insight_max_investigation_rounds"] = plan["insight_max_investigation_rounds"]
+        file_io.write_json(state, "insight_escalation.json", plan)
+        log.info(f"Escalation: {plan['reason']}.")
     return updates

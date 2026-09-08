@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field
 
 from ..tools import file_io
 from ..tools.llm import get_llm
+from ..tools import plan_cache
 from ..utils.json_utils import dumps
 from ..utils.logger import RunLogger
 from ..utils.model_context import llm_model_context
@@ -28,6 +29,17 @@ def run(state: dict) -> dict:
     log = RunLogger(state)
     log.info("Node 3: understanding the report/model...")
 
+    # The model's structure decides this, not today's rows, so a stored answer
+    # for an unchanged schema is the same answer at zero cost.
+    cached = plan_cache.load(state)
+    if cached and cached.get("report_understanding"):
+        understanding = cached["report_understanding"]
+        file_io.write_json(state, "report_understanding.json", understanding)
+        log.info(f"Node 3: reused cached understanding "
+                 f"(plan cache {cached['key'][:8]}, {cached['age_days']}d old) - no LLM call.")
+        return {"report_understanding": understanding,
+                "plan_cache_hit": True, **log.updates()}
+
     rules = file_io.read_prompt("_global_rules.md")
     task = file_io.read_prompt("report_understanding_prompt.md")
     model_context = llm_model_context(state["model_metadata"])
@@ -48,6 +60,7 @@ def run(state: dict) -> dict:
     if not model_context["date_fields"]:
         understanding["time_summary_possible"] = False
 
+    plan_cache.save(state, report_understanding=understanding)
     file_io.write_json(state, "report_understanding.json", understanding)
     log.info(
         f"Domain: {understanding.get('domain')!r}; "

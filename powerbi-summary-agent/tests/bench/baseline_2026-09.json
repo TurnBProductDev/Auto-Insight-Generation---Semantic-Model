@@ -1,0 +1,328 @@
+{
+  "_what": "Measured cost baseline for the Sales YoY pipeline run, recorded 2026-09-03 to 2026-09-05 against the live model. This is what every later phase of docs/cost-and-tiering-implementation-brief.md measures against - replace a projection with a measurement, never the other way round.",
+  "_how": "A 2x2: cold vs warm plan cache, against config/bench/baseline.json (every cost control off) and config/bench/optimized.json (plan cache, adaptive investigation, and the signal detector routed to gpt-5.4-mini). Produced by src/tools/token_usage.py, which records each call at the point of use.",
+  "_read_this": "The headline saving is a WARM-run saving. A cold run still pays for planning (cell D, USD 1.20), and any schema change forces a re-plan. On a genuinely eventful day adaptive investigation saves nothing, which is correct behaviour rather than a regression.",
+  "_source": "outputs_bench_results/bench_results.json (a gitignored run artifact)",
+  "cells": {
+    "A_baseline_cold": {
+      "config": "baseline.json",
+      "exit": 0,
+      "seconds": 378.5,
+      "total": {
+        "calls": 24,
+        "prompt_tokens": 610988,
+        "cached_tokens": 236416,
+        "completion_tokens": 22072,
+        "usd": 1.326616
+      },
+      "by_node": {
+        "insight_investigator": {
+          "calls": 5,
+          "prompt_tokens": 169028,
+          "cached_tokens": 55552,
+          "completion_tokens": 1688,
+          "usd": 0.322897,
+          "deployment": "gpt-5.4"
+        },
+        "insight_synthesizer": {
+          "calls": 3,
+          "prompt_tokens": 69254,
+          "cached_tokens": 49280,
+          "completion_tokens": 10522,
+          "usd": 0.220085,
+          "deployment": "gpt-5.4"
+        },
+        "dax_planner": {
+          "calls": 1,
+          "prompt_tokens": 68957,
+          "cached_tokens": 0,
+          "completion_tokens": 1567,
+          "usd": 0.195898,
+          "deployment": "gpt-5.4"
+        },
+        "dax_generator": {
+          "calls": 8,
+          "prompt_tokens": 157385,
+          "cached_tokens": 115968,
+          "completion_tokens": 2938,
+          "usd": 0.176606,
+          "deployment": "gpt-5.4"
+        },
+        "insight_signal_detector": {
+          "calls": 1,
+          "prompt_tokens": 64930,
+          "cached_tokens": 0,
+          "completion_tokens": 777,
+          "usd": 0.17398,
+          "deployment": "gpt-5.4"
+        },
+        "report_understanding": {
+          "calls": 1,
+          "prompt_tokens": 36323,
+          "cached_tokens": 0,
+          "completion_tokens": 400,
+          "usd": 0.096808,
+          "deployment": "gpt-5.4"
+        },
+        "summary_dashboard_builder": {
+          "calls": 3,
+          "prompt_tokens": 22483,
+          "cached_tokens": 15616,
+          "completion_tokens": 2777,
+          "usd": 0.062727,
+          "deployment": "gpt-5.4"
+        },
+        "fresh_summary_generator": {
+          "calls": 1,
+          "prompt_tokens": 18938,
+          "cached_tokens": 0,
+          "completion_tokens": 809,
+          "usd": 0.05948,
+          "deployment": "gpt-5.4"
+        },
+        "api_payloads": {
+          "calls": 1,
+          "prompt_tokens": 3690,
+          "cached_tokens": 0,
+          "completion_tokens": 594,
+          "usd": 0.018135,
+          "deployment": "gpt-5.4"
+        }
+      }
+    },
+    "B_baseline_warm": {
+      "config": "same as the cold run of this arm",
+      "exit": 0,
+      "seconds": 323.7,
+      "total": {
+        "calls": 26,
+        "prompt_tokens": 694207,
+        "cached_tokens": 229760,
+        "completion_tokens": 21695,
+        "usd": 1.543984
+      },
+      "by_node": {
+        "insight_investigator": {
+          "calls": 6,
+          "prompt_tokens": 207905,
+          "cached_tokens": 34688,
+          "completion_tokens": 1734,
+          "usd": 0.467725,
+          "deployment": "gpt-5.4"
+        },
+        "insight_synthesizer": {
+          "calls": 3,
+          "prompt_tokens": 74307,
+          "cached_tokens": 52480,
+          "completion_tokens": 10269,
+          "usd": 0.221722,
+          "deployment": "gpt-5.4"
+        },
+        "fresh_summary_generator": {
+          "calls": 3,
+          "prompt_tokens": 66326,
+          "cached_tokens": 0,
+          "completion_tokens": 2611,
+          "usd": 0.20498,
+          "deployment": "gpt-5.4"
+        },
+        "dax_planner": {
+          "calls": 1,
+          "prompt_tokens": 69009,
+          "cached_tokens": 0,
+          "completion_tokens": 1315,
+          "usd": 0.192247,
+          "deployment": "gpt-5.4"
+        },
+        "insight_signal_detector": {
+          "calls": 1,
+          "prompt_tokens": 65503,
+          "cached_tokens": 0,
+          "completion_tokens": 818,
+          "usd": 0.176028,
+          "deployment": "gpt-5.4"
+        },
+        "dax_generator": {
+          "calls": 8,
+          "prompt_tokens": 157117,
+          "cached_tokens": 135296,
+          "completion_tokens": 2212,
+          "usd": 0.121558,
+          "deployment": "gpt-5.4"
+        },
+        "report_understanding": {
+          "calls": 1,
+          "prompt_tokens": 36323,
+          "cached_tokens": 0,
+          "completion_tokens": 397,
+          "usd": 0.096763,
+          "deployment": "gpt-5.4"
+        },
+        "summary_dashboard_builder": {
+          "calls": 2,
+          "prompt_tokens": 13998,
+          "cached_tokens": 7296,
+          "completion_tokens": 1793,
+          "usd": 0.045474,
+          "deployment": "gpt-5.4"
+        },
+        "api_payloads": {
+          "calls": 1,
+          "prompt_tokens": 3719,
+          "cached_tokens": 0,
+          "completion_tokens": 546,
+          "usd": 0.017487,
+          "deployment": "gpt-5.4"
+        }
+      }
+    },
+    "C_optimized_warm": {
+      "config": "same as the cold run of this arm",
+      "exit": 0,
+      "seconds": 216.4,
+      "total": {
+        "calls": 14,
+        "prompt_tokens": 383710,
+        "cached_tokens": 176000,
+        "completion_tokens": 15805,
+        "usd": 0.677669
+      },
+      "by_node": {
+        "insight_investigator": {
+          "calls": 6,
+          "prompt_tokens": 203198,
+          "cached_tokens": 109824,
+          "completion_tokens": 1751,
+          "usd": 0.287155,
+          "deployment": "gpt-5.4"
+        },
+        "insight_synthesizer": {
+          "calls": 3,
+          "prompt_tokens": 76774,
+          "cached_tokens": 57088,
+          "completion_tokens": 10189,
+          "usd": 0.216321,
+          "deployment": "gpt-5.4"
+        },
+        "fresh_summary_generator": {
+          "calls": 1,
+          "prompt_tokens": 19518,
+          "cached_tokens": 0,
+          "completion_tokens": 793,
+          "usd": 0.06069,
+          "deployment": "gpt-5.4"
+        },
+        "insight_signal_detector": {
+          "calls": 1,
+          "prompt_tokens": 65692,
+          "cached_tokens": 0,
+          "completion_tokens": 735,
+          "usd": 0.052576,
+          "deployment": "gpt-5.4-mini"
+        },
+        "summary_dashboard_builder": {
+          "calls": 2,
+          "prompt_tokens": 14017,
+          "cached_tokens": 7296,
+          "completion_tokens": 1811,
+          "usd": 0.045792,
+          "deployment": "gpt-5.4"
+        },
+        "api_payloads": {
+          "calls": 1,
+          "prompt_tokens": 4511,
+          "cached_tokens": 1792,
+          "completion_tokens": 526,
+          "usd": 0.015135,
+          "deployment": "gpt-5.4"
+        }
+      }
+    },
+    "D_optimized_cold": {
+      "config": "optimized.json",
+      "exit": 0,
+      "seconds": 325.5,
+      "total": {
+        "calls": 22,
+        "prompt_tokens": 590734,
+        "cached_tokens": 196096,
+        "completion_tokens": 19424,
+        "usd": 1.20491
+      },
+      "by_node": {
+        "insight_investigator": {
+          "calls": 5,
+          "prompt_tokens": 169382,
+          "cached_tokens": 40960,
+          "completion_tokens": 1569,
+          "usd": 0.354829,
+          "deployment": "gpt-5.4"
+        },
+        "insight_synthesizer": {
+          "calls": 3,
+          "prompt_tokens": 72867,
+          "cached_tokens": 51200,
+          "completion_tokens": 9440,
+          "usd": 0.208568,
+          "deployment": "gpt-5.4"
+        },
+        "dax_planner": {
+          "calls": 1,
+          "prompt_tokens": 68970,
+          "cached_tokens": 0,
+          "completion_tokens": 1150,
+          "usd": 0.189675,
+          "deployment": "gpt-5.4"
+        },
+        "fresh_summary_generator": {
+          "calls": 2,
+          "prompt_tokens": 41832,
+          "cached_tokens": 0,
+          "completion_tokens": 1446,
+          "usd": 0.12627,
+          "deployment": "gpt-5.4"
+        },
+        "dax_generator": {
+          "calls": 6,
+          "prompt_tokens": 117998,
+          "cached_tokens": 96640,
+          "completion_tokens": 2145,
+          "usd": 0.10973,
+          "deployment": "gpt-5.4"
+        },
+        "report_understanding": {
+          "calls": 1,
+          "prompt_tokens": 36323,
+          "cached_tokens": 0,
+          "completion_tokens": 569,
+          "usd": 0.099343,
+          "deployment": "gpt-5.4"
+        },
+        "insight_signal_detector": {
+          "calls": 1,
+          "prompt_tokens": 65116,
+          "cached_tokens": 0,
+          "completion_tokens": 773,
+          "usd": 0.052316,
+          "deployment": "gpt-5.4-mini"
+        },
+        "summary_dashboard_builder": {
+          "calls": 2,
+          "prompt_tokens": 14108,
+          "cached_tokens": 7296,
+          "completion_tokens": 1801,
+          "usd": 0.045869,
+          "deployment": "gpt-5.4"
+        },
+        "api_payloads": {
+          "calls": 1,
+          "prompt_tokens": 4138,
+          "cached_tokens": 0,
+          "completion_tokens": 531,
+          "usd": 0.01831,
+          "deployment": "gpt-5.4"
+        }
+      }
+    }
+  }
+}

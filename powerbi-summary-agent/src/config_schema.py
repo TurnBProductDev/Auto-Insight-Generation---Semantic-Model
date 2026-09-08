@@ -329,6 +329,39 @@ _CONNECTION: tuple[ConfigKey, ...] = (
        "Retries when the AI is busy",
        "How many times to try again if the AI service is temporarily overloaded.",
        tier="expert", in_state=False),
+    _k("node_model_overrides", "object", {}, "connection",
+       "Use a cheaper AI for specific steps",
+       "Names which steps should run on a smaller, cheaper model instead of the main one. "
+       "Steps that write query code are checked by the validator afterwards, so a cheaper "
+       "model that writes worse code is caught rather than published; steps that write the "
+       "words people read should stay on the main model.",
+       "Maps a node label (the calling module name, e.g. 'dax_generator', 'dax_planner', "
+       "'report_understanding') to an Azure deployment name, overriding "
+       "AZURE_OPENAI_DEPLOYMENT for that node only. Empty routes everything to the single "
+       "configured deployment, exactly as before. Azure only.",
+       tier="expert"),
+    _k("plan_cache_enabled", "bool", False, "connection",
+       "Reuse the query plan between runs",
+       "The steps that work out which questions to ask read the dashboard's structure, not "
+       "today's figures, so they produce the same answer every day until the dashboard "
+       "changes. Turning this on stores that work and reuses it, which removes about a fifth "
+       "of a run's AI cost and makes the queries reviewable instead of regenerated nightly.",
+       "Cached by src/tools/plan_cache.py, keyed on dataset, report, the model's structural "
+       "shape, the business rules and the prompt files. A cached plan is still put through "
+       "dax_validator and scope_validator unchanged, and is dropped automatically if its "
+       "queries stop executing. Off reproduces the previous behaviour exactly.",
+       tier="standard"),
+    _k("plan_cache_folder", "string", "outputs/.runtime/plan_cache", "connection",
+       "Where the reused plan is stored",
+       "A folder for the saved query plan. Relative paths sit under the project.",
+       tier="expert"),
+    _k("plan_cache_max_age_days", "int", 7, "connection",
+       "Rebuild the plan at least this often",
+       "Forces a fresh plan on a schedule even when nothing looks wrong, so a plan cannot "
+       "quietly drift out of step with the dashboard forever. Zero means never expire.",
+       "The structural hash already invalidates on a schema change; this is the backstop for "
+       "drift the hash cannot see.",
+       tier="expert"),
     _k("azure_openai_api_key_env", "string", "AZURE_OPENAI_API_KEY", "connection",
        "Azure key: environment variable name",
        "The NAME of the environment variable that holds your Azure key - never the key itself. "
@@ -1570,6 +1603,21 @@ _INSIGHT_TUNING: tuple[ConfigKey, ...] = (
     _k("insight_probe_max_rows", "int", 20, "insight_tuning",
        "Rows returned by a follow-up query",
        "Keeps investigation results readable."),
+    _k("adaptive_investigation_enabled", "bool", False, "insight_tuning",
+       "Spend on investigation only when there is news",
+       "Buys follow-up investigation in proportion to how many unreported findings the day "
+       "actually produced, instead of paying the same amount on a dramatic day and a quiet "
+       "one. On a day where nothing new survived, the descriptive report still publishes in "
+       "full - only the 'why' digging is skipped.",
+       "Tiers in src/tools/escalation.py: 0 eligible findings buys nothing, 1-5 buys a "
+       "reduced budget, 6+ keeps the configured budget. Budgets are floored against config "
+       "with min(), so enabling this can never increase spend. Off reproduces fixed budgets."),
+    _k("adaptive_investigation_min_score", "float", 0.0, "insight_tuning",
+       "Ignore findings smaller than this when sizing the budget",
+       "A materiality floor so a day full of trivial movements does not count as an eventful "
+       "one. Zero counts every eligible finding.",
+       "A candidate carrying no score is counted rather than dropped - discarding unknowns "
+       "would let the gate silence a story it merely could not measure."),
     _k("insight_cross_dimensions", "int", 1, "insight_tuning",
        "Combined breakdowns to try",
        "How many two-way breakdowns, such as department by location, the sweep tries."),
