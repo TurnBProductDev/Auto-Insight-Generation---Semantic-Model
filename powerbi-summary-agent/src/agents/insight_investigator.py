@@ -313,6 +313,26 @@ def run(state: dict) -> dict:
     cache = dict(state.get("insight_query_cache", {}) or {})
     rows_by_name = {q.get("query_name"): q.get("rows") for q in scan.get("queries", [])}
 
+    from ..tools import ai_tier
+    if ai_tier.deterministic(state):
+        # The gap scan has already drilled every signal within its own members;
+        # the trail is those rows plus a code-written explanation. No tool loop.
+        from . import insight_deterministic
+        profile = state.get("semantic_model_profile") or {}
+        investigations = []
+        for signal in signals:
+            gap = gap_ev.get(signal.get("id"), {}) or {}
+            inv = insight_deterministic.trail(signal, gap, profile)
+            inv["reuse_summary"] = (briefs.get(signal.get("id")) or {}).get("reuse_summary")
+            inv["gap_probes_used"] = gap.get("gap_probes_used", 0)
+            inv["probe_budget"] = 0
+            investigations.append(inv)
+            log.info(f"  '{signal['id']}': trail written from {inv['gap_probes_used']} gap-scan "
+                     f"probe(s), concluded={inv['concluded']} (report_ai_tier=deterministic, no LLM).")
+        file_io.write_json(state, "insight_investigations.json", investigations)
+        return {"insight_investigations": investigations,
+                "insight_query_cache": cache, **log.updates()}
+
     investigations = []
     for signal in signals:
         log.info(f"  investigating signal '{signal['id']}': {signal.get('question', '')}")

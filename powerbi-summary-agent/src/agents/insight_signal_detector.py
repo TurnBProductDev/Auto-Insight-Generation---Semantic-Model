@@ -421,6 +421,35 @@ def run(state: dict) -> dict:
         log.info(f"Insight branch: no eligible (unseen) candidates - {reason}.")
         return _finish(state, log, [], novelty, reason=reason)
 
+    from ..tools import ai_tier
+    if ai_tier.deterministic(state):
+        # Rank every eligible candidate by the materiality score it already
+        # carries, through the same _rank_and_cap the LLM's picks go through.
+        # The one thing the LLM adds on the investigated tier is merging related
+        # candidates into a single story; here each stands alone, and the cap
+        # keeps the page as short as it was.
+        pool: List[dict] = []
+        for key, kind in (("business_candidates", None),
+                          ("data_quality_candidates", "data_quality")):
+            for cand in eligible.get(key) or []:
+                sig = _signal_from_candidate(cand)
+                sig.pop("injected", None)
+                sig["candidate_id"] = cand.get("id")
+                sig["related_candidate_ids"] = []
+                if kind:
+                    # The candidate list says which kind it is; the candidate
+                    # itself may not carry the field, and a data-quality finding
+                    # read as business would take a business finding's slot.
+                    sig["kind"] = kind
+                pool.append(sig)
+        if memory_enabled:
+            pool = _ensure_reserved_relative(pool, eligible)
+        signals = _rank_and_cap(pool, cap, max_dq)
+        log.info(f"Deterministic selection (report_ai_tier=deterministic): {len(signals)} "
+                 f"of {len(pool)} eligible candidate(s) by materiality score - no LLM call.")
+        reason = "ok" if signals else (novelty.get("reason") or "no_new_selected")
+        return _finish(state, log, signals, novelty, reason=reason)
+
     rules = file_io.read_prompt("_global_rules.md")
     task = file_io.read_prompt("insight_signal_detector_prompt.md")
 

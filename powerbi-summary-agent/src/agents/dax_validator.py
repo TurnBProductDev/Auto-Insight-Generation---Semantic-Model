@@ -110,7 +110,15 @@ def run(state: dict) -> dict:
     file_io.write_json(state, "validated_dax_queries.json", audit)
 
     fatal = not validated and not skipped
-    if fatal:
+    from ..tools import ai_tier  # local, like scope_validator above
+    if fatal and ai_tier.deterministic(state):
+        # Expected rather than a failure: the deterministic tier plans no DAX,
+        # and summary_fatal is exactly the route that builds the summary from
+        # the shared baseline evidence. Logging it as an error would put a
+        # failure line in every run log of a report that worked.
+        log.info("No summary DAX in the deterministic tier; the summary uses the "
+                 "shared baseline evidence.")
+    elif fatal:
         log.error("No DAX queries were generated - stopping.")
     else:
         log.info(

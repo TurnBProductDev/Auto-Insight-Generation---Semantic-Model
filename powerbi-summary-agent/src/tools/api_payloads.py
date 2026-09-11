@@ -1359,7 +1359,29 @@ def generate_kpi_insights_payload(
     if not signals:
         return []
     when = _now(generated_at)
-    texts = _author_kpi_texts([_signal_facts(s) for s in signals], state)
+    from . import ai_tier
+    if ai_tier.deterministic(state):
+        # No card-wording model call. The lead sentence is already code-owned
+        # and grounded, and _grounded_summary swaps an empty authored summary
+        # for that same sentence, so every figure on the card is one code wrote.
+        texts = {}
+        for s in signals:
+            family = _signal_family(s)
+            segment = str(s.get("affected_segment") or "This area")
+            lead = _lead_sentence(s, family) or _sentence(s.get("description") or segment)
+            texts[s.get("id")] = _KpiCardText(
+                signal_id=str(s.get("id")),
+                category="",
+                # Empty, not the lead: _assemble_kpi_card already opens the
+                # description with the lead sentence and appends this after it,
+                # so repeating it printed every card's sentence twice.
+                description="",
+                insight_title=f"{segment} {str(family or '').lower()}".strip(),
+                insight_summary="",
+                insight_action=f"Check {segment} by product and branch to see where the change happened.",
+            )
+    else:
+        texts = _author_kpi_texts([_signal_facts(s) for s in signals], state)
     report_id = feed_report_id(state) if multi_report_feed(state) else None
     extended_fields = kpi_extended_fields(state)
     cards: List[Dict[str, Any]] = []

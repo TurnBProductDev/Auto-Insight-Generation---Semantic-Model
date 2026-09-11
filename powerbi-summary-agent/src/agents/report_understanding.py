@@ -25,9 +25,60 @@ class ReportUnderstanding(BaseModel):
     notes: str = ""
 
 
+def _deterministic_understanding(state: dict) -> dict:
+    """The fields the LLM returns, read off the semantic profile instead.
+
+    Outside `dax_planner` - which plans nothing in the deterministic tier - the
+    only field any node reads is `domain`, for the insight report's title. So
+    this names what the profiler actually resolved rather than inventing a
+    fuller answer, and `notes` says plainly that no model was asked.
+    """
+    from ..tools import ai_tier
+
+    profile = state.get("semantic_model_profile") or {}
+    cfg = state.get("config") or {}
+
+    def reference(item) -> str | None:
+        if isinstance(item, dict):
+            return item.get("reference") or item.get("name") or item.get("table")
+        return str(item) if item else None
+
+    measures: list[str] = []
+    for bundle in [profile.get("primary_value_bundle") or {}] + list(
+            profile.get("volume_driver_bundles") or []):
+        for name in ((bundle or {}).get("measures") or {}).values():
+            if name and name not in measures:
+                measures.append(name)
+    dimensions = [r for r in (reference(d) for d in profile.get("dimensions") or []) if r]
+    dates = [r for r in (reference(d) for d in profile.get("time_dimensions") or []) if r]
+    fact = reference(profile.get("fact_table"))
+    domain = str(cfg.get("report_domain") or state.get("report_domain") or "sales").strip()
+    return {
+        # "Sales / Retail" is what the LLM has returned for this domain on every
+        # recorded run, so the report title is unchanged between the tiers.
+        "domain": "Sales / Retail" if domain.lower() == "sales" else domain.title(),
+        "fact_tables": [fact] if fact else [],
+        "dimension_tables": [],
+        "important_measures": measures,
+        "important_dimensions": dimensions,
+        "date_fields": dates,
+        "time_summary_possible": bool(dates),
+        "notes": (f"Built from the semantic profile without a model call "
+                  f"(report_ai_tier={ai_tier.tier(state)})."),
+    }
+
+
 def run(state: dict) -> dict:
     log = RunLogger(state)
     log.info("Node 3: understanding the report/model...")
+
+    from ..tools import ai_tier
+    if ai_tier.deterministic(state):
+        understanding = _deterministic_understanding(state)
+        file_io.write_json(state, "report_understanding.json", understanding)
+        log.info("Node 3: understanding built from the semantic profile "
+                 "(report_ai_tier=deterministic) - no LLM call.")
+        return {"report_understanding": understanding, **log.updates()}
 
     # The model's structure decides this, not today's rows, so a stored answer
     # for an unchanged schema is the same answer at zero cost.

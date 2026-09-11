@@ -732,7 +732,77 @@ def build_entity_cards(level: dict | None, contributions: dict | None,
             "authored": bool(str(authored.get("story") or "").strip()),
             "rag": summary_rag.verdict("revenue", row.get("change_pct")),
         })
+    _distinguish_repeated_stories(cards, rows, by_member, carrier, drag, level)
     return cards
+
+
+#: Word overlap at or above which the dashboard prose check reads two entity
+#: stories as the same sentence (`summary_validation.dashboard_rules` default).
+_STORY_DUPLICATE_THRESHOLD = 0.82
+
+
+def _distinguish_repeated_stories(cards: list[dict], rows: list[dict], by_member: dict,
+                                  carrier: str | None, drag: str | None,
+                                  level: dict | None) -> None:
+    """Give a code-written story that repeats an earlier one a distinguishing lead.
+
+    The levers template is chosen whenever an entity's three levers reconcile,
+    so entities sharing a lever pattern share the sentence word for word once
+    the figures are set aside. On the SB Mart run of 2026-09-11 three of four
+    stores read "thinner baskets, higher prices", and a page written with no
+    LLM failed its own prose audit on exactly that - the breadth rule as well as
+    the top-ranked one, so distinguishing only the leading pair is not enough.
+
+    It changes nothing unless the prose check itself would reject the page, and
+    it builds that check's input exactly as `dashboard_rules` does: material
+    cards only, because a steady area's honest "no material change" line is
+    exempt from distinctness. A first version compared every pair on its own
+    terms and was stricter than the validator - it rewrote stories on a page the
+    check accepts (golden master `outputs_r4_acceptance_20260730_fix`), prefixed
+    exempt steady lines, and on a card with no levers, where the situational
+    sentence already IS the story, printed that sentence twice.
+    """
+    from .summary_validation import _duplicate_story_errors, _similar  # local: no cycle
+
+    def material(card: dict) -> bool:
+        return str(card.get("severity") or "steady") != "steady"
+
+    def story_list() -> list[tuple[str, str, Any]]:
+        return [(str(c.get("member")), str(c.get("story") or ""), c.get("rank"))
+                for c in cards if material(c)]
+
+    if not _duplicate_story_errors(story_list(), _STORY_DUPLICATE_THRESHOLD):
+        return
+
+    peer_median = _num((level or {}).get("peer_median_change_pct"))
+    accepted: list[str] = []
+
+    def repeats(text: str) -> bool:
+        return any(_similar(text, earlier) >= _STORY_DUPLICATE_THRESHOLD for earlier in accepted)
+
+    for card, row in zip(cards, rows):
+        if not material(card):
+            continue
+        story = str(card.get("story") or "")
+        if card.get("authored") or not repeats(story):
+            accepted.append(story)
+            continue
+        contribution = (by_member.get(member_name(row.get("member"))) or {}).get("contribution_pts")
+        # The entity's own situation - carrying the level, dragging it, moving
+        # against its peers, weight rather than rate - told first, then its levers.
+        situation = _entity_story(row, None, contribution, carrier, drag, peer_median)
+        options = []
+        if situation and situation != NO_MATERIAL_CHANGE and situation != story:
+            options.append(f"{situation} {story}")
+        ordinal = _ordinal_word(row.get("rank"))
+        if ordinal:
+            options.append(f"The {ordinal} largest movement in the level. {story}")
+        chosen = next((option for option in options if not repeats(option)), None)
+        if chosen is None:
+            accepted.append(story)
+            continue
+        card["story"] = chosen
+        accepted.append(chosen)
 
 
 # ---------------------------------------------------------------------------

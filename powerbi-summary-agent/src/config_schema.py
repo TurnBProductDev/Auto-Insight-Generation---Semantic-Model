@@ -623,6 +623,22 @@ _FEATURES: tuple[ConfigKey, ...] = (
        "want the AI out of the loop entirely.",
        "False forces the grounded deterministic draft in both the summary generator and the "
        "dashboard builder."),
+    _k("report_ai_tier", "enum", "investigated", "features",
+       "How much AI this report uses",
+       "'AI investigates and writes' lets the AI plan the questions, pick the findings, dig into "
+       "them and write the wording - the report as it has always run. 'No AI' uses fixed rules "
+       "for every step, the way the stock and daily sales reports already work: the same checked "
+       "figures, costing nothing to run, but the wording is plainer and it cannot follow a "
+       "surprising finding with a new question of its own.",
+       "src/tools/ai_tier.py. Deterministic plans no summary DAX (validate_dax takes the existing "
+       "no-valid-DAX route to the baseline portfolio), ranks signals by materiality score, writes "
+       "investigation trails from the gap scan, and uses the grounded fallback for every prose "
+       "writer including KPI card text. Needs fresh_summary_enabled: the legacy summary path has "
+       "no deterministic writer.",
+       tier="standard",
+       choices=("investigated", "deterministic"),
+       choice_labels=(("investigated", "AI investigates and writes"),
+                      ("deterministic", "No AI - fixed rules only"))),
     _k("summary_dashboard_entity_levers", "bool", True, "features",
        "Break each location down into trips, basket size and price",
        "Spends one extra query so each location card can show whether revenue moved because of "

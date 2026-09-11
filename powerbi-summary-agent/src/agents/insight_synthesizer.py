@@ -670,9 +670,16 @@ def _deterministic_finding(signal: dict, brief: dict) -> str | None:
                         f"{'gained' if net >= 0 else 'lost'} {net_display} {unit}."
                     )
             elif main.get("other_change_display") and main.get("total_change_display"):
+                # No figure in this sentence, on purpose: it used to say "the
+                # above-100% result", and 100 is not a measured value, so the
+                # clarity check rightly rejected the repo's own fallback wording
+                # on every finding whose share exceeded the whole change. It also
+                # avoids "other areas" and "elsewhere", which that check bans as
+                # analyst shorthand. The trimming loop below matches on the
+                # "were not available, so this report cannot say" phrase.
                 sentences.append(
-                    "The area-by-area names were not available, so this report "
-                    "cannot explain the above-100% result safely."
+                    "Names for the rest of the business were not available, so this "
+                    "report cannot say which of them offset it."
                 )
         elif share >= 0:
             sentences.append(f"It made up {share_display} of the overall {total_name}.")
@@ -747,6 +754,17 @@ def _deterministic_finding(signal: dict, brief: dict) -> str | None:
             (i for i, sentence in enumerate(sentences) if sentence.startswith("Transactions ")),
             None,
         )
+        if transaction_index is None:
+            # Next to go is the note that the other areas' names were missing.
+            # It is a limitation the Evidence Trail still records - never the
+            # headline, the contribution, a quantified driver or the final
+            # check. Without this a finding with two lever sentences shipped at
+            # eight sentences against a limit of seven.
+            transaction_index = next(
+                (i for i, sentence in enumerate(sentences)
+                 if "were not available, so this report cannot say" in sentence),
+                None,
+            )
         if transaction_index is None:
             break
         sentences.pop(transaction_index)
@@ -1239,6 +1257,34 @@ def run(state: dict) -> dict:
                  for k in ("enabled", "reason", "incidents_found", "incidents_reported")},
         "note": note,
     }
+
+    from ..tools import ai_tier
+    if ai_tier.deterministic(state):
+        from . import insight_deterministic
+        report = insight_deterministic.write_report(
+            state, signals, investigations, fact_briefs, novelty)
+        # Held to the same manager-facing clarity check as an LLM draft. There is
+        # no rewrite loop to fall back on, so a failure is logged loudly rather
+        # than retried - the paragraphs are the repo's own grounded fallback, and
+        # a failure here means that fallback needs fixing, not re-rolling.
+        issues = _clarity_issues(
+            report,
+            sum(1 for s in signals if s.get("kind") != "data_quality"),
+            [b for b in fact_briefs if b.get("kind") != "data_quality"],
+            manager_supported_numbers,
+        )
+        if issues:
+            log.error("Deterministic insight report has %d manager-facing clarity issue(s): %s"
+                      % (len(issues), "; ".join(issues[:3])))
+        else:
+            log.info("Insight report written by fixed rules (report_ai_tier=deterministic) "
+                     "- no LLM call; clarity check clean.")
+        file_io.write_text(state, "insight_report.md", report)
+        domain = understanding.get("domain") if isinstance(understanding, dict) else None
+        title = f"{domain} Insight Report" if domain else "Insight Report"
+        file_io.write_text(state, "insight_report.html",
+                           html_report.render(report, title=title, eyebrow="Power BI Insight Report"))
+        return {"insight_report": report, **log.updates()}
 
     llm = get_llm(state)  # free-form text output
     messages = [

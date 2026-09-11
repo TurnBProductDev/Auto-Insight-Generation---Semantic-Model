@@ -772,6 +772,28 @@ def _overall_headline(overall_candidate: dict | None) -> str:
          if fact.get("fact_kind") == "comparison" and "revenue" in str(fact.get("metric") or "").casefold()),
         None,
     )
+    # The comparison fact already carries every display a headline needs. Passing
+    # it to _headline_from_fact alone read its metric name, "Revenue comparison",
+    # which holds no change word, and published "Revenue comparison was +968.1K."
+    # as the page headline on the SB Mart run of 2026-09-11. Every figure below is
+    # a display value on the fact itself, so the headline stays grounded.
+    if revenue and revenue.get("change_display") and revenue.get("current_display"):
+        # _number is a finiteness CHECK returning a bool, not a parser: using its
+        # result as the value read every change as True, i.e. positive, and
+        # published a decline as "Revenue increased by -12.0K".
+        value = revenue.get("change_value")
+        if not _number(value):
+            value = revenue.get("raw_value")
+        raw = float(value) if _number(value) else 0.0
+        direction = "increased" if raw > 0 else "decreased" if raw < 0 else "was unchanged"
+        pct = f" ({revenue['change_pct_display']})" if revenue.get("change_pct_display") else ""
+        comparison = str(revenue.get("comparison") or "").strip()
+        if raw == 0:
+            text = f"Revenue was unchanged at {revenue['current_display']}"
+        else:
+            text = (f"Revenue {direction} by {revenue['change_display']}{pct} "
+                    f"to {revenue['current_display']}")
+        return text + (f", compared with {comparison}." if comparison else ".")
     return _headline_from_fact(overall_candidate, [revenue] if revenue else facts[:1])
 
 
@@ -928,7 +950,8 @@ def _run_r4(state: dict, log: RunLogger, novelty: dict) -> dict:
         log.info("Fresh summary (R4): no overall evidence or focus; empty summary.")
         return {"fresh_summary": summary, **log.updates()}
 
-    if not state.get("summary_llm_authoring_enabled", True):
+    from ..tools import ai_tier
+    if not ai_tier.authoring_allowed(state):
         authored = _r4_fallback(state, overall_candidate, merged_focuses)
         log.info("Balanced summary LLM authoring disabled; used deterministic fallback.")
     else:
@@ -1081,11 +1104,19 @@ def run(state: dict) -> dict:
     # One perspective per run gives the memory rotation a clear, stable unit.
     selected = eligible[:1]
     summary_type = str(novelty.get("summary_type") or "new_perspective")
-    try:
-        authored = _invoke(state, selected)
-    except Exception as exc:  # noqa: BLE001 - a deterministic grounded fallback still delivers
+    from ..tools import ai_tier
+    if ai_tier.deterministic(state):
+        # Gated on the tier only, deliberately: this single-focus path never read
+        # summary_llm_authoring_enabled, and routing it through that flag too
+        # would change what an existing config does.
         authored = _fallback(selected[0], state.get("summary_period_context") or {}, summary_type)
-        log.error(f"Fresh summary LLM draft failed validation; used deterministic fallback ({type(exc).__name__}: {exc}).")
+        log.info("Fresh summary written by fixed rules (report_ai_tier=deterministic) - no LLM call.")
+    else:
+        try:
+            authored = _invoke(state, selected)
+        except Exception as exc:  # noqa: BLE001 - a deterministic grounded fallback still delivers
+            authored = _fallback(selected[0], state.get("summary_period_context") or {}, summary_type)
+            log.error(f"Fresh summary LLM draft failed validation; used deterministic fallback ({type(exc).__name__}: {exc}).")
 
     by_id = {str(item.get("candidate_id")): item for item in selected}
     covered = [by_id[item] for item in authored.get("covered_candidate_ids", []) if item in by_id]

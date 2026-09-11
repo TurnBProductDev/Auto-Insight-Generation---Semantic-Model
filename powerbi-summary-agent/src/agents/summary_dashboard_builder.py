@@ -350,7 +350,8 @@ def _narratives(state: dict, page_views: list[dict], log: RunLogger) -> dict:
     Validation is per view against that view's own model, so a figure from the
     period-to-date view cannot leak into the latest-period view.
     """
-    if not state.get("summary_llm_authoring_enabled", True):
+    from ..tools import ai_tier
+    if not ai_tier.authoring_allowed(state):
         return {}
     rules = (
         file_io.read_prompt("_global_rules.md")
