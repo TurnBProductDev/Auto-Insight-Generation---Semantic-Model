@@ -1,0 +1,1448 @@
+{
+ "_source": "The primary view of summary_dashboard.json from the isolated narrated Sales YoY bench run p2_run1 of 2026-09-11 (SB Mart).",
+ "view": {
+  "key": "primary",
+  "label": "Full period",
+  "period": {
+   "data_as_of": "2026-09-10",
+   "grain": "month",
+   "freshness_status": "current",
+   "period_anchor": "2026-08",
+   "comparison": "the same period last year"
+  },
+  "hero": {
+   "state": "Thinner baskets, higher prices - revenue up",
+   "verdict_tag": "Price masking - watch real demand",
+   "headline": "For 2026-08, revenue was 40.8M, up +2.59% versus the same period last year.",
+   "narrative": "Revenue reached 40.8M, up +2.59% versus the same period last year. The two-way read is 10.1M transactions, up +2.43%, with basket value at 4.05, up +0.16%. Under that, transactions added about 966.3K, basket size fell to 2.21 and -4.12%, and price rose to 1.83 and +4.47%. The demand check is weaker: units were 22.3M, down -1.79%, so revenue growth sat with fewer items sold per basket.",
+   "levers": [
+    {
+     "key": "transactions",
+     "label": "Transactions",
+     "change_pct": 2.4278744284882414,
+     "display": "+2.43%",
+     "effect": 966266.5537831171,
+     "effect_display": "+966K"
+    },
+    {
+     "key": "basket_size",
+     "label": "Basket Size",
+     "change_pct": -4.122508076304751,
+     "display": "-4.12%",
+     "effect": -1680545.9893981596,
+     "effect_display": "-1.7M"
+    },
+    {
+     "key": "price",
+     "label": "Price",
+     "change_pct": 4.467325978466419,
+     "display": "+4.47%",
+     "effect": 1746036.0057150326,
+     "effect_display": "+1.7M"
+    }
+   ],
+   "waterfall": [
+    {
+     "label": "Prior",
+     "kind": "total",
+     "value": 39798868.6089
+    },
+    {
+     "label": "Transactions",
+     "kind": "up",
+     "value": 966266.5537831171
+    },
+    {
+     "label": "Basket Size",
+     "kind": "down",
+     "value": -1680545.9893981596
+    },
+    {
+     "label": "Price",
+     "kind": "up",
+     "value": 1746036.0057150326
+    },
+    {
+     "label": "Current",
+     "kind": "total",
+     "value": 40830625.179
+    }
+   ],
+   "dual_trend": {
+    "labels": [
+     "None",
+     "None",
+     "None",
+     "None",
+     "None",
+     "None",
+     "None",
+     "None",
+     "None"
+    ],
+    "series": [
+     {
+      "name": "Last year",
+      "values": [
+       5050918.6416,
+       4645516.2066,
+       5578666.6518,
+       4072992.2577,
+       5168609.6571,
+       4474619.5797,
+       4506482.9277,
+       4664975.1552,
+       1636087.5315
+      ],
+      "style": "reference"
+     },
+     {
+      "name": "This year",
+      "values": [
+       5522643.0045,
+       5114458.8054,
+       5026920.3774,
+       4643347.3236,
+       5386948.9236,
+       4198591.0737,
+       4770773.2755,
+       4461101.5572,
+       1705840.8381
+      ],
+      "style": "primary"
+     }
+    ],
+    "grain": "month"
+   },
+   "reconciles": true,
+   "reconciliation_note": "Growth rates multiply rather than add. Effects are charged in reading order - transactions, then basket size, then price - so they sum exactly to the revenue change; a different order moves the shared interaction between levers."
+  },
+  "kpis": [
+   {
+    "key": "revenue",
+    "label": "Revenue",
+    "value_display": "40.8M",
+    "unit_suffix": "",
+    "current": 40830625.179,
+    "prior": 39798868.6089,
+    "change": 1031756.5700999945,
+    "change_pct": 2.5924268858971247,
+    "change_display": "+2.59%",
+    "direction": "up",
+    "rag": {
+     "measure": "revenue",
+     "band": "standard",
+     "status": "on_track",
+     "label": "On track",
+     "tone": "positive",
+     "caution": null,
+     "read_with": null
+    },
+    "sparkline": [
+     5522643.0045,
+     5114458.8054,
+     5026920.3774,
+     4643347.3236,
+     5386948.9236,
+     4198591.0737,
+     4770773.2755,
+     4461101.5572,
+     1705840.8381
+    ],
+    "note": "The headline result."
+   },
+   {
+    "key": "transactions",
+    "label": "Transactions",
+    "value_display": "10.1M",
+    "unit_suffix": "",
+    "current": 10079036.0,
+    "prior": 9840130.0,
+    "change": 238906.0,
+    "change_pct": 2.4278744284882414,
+    "change_display": "+2.43%",
+    "direction": "up",
+    "rag": {
+     "measure": "transactions",
+     "band": "standard",
+     "status": "on_track",
+     "label": "On track",
+     "tone": "positive",
+     "caution": null,
+     "read_with": null
+    },
+    "sparkline": [],
+    "note": "How many bills - the healthiest lever to grow."
+   },
+   {
+    "key": "units",
+    "label": "Units",
+    "value_display": "22.3M",
+    "unit_suffix": "",
+    "current": 22292815.402440004,
+    "prior": 22700221.49115,
+    "change": -407406.08870999515,
+    "change_pct": -1.7947229672134615,
+    "change_display": "-1.79%",
+    "direction": "down",
+    "rag": {
+     "measure": "units",
+     "band": "tough",
+     "status": "off_track",
+     "label": "Off track",
+     "tone": "critical",
+     "caution": "We sold fewer items than last year.",
+     "read_with": null
+    },
+    "sparkline": [],
+    "note": "Real demand, with price stripped out."
+   },
+   {
+    "key": "basket_value",
+    "label": "Basket Value",
+    "value_display": "4.05",
+    "unit_suffix": "",
+    "current": 4.051044681157999,
+    "prior": 4.044547034327799,
+    "change": 0.0064976468302004875,
+    "change_pct": 0.16065202790453867,
+    "change_display": "+0.16%",
+    "direction": "up",
+    "rag": {
+     "measure": "basket_value",
+     "band": "standard",
+     "status": "on_track",
+     "label": "On track",
+     "tone": "positive",
+     "caution": null,
+     "read_with": null
+    },
+    "sparkline": [],
+    "note": "Average spend per bill."
+   },
+   {
+    "key": "basket_size",
+    "label": "Basket Size",
+    "value_display": "2.21",
+    "unit_suffix": "items",
+    "current": 2.21180035495855,
+    "prior": 2.3069026009971414,
+    "change": -0.09510224603859152,
+    "change_pct": -4.122508076304751,
+    "change_display": "-4.12%",
+    "direction": "down",
+    "rag": {
+     "measure": "basket_size",
+     "band": "tough",
+     "status": "off_track",
+     "label": "Off track",
+     "tone": "critical",
+     "caution": "Each basket held fewer items than last year.",
+     "read_with": "price"
+    },
+    "sparkline": [],
+    "note": "Items per bill - the range at work."
+   },
+   {
+    "key": "price",
+    "label": "Price",
+    "value_display": "1.83",
+    "unit_suffix": "",
+    "current": 1.8315598295642364,
+    "prior": 1.7532370168465603,
+    "change": 0.07832281271767605,
+    "change_pct": 4.467325978466419,
+    "change_display": "+4.47%",
+    "direction": "up",
+    "rag": {
+     "measure": "price",
+     "band": "standard",
+     "status": "on_track",
+     "label": "On track",
+     "tone": "positive",
+     "caution": null,
+     "read_with": "basket_size"
+    },
+    "sparkline": [],
+    "note": "Read with Basket Size; a rise is not automatically good."
+   }
+  ],
+  "signals": [
+   {
+    "key": "declining_areas",
+    "label": "Section in decline",
+    "value": "43.5%",
+    "badge": "10 of 23",
+    "tone": "warning",
+    "note": "Read alongside the revenue those areas carry, on the next card."
+   },
+   {
+    "key": "at_risk_revenue",
+    "label": "Revenue in declining areas",
+    "value": "20.6%",
+    "badge": "exposure",
+    "tone": "positive",
+    "note": "The share of current business sitting inside areas that went backwards - the size of the exposure, not a forecast."
+   },
+   {
+    "key": "growth_quality",
+    "label": "Growth quality",
+    "value": "40%",
+    "badge": "from Price",
+    "tone": "positive",
+    "note": "No single lever dominates - the largest, Price, is 40% of the total lever movement."
+   }
+  ],
+  "calendar": {
+   "comparator_effect": false,
+   "verdict": {
+    "uniform_move": false,
+    "direction": "down",
+    "median_change_pct": -2.813235446762947,
+    "cluster_spread_pct": 4.007799605839076,
+    "count_share_pct": 50.0,
+    "business_share_pct": 47.76664194755214,
+    "member_count": 4,
+    "reason": "movements are not uniform enough across the estate to point at the comparator",
+    "checks": {
+     "comparable_members": 4,
+     "min_members": 3,
+     "required_count_share_pct": 80.0,
+     "required_business_share_pct": 80.0,
+     "max_cluster_spread_pct": 8.0,
+     "direction": "down",
+     "count_share_pct": 50.0,
+     "business_share_pct": 47.76664194755214,
+     "median_change_pct": -2.813235446762947,
+     "cluster_spread_pct": 4.007799605839076
+    }
+   },
+   "event": null,
+   "exceptions": [],
+   "headline": null,
+   "exceptions_note": null
+  },
+  "layers": {
+   "overview": {
+    "available": true
+   },
+   "entities": {
+    "role": "store",
+    "available": true,
+    "contributions": {
+     "role": "store",
+     "items": [
+      {
+       "member": "ST4",
+       "contribution_pts": 3.1300547448764067,
+       "change": 1245726.3753000014,
+       "change_pct": 10.389516500107877,
+       "current": 13235951.0916,
+       "severity": "critical",
+       "direction": "up",
+       "business_share_pct": 32.41672404861318
+      },
+      {
+       "member": "ST3",
+       "contribution_pts": 0.5176836741884812,
+       "change": 206032.2452999996,
+       "change_pct": 2.612890431315766,
+       "current": 8091255.5532,
+       "severity": "watch",
+       "direction": "up",
+       "business_share_pct": 19.816634003834686
+      },
+      {
+       "member": "ST1",
+       "contribution_pts": -0.09891109766672342,
+       "change": -39365.49780000001,
+       "change_pct": -0.308360693113524,
+       "current": 12726690.1893,
+       "severity": "watch",
+       "direction": "down",
+       "business_share_pct": 31.169471771511326
+      },
+      {
+       "member": "ST2",
+       "contribution_pts": -0.9564004355010237,
+       "change": -380636.5526999999,
+       "change_pct": -5.318110200412369,
+       "current": 6776728.3449,
+       "severity": "watch",
+       "direction": "down",
+       "business_share_pct": 16.597170176040816
+      }
+     ],
+     "sums_to_pts": 2.5924268858971407,
+     "sums_to": "+2.59 pts",
+     "carrier": {
+      "member": "ST4",
+      "contribution_pts": 3.1300547448764067,
+      "change": 1245726.3753000014,
+      "change_pct": 10.389516500107877,
+      "current": 13235951.0916,
+      "severity": "critical",
+      "direction": "up",
+      "business_share_pct": 32.41672404861318
+     },
+     "drag": {
+      "member": "ST2",
+      "contribution_pts": -0.9564004355010237,
+      "change": -380636.5526999999,
+      "change_pct": -5.318110200412369,
+      "current": 6776728.3449,
+      "severity": "watch",
+      "direction": "down",
+      "business_share_pct": 16.597170176040816
+     },
+     "note": "ST4 carries the group (+3.13 pts) while ST2 drags it (-0.96 pts)."
+    },
+    "cards": [
+     {
+      "member": "ST4",
+      "comparable": true,
+      "current": 13235951.0916,
+      "current_display": "13.2M",
+      "change_pct": 10.389516500107877,
+      "change_display": "+10.39%",
+      "change": 1245726.3753000014,
+      "severity": "critical",
+      "rank": 1,
+      "business_share_pct": 32.41672404861318,
+      "vs_peer_median_pts": 9.237251631006757,
+      "state": "Thinner baskets, higher prices - revenue up",
+      "levers": {
+       "transactions": 6.059182898845212,
+       "basket_size": -5.147761467858538,
+       "price": 9.73166512891041
+      },
+      "lever_effects": {
+       "transactions": 726509.6455431614,
+       "basket_size": -654627.1514488886,
+       "price": 1173843.8812057278
+      },
+      "contribution_pts": 3.1300547448764067,
+      "contribution_display": "+3.13 pts",
+      "story": "ST4 had the largest positive movement among the stores shown. Revenue rose +10.39% (+1.2M) on 32.42% of business, with transactions +6.06%, basket size -5.15%, and price +9.73%.",
+      "authored": true,
+      "rag": {
+       "measure": "revenue",
+       "band": "standard",
+       "status": "on_track",
+       "label": "On track",
+       "tone": "positive",
+       "caution": null,
+       "read_with": null
+      }
+     },
+     {
+      "member": "ST2",
+      "comparable": true,
+      "current": 6776728.3449,
+      "current_display": "6.8M",
+      "change_pct": -5.318110200412369,
+      "change_display": "-5.32%",
+      "change": -380636.5526999999,
+      "severity": "watch",
+      "rank": 2,
+      "business_share_pct": 16.597170176040816,
+      "vs_peer_median_pts": 6.470375069513491,
+      "state": "Price masking - revenue down",
+      "levers": {
+       "transactions": -6.304609017295992,
+       "basket_size": -0.6197465648146839,
+       "price": 1.6830559487437404
+      },
+      "lever_effects": {
+       "transactions": -451243.8727348677,
+       "basket_size": -41560.95468391694,
+       "price": 112168.27471878495
+      },
+      "contribution_pts": -0.9564004355010237,
+      "contribution_display": "-0.96 pts",
+      "story": "ST2 had the sharpest decline. Revenue fell -5.32% (-381K), with transactions down -6.30%, basket size down -0.62%, and price up +1.68%, so the rise in price did not cover weaker basket activity.",
+      "authored": true,
+      "rag": {
+       "measure": "revenue",
+       "band": "standard",
+       "status": "off_track",
+       "label": "Off track",
+       "tone": "critical",
+       "caution": null,
+       "read_with": null
+      }
+     },
+     {
+      "member": "ST3",
+      "comparable": true,
+      "current": 8091255.5532,
+      "current_display": "8.1M",
+      "change_pct": 2.612890431315766,
+      "change_display": "+2.61%",
+      "change": 206032.2452999996,
+      "severity": "watch",
+      "rank": 3,
+      "business_share_pct": 19.816634003834686,
+      "vs_peer_median_pts": 1.460625562214645,
+      "state": "Thinner baskets, higher prices - revenue up",
+      "levers": {
+       "transactions": 4.5402814854407705,
+       "basket_size": -5.042924469113717,
+       "price": 3.369145248072543
+      },
+      "lever_effects": {
+       "transactions": 358011.333934244,
+       "basket_size": -415700.0967995176,
+       "price": 263721.0081652742
+      },
+      "contribution_pts": 0.5176836741884812,
+      "contribution_display": "+0.52 pts",
+      "story": "ST3 moved up, but more moderately than ST4. Revenue increased +2.61% (+206K), built by transactions up +4.54%, basket size down -5.04%, and price up +3.37%.",
+      "authored": true,
+      "rag": {
+       "measure": "revenue",
+       "band": "standard",
+       "status": "on_track",
+       "label": "On track",
+       "tone": "positive",
+       "caution": null,
+       "read_with": null
+      }
+     },
+     {
+      "member": "ST1",
+      "comparable": true,
+      "current": 12726690.1893,
+      "current_display": "12.7M",
+      "change_pct": -0.308360693113524,
+      "change_display": "-0.31%",
+      "change": -39365.49780000001,
+      "severity": "watch",
+      "rank": 4,
+      "business_share_pct": 31.169471771511326,
+      "vs_peer_median_pts": 1.460625562214645,
+      "state": "Thinner baskets, higher prices - revenue down",
+      "levers": {
+       "transactions": 2.247390284296573,
+       "basket_size": -4.431797516850714,
+       "price": 2.0218249500320664
+      },
+      "lever_effects": {
+       "transactions": 286903.0951997756,
+       "basket_size": -578480.7031895088,
+       "price": 252212.11018973225
+      },
+      "contribution_pts": -0.09891109766672342,
+      "contribution_display": "-0.10 pts",
+      "story": "ST1 was close to flat by rate, but still meaningful for the total. Revenue edged down -0.31% (-39K) on 31.17% of business, with transactions up +2.25%, basket size down -4.43%, and price up +2.02%.",
+      "authored": true,
+      "rag": {
+       "measure": "revenue",
+       "band": "standard",
+       "status": "watch",
+       "label": "Watch",
+       "tone": "warning",
+       "caution": null,
+       "read_with": null
+      }
+     }
+    ],
+    "new_entities": null,
+    "pointer": null
+   },
+   "areas": {
+    "available": true,
+    "pointer": null,
+    "entries": [
+     {
+      "focus_key": "focus:v2:a6288ea04f48a34a2657f1aa087e4fd7845976c23d1f674db7bf6412bc82b0cb",
+      "segment": "CONSUMER GOODS",
+      "role": "division",
+      "lens": "performance",
+      "sentiment": "opportunity",
+      "headline": "CONSUMER GOODS revenue changed by +426.1K (+2.0%).",
+      "connect": "CONSUMER GOODS added +426.1K, with transactions change at +71.6K and quantity change at -459.0K. Within this division, change in units sold reduced revenue by -634.0K, while average revenue per item and mix added +1.1M. PERSONAL CARE added +197.0K, and ST4 led CONSUMER GOODS across the stores included in the comparison at +346.4K.",
+      "facts": [
+       {
+        "fact_id": "D1",
+        "fact_kind": "deep_dive",
+        "subject": "CONSUMER GOODS",
+        "metric": "Revenue change",
+        "display_value": "+426.1K",
+        "raw_value": 426131.8308000006,
+        "statement": "CONSUMER GOODS revenue changed by +426.1K (+2.0%).",
+        "subject_role": "focus",
+        "detail_role": "focus_metric",
+        "coverage": "complete"
+       },
+       {
+        "fact_id": "D2",
+        "fact_kind": "deep_dive",
+        "subject": "CONSUMER GOODS",
+        "metric": "Quantity change",
+        "display_value": "-459.0K",
+        "raw_value": -459033.8237100076,
+        "statement": "CONSUMER GOODS quantity changed by -459.0K.",
+        "subject_role": "focus",
+        "detail_role": "focus_metric",
+        "coverage": "complete"
+       },
+       {
+        "fact_id": "D3",
+        "fact_kind": "deep_dive",
+        "subject": "CONSUMER GOODS",
+        "metric": "Transactions change",
+        "display_value": "+71.6K",
+        "raw_value": 71605.0,
+        "statement": "CONSUMER GOODS transactions changed by +71.6K.",
+        "subject_role": "focus",
+        "detail_role": "focus_metric",
+        "coverage": "complete"
+       },
+       {
+        "fact_id": "D4",
+        "fact_kind": "deep_dive",
+        "subject": "PERSONAL CARE",
+        "metric": "Revenue change in item_category_name",
+        "display_value": "+197.0K",
+        "raw_value": 197038.42650000006,
+        "statement": "Within CONSUMER GOODS, PERSONAL CARE added +197.0K.",
+        "subject_role": "peer",
+        "detail_role": "contributor",
+        "coverage": "complete"
+       },
+       {
+        "fact_id": "D5",
+        "fact_kind": "deep_dive",
+        "subject": "ST4",
+        "metric": "Store contribution",
+        "display_value": "+346.4K",
+        "raw_value": 346412.4057,
+        "statement": "ST4 led CONSUMER GOODS across the stores included in the comparison at +346.4K.",
+        "subject_role": "peer",
+        "detail_role": "location",
+        "coverage": "complete"
+       },
+       {
+        "fact_id": "D6",
+        "fact_kind": "deep_dive",
+        "subject": "CONSUMER GOODS",
+        "metric": "Volume effect on revenue",
+        "display_value": "-634.0K",
+        "raw_value": -633980.0451266881,
+        "statement": "Within CONSUMER GOODS, change in units sold reduced revenue by -634.0K.",
+        "subject_role": "focus",
+        "detail_role": "driver",
+        "coverage": "complete"
+       },
+       {
+        "fact_id": "D7",
+        "fact_kind": "deep_dive",
+        "subject": "CONSUMER GOODS",
+        "metric": "Rate and mix effect on revenue",
+        "display_value": "+1.1M",
+        "raw_value": 1060111.8759266883,
+        "statement": "Within CONSUMER GOODS, average revenue per item and mix added revenue by +1.1M.",
+        "subject_role": "focus",
+        "detail_role": "driver",
+        "coverage": "complete"
+       }
+      ],
+      "contributors": [],
+      "location": [
+       {
+        "store_no": "ST1",
+        "revenue_current": 6727933.4886,
+        "revenue_prior": 6753485.9538,
+        "revenue_change": -25552.465200000443,
+        "abs_sort": 25552.465200000443
+       },
+       {
+        "store_no": "ST2",
+        "revenue_current": 3718294.3485,
+        "revenue_prior": 3835044.9216,
+        "revenue_change": -116750.57310000015,
+        "abs_sort": 116750.57310000015
+       },
+       {
+        "store_no": "ST3",
+        "revenue_current": 4715284.833,
+        "revenue_prior": 4493262.3696,
+        "revenue_change": 222022.46339999977,
+        "abs_sort": 222022.46339999977
+       },
+       {
+        "store_no": "ST4",
+        "revenue_current": 6396712.4385,
+        "revenue_prior": 6050300.0328,
+        "revenue_change": 346412.4057,
+        "abs_sort": 346412.4057
+       }
+      ],
+      "trend": {
+       "dimension": "Month",
+       "reference": "'MIS_DEEP_DIVE2'[Month]",
+       "grain": "month",
+       "rows": [
+        {
+         "month": 1,
+         "revenue_current": 2984628.4434,
+         "revenue_prior": 2770016.0409,
+         "revenue_change": 214612.40250000032
+        },
+        {
+         "month": 2,
+         "revenue_current": 2750629.1904,
+         "revenue_prior": 2564639.7012,
+         "revenue_change": 185989.4892000002
+        },
+        {
+         "month": 3,
+         "revenue_current": 2504282.778,
+         "revenue_prior": 2779118.4996,
+         "revenue_change": -274835.7216000003
+        },
+        {
+         "month": 4,
+         "revenue_current": 2499522.1785,
+         "revenue_prior": 2133891.9288,
+         "revenue_change": 365630.24970000004
+        },
+        {
+         "month": 5,
+         "revenue_current": 2785529.7549,
+         "revenue_prior": 2789909.0604,
+         "revenue_change": -4379.305499999784
+        },
+        {
+         "month": 6,
+         "revenue_current": 2214625.8897,
+         "revenue_prior": 2343842.217,
+         "revenue_change": -129216.3273
+        },
+        {
+         "month": 7,
+         "revenue_current": 2551675.3839,
+         "revenue_prior": 2411170.5159,
+         "revenue_change": 140504.86799999978
+        },
+        {
+         "month": 8,
+         "revenue_current": 2354748.5322,
+         "revenue_prior": 2459219.6376,
+         "revenue_change": -104471.10540000023
+        },
+        {
+         "month": 9,
+         "revenue_current": 912582.9576,
+         "revenue_prior": 880285.6764,
+         "revenue_change": 32297.28119999997
+        }
+       ],
+       "completeness": "complete",
+       "direction": "reversal_up"
+      },
+      "signature_duplicate": false
+     },
+     {
+      "focus_key": "focus:v2:95a64a43fb5e9d7101162ea812625b927aceb2ade19333c077afbc2cd8be10a0",
+      "segment": "LIFESTYLE",
+      "role": "division",
+      "lens": "performance",
+      "sentiment": "opportunity",
+      "headline": "LIFESTYLE revenue changed by +338.4K (+5.1%).",
+      "connect": "LIFESTYLE added +338.4K, with transactions change at +79.3K and quantity change at +112.1K. Within this division, change in units sold added +465.5K, while average revenue per item and mix reduced revenue by -127.2K. MENS APPAREL added +138.9K, TRAVEL reduced revenue by -18.9K, and ST4 led LIFESTYLE across the stores included in the comparison at +583.0K.",
+      "facts": [
+       {
+        "fact_id": "D1",
+        "fact_kind": "deep_dive",
+        "subject": "LIFESTYLE",
+        "metric": "Revenue change",
+        "display_value": "+338.4K",
+        "raw_value": 338367.5343000004,
+        "statement": "LIFESTYLE revenue changed by +338.4K (+5.1%).",
+        "subject_role": "focus",
+        "detail_role": "focus_metric",
+        "coverage": "complete"
+       },
+       {
+        "fact_id": "D2",
+        "fact_kind": "deep_dive",
+        "subject": "LIFESTYLE",
+        "metric": "Quantity change",
+        "display_value": "+112.1K",
+        "raw_value": 112111.0,
+        "statement": "LIFESTYLE quantity changed by +112.1K.",
+        "subject_role": "focus",
+        "detail_role": "focus_metric",
+        "coverage": "complete"
+       },
+       {
+        "fact_id": "D3",
+        "fact_kind": "deep_dive",
+        "subject": "LIFESTYLE",
+        "metric": "Transactions change",
+        "display_value": "+79.3K",
+        "raw_value": 79308.0,
+        "statement": "LIFESTYLE transactions changed by +79.3K.",
+        "subject_role": "focus",
+        "detail_role": "focus_metric",
+        "coverage": "complete"
+       },
+       {
+        "fact_id": "D4",
+        "fact_kind": "deep_dive",
+        "subject": "MENS APPAREL",
+        "metric": "Revenue change in item_category_name",
+        "display_value": "+138.9K",
+        "raw_value": 138883.8744000001,
+        "statement": "Within LIFESTYLE, MENS APPAREL added +138.9K.",
+        "subject_role": "peer",
+        "detail_role": "contributor",
+        "coverage": "complete"
+       },
+       {
+        "fact_id": "D5",
+        "fact_kind": "deep_dive",
+        "subject": "TRAVEL",
+        "metric": "Revenue change in item_category_name",
+        "display_value": "-18.9K",
+        "raw_value": -18861.97589999996,
+        "statement": "Within LIFESTYLE, TRAVEL reduced revenue by -18.9K.",
+        "subject_role": "peer",
+        "detail_role": "contributor",
+        "coverage": "complete"
+       },
+       {
+        "fact_id": "D6",
+        "fact_kind": "deep_dive",
+        "subject": "ST4",
+        "metric": "Store contribution",
+        "display_value": "+583.0K",
+        "raw_value": 583009.3448999999,
+        "statement": "ST4 led LIFESTYLE across the stores included in the comparison at +583.0K.",
+        "subject_role": "peer",
+        "detail_role": "location",
+        "coverage": "complete"
+       },
+       {
+        "fact_id": "D7",
+        "fact_kind": "deep_dive",
+        "subject": "LIFESTYLE",
+        "metric": "Volume effect on revenue",
+        "display_value": "+465.5K",
+        "raw_value": 465519.1702824713,
+        "statement": "Within LIFESTYLE, change in units sold added revenue by +465.5K.",
+        "subject_role": "focus",
+        "detail_role": "driver",
+        "coverage": "complete"
+       },
+       {
+        "fact_id": "D8",
+        "fact_kind": "deep_dive",
+        "subject": "LIFESTYLE",
+        "metric": "Rate and mix effect on revenue",
+        "display_value": "-127.2K",
+        "raw_value": -127151.63598247143,
+        "statement": "Within LIFESTYLE, average revenue per item and mix reduced revenue by -127.2K.",
+        "subject_role": "focus",
+        "detail_role": "driver",
+        "coverage": "complete"
+       }
+      ],
+      "contributors": [],
+      "location": [
+       {
+        "store_no": "ST3",
+        "revenue_current": 1065106.0818,
+        "revenue_prior": 1098301.4208,
+        "revenue_change": -33195.33899999992,
+        "abs_sort": 33195.33899999992
+       },
+       {
+        "store_no": "ST1",
+        "revenue_current": 2169917.4888,
+        "revenue_prior": 2257097.5107,
+        "revenue_change": -87180.02190000005,
+        "abs_sort": 87180.02190000005
+       },
+       {
+        "store_no": "ST2",
+        "revenue_current": 1022462.4303,
+        "revenue_prior": 1146728.88,
+        "revenue_change": -124266.44969999988,
+        "abs_sort": 124266.44969999988
+       },
+       {
+        "store_no": "ST4",
+        "revenue_current": 2695488.273,
+        "revenue_prior": 2112478.9281,
+        "revenue_change": 583009.3448999999,
+        "abs_sort": 583009.3448999999
+       }
+      ],
+      "trend": {
+       "dimension": "Month",
+       "reference": "'MIS_DEEP_DIVE2'[Month]",
+       "grain": "month",
+       "rows": [
+        {
+         "month": 1,
+         "revenue_current": 920072.5848,
+         "revenue_prior": 745808.1237,
+         "revenue_change": 174264.46109999996
+        },
+        {
+         "month": 2,
+         "revenue_current": 825434.8794,
+         "revenue_prior": 689529.5262,
+         "revenue_change": 135905.3532
+        },
+        {
+         "month": 3,
+         "revenue_current": 1001874.7683,
+         "revenue_prior": 1061410.0734,
+         "revenue_change": -59535.305100000114
+        },
+        {
+         "month": 4,
+         "revenue_current": 769295.5155,
+         "revenue_prior": 656557.1289,
+         "revenue_change": 112738.38659999997
+        },
+        {
+         "month": 5,
+         "revenue_current": 1017650.7603,
+         "revenue_prior": 895504.032,
+         "revenue_change": 122146.72829999996
+        },
+        {
+         "month": 6,
+         "revenue_current": 690455.9367,
+         "revenue_prior": 795975.1119,
+         "revenue_change": -105519.17520000006
+        },
+        {
+         "month": 7,
+         "revenue_current": 755513.4033,
+         "revenue_prior": 731703.7449,
+         "revenue_change": 23809.658399999957
+        },
+        {
+         "month": 8,
+         "revenue_current": 706880.8116,
+         "revenue_prior": 777354.8778,
+         "revenue_change": -70474.0662
+        },
+        {
+         "month": 9,
+         "revenue_current": 265795.614,
+         "revenue_prior": 260764.1208,
+         "revenue_change": 5031.493199999997
+        }
+       ],
+       "completeness": "complete",
+       "direction": "reversal_up"
+      },
+      "signature_duplicate": false
+     },
+     {
+      "focus_key": "focus:v2:a4dc5063b1014df3617a681c2a6841791b247aa6c591fc328cee874284cfe06c",
+      "segment": "MEAT SHOP",
+      "role": "section",
+      "lens": "composition",
+      "sentiment": "opportunity",
+      "headline": "MEAT SHOP revenue changed by +235.8K (+9.9%).",
+      "connect": "MEAT SHOP added +235.8K, with transactions change at +76.4K and quantity change at +180.8K. Within this section, change in units sold added +571.1K, while average revenue per item and mix reduced revenue by -335.3K. ST3 led MEAT SHOP across the stores included in the comparison at +90.3K.",
+      "facts": [
+       {
+        "fact_id": "D1",
+        "fact_kind": "deep_dive",
+        "subject": "MEAT SHOP",
+        "metric": "Revenue change",
+        "display_value": "+235.8K",
+        "raw_value": 235792.6335,
+        "statement": "MEAT SHOP revenue changed by +235.8K (+9.9%).",
+        "subject_role": "focus",
+        "detail_role": "focus_metric",
+        "coverage": "complete"
+       },
+       {
+        "fact_id": "D2",
+        "fact_kind": "deep_dive",
+        "subject": "MEAT SHOP",
+        "metric": "Quantity change",
+        "display_value": "+180.8K",
+        "raw_value": 180773.09809999994,
+        "statement": "MEAT SHOP quantity changed by +180.8K.",
+        "subject_role": "focus",
+        "detail_role": "focus_metric",
+        "coverage": "complete"
+       },
+       {
+        "fact_id": "D3",
+        "fact_kind": "deep_dive",
+        "subject": "MEAT SHOP",
+        "metric": "Transactions change",
+        "display_value": "+76.4K",
+        "raw_value": 76440.0,
+        "statement": "MEAT SHOP transactions changed by +76.4K.",
+        "subject_role": "focus",
+        "detail_role": "focus_metric",
+        "coverage": "complete"
+       },
+       {
+        "fact_id": "D4",
+        "fact_kind": "deep_dive",
+        "subject": "MEAT SHOP",
+        "metric": "Revenue change in item_category_name",
+        "display_value": "+235.8K",
+        "raw_value": 235792.6335,
+        "statement": "Within MEAT SHOP, MEAT SHOP added +235.8K.",
+        "subject_role": "peer",
+        "detail_role": "contributor",
+        "coverage": "complete"
+       },
+       {
+        "fact_id": "D5",
+        "fact_kind": "deep_dive",
+        "subject": "ST3",
+        "metric": "Store contribution",
+        "display_value": "+90.3K",
+        "raw_value": 90267.43680000002,
+        "statement": "ST3 led MEAT SHOP across the stores included in the comparison at +90.3K.",
+        "subject_role": "peer",
+        "detail_role": "location",
+        "coverage": "complete"
+       },
+       {
+        "fact_id": "D6",
+        "fact_kind": "deep_dive",
+        "subject": "MEAT SHOP",
+        "metric": "Volume effect on revenue",
+        "display_value": "+571.1K",
+        "raw_value": 571073.944761822,
+        "statement": "Within MEAT SHOP, change in units sold added revenue by +571.1K.",
+        "subject_role": "focus",
+        "detail_role": "driver",
+        "coverage": "complete"
+       },
+       {
+        "fact_id": "D7",
+        "fact_kind": "deep_dive",
+        "subject": "MEAT SHOP",
+        "metric": "Rate and mix effect on revenue",
+        "display_value": "-335.3K",
+        "raw_value": -335281.3112618219,
+        "statement": "Within MEAT SHOP, average revenue per item and mix reduced revenue by -335.3K.",
+        "subject_role": "focus",
+        "detail_role": "driver",
+        "coverage": "complete"
+       }
+      ],
+      "contributors": [],
+      "location": [
+       {
+        "store_no": "ST2",
+        "revenue_current": 609561.1287,
+        "revenue_prior": 580469.4738,
+        "revenue_change": 29091.654899999965,
+        "abs_sort": 29091.654899999965
+       },
+       {
+        "store_no": "ST1",
+        "revenue_current": 862036.8057,
+        "revenue_prior": 811452.1599,
+        "revenue_change": 50584.64580000006,
+        "abs_sort": 50584.64580000006
+       },
+       {
+        "store_no": "ST3",
+        "revenue_current": 709234.407,
+        "revenue_prior": 618966.9702,
+        "revenue_change": 90267.43680000002,
+        "abs_sort": 90267.43680000002
+       },
+       {
+        "store_no": "ST4",
+        "revenue_current": 432194.5701,
+        "revenue_prior": 366345.6741,
+        "revenue_change": 65848.89600000001,
+        "abs_sort": 65848.89600000001
+       }
+      ],
+      "trend": {
+       "dimension": "Month",
+       "reference": "'MIS_DEEP_DIVE2'[Month]",
+       "grain": "month",
+       "rows": [
+        {
+         "month": 1,
+         "revenue_current": 319825.6029,
+         "revenue_prior": 293359.4523,
+         "revenue_change": 26466.150599999994
+        },
+        {
+         "month": 2,
+         "revenue_current": 306424.9872,
+         "revenue_prior": 268927.0443,
+         "revenue_change": 37497.942899999965
+        },
+        {
+         "month": 3,
+         "revenue_current": 365500.8279,
+         "revenue_prior": 331659.9918,
+         "revenue_change": 33840.83609999996
+        },
+        {
+         "month": 4,
+         "revenue_current": 303754.4874,
+         "revenue_prior": 252358.6131,
+         "revenue_change": 51395.874299999996
+        },
+        {
+         "month": 5,
+         "revenue_current": 343030.1211,
+         "revenue_prior": 288494.7624,
+         "revenue_change": 54535.35869999998
+        },
+        {
+         "month": 6,
+         "revenue_current": 258442.2531,
+         "revenue_prior": 284779.9323,
+         "revenue_change": -26337.679199999984
+        },
+        {
+         "month": 7,
+         "revenue_current": 314250.8238,
+         "revenue_prior": 279673.7436,
+         "revenue_change": 34577.080200000026
+        },
+        {
+         "month": 8,
+         "revenue_current": 289566.0576,
+         "revenue_prior": 281853.6831,
+         "revenue_change": 7712.374499999976
+        },
+        {
+         "month": 9,
+         "revenue_current": 112231.7505,
+         "revenue_prior": 96127.0551,
+         "revenue_change": 16104.695399999997
+        }
+       ],
+       "completeness": "complete",
+       "direction": "accelerating"
+      },
+      "signature_duplicate": false
+     }
+    ],
+    "count": 3,
+    "total_in_level": 6,
+    "rotates_note": "3 of 6 areas are put under the lens today; the selection rotates, so an area missing here is not an area with nothing happening. Every area is still ranked in full coverage below."
+   },
+   "detail": {
+    "available": true,
+    "pointer": null,
+    "coverage_owned": true,
+    "growth": [
+     {
+      "member": "CONSUMER GOODS",
+      "role": "division",
+      "path": [
+       "CONSUMER GOODS"
+      ],
+      "parent": null,
+      "change_pct": 2.0165150001853664,
+      "change_display": "+2.02%",
+      "change": 426131.8308000006,
+      "change_abs_display": "+426K",
+      "current": 21558225.1086,
+      "business_share_pct": 52.799155080505166,
+      "severity": "watch",
+      "rank_score": 0.4324451440115269,
+      "share_shift_pts": -0.2980660627972531,
+      "share_shift_display": "-0.30 pts"
+     },
+     {
+      "member": "MEAT SHOP",
+      "role": "section",
+      "path": [
+       "FRESH FOOD",
+       "FRESH FOOD",
+       "MEAT SHOP"
+      ],
+      "parent": "FRESH FOOD",
+      "change_pct": 9.9187798056814,
+      "change_display": "+9.92%",
+      "change": 235792.6335,
+      "change_abs_display": "+236K",
+      "current": 2613026.9115,
+      "business_share_pct": 6.399674019304341,
+      "severity": "watch",
+      "rank_score": 0.41639166474042616,
+      "share_shift_pts": 0.4265537747042435,
+      "share_shift_display": "+0.43 pts"
+     },
+     {
+      "member": "LIFESTYLE",
+      "role": "division",
+      "path": [
+       "LIFESTYLE"
+      ],
+      "parent": null,
+      "change_pct": 5.115459582415965,
+      "change_display": "+5.12%",
+      "change": 338367.5343000004,
+      "change_abs_display": "+338K",
+      "current": 6952974.2739,
+      "business_share_pct": 17.028821487347816,
+      "severity": "watch",
+      "rank_score": 0.35373549037242497,
+      "share_shift_pts": 0.4087341059673011,
+      "share_shift_display": "+0.41 pts"
+     },
+     {
+      "member": "PERSONAL CARE",
+      "role": "section",
+      "path": [
+       "CONSUMER GOODS",
+       "CONSUMER GOODS",
+       "PERSONAL CARE"
+      ],
+      "parent": "CONSUMER GOODS",
+      "change_pct": 3.79997967687758,
+      "change_display": "+3.80%",
+      "change": 197038.42650000006,
+      "change_abs_display": "+197K",
+      "current": 5382287.9082,
+      "business_share_pct": 13.181987502283498,
+      "severity": "watch",
+      "rank_score": 0.3464045882176452,
+      "share_shift_pts": 0.1533521090139267,
+      "share_shift_display": "+0.15 pts"
+     },
+     {
+      "member": "MENS APPAREL",
+      "role": "section",
+      "path": [
+       "LIFESTYLE",
+       "LIFESTYLE",
+       "MENS APPAREL"
+      ],
+      "parent": "LIFESTYLE",
+      "change_pct": 7.207578730739354,
+      "change_display": "+7.21%",
+      "change": 138883.8744000001,
+      "change_abs_display": "+139K",
+      "current": 2065798.3014,
+      "business_share_pct": 5.059433433467193,
+      "severity": "watch",
+      "rank_score": 0.2448861560282805,
+      "share_shift_pts": 0.21780226566787894,
+      "share_shift_display": "+0.22 pts"
+     }
+    ],
+    "decline": [
+     {
+      "member": "TRAVEL",
+      "role": "section",
+      "path": [
+       "LIFESTYLE",
+       "LIFESTYLE",
+       "TRAVEL"
+      ],
+      "parent": "LIFESTYLE",
+      "change_pct": -2.656556911357905,
+      "change_display": "-2.66%",
+      "change": -18861.97589999996,
+      "change_abs_display": "-19K",
+      "current": 691153.9029,
+      "business_share_pct": 1.6927340687780457,
+      "severity": "steady",
+      "rank_score": 0.03336665262859146,
+      "share_shift_pts": -0.0912761395956238,
+      "share_shift_display": "-0.09 pts"
+     },
+     {
+      "member": "BABY CLOTHING",
+      "role": "section",
+      "path": [
+       "LIFESTYLE",
+       "LIFESTYLE",
+       "BABY CLOTHING"
+      ],
+      "parent": "LIFESTYLE",
+      "change_pct": -43.53675900356572,
+      "change_display": "-43.54%",
+      "change": -859.4342999999999,
+      "change_abs_display": "-859",
+      "current": 1114.6086,
+      "business_share_pct": 0.00272983476278797,
+      "severity": "watch",
+      "rank_score": 0.0014900645057370696,
+      "share_shift_pts": -0.002230213019973762,
+      "share_shift_display": "-0.00 pts"
+     }
+    ],
+    "restricted": true,
+    "pool_size": 16
+   }
+  },
+  "tldr": [
+   {
+    "tone": "critical",
+    "layer": "overview",
+    "text": "Revenue rose +2.59% but we sold 1.79% fewer items, so the growth is price and transactions rather than real demand.",
+    "to": "Overview",
+    "rank": 1
+   },
+   {
+    "tone": "positive",
+    "layer": "entities",
+    "text": "ST4 (store) is +10.39%, +1.2M of business.",
+    "to": "Entities",
+    "rank": 2
+   },
+   {
+    "tone": "positive",
+    "layer": "areas",
+    "text": "CONSUMER GOODS (division) is +2.02%, +426K of business.",
+    "to": "Areas",
+    "rank": 3
+   },
+   {
+    "tone": "positive",
+    "layer": "areas",
+    "text": "MEAT SHOP (section) is +9.92%, +236K of business.",
+    "to": "Areas",
+    "rank": 4
+   },
+   {
+    "tone": "positive",
+    "layer": "areas",
+    "text": "LIFESTYLE (division) is +5.12%, +338K of business.",
+    "to": "Areas",
+    "rank": 5
+   }
+  ],
+  "bridge": {
+   "effects": {
+    "transactions": 966266.5537831171,
+    "basket_size": -1680545.9893981596,
+    "price": 1746036.0057150326
+   },
+   "levers": {
+    "transactions": 2.4278744284882414,
+    "basket_size": -4.122508076304751,
+    "price": 4.467325978466419
+   },
+   "growth_factors": {
+    "transactions": 1.0242787442848824,
+    "basket_size": 0.9587749192369525,
+    "price": 1.0446732597846642
+   },
+   "factor_product_pct": 2.5924268858971145,
+   "revenue_change": 1031756.5700999945,
+   "revenue_change_pct": 2.5924268858971247,
+   "total": 1031756.5700999901,
+   "reconciles": true,
+   "state": "Thinner baskets, higher prices - revenue up",
+   "dominant": "price",
+   "note": "Growth rates multiply rather than add. Effects are charged in reading order - transactions, then basket size, then price - so they sum exactly to the revenue change; a different order moves the shared interaction between levers."
+  },
+  "measures": {
+   "revenue": {
+    "key": "revenue",
+    "label": "Revenue",
+    "current": 40830625.179,
+    "prior": 39798868.6089,
+    "change": 1031756.5700999945,
+    "change_pct": 2.5924268858971247,
+    "unit": "money",
+    "decimals": 0
+   },
+   "transactions": {
+    "key": "transactions",
+    "label": "Transactions",
+    "current": 10079036.0,
+    "prior": 9840130.0,
+    "change": 238906.0,
+    "change_pct": 2.4278744284882414,
+    "unit": "count",
+    "decimals": 0
+   },
+   "units": {
+    "key": "units",
+    "label": "Units",
+    "current": 22292815.402440004,
+    "prior": 22700221.49115,
+    "change": -407406.08870999515,
+    "change_pct": -1.7947229672134615,
+    "unit": "count",
+    "decimals": 0
+   },
+   "basket_value": {
+    "key": "basket_value",
+    "label": "Basket Value",
+    "current": 4.051044681157999,
+    "prior": 4.044547034327799,
+    "change": 0.0064976468302004875,
+    "change_pct": 0.16065202790453867,
+    "unit": "money",
+    "decimals": 2
+   },
+   "basket_size": {
+    "key": "basket_size",
+    "label": "Basket Size",
+    "current": 2.21180035495855,
+    "prior": 2.3069026009971414,
+    "change": -0.09510224603859152,
+    "change_pct": -4.122508076304751,
+    "unit": "items",
+    "decimals": 2
+   },
+   "price": {
+    "key": "price",
+    "label": "Price",
+    "current": 1.8315598295642364,
+    "prior": 1.7532370168465603,
+    "change": 0.07832281271767605,
+    "change_pct": 4.467325978466419,
+    "unit": "money",
+    "decimals": 2
+   }
+  },
+  "exposure": {
+   "role": "section",
+   "declining_count": 10,
+   "comparable_count": 23,
+   "count_share_pct": 43.47826086956522,
+   "at_risk_revenue_share_pct": 20.589381328953472,
+   "count_rag": {
+    "measure": "declining_share",
+    "band": "exposure",
+    "status": "watch",
+    "label": "Watch",
+    "tone": "warning",
+    "caution": null,
+    "read_with": null
+   },
+   "revenue_rag": {
+    "measure": "at_risk_share",
+    "band": "exposure",
+    "status": "on_track",
+    "label": "On track",
+    "tone": "positive",
+    "caution": null,
+    "read_with": null
+   }
+  },
+  "period_context": null,
+  "limitations": [],
+  "period_scope": "own",
+  "owns_breakdowns": true,
+  "breakdown_owner": null,
+  "scan_reference": null
+ }
+}

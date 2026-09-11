@@ -34,7 +34,13 @@ from pydantic import BaseModel, ConfigDict, Field
 from ..tools import authoring_attempts, file_io, summary_dashboard, summary_levers
 from ..tools import summary_focus_queries as q
 from ..tools.llm import get_llm
-from ..tools.summary_validation import dashboard_rules
+from ..tools.summary_validation import (
+    _EMPTY_SECTION_PHRASES,
+    _OFF_VOCABULARY,
+    _TECHNICAL_MANAGER_PHRASES,
+    MAX_QUOTED_DECIMALS,
+    dashboard_rules,
+)
 from ..utils.json_utils import dumps
 from ..utils.logger import RunLogger
 from .summary_focus_evidence import (
@@ -362,16 +368,24 @@ def _narratives(state: dict, page_views: list[dict], log: RunLogger) -> dict:
         + file_io.summary_business_rules_block(state)
     )
     task = file_io.read_prompt("summary_dashboard_prompt.md")
+    # The narrated tier gets one repair, so what it is shown must pass the check
+    # as written: figures at the precision the check allows, the cards' own
+    # display strings, and the check's own rejected words. On 2026-09-11 every
+    # narrated run after the first two retried here - raw floats quoted to 16
+    # decimal places, and "growth engine". The investigated tier is unchanged.
+    narrated = ai_tier.narrated(state)
+    max_attempts = 2 if narrated else 3
+    system = rules + "\n\n" + task + (_rejected_words_block() if narrated else "")
     out: dict = {}
     for view in page_views:
-        context = _authoring_context(view)
+        context = _authoring_context(view, narrated=narrated)
         messages = [
-            {"role": "system", "content": rules + "\n\n" + task},
+            {"role": "system", "content": system},
             {"role": "user", "content": "DASHBOARD VIEW MODEL:\n" + dumps(context)},
         ]
         authored = None
         attempts: list[dict] = []
-        for attempt in range(3):
+        for attempt in range(max_attempts):
             since = authoring_attempts.mark(_USAGE_LABEL)
             try:
                 llm = get_llm(state, structured_schema=DashboardDraft)
@@ -406,9 +420,12 @@ def _narratives(state: dict, page_views: list[dict], log: RunLogger) -> dict:
                     "Issues:\n- " + "\n- ".join(errors[:12])
                     + "\n\nQuote only figures that appear in the view model above, and give "
                       "every entity that moved materially its own distinct story."
+                    + (" This is the final correction: quote each figure exactly as the view "
+                       "model writes it, and leave out any sentence you cannot fix."
+                       if narrated else "")
                 ),
             })
-            if attempt == 2:
+            if attempt == max_attempts - 1:
                 log.error(
                     f"Dashboard authoring for view {view.get('key')} did not validate; "
                     "using the deterministic draft."
@@ -432,7 +449,58 @@ def _narratives(state: dict, page_views: list[dict], log: RunLogger) -> dict:
     return out
 
 
-def _authoring_context(view: dict) -> dict:
+def _rounded(value):
+    """Every float in a model-facing structure at the precision the check allows.
+
+    `dashboard_rules` rejects a figure quoted to more than MAX_QUOTED_DECIMALS
+    places, and its rounding tolerance accepts the rounded value as supported,
+    so nothing shown this way can be rejected for being copied exactly.
+    """
+    if isinstance(value, float):
+        return round(value, MAX_QUOTED_DECIMALS)
+    if isinstance(value, dict):
+        return {key: _rounded(item) for key, item in value.items()}
+    if isinstance(value, list):
+        return [_rounded(item) for item in value]
+    return value
+
+
+def _rejected_words_block() -> str:
+    """The dashboard check's own word lists, so the prompt never names fewer than it rejects.
+
+    The prompt's hand-written rule named nine of them; "growth engine" was not
+    one, and narrated drafts were rejected for it.
+    """
+    lines = [
+        "", "", "# WORDS THE CHECK REJECTS", "",
+        "A hero line or story is rejected if it contains any of these, anywhere, including "
+        "inside a longer word:",
+    ]
+    lines += [f"- {phrase}" for phrase in sorted(set(_TECHNICAL_MANAGER_PHRASES) | set(_EMPTY_SECTION_PHRASES))]
+    lines += ["", "These name the wrong measure. Write the approved word instead:"]
+    lines += [f"- {word} -> {approved}" for word, approved in sorted(_OFF_VOCABULARY.items())]
+    return "\n".join(lines)
+
+
+def _authoring_context(view: dict, narrated: bool = False) -> dict:
+    """What the dashboard writer is shown for one view.
+
+    The narrated tier additionally gets each entity card's own display strings
+    and every float rounded to the precision the check allows. The investigated
+    tier's context is `_view_context` exactly as it always was.
+    """
+    context = _view_context(view)
+    if not narrated:
+        return context
+    cards = ((view.get("layers") or {}).get("entities") or {}).get("cards") or []
+    for entry, card in zip(context["entities"], cards):
+        for key in ("current_display", "change_display", "contribution_display"):
+            if card.get(key):
+                entry[key] = card[key]
+    return _rounded(context)
+
+
+def _view_context(view: dict) -> dict:
     """Only what the prose needs - the figures, states and slot names.
 
     Full coverage tables are excluded deliberately: they are code-owned, never

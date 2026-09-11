@@ -1044,19 +1044,20 @@ def test_rejected_drafts_leave_their_reasons() -> None:
         summary_dashboard_builder.dashboard_rules = (  # type: ignore[assignment]
             lambda draft, view: ["hero headline quotes no figure"])
         summary_dashboard_builder._authoring_context = (  # type: ignore[assignment]
-            lambda view: {"view": view.get("key")})
+            lambda view, narrated=False: {"view": view.get("key")})
         out = summary_dashboard_builder._narratives(dict(state), [{"key": "primary"}], log)
     finally:
         (summary_dashboard_builder.get_llm, summary_dashboard_builder.dashboard_rules,
          summary_dashboard_builder._authoring_context) = saved
     views = _writer("summary_dashboard_builder")
+    # Narrated state: the dashboard allows one repair on this tier, so two attempts.
     check("the dashboard records every rejected attempt per view, then falls back unchanged",
-          out == {} and len(calls) == 3 and bool(views) and views[0]["view"] == "primary"
+          out == {} and len(calls) == 2 and bool(views) and views[0]["view"] == "primary"
           and views[0]["outcome"] == "fallback"
-          and [item["outcome"] for item in views[0]["attempts"]] == ["rejected"] * 3
+          and [item["outcome"] for item in views[0]["attempts"]] == ["rejected"] * 2
           and views[0]["attempts"][0]["errors"] == ["hero headline quotes no figure"], views)
     check("each rejected dashboard attempt is logged with its reasons",
-          sum("rejected" in line and "quotes no figure" in line for line in log.lines) == 3, log.lines)
+          sum("rejected" in line and "quotes no figure" in line for line in log.lines) == 2, log.lines)
     check("the summary writer's entry survives the dashboard's merge",
           bool(_writer("fresh_summary_generator")))
 
@@ -1412,6 +1413,107 @@ def test_narrated_summary_slots() -> None:
           "authoring_slots" not in grounded)
 
 
+DASHBOARD_FIXTURE = PROJECT_ROOT / "tests" / "fixtures" / "summary" / "narrated_dashboard_view_2026-09-11.json"
+
+
+class _CopyingDashboardModel:
+    """Writes the hero and the top entity's story from the figures it is shown, as given."""
+
+    def __init__(self, extra: str = "") -> None:
+        self.calls: list = []
+        self.schemas: list[str] = []
+        self.extra = extra
+
+    def __call__(self, state=None, structured_schema=None, **_kwargs):
+        self.schemas.append(getattr(structured_schema, "__name__", str(structured_schema)))
+        return self
+
+    def invoke(self, messages):
+        self.calls.append(list(messages))
+        context = json.loads(messages[1]["content"].split("\n", 1)[1])
+        top = min(context["entities"], key=lambda entry: entry.get("rank") or 99)
+        revenue = context["quote_these_display_values"]["revenue"]
+        return {
+            "hero": {"headline": f"Revenue reached {revenue['value']}, {revenue['change']} on last year.",
+                     "narrative": f"Revenue moved {revenue['change']} to {revenue['value']}." + self.extra},
+            "entities": [{"member": top["member"],
+                          "story": f"{top['member']} moved {top['change_pct']}% on "
+                                   f"{top['business_share_pct']}% of the business."}],
+            "areas": [],
+        }
+
+
+def test_narrated_dashboard_passes_first_time() -> None:
+    print("\n=== narrated dashboard: what the model is shown passes the check as written ===")
+    from src.agents import summary_dashboard_builder as builder
+    from src.tools import file_io, summary_validation
+
+    view = json.loads(DASHBOARD_FIXTURE.read_text(encoding="utf-8"))["view"]
+
+    def author(tier: str, model: _CopyingDashboardModel) -> dict:
+        state = {"output_folder": OUT, **({"report_ai_tier": tier} if tier != "investigated" else {})}
+        original = builder.get_llm
+        builder.get_llm = model  # type: ignore[assignment]
+        try:
+            return builder._narratives(state, [view], _Lines())
+        finally:
+            builder.get_llm = original  # type: ignore[assignment]
+
+    def floats(value):
+        if isinstance(value, float):
+            yield value
+        elif isinstance(value, dict):
+            for item in value.values():
+                yield from floats(item)
+        elif isinstance(value, list):
+            for item in value:
+                yield from floats(item)
+
+    shown = builder._authoring_context(view, narrated=True)
+    too_precise = [f for f in floats(shown) if round(f, summary_validation.MAX_QUOTED_DECIMALS) != f]
+    check("narrated: no figure the model is shown carries more decimals than the check allows",
+          not too_precise, too_precise[:5])
+    check("narrated: each entity comes with the card's own display strings",
+          all(entry.get("change_display") and entry.get("current_display") for entry in shown["entities"]),
+          shown["entities"][0])
+    check("investigated: the view model it is shown is exactly as before, raw floats and all",
+          builder._authoring_context(view) == builder._authoring_context(view, narrated=False)
+          and any(round(f, 2) != f for f in floats(builder._authoring_context(view))))
+
+    copier = _CopyingDashboardModel()
+    out = author("narrated", copier)
+    check("narrated: a draft copying the figures it was shown passes on attempt 1",
+          "primary" in out and len(copier.calls) == 1, [len(copier.calls), list(out)])
+
+    copier = _CopyingDashboardModel()
+    out = author("investigated", copier)
+    check("investigated: the same copy is still rejected for spurious precision, three times",
+          out == {} and len(copier.calls) == 3, len(copier.calls))
+    expected = (file_io.read_prompt("_global_rules.md") + file_io.business_rules_block({})
+                + file_io.summary_business_rules_block({}) + "\n\n"
+                + file_io.read_prompt("summary_dashboard_prompt.md"))
+    check("investigated: the system prompt is exactly what it was",
+          copier.calls[0][0]["content"] == expected)
+
+    inventor = _CopyingDashboardModel(extra=" It could reach 123.4B.")
+    out = author("narrated", inventor)
+    check("narrated: an unsupported figure gets one repair, then the deterministic stories",
+          out == {} and len(inventor.calls) == 2, len(inventor.calls))
+    check("narrated: that repair is marked as the final correction",
+          "final correction" in inventor.calls[1][-1]["content"])
+
+    narrated_system = _CopyingDashboardModel()
+    author("narrated", narrated_system)
+    prompt = narrated_system.calls[0][0]["content"].casefold()
+    missing = sorted(p for p in (set(summary_validation._TECHNICAL_MANAGER_PHRASES)
+                                 | set(summary_validation._OFF_VOCABULARY))
+                     if p not in prompt)
+    check("narrated: the prompt names every word the dashboard check rejects, growth engine included",
+          not missing and "growth engine" in prompt, missing)
+    check("investigated: gains no rejected-words block",
+          "# WORDS THE CHECK REJECTS" not in copier.calls[0][0]["content"])
+
+
 def fresh_summary_generator_run_with(generator, state: dict, model) -> dict:
     original = generator.get_llm
     generator.get_llm = lambda *_a, **_k: model  # type: ignore[assignment]
@@ -1429,6 +1531,7 @@ def main() -> int:
     test_rejected_drafts_leave_their_reasons()
     test_narrated_summary_passes_first_time()
     test_narrated_summary_slots()
+    test_narrated_dashboard_passes_first_time()
     test_snapshot_investigation_keeps_drills_without_a_model()
     test_standalone_prose_writers_return_their_draft()
     test_standalone_kpi_cards_read_the_tier_from_config()
