@@ -1231,15 +1231,185 @@ def test_narrated_summary_passes_first_time() -> None:
     check("a figure neither sign supports is left for the check to reject",
           generator._copyable_text("a 9.9% move", allowed) == "a 9.9% move")
 
+    # The single-focus page still goes through `_invoke` on the narrated tier (the
+    # balanced R4 page uses slots, tested separately), so its retry limit is here.
+    inventor = _CopyingSummaryModel(extra=" It could reach 999.9K.")
     run = fresh_summary_generator_run_with(generator, dict(
-        narrated, summary_r4_enabled=True, summary_candidates=[candidate], summary_novelty={},
-        summary_overall_performance={}, summary_selected_focuses=[], summary_focus_evidence_by_key={}),
-        _CopyingSummaryModel(extra=" It could reach 999.9K."))
+        narrated, summary_eligible_candidates=[candidate], summary_novelty={}), inventor)
     summary = run.get("fresh_summary") or {}
-    check("narrated: after the one repair fails, the page is the grounded fallback",
-          summary.get("authoring_mode") == "deterministic_fallback", summary.get("authoring_mode"))
+    check("narrated single focus: after the one repair fails, the page is the grounded fallback",
+          summary.get("authoring_mode") == "deterministic_fallback" and len(inventor.calls) == 2,
+          [summary.get("authoring_mode"), len(inventor.calls)])
     check("and the published fallback keeps its own display, unsigned percentage and all",
           "(1.8%)" in json.dumps(summary.get("content_blocks")), summary.get("content_blocks"))
+
+
+SLOT_FIXTURE = PROJECT_ROOT / "tests" / "fixtures" / "summary" / "narrated_slots_2026-09-11.json"
+
+
+def _slot_state(tier: str = "narrated") -> dict:
+    """The R4 authoring state of the narrated SB Mart run of 2026-09-11."""
+    data = json.loads(SLOT_FIXTURE.read_text(encoding="utf-8"))
+    data.pop("_source", None)
+    data.update({"output_folder": OUT, "summary_coverage": {}})
+    if tier != "investigated":
+        data["report_ai_tier"] = tier
+    return data
+
+
+class _SlotModel:
+    """A get_llm stand-in answering each slot from what it was shown.
+
+    ``rewrite(entry, call_number)`` may return replacement text for a slot, or
+    None to answer with the slot's grounded text made into plain prose.
+    """
+
+    def __init__(self, rewrite=None, raise_on_invoke: bool = False, extra: list | None = None) -> None:
+        self.rewrite = rewrite or (lambda entry, call: None)
+        self.raise_on_invoke = raise_on_invoke
+        self.extra = extra or []
+        self.calls: list = []
+        self.schemas: list[str] = []
+
+    def __call__(self, state=None, structured_schema=None, **_kwargs):
+        self.schemas.append(getattr(structured_schema, "__name__", str(structured_schema)))
+        return self
+
+    def invoke(self, messages):
+        self.calls.append(list(messages))
+        if self.raise_on_invoke:
+            raise LLMCalled("stub model")
+        shown = json.loads(messages[1]["content"].split("\n", 1)[1])["slots"]
+        slots = []
+        for entry in shown:
+            text = self.rewrite(entry, len(self.calls))
+            if text is None:
+                grounded = entry["grounded_text"]
+                if isinstance(grounded, list):
+                    text = " ".join(point if point.endswith(".") else point + "." for point in grounded)
+                else:
+                    text = grounded
+            slots.append({"slot_id": entry["slot_id"], "text": text})
+        return {"slots": slots + self.extra}
+
+
+def test_narrated_summary_slots() -> None:
+    print("\n=== narrated summary: code owns the page, the model writes only its slots ===")
+    from src.agents import fresh_summary_generator as generator
+    from src.agents import fresh_summary_validator
+
+    def run(tier: str, model: _SlotModel) -> dict:
+        original = generator.get_llm
+        generator.get_llm = model  # type: ignore[assignment]
+        try:
+            out = generator.run(_slot_state(tier))
+        finally:
+            generator.get_llm = original  # type: ignore[assignment]
+        return out
+
+    grounded_out = run("deterministic", _SlotModel(raise_on_invoke=True))
+    grounded = grounded_out["fresh_summary"]
+    check("deterministic: code's page is built with no model call",
+          grounded.get("authoring_mode") == "deterministic_fallback")
+    plan_blocks = grounded["content_blocks"]
+
+    def shape(blocks: list[dict]) -> list[tuple]:
+        return [(b.get("kind") == "chart", b.get("heading") if b.get("kind") != "chart" else None,
+                 (b.get("chart") or {}).get("source_id"), (b.get("chart") or {}).get("type"))
+                for b in blocks]
+
+    model = _SlotModel(extra=[{"slot_id": "block:99", "text": "An extra block of 123.4B."}])
+    out = run("narrated", model)
+    summary = out["fresh_summary"]
+    check("narrated: every slot the model writes validly is published",
+          summary.get("authoring_mode") == "llm_slots"
+          and summary.get("authoring_slots", {}).get("fallback") == 0, summary.get("authoring_slots"))
+    check("narrated: the model is asked for slots, never for a page", model.schemas == ["SummarySlotDraft"],
+          model.schemas)
+    check("narrated: block count, order, headings, chart ids and chart types are code's",
+          shape(summary["content_blocks"]) == shape(plan_blocks),
+          [shape(summary["content_blocks"]), shape(plan_blocks)])
+    check("narrated: an invented slot id adds nothing to the page",
+          "123.4B" not in json.dumps(summary) and len(summary["content_blocks"]) == len(plan_blocks))
+    check("narrated: model-written narratives render as paragraphs under code's headings",
+          [b["kind"] for b in summary["content_blocks"] if b["kind"] != "chart"]
+          == ["paragraph"] * sum(1 for b in plan_blocks if b["kind"] != "chart"))
+    covered = fresh_summary_validator._validation_candidates(_slot_state(), summary)
+    check("narrated: the published page passes the final validator's own check",
+          not generator.validate_draft(summary, covered, mode="balanced_multi_focus", require_chart=True),
+          generator.validate_draft(summary, covered, mode="balanced_multi_focus", require_chart=True))
+    try:
+        payload = api_payloads.generate_fresh_report_summary_payload(
+            {**_slot_state(), "fresh_summary": summary}, generated_at=datetime(2026, 9, 11, 7, 15))
+        payload_ok = bool(payload.get("sections"))
+    except Exception as exc:  # noqa: BLE001
+        payload_ok, payload = False, str(exc)
+    check("narrated: report_summary.json still validates", payload_ok, payload)
+
+    user = model.calls[0][1]["content"]
+    investigated_context = len(json.dumps(
+        [generator._perspective_context(c) for c in covered] + [generator._chart_sources(covered)]))
+    check("narrated: no evidence set or chart data is sent - only each slot's own text",
+          "supported_facts" not in user and "available_chart_sources" not in user
+          and '"rows"' not in user and len(user) * 4 < investigated_context,
+          f"slot context {len(user):,} chars vs whole-evidence context {investigated_context:,}")
+
+    # 123.4B, not 999.9K: the real evidence holds a value within rounding of
+    # 999.9K, so the check rightly accepts it - a first draft of these tests
+    # "invented" a figure the data genuinely supports.
+    def bad_consumer_goods(entry, call):
+        if entry.get("heading") == "CONSUMER GOODS":
+            return "CONSUMER GOODS revenue rose by +426.1K and could reach 123.4B."
+        return None
+
+    model = _SlotModel(rewrite=bad_consumer_goods)
+    summary = run("narrated", model)["fresh_summary"]
+    kinds = {b.get("heading"): b["kind"] for b in summary["content_blocks"] if b["kind"] != "chart"}
+    check("narrated: an invented figure costs only its own slot",
+          kinds.get("CONSUMER GOODS") == "bullets"
+          and [k for h, k in kinds.items() if h != "CONSUMER GOODS"] == ["paragraph"] * (len(kinds) - 1),
+          kinds)
+    check("narrated: that slot keeps code's exact bullets",
+          next(b for b in summary["content_blocks"] if b.get("heading") == "CONSUMER GOODS")["points"]
+          == next(b for b in plan_blocks if b.get("heading") == "CONSUMER GOODS")["points"])
+    check("narrated: one repair round is tried, then no more",
+          len(model.calls) == 2 and summary["authoring_slots"]["fallback"] == 1, summary.get("authoring_slots"))
+    repair = model.calls[1][-1]["content"]
+    check("narrated: the repair carries only the rejected slot and the check's reason",
+          "123.4B" in repair and "not supported" in repair and "LIFESTYLE" not in repair, repair)
+    check("narrated: figures to keep carry the sign exactly as the grounded text writes it",
+          '"+426.1K"' in repair and '"-634.0K"' in repair, repair)
+
+    def healed(entry, call):
+        if entry.get("heading") == "LIFESTYLE" and call == 1:
+            return "LIFESTYLE revenue rose because of shoppers."
+        return None
+
+    model = _SlotModel(rewrite=healed)
+    summary = run("narrated", model)["fresh_summary"]
+    check("narrated: a slot rejected once and fixed in the repair is published",
+          summary["authoring_slots"]["fallback"] == 0 and len(model.calls) == 2, summary.get("authoring_slots"))
+
+    def figure_title(entry, call):
+        return "Revenue change 123.4B" if entry["kind"] == "chart_title" else None
+
+    summary = run("narrated", _SlotModel(rewrite=figure_title))["fresh_summary"]
+    titles = [b["heading"] for b in summary["content_blocks"] if b["kind"] == "chart"]
+    check("narrated: a chart title quoting an unsupported figure keeps code's title",
+          titles == [b["heading"] for b in plan_blocks if b["kind"] == "chart"], titles)
+
+    failed = run("narrated", _SlotModel(raise_on_invoke=True))["fresh_summary"]
+    check("narrated: a failed call publishes code's page exactly",
+          failed.get("authoring_mode") == "deterministic_fallback"
+          and failed["content_blocks"] == plan_blocks and failed["heading"] == grounded["heading"])
+
+    recorder = _SlotModel(raise_on_invoke=True)
+    investigated = run("investigated", recorder)["fresh_summary"]
+    check("investigated: still designs the page with the full draft schema, never slots",
+          recorder.schemas and set(recorder.schemas) == {"FreshSummaryDraft"}
+          and "authoring_slots" not in investigated, recorder.schemas)
+    check("deterministic: carries no slot accounting",
+          "authoring_slots" not in grounded)
 
 
 def fresh_summary_generator_run_with(generator, state: dict, model) -> dict:
@@ -1258,6 +1428,7 @@ def main() -> int:
     (PROJECT_ROOT / OUT).mkdir(parents=True, exist_ok=True)
     test_rejected_drafts_leave_their_reasons()
     test_narrated_summary_passes_first_time()
+    test_narrated_summary_slots()
     test_snapshot_investigation_keeps_drills_without_a_model()
     test_standalone_prose_writers_return_their_draft()
     test_standalone_kpi_cards_read_the_tier_from_config()

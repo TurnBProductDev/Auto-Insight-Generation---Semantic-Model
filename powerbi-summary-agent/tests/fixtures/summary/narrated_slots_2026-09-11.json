@@ -1,0 +1,1807 @@
+{
+ "_source": "Reconstructed from the isolated narrated Sales YoY bench run 'p1_run1' of 2026-09-11 (SB Mart). The overall candidate carries the bridge and contribution facts summary_overall_performance attaches at run time; the published summary re-validates clean against this state.",
+ "summary_r4_enabled": true,
+ "summary_visual_enabled": true,
+ "summary_candidates": [
+  {
+   "candidate_id": "summary_8f07346707db",
+   "summary_key": "summary:v1:8f07346707db4e70b4a55d36b3a05951e107ac6b4860ff2f54af266632108428",
+   "focus_key": "focus:v1:86cfa8f9b1a6d8ca252012317b046b137c2c43690451d97f51b2e9ebe99e245f",
+   "angle": "overall_performance",
+   "candidate_kind": "broad",
+   "dimension_role": "overall",
+   "lens": "performance",
+   "coverage": "complete",
+   "title_hint": "Overall performance at a glance",
+   "purpose": "Metadata-selected comparable totals for the primary value and compatible volume families.",
+   "query_name": "meta_comparable_totals",
+   "dimension": "overall",
+   "dimension_ref": null,
+   "segment": "",
+   "metric": "revenue Growth",
+   "metric_family": "revenue",
+   "direction": "increase",
+   "observation_value": 1031756.5700999945,
+   "change_pct": 2.5924268858971247,
+   "score": 106.01357766401962,
+   "period_anchor": "2026-08",
+   "evidence": {
+    "rows": [
+     {
+      "revenue Growth": 1031756.5700999945,
+      "QTY Growth": -407406.08870999515,
+      "bills growth": 238906,
+      "net revenue CURRENT": 40830625.179,
+      "net qty CURRENT": 22292815.402440004,
+      "net bills CURRENT": 10079036
+     }
+    ],
+    "coverage": "returned_rows",
+    "scope": {
+     "population_status": "comparable",
+     "comparable_entities": [
+      "ST4",
+      "ST1",
+      "ST3",
+      "ST2"
+     ],
+     "excluded_entities": [],
+     "note": "The evidence is already filtered to the entities included in this comparison."
+    },
+    "facts": [
+     {
+      "fact_id": "F1",
+      "subject": "Overall",
+      "metric": "Revenue change",
+      "display_value": "+1.0M",
+      "raw_value": 1031756.5700999945,
+      "statement": "Overall — Revenue change: +1.0M",
+      "subject_role": "focus",
+      "coverage": "complete"
+     },
+     {
+      "fact_id": "F2",
+      "subject": "Overall",
+      "metric": "Quantity change",
+      "display_value": "-407.4K",
+      "raw_value": -407406.08870999515,
+      "statement": "Overall — Quantity change: -407.4K",
+      "subject_role": "focus",
+      "coverage": "complete"
+     },
+     {
+      "fact_id": "F3",
+      "subject": "Overall",
+      "metric": "Transactions change",
+      "display_value": "+238.9K",
+      "raw_value": 238906.0,
+      "statement": "Overall — Transactions change: +238.9K",
+      "subject_role": "focus",
+      "coverage": "complete"
+     },
+     {
+      "fact_id": "F4",
+      "subject": "Overall",
+      "metric": "Revenue current",
+      "display_value": "40.8M",
+      "raw_value": 40830625.179,
+      "statement": "Overall — Revenue current: 40.8M",
+      "subject_role": "focus",
+      "coverage": "complete"
+     },
+     {
+      "fact_kind": "comparison",
+      "subject": "Overall",
+      "metric": "Revenue comparison",
+      "display_value": "+1.0M",
+      "raw_value": 1031756.5700999945,
+      "current_value": 40830625.179,
+      "current_display": "40.8M",
+      "prior_value": 39798868.6089,
+      "prior_display": "39.8M",
+      "change_value": 1031756.5700999945,
+      "change_display": "+1.0M",
+      "change_pct": 2.5924268858971247,
+      "change_pct_display": "2.6%",
+      "comparison": "the same period last year",
+      "statement": "Overall - Revenue increased by +1.0M (2.6%), from 39.8M to 40.8M compared with the same period last year",
+      "fact_id": "F5",
+      "subject_role": "focus",
+      "coverage": "complete"
+     },
+     {
+      "fact_kind": "comparison",
+      "subject": "Overall",
+      "metric": "Quantity comparison",
+      "display_value": "-407.4K",
+      "raw_value": -407406.08870999515,
+      "current_value": 22292815.402440004,
+      "current_display": "22.3M",
+      "prior_value": 22700221.49115,
+      "prior_display": "22.7M",
+      "change_value": -407406.08870999515,
+      "change_display": "-407.4K",
+      "change_pct": -1.7947229672134615,
+      "change_pct_display": "1.8%",
+      "comparison": "the same period last year",
+      "statement": "Overall - Quantity decreased by -407.4K (1.8%), from 22.7M to 22.3M compared with the same period last year",
+      "fact_id": "F6",
+      "subject_role": "focus",
+      "coverage": "complete"
+     },
+     {
+      "fact_kind": "comparison",
+      "subject": "Overall",
+      "metric": "Transactions comparison",
+      "display_value": "+238.9K",
+      "raw_value": 238906.0,
+      "current_value": 10079036.0,
+      "current_display": "10.1M",
+      "prior_value": 9840130.0,
+      "prior_display": "9.8M",
+      "change_value": 238906.0,
+      "change_display": "+238.9K",
+      "change_pct": 2.4278744284882414,
+      "change_pct_display": "2.4%",
+      "comparison": "the same period last year",
+      "statement": "Overall - Transactions increased by +238.9K (2.4%), from 9.8M to 10.1M compared with the same period last year",
+      "fact_id": "F7",
+      "subject_role": "focus",
+      "coverage": "complete"
+     },
+     {
+      "fact_id": "F8",
+      "subject": "Scope",
+      "metric": "Population",
+      "display_value": "",
+      "statement": "The evidence is already filtered to the entities included in this comparison.",
+      "subject_role": "scope",
+      "coverage": null
+     },
+     {
+      "fact_id": "OVERALL_VOLUME",
+      "fact_kind": "bridge",
+      "subject": "Overall",
+      "subject_role": "focus",
+      "detail_role": "driver",
+      "metric": "Volume effect on revenue",
+      "display_value": "-714.3K",
+      "raw_value": -714279.435615037,
+      "statement": "Change in quantity reduced revenue by -714.3K versus the same period last year."
+     },
+     {
+      "fact_id": "OVERALL_RATE_MIX",
+      "fact_kind": "bridge",
+      "subject": "Overall",
+      "subject_role": "focus",
+      "detail_role": "driver",
+      "metric": "Rate and mix effect on revenue",
+      "display_value": "+1.7M",
+      "raw_value": 1746036.0057150326,
+      "statement": "Average revenue per item and mix added revenue by +1.7M versus the same period last year."
+     }
+    ]
+   },
+   "metadata_context": {
+    "dimension": "Overall",
+    "metric": "Revenue change",
+    "metric_family": "revenue",
+    "metric_phase": null,
+    "metric_description": "",
+    "population_status": "comparable",
+    "scope_note": "The evidence is already filtered to the entities included in this comparison."
+   },
+   "metrics": [
+    {
+     "label": "Revenue change",
+     "value": "+1.0M",
+     "tone": "teal"
+    },
+    {
+     "label": "Quantity change",
+     "value": "-407.4K",
+     "tone": "teal"
+    },
+    {
+     "label": "Transactions change",
+     "value": "+238.9K",
+     "tone": "teal"
+    }
+   ],
+   "visual": {
+    "type": "bar",
+    "title": "Revenue: prior versus current",
+    "labels": [
+     "Prior",
+     "Current"
+    ],
+    "values": [
+     39798868.6089,
+     40830625.179
+    ],
+    "value_label": "Revenue"
+   },
+   "area_key": "area:v1:724d4ea66e18cd632b5abcfb17a37ac782fa01ce0ae27be3a4e1329032db9d18"
+  },
+  {
+   "candidate_id": "summary_a6288ea04f48",
+   "summary_key": "summary:v1:f05f0fb1678e2b9edc3df27c20ad6c52e10d8b9ecf94b115b485948f7c77e3e6",
+   "focus_key": "focus:v2:a6288ea04f48a34a2657f1aa087e4fd7845976c23d1f674db7bf6412bc82b0cb",
+   "area_key": "area:v1:bd51d6f5f28c32605220e7e3fe02a4d698d77ea3320925559c31ad9f113d2444",
+   "angle": "division_overview",
+   "candidate_kind": "member",
+   "candidate_source": "universe",
+   "dimension_role": "division",
+   "lens": "performance",
+   "coverage": "partial",
+   "title_hint": "How CONSUMER GOODS performed",
+   "purpose": "Focus on CONSUMER GOODS within the division name universe",
+   "query_name": "summary_universe_division",
+   "dimension": "division_name",
+   "dimension_ref": "'MIS_DEEP_DIVE2'[division_name]",
+   "member_value": "CONSUMER GOODS",
+   "segment": "CONSUMER GOODS",
+   "hierarchy_path": [
+    "CONSUMER GOODS"
+   ],
+   "metric": null,
+   "metric_family": "revenue",
+   "direction": "increase",
+   "observation_value": 426131.8308000006,
+   "materiality": 426131.8308000006,
+   "change_pct": 2.0165150001853664,
+   "current": 21558225.1086,
+   "prior": 21132093.2778,
+   "change": 426131.8308000006,
+   "overall_current": 40830625.179000005,
+   "gross_sibling_change": 1067255.4681000004,
+   "signed_sibling_change": 1031756.5701000002,
+   "parent_change": 1031756.570100002,
+   "full_member_count": 6.0,
+   "score": 65.62954499509229,
+   "period_anchor": "2026-08",
+   "evidence": {
+    "rows": [],
+    "coverage": "partial",
+    "facts": [
+     {
+      "fact_id": "F1",
+      "fact_kind": "comparison",
+      "subject": "CONSUMER GOODS",
+      "subject_role": "focus",
+      "coverage": "partial",
+      "metric": "Revenue comparison",
+      "current_value": 21558225.1086,
+      "prior_value": 21132093.2778,
+      "change_value": 426131.8308000006,
+      "change_pct": 2.0165150001853664,
+      "raw_value": 426131.8308000006,
+      "statement": "CONSUMER GOODS - Revenue change of +426.1K"
+     }
+    ]
+   },
+   "metadata_context": {
+    "dimension": "Division name",
+    "metric_family": "revenue",
+    "segment": "CONSUMER GOODS"
+   },
+   "metrics": [],
+   "visual": null
+  },
+  {
+   "candidate_id": "summary_95a64a43fb5e",
+   "summary_key": "summary:v1:b62713ce5a591ee01ad78b1c99201d34b8443ebdf217607f6d986a8548121939",
+   "focus_key": "focus:v2:95a64a43fb5e9d7101162ea812625b927aceb2ade19333c077afbc2cd8be10a0",
+   "area_key": "area:v1:aae6e7009eea4668ae5de3dabeba843361444b1c27107e60765b2e778668a92c",
+   "angle": "division_overview",
+   "candidate_kind": "member",
+   "candidate_source": "universe",
+   "dimension_role": "division",
+   "lens": "performance",
+   "coverage": "partial",
+   "title_hint": "How LIFESTYLE performed",
+   "purpose": "Focus on LIFESTYLE within the division name universe",
+   "query_name": "summary_universe_division",
+   "dimension": "division_name",
+   "dimension_ref": "'MIS_DEEP_DIVE2'[division_name]",
+   "member_value": "LIFESTYLE",
+   "segment": "LIFESTYLE",
+   "hierarchy_path": [
+    "LIFESTYLE"
+   ],
+   "metric": null,
+   "metric_family": "revenue",
+   "direction": "increase",
+   "observation_value": 338367.5343000004,
+   "materiality": 338367.5343000004,
+   "change_pct": 5.115459582415965,
+   "current": 6952974.2739,
+   "prior": 6614606.7396,
+   "change": 338367.5343000004,
+   "overall_current": 40830625.179000005,
+   "gross_sibling_change": 1067255.4681000004,
+   "signed_sibling_change": 1031756.5701000002,
+   "parent_change": 1031756.570100002,
+   "full_member_count": 6.0,
+   "score": 65.52938997016118,
+   "period_anchor": "2026-08",
+   "evidence": {
+    "rows": [],
+    "coverage": "partial",
+    "facts": [
+     {
+      "fact_id": "F1",
+      "fact_kind": "comparison",
+      "subject": "LIFESTYLE",
+      "subject_role": "focus",
+      "coverage": "partial",
+      "metric": "Revenue comparison",
+      "current_value": 6952974.2739,
+      "prior_value": 6614606.7396,
+      "change_value": 338367.5343000004,
+      "change_pct": 5.115459582415965,
+      "raw_value": 338367.5343000004,
+      "statement": "LIFESTYLE - Revenue change of +338.4K"
+     }
+    ]
+   },
+   "metadata_context": {
+    "dimension": "Division name",
+    "metric_family": "revenue",
+    "segment": "LIFESTYLE"
+   },
+   "metrics": [],
+   "visual": null
+  },
+  {
+   "candidate_id": "summary_a4dc5063b101",
+   "summary_key": "summary:v1:1a29abef69c5521ae8d2c109c8a14101652f5f7adf2f14d2b94e61a3d685a123",
+   "focus_key": "focus:v2:a4dc5063b1014df3617a681c2a6841791b247aa6c591fc328cee874284cfe06c",
+   "area_key": "area:v1:b081af26d7ae965f02d8f23492d28d1351fed2a26c2ca2f304256064d4a33b4c",
+   "angle": "business_breakdown",
+   "candidate_kind": "member",
+   "candidate_source": "universe",
+   "dimension_role": "section",
+   "lens": "composition",
+   "coverage": "partial",
+   "title_hint": "How MEAT SHOP performed",
+   "purpose": "Focus on MEAT SHOP within the sec universe",
+   "query_name": "summary_universe_section",
+   "dimension": "sec",
+   "dimension_ref": "'CAT_TABLE'[sec]",
+   "member_value": "MEAT SHOP",
+   "segment": "MEAT SHOP",
+   "hierarchy_path": [
+    "FRESH FOOD",
+    "FRESH FOOD",
+    "MEAT SHOP"
+   ],
+   "metric": null,
+   "metric_family": "revenue",
+   "direction": "increase",
+   "observation_value": 235792.6335,
+   "materiality": 235792.6335,
+   "change_pct": 9.9187798056814,
+   "current": 2613026.9115,
+   "prior": 2377234.278,
+   "change": 235792.6335,
+   "overall_current": 40830625.179000005,
+   "gross_sibling_change": 339111.6569999998,
+   "signed_sibling_change": 132473.6100000002,
+   "parent_change": 132473.6099999994,
+   "full_member_count": 3.0,
+   "score": 65.37253207483394,
+   "period_anchor": "2026-08",
+   "evidence": {
+    "rows": [],
+    "coverage": "partial",
+    "facts": [
+     {
+      "fact_id": "F1",
+      "fact_kind": "comparison",
+      "subject": "MEAT SHOP",
+      "subject_role": "focus",
+      "coverage": "partial",
+      "metric": "Revenue comparison",
+      "current_value": 2613026.9115,
+      "prior_value": 2377234.278,
+      "change_value": 235792.6335,
+      "change_pct": 9.9187798056814,
+      "raw_value": 235792.6335,
+      "statement": "MEAT SHOP - Revenue change of +235.8K"
+     }
+    ]
+   },
+   "metadata_context": {
+    "dimension": "Sec",
+    "metric_family": "revenue",
+    "segment": "MEAT SHOP"
+   },
+   "metrics": [],
+   "visual": null
+  }
+ ],
+ "summary_overall_performance": {
+  "status": "ok",
+  "families": {
+   "revenue": {
+    "current": 40830625.179,
+    "prior": 39798868.6089,
+    "change": 1031756.5700999945,
+    "change_pct": 2.5924268858971247,
+    "comparison": "the same period last year"
+   },
+   "quantity": {
+    "current": 22292815.402440004,
+    "prior": 22700221.49115,
+    "change": -407406.08870999515,
+    "change_pct": -1.7947229672134615,
+    "comparison": "the same period last year"
+   },
+   "transactions": {
+    "current": 10079036.0,
+    "prior": 9840130.0,
+    "change": 238906.0,
+    "change_pct": 2.4278744284882414,
+    "comparison": "the same period last year"
+   }
+  },
+  "primary_family": "revenue",
+  "bridge": {
+   "volume_effect": -714279.435615037,
+   "rate_mix_effect": 1746036.0057150326,
+   "total": 1031756.5700999956,
+   "revenue_change": 1031756.5700999945,
+   "reconciles": true,
+   "note": "Rate/mix reflects price and mix together, not pure price."
+  },
+  "comparison": "the same period last year",
+  "data_as_of": "2026-09-10",
+  "grain": "month",
+  "freshness_status": "current",
+  "reconciled": true,
+  "coverage": "complete",
+  "visual": {
+   "type": "bar",
+   "title": "Revenue: prior versus current",
+   "labels": [
+    "Prior",
+    "Current"
+   ],
+   "values": [
+    39798868.6089,
+    40830625.179
+   ],
+   "value_label": "Revenue"
+  },
+  "metrics": [
+   {
+    "label": "Revenue change",
+    "value": "+1.0M",
+    "tone": "teal"
+   },
+   {
+    "label": "Quantity change",
+    "value": "-407.4K",
+    "tone": "teal"
+   },
+   {
+    "label": "Transactions change",
+    "value": "+238.9K",
+    "tone": "teal"
+   }
+  ],
+  "trend": {
+   "dimension": "Month",
+   "grain": "month",
+   "rows": [
+    {
+     "month": 1,
+     "revenue_current": 5522643.0045,
+     "revenue_prior": 5050918.6416,
+     "revenue_change": 471724.36290000007
+    },
+    {
+     "month": 2,
+     "revenue_current": 5114458.8054,
+     "revenue_prior": 4645516.2066,
+     "revenue_change": 468942.5987999998
+    },
+    {
+     "month": 3,
+     "revenue_current": 5026920.3774,
+     "revenue_prior": 5578666.6518,
+     "revenue_change": -551746.2744000005
+    },
+    {
+     "month": 4,
+     "revenue_current": 4643347.3236,
+     "revenue_prior": 4072992.2577,
+     "revenue_change": 570355.0658999998
+    },
+    {
+     "month": 5,
+     "revenue_current": 5386948.9236,
+     "revenue_prior": 5168609.6571,
+     "revenue_change": 218339.2664999999
+    },
+    {
+     "month": 6,
+     "revenue_current": 4198591.0737,
+     "revenue_prior": 4474619.5797,
+     "revenue_change": -276028.50600000005
+    },
+    {
+     "month": 7,
+     "revenue_current": 4770773.2755,
+     "revenue_prior": 4506482.9277,
+     "revenue_change": 264290.34780000057
+    },
+    {
+     "month": 8,
+     "revenue_current": 4461101.5572,
+     "revenue_prior": 4664975.1552,
+     "revenue_change": -203873.59800000023
+    },
+    {
+     "month": 9,
+     "revenue_current": 1705840.8381,
+     "revenue_prior": 1636087.5315,
+     "revenue_change": 69753.30660000001
+    }
+   ],
+   "completeness": "complete",
+   "direction": "decelerating",
+   "value_aliases": {
+    "current": "revenue_current",
+    "prior": "revenue_prior",
+    "change": "revenue_change"
+   }
+  }
+ },
+ "summary_selected_focuses": [
+  {
+   "candidate_id": "summary_a6288ea04f48",
+   "summary_key": "summary:v1:f05f0fb1678e2b9edc3df27c20ad6c52e10d8b9ecf94b115b485948f7c77e3e6",
+   "focus_key": "focus:v2:a6288ea04f48a34a2657f1aa087e4fd7845976c23d1f674db7bf6412bc82b0cb",
+   "area_key": "area:v1:bd51d6f5f28c32605220e7e3fe02a4d698d77ea3320925559c31ad9f113d2444",
+   "angle": "division_overview",
+   "candidate_kind": "member",
+   "candidate_source": "universe",
+   "dimension_role": "division",
+   "lens": "performance",
+   "coverage": "partial",
+   "title_hint": "How CONSUMER GOODS performed",
+   "purpose": "Focus on CONSUMER GOODS within the division name universe",
+   "query_name": "summary_universe_division",
+   "dimension": "division_name",
+   "dimension_ref": "'MIS_DEEP_DIVE2'[division_name]",
+   "member_value": "CONSUMER GOODS",
+   "segment": "CONSUMER GOODS",
+   "hierarchy_path": [
+    "CONSUMER GOODS"
+   ],
+   "metric": null,
+   "metric_family": "revenue",
+   "direction": "increase",
+   "observation_value": 426131.8308000006,
+   "materiality": 426131.8308000006,
+   "change_pct": 2.0165150001853664,
+   "current": 21558225.1086,
+   "prior": 21132093.2778,
+   "change": 426131.8308000006,
+   "overall_current": 40830625.179000005,
+   "gross_sibling_change": 1067255.4681000004,
+   "signed_sibling_change": 1031756.5701000002,
+   "parent_change": 1031756.570100002,
+   "full_member_count": 6.0,
+   "score": 65.62954499509229,
+   "period_anchor": "2026-08",
+   "evidence": {
+    "rows": [],
+    "coverage": "partial",
+    "facts": [
+     {
+      "fact_id": "F1",
+      "fact_kind": "comparison",
+      "subject": "CONSUMER GOODS",
+      "subject_role": "focus",
+      "coverage": "partial",
+      "metric": "Revenue comparison",
+      "current_value": 21558225.1086,
+      "prior_value": 21132093.2778,
+      "change_value": 426131.8308000006,
+      "change_pct": 2.0165150001853664,
+      "raw_value": 426131.8308000006,
+      "statement": "CONSUMER GOODS - Revenue change of +426.1K"
+     }
+    ]
+   },
+   "metadata_context": {
+    "dimension": "Division name",
+    "metric_family": "revenue",
+    "segment": "CONSUMER GOODS"
+   },
+   "metrics": [],
+   "visual": null
+  },
+  {
+   "candidate_id": "summary_95a64a43fb5e",
+   "summary_key": "summary:v1:b62713ce5a591ee01ad78b1c99201d34b8443ebdf217607f6d986a8548121939",
+   "focus_key": "focus:v2:95a64a43fb5e9d7101162ea812625b927aceb2ade19333c077afbc2cd8be10a0",
+   "area_key": "area:v1:aae6e7009eea4668ae5de3dabeba843361444b1c27107e60765b2e778668a92c",
+   "angle": "division_overview",
+   "candidate_kind": "member",
+   "candidate_source": "universe",
+   "dimension_role": "division",
+   "lens": "performance",
+   "coverage": "partial",
+   "title_hint": "How LIFESTYLE performed",
+   "purpose": "Focus on LIFESTYLE within the division name universe",
+   "query_name": "summary_universe_division",
+   "dimension": "division_name",
+   "dimension_ref": "'MIS_DEEP_DIVE2'[division_name]",
+   "member_value": "LIFESTYLE",
+   "segment": "LIFESTYLE",
+   "hierarchy_path": [
+    "LIFESTYLE"
+   ],
+   "metric": null,
+   "metric_family": "revenue",
+   "direction": "increase",
+   "observation_value": 338367.5343000004,
+   "materiality": 338367.5343000004,
+   "change_pct": 5.115459582415965,
+   "current": 6952974.2739,
+   "prior": 6614606.7396,
+   "change": 338367.5343000004,
+   "overall_current": 40830625.179000005,
+   "gross_sibling_change": 1067255.4681000004,
+   "signed_sibling_change": 1031756.5701000002,
+   "parent_change": 1031756.570100002,
+   "full_member_count": 6.0,
+   "score": 65.52938997016118,
+   "period_anchor": "2026-08",
+   "evidence": {
+    "rows": [],
+    "coverage": "partial",
+    "facts": [
+     {
+      "fact_id": "F1",
+      "fact_kind": "comparison",
+      "subject": "LIFESTYLE",
+      "subject_role": "focus",
+      "coverage": "partial",
+      "metric": "Revenue comparison",
+      "current_value": 6952974.2739,
+      "prior_value": 6614606.7396,
+      "change_value": 338367.5343000004,
+      "change_pct": 5.115459582415965,
+      "raw_value": 338367.5343000004,
+      "statement": "LIFESTYLE - Revenue change of +338.4K"
+     }
+    ]
+   },
+   "metadata_context": {
+    "dimension": "Division name",
+    "metric_family": "revenue",
+    "segment": "LIFESTYLE"
+   },
+   "metrics": [],
+   "visual": null
+  },
+  {
+   "candidate_id": "summary_a4dc5063b101",
+   "summary_key": "summary:v1:1a29abef69c5521ae8d2c109c8a14101652f5f7adf2f14d2b94e61a3d685a123",
+   "focus_key": "focus:v2:a4dc5063b1014df3617a681c2a6841791b247aa6c591fc328cee874284cfe06c",
+   "area_key": "area:v1:b081af26d7ae965f02d8f23492d28d1351fed2a26c2ca2f304256064d4a33b4c",
+   "angle": "business_breakdown",
+   "candidate_kind": "member",
+   "candidate_source": "universe",
+   "dimension_role": "section",
+   "lens": "composition",
+   "coverage": "partial",
+   "title_hint": "How MEAT SHOP performed",
+   "purpose": "Focus on MEAT SHOP within the sec universe",
+   "query_name": "summary_universe_section",
+   "dimension": "sec",
+   "dimension_ref": "'CAT_TABLE'[sec]",
+   "member_value": "MEAT SHOP",
+   "segment": "MEAT SHOP",
+   "hierarchy_path": [
+    "FRESH FOOD",
+    "FRESH FOOD",
+    "MEAT SHOP"
+   ],
+   "metric": null,
+   "metric_family": "revenue",
+   "direction": "increase",
+   "observation_value": 235792.6335,
+   "materiality": 235792.6335,
+   "change_pct": 9.9187798056814,
+   "current": 2613026.9115,
+   "prior": 2377234.278,
+   "change": 235792.6335,
+   "overall_current": 40830625.179000005,
+   "gross_sibling_change": 339111.6569999998,
+   "signed_sibling_change": 132473.6100000002,
+   "parent_change": 132473.6099999994,
+   "full_member_count": 3.0,
+   "score": 65.37253207483394,
+   "period_anchor": "2026-08",
+   "evidence": {
+    "rows": [],
+    "coverage": "partial",
+    "facts": [
+     {
+      "fact_id": "F1",
+      "fact_kind": "comparison",
+      "subject": "MEAT SHOP",
+      "subject_role": "focus",
+      "coverage": "partial",
+      "metric": "Revenue comparison",
+      "current_value": 2613026.9115,
+      "prior_value": 2377234.278,
+      "change_value": 235792.6335,
+      "change_pct": 9.9187798056814,
+      "raw_value": 235792.6335,
+      "statement": "MEAT SHOP - Revenue change of +235.8K"
+     }
+    ]
+   },
+   "metadata_context": {
+    "dimension": "Sec",
+    "metric_family": "revenue",
+    "segment": "MEAT SHOP"
+   },
+   "metrics": [],
+   "visual": null
+  }
+ ],
+ "summary_focus_evidence_by_key": {
+  "focus:v2:a6288ea04f48a34a2657f1aa087e4fd7845976c23d1f674db7bf6412bc82b0cb": {
+   "focus_key": "focus:v2:a6288ea04f48a34a2657f1aa087e4fd7845976c23d1f674db7bf6412bc82b0cb",
+   "candidate_id": "summary_a6288ea04f48",
+   "segment": "CONSUMER GOODS",
+   "dimension_role": "division",
+   "sections": {
+    "scorecard": {
+     "source": "targeted_dax",
+     "metrics": {
+      "revenue": {
+       "current": 21558225.1086,
+       "prior": 21132093.2778,
+       "change": 426131.8308000006,
+       "change_pct": 2.0165150001853664
+      },
+      "quantity": {
+       "current": 14841677.381429998,
+       "prior": 15300711.205140006,
+       "change": -459033.8237100076,
+       "change_pct": -3.0000816142180584
+      },
+      "transactions": {
+       "current": 5293495.0,
+       "prior": 5221890.0,
+       "change": 71605.0,
+       "change_pct": 1.3712468091055154
+      }
+     }
+    },
+    "internal_contributors": [
+     {
+      "dimension": "item_category_name",
+      "reference": "'MIS_DEEP_DIVE2'[item_category_name]",
+      "hierarchy_role": "category",
+      "discovery_source": "metadata",
+      "hierarchy_checks": {
+       "semantic_order": true,
+       "relationship_path": true,
+       "parent_filters_child": true,
+       "filter_effect_observed": true,
+       "nestedness": true,
+       "reconciles_to_parent": true,
+       "focus_total": 21558225.1086,
+       "unfiltered_total": 40830625.179000005
+      },
+      "rows": [
+       {
+        "item_category_name": "SPICE MARKET",
+        "revenue_current": 2031343.3827,
+        "revenue_prior": 2018608.7679,
+        "revenue_change": 12734.614799999865
+       },
+       {
+        "item_category_name": "CLEANING ESSENSTIALS",
+        "revenue_current": 758547.9414,
+        "revenue_prior": 745002.4329,
+        "revenue_change": 13545.508499999996
+       },
+       {
+        "item_category_name": "REFRIDGERATED GOODS",
+        "revenue_current": 2761854.4161,
+        "revenue_prior": 2650940.4411,
+        "revenue_change": 110913.9750000001
+       },
+       {
+        "item_category_name": "PROVISIONS",
+        "revenue_current": 10624191.4602,
+        "revenue_prior": 10532292.1542,
+        "revenue_change": 91899.30599999987
+       },
+       {
+        "item_category_name": "PERSONAL CARE",
+        "revenue_current": 5382287.9082,
+        "revenue_prior": 5185249.4817,
+        "revenue_change": 197038.42650000006
+       }
+      ],
+      "completeness": "complete",
+      "top_positive": {
+       "member": "PERSONAL CARE",
+       "change": 197038.42650000006
+      },
+      "top_negative": null
+     }
+    ],
+    "location": {
+     "dimension": "store_no",
+     "rows": [
+      {
+       "store_no": "ST1",
+       "revenue_current": 6727933.4886,
+       "revenue_prior": 6753485.9538,
+       "revenue_change": -25552.465200000443,
+       "abs_sort": 25552.465200000443
+      },
+      {
+       "store_no": "ST2",
+       "revenue_current": 3718294.3485,
+       "revenue_prior": 3835044.9216,
+       "revenue_change": -116750.57310000015,
+       "abs_sort": 116750.57310000015
+      },
+      {
+       "store_no": "ST3",
+       "revenue_current": 4715284.833,
+       "revenue_prior": 4493262.3696,
+       "revenue_change": 222022.46339999977,
+       "abs_sort": 222022.46339999977
+      },
+      {
+       "store_no": "ST4",
+       "revenue_current": 6396712.4385,
+       "revenue_prior": 6050300.0328,
+       "revenue_change": 346412.4057,
+       "abs_sort": 346412.4057
+      }
+     ],
+     "completeness": "complete",
+     "top_positive": {
+      "member": "ST4",
+      "change": 346412.4057
+     },
+     "top_negative": {
+      "member": "ST2",
+      "change": -116750.57310000015
+     }
+    },
+    "driver_bridge": {
+     "volume_effect": -633980.0451266881,
+     "rate_mix_effect": 1060111.8759266883,
+     "total_change": 426131.8308000006,
+     "reconciles": true,
+     "driver_class": "rate/mix"
+    },
+    "period_trend": {
+     "dimension": "Month",
+     "reference": "'MIS_DEEP_DIVE2'[Month]",
+     "grain": "month",
+     "rows": [
+      {
+       "month": 1,
+       "revenue_current": 2984628.4434,
+       "revenue_prior": 2770016.0409,
+       "revenue_change": 214612.40250000032
+      },
+      {
+       "month": 2,
+       "revenue_current": 2750629.1904,
+       "revenue_prior": 2564639.7012,
+       "revenue_change": 185989.4892000002
+      },
+      {
+       "month": 3,
+       "revenue_current": 2504282.778,
+       "revenue_prior": 2779118.4996,
+       "revenue_change": -274835.7216000003
+      },
+      {
+       "month": 4,
+       "revenue_current": 2499522.1785,
+       "revenue_prior": 2133891.9288,
+       "revenue_change": 365630.24970000004
+      },
+      {
+       "month": 5,
+       "revenue_current": 2785529.7549,
+       "revenue_prior": 2789909.0604,
+       "revenue_change": -4379.305499999784
+      },
+      {
+       "month": 6,
+       "revenue_current": 2214625.8897,
+       "revenue_prior": 2343842.217,
+       "revenue_change": -129216.3273
+      },
+      {
+       "month": 7,
+       "revenue_current": 2551675.3839,
+       "revenue_prior": 2411170.5159,
+       "revenue_change": 140504.86799999978
+      },
+      {
+       "month": 8,
+       "revenue_current": 2354748.5322,
+       "revenue_prior": 2459219.6376,
+       "revenue_change": -104471.10540000023
+      },
+      {
+       "month": 9,
+       "revenue_current": 912582.9576,
+       "revenue_prior": 880285.6764,
+       "revenue_change": 32297.28119999997
+      }
+     ],
+     "completeness": "complete",
+     "direction": "reversal_up"
+    },
+    "daily_trend": {
+     "status": "disabled",
+     "reason": "summary_focus_daily_trend_enabled is false"
+    },
+    "caveats": [
+     "child dimension product_group_name failed hierarchy validation"
+    ]
+   },
+   "caveats": [
+    "child dimension product_group_name failed hierarchy validation"
+   ],
+   "queries_attempted": 5,
+   "query_budget": 5,
+   "signature_fields": {
+    "top_pos_contributor": "PERSONAL CARE",
+    "top_neg_contributor": null,
+    "leading_location": "ST4",
+    "driver_class": "rate/mix"
+   },
+   "deep_dive_signature": "4ce256604326c734",
+   "signature_duplicate": false,
+   "signature_duplicate_of": null,
+   "signature_overlap": 0.0,
+   "facts": [
+    {
+     "fact_id": "D1",
+     "fact_kind": "deep_dive",
+     "subject": "CONSUMER GOODS",
+     "metric": "Revenue change",
+     "display_value": "+426.1K",
+     "raw_value": 426131.8308000006,
+     "statement": "CONSUMER GOODS revenue changed by +426.1K (+2.0%).",
+     "subject_role": "focus",
+     "detail_role": "focus_metric",
+     "coverage": "complete"
+    },
+    {
+     "fact_id": "D2",
+     "fact_kind": "deep_dive",
+     "subject": "CONSUMER GOODS",
+     "metric": "Quantity change",
+     "display_value": "-459.0K",
+     "raw_value": -459033.8237100076,
+     "statement": "CONSUMER GOODS quantity changed by -459.0K.",
+     "subject_role": "focus",
+     "detail_role": "focus_metric",
+     "coverage": "complete"
+    },
+    {
+     "fact_id": "D3",
+     "fact_kind": "deep_dive",
+     "subject": "CONSUMER GOODS",
+     "metric": "Transactions change",
+     "display_value": "+71.6K",
+     "raw_value": 71605.0,
+     "statement": "CONSUMER GOODS transactions changed by +71.6K.",
+     "subject_role": "focus",
+     "detail_role": "focus_metric",
+     "coverage": "complete"
+    },
+    {
+     "fact_id": "D4",
+     "fact_kind": "deep_dive",
+     "subject": "PERSONAL CARE",
+     "metric": "Revenue change in item_category_name",
+     "display_value": "+197.0K",
+     "raw_value": 197038.42650000006,
+     "statement": "Within CONSUMER GOODS, PERSONAL CARE added +197.0K.",
+     "subject_role": "peer",
+     "detail_role": "contributor",
+     "coverage": "complete"
+    },
+    {
+     "fact_id": "D5",
+     "fact_kind": "deep_dive",
+     "subject": "ST4",
+     "metric": "Store contribution",
+     "display_value": "+346.4K",
+     "raw_value": 346412.4057,
+     "statement": "ST4 led CONSUMER GOODS across the stores included in the comparison at +346.4K.",
+     "subject_role": "peer",
+     "detail_role": "location",
+     "coverage": "complete"
+    },
+    {
+     "fact_id": "D6",
+     "fact_kind": "deep_dive",
+     "subject": "CONSUMER GOODS",
+     "metric": "Volume effect on revenue",
+     "display_value": "-634.0K",
+     "raw_value": -633980.0451266881,
+     "statement": "Within CONSUMER GOODS, change in units sold reduced revenue by -634.0K.",
+     "subject_role": "focus",
+     "detail_role": "driver",
+     "coverage": "complete"
+    },
+    {
+     "fact_id": "D7",
+     "fact_kind": "deep_dive",
+     "subject": "CONSUMER GOODS",
+     "metric": "Rate and mix effect on revenue",
+     "display_value": "+1.1M",
+     "raw_value": 1060111.8759266883,
+     "statement": "Within CONSUMER GOODS, average revenue per item and mix added revenue by +1.1M.",
+     "subject_role": "focus",
+     "detail_role": "driver",
+     "coverage": "complete"
+    }
+   ],
+   "selection": {
+    "reason": "overdue",
+    "priority": 1.0,
+    "importance": 1.0,
+    "coverage_debt": 1.0,
+    "reversal": false,
+    "magnitude": false,
+    "sentiment": "opportunity"
+   },
+   "materiality_facts": {
+    "global_impact_pct": 1.0436573746589817,
+    "business_share_pct": 52.799155080505166,
+    "sibling_movement_impact_pct": 39.92781892779889,
+    "area_change_pct": 2.0165150001853664,
+    "reconciled": true,
+    "impact_share_pct": 41.30158635759414
+   }
+  },
+  "focus:v2:95a64a43fb5e9d7101162ea812625b927aceb2ade19333c077afbc2cd8be10a0": {
+   "focus_key": "focus:v2:95a64a43fb5e9d7101162ea812625b927aceb2ade19333c077afbc2cd8be10a0",
+   "candidate_id": "summary_95a64a43fb5e",
+   "segment": "LIFESTYLE",
+   "dimension_role": "division",
+   "sections": {
+    "scorecard": {
+     "source": "targeted_dax",
+     "metrics": {
+      "revenue": {
+       "current": 6952974.2739,
+       "prior": 6614606.7396,
+       "change": 338367.5343000004,
+       "change_pct": 5.115459582415965
+      },
+      "quantity": {
+       "current": 1705107.0,
+       "prior": 1592996.0,
+       "change": 112111.0,
+       "change_pct": 7.037745229743201
+      },
+      "transactions": {
+       "current": 1088582.0,
+       "prior": 1009274.0,
+       "change": 79308.0,
+       "change_pct": 7.85792559800411
+      }
+     }
+    },
+    "internal_contributors": [
+     {
+      "dimension": "item_category_name",
+      "reference": "'MIS_DEEP_DIVE2'[item_category_name]",
+      "hierarchy_role": "category",
+      "discovery_source": "metadata",
+      "hierarchy_checks": {
+       "semantic_order": true,
+       "relationship_path": true,
+       "parent_filters_child": true,
+       "filter_effect_observed": true,
+       "nestedness": true,
+       "reconciles_to_parent": true,
+       "focus_total": 6952974.273900001,
+       "unfiltered_total": 40830625.179000005
+      },
+      "rows": [
+       {
+        "item_category_name": "BABY CLOTHING",
+        "revenue_current": 1114.6086,
+        "revenue_prior": 1974.0429,
+        "revenue_change": -859.4342999999999
+       },
+       {
+        "item_category_name": "SPORTING GOODS",
+        "revenue_current": 85319.865,
+        "revenue_prior": 81995.1606,
+        "revenue_change": 3324.7044000000024
+       },
+       {
+        "item_category_name": "TRAVEL",
+        "revenue_current": 691153.9029,
+        "revenue_prior": 710015.8788,
+        "revenue_change": -18861.97589999996
+       },
+       {
+        "item_category_name": "KIDS FASHION",
+        "revenue_current": 249859.1475,
+        "revenue_prior": 244902.1473,
+        "revenue_change": 4957.00019999998
+       },
+       {
+        "item_category_name": "TOYS",
+        "revenue_current": 712572.9543,
+        "revenue_prior": 635916.3471,
+        "revenue_change": 76656.60719999997
+       },
+       {
+        "item_category_name": "MENS APPAREL",
+        "revenue_current": 2065798.3014,
+        "revenue_prior": 1926914.427,
+        "revenue_change": 138883.8744000001
+       },
+       {
+        "item_category_name": "FOOTWEAR",
+        "revenue_current": 673945.4043,
+        "revenue_prior": 643571.6247,
+        "revenue_change": 30373.77960000001
+       },
+       {
+        "item_category_name": "LADIES APPAREL",
+        "revenue_current": 2473210.0899,
+        "revenue_prior": 2369317.1112,
+        "revenue_change": 103892.97869999986
+       }
+      ],
+      "completeness": "complete",
+      "top_positive": {
+       "member": "MENS APPAREL",
+       "change": 138883.8744000001
+      },
+      "top_negative": {
+       "member": "TRAVEL",
+       "change": -18861.97589999996
+      }
+     }
+    ],
+    "location": {
+     "dimension": "store_no",
+     "rows": [
+      {
+       "store_no": "ST3",
+       "revenue_current": 1065106.0818,
+       "revenue_prior": 1098301.4208,
+       "revenue_change": -33195.33899999992,
+       "abs_sort": 33195.33899999992
+      },
+      {
+       "store_no": "ST1",
+       "revenue_current": 2169917.4888,
+       "revenue_prior": 2257097.5107,
+       "revenue_change": -87180.02190000005,
+       "abs_sort": 87180.02190000005
+      },
+      {
+       "store_no": "ST2",
+       "revenue_current": 1022462.4303,
+       "revenue_prior": 1146728.88,
+       "revenue_change": -124266.44969999988,
+       "abs_sort": 124266.44969999988
+      },
+      {
+       "store_no": "ST4",
+       "revenue_current": 2695488.273,
+       "revenue_prior": 2112478.9281,
+       "revenue_change": 583009.3448999999,
+       "abs_sort": 583009.3448999999
+      }
+     ],
+     "completeness": "complete",
+     "top_positive": {
+      "member": "ST4",
+      "change": 583009.3448999999
+     },
+     "top_negative": {
+      "member": "ST2",
+      "change": -124266.44969999988
+     }
+    },
+    "driver_bridge": {
+     "volume_effect": 465519.1702824713,
+     "rate_mix_effect": -127151.63598247143,
+     "total_change": 338367.5343000004,
+     "reconciles": true,
+     "driver_class": "volume"
+    },
+    "period_trend": {
+     "dimension": "Month",
+     "reference": "'MIS_DEEP_DIVE2'[Month]",
+     "grain": "month",
+     "rows": [
+      {
+       "month": 1,
+       "revenue_current": 920072.5848,
+       "revenue_prior": 745808.1237,
+       "revenue_change": 174264.46109999996
+      },
+      {
+       "month": 2,
+       "revenue_current": 825434.8794,
+       "revenue_prior": 689529.5262,
+       "revenue_change": 135905.3532
+      },
+      {
+       "month": 3,
+       "revenue_current": 1001874.7683,
+       "revenue_prior": 1061410.0734,
+       "revenue_change": -59535.305100000114
+      },
+      {
+       "month": 4,
+       "revenue_current": 769295.5155,
+       "revenue_prior": 656557.1289,
+       "revenue_change": 112738.38659999997
+      },
+      {
+       "month": 5,
+       "revenue_current": 1017650.7603,
+       "revenue_prior": 895504.032,
+       "revenue_change": 122146.72829999996
+      },
+      {
+       "month": 6,
+       "revenue_current": 690455.9367,
+       "revenue_prior": 795975.1119,
+       "revenue_change": -105519.17520000006
+      },
+      {
+       "month": 7,
+       "revenue_current": 755513.4033,
+       "revenue_prior": 731703.7449,
+       "revenue_change": 23809.658399999957
+      },
+      {
+       "month": 8,
+       "revenue_current": 706880.8116,
+       "revenue_prior": 777354.8778,
+       "revenue_change": -70474.0662
+      },
+      {
+       "month": 9,
+       "revenue_current": 265795.614,
+       "revenue_prior": 260764.1208,
+       "revenue_change": 5031.493199999997
+      }
+     ],
+     "completeness": "complete",
+     "direction": "reversal_up"
+    },
+    "daily_trend": {
+     "status": "disabled",
+     "reason": "summary_focus_daily_trend_enabled is false"
+    },
+    "caveats": [
+     "child dimension product_group_name failed hierarchy validation"
+    ]
+   },
+   "caveats": [
+    "child dimension product_group_name failed hierarchy validation"
+   ],
+   "queries_attempted": 5,
+   "query_budget": 5,
+   "signature_fields": {
+    "top_pos_contributor": "MENS APPAREL",
+    "top_neg_contributor": "TRAVEL",
+    "leading_location": "ST4",
+    "driver_class": "volume"
+   },
+   "deep_dive_signature": "0f350191a80f774c",
+   "signature_duplicate": false,
+   "signature_duplicate_of": null,
+   "signature_overlap": 0.0,
+   "facts": [
+    {
+     "fact_id": "D1",
+     "fact_kind": "deep_dive",
+     "subject": "LIFESTYLE",
+     "metric": "Revenue change",
+     "display_value": "+338.4K",
+     "raw_value": 338367.5343000004,
+     "statement": "LIFESTYLE revenue changed by +338.4K (+5.1%).",
+     "subject_role": "focus",
+     "detail_role": "focus_metric",
+     "coverage": "complete"
+    },
+    {
+     "fact_id": "D2",
+     "fact_kind": "deep_dive",
+     "subject": "LIFESTYLE",
+     "metric": "Quantity change",
+     "display_value": "+112.1K",
+     "raw_value": 112111.0,
+     "statement": "LIFESTYLE quantity changed by +112.1K.",
+     "subject_role": "focus",
+     "detail_role": "focus_metric",
+     "coverage": "complete"
+    },
+    {
+     "fact_id": "D3",
+     "fact_kind": "deep_dive",
+     "subject": "LIFESTYLE",
+     "metric": "Transactions change",
+     "display_value": "+79.3K",
+     "raw_value": 79308.0,
+     "statement": "LIFESTYLE transactions changed by +79.3K.",
+     "subject_role": "focus",
+     "detail_role": "focus_metric",
+     "coverage": "complete"
+    },
+    {
+     "fact_id": "D4",
+     "fact_kind": "deep_dive",
+     "subject": "MENS APPAREL",
+     "metric": "Revenue change in item_category_name",
+     "display_value": "+138.9K",
+     "raw_value": 138883.8744000001,
+     "statement": "Within LIFESTYLE, MENS APPAREL added +138.9K.",
+     "subject_role": "peer",
+     "detail_role": "contributor",
+     "coverage": "complete"
+    },
+    {
+     "fact_id": "D5",
+     "fact_kind": "deep_dive",
+     "subject": "TRAVEL",
+     "metric": "Revenue change in item_category_name",
+     "display_value": "-18.9K",
+     "raw_value": -18861.97589999996,
+     "statement": "Within LIFESTYLE, TRAVEL reduced revenue by -18.9K.",
+     "subject_role": "peer",
+     "detail_role": "contributor",
+     "coverage": "complete"
+    },
+    {
+     "fact_id": "D6",
+     "fact_kind": "deep_dive",
+     "subject": "ST4",
+     "metric": "Store contribution",
+     "display_value": "+583.0K",
+     "raw_value": 583009.3448999999,
+     "statement": "ST4 led LIFESTYLE across the stores included in the comparison at +583.0K.",
+     "subject_role": "peer",
+     "detail_role": "location",
+     "coverage": "complete"
+    },
+    {
+     "fact_id": "D7",
+     "fact_kind": "deep_dive",
+     "subject": "LIFESTYLE",
+     "metric": "Volume effect on revenue",
+     "display_value": "+465.5K",
+     "raw_value": 465519.1702824713,
+     "statement": "Within LIFESTYLE, change in units sold added revenue by +465.5K.",
+     "subject_role": "focus",
+     "detail_role": "driver",
+     "coverage": "complete"
+    },
+    {
+     "fact_id": "D8",
+     "fact_kind": "deep_dive",
+     "subject": "LIFESTYLE",
+     "metric": "Rate and mix effect on revenue",
+     "display_value": "-127.2K",
+     "raw_value": -127151.63598247143,
+     "statement": "Within LIFESTYLE, average revenue per item and mix reduced revenue by -127.2K.",
+     "subject_role": "focus",
+     "detail_role": "driver",
+     "coverage": "complete"
+    }
+   ],
+   "selection": {
+    "reason": "greedy",
+    "priority": 0.7883,
+    "importance": 0.6526,
+    "coverage_debt": 1.0,
+    "reversal": false,
+    "magnitude": false,
+    "sentiment": "opportunity"
+   },
+   "materiality_facts": {
+    "global_impact_pct": 0.8287101478770144,
+    "business_share_pct": 17.028821487347816,
+    "sibling_movement_impact_pct": 31.704455438620045,
+    "area_change_pct": 5.115459582415965,
+    "reconciled": true,
+    "impact_share_pct": 32.79528758098501
+   }
+  },
+  "focus:v2:a4dc5063b1014df3617a681c2a6841791b247aa6c591fc328cee874284cfe06c": {
+   "focus_key": "focus:v2:a4dc5063b1014df3617a681c2a6841791b247aa6c591fc328cee874284cfe06c",
+   "candidate_id": "summary_a4dc5063b101",
+   "segment": "MEAT SHOP",
+   "dimension_role": "section",
+   "sections": {
+    "scorecard": {
+     "source": "targeted_dax",
+     "metrics": {
+      "revenue": {
+       "current": 2613026.9115,
+       "prior": 2377234.278,
+       "change": 235792.6335,
+       "change_pct": 9.9187798056814
+      },
+      "quantity": {
+       "current": 933285.1139,
+       "prior": 752512.0158,
+       "change": 180773.09809999994,
+       "change_pct": 24.02261948041042
+      },
+      "transactions": {
+       "current": 503480.0,
+       "prior": 427040.0,
+       "change": 76440.0,
+       "change_pct": 17.899962532783814
+      }
+     }
+    },
+    "internal_contributors": [
+     {
+      "dimension": "item_category_name",
+      "reference": "'MIS_DEEP_DIVE2'[item_category_name]",
+      "hierarchy_role": "category",
+      "discovery_source": "metadata",
+      "hierarchy_checks": {
+       "semantic_order": true,
+       "relationship_path": true,
+       "parent_filters_child": true,
+       "filter_effect_observed": true,
+       "nestedness": true,
+       "reconciles_to_parent": true,
+       "focus_total": 2613026.9115,
+       "unfiltered_total": 40830625.179
+      },
+      "rows": [
+       {
+        "item_category_name": "MEAT SHOP",
+        "revenue_current": 2613026.9115,
+        "revenue_prior": 2377234.278,
+        "revenue_change": 235792.6335
+       }
+      ],
+      "completeness": "complete",
+      "top_positive": {
+       "member": "MEAT SHOP",
+       "change": 235792.6335
+      },
+      "top_negative": null
+     }
+    ],
+    "location": {
+     "dimension": "store_no",
+     "rows": [
+      {
+       "store_no": "ST2",
+       "revenue_current": 609561.1287,
+       "revenue_prior": 580469.4738,
+       "revenue_change": 29091.654899999965,
+       "abs_sort": 29091.654899999965
+      },
+      {
+       "store_no": "ST1",
+       "revenue_current": 862036.8057,
+       "revenue_prior": 811452.1599,
+       "revenue_change": 50584.64580000006,
+       "abs_sort": 50584.64580000006
+      },
+      {
+       "store_no": "ST3",
+       "revenue_current": 709234.407,
+       "revenue_prior": 618966.9702,
+       "revenue_change": 90267.43680000002,
+       "abs_sort": 90267.43680000002
+      },
+      {
+       "store_no": "ST4",
+       "revenue_current": 432194.5701,
+       "revenue_prior": 366345.6741,
+       "revenue_change": 65848.89600000001,
+       "abs_sort": 65848.89600000001
+      }
+     ],
+     "completeness": "complete",
+     "top_positive": {
+      "member": "ST3",
+      "change": 90267.43680000002
+     },
+     "top_negative": null
+    },
+    "driver_bridge": {
+     "volume_effect": 571073.944761822,
+     "rate_mix_effect": -335281.3112618219,
+     "total_change": 235792.6335,
+     "reconciles": true,
+     "driver_class": "volume"
+    },
+    "period_trend": {
+     "dimension": "Month",
+     "reference": "'MIS_DEEP_DIVE2'[Month]",
+     "grain": "month",
+     "rows": [
+      {
+       "month": 1,
+       "revenue_current": 319825.6029,
+       "revenue_prior": 293359.4523,
+       "revenue_change": 26466.150599999994
+      },
+      {
+       "month": 2,
+       "revenue_current": 306424.9872,
+       "revenue_prior": 268927.0443,
+       "revenue_change": 37497.942899999965
+      },
+      {
+       "month": 3,
+       "revenue_current": 365500.8279,
+       "revenue_prior": 331659.9918,
+       "revenue_change": 33840.83609999996
+      },
+      {
+       "month": 4,
+       "revenue_current": 303754.4874,
+       "revenue_prior": 252358.6131,
+       "revenue_change": 51395.874299999996
+      },
+      {
+       "month": 5,
+       "revenue_current": 343030.1211,
+       "revenue_prior": 288494.7624,
+       "revenue_change": 54535.35869999998
+      },
+      {
+       "month": 6,
+       "revenue_current": 258442.2531,
+       "revenue_prior": 284779.9323,
+       "revenue_change": -26337.679199999984
+      },
+      {
+       "month": 7,
+       "revenue_current": 314250.8238,
+       "revenue_prior": 279673.7436,
+       "revenue_change": 34577.080200000026
+      },
+      {
+       "month": 8,
+       "revenue_current": 289566.0576,
+       "revenue_prior": 281853.6831,
+       "revenue_change": 7712.374499999976
+      },
+      {
+       "month": 9,
+       "revenue_current": 112231.7505,
+       "revenue_prior": 96127.0551,
+       "revenue_change": 16104.695399999997
+      }
+     ],
+     "completeness": "complete",
+     "direction": "accelerating"
+    },
+    "daily_trend": {
+     "status": "disabled",
+     "reason": "summary_focus_daily_trend_enabled is false"
+    },
+    "caveats": [
+     "child dimension special_product_group_name failed hierarchy validation"
+    ]
+   },
+   "caveats": [
+    "child dimension special_product_group_name failed hierarchy validation"
+   ],
+   "queries_attempted": 5,
+   "query_budget": 5,
+   "signature_fields": {
+    "top_pos_contributor": "MEAT SHOP",
+    "top_neg_contributor": null,
+    "leading_location": "ST3",
+    "driver_class": "volume"
+   },
+   "deep_dive_signature": "63f1f055664e5dd4",
+   "signature_duplicate": false,
+   "signature_duplicate_of": null,
+   "signature_overlap": 0.0,
+   "facts": [
+    {
+     "fact_id": "D1",
+     "fact_kind": "deep_dive",
+     "subject": "MEAT SHOP",
+     "metric": "Revenue change",
+     "display_value": "+235.8K",
+     "raw_value": 235792.6335,
+     "statement": "MEAT SHOP revenue changed by +235.8K (+9.9%).",
+     "subject_role": "focus",
+     "detail_role": "focus_metric",
+     "coverage": "complete"
+    },
+    {
+     "fact_id": "D2",
+     "fact_kind": "deep_dive",
+     "subject": "MEAT SHOP",
+     "metric": "Quantity change",
+     "display_value": "+180.8K",
+     "raw_value": 180773.09809999994,
+     "statement": "MEAT SHOP quantity changed by +180.8K.",
+     "subject_role": "focus",
+     "detail_role": "focus_metric",
+     "coverage": "complete"
+    },
+    {
+     "fact_id": "D3",
+     "fact_kind": "deep_dive",
+     "subject": "MEAT SHOP",
+     "metric": "Transactions change",
+     "display_value": "+76.4K",
+     "raw_value": 76440.0,
+     "statement": "MEAT SHOP transactions changed by +76.4K.",
+     "subject_role": "focus",
+     "detail_role": "focus_metric",
+     "coverage": "complete"
+    },
+    {
+     "fact_id": "D4",
+     "fact_kind": "deep_dive",
+     "subject": "MEAT SHOP",
+     "metric": "Revenue change in item_category_name",
+     "display_value": "+235.8K",
+     "raw_value": 235792.6335,
+     "statement": "Within MEAT SHOP, MEAT SHOP added +235.8K.",
+     "subject_role": "peer",
+     "detail_role": "contributor",
+     "coverage": "complete"
+    },
+    {
+     "fact_id": "D5",
+     "fact_kind": "deep_dive",
+     "subject": "ST3",
+     "metric": "Store contribution",
+     "display_value": "+90.3K",
+     "raw_value": 90267.43680000002,
+     "statement": "ST3 led MEAT SHOP across the stores included in the comparison at +90.3K.",
+     "subject_role": "peer",
+     "detail_role": "location",
+     "coverage": "complete"
+    },
+    {
+     "fact_id": "D6",
+     "fact_kind": "deep_dive",
+     "subject": "MEAT SHOP",
+     "metric": "Volume effect on revenue",
+     "display_value": "+571.1K",
+     "raw_value": 571073.944761822,
+     "statement": "Within MEAT SHOP, change in units sold added revenue by +571.1K.",
+     "subject_role": "focus",
+     "detail_role": "driver",
+     "coverage": "complete"
+    },
+    {
+     "fact_id": "D7",
+     "fact_kind": "deep_dive",
+     "subject": "MEAT SHOP",
+     "metric": "Rate and mix effect on revenue",
+     "display_value": "-335.3K",
+     "raw_value": -335281.3112618219,
+     "statement": "Within MEAT SHOP, average revenue per item and mix reduced revenue by -335.3K.",
+     "subject_role": "focus",
+     "detail_role": "driver",
+     "coverage": "complete"
+    }
+   ],
+   "selection": {
+    "reason": "greedy",
+    "priority": 0.683,
+    "importance": 0.4237,
+    "coverage_debt": 1.0,
+    "reversal": false,
+    "magnitude": false,
+    "sentiment": "opportunity"
+   },
+   "materiality_facts": {
+    "global_impact_pct": 0.5774896477002092,
+    "business_share_pct": 6.399674019304341,
+    "sibling_movement_impact_pct": 69.53244709603132,
+    "area_change_pct": 9.9187798056814,
+    "reconciled": true,
+    "impact_share_pct": 22.853514126607184
+   }
+  }
+ },
+ "summary_period_context": {
+  "grain": "month",
+  "axis": "'MIS_DEEP_DIVE2'[Month]",
+  "data_as_of": "2026-09-10",
+  "period_anchor": "2026-08",
+  "freshness_status": "current",
+  "age_in_grain_periods": 0,
+  "today": "2026-09-11",
+  "reason": "metadata fallback after rejecting batch/load date evidence",
+  "checks": [
+   {
+    "query": "meta_trend_by_mis_deep_dive2_max_date",
+    "column": "max_date",
+    "grain": "day",
+    "periods": 24,
+    "data_start": "2026-08-18",
+    "data_as_of": "2026-09-10",
+    "span_days": 24,
+    "max_bucket_share": 0.7082452234598701,
+    "verdict": "batch_date"
+   }
+  ],
+  "data_signature": "5c85bfa5aff15c242d199ae2e1049dc74d2791341870355f51eabf2f1a4aa53e"
+ },
+ "summary_novelty": {
+  "status": "ok",
+  "mode": "portfolio",
+  "memory_status": "empty",
+  "detected": 121,
+  "eligible": 3,
+  "summary_type": "new_data",
+  "recovered_same_day": false,
+  "selected_areas": [
+   "area:v1:bd51d6f5f28c32605220e7e3fe02a4d698d77ea3320925559c31ad9f113d2444",
+   "area:v1:aae6e7009eea4668ae5de3dabeba843361444b1c27107e60765b2e778668a92c",
+   "area:v1:b081af26d7ae965f02d8f23492d28d1351fed2a26c2ca2f304256064d4a33b4c"
+  ],
+  "selected_segments": [
+   "CONSUMER GOODS",
+   "LIFESTYLE",
+   "MEAT SHOP"
+  ],
+  "selected_roles": [
+   "division",
+   "division",
+   "section"
+  ],
+  "reason": "portfolio",
+  "audit": {
+   "detected": 121,
+   "today": "2026-09-11",
+   "dropped": {
+    "role": 40,
+    "invalid": 0,
+    "evidence": 16,
+    "collapsed_hierarchy": 30,
+    "materiality": 10,
+    "repeat_gap": 0
+   },
+   "eligible": 18,
+   "seeds": 1,
+   "selected": 3,
+   "reserves": 15,
+   "reason": "portfolio"
+  }
+ }
+}

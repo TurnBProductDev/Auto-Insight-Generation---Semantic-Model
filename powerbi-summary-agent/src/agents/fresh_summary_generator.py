@@ -976,6 +976,221 @@ def _r4_fallback(state: dict, overall_candidate: dict | None, merged_focuses: li
     }
 
 
+class SummarySlotText(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    slot_id: str = Field(description="Exact slot_id copied from the input")
+    text: str = Field(description="The wording for this one slot")
+
+
+class SummarySlotDraft(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    slots: List[SummarySlotText] = Field(description="One entry per slot given, in any order")
+
+
+def _slot_plan(plan: dict) -> list[dict]:
+    """The prose slots inside code's page plan, in page order.
+
+    A slot is wording and never structure: the headline, the narrative of each
+    grounded bullet block, and the title of each chart. Blocks, their order,
+    their headings, their facts and every chart's data stay code's.
+    """
+    slots = [{"slot_id": "headline", "kind": "headline", "heading": "", "area": "",
+              "grounded": str(plan.get("headline") or "")}]
+    area = ""
+    for index, block in enumerate(plan.get("blocks") or []):
+        if block.get("kind") == "bullets" and block.get("points"):
+            area = str(block.get("heading") or "")
+            slots.append({"slot_id": f"block:{index}", "kind": "narrative", "heading": area,
+                          "area": area, "grounded": [str(point) for point in block["points"]]})
+        elif block.get("kind") == "chart":
+            slots.append({"slot_id": f"chart:{index}", "kind": "chart_title", "heading": "",
+                          "area": area, "grounded": str(block.get("heading") or "")})
+    return slots
+
+
+def _assemble_slots(plan: dict, texts: dict[str, str]) -> dict:
+    """Code's plan with the given slot wording in place; the structure never changes.
+
+    A narrative slot the model wrote renders as a paragraph under the same
+    heading; one it did not keeps code's bullets. Nothing else can move.
+    """
+    blocks = []
+    for index, block in enumerate(plan.get("blocks") or []):
+        block = dict(block)
+        narrative = texts.get(f"block:{index}")
+        title = texts.get(f"chart:{index}")
+        if block.get("kind") == "bullets" and narrative:
+            block.update({"kind": "paragraph", "text": narrative, "points": []})
+        elif block.get("kind") == "chart" and title:
+            block["heading"] = title
+        blocks.append(block)
+    return {**plan, "headline": texts.get("headline") or plan.get("headline"), "blocks": blocks}
+
+
+def _author_slots(state: dict, log: RunLogger, plan: dict, covered: list[dict],
+                  overall_candidate: dict | None, merged_focuses: list[dict]) -> dict:
+    """Narrated tier: code's grounded R4 page, with the model writing only its words.
+
+    The investigated writer designs the whole page, so it has to be shown the
+    whole evidence set and every chart's data - 86% of a 19,859-token prompt on
+    2026-09-11. Here code builds the page first (the grounded `_r4_fallback`,
+    which passes the same check), and the model is sent only each slot's own
+    grounded text and the figures in it.
+
+    Each returned slot is checked in place - the whole page validated with that
+    slot and every slot already accepted - so a bad slot costs only itself. One
+    repair round carries the rejected slots' reasons; anything still failing
+    keeps code's words. Accepting slot by slot means the assembled page has
+    already passed `validate_draft`, and code's page is the floor.
+    """
+    from ..tools import ai_tier
+
+    sources = _chart_sources(covered) if state.get("summary_visual_enabled", True) else []
+
+    def check(texts: dict[str, str]) -> list[str]:
+        return validate_draft(_assemble_slots(plan, texts), covered, chart_sources=sources,
+                              mode="balanced_multi_focus", require_chart=bool(sources))
+
+    baseline = set(check({}))
+    slots = _slot_plan(plan)
+    by_id = {slot["slot_id"]: slot for slot in slots}
+    copyable = evidence_numbers(covered)
+    sentiment = {
+        str(focus.get("segment") or ""): focus.get("sentiment") or (focus.get("selection") or {}).get("sentiment")
+        for focus in merged_focuses
+    }
+    if overall_candidate:
+        sentiment["Overall Performance"] = overall_candidate.get("sentiment")
+
+    def shown(slot: dict) -> dict:
+        grounded = slot["grounded"]
+        if isinstance(grounded, list):
+            grounded = [_copyable_text(point, copyable) for point in grounded]
+            figures_from = " ".join(grounded)
+        else:
+            grounded = _copyable_text(grounded, copyable) if slot["kind"] == "headline" else grounded
+            figures_from = grounded if slot["kind"] == "headline" else ""
+        # Each figure as the grounded text writes it: parse_numbers drops a
+        # leading "+", and the model is told to copy the sign exactly.
+        figures: list[str] = []
+        for _value, _tolerance, token in parse_numbers(figures_from):
+            if not token.startswith(("+", "-")) and f"+{token}" in figures_from:
+                token = f"+{token}"
+            if token not in figures:
+                figures.append(token)
+        entry = {"slot_id": slot["slot_id"], "kind": slot["kind"], "grounded_text": grounded,
+                 "figures_to_keep": figures}
+        if slot["heading"]:
+            entry["heading"] = slot["heading"]
+        if slot["kind"] == "chart_title" and slot["area"]:
+            entry["area"] = slot["area"]
+        if sentiment.get(slot["area"]):
+            entry["sentiment"] = sentiment[slot["area"]]
+        return entry
+
+    context = [shown(slot) for slot in slots]
+    shown_by_id = {entry["slot_id"]: entry for entry in context}
+    system = (
+        file_io.read_prompt("_global_rules.md")
+        + file_io.business_rules_block(state)
+        + file_io.summary_business_rules_block(state)
+        + "\n\n" + file_io.read_prompt("fresh_summary_slots_prompt.md")
+        + _rejected_phrases_block()
+    )
+    messages = [
+        {"role": "system", "content": system},
+        {"role": "user", "content": "SLOTS:\n" + dumps({
+            "reporting_period": (state.get("summary_period_context") or {}).get("period_anchor"),
+            "slots": context,
+        })},
+    ]
+
+    accepted: dict[str, str] = {}
+    rejected: dict[str, list[str]] = {}
+    attempts: list[dict] = []
+    pending = list(by_id)
+    for attempt in (1, 2):
+        since = authoring_attempts.mark(_USAGE_LABEL)
+        try:
+            llm = get_llm(state, structured_schema=SummarySlotDraft)
+            response = llm.invoke(messages)
+        except Exception as exc:  # noqa: BLE001 - code's page still delivers
+            attempts.append({"attempt": attempt, "outcome": "call_failed",
+                             "errors": [f"{type(exc).__name__}: {exc}"],
+                             "usage": authoring_attempts.usage_since(_USAGE_LABEL, since)})
+            log.error(f"Summary slot authoring call failed ({type(exc).__name__}: {exc}); "
+                      "slots not yet accepted keep code's wording.")
+            break
+        raw = response.model_dump() if hasattr(response, "model_dump") else dict(response or {})
+        returned: dict[str, str] = {}
+        for item in raw.get("slots") or []:
+            slot_id = str((item or {}).get("slot_id") or "").strip()
+            text = str((item or {}).get("text") or "").strip()
+            if slot_id in pending and text and slot_id not in returned:
+                returned[slot_id] = text
+        rejected = {}
+        for slot_id in pending:
+            if slot_id not in returned:
+                rejected[slot_id] = ["not returned"]
+                continue
+            errors = [error for error in check({**accepted, slot_id: returned[slot_id]})
+                      if error not in baseline]
+            if errors:
+                rejected[slot_id] = errors
+            else:
+                accepted[slot_id] = returned[slot_id]
+        attempts.append({
+            "attempt": attempt,
+            "outcome": "validated" if not rejected else ("partial" if len(rejected) < len(pending) else "rejected"),
+            "errors": [f"{slot_id}: {error}" for slot_id, errors in rejected.items() for error in errors],
+            "accepted": [slot_id for slot_id in pending if slot_id not in rejected],
+            "usage": authoring_attempts.usage_since(_USAGE_LABEL, since),
+        })
+        for slot_id, errors in rejected.items():
+            log.info(f"Summary slot {slot_id} rejected at attempt {attempt}: " + "; ".join(errors))
+        pending = [slot_id for slot_id in pending if slot_id in rejected]
+        if not pending or attempt == 2:
+            break
+        messages.append({"role": "assistant", "content": dumps(
+            {"slots": [{"slot_id": key, "text": value} for key, value in returned.items()]})})
+        messages.append({"role": "user", "content": (
+            "These slots were rejected. Rewrite only them, fixing every reason. This is the final "
+            "correction: keep each grounded figure exactly as written and add none; if a sentence "
+            "cannot be fixed, leave it out.\n" + dumps([
+                {"slot_id": slot_id, "reasons": rejected[slot_id],
+                 "grounded_text": shown_by_id[slot_id]["grounded_text"],
+                 "figures_to_keep": shown_by_id[slot_id]["figures_to_keep"]}
+                for slot_id in pending
+            ])
+        )})
+
+    final = _assemble_slots(plan, accepted)
+    if [error for error in check(accepted) if error not in baseline]:
+        # Unreachable by construction (every acceptance was checked with all the
+        # others in place); kept so a future change to the check cannot publish
+        # a page that fails it.
+        log.error("Summary slots failed as a whole page; publishing code's wording.")
+        accepted, final = {}, _assemble_slots(plan, {})
+    counts = {"total": len(slots), "model": len(accepted), "fallback": len(slots) - len(accepted),
+              "narrative_model": sum(1 for key in accepted if key.startswith("block:")),
+              "narrative_total": sum(1 for slot in slots if slot["kind"] == "narrative")}
+    final["authoring_slots"] = counts
+    final["covered_candidate_ids"] = list(plan.get("covered_candidate_ids") or [])
+    final["authoring_mode"] = "llm_slots" if accepted else "deterministic_fallback"
+    final["validation_status"] = "validated" if accepted and not baseline else "deterministic_fallback"
+    authoring_attempts.record(state, _USAGE_LABEL, {
+        "mode": "balanced_multi_focus_slots", "tier": ai_tier.tier(state),
+        "outcome": final["authoring_mode"], "slots": counts, "attempts": attempts,
+        "fallback_slots": {key: rejected.get(key, ["no model text"]) for key in by_id if key not in accepted},
+    })
+    log.info("Summary slots: %d of %d written by the model (%d of %d narratives), %d kept on code's wording."
+             % (counts["model"], counts["total"], counts["narrative_model"], counts["narrative_total"],
+                counts["fallback"]))
+    return final
+
+
 def _merge_focus_evidence(focus: dict, evidence: dict) -> dict:
     """Attach the multi-focus deep-dive sections + facts onto a focus candidate."""
     base = focus.get("evidence") or {}
@@ -1022,6 +1237,10 @@ def _run_r4(state: dict, log: RunLogger, novelty: dict) -> dict:
     if not ai_tier.authoring_allowed(state):
         authored = _r4_fallback(state, overall_candidate, merged_focuses)
         log.info("Balanced summary LLM authoring disabled; used deterministic fallback.")
+    elif ai_tier.narrated(state):
+        # Code owns the page; the model writes only the sentences inside it.
+        authored = _author_slots(state, log, _r4_fallback(state, overall_candidate, merged_focuses),
+                                 covered_set, overall_candidate, merged_focuses)
     else:
         attempts: list[dict] = []
         try:
@@ -1070,6 +1289,10 @@ def _run_r4(state: dict, log: RunLogger, novelty: dict) -> dict:
             for f in focuses
         ],
     }
+    if authored.get("authoring_slots"):
+        # Narrated slots only: how many sentences the model wrote and how many kept
+        # code's wording. Absent on the other tiers, so their summary is unchanged.
+        summary["authoring_slots"] = authored["authoring_slots"]
     # R3 additive public metadata, off by default (coordinated UI/API opt-in).
     if state.get("summary_focus_public_metadata"):
         summary["dailyFocuses"] = [
