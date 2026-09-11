@@ -1237,6 +1237,9 @@ def _run_r4(state: dict, log: RunLogger, novelty: dict) -> dict:
     if not ai_tier.authoring_allowed(state):
         authored = _r4_fallback(state, overall_candidate, merged_focuses)
         log.info("Balanced summary LLM authoring disabled; used deterministic fallback.")
+    elif ai_tier.code_slot(state, "summary"):
+        authored = _r4_fallback(state, overall_candidate, merged_focuses)
+        log.info("Balanced summary kept on code's wording (narrated_code_slots lists summary) - no LLM call.")
     elif ai_tier.narrated(state):
         # Code owns the page; the model writes only the sentences inside it.
         authored = _author_slots(state, log, _r4_fallback(state, overall_candidate, merged_focuses),
@@ -1457,12 +1460,13 @@ def run(state: dict) -> dict:
     selected = eligible[:1]
     summary_type = str(novelty.get("summary_type") or "new_perspective")
     from ..tools import ai_tier
-    if ai_tier.deterministic(state):
+    if ai_tier.deterministic(state) or ai_tier.code_slot(state, "summary"):
         # Gated on the tier only, deliberately: this single-focus path never read
         # summary_llm_authoring_enabled, and routing it through that flag too
-        # would change what an existing config does.
+        # would change what an existing config does. A narrated run listing
+        # "summary" in narrated_code_slots takes the same code wording.
         authored = _fallback(selected[0], state.get("summary_period_context") or {}, summary_type)
-        log.info("Fresh summary written by fixed rules (report_ai_tier=deterministic) - no LLM call.")
+        log.info(f"Fresh summary written by fixed rules (report_ai_tier={ai_tier.tier(state)}) - no LLM call.")
     else:
         attempts: list[dict] = []
         try:

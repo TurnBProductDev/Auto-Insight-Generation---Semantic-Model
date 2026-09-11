@@ -1526,6 +1526,106 @@ def test_narrated_dashboard_passes_first_time() -> None:
           "# WORDS THE CHECK REJECTS" not in copier.calls[0][0]["content"])
 
 
+def test_narrated_code_slots() -> None:
+    print("\n=== narrated_code_slots: one writer back to code wording, the others still narrated ===")
+    from src.agents import fresh_summary_generator as generator
+    from src.agents import summary_dashboard_builder as builder
+
+    check("only known slot names are read, from state before config",
+          ai_tier.code_slots({"narrated_code_slots": ["Summary", "charts"]}) == ("summary",)
+          and ai_tier.code_slots({"config": {"narrated_code_slots": ["kpi_cards"]}}) == ("kpi_cards",)
+          and ai_tier.code_slots({"narrated_code_slots": [], "config": {"narrated_code_slots": ["summary"]}}) == ())
+    listed = {"narrated_code_slots": list(ai_tier.CODE_SLOTS)}
+    check("it changes nothing on the investigated or deterministic tier",
+          not any(ai_tier.code_slot(listed, slot) for slot in ai_tier.CODE_SLOTS)
+          and not any(ai_tier.code_slot({**listed, "report_ai_tier": "deterministic"}, slot)
+                      for slot in ai_tier.CODE_SLOTS))
+    entry = config_schema.BY_KEY.get("narrated_code_slots")
+    check("the key is catalogued, defaults to today's behaviour and names exactly the slots",
+          entry is not None and entry.default == [] and entry.in_state
+          and tuple(entry.item_choices) == ai_tier.CODE_SLOTS and entry.strict_items)
+    try:
+        config_schema.coerce("narrated_code_slots", "summary, charts")
+        refused = False
+    except Exception:  # noqa: BLE001
+        refused = True
+    check("an unknown slot name is refused by the catalogue, not silently ignored", refused)
+    check("SummaryAgentState declares the key",
+          "narrated_code_slots" in SummaryAgentState.__annotations__)
+
+    def summary_calls(slots: list[str]) -> tuple[int, dict]:
+        model = _SlotModel()
+        state = {**_slot_state("narrated"), "narrated_code_slots": slots}
+        original = generator.get_llm
+        generator.get_llm = model  # type: ignore[assignment]
+        try:
+            summary = generator.run(state)["fresh_summary"]
+        finally:
+            generator.get_llm = original  # type: ignore[assignment]
+        return len(model.calls), summary
+
+    code_calls, code_summary = summary_calls(["summary"])
+    narrated_calls, narrated_summary = summary_calls(["dashboard", "key_insights", "kpi_cards"])
+    check("summary listed: no model call, and the page is code's grounded page",
+          code_calls == 0 and code_summary.get("authoring_mode") == "deterministic_fallback",
+          [code_calls, code_summary.get("authoring_mode")])
+    check("summary not listed: still written by the model while the other three are listed",
+          narrated_calls == 1 and narrated_summary.get("authoring_mode") == "llm_slots",
+          [narrated_calls, narrated_summary.get("authoring_mode")])
+
+    view = json.loads(DASHBOARD_FIXTURE.read_text(encoding="utf-8"))["view"]
+
+    def dashboard_calls(slots: list[str]) -> int:
+        model = _CopyingDashboardModel()
+        original = builder.get_llm
+        builder.get_llm = model  # type: ignore[assignment]
+        try:
+            builder._narratives({"report_ai_tier": "narrated", "output_folder": OUT,
+                                 "narrated_code_slots": slots}, [view], _Lines())
+        finally:
+            builder.get_llm = original  # type: ignore[assignment]
+        return len(model.calls)
+
+    check("dashboard listed: no model call; not listed: one",
+          dashboard_calls(["dashboard"]) == 0 and dashboard_calls(["summary"]) == 1)
+
+    signal, brief, numbers, draft, reworded = _narration_inputs()
+    listed_model = _SchemaRecorder(reply=_reply([(signal["id"], reworded)]), raise_on_invoke=False)
+    out, stats = insight_deterministic.narrate_key_insights(
+        {"report_ai_tier": "narrated", "narrated_code_slots": ["key_insights"]},
+        [signal], [brief], numbers, llm_factory=listed_model)
+    unlisted_model = _SchemaRecorder(reply=_reply([(signal["id"], reworded)]), raise_on_invoke=False)
+    insight_deterministic.narrate_key_insights(
+        {"report_ai_tier": "narrated", "narrated_code_slots": ["summary"]},
+        [signal], [brief], numbers, llm_factory=unlisted_model)
+    check("key_insights listed: no model call, every paragraph its grounded draft",
+          listed_model.schemas == [] and out.get(signal["id"]) == draft and stats["authored"] == 0,
+          [listed_model.schemas, stats])
+    check("key_insights not listed: still model-written", unlisted_model.schemas == ["_Paragraphs"],
+          unlisted_model.schemas)
+
+    kpi_signal = [{"id": "s1", "kind": "business", "affected_segment": "CFH017",
+                   "description": "CFH017 was below target in all four periods.",
+                   "comparison_label": "of target", "impact_value": -11.13}]
+
+    def kpi_schemas(slots: list[str]) -> list[str]:
+        recorder = _SchemaRecorder(raise_on_invoke=True)
+        saved = api_payloads.get_llm
+        api_payloads.get_llm = recorder  # type: ignore[assignment]
+        try:
+            api_payloads.generate_kpi_insights_payload(
+                kpi_signal, {"config": {"report_ai_tier": "narrated", "narrated_code_slots": slots}},
+                generated_at=datetime(2026, 9, 11, 7, 15))
+        except Exception:  # noqa: BLE001 - the stub model refuses when it is reached
+            pass
+        finally:
+            api_payloads.get_llm = saved  # type: ignore[assignment]
+        return recorder.schemas
+
+    check("kpi_cards listed: no model call; not listed: card text requested",
+          kpi_schemas(["kpi_cards"]) == [] and "_KpiCardTextList" in kpi_schemas(["summary"]))
+
+
 def fresh_summary_generator_run_with(generator, state: dict, model) -> dict:
     original = generator.get_llm
     generator.get_llm = lambda *_a, **_k: model  # type: ignore[assignment]
@@ -1544,6 +1644,7 @@ def main() -> int:
     test_narrated_summary_passes_first_time()
     test_narrated_summary_slots()
     test_narrated_dashboard_passes_first_time()
+    test_narrated_code_slots()
     test_snapshot_investigation_keeps_drills_without_a_model()
     test_standalone_prose_writers_return_their_draft()
     test_standalone_kpi_cards_read_the_tier_from_config()

@@ -362,6 +362,9 @@ def _narratives(state: dict, page_views: list[dict], log: RunLogger) -> dict:
     from ..tools import ai_tier
     if not ai_tier.authoring_allowed(state):
         return {}
+    if ai_tier.code_slot(state, "dashboard"):
+        log.info("Dashboard stories kept on code's wording (narrated_code_slots lists dashboard) - no LLM call.")
+        return {}
     rules = (
         file_io.read_prompt("_global_rules.md")
         + file_io.business_rules_block(state)

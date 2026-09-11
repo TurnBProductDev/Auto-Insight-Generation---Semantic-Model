@@ -250,7 +250,14 @@ def narrate_key_insights(state: dict, signals: list[dict], fact_briefs: list[dic
              "attempts": []}
     if not drafts:
         return drafts, stats
-    from ..tools import authoring_attempts
+    from ..tools import ai_tier, authoring_attempts
+
+    if ai_tier.code_slot(state, "key_insights"):
+        stats["code_slot"] = True
+        if log:
+            log("Key Insights kept on the grounded drafts (narrated_code_slots lists key_insights) "
+                "- no LLM call.")
+        return drafts, stats
 
     usage_label = __name__.rsplit(".", 1)[-1]
 

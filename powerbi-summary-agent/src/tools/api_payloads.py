@@ -1409,8 +1409,9 @@ def generate_kpi_insights_payload(
         return []
     when = _now(generated_at)
     from . import ai_tier
-    if ai_tier.deterministic(state):
-        # No card-wording model call. The lead sentence is already code-owned
+    if ai_tier.deterministic(state) or ai_tier.code_slot(state, "kpi_cards"):
+        # No card-wording model call (the deterministic tier, or a narrated run
+        # listing kpi_cards in narrated_code_slots). The lead sentence is already code-owned
         # and grounded, and _grounded_summary swaps an empty authored summary
         # for that same sentence, so every figure on the card is one code wrote.
         texts = {}

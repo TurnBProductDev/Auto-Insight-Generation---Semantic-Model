@@ -369,6 +369,13 @@ def test_coercion() -> None:
           == {"merch": "department"})
     check("enum rejects an unknown choice",
           _raises(lambda: config_schema.coerce("ai_provider", "bedrock")))
+    check("a strict list refuses an item outside its choices",
+          _raises(lambda: config_schema.coerce("narrated_code_slots", "summary, charts"))
+          and _raises(lambda: config_schema.coerce("narrated_code_slots", ["kpi_card"])))
+    check("a strict list accepts its own choices",
+          config_schema.coerce("narrated_code_slots", "summary, kpi_cards") == ["summary", "kpi_cards"])
+    check("a permissive list still takes names outside its suggestions",
+          config_schema.coerce("summary_coverage_roles", "store, zone") == ["store", "zone"])
     check("int rejects text", _raises(lambda: config_schema.coerce("summary_dashboard_tldr", "five")))
     check("bool rejects a bare int-like string is not silently truthy",
           config_schema.coerce("summary_r4_enabled", "0") is False)

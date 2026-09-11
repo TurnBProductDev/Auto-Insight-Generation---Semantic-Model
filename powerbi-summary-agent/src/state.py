@@ -141,6 +141,7 @@ class SummaryAgentState(TypedDict, total=False):
     adaptive_investigation_min_score: float
     insight_escalation: Dict[str, Any]     # the tier and budgets the day's news bought
     report_ai_tier: str                    # investigated | deterministic (src/tools/ai_tier.py)
+    narrated_code_slots: List[str]         # narrated writers using code wording (ai_tier.code_slot)
 
     # Catalogued as in_state and read by fresh_summary_generator and
     # summary_dashboard_builder via a bare state.get(..., True), but never

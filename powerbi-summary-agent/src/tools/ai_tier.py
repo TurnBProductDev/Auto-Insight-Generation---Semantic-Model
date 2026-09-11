@@ -94,3 +94,36 @@ def prose_allowed(state: dict, flag: bool = True) -> bool:
 def authoring_allowed(state: dict) -> bool:
     """Whether the Sales YoY summary writers may use the model for their wording."""
     return prose_allowed(state, bool((state or {}).get("summary_llm_authoring_enabled", True)))
+
+
+#: The narrated writers ``narrated_code_slots`` can switch back to code wording.
+CODE_SLOTS = ("summary", "dashboard", "key_insights", "kpi_cards")
+
+
+def code_slots(state: dict) -> tuple[str, ...]:
+    """The narrated writers this run hands back to code wording, known names only.
+
+    Read from state first and ``config`` second, like the tier. An unknown name
+    is refused by the config catalogue before a run; here it is simply not a
+    slot, so a typo can never switch off a writer nobody meant to switch off.
+    """
+    cfg = (state or {}).get("config") or {}
+    raw = (state or {}).get("narrated_code_slots")
+    if raw is None:
+        raw = cfg.get("narrated_code_slots")
+    if isinstance(raw, str):
+        raw = [raw]
+    wanted = {str(item).strip().casefold() for item in raw or [] if str(item).strip()}
+    return tuple(slot for slot in CODE_SLOTS if slot in wanted)
+
+
+def code_slot(state: dict, slot: str) -> bool:
+    """True when the narrated tier writes this slot with code's wording and no model call.
+
+    A per-writer way back to the grounded draft without dropping the whole report
+    to the deterministic tier: the summary, the dashboard stories, the Key
+    Insights paragraphs or the KPI card text. It has no effect on the other two
+    tiers - investigated keeps each report's own switches, deterministic already
+    uses code wording everywhere.
+    """
+    return narrated(state) and slot in code_slots(state)

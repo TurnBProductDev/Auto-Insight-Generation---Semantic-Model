@@ -213,6 +213,10 @@ class ConfigKey:
     choice_labels: tuple[tuple[str, str], ...] = ()
     item_type: str = "string"  # list element type
     item_choices: tuple[str, ...] = ()
+    #: Refuse a list item outside ``item_choices``. Only for a list where an
+    #: unknown item would silently do nothing - a misspelt slot name switches no
+    #: writer back to code wording. The role and channel lists stay permissive.
+    strict_items: bool = False
     #: False for keys read only from ``state["config"]``; they are never copied
     #: into the graph state, and copying them there would change behaviour.
     in_state: bool = True
@@ -646,6 +650,21 @@ _FEATURES: tuple[ConfigKey, ...] = (
        choice_labels=(("investigated", "AI investigates and writes"),
                       ("narrated", "AI writes the wording only"),
                       ("deterministic", "No AI - fixed rules only"))),
+    _k("narrated_code_slots", "list", [], "features",
+       "Parts that use plain fixed wording even when the AI writes",
+       "Only matters when 'How much AI this report uses' is 'AI writes the wording only'. Each "
+       "part listed here - the summary, the dashboard stories, the key insights or the insight "
+       "cards - uses the plain checked wording instead of AI wording, and costs nothing in AI; "
+       "the parts not listed keep AI wording. Leave it empty to let the AI write every part. "
+       "Listing a part you wanted AI-written only makes that part plainer, never wrong.",
+       "src/tools/ai_tier.code_slot. Narrated tier only; no effect on investigated or "
+       "deterministic. summary -> fresh_summary_generator's grounded R4 page (or single-focus "
+       "_fallback); dashboard -> summary_dashboard_builder._narratives returns no narratives; "
+       "key_insights -> insight_deterministic.narrate_key_insights keeps the grounded drafts; "
+       "kpi_cards -> api_payloads takes the deterministic card-text path. An unknown name is "
+       "refused (strict_items), because a misspelt slot would silently switch nothing off.",
+       tier="expert", item_choices=("summary", "dashboard", "key_insights", "kpi_cards"),
+       strict_items=True),
     _k("summary_dashboard_entity_levers", "bool", True, "features",
        "Break each location down into trips, basket size and price",
        "Spends one extra query so each location card can show whether revenue moved because of "
@@ -2025,6 +2044,18 @@ class CoercionError(ValueError):
     """A submitted value cannot be represented as the key's declared type."""
 
 
+def _strict_list(entry: ConfigKey, items: list) -> list:
+    """Refuse an item a strict list does not know; pass every other list through."""
+    if entry.strict_items and entry.item_choices:
+        unknown = [item for item in items if str(item).strip() not in entry.item_choices]
+        if unknown:
+            raise CoercionError(
+                f"{entry.label}: choose from {', '.join(entry.item_choices)}; "
+                f"{', '.join(repr(item) for item in unknown)} is not one of them."
+            )
+    return items
+
+
 def coerce(key: str, raw: Any) -> Any:
     """Turn a form/JSON value into the type the pipeline expects.
 
@@ -2071,7 +2102,7 @@ def coerce(key: str, raw: Any) -> Any:
 
     if kind == "list":
         if isinstance(raw, list):
-            return raw
+            return _strict_list(entry, raw)
         text = str(raw).strip()
         if not text:
             return []
@@ -2079,8 +2110,8 @@ def coerce(key: str, raw: Any) -> Any:
             parsed = json.loads(text)
             if not isinstance(parsed, list):
                 raise CoercionError(f"{name}: this must be a list; got {raw!r}.")
-            return parsed
-        return [part.strip() for part in text.split(",") if part.strip()]
+            return _strict_list(entry, parsed)
+        return _strict_list(entry, [part.strip() for part in text.split(",") if part.strip()])
 
     if kind == "object":
         if isinstance(raw, dict):
