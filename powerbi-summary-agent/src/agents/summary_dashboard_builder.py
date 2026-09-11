@@ -450,13 +450,19 @@ def _narratives(state: dict, page_views: list[dict], log: RunLogger) -> dict:
 
 
 def _rounded(value):
-    """Every float in a model-facing structure at the precision the check allows.
+    """Every float in a model-facing structure in a form the check accepts and a manager reads.
 
     `dashboard_rules` rejects a figure quoted to more than MAX_QUOTED_DECIMALS
-    places, and its rounding tolerance accepts the rounded value as supported,
-    so nothing shown this way can be rejected for being copied exactly.
+    places. Rounding alone was not enough: it let "transactions added 966266.55"
+    through, because the long figure now passed. So a float of 1,000 or more is
+    shown in the page's own compact form ("966K", "-1.7M", as the waterfall and
+    cards print it), and a smaller one is rounded. Integers (years, ranks,
+    counts) are left alone. Each compact display step is twice the check's
+    rounding tolerance, so every value shown is supported as written.
     """
     if isinstance(value, float):
+        if abs(value) >= 1000:
+            return summary_dashboard._compact(value)
         return round(value, MAX_QUOTED_DECIMALS)
     if isinstance(value, dict):
         return {key: _rounded(item) for key, item in value.items()}

@@ -1476,6 +1476,18 @@ def test_narrated_dashboard_passes_first_time() -> None:
     check("narrated: each entity comes with the card's own display strings",
           all(entry.get("change_display") and entry.get("current_display") for entry in shown["entities"]),
           shown["entities"][0])
+    large = [f for f in floats(shown) if abs(f) >= 1000]
+    check("narrated: no money-sized raw float is shown - large figures come in the page's compact form",
+          not large, large[:5])
+    effects = shown["three_lever_bridge"]["effects"]
+    hero = {"hero": {"headline": f"Revenue reached {shown['quote_these_display_values']['revenue']['value']}.",
+                     "narrative": (f"Transactions added {effects['transactions']}, basket size took "
+                                   f"{effects['basket_size']} and price added {effects['price']}.")},
+            "entities": [], "areas": []}
+    hero_errors = summary_validation.dashboard_rules(hero, view)
+    check("narrated: a hero quoting the bridge effects as shown validates and reads like the page",
+          not hero_errors and not re.search(r"\d{5,}", hero["hero"]["narrative"]),
+          [hero["hero"]["narrative"], hero_errors])
     check("investigated: the view model it is shown is exactly as before, raw floats and all",
           builder._authoring_context(view) == builder._authoring_context(view, narrated=False)
           and any(round(f, 2) != f for f in floats(builder._authoring_context(view))))
