@@ -1120,12 +1120,144 @@ def test_rejected_drafts_leave_their_reasons() -> None:
     authoring_attempts.reset()
 
 
+def _quantity_decline_candidate() -> dict:
+    """The overall quantity comparison of the narrated run of 2026-09-11, as the builder printed it.
+
+    Its percentage is unsigned beside a signed amount, while the check holds the
+    signed change - the fact that rejected two live drafts for copying it.
+    """
+    return {"candidate_id": "overall", "angle": "overall_performance", "evidence": {"facts": [{
+        "fact_id": "F1", "fact_kind": "comparison", "subject": "Overall",
+        "metric": "Quantity comparison", "display_value": "-407.4K", "raw_value": -407406.1,
+        "current_value": 22300000.0, "current_display": "22.3M",
+        "prior_value": 22707406.1, "prior_display": "22.7M",
+        "change_value": -407406.1, "change_display": "-407.4K",
+        "change_pct": -1.794, "change_pct_display": "1.8%",
+        "comparison": "the same period last year",
+        "statement": ("Overall - Quantity decreased by -407.4K (1.8%), from 22.7M to 22.3M "
+                      "compared with the same period last year"),
+        "subject_role": "focus", "coverage": "complete",
+    }]}}
+
+
+class _CopyingSummaryModel:
+    """Writes the page from the first supported fact it is shown, word for word."""
+
+    def __init__(self, extra: str = "") -> None:
+        self.calls: list = []
+        self.extra = extra
+
+    def invoke(self, messages):
+        self.calls.append(list(messages))
+        context = json.loads(messages[1]["content"].split("\n", 1)[1])
+        fact = context["selected_perspectives"][0]["supported_facts"][0]
+        return {
+            "headline": f"Quantity decreased by {fact['display_value']} compared with the same period last year.",
+            "blocks": [{"kind": "paragraph", "heading": "Overall Performance",
+                        "text": fact["statement"] + "." + self.extra, "points": [],
+                        "chart_source_id": "", "chart_type": "bar"}],
+            "covered_candidate_ids": ["overall"],
+        }
+
+
+def test_narrated_summary_passes_first_time() -> None:
+    print("\n=== narrated summary: what the model is shown passes the check as written ===")
+    from src.agents import fresh_summary_generator as generator
+    from src.tools import file_io, summary_validation
+
+    candidate = _quantity_decline_candidate()
+    narrated = {"report_ai_tier": "narrated", "output_folder": OUT}
+    investigated = {"output_folder": OUT}
+
+    def author(state: dict, model: _CopyingSummaryModel) -> tuple[list, bool]:
+        attempts: list = []
+        original = generator.get_llm
+        generator.get_llm = lambda *_a, **_k: model  # type: ignore[assignment]
+        try:
+            generator._invoke(state, [candidate], mode="balanced_multi_focus", attempts=attempts)
+            raised = False
+        except ValueError:
+            raised = True
+        finally:
+            generator.get_llm = original  # type: ignore[assignment]
+        return attempts, raised
+
+    copier = _CopyingSummaryModel()
+    attempts, raised = author(narrated, copier)
+    shown = json.loads(copier.calls[0][1]["content"].split("\n", 1)[1])
+    statement = shown["selected_perspectives"][0]["supported_facts"][0]["statement"]
+    check("narrated: the percentage the model is shown carries the sign the check expects",
+          "(-1.8%)" in statement, statement)
+    check("narrated: a draft copying code's own statement word for word passes on attempt 1",
+          not raised and [a["outcome"] for a in attempts] == ["validated"] and len(copier.calls) == 1,
+          attempts)
+
+    copier = _CopyingSummaryModel()
+    attempts, raised = author(investigated, copier)
+    check("investigated: the same copy is still rejected, so the defect this closes is real",
+          raised and "'1.8%' is not supported" in json.dumps(attempts), attempts)
+    check("investigated: still allows three attempts",
+          len(copier.calls) == 3 and len(attempts) == 3, attempts)
+    expected_system = (file_io.read_prompt("_global_rules.md") + file_io.business_rules_block(investigated)
+                       + file_io.summary_business_rules_block(investigated) + "\n\n"
+                       + file_io.read_prompt("fresh_summary_prompt.md"))
+    check("investigated: the system prompt is exactly what it was",
+          copier.calls[0][0]["content"] == expected_system)
+    check("investigated: the evidence it is shown is unchanged, unsigned percentage included",
+          "(1.8%)" in copier.calls[0][1]["content"] and "(-1.8%)" not in copier.calls[0][1]["content"])
+
+    inventor = _CopyingSummaryModel(extra=" It could reach 999.9K.")
+    attempts, raised = author(narrated, inventor)
+    check("narrated: an unsupported figure gets one repair, then gives way to the fallback",
+          raised and len(inventor.calls) == 2 and [a["outcome"] for a in attempts] == ["rejected"] * 2,
+          attempts)
+    repair = inventor.calls[1][-1]["content"]
+    check("narrated: that one repair is the final correction, and re-lists the signed statement",
+          "final correction" in repair and "(-1.8%)" in repair and "(1.8%)" not in repair, repair)
+
+    system = copier.calls[0][0]["content"]  # investigated
+    probe = _CopyingSummaryModel()
+    author(narrated, probe)
+    narrated_system = probe.calls[0][0]["content"].casefold()
+    missing = sorted(p for p in summary_validation._TECHNICAL_MANAGER_PHRASES if p not in narrated_system)
+    check("narrated: the prompt names every phrase the check rejects, uplift included",
+          not missing and "uplift" in narrated_system, missing)
+    check("investigated: gains no rejected-words block", "# WORDS THE CHECK REJECTS" not in system)
+
+    allowed = [2.7, -1.794, 5.0]
+    check("a figure the check already accepts is left exactly as written",
+          generator._copyable_text("up 2.7% and down (-1.8%) and +5.0%", allowed)
+          == "up 2.7% and down (-1.8%) and +5.0%")
+    check("a figure neither sign supports is left for the check to reject",
+          generator._copyable_text("a 9.9% move", allowed) == "a 9.9% move")
+
+    run = fresh_summary_generator_run_with(generator, dict(
+        narrated, summary_r4_enabled=True, summary_candidates=[candidate], summary_novelty={},
+        summary_overall_performance={}, summary_selected_focuses=[], summary_focus_evidence_by_key={}),
+        _CopyingSummaryModel(extra=" It could reach 999.9K."))
+    summary = run.get("fresh_summary") or {}
+    check("narrated: after the one repair fails, the page is the grounded fallback",
+          summary.get("authoring_mode") == "deterministic_fallback", summary.get("authoring_mode"))
+    check("and the published fallback keeps its own display, unsigned percentage and all",
+          "(1.8%)" in json.dumps(summary.get("content_blocks")), summary.get("content_blocks"))
+
+
+def fresh_summary_generator_run_with(generator, state: dict, model) -> dict:
+    original = generator.get_llm
+    generator.get_llm = lambda *_a, **_k: model  # type: ignore[assignment]
+    try:
+        return generator.run(state)
+    finally:
+        generator.get_llm = original  # type: ignore[assignment]
+
+
 def main() -> int:
     print("=" * 72)
     print("report_ai_tier: investigated, narrated and deterministic")
     print("=" * 72)
     (PROJECT_ROOT / OUT).mkdir(parents=True, exist_ok=True)
     test_rejected_drafts_leave_their_reasons()
+    test_narrated_summary_passes_first_time()
     test_snapshot_investigation_keeps_drills_without_a_model()
     test_standalone_prose_writers_return_their_draft()
     test_standalone_kpi_cards_read_the_tier_from_config()

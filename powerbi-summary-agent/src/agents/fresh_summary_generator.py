@@ -15,7 +15,13 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from ..tools import authoring_attempts, file_io
 from ..tools.llm import get_llm
-from ..tools.summary_validation import chart_data_is_sufficient, validate_draft
+from ..tools.summary_validation import (
+    _TECHNICAL_MANAGER_PHRASES,
+    chart_data_is_sufficient,
+    evidence_numbers,
+    parse_numbers,
+    validate_draft,
+)
 from ..utils.json_utils import dumps
 from ..utils.logger import RunLogger
 
@@ -674,8 +680,68 @@ def _deep_dive_brief(deep_dive: dict | None) -> dict | None:
     return {key: value for key, value in brief.items() if value not in (None, [], "")}
 
 
-def _perspective_context(candidate: dict) -> dict:
+_UNSIGNED_PERCENT = re.compile(r"(?<![A-Za-z0-9+\-])\d[\d,]*(?:\.\d+)?\s*%")
+
+
+def _copyable_text(text: str, allowed: list[float]) -> str:
+    """Sign a percentage the check rejects as written but accepts negated.
+
+    A comparison fact prints its percentage unsigned beside a signed amount -
+    "Quantity decreased by -407.4K (1.8%)" - while the check holds the signed
+    change of -1.79, so it reads a copied "1.8%" as a rise. On 2026-09-11 that
+    rejected two narrated drafts in a row for quoting code's own statement word
+    for word, and the repair message re-listed the same statement.
+
+    Model-facing only: the evidence, the grounded fallback and every published
+    display keep their text. A figure the check already accepts is untouched,
+    and the test is the one `validate_text` applies.
+    """
+    def supported(value: float, tolerance: float) -> bool:
+        return any(abs(value - known) <= max(tolerance, abs(known) * 0.0005) for known in allowed)
+
+    def sign(match: re.Match) -> str:
+        parsed = parse_numbers(match.group(0))
+        if not parsed:
+            return match.group(0)
+        value, tolerance, _token = parsed[0]
+        if value > 0 and not supported(value, tolerance) and supported(-value, tolerance):
+            return "-" + match.group(0)
+        return match.group(0)
+
+    return _UNSIGNED_PERCENT.sub(sign, text)
+
+
+def _copyable_fact(fact: dict, allowed: list[float] | None) -> dict:
+    if allowed is None or not isinstance(fact, dict):
+        return fact
+    return {key: _copyable_text(value, allowed) if isinstance(value, str) else value
+            for key, value in fact.items()}
+
+
+def _rejected_phrases_block() -> str:
+    """The check's own shorthand list, so the prompt never names fewer words than it rejects.
+
+    The prompt's hand-written list named 11 of the 23 phrases `validate_draft`
+    rejects; "uplift" was one it left out, and a narrated draft was rejected for it.
+    """
+    return (
+        "\n\n# WORDS THE CHECK REJECTS\n\n"
+        "The summary is rejected if the headline, any heading, paragraph, bullet or chart "
+        "title contains one of these words or phrases anywhere, including inside a longer "
+        "word (for example `uplifted`). Say what you mean in plain business words instead.\n"
+        + "\n".join(f"- {phrase}" for phrase in sorted(_TECHNICAL_MANAGER_PHRASES))
+    )
+
+
+def _perspective_context(candidate: dict, copyable: list[float] | None = None) -> dict:
+    """What the model is told about one perspective.
+
+    ``copyable`` (narrated tier) is the check's own allowed-number set; when
+    given, every figure in the supported facts is shown in a form the check
+    accepts as written. When omitted the facts are passed through unchanged.
+    """
     evidence = candidate.get("evidence") or {}
+    facts = evidence.get("facts") or []
     return {
         "candidate_id": candidate.get("candidate_id"),
         "aspect": candidate.get("angle"),
@@ -687,16 +753,18 @@ def _perspective_context(candidate: dict) -> dict:
         "business_purpose": candidate.get("purpose"),
         "metadata": candidate.get("metadata_context") or {},
         "scope": evidence.get("scope") or {},
-        "supported_facts": evidence.get("facts") or [],
+        "supported_facts": facts if copyable is None else [_copyable_fact(fact, copyable) for fact in facts],
         "deep_dive": _deep_dive_brief(evidence.get("deep_dive")),
     }
 
 
-def _supported_fact_lines(selected: list[dict]) -> str:
+def _supported_fact_lines(selected: list[dict], copyable: list[float] | None = None) -> str:
     lines = []
     for candidate in selected:
         for fact in (candidate.get("evidence") or {}).get("facts", []) or []:
             statement = str(fact.get("statement") or "").strip()
+            if statement and copyable is not None:
+                statement = _copyable_text(statement, copyable)
             if statement:
                 lines.append(f"- {fact.get('fact_id')}: {statement}")
     return "\n".join(lines) or "- No numeric display facts are available; write qualitatively."
@@ -1058,6 +1126,16 @@ def _invoke(state: dict, selected: list[dict], *, mode: str = "single_focus",
         + file_io.summary_business_rules_block(state)
     )
     task = file_io.read_prompt("fresh_summary_prompt.md")
+    from ..tools import ai_tier
+
+    # The narrated tier is held to the same check with fewer tries, so what the
+    # model is shown must be passable as written: every percentage it may copy is
+    # one the check accepts, and the words the check rejects are named from the
+    # check's own list. The investigated tier's prompt and retries are unchanged.
+    narrated = ai_tier.narrated(state)
+    copyable = evidence_numbers(selected) if narrated else None
+    system = rules + "\n\n" + task + (_rejected_phrases_block() if narrated else "")
+    max_attempts = 2 if narrated else 3
     focus = state.get("summary_selected_focus") or {}
     context = {
         "summary_mode": mode,
@@ -1066,15 +1144,15 @@ def _invoke(state: dict, selected: list[dict], *, mode: str = "single_focus",
         # Mutable tone (R2): opportunity when the focus grew, risk when it fell.
         # It only guides framing; every figure still comes from supported_facts.
         "focus_sentiment": focus.get("sentiment"),
-        "selected_perspectives": [_perspective_context(candidate) for candidate in selected],
+        "selected_perspectives": [_perspective_context(candidate, copyable) for candidate in selected],
         "available_chart_sources": chart_sources,
     }
     messages = [
-        {"role": "system", "content": rules + "\n\n" + task},
+        {"role": "system", "content": system},
         {"role": "user", "content": "SELECTED SUMMARY EVIDENCE:\n" + dumps(context)},
     ]
     last_errors = []
-    for attempt in range(3):
+    for attempt in range(max_attempts):
         since = authoring_attempts.mark(_USAGE_LABEL)
         try:
             llm = get_llm(state, structured_schema=FreshSummaryDraft)
@@ -1105,7 +1183,9 @@ def _invoke(state: dict, selected: list[dict], *, mode: str = "single_focus",
         last_errors = errors
         messages.append({"role": "assistant", "content": dumps(draft)})
         final_instruction = ""
-        if attempt >= 1:
+        # The last repair carries the final instruction: the third attempt on the
+        # investigated tier, as before, and the only repair on the narrated tier.
+        if attempt >= max_attempts - 2:
             final_instruction = (
                 "\nThis is the final correction: if you cannot copy a supported display value exactly, "
                 "omit that figure and describe the direction qualitatively. Do not approximate it yourself."
@@ -1117,7 +1197,7 @@ def _invoke(state: dict, selected: list[dict], *, mode: str = "single_focus",
                 "Validation issues:\n- "
                 + "\n- ".join(errors)
                 + "\n\nThese are the only supported fact statements and signed display values:\n"
-                + _supported_fact_lines(selected)
+                + _supported_fact_lines(selected, copyable)
                 + "\n\nUse only these chart source ids and their allowed chart types:\n"
                 + dumps([
                     {
