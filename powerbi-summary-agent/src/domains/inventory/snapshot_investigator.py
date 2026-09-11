@@ -198,7 +198,12 @@ def author_narrative(entry: dict, currency: str, cfg: dict, *,
                      enabled_key: str, rules: str = "") -> tuple[str, str]:
     """Returns (text, mode). Falls back to the grounded draft on any failure."""
     fallback = deterministic_narrative(entry, currency)
-    if not cfg.get(enabled_key, False):
+    from ...tools import ai_tier
+    # The investigation flag used to mean two things at once: run the drill
+    # queries, AND let a model write them up. The deterministic tier keeps the
+    # drills - they are bounded, validated DAX and the evidence is the point -
+    # and takes only the model away.
+    if not cfg.get(enabled_key, False) or ai_tier.deterministic(cfg):
         return fallback, "deterministic"
     try:
         from ...tools.file_io import read_prompt
@@ -258,6 +263,12 @@ def _decide(entry: dict, offered_roles: list[str], cfg: dict) -> "DrillDecision 
     """One adaptive round's choice: drill a specific role, or conclude. None
     on any failure - the caller falls back to exhausting the round budget in
     a fixed order rather than stalling on a broken LLM call."""
+    from ...tools import ai_tier
+    if ai_tier.deterministic(cfg):
+        # No model to ask. Returning None is the engine's own documented
+        # fallback: drill the offered roles in their fixed order until the
+        # round and query budgets run out.
+        return None
     try:
         from ...tools.file_io import read_prompt
         from ...tools.llm import get_llm

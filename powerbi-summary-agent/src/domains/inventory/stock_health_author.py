@@ -475,7 +475,8 @@ def author(model: dict, cfg: dict, score: dict | None = None, *,
            rules: str = "", log=print) -> dict:
     """The prose slots. Falls back to the grounded draft on any failure."""
     fallback = deterministic(model, score)
-    if not cfg.get("inventory_llm_authoring_enabled", False):
+    from ...tools import ai_tier
+    if not cfg.get("inventory_llm_authoring_enabled", False) or ai_tier.deterministic(cfg):
         return fallback
 
     try:

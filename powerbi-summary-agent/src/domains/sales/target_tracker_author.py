@@ -321,7 +321,8 @@ def author(model: dict, cfg: dict, *, rules: str = "", log=print) -> dict:
     fallback = {"headline": headline(r, model), "narrative": hero_narrative(r, model),
                 "today_note": "", "month_note": "", "authoring_mode": "deterministic"}
 
-    if not cfg.get("target_tracker_llm_authoring_enabled", False):
+    from ...tools import ai_tier
+    if not cfg.get("target_tracker_llm_authoring_enabled", False) or ai_tier.deterministic(cfg):
         return fallback
 
     try:

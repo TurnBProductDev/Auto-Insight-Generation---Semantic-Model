@@ -626,15 +626,18 @@ _FEATURES: tuple[ConfigKey, ...] = (
     _k("report_ai_tier", "enum", "investigated", "features",
        "How much AI this report uses",
        "'AI investigates and writes' lets the AI plan the questions, pick the findings, dig into "
-       "them and write the wording - the report as it has always run. 'No AI' uses fixed rules "
-       "for every step, the way the stock and daily sales reports already work: the same checked "
-       "figures, costing nothing to run, but the wording is plainer and it cannot follow a "
-       "surprising finding with a new question of its own.",
-       "src/tools/ai_tier.py. Deterministic plans no summary DAX (validate_dax takes the existing "
+       "them and write the wording - each report as it has always run. 'No AI' uses fixed rules "
+       "for every step of every report: the same checked figures and the same breakdowns, "
+       "costing nothing in AI to run, but the wording is plainer and a report cannot follow a "
+       "surprising finding with a new question of its own. This overrides every other 'let the "
+       "AI write' setting.",
+       "src/tools/ai_tier.py. Sales YoY: plans no summary DAX (validate_dax takes the existing "
        "no-valid-DAX route to the baseline portfolio), ranks signals by materiality score, writes "
-       "investigation trails from the gap scan, and uses the grounded fallback for every prose "
-       "writer including KPI card text. Needs fresh_summary_enabled: the legacy summary path has "
-       "no deterministic writer.",
+       "investigation trails from the gap scan, uses the grounded fallback for every prose writer "
+       "(needs fresh_summary_enabled). Target Tracker and Inventory Management: the deterministic "
+       "prose draft regardless of *_llm_authoring_enabled. Stock Age, SKU Overview and Daily "
+       "Sales: the drill-down queries still run, in the engine's fixed role order, with the "
+       "grounded narrative. Every report: KPI card text from the code-owned lead sentence.",
        tier="standard",
        choices=("investigated", "deterministic"),
        choice_labels=(("investigated", "AI investigates and writes"),

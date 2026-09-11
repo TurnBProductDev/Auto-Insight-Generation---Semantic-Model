@@ -565,11 +565,136 @@ def test_overall_headline() -> None:
           == "Latest performance summary")
 
 
+# ------------------------------------------------- 5. the five standalone reports
+#
+# The same dial, reaching every report. Those modules import get_llm inside the
+# function, so the stand-in is installed on src.tools.llm itself.
+
+
+class _CountingLLM:
+    def __init__(self) -> None:
+        self.calls = 0
+
+    def __call__(self, *_a, **_k):
+        self.calls += 1
+        raise LLMCalled("a language model was requested")
+
+
+def _install(counter: _CountingLLM):
+    from src.tools import llm as llm_module
+    original = llm_module.get_llm
+    llm_module.get_llm = counter  # type: ignore[assignment]
+    return llm_module, original
+
+
+def test_snapshot_investigation_keeps_drills_without_a_model() -> None:
+    print("\n=== Stock Age / SKU Overview / Daily Sales: drills stay, the model goes ===")
+    from src.domains.inventory import snapshot_investigator
+
+    def run(cfg: dict) -> tuple[dict, int]:
+        counter = _CountingLLM()
+        module, original = _install(counter)
+        try:
+            result = snapshot_investigator.investigate(
+                lambda dax: [{"name": "LOC1", "value": 900.0}, {"name": "LOC2", "value": 100.0}],
+                {"currency": "USD"}, cfg, report_id="replay",
+                candidates_fn=lambda model, cfg, max_findings: [{
+                    "candidate_id": "f1", "affected_segment": "FMCG FOOD",
+                    "dimension": "division", "description": "FMCG FOOD holds aged stock.",
+                    "_drill_role": "division", "_drill_others": ["location", "category"]}],
+                build_dax_fn=lambda cfg, own_role, own_member, drill_role: f"EVALUATE /* {drill_role} */",
+                normalize_fn=lambda rows, role: rows,
+                enabled_key="replay_investigation_enabled",
+                max_findings_key="replay_max_findings", max_rounds_key="replay_max_rounds",
+                budget_total_key="replay_budget_total", budget_per_finding_key="replay_budget_each",
+                default_max_rounds=2, default_budget_total=4, default_budget_per_finding=2)
+        finally:
+            module.get_llm = original  # type: ignore[assignment]
+        return result, counter.calls
+
+    deterministic, calls = run({"replay_investigation_enabled": True, "report_ai_tier": "deterministic"})
+    entry = (deterministic.get("entries") or [{}])[0]
+    check("no model is requested on the deterministic tier", calls == 0, calls)
+    check("the drill-down queries still run - the evidence is kept",
+          len(entry.get("drills") or []) == 2, entry.get("drills"))
+    check("roles are drilled in the engine's fixed order",
+          [d["role"] for d in entry.get("drills") or []] == ["location", "category"], entry.get("drills"))
+    check("and the narrative is the grounded draft",
+          entry.get("authoring_mode") == "deterministic" and "LOC1" in str(entry.get("narrative")),
+          entry)
+
+    _investigated, calls = run({"replay_investigation_enabled": True})
+    check("with no tier set the investigator still asks the model", calls > 0, calls)
+
+
+def test_standalone_prose_writers_return_their_draft() -> None:
+    print("\n=== Target Tracker / Inventory Management: the draft, even with AI wording on ===")
+    from src.domains.inventory import stock_health_author
+    from src.domains.sales import target_tracker_author, target_tracker_html
+
+    counter = _CountingLLM()
+    module, original = _install(counter)
+    saved = (target_tracker_html.headline, target_tracker_html.hero_narrative,
+             stock_health_author.deterministic, target_tracker_author.context)
+    try:
+        # The investigated path builds its prompt from the model before asking for
+        # one; a stub context lets the empty fixture model reach that request.
+        target_tracker_author.context = lambda model, rules: "fixture context"  # type: ignore[assignment]
+        target_tracker_html.headline = lambda r, model: "Month at 105.1% of target."  # type: ignore[assignment]
+        target_tracker_html.hero_narrative = lambda r, model: "13 of 31 days hit target."  # type: ignore[assignment]
+        stock_health_author.deterministic = lambda model, score=None: {  # type: ignore[assignment]
+            "headline": "Stock Value USD 13,966,417.", "authoring_mode": "deterministic"}
+
+        prose = target_tracker_author.author(
+            {}, {"target_tracker_llm_authoring_enabled": True, "report_ai_tier": "deterministic"})
+        check("Target Tracker returns its grounded draft with AI wording switched on",
+              prose.get("authoring_mode") == "deterministic"
+              and prose.get("headline") == "Month at 105.1% of target.", prose)
+
+        stock = stock_health_author.author(
+            {}, {"inventory_llm_authoring_enabled": True, "report_ai_tier": "deterministic"})
+        check("Inventory Management returns its grounded draft with AI wording switched on",
+              stock.get("authoring_mode") == "deterministic", stock)
+        check("neither writer requested a model", counter.calls == 0, counter.calls)
+
+        target_tracker_author.author({}, {"target_tracker_llm_authoring_enabled": True})
+        check("with no tier set, Target Tracker still asks the model when its switch is on",
+              counter.calls > 0, counter.calls)
+    finally:
+        (target_tracker_html.headline, target_tracker_html.hero_narrative,
+         stock_health_author.deterministic, target_tracker_author.context) = saved
+        module.get_llm = original  # type: ignore[assignment]
+
+
+def test_standalone_kpi_cards_read_the_tier_from_config() -> None:
+    print("\n=== KPI cards from a standalone runner's state shape ===")
+    forbid_llm()
+    signal = {"id": "s1", "kind": "business", "affected_segment": "CFH017",
+              "description": "CFH017 was below target in all four periods.",
+              "comparison_label": "of target", "impact_value": -11.13, "impact_share": None}
+    # Exactly what run_ageing / run_inventory / run_target_tracker build: the tier
+    # lives only inside "config", never as a top-level key.
+    state = {"config": {"report_ai_tier": "deterministic"}, "report_id": "target_tracker"}
+    try:
+        cards = api_payloads.generate_kpi_insights_payload(
+            [signal], state, generated_at=datetime(2026, 9, 11, 7, 15))
+        ok = True
+    except LLMCalled:
+        cards, ok = [], False
+    check("KPI cards are built without a model from the runner's state shape", ok)
+    check("the card uses the report's own grounded sentence",
+          bool(cards) and "CFH017 was below target" in str(cards[0].get("description")),
+          cards[0].get("description") if cards else None)
+
+
 def main() -> int:
     print("=" * 72)
     print("report_ai_tier: the deterministic Sales YoY run")
     print("=" * 72)
     (PROJECT_ROOT / OUT).mkdir(parents=True, exist_ok=True)
+    test_snapshot_investigation_keeps_drills_without_a_model()
+    test_standalone_prose_writers_return_their_draft()
+    test_standalone_kpi_cards_read_the_tier_from_config()
 
     test_the_dial()
     test_default_tier_still_reaches_the_model()

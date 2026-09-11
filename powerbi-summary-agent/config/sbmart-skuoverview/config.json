@@ -58,5 +58,6 @@
   "ai_content_kpi_card_fields": true,
   "ai_content_feed_max_cards": 10,
   "insight_max_new_per_run": 3,
-  "ai_content_alert_days": 7
+  "ai_content_alert_days": 7,
+  "report_ai_tier": "deterministic"
 }

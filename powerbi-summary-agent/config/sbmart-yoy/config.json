@@ -164,5 +164,6 @@
   "adaptive_investigation_min_score": 0.0,
   "node_model_overrides": {
     "insight_signal_detector": "gpt-5.4-mini"
-  }
+  },
+  "report_ai_tier": "deterministic"
 }
