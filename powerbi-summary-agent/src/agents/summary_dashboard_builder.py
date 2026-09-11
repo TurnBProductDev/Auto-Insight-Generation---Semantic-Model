@@ -31,7 +31,7 @@ from typing import List, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from ..tools import file_io, summary_dashboard, summary_levers
+from ..tools import authoring_attempts, file_io, summary_dashboard, summary_levers
 from ..tools import summary_focus_queries as q
 from ..tools.llm import get_llm
 from ..tools.summary_validation import dashboard_rules
@@ -47,6 +47,9 @@ from .summary_focus_evidence import (
 # Families the three-lever split needs. Anything else the profile exposes is not
 # scanned here - this call has to stay a single bounded query.
 _LEVER_FAMILIES = ("revenue", "quantity", "transactions")
+
+# The token_usage label of this module's model calls (the calling module's name).
+_USAGE_LABEL = __name__.rsplit(".", 1)[-1]
 
 
 class DashboardHero(BaseModel):
@@ -367,21 +370,34 @@ def _narratives(state: dict, page_views: list[dict], log: RunLogger) -> dict:
             {"role": "user", "content": "DASHBOARD VIEW MODEL:\n" + dumps(context)},
         ]
         authored = None
+        attempts: list[dict] = []
         for attempt in range(3):
+            since = authoring_attempts.mark(_USAGE_LABEL)
             try:
                 llm = get_llm(state, structured_schema=DashboardDraft)
                 response = llm.invoke(messages)
                 draft = response.model_dump() if hasattr(response, "model_dump") else dict(response)
             except Exception as exc:  # noqa: BLE001 - fall back to deterministic prose
+                attempts.append({"attempt": attempt + 1, "outcome": "call_failed",
+                                 "errors": [f"{type(exc).__name__}: {exc}"],
+                                 "usage": authoring_attempts.usage_since(_USAGE_LABEL, since)})
                 log.error(
                     f"Dashboard authoring call failed for view {view.get('key')} "
                     f"({type(exc).__name__}: {exc})."
                 )
                 break
             errors = dashboard_rules(draft, view)
+            attempts.append({"attempt": attempt + 1,
+                             "outcome": "rejected" if errors else "validated",
+                             "errors": list(errors),
+                             "usage": authoring_attempts.usage_since(_USAGE_LABEL, since)})
             if not errors:
                 authored = draft
                 break
+            log.info(
+                "Dashboard authoring for view %s attempt %d rejected (%d issue(s)): %s"
+                % (view.get("key"), attempt + 1, len(errors), "; ".join(errors))
+            )
             messages.append({"role": "assistant", "content": dumps(draft)})
             messages.append({
                 "role": "user",
@@ -397,6 +413,10 @@ def _narratives(state: dict, page_views: list[dict], log: RunLogger) -> dict:
                     f"Dashboard authoring for view {view.get('key')} did not validate; "
                     "using the deterministic draft."
                 )
+        authoring_attempts.record(state, _USAGE_LABEL, {
+            "view": str(view.get("key")), "tier": ai_tier.tier(state),
+            "outcome": "validated" if authored else "fallback", "attempts": attempts,
+        })
         if authored:
             out[str(view.get("key"))] = {
                 "hero": authored.get("hero") or {},

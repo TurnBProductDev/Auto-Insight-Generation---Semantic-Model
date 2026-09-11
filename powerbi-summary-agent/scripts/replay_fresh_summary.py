@@ -307,13 +307,18 @@ def main(argv=None) -> int:
                     "covered_candidate_ids": [store_candidate["candidate_id"]],
                 }
 
+        attempts: list[dict] = []
         try:
             fake = _FakeLLM()
             fresh_summary_generator.get_llm = lambda *_args, **_kwargs: fake
-            authored = fresh_summary_generator._invoke(state, [store_candidate])
+            authored = fresh_summary_generator._invoke(state, [store_candidate], attempts=attempts)
         finally:
             fresh_summary_generator.get_llm = original_get_llm
         assert len(calls) == 2
+        # Every attempt is recorded with the validator's own errors, and recording
+        # changes neither the retry nor the draft.
+        assert [item["outcome"] for item in attempts] == ["rejected", "validated"], attempts
+        assert attempts[0]["errors"] and attempts[1]["errors"] == [], attempts
         assert authored["authoring_mode"] == "llm"
         assert authored["validation_status"] == "validated"
         assert "only supported fact statements" in calls[1][-1]["content"]

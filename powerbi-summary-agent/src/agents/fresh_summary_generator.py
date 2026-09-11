@@ -13,7 +13,7 @@ from typing import Any, List, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from ..tools import file_io
+from ..tools import authoring_attempts, file_io
 from ..tools.llm import get_llm
 from ..tools.summary_validation import chart_data_is_sufficient, validate_draft
 from ..utils.json_utils import dumps
@@ -955,14 +955,17 @@ def _run_r4(state: dict, log: RunLogger, novelty: dict) -> dict:
         authored = _r4_fallback(state, overall_candidate, merged_focuses)
         log.info("Balanced summary LLM authoring disabled; used deterministic fallback.")
     else:
+        attempts: list[dict] = []
         try:
-            authored = _invoke(state, covered_set, mode="balanced_multi_focus")
+            authored = _invoke(state, covered_set, mode="balanced_multi_focus", attempts=attempts)
         except Exception as exc:  # noqa: BLE001 - grounded fallback still delivers
             authored = _r4_fallback(state, overall_candidate, merged_focuses)
             log.error(
                 "Balanced summary LLM draft failed validation; used deterministic fallback "
                 f"({type(exc).__name__}: {exc})."
             )
+        _report_attempts(state, log, attempts, mode="balanced_multi_focus",
+                         outcome="validated" if authored.get("authoring_mode") == "llm" else "fallback")
     chart_sources = _chart_sources(covered_set) if state.get("summary_visual_enabled", True) else []
     blocks = _resolve_blocks(authored, chart_sources)
     sections = _legacy_sections(blocks)
@@ -1013,7 +1016,40 @@ def _run_r4(state: dict, log: RunLogger, novelty: dict) -> dict:
     return {"fresh_summary": summary, **log.updates()}
 
 
-def _invoke(state: dict, selected: list[dict], *, mode: str = "single_focus") -> dict:
+_USAGE_LABEL = __name__.rsplit(".", 1)[-1]
+
+
+def _report_attempts(state: dict, log: RunLogger, attempts: list[dict], *,
+                     mode: str, outcome: str) -> None:
+    """Put each rejected draft's validation errors in the run log and the attempts artifact.
+
+    Observational only: before this, the reasons a draft failed were sent back to
+    the model and then lost, so a run that paid for three attempts left no record
+    of what the first two got wrong.
+    """
+    from ..tools import ai_tier
+
+    for item in attempts:
+        if item.get("outcome") == "validated":
+            continue
+        errors = item.get("errors") or []
+        log.info(
+            "Summary authoring attempt %s %s (%d issue(s)): %s"
+            % (item.get("attempt"), item.get("outcome"), len(errors), "; ".join(errors))
+        )
+    authoring_attempts.record(state, _USAGE_LABEL, {
+        "mode": mode, "tier": ai_tier.tier(state), "outcome": outcome, "attempts": attempts,
+    })
+
+
+def _invoke(state: dict, selected: list[dict], *, mode: str = "single_focus",
+            attempts: list[dict] | None = None) -> dict:
+    """Author a validated draft, or raise with the last attempt's errors.
+
+    ``attempts``, when given, receives one entry per model call - its outcome,
+    the validator's errors verbatim and that call's tokens. Nothing here reads
+    it, so passing it changes no draft and no retry.
+    """
     period = state.get("summary_period_context") or {}
     chart_sources = _chart_sources(selected) if state.get("summary_visual_enabled", True) else []
     rules = (
@@ -1039,8 +1075,16 @@ def _invoke(state: dict, selected: list[dict], *, mode: str = "single_focus") ->
     ]
     last_errors = []
     for attempt in range(3):
-        llm = get_llm(state, structured_schema=FreshSummaryDraft)
-        response = llm.invoke(messages)
+        since = authoring_attempts.mark(_USAGE_LABEL)
+        try:
+            llm = get_llm(state, structured_schema=FreshSummaryDraft)
+            response = llm.invoke(messages)
+        except Exception as exc:
+            if attempts is not None:
+                attempts.append({"attempt": attempt + 1, "outcome": "call_failed",
+                                 "errors": [f"{type(exc).__name__}: {exc}"],
+                                 "usage": authoring_attempts.usage_since(_USAGE_LABEL, since)})
+            raise
         draft = response.model_dump() if hasattr(response, "model_dump") else dict(response)
         errors = validate_draft(
             draft,
@@ -1049,6 +1093,11 @@ def _invoke(state: dict, selected: list[dict], *, mode: str = "single_focus") ->
             mode=mode,
             require_chart=bool(chart_sources),
         )
+        if attempts is not None:
+            attempts.append({"attempt": attempt + 1,
+                             "outcome": "rejected" if errors else "validated",
+                             "errors": list(errors),
+                             "usage": authoring_attempts.usage_since(_USAGE_LABEL, since)})
         if not errors:
             draft["validation_status"] = "validated"
             draft["authoring_mode"] = "llm"
@@ -1112,11 +1161,14 @@ def run(state: dict) -> dict:
         authored = _fallback(selected[0], state.get("summary_period_context") or {}, summary_type)
         log.info("Fresh summary written by fixed rules (report_ai_tier=deterministic) - no LLM call.")
     else:
+        attempts: list[dict] = []
         try:
-            authored = _invoke(state, selected)
+            authored = _invoke(state, selected, attempts=attempts)
         except Exception as exc:  # noqa: BLE001 - a deterministic grounded fallback still delivers
             authored = _fallback(selected[0], state.get("summary_period_context") or {}, summary_type)
             log.error(f"Fresh summary LLM draft failed validation; used deterministic fallback ({type(exc).__name__}: {exc}).")
+        _report_attempts(state, log, attempts, mode="single_focus",
+                         outcome="validated" if authored.get("authoring_mode") == "llm" else "fallback")
 
     by_id = {str(item.get("candidate_id")): item for item in selected}
     covered = [by_id[item] for item in authored.get("covered_candidate_ids", []) if item in by_id]

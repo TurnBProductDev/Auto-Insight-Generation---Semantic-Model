@@ -246,9 +246,13 @@ def narrate_key_insights(state: dict, signals: list[dict], fact_briefs: list[dic
         if paragraph:
             drafts[str(signal.get("id"))] = paragraph
             briefs[str(signal.get("id"))] = brief
-    stats = {"slots": len(drafts), "authored": 0, "fallback": len(drafts), "rejected": []}
+    stats = {"slots": len(drafts), "authored": 0, "fallback": len(drafts), "rejected": [],
+             "attempts": []}
     if not drafts:
         return drafts, stats
+    from ..tools import authoring_attempts
+
+    usage_label = __name__.rsplit(".", 1)[-1]
 
     class _Paragraph(BaseModel):
         signal_id: str = Field(description="exact signal_id copied from the input")
@@ -274,10 +278,19 @@ def narrate_key_insights(state: dict, signals: list[dict], fact_briefs: list[dic
                     {"role": "user", "content": "GROUNDED DRAFTS:\n" + dumps(payload)}]
         llm = llm_factory(state, structured_schema=_Paragraphs)
         for attempt in (1, 2):
-            result = llm.invoke(messages)
+            since = authoring_attempts.mark(usage_label)
+            try:
+                result = llm.invoke(messages)
+            except Exception as exc:
+                stats["attempts"].append({
+                    "attempt": attempt, "outcome": "call_failed",
+                    "errors": [f"{type(exc).__name__}: {exc}"],
+                    "usage": authoring_attempts.usage_since(usage_label, since)})
+                raise
             items = result.paragraphs if hasattr(result, "paragraphs") else \
                 [_Paragraph(**p) for p in (result or {}).get("paragraphs", [])]
             reasons: dict[str, list[str]] = {}
+            accepted_before = set(accepted)
             for item in items:
                 sid = str(item.signal_id)
                 if sid not in drafts or sid in accepted:
@@ -287,6 +300,14 @@ def narrate_key_insights(state: dict, signals: list[dict], fact_briefs: list[dic
                     reasons[sid] = issues
                 else:
                     accepted[sid] = item.paragraph.strip()
+            stats["attempts"].append({
+                "attempt": attempt, "returned": len(items),
+                "accepted": [sid for sid in accepted if sid not in accepted_before],
+                "rejected": [{"signal_id": sid, "issues": issues} for sid, issues in reasons.items()],
+                "usage": authoring_attempts.usage_since(usage_label, since)})
+            if reasons and log:
+                log(f"Key Insights narration attempt {attempt}: {len(reasons)} paragraph(s) rejected - "
+                    + "; ".join(f"{sid}: {', '.join(issues)}" for sid, issues in reasons.items()))
             missing = [sid for sid in drafts if sid not in accepted]
             if not missing or attempt == 2:
                 stats["rejected"] = [{"signal_id": sid, "issues": reasons.get(sid, ["not returned"])}
@@ -306,6 +327,12 @@ def narrate_key_insights(state: dict, signals: list[dict], fact_briefs: list[dic
 
     stats["authored"] = len(accepted)
     stats["fallback"] = len(drafts) - len(accepted)
+    from ..tools import ai_tier
+    authoring_attempts.record(state, usage_label, {
+        "slot": "key_insights", "tier": ai_tier.tier(state),
+        **{key: stats.get(key) for key in ("slots", "authored", "fallback", "rejected", "error")},
+        "attempts": stats["attempts"],
+    })
     return {sid: accepted.get(sid, draft) for sid, draft in drafts.items()}, stats
 
 

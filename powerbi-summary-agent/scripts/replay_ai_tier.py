@@ -926,11 +926,206 @@ def test_narrated_standalone_reports() -> None:
         module.get_llm = original  # type: ignore[assignment]
 
 
+def _attempts_file() -> Path:
+    from src.tools import authoring_attempts
+    return PROJECT_ROOT / OUT / authoring_attempts.FILENAME
+
+
+def _read_attempts() -> dict:
+    try:
+        return json.loads(_attempts_file().read_text(encoding="utf-8"))
+    except Exception:  # noqa: BLE001 - an absent file reads as nothing recorded
+        return {}
+
+
+def _writer(name: str) -> list:
+    return (_read_attempts().get("writers") or {}).get(name) or []
+
+
+class _Lines:
+    """A RunLogger stand-in keeping every line it is given."""
+
+    def __init__(self) -> None:
+        self.lines: list[str] = []
+
+    def info(self, message: str) -> None:
+        self.lines.append(str(message))
+
+    error = info
+
+
+def test_rejected_drafts_leave_their_reasons() -> None:
+    print("\n=== every rejected draft leaves the checker's reasons behind ===")
+    import threading
+
+    from src.agents import fresh_summary_generator, summary_dashboard_builder
+    from src.tools import authoring_attempts, token_usage
+
+    state = {"report_ai_tier": "narrated", "output_folder": OUT}
+
+    # The artifact itself: never written without a folder, never raises,
+    # survives concurrent writers, and a new run replaces the last one's file.
+    authoring_attempts.reset()
+    if _attempts_file().is_dir():
+        import shutil
+        shutil.rmtree(_attempts_file())
+    _attempts_file().unlink(missing_ok=True)
+    authoring_attempts.record({"config": {"report_ai_tier": "narrated"}}, "api_payloads", {"n": 1})
+    check("a caller naming no output folder writes nothing", not _attempts_file().exists())
+    # A folder nested under a plain file cannot be created. (Nesting it under the
+    # artifact's own name would create a directory of that name and break every
+    # later write in this test - which is exactly what a first draft of it did.)
+    blocker = PROJECT_ROOT / OUT / "not_a_folder.txt"
+    blocker.write_text("a file, not a folder", encoding="utf-8")
+    try:
+        authoring_attempts.record({"output_folder": f"{OUT}/not_a_folder.txt/nested"}, "x", {"n": 1})
+        raised = False
+    except Exception:  # noqa: BLE001
+        raised = True
+    check("an unwritable folder is swallowed, never raised", not raised)
+
+    authoring_attempts.reset()
+    threads = [threading.Thread(target=authoring_attempts.record, args=(state, f"w{i % 4}", {"n": i}))
+               for i in range(40)]
+    for thread in threads:
+        thread.start()
+    for thread in threads:
+        thread.join()
+    writers = _read_attempts().get("writers") or {}
+    check("forty concurrent records from two branches all survive the merge",
+          sum(len(entries) for entries in writers.values()) == 40, writers)
+    authoring_attempts.reset()
+    authoring_attempts.record(state, "w0", {"n": "new run"})
+    check("the first record of a new run replaces the previous run's file",
+          _read_attempts().get("writers") == {"w0": [{"n": "new run"}]}, _read_attempts())
+
+    # Tokens are attributed by writer, so a concurrent branch's call is not counted.
+    token_usage.reset()
+    since = authoring_attempts.mark("fresh_summary_generator")
+    token_usage.record("fresh_summary_generator", "gpt-5.4", {"prompt": 19859, "cached": 0, "completion": 721})
+    token_usage.record("insight_deterministic", "gpt-5.4", {"prompt": 2033, "cached": 0, "completion": 501})
+    usage = authoring_attempts.usage_since("fresh_summary_generator", since)
+    token_usage.reset()
+    check("a call's tokens are attributed to its own writer and no other",
+          usage["calls"] == 1 and usage["prompt_tokens"] == 19859
+          and usage["completion_tokens"] == 721, usage)
+
+    # The summary writer: rejected attempts reach the log; the artifact is verbatim.
+    authoring_attempts.reset()
+    log = _Lines()
+    attempts = [
+        {"attempt": 1, "outcome": "rejected", "errors": ["headline must quote a supported figure"]},
+        {"attempt": 2, "outcome": "validated", "errors": []},
+    ]
+    fresh_summary_generator._report_attempts(state, log, attempts, mode="balanced_multi_focus",
+                                             outcome="validated")
+    check("a rejected summary attempt's reasons reach the run log, a validated one's do not",
+          any("attempt 1 rejected" in line and "must quote a supported figure" in line
+              for line in log.lines)
+          and not any("attempt 2" in line for line in log.lines), log.lines)
+    written = _writer("fresh_summary_generator")
+    check("and the attempts artifact, verbatim and labelled with the tier",
+          bool(written) and written[0]["attempts"] == attempts and written[0]["tier"] == "narrated",
+          written)
+
+    # The dashboard: three rejections per view, each recorded and logged, then fallback.
+    saved = (summary_dashboard_builder.get_llm, summary_dashboard_builder.dashboard_rules,
+             summary_dashboard_builder._authoring_context)
+    calls: list = []
+
+    class _Draft:
+        def invoke(self, messages):
+            calls.append(messages)
+            return {"hero": {"headline": "Revenue rose."}, "entities": [], "areas": []}
+
+    log = _Lines()
+    try:
+        summary_dashboard_builder.get_llm = lambda *_a, **_k: _Draft()  # type: ignore[assignment]
+        summary_dashboard_builder.dashboard_rules = (  # type: ignore[assignment]
+            lambda draft, view: ["hero headline quotes no figure"])
+        summary_dashboard_builder._authoring_context = (  # type: ignore[assignment]
+            lambda view: {"view": view.get("key")})
+        out = summary_dashboard_builder._narratives(dict(state), [{"key": "primary"}], log)
+    finally:
+        (summary_dashboard_builder.get_llm, summary_dashboard_builder.dashboard_rules,
+         summary_dashboard_builder._authoring_context) = saved
+    views = _writer("summary_dashboard_builder")
+    check("the dashboard records every rejected attempt per view, then falls back unchanged",
+          out == {} and len(calls) == 3 and bool(views) and views[0]["view"] == "primary"
+          and views[0]["outcome"] == "fallback"
+          and [item["outcome"] for item in views[0]["attempts"]] == ["rejected"] * 3
+          and views[0]["attempts"][0]["errors"] == ["hero headline quotes no figure"], views)
+    check("each rejected dashboard attempt is logged with its reasons",
+          sum("rejected" in line and "quotes no figure" in line for line in log.lines) == 3, log.lines)
+    check("the summary writer's entry survives the dashboard's merge",
+          bool(_writer("fresh_summary_generator")))
+
+    # Key Insights: the rejected paragraph and the repair that passed, per attempt.
+    signal, brief, numbers, draft, reworded = _narration_inputs()
+    sid = signal["id"]
+    invented = draft.rstrip() + " It could reach 999.9K."
+    seen: list = []
+
+    def two_rounds(messages):
+        seen.append(messages)
+        return _reply([(sid, invented)]) if len(seen) == 1 else _reply([(sid, reworded)])
+
+    lines: list[str] = []
+    _out, stats = insight_deterministic.narrate_key_insights(
+        dict(state), [signal], [brief], numbers,
+        llm_factory=_SchemaRecorder(reply=two_rounds, raise_on_invoke=False), log=lines.append)
+    first, second = ((stats.get("attempts") or []) + [{}, {}])[:2]
+    check("Key Insights records the rejected paragraph and the repair that passed",
+          "unsupported figure" in json.dumps(first.get("rejected"))
+          and second.get("accepted") == [sid], stats.get("attempts"))
+    check("and logs the rejection with the checker's reason",
+          any("unsupported figure" in line for line in lines), lines)
+    entry = (_writer("insight_deterministic") or [{}])[-1]
+    check("the Key Insights entry lands in the same artifact",
+          entry.get("authored") == 1 and len(entry.get("attempts") or []) == 2, entry)
+
+    # KPI cards: a summary swapped for code's sentence is a recorded fallback, and
+    # one that quotes only a measured figure is not. The description carries the
+    # figures, because with nothing measured to quote the summary is kept as written.
+    def card(sid: str, summary: str):
+        return api_payloads._KpiCardText(
+            signal_id=sid, category="", description="", insight_title=f"CFH01{sid[-1]} target",
+            insight_summary=summary, insight_action="Check the branch by department.")
+
+    class _Cards:
+        def invoke(self, messages):
+            return api_payloads._KpiCardTextList(cards=[
+                card("s1", "CFH011 fell short by 999.9K."),
+                card("s2", "CFH012 reached 88.9% of target, a gap of 406.3K."),
+            ])
+
+    signals = [{"id": sid, "kind": "business", "affected_segment": segment,
+                "description": f"{segment} reached 88.9% of target, a gap of 406.3K.",
+                "comparison_label": "of target", "impact_value": -406300.0}
+               for sid, segment in (("s1", "CFH011"), ("s2", "CFH012"))]
+    saved_llm = api_payloads.get_llm
+    try:
+        api_payloads.get_llm = lambda *_a, **_k: _Cards()  # type: ignore[assignment]
+        try:
+            api_payloads.generate_kpi_insights_payload(
+                signals, dict(state), generated_at=datetime(2026, 9, 11, 7, 15))
+        except Exception:  # noqa: BLE001 - only the record is under test here
+            pass
+    finally:
+        api_payloads.get_llm = saved_llm  # type: ignore[assignment]
+    kpi = (_writer("api_payloads") or [{}])[-1]
+    check("a KPI summary quoting an unmeasured figure is recorded as a fallback, a grounded one is not",
+          kpi.get("summary_fallback") == ["s1"] and bool(kpi.get("rounds"))
+          and kpi["rounds"][0]["returned"] == ["s1", "s2"], kpi)
+    authoring_attempts.reset()
+
+
 def main() -> int:
     print("=" * 72)
     print("report_ai_tier: investigated, narrated and deterministic")
     print("=" * 72)
     (PROJECT_ROOT / OUT).mkdir(parents=True, exist_ok=True)
+    test_rejected_drafts_leave_their_reasons()
     test_snapshot_investigation_keeps_drills_without_a_model()
     test_standalone_prose_writers_return_their_draft()
     test_standalone_kpi_cards_read_the_tier_from_config()

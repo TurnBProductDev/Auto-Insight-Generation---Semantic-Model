@@ -42,6 +42,7 @@ from typing import Any, get_args, Dict, List, Literal, Optional, Sequence
 from pydantic import BaseModel, ConfigDict, Field
 
 from . import file_io
+from . import authoring_attempts
 from .llm import get_llm
 from ..utils.json_utils import dumps
 
@@ -964,7 +965,11 @@ def _parse_key_metrics(lines: Sequence[str]) -> "list[tuple[str, str]]":
 # --------------------------------------------------------------------------
 # LLM invocation with one retry
 # --------------------------------------------------------------------------
-def _invoke(state: dict, schema, system: str, user: str):
+_USAGE_LABEL = __name__.rsplit(".", 1)[-1]  # this module's token_usage label
+
+
+def _invoke(state: dict, schema, system: str, user: str,
+            attempts: Optional[List[Dict[str, Any]]] = None):
     last = None
     for attempt in range(2):
         try:
@@ -974,6 +979,9 @@ def _invoke(state: dict, schema, system: str, user: str):
             )
         except Exception as e:  # noqa: BLE001 - retry once, then surface
             last = e
+            if attempts is not None:
+                attempts.append({"call": attempt + 1, "outcome": "call_failed",
+                                 "error": f"{type(e).__name__}: {e}"})
     raise RuntimeError(f"LLM structured call failed after retry: {last}")
 
 
@@ -1084,7 +1092,8 @@ def _signal_facts(sig: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-def _author_kpi_texts(facts: List[Dict[str, Any]], state: dict) -> Dict[str, _KpiCardText]:
+def _author_kpi_texts(facts: List[Dict[str, Any]], state: dict,
+                      rounds: Optional[List[Dict[str, Any]]] = None) -> Dict[str, _KpiCardText]:
     system = (
         file_io.read_prompt("_global_rules.md")
         + file_io.business_rules_block(state)
@@ -1093,18 +1102,58 @@ def _author_kpi_texts(facts: List[Dict[str, Any]], state: dict) -> Dict[str, _Kp
     )
     out: Dict[str, _KpiCardText] = {}
     remaining = facts
-    for _ in range(2):
+    for round_no in (1, 2):
         user = (
             "SIGNAL FACTS -- author one card per signal_id. Numbers are fixed and "
             "injected by code; do not restate raw values:\n" + dumps(remaining)
         )
-        result: _KpiCardTextList = _invoke(state, _KpiCardTextList, system, user)
+        # Observational: which cards each round asked for and got back, and what
+        # it cost. Mutated in place so a raising call still leaves its record.
+        since = authoring_attempts.mark(_USAGE_LABEL)
+        entry: Dict[str, Any] = {"round": round_no,
+                                 "requested": [f.get("signal_id") for f in remaining],
+                                 "returned": [], "call_errors": []}
+        if rounds is not None:
+            rounds.append(entry)
+        try:
+            result: _KpiCardTextList = _invoke(state, _KpiCardTextList, system, user,
+                                               attempts=entry["call_errors"])
+        finally:
+            entry["usage"] = authoring_attempts.usage_since(_USAGE_LABEL, since)
+        entry["returned"] = [c.signal_id for c in result.cards]
         for c in result.cards:
             out.setdefault(c.signal_id, c)
         remaining = [f for f in facts if f["signal_id"] not in out]
         if not remaining:
             break
     return out
+
+
+def _record_kpi_attempts(state: dict, signals: Sequence[Dict[str, Any]],
+                         texts: Dict[Any, _KpiCardText],
+                         rounds: List[Dict[str, Any]]) -> None:
+    """Record which cards kept the model's summary and which fell back to code's.
+
+    `_grounded_summary` swaps a summary quoting an unlisted figure, or none, for
+    the code-owned lead sentence. That swap is silent on the card, so without
+    this a narrated run could pay for card wording and publish none of it.
+    Recomputes the same pure check; changes no card.
+    """
+    fallback: List[Any] = []
+    for sig in signals:
+        text = texts.get(sig.get("id"))
+        if text is None:
+            continue
+        family = _signal_family(sig)
+        written = _sentence(_plain_business_text(text.insight_summary))
+        if _grounded_summary(sig, family, text.insight_summary) != written:
+            fallback.append(sig.get("id"))
+    from . import ai_tier
+    authoring_attempts.record(state, _USAGE_LABEL, {
+        "slot": "kpi_cards", "tier": ai_tier.tier(state), "outcome": "authored",
+        "cards": len(signals), "missing": [s.get("id") for s in signals if s.get("id") not in texts],
+        "summary_fallback": fallback, "rounds": rounds,
+    })
 
 
 def multi_report_feed(state: dict) -> bool:
@@ -1381,7 +1430,16 @@ def generate_kpi_insights_payload(
                 insight_action=f"Check {segment} by product and branch to see where the change happened.",
             )
     else:
-        texts = _author_kpi_texts([_signal_facts(s) for s in signals], state)
+        rounds: List[Dict[str, Any]] = []
+        try:
+            texts = _author_kpi_texts([_signal_facts(s) for s in signals], state, rounds=rounds)
+        except Exception as exc:
+            authoring_attempts.record(state, _USAGE_LABEL, {
+                "slot": "kpi_cards", "tier": ai_tier.tier(state), "outcome": "call_failed",
+                "error": f"{type(exc).__name__}: {exc}", "rounds": rounds,
+            })
+            raise
+        _record_kpi_attempts(state, signals, texts, rounds)
     report_id = feed_report_id(state) if multi_report_feed(state) else None
     extended_fields = kpi_extended_fields(state)
     cards: List[Dict[str, Any]] = []
