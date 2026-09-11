@@ -56,9 +56,10 @@ def run(state: dict) -> dict:
     # structure alone - so a cached set for an unchanged schema is reused whole.
     # It is still handed to the validator below exactly as fresh DAX would be.
     from ..tools import ai_tier
-    if ai_tier.deterministic(state):
+    if not ai_tier.investigates(state):
         file_io.write_json(state, "generated_dax_queries.json", [])
-        log.info("Node 5: nothing to generate (report_ai_tier=deterministic) - no LLM calls.")
+        log.info(f"Node 5: nothing to generate (report_ai_tier={ai_tier.tier(state)}) "
+                 f"- no LLM calls.")
         return {"generated_dax_queries": [], **log.updates()}
 
     cached = plan_cache.load(state)

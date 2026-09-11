@@ -322,7 +322,7 @@ def author(model: dict, cfg: dict, *, rules: str = "", log=print) -> dict:
                 "today_note": "", "month_note": "", "authoring_mode": "deterministic"}
 
     from ...tools import ai_tier
-    if not cfg.get("target_tracker_llm_authoring_enabled", False) or ai_tier.deterministic(cfg):
+    if not ai_tier.prose_allowed(cfg, cfg.get("target_tracker_llm_authoring_enabled", False)):
         return fallback
 
     try:

@@ -1259,10 +1259,21 @@ def run(state: dict) -> dict:
     }
 
     from ..tools import ai_tier
-    if ai_tier.deterministic(state):
+    if not ai_tier.investigates(state):
         from . import insight_deterministic
+        paragraphs, authored = None, 0
+        if ai_tier.narrated(state):
+            # Code owns the whole report; a model rewrites only the Key Insights
+            # paragraphs, each held alone to the clarity check below and kept
+            # on its grounded draft if it fails.
+            paragraphs, stats = insight_deterministic.narrate_key_insights(
+                state, signals, fact_briefs, manager_supported_numbers, log=log.info)
+            authored = stats["authored"]
+            log.info(f"Key Insights narration: {stats['authored']} of {stats['slots']} slot(s) "
+                     f"written by the model, {stats['fallback']} kept on the grounded draft.")
         report = insight_deterministic.write_report(
-            state, signals, investigations, fact_briefs, novelty)
+            state, signals, investigations, fact_briefs, novelty,
+            paragraphs=paragraphs, authored=authored)
         # Held to the same manager-facing clarity check as an LLM draft. There is
         # no rewrite loop to fall back on, so a failure is logged loudly rather
         # than retried - the paragraphs are the repo's own grounded fallback, and
@@ -1274,8 +1285,11 @@ def run(state: dict) -> dict:
             manager_supported_numbers,
         )
         if issues:
-            log.error("Deterministic insight report has %d manager-facing clarity issue(s): %s"
-                      % (len(issues), "; ".join(issues[:3])))
+            log.error("Insight report (report_ai_tier=%s) has %d manager-facing clarity issue(s): %s"
+                      % (ai_tier.tier(state), len(issues), "; ".join(issues[:3])))
+        elif ai_tier.narrated(state):
+            log.info(f"Insight report written (report_ai_tier=narrated): structure and figures by "
+                     f"fixed rules, {authored} paragraph(s) worded by the model; clarity check clean.")
         else:
             log.info("Insight report written by fixed rules (report_ai_tier=deterministic) "
                      "- no LLM call; clarity check clean.")

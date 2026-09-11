@@ -687,14 +687,257 @@ def test_standalone_kpi_cards_read_the_tier_from_config() -> None:
           cards[0].get("description") if cards else None)
 
 
+# ------------------------------------------------------------------ 6. narrated
+#
+# The middle tier: code decides everything a model could get wrong in substance,
+# and a model writes only the sentences, each one checked, each with a fallback.
+
+
+class _SchemaRecorder:
+    """A get_llm stand-in recording which structured schema each call asked for."""
+
+    def __init__(self, reply=None, raise_on_invoke: bool = True) -> None:
+        self.schemas: list[str] = []
+        self.reply = reply
+        self.raise_on_invoke = raise_on_invoke
+
+    def __call__(self, state=None, structured_schema=None, **_kwargs):
+        self.schemas.append(getattr(structured_schema, "__name__", str(structured_schema)))
+        recorder = self
+
+        class _Model:
+            def invoke(self, messages):
+                if recorder.raise_on_invoke:
+                    raise LLMCalled("stub model")
+                return recorder.reply(messages) if callable(recorder.reply) else recorder.reply
+
+        return _Model()
+
+
+def _reply(paragraphs: list[tuple[str, str]]):
+    from types import SimpleNamespace
+    return SimpleNamespace(paragraphs=[SimpleNamespace(signal_id=sid, paragraph=text)
+                                       for sid, text in paragraphs])
+
+
+def _narration_inputs():
+    signal = torch_signal()
+    brief = insight_synthesizer._manager_fact_brief(signal, PROFILE)
+    numbers = insight_synthesizer._supported_numbers({"manager_fact_briefs": [brief],
+                                                      "signals": [signal]})
+    draft = insight_deterministic.grounded_paragraph(signal, brief) or ""
+    head, tail = draft.rsplit("Check ", 1)
+    # A genuine rewording that keeps every figure: a different closing verb.
+    reworded = head + "Review " + tail
+    return signal, brief, numbers, draft, reworded
+
+
+def test_narrated_decides_nothing() -> None:
+    print("\n=== narrated: no model plans, selects or investigates ===")
+    forbid_llm()
+    base = {"report_ai_tier": "narrated", "output_folder": OUT, "semantic_model_profile": PROFILE,
+            "config": {"report_domain": "sales"},
+            "model_metadata": {"tables": [], "columns": [], "measures": []}}
+    signal = torch_signal()
+    for label, call in (
+        ("report_understanding", lambda: report_understanding.run(dict(base))),
+        ("dax_planner", lambda: dax_planner.run(dict(base, report_understanding={"domain": "Sales / Retail"}))),
+        ("dax_generator", lambda: dax_generator.run(dict(base, dax_plan={"queries": []}))),
+        ("insight_signal_detector", lambda: insight_signal_detector.run(dict(
+            base, insight_memory_enabled=True, insight_max_new_per_run=2,
+            insight_clean_data={"successful": 1, "queries": []},
+            insight_eligible_candidates={"business_candidates": [candidate("c1", 5, "ST1")],
+                                         "data_quality_candidates": []}))),
+        ("insight_investigator", lambda: insight_investigator.run(dict(
+            base, insight_signals=[signal], insight_clean_data={"queries": []},
+            insight_evidence_briefs={}, insight_gap_evidence={signal["id"]: gap_evidence()},
+            insight_evidence_contracts={}, insight_query_cache={}))),
+    ):
+        try:
+            call()
+            ok = True
+        except LLMCalled:
+            ok = False
+        check(f"{label} makes no model call on the narrated tier", ok)
+
+    check("narrated writes but never decides",
+          ai_tier.narrated(base) and not ai_tier.investigates(base)
+          and not ai_tier.deterministic(base) and ai_tier.prose_allowed(base, False))
+    check("narrated turns the summary wording on even with its old switch off",
+          ai_tier.authoring_allowed({"report_ai_tier": "narrated",
+                                     "summary_llm_authoring_enabled": False}))
+    check("investigated still leaves each report's own switch in charge",
+          not ai_tier.prose_allowed({}, False) and ai_tier.prose_allowed({}, True))
+    check("deterministic still refuses wording whatever the switch says",
+          not ai_tier.prose_allowed({"report_ai_tier": "deterministic"}, True))
+
+
+def test_narrated_key_insights_are_checked_slot_by_slot() -> None:
+    print("\n=== narrated Key Insights: model wording, checked alone, fallback per slot ===")
+    signal, brief, numbers, draft, reworded = _narration_inputs()
+    sid = signal["id"]
+    state = {"report_ai_tier": "narrated"}
+    check("the grounded draft passes the check on its own",
+          not insight_deterministic.paragraph_issues(draft, brief, numbers))
+    check("the fixture rewording is itself a valid paragraph",
+          not insight_deterministic.paragraph_issues(reworded, brief, numbers),
+          insight_deterministic.paragraph_issues(reworded, brief, numbers))
+
+    good = _SchemaRecorder(reply=_reply([(sid, reworded)]), raise_on_invoke=False)
+    out, stats = insight_deterministic.narrate_key_insights(
+        state, [signal], [brief], numbers, llm_factory=good)
+    check("a paragraph that passes the check is published", out.get(sid) == reworded
+          and stats["authored"] == 1, stats)
+    check("the model is asked for paragraphs and nothing else", good.schemas == ["_Paragraphs"],
+          good.schemas)
+
+    invented = draft.rstrip() + " It could reach 999.9K."
+    bad = _SchemaRecorder(reply=_reply([(sid, invented)]), raise_on_invoke=False)
+    out, stats = insight_deterministic.narrate_key_insights(
+        state, [signal], [brief], numbers, llm_factory=bad)
+    check("a paragraph quoting a figure the data does not hold is thrown away",
+          out.get(sid) == draft and stats["authored"] == 0, stats)
+    check("and the rejection records the checker's reason",
+          "unsupported figure" in json.dumps(stats["rejected"]), stats["rejected"])
+
+    seen: list[list[dict]] = []
+
+    def two_rounds(messages):
+        seen.append(list(messages))
+        return _reply([(sid, invented)]) if len(seen) == 1 else _reply([(sid, reworded)])
+
+    healed = _SchemaRecorder(reply=two_rounds, raise_on_invoke=False)
+    out, stats = insight_deterministic.narrate_key_insights(
+        state, [signal], [brief], numbers, llm_factory=healed)
+    check("a rejected paragraph gets one repair round and can still be published",
+          len(seen) == 2 and out.get(sid) == reworded, stats)
+    check("the repair request hands back the checker's own reasons",
+          len(seen) == 2 and "unsupported figure" in seen[1][-1]["content"])
+
+    broken = _SchemaRecorder(raise_on_invoke=True)
+    out, stats = insight_deterministic.narrate_key_insights(
+        state, [signal], [brief], numbers, llm_factory=broken)
+    check("a failed model call keeps every grounded draft and never raises",
+          out.get(sid) == draft and "error" in stats, stats)
+
+    silent = _SchemaRecorder(reply=_reply([]), raise_on_invoke=False)
+    out, stats = insight_deterministic.narrate_key_insights(
+        state, [signal], [brief], numbers, llm_factory=silent)
+    check("a slot the model did not return keeps its draft",
+          out.get(sid) == draft and stats["fallback"] == 1, stats)
+
+
+def test_narrated_report_end_to_end() -> None:
+    print("\n=== narrated insight report: the model's words inside code's structure ===")
+    signal, _brief, _numbers, _draft, reworded = _narration_inputs()
+    recorder = _SchemaRecorder(reply=_reply([(signal["id"], reworded)]), raise_on_invoke=False)
+    module, original = _install(recorder)
+    try:
+        trail = insight_deterministic.trail(signal, gap_evidence(), PROFILE)
+        out = insight_synthesizer.run({
+            "report_ai_tier": "narrated", "output_folder": OUT,
+            "insight_signals": [signal], "insight_investigations": [trail],
+            "semantic_model_profile": PROFILE, "insight_clean_data": {},
+            "insight_novelty": {"reason": "ok"},
+            "report_understanding": {"domain": "Sales / Retail"},
+        })
+    finally:
+        module.get_llm = original  # type: ignore[assignment]
+    report = str(out.get("insight_report") or "")
+    check("the published Key Insights paragraph is the model's wording",
+          "Review CFH021 HAND TORCH" in report, report[:400])
+    check("the structure is code's: the five sections in order",
+          re.findall(r"(?m)^# (.+)$", report) == ["Key Insights", "Data Quality Watch-outs",
+                                                   "Evidence Trail", "Confidence & Caveats",
+                                                   "Suggested Follow-ups"])
+    check("only the Key Insights slots were requested from the model",
+          recorder.schemas == ["_Paragraphs"], recorder.schemas)
+    check("the report says which wording the model wrote and that figures were checked",
+          "An AI model wrote the wording of 1 of the 1 key insight(s)" in report)
+    check("the run log reports a clean clarity check",
+          any("clarity check clean" in line for line in out.get("logs") or []), out.get("logs"))
+
+
+def test_narrated_standalone_reports() -> None:
+    print("\n=== narrated standalone reports: wording by the model, choices by rules ===")
+    from src.domains.inventory import snapshot_investigator, stock_health_author
+    from src.domains.sales import target_tracker_author, target_tracker_html
+
+    recorder = _SchemaRecorder(raise_on_invoke=True)
+    module, original = _install(recorder)
+    saved = (target_tracker_html.headline, target_tracker_html.hero_narrative,
+             stock_health_author.deterministic, target_tracker_author.context,
+             stock_health_author.context, api_payloads.get_llm)
+    try:
+        target_tracker_html.headline = lambda r, model: "Month at 105.1% of target."  # type: ignore[assignment]
+        target_tracker_html.hero_narrative = lambda r, model: "13 of 31 days hit target."  # type: ignore[assignment]
+        target_tracker_author.context = lambda model, rules: "fixture context"  # type: ignore[assignment]
+        stock_health_author.deterministic = lambda model, score=None: {  # type: ignore[assignment]
+            "headline": "Stock Value USD 13,966,417.", "authoring_mode": "deterministic"}
+        stock_health_author.context = lambda model, score, rules: "fixture context"  # type: ignore[assignment]
+
+        result = snapshot_investigator.investigate(
+            lambda dax: [{"name": "LOC1", "value": 900.0}, {"name": "LOC2", "value": 100.0}],
+            {"currency": "USD"}, {"replay_investigation_enabled": True, "report_ai_tier": "narrated"},
+            report_id="replay",
+            candidates_fn=lambda model, cfg, max_findings: [{
+                "candidate_id": "f1", "affected_segment": "FMCG FOOD", "dimension": "division",
+                "description": "FMCG FOOD holds aged stock.",
+                "_drill_role": "division", "_drill_others": ["location", "category"]}],
+            build_dax_fn=lambda cfg, own_role, own_member, drill_role: f"EVALUATE /* {drill_role} */",
+            normalize_fn=lambda rows, role: rows,
+            enabled_key="replay_investigation_enabled",
+            max_findings_key="replay_max_findings", max_rounds_key="replay_max_rounds",
+            budget_total_key="replay_budget_total", budget_per_finding_key="replay_budget_each",
+            default_max_rounds=2, default_budget_total=4, default_budget_per_finding=2)
+        entry = (result.get("entries") or [{}])[0]
+        check("the breakdowns still run in the fixed order",
+              [d["role"] for d in entry.get("drills") or []] == ["location", "category"], entry)
+        check("no model is asked which breakdown to drill next",
+              "DrillDecision" not in recorder.schemas, recorder.schemas)
+        check("a model is asked to write the breakdown up",
+              "DrillNarrative" in recorder.schemas, recorder.schemas)
+
+        recorder.schemas.clear()
+        target_tracker_author.author({}, {"target_tracker_llm_authoring_enabled": False,
+                                          "report_ai_tier": "narrated"})
+        stock_health_author.author({}, {"inventory_llm_authoring_enabled": False,
+                                        "report_ai_tier": "narrated"})
+        check("Target Tracker and Inventory Management ask for wording with their old switches off",
+              {"TargetTrackerProse", "StockHealthProse"} <= set(recorder.schemas), recorder.schemas)
+
+        recorder.schemas.clear()
+        api_payloads.get_llm = recorder  # type: ignore[assignment]
+        try:
+            api_payloads.generate_kpi_insights_payload(
+                [{"id": "s1", "kind": "business", "affected_segment": "CFH017",
+                  "description": "CFH017 was below target in all four periods.",
+                  "comparison_label": "of target", "impact_value": -11.13}],
+                {"config": {"report_ai_tier": "narrated"}},
+                generated_at=datetime(2026, 9, 11, 7, 15))
+        except Exception:  # noqa: BLE001 - the stub model refuses, which is the point
+            pass
+        check("KPI card wording is requested from the model on the narrated tier",
+              "_KpiCardTextList" in recorder.schemas, recorder.schemas)
+    finally:
+        (target_tracker_html.headline, target_tracker_html.hero_narrative,
+         stock_health_author.deterministic, target_tracker_author.context,
+         stock_health_author.context, api_payloads.get_llm) = saved
+        module.get_llm = original  # type: ignore[assignment]
+
+
 def main() -> int:
     print("=" * 72)
-    print("report_ai_tier: the deterministic Sales YoY run")
+    print("report_ai_tier: investigated, narrated and deterministic")
     print("=" * 72)
     (PROJECT_ROOT / OUT).mkdir(parents=True, exist_ok=True)
     test_snapshot_investigation_keeps_drills_without_a_model()
     test_standalone_prose_writers_return_their_draft()
     test_standalone_kpi_cards_read_the_tier_from_config()
+    test_narrated_decides_nothing()
+    test_narrated_key_insights_are_checked_slot_by_slot()
+    test_narrated_report_end_to_end()
+    test_narrated_standalone_reports()
 
     test_the_dial()
     test_default_tier_still_reaches_the_model()

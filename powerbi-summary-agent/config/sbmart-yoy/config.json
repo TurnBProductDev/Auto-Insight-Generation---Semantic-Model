@@ -165,5 +165,5 @@
   "node_model_overrides": {
     "insight_signal_detector": "gpt-5.4-mini"
   },
-  "report_ai_tier": "deterministic"
+  "report_ai_tier": "narrated"
 }

@@ -314,7 +314,7 @@ def run(state: dict) -> dict:
     rows_by_name = {q.get("query_name"): q.get("rows") for q in scan.get("queries", [])}
 
     from ..tools import ai_tier
-    if ai_tier.deterministic(state):
+    if not ai_tier.investigates(state):
         # The gap scan has already drilled every signal within its own members;
         # the trail is those rows plus a code-written explanation. No tool loop.
         from . import insight_deterministic
@@ -328,7 +328,8 @@ def run(state: dict) -> dict:
             inv["probe_budget"] = 0
             investigations.append(inv)
             log.info(f"  '{signal['id']}': trail written from {inv['gap_probes_used']} gap-scan "
-                     f"probe(s), concluded={inv['concluded']} (report_ai_tier=deterministic, no LLM).")
+                     f"probe(s), concluded={inv['concluded']} "
+                     f"(report_ai_tier={ai_tier.tier(state)}, no LLM).")
         file_io.write_json(state, "insight_investigations.json", investigations)
         return {"insight_investigations": investigations,
                 "insight_query_cache": cache, **log.updates()}

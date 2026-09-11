@@ -626,21 +626,25 @@ _FEATURES: tuple[ConfigKey, ...] = (
     _k("report_ai_tier", "enum", "investigated", "features",
        "How much AI this report uses",
        "'AI investigates and writes' lets the AI plan the questions, pick the findings, dig into "
-       "them and write the wording - each report as it has always run. 'No AI' uses fixed rules "
-       "for every step of every report: the same checked figures and the same breakdowns, "
-       "costing nothing in AI to run, but the wording is plainer and a report cannot follow a "
-       "surprising finding with a new question of its own. This overrides every other 'let the "
-       "AI write' setting.",
-       "src/tools/ai_tier.py. Sales YoY: plans no summary DAX (validate_dax takes the existing "
-       "no-valid-DAX route to the baseline portfolio), ranks signals by materiality score, writes "
-       "investigation trails from the gap scan, uses the grounded fallback for every prose writer "
-       "(needs fresh_summary_enabled). Target Tracker and Inventory Management: the deterministic "
-       "prose draft regardless of *_llm_authoring_enabled. Stock Age, SKU Overview and Daily "
-       "Sales: the drill-down queries still run, in the engine's fixed role order, with the "
-       "grounded narrative. Every report: KPI card text from the code-owned lead sentence.",
+       "them and write the wording - each report as it has always run. 'AI writes the wording' "
+       "keeps every choice with fixed rules - which findings, which breakdowns, which figures - "
+       "and lets the AI write only the sentences, each one checked against the figures and "
+       "replaced by the plain version if it fails. 'No AI' uses fixed rules for every step: "
+       "the same checked figures, costing nothing in AI, but plainer wording. The last two "
+       "override every other 'let the AI write' setting.",
+       "src/tools/ai_tier.py. Below investigated no model decides: Sales YoY plans no summary "
+       "DAX (validate_dax takes the no-valid-DAX route to the baseline portfolio), ranks signals "
+       "by materiality score and writes investigation trails from the gap scan; Stock Age, SKU "
+       "Overview and Daily Sales drill in the engine's fixed role order. Narrated then has the "
+       "model fill prose slots only - Sales YoY Key Insights paragraphs (held to "
+       "_clarity_issues, per paragraph), the summary and dashboard wording, Target Tracker and "
+       "Inventory Management prose, investigation narratives and KPI card text - each behind "
+       "its existing validator and grounded fallback. Deterministic uses the fallback for "
+       "every slot. Sales YoY needs fresh_summary_enabled.",
        tier="standard",
-       choices=("investigated", "deterministic"),
+       choices=("investigated", "narrated", "deterministic"),
        choice_labels=(("investigated", "AI investigates and writes"),
+                      ("narrated", "AI writes the wording only"),
                       ("deterministic", "No AI - fixed rules only"))),
     _k("summary_dashboard_entity_levers", "bool", True, "features",
        "Break each location down into trips, basket size and price",

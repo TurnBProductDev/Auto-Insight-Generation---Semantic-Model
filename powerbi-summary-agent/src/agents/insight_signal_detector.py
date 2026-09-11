@@ -422,7 +422,7 @@ def run(state: dict) -> dict:
         return _finish(state, log, [], novelty, reason=reason)
 
     from ..tools import ai_tier
-    if ai_tier.deterministic(state):
+    if not ai_tier.investigates(state):
         # Rank every eligible candidate by the materiality score it already
         # carries, through the same _rank_and_cap the LLM's picks go through.
         # The one thing the LLM adds on the investigated tier is merging related
@@ -445,7 +445,7 @@ def run(state: dict) -> dict:
         if memory_enabled:
             pool = _ensure_reserved_relative(pool, eligible)
         signals = _rank_and_cap(pool, cap, max_dq)
-        log.info(f"Deterministic selection (report_ai_tier=deterministic): {len(signals)} "
+        log.info(f"Rule-based selection (report_ai_tier={ai_tier.tier(state)}): {len(signals)} "
                  f"of {len(pool)} eligible candidate(s) by materiality score - no LLM call.")
         reason = "ok" if signals else (novelty.get("reason") or "no_new_selected")
         return _finish(state, log, signals, novelty, reason=reason)

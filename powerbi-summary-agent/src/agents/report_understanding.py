@@ -73,11 +73,11 @@ def run(state: dict) -> dict:
     log.info("Node 3: understanding the report/model...")
 
     from ..tools import ai_tier
-    if ai_tier.deterministic(state):
+    if not ai_tier.investigates(state):
         understanding = _deterministic_understanding(state)
         file_io.write_json(state, "report_understanding.json", understanding)
-        log.info("Node 3: understanding built from the semantic profile "
-                 "(report_ai_tier=deterministic) - no LLM call.")
+        log.info(f"Node 3: understanding built from the semantic profile "
+                 f"(report_ai_tier={ai_tier.tier(state)}) - no LLM call.")
         return {"report_understanding": understanding, **log.updates()}
 
     # The model's structure decides this, not today's rows, so a stored answer

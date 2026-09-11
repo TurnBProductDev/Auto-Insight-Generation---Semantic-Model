@@ -56,15 +56,16 @@ def run(state: dict) -> dict:
     max_rows = state.get("max_rows_per_query", 15)
 
     from ..tools import ai_tier
-    if ai_tier.deterministic(state):
-        # An empty plan, on purpose. validate_dax then takes the summary
-        # branch's existing "no valid summary DAX" route, and the fresh summary
-        # is built from the pre-fork baseline portfolio instead of from queries
-        # an LLM would have written.
+    if not ai_tier.investigates(state):
+        # An empty plan, on purpose: planning is a decision, and below the
+        # investigated tier no model makes decisions. validate_dax then takes
+        # the summary branch's existing "no valid summary DAX" route, and the
+        # fresh summary is built from the pre-fork baseline portfolio instead of
+        # from queries an LLM would have written.
         plan_dict = {"queries": []}
         file_io.write_json(state, "generated_dax_plan.json", plan_dict)
-        log.info("Node 4: no DAX planned (report_ai_tier=deterministic); the summary "
-                 "is built from the shared baseline evidence.")
+        log.info(f"Node 4: no DAX planned (report_ai_tier={ai_tier.tier(state)}); the "
+                 f"summary is built from the shared baseline evidence.")
         return {"dax_plan": plan_dict, **log.updates()}
 
     cached = plan_cache.load(state)

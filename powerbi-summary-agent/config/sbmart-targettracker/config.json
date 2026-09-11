@@ -48,5 +48,5 @@
   "ai_content_feed_max_cards": 10,
   "insight_max_new_per_run": 3,
   "ai_content_alert_days": 7,
-  "report_ai_tier": "deterministic"
+  "report_ai_tier": "narrated"
 }

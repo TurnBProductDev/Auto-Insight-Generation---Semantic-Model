@@ -264,10 +264,12 @@ def _decide(entry: dict, offered_roles: list[str], cfg: dict) -> "DrillDecision 
     on any failure - the caller falls back to exhausting the round budget in
     a fixed order rather than stalling on a broken LLM call."""
     from ...tools import ai_tier
-    if ai_tier.deterministic(cfg):
-        # No model to ask. Returning None is the engine's own documented
-        # fallback: drill the offered roles in their fixed order until the
-        # round and query budgets run out.
+    if not ai_tier.investigates(cfg):
+        # Choosing the next breakdown is a decision, and below the investigated
+        # tier no model makes one. Returning None is the engine's own documented
+        # fallback: drill the offered roles in their fixed order until the round
+        # and query budgets run out. The narrated tier still has a model write
+        # the result up, in author_narrative.
         return None
     try:
         from ...tools.file_io import read_prompt

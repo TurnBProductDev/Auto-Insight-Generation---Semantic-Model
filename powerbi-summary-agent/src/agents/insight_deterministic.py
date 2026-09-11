@@ -1,9 +1,10 @@
-"""Code-owned investigation trails and insight report (report_ai_tier=deterministic).
+"""Code-owned investigation trails and insight report, below the investigated tier.
 
 The investigated tier spends most of a run's money in two places: a
 tool-calling investigator that decides which follow-up queries to run, and a
 free-form writer that turns the trails into the report. This module is what
-both become when a run may not call a language model.
+both become when no model may make a decision - the ``narrated`` and
+``deterministic`` tiers of `src/tools/ai_tier.py`.
 
 **Investigation.** `insight_gap_scan` has already drilled every selected finding
 deterministically, scoped to exactly its members, before the investigator is
@@ -16,21 +17,26 @@ movements in each breakdown.
 
 **Report.** The same five sections the synthesizer prompt requires, in the same
 order, so the history parser, the API payloads and the clarity check read it
-unchanged. The manager-facing Key Insights paragraphs are
-`insight_synthesizer._deterministic_finding` - the writer that already replaces
-an LLM paragraph that fails the clarity check - so the words the reader sees are
-ones this repo has been publishing as a fallback, now used first. The other four
-sections are for the report owner and are stated plainly, including the fact
-that no model was asked.
+unchanged. Code owns the structure completely. The manager-facing Key Insights
+paragraphs are the only prose slots:
 
-What is genuinely lost, and the report says so: the LLM could merge related
-findings into one story and ask a follow-up question the standard breakdowns did
-not cover. Neither is attempted here.
+* deterministic - each is `insight_synthesizer._deterministic_finding`, the
+  writer that already replaces an LLM paragraph failing the clarity check;
+* narrated - `narrate_key_insights` has a model rewrite those same paragraphs
+  for a manager, and every rewritten paragraph is held, on its own, to the same
+  `_clarity_issues` check against its own fact brief and the run's supported
+  numbers. One that fails keeps the code-written paragraph. The model never
+  sees a raw row, chooses a finding, adds a section or writes the four owner
+  sections.
+
+What is genuinely lost below the investigated tier, and the report says so: a
+model could merge related findings into one story and ask a follow-up question
+the standard breakdowns did not cover. Neither is attempted here.
 """
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Callable
 
 from . import insight_synthesizer as syn
 
@@ -160,16 +166,160 @@ def _minimal_finding(signal: dict, brief: dict) -> str | None:
     return syn._deterministic_finding(signal, trimmed)
 
 
+def grounded_paragraph(signal: dict, brief: dict) -> str | None:
+    """The code-written Key Insights paragraph for one finding."""
+    return syn._deterministic_finding(signal, brief) or _minimal_finding(signal, brief)
+
+
 def _segment(signal: dict) -> str:
     return str(signal.get("affected_segment") or signal.get("segment") or "This area")
 
 
+def business_pairs(signals: list[dict], fact_briefs: list[dict]) -> list[tuple[dict, dict]]:
+    return [(s, b) for s, b in zip(signals, fact_briefs) if s.get("kind") != "data_quality"]
+
+
+def paragraph_issues(paragraph: str, brief: dict, supported_numbers: list[float]) -> list[str]:
+    """The synthesizer's manager-facing check, applied to one paragraph alone."""
+    return syn._clarity_issues(
+        "# Key Insights\n" + paragraph.strip() + "\n\n# Data Quality Watch-outs\n",
+        1, [brief], supported_numbers)
+
+
+# ------------------------------------------------------------ narrated slots
+
+_NARRATION_TASK = """\
+You write the Key Insights paragraphs of a retail sales report for store and
+area managers.
+
+For each signal_id you receive a GROUNDED DRAFT that is already correct and
+already passes every check. Rewrite it so a busy manager understands it at a
+glance. You change wording only - never the facts.
+
+A checker reads every paragraph you return. Any paragraph that breaks one rule
+below is thrown away and the grounded draft is published instead:
+
+- Start with one bold sentence (**...**) that says what changed and quotes its
+  figure.
+- Keep every figure exactly as it is written in the draft, including its sign,
+  unit and rounding. Never calculate, re-round or add a figure.
+- Keep every figure the draft gives for the change, the percentage, the
+  starting and ending values and the share of the overall result, and for every
+  reason it measures (units sold, purchases, revenue per item).
+- Keep the comparison words, such as "from X to Y" and "compared with the same
+  period last year".
+- At most 105 words, at most 7 sentences, at most 28 words in any sentence.
+- End with one sentence telling the reader what to check next.
+- Never state a cause, never predict, never speculate. Purchases are
+  purchases, not customers.
+- Never use these words or phrases: {banned}.
+- No emojis, no headings, no bullet points.
+
+Return exactly one paragraph per signal_id you were given.
+"""
+
+
+def _banned_phrases() -> str:
+    return ", ".join(f'"{phrase}"' for phrase in syn._TECHNICAL_MANAGER_PHRASES)
+
+
+def narrate_key_insights(state: dict, signals: list[dict], fact_briefs: list[dict],
+                         supported_numbers: list[float],
+                         llm_factory: Callable[..., Any] | None = None,
+                         log: Callable[[str], None] | None = None) -> tuple[dict, dict]:
+    """Model-written Key Insights paragraphs, each checked alone, per-slot fallback.
+
+    Returns ``({signal_id: paragraph}, stats)``. Never raises: any failure - the
+    call, the schema, the check - leaves that slot on its grounded draft, so a
+    narrated run can publish a plainer paragraph but never a worse one.
+
+    One call writes every slot, with one repair round for the slots the check
+    rejected, sending back the check's own reasons.
+    """
+    from pydantic import BaseModel, Field
+
+    pairs = business_pairs(signals, fact_briefs)
+    drafts: dict[str, str] = {}
+    briefs: dict[str, dict] = {}
+    for signal, brief in pairs:
+        paragraph = grounded_paragraph(signal, brief)
+        if paragraph:
+            drafts[str(signal.get("id"))] = paragraph
+            briefs[str(signal.get("id"))] = brief
+    stats = {"slots": len(drafts), "authored": 0, "fallback": len(drafts), "rejected": []}
+    if not drafts:
+        return drafts, stats
+
+    class _Paragraph(BaseModel):
+        signal_id: str = Field(description="exact signal_id copied from the input")
+        paragraph: str = Field(description="the rewritten paragraph, starting with a bold sentence")
+
+    class _Paragraphs(BaseModel):
+        paragraphs: list[_Paragraph]
+
+    accepted: dict[str, str] = {}
+    try:
+        from ..tools import file_io
+        from ..utils.json_utils import dumps
+
+        if llm_factory is None:
+            from ..tools.llm import get_llm as llm_factory  # noqa: N813
+        system = (file_io.read_prompt("_global_rules.md") + file_io.business_rules_block(state)
+                  + "\n\n" + _NARRATION_TASK.format(banned=_banned_phrases()))
+        payload = [{"signal_id": sid, "segment": _segment(next(
+                        s for s, _b in pairs if str(s.get("id")) == sid)),
+                    "grounded_draft": draft}
+                   for sid, draft in drafts.items()]
+        messages = [{"role": "system", "content": system},
+                    {"role": "user", "content": "GROUNDED DRAFTS:\n" + dumps(payload)}]
+        llm = llm_factory(state, structured_schema=_Paragraphs)
+        for attempt in (1, 2):
+            result = llm.invoke(messages)
+            items = result.paragraphs if hasattr(result, "paragraphs") else \
+                [_Paragraph(**p) for p in (result or {}).get("paragraphs", [])]
+            reasons: dict[str, list[str]] = {}
+            for item in items:
+                sid = str(item.signal_id)
+                if sid not in drafts or sid in accepted:
+                    continue
+                issues = paragraph_issues(item.paragraph, briefs[sid], supported_numbers)
+                if issues:
+                    reasons[sid] = issues
+                else:
+                    accepted[sid] = item.paragraph.strip()
+            missing = [sid for sid in drafts if sid not in accepted]
+            if not missing or attempt == 2:
+                stats["rejected"] = [{"signal_id": sid, "issues": reasons.get(sid, ["not returned"])}
+                                     for sid in missing]
+                break
+            messages.append({"role": "assistant", "content": dumps(
+                [{"signal_id": i.signal_id, "paragraph": i.paragraph} for i in items])})
+            messages.append({"role": "user", "content": (
+                "These paragraphs were rejected. Rewrite only them, fixing every reason, "
+                "and start again from each grounded draft if in doubt:\n" + dumps(
+                    [{"signal_id": sid, "reasons": reasons.get(sid, ["not returned"]),
+                      "grounded_draft": drafts[sid]} for sid in missing]))})
+    except Exception as exc:  # noqa: BLE001 - narration must never cost the report
+        stats["error"] = f"{type(exc).__name__}: {exc}"
+        if log:
+            log(f"Key Insights narration failed ({stats['error']}); grounded drafts kept.")
+
+    stats["authored"] = len(accepted)
+    stats["fallback"] = len(drafts) - len(accepted)
+    return {sid: accepted.get(sid, draft) for sid, draft in drafts.items()}, stats
+
+
 def write_report(state: dict, signals: list[dict], investigations: list[dict],
-                 fact_briefs: list[dict], novelty: dict) -> str:
-    """The insight report with the synthesizer's five sections, no model call."""
+                 fact_briefs: list[dict], novelty: dict,
+                 paragraphs: dict | None = None, authored: int = 0) -> str:
+    """The insight report with the synthesizer's five sections.
+
+    ``paragraphs`` carries narrated Key Insights by signal id; any slot without
+    one uses its grounded draft. ``authored`` is how many a model wrote, so the
+    caveat states what actually happened.
+    """
     by_signal = {((inv.get("signal") or {}).get("id")): inv for inv in investigations or []}
-    pairs = list(zip(signals, fact_briefs))
-    business = [(s, b) for s, b in pairs if s.get("kind") != "data_quality"]
+    business = business_pairs(signals, fact_briefs)
     data_quality = [s for s in signals if s.get("kind") == "data_quality"]
 
     lines: list[str] = ["# Key Insights"]
@@ -177,12 +327,12 @@ def write_report(state: dict, signals: list[dict], investigations: list[dict],
         reason = (novelty or {}).get("reason") or "no_notable_findings"
         lines.append(_REASON_SENTENCES.get(reason, _REASON_SENTENCES["no_notable_findings"]))
     else:
-        paragraphs = []
+        written = []
         for signal, brief in business:
-            paragraph = syn._deterministic_finding(signal, brief) or _minimal_finding(signal, brief)
+            paragraph = (paragraphs or {}).get(str(signal.get("id"))) or grounded_paragraph(signal, brief)
             if paragraph:
-                paragraphs.append(paragraph)
-        lines.append("\n\n".join(paragraphs))
+                written.append(paragraph)
+        lines.append("\n\n".join(written))
 
     lines.append("")
     lines.append("# Data Quality Watch-outs")
@@ -216,9 +366,15 @@ def write_report(state: dict, signals: list[dict], investigations: list[dict],
         else:
             lines.append(f"- {_segment(signal)}: no complete breakdown came back, so the finding "
                          f"is stated without a measured explanation.")
-    lines.append("- This report was written by fixed rules without an AI model. Findings are ranked by "
-                 "size, related findings are not combined, and no follow-up question was asked beyond "
-                 "the standard breakdowns.")
+    if authored:
+        lines.append(f"- Findings were chosen, ranked and checked by fixed rules. An AI model wrote "
+                     f"the wording of {authored} of the {len(business)} key insight(s), and every "
+                     f"figure in that wording was checked against the data. Related findings are not "
+                     f"combined, and no follow-up question was asked beyond the standard breakdowns.")
+    else:
+        lines.append("- This report was written by fixed rules without an AI model. Findings are ranked by "
+                     "size, related findings are not combined, and no follow-up question was asked beyond "
+                     "the standard breakdowns.")
     for key, label in (("insight_temporal_verdict", "Month-by-month checks"),
                        ("insight_recent_week_verdict", "Recent-week checks"),
                        ("insight_daily_verdict", "Daily checks")):

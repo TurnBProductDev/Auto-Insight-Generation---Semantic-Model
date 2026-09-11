@@ -1,44 +1,54 @@
-"""How much AI one run of the LangGraph report is allowed to buy.
+"""How much AI one report run is allowed to buy.
 
 `docs/cost-and-tiering-implementation-brief.md` separates two questions the
 pipeline had welded together: *what does this report compare against* (a fact
 about the data, already named by `kernel/spine.py`) and *how much thinking does
-this run buy* (a business decision). This module is the second dial.
+this run buy* (a business decision). This module is the second dial, and every
+report reads it.
 
-Two tiers:
+Three tiers, matching the brief's:
 
-* ``investigated`` - the pipeline as it has always run: the LLM plans the DAX,
-  selects the findings, runs a tool-calling investigation and writes the prose.
-  It is the code default, so a config that predates this key is unchanged.
-* ``deterministic`` - no LLM call anywhere in the run. Every stage that used a
-  model already had a code-owned path beside it, and this tier selects it:
+* ``investigated`` - each report as it has always run. In Sales YoY the model
+  plans the DAX, selects the findings, runs a tool-calling investigation and
+  writes the prose; in the standalone reports it chooses which breakdown to
+  drill next. Every older per-report "let the AI write" switch keeps its own
+  meaning here. It is the code default, so a config without this key is
+  unchanged.
+* ``narrated`` - code owns everything a model could get wrong in substance:
+  which findings, which breakdowns, which numbers, what the page holds. A model
+  writes the sentences, and only the sentences, and every sentence goes through
+  the same deterministic check an LLM draft already had to pass, with the
+  grounded code-written draft as the fallback. Prose is on in every report here,
+  whatever the older per-report switches say - that is what choosing this tier
+  means.
+* ``deterministic`` - no model call anywhere. Every prose slot uses its grounded
+  code-written draft.
 
-  - planning: no summary DAX is planned, so `validate_dax` takes the summary
-    branch's existing "no valid summary DAX" route and the fresh summary is
-    built from the pre-fork baseline portfolio;
-  - signal selection: every eligible candidate is ranked by its computed
-    materiality score through the same `_rank_and_cap` the LLM's picks go
-    through - the LLM's only extra power was merging related candidates;
-  - investigation: the deterministic gap scan has already drilled each finding
-    (on the measured 2026-09-08 run the LLM investigator added no probe at all
-    to three of four signals), so the trail is written from those rows;
-  - prose: the grounded writers that already existed as fallbacks -
-    `_deterministic_finding`, the R4/R6 summary drafts and the KPI lead sentence.
+What each tier permits, as the two questions the code asks:
 
-The brief's ``narrated`` tier (code-owned structure, LLM-filled prose slots) is
-not offered yet. An unrecognised value resolves to ``investigated`` because that
-is today's behaviour; the config catalogue's enum rejects it before a run anyway.
+    ==============  ===================  ===============
+    tier            model decides        model writes
+    ==============  ===================  ===============
+    investigated    yes                  per-report flag
+    narrated        no                   yes
+    deterministic   no                   no
+    ==============  ===================  ===============
+
+An unrecognised value resolves to ``investigated`` because that is today's
+behaviour; the config catalogue's enum rejects it before a run anyway.
 
 The value is read from state first and from ``config`` second. `report_id` taught
 that lesson: a key LangGraph does not carry as a declared channel reads one way
-before the graph and another way inside it, silently.
+before the graph and another way inside it, silently. The standalone runners
+hand the config itself, which this reads the same way.
 """
 
 from __future__ import annotations
 
 INVESTIGATED = "investigated"
+NARRATED = "narrated"
 DETERMINISTIC = "deterministic"
-TIERS = (INVESTIGATED, DETERMINISTIC)
+TIERS = (INVESTIGATED, NARRATED, DETERMINISTIC)
 DEFAULT = INVESTIGATED
 
 
@@ -55,11 +65,32 @@ def deterministic(state: dict) -> bool:
     return tier(state) == DETERMINISTIC
 
 
-def authoring_allowed(state: dict) -> bool:
-    """Whether the summary writers may use the LLM for their wording.
+def narrated(state: dict) -> bool:
+    """True when a model writes the wording but decides nothing."""
+    return tier(state) == NARRATED
 
-    The long-standing `summary_llm_authoring_enabled` switch still works on its
-    own; the deterministic tier simply forces it off.
+
+def investigates(state: dict) -> bool:
+    """Whether a model may make a substantive decision: plan queries, choose
+    findings, run an investigation, pick the next breakdown."""
+    return tier(state) == INVESTIGATED
+
+
+def prose_allowed(state: dict, flag: bool = True) -> bool:
+    """Whether a model may write the wording of one prose slot.
+
+    ``flag`` is that slot's older per-report switch, already read by the caller
+    with its catalogued default. It decides only on the investigated tier; the
+    other two tiers answer the question themselves.
     """
-    enabled = bool((state or {}).get("summary_llm_authoring_enabled", True))
-    return enabled and not deterministic(state)
+    current = tier(state)
+    if current == DETERMINISTIC:
+        return False
+    if current == NARRATED:
+        return True
+    return bool(flag)
+
+
+def authoring_allowed(state: dict) -> bool:
+    """Whether the Sales YoY summary writers may use the model for their wording."""
+    return prose_allowed(state, bool((state or {}).get("summary_llm_authoring_enabled", True)))
