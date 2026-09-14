@@ -1,0 +1,692 @@
+{
+ "_what": "Measured cost of the narrated Sales vs Previous Year run after the cost work on branch cost/sales-yoy-narrated-summary (docs/sales-yoy-narrated-cost-prompt.md), recorded 2026-09-11 against the live SB Mart model. Beside baseline_2026-09.json, which measured the investigated pipeline.",
+ "_how": "Isolated local runs: report_ai_tier narrated, blob upload, publishing, history and plan cache off, memory local and empty, so every finding is new. Receipts from src/tools/token_usage.py; writer outcomes from summary_authoring_attempts.json.",
+ "_read_this": "Compare day_usd, not total.usd. Runs made back to back read each other's prompt cache, which a once-a-day job never has, so day_usd reprices each writer's first call at the uncached rate and keeps a writer's own retries as billed. Per-year figures assume one run a day (365 runs).",
+ "_source": "outputs_bench_narrated/<experiment>/ (gitignored run artifacts)",
+ "cells": {
+  "before_this_work": {
+   "runs": [
+    {
+     "experiment": "p0_run1",
+     "ran": "2026-09-11 17:25",
+     "data_as_of": "2026-09-10",
+     "config": {
+      "report_ai_tier": "narrated",
+      "node_model_overrides": {
+       "insight_signal_detector": "gpt-5.4-mini"
+      },
+      "narrated_code_slots": []
+     },
+     "exit": 0,
+     "seconds": 113,
+     "total": {
+      "calls": 5,
+      "prompt_tokens": 57265,
+      "cached_tokens": 19840,
+      "completion_tokens": 3575,
+      "usd": 0.152147
+     },
+     "day_usd": 0.152148,
+     "by_node": {
+      "fresh_summary_generator": {
+       "calls": 2,
+       "prompt_tokens": 42766,
+       "cached_tokens": 19840,
+       "completion_tokens": 1615,
+       "usd": 0.0865,
+       "deployment": "gpt-5.4"
+      },
+      "summary_dashboard_builder": {
+       "calls": 1,
+       "prompt_tokens": 8210,
+       "cached_tokens": 0,
+       "completion_tokens": 917,
+       "usd": 0.03428,
+       "deployment": "gpt-5.4"
+      },
+      "insight_deterministic": {
+       "calls": 1,
+       "prompt_tokens": 2033,
+       "cached_tokens": 0,
+       "completion_tokens": 501,
+       "usd": 0.012597,
+       "deployment": "gpt-5.4"
+      },
+      "api_payloads": {
+       "calls": 1,
+       "prompt_tokens": 4256,
+       "cached_tokens": 0,
+       "completion_tokens": 542,
+       "usd": 0.01877,
+       "deployment": "gpt-5.4"
+      }
+     },
+     "writers": {
+      "fresh_summary_generator": {
+       "attempts": 2,
+       "outcome": "validated",
+       "rejections": [
+        "manager-facing summary uses analyst shorthand: uplift",
+        "figure '1.8%' is not supported by selected summary evidence"
+       ]
+      },
+      "summary_dashboard_builder": {
+       "attempts": 1,
+       "outcome": "validated"
+      },
+      "insight_deterministic": {
+       "attempts": 1,
+       "outcome": null,
+       "slots": 4,
+       "authored": 4,
+       "fallback": 0
+      },
+      "api_payloads": {
+       "attempts": 1,
+       "outcome": "authored",
+       "cards": 4,
+       "summary_fallback": 0
+      }
+     }
+    },
+    {
+     "experiment": "p0_run2",
+     "ran": "2026-09-11 17:27",
+     "data_as_of": "2026-09-10",
+     "config": {
+      "report_ai_tier": "narrated",
+      "node_model_overrides": {
+       "insight_signal_detector": "gpt-5.4-mini"
+      },
+      "narrated_code_slots": []
+     },
+     "exit": 0,
+     "seconds": 104,
+     "total": {
+      "calls": 6,
+      "prompt_tokens": 83078,
+      "cached_tokens": 72576,
+      "completion_tokens": 4312,
+      "usd": 0.10908
+     },
+     "day_usd": 0.175895,
+     "by_node": {
+      "fresh_summary_generator": {
+       "calls": 3,
+       "prompt_tokens": 68579,
+       "cached_tokens": 62592,
+       "completion_tokens": 2360,
+       "usd": 0.066016,
+       "deployment": "gpt-5.4"
+      },
+      "summary_dashboard_builder": {
+       "calls": 1,
+       "prompt_tokens": 8210,
+       "cached_tokens": 8064,
+       "completion_tokens": 942,
+       "usd": 0.016511,
+       "deployment": "gpt-5.4"
+      },
+      "insight_deterministic": {
+       "calls": 1,
+       "prompt_tokens": 2033,
+       "cached_tokens": 1920,
+       "completion_tokens": 501,
+       "usd": 0.008278,
+       "deployment": "gpt-5.4"
+      },
+      "api_payloads": {
+       "calls": 1,
+       "prompt_tokens": 4256,
+       "cached_tokens": 0,
+       "completion_tokens": 509,
+       "usd": 0.018275,
+       "deployment": "gpt-5.4"
+      }
+     },
+     "writers": {
+      "fresh_summary_generator": {
+       "attempts": 3,
+       "outcome": "validated",
+       "rejections": [
+        "figure '1.8%' is not supported by selected summary evidence",
+        "figure '1.8%' is not supported by selected summary evidence"
+       ]
+      },
+      "summary_dashboard_builder": {
+       "attempts": 1,
+       "outcome": "validated"
+      },
+      "insight_deterministic": {
+       "attempts": 1,
+       "outcome": null,
+       "slots": 4,
+       "authored": 4,
+       "fallback": 0
+      },
+      "api_payloads": {
+       "attempts": 1,
+       "outcome": "authored",
+       "cards": 4,
+       "summary_fallback": 0
+      }
+     }
+    }
+   ],
+   "runs_measured": 2,
+   "day_usd_mean": 0.164021,
+   "per_year_one_client_usd": 59.87,
+   "per_year_20_clients_usd": 1197.35
+  },
+  "a_narrated_all_flagship": {
+   "runs": [
+    {
+     "experiment": "p5a_run1",
+     "ran": "2026-09-14 09:37",
+     "data_as_of": "2026-09-12",
+     "config": {
+      "report_ai_tier": "narrated",
+      "node_model_overrides": {
+       "insight_signal_detector": "gpt-5.4-mini"
+      },
+      "narrated_code_slots": []
+     },
+     "exit": 0,
+     "seconds": 102,
+     "total": {
+      "calls": 4,
+      "prompt_tokens": 17792,
+      "cached_tokens": 17152,
+      "completion_tokens": 2526,
+      "usd": 0.043777
+     },
+     "day_usd": 0.08237,
+     "by_node": {
+      "fresh_summary_generator": {
+       "calls": 1,
+       "prompt_tokens": 3423,
+       "cached_tokens": 3200,
+       "completion_tokens": 533,
+       "usd": 0.009352,
+       "deployment": "gpt-5.4"
+      },
+      "summary_dashboard_builder": {
+       "calls": 1,
+       "prompt_tokens": 8083,
+       "cached_tokens": 7936,
+       "completion_tokens": 944,
+       "usd": 0.016511,
+       "deployment": "gpt-5.4"
+      },
+      "insight_deterministic": {
+       "calls": 1,
+       "prompt_tokens": 2033,
+       "cached_tokens": 1920,
+       "completion_tokens": 521,
+       "usd": 0.008578,
+       "deployment": "gpt-5.4"
+      },
+      "api_payloads": {
+       "calls": 1,
+       "prompt_tokens": 4253,
+       "cached_tokens": 4096,
+       "completion_tokens": 528,
+       "usd": 0.009336,
+       "deployment": "gpt-5.4"
+      }
+     },
+     "writers": {
+      "fresh_summary_generator": {
+       "attempts": 1,
+       "outcome": "llm_slots",
+       "slots": {
+        "total": 15,
+        "model": 15,
+        "fallback": 0,
+        "narrative_model": 4,
+        "narrative_total": 4
+       }
+      },
+      "summary_dashboard_builder": {
+       "attempts": 1,
+       "outcome": "validated"
+      },
+      "insight_deterministic": {
+       "attempts": 1,
+       "outcome": null,
+       "slots": 4,
+       "authored": 4,
+       "fallback": 0
+      },
+      "api_payloads": {
+       "attempts": 1,
+       "outcome": "authored",
+       "cards": 4,
+       "summary_fallback": 0
+      }
+     }
+    },
+    {
+     "experiment": "p5a_run2",
+     "ran": "2026-09-14 09:41",
+     "data_as_of": "2026-09-12",
+     "config": {
+      "report_ai_tier": "narrated",
+      "node_model_overrides": {
+       "insight_signal_detector": "gpt-5.4-mini"
+      },
+      "narrated_code_slots": []
+     },
+     "exit": 0,
+     "seconds": 87,
+     "total": {
+      "calls": 4,
+      "prompt_tokens": 17792,
+      "cached_tokens": 17152,
+      "completion_tokens": 2479,
+      "usd": 0.043073
+     },
+     "day_usd": 0.081665,
+     "by_node": {
+      "fresh_summary_generator": {
+       "calls": 1,
+       "prompt_tokens": 3423,
+       "cached_tokens": 3200,
+       "completion_tokens": 523,
+       "usd": 0.009203,
+       "deployment": "gpt-5.4"
+      },
+      "summary_dashboard_builder": {
+       "calls": 1,
+       "prompt_tokens": 8083,
+       "cached_tokens": 7936,
+       "completion_tokens": 899,
+       "usd": 0.015836,
+       "deployment": "gpt-5.4"
+      },
+      "insight_deterministic": {
+       "calls": 1,
+       "prompt_tokens": 2033,
+       "cached_tokens": 1920,
+       "completion_tokens": 521,
+       "usd": 0.008578,
+       "deployment": "gpt-5.4"
+      },
+      "api_payloads": {
+       "calls": 1,
+       "prompt_tokens": 4253,
+       "cached_tokens": 4096,
+       "completion_tokens": 536,
+       "usd": 0.009456,
+       "deployment": "gpt-5.4"
+      }
+     },
+     "writers": {
+      "fresh_summary_generator": {
+       "attempts": 1,
+       "outcome": "llm_slots",
+       "slots": {
+        "total": 15,
+        "model": 15,
+        "fallback": 0,
+        "narrative_model": 4,
+        "narrative_total": 4
+       }
+      },
+      "summary_dashboard_builder": {
+       "attempts": 1,
+       "outcome": "validated"
+      },
+      "insight_deterministic": {
+       "attempts": 1,
+       "outcome": null,
+       "slots": 4,
+       "authored": 4,
+       "fallback": 0
+      },
+      "api_payloads": {
+       "attempts": 1,
+       "outcome": "authored",
+       "cards": 4,
+       "summary_fallback": 0
+      }
+     }
+    }
+   ],
+   "runs_measured": 2,
+   "day_usd_mean": 0.082017,
+   "per_year_one_client_usd": 29.94,
+   "per_year_20_clients_usd": 598.72
+  },
+  "b_summary_and_key_insights_on_mini": {
+   "runs": [
+    {
+     "experiment": "p5b_run1",
+     "ran": "2026-09-14 09:39",
+     "data_as_of": "2026-09-12",
+     "config": {
+      "report_ai_tier": "narrated",
+      "node_model_overrides": {
+       "insight_signal_detector": "gpt-5.4-mini",
+       "fresh_summary_generator": "gpt-5.4-mini",
+       "insight_deterministic": "gpt-5.4-mini"
+      },
+      "narrated_code_slots": []
+     },
+     "exit": 0,
+     "seconds": 85,
+     "total": {
+      "calls": 4,
+      "prompt_tokens": 17792,
+      "cached_tokens": 12032,
+      "completion_tokens": 2541,
+      "usd": 0.035202
+     },
+     "day_usd": 0.062274,
+     "by_node": {
+      "fresh_summary_generator": {
+       "calls": 1,
+       "prompt_tokens": 3423,
+       "cached_tokens": 0,
+       "completion_tokens": 505,
+       "usd": 0.00484,
+       "deployment": "gpt-5.4-mini"
+      },
+      "summary_dashboard_builder": {
+       "calls": 1,
+       "prompt_tokens": 8083,
+       "cached_tokens": 7936,
+       "completion_tokens": 935,
+       "usd": 0.016376,
+       "deployment": "gpt-5.4"
+      },
+      "insight_deterministic": {
+       "calls": 1,
+       "prompt_tokens": 2033,
+       "cached_tokens": 0,
+       "completion_tokens": 521,
+       "usd": 0.003869,
+       "deployment": "gpt-5.4-mini"
+      },
+      "api_payloads": {
+       "calls": 1,
+       "prompt_tokens": 4253,
+       "cached_tokens": 4096,
+       "completion_tokens": 580,
+       "usd": 0.010117,
+       "deployment": "gpt-5.4"
+      }
+     },
+     "writers": {
+      "fresh_summary_generator": {
+       "attempts": 1,
+       "outcome": "llm_slots",
+       "slots": {
+        "total": 15,
+        "model": 15,
+        "fallback": 0,
+        "narrative_model": 4,
+        "narrative_total": 4
+       }
+      },
+      "summary_dashboard_builder": {
+       "attempts": 1,
+       "outcome": "validated"
+      },
+      "insight_deterministic": {
+       "attempts": 1,
+       "outcome": null,
+       "slots": 4,
+       "authored": 4,
+       "fallback": 0
+      },
+      "api_payloads": {
+       "attempts": 1,
+       "outcome": "authored",
+       "cards": 4,
+       "summary_fallback": 0
+      }
+     }
+    },
+    {
+     "experiment": "p5b_run2",
+     "ran": "2026-09-14 09:43",
+     "data_as_of": "2026-09-12",
+     "config": {
+      "report_ai_tier": "narrated",
+      "node_model_overrides": {
+       "insight_signal_detector": "gpt-5.4-mini",
+       "fresh_summary_generator": "gpt-5.4-mini",
+       "insight_deterministic": "gpt-5.4-mini"
+      },
+      "narrated_code_slots": []
+     },
+     "exit": 0,
+     "seconds": 74,
+     "total": {
+      "calls": 4,
+      "prompt_tokens": 17792,
+      "cached_tokens": 16640,
+      "completion_tokens": 2508,
+      "usd": 0.03165
+     },
+     "day_usd": 0.061831,
+     "by_node": {
+      "fresh_summary_generator": {
+       "calls": 1,
+       "prompt_tokens": 3423,
+       "cached_tokens": 2816,
+       "completion_tokens": 500,
+       "usd": 0.002916,
+       "deployment": "gpt-5.4-mini"
+      },
+      "summary_dashboard_builder": {
+       "calls": 1,
+       "prompt_tokens": 8083,
+       "cached_tokens": 7936,
+       "completion_tokens": 955,
+       "usd": 0.016677,
+       "deployment": "gpt-5.4"
+      },
+      "insight_deterministic": {
+       "calls": 1,
+       "prompt_tokens": 2033,
+       "cached_tokens": 1792,
+       "completion_tokens": 521,
+       "usd": 0.00266,
+       "deployment": "gpt-5.4-mini"
+      },
+      "api_payloads": {
+       "calls": 1,
+       "prompt_tokens": 4253,
+       "cached_tokens": 4096,
+       "completion_tokens": 532,
+       "usd": 0.009397,
+       "deployment": "gpt-5.4"
+      }
+     },
+     "writers": {
+      "fresh_summary_generator": {
+       "attempts": 1,
+       "outcome": "llm_slots",
+       "slots": {
+        "total": 15,
+        "model": 15,
+        "fallback": 0,
+        "narrative_model": 4,
+        "narrative_total": 4
+       }
+      },
+      "summary_dashboard_builder": {
+       "attempts": 1,
+       "outcome": "validated"
+      },
+      "insight_deterministic": {
+       "attempts": 1,
+       "outcome": null,
+       "slots": 4,
+       "authored": 4,
+       "fallback": 0
+      },
+      "api_payloads": {
+       "attempts": 1,
+       "outcome": "authored",
+       "cards": 4,
+       "summary_fallback": 0
+      }
+     }
+    }
+   ],
+   "runs_measured": 2,
+   "day_usd_mean": 0.062052,
+   "per_year_one_client_usd": 22.65,
+   "per_year_20_clients_usd": 452.98
+  },
+  "c_summary_in_code_wording": {
+   "runs": [
+    {
+     "experiment": "p5c_run1",
+     "ran": "2026-09-14 09:40",
+     "data_as_of": "2026-09-12",
+     "config": {
+      "report_ai_tier": "narrated",
+      "node_model_overrides": {
+       "insight_signal_detector": "gpt-5.4-mini"
+      },
+      "narrated_code_slots": [
+       "summary"
+      ]
+     },
+     "exit": 0,
+     "seconds": 77,
+     "total": {
+      "calls": 3,
+      "prompt_tokens": 14369,
+      "cached_tokens": 13952,
+      "completion_tokens": 1981,
+      "usd": 0.034246
+     },
+     "day_usd": 0.065638,
+     "by_node": {
+      "summary_dashboard_builder": {
+       "calls": 1,
+       "prompt_tokens": 8083,
+       "cached_tokens": 7936,
+       "completion_tokens": 930,
+       "usd": 0.016302,
+       "deployment": "gpt-5.4"
+      },
+      "insight_deterministic": {
+       "calls": 1,
+       "prompt_tokens": 2033,
+       "cached_tokens": 1920,
+       "completion_tokens": 521,
+       "usd": 0.008578,
+       "deployment": "gpt-5.4"
+      },
+      "api_payloads": {
+       "calls": 1,
+       "prompt_tokens": 4253,
+       "cached_tokens": 4096,
+       "completion_tokens": 530,
+       "usd": 0.009366,
+       "deployment": "gpt-5.4"
+      }
+     },
+     "writers": {
+      "summary_dashboard_builder": {
+       "attempts": 1,
+       "outcome": "validated"
+      },
+      "insight_deterministic": {
+       "attempts": 1,
+       "outcome": null,
+       "slots": 4,
+       "authored": 4,
+       "fallback": 0
+      },
+      "api_payloads": {
+       "attempts": 1,
+       "outcome": "authored",
+       "cards": 4,
+       "summary_fallback": 0
+      }
+     }
+    },
+    {
+     "experiment": "p5c_run2",
+     "ran": "2026-09-14 09:44",
+     "data_as_of": "2026-09-12",
+     "config": {
+      "report_ai_tier": "narrated",
+      "node_model_overrides": {
+       "insight_signal_detector": "gpt-5.4-mini"
+      },
+      "narrated_code_slots": [
+       "summary"
+      ]
+     },
+     "exit": 0,
+     "seconds": 69,
+     "total": {
+      "calls": 3,
+      "prompt_tokens": 14369,
+      "cached_tokens": 13952,
+      "completion_tokens": 1995,
+      "usd": 0.034454
+     },
+     "day_usd": 0.065848,
+     "by_node": {
+      "summary_dashboard_builder": {
+       "calls": 1,
+       "prompt_tokens": 8083,
+       "cached_tokens": 7936,
+       "completion_tokens": 905,
+       "usd": 0.015926,
+       "deployment": "gpt-5.4"
+      },
+      "insight_deterministic": {
+       "calls": 1,
+       "prompt_tokens": 2033,
+       "cached_tokens": 1920,
+       "completion_tokens": 522,
+       "usd": 0.008592,
+       "deployment": "gpt-5.4"
+      },
+      "api_payloads": {
+       "calls": 1,
+       "prompt_tokens": 4253,
+       "cached_tokens": 4096,
+       "completion_tokens": 568,
+       "usd": 0.009936,
+       "deployment": "gpt-5.4"
+      }
+     },
+     "writers": {
+      "summary_dashboard_builder": {
+       "attempts": 1,
+       "outcome": "validated"
+      },
+      "insight_deterministic": {
+       "attempts": 1,
+       "outcome": null,
+       "slots": 4,
+       "authored": 4,
+       "fallback": 0
+      },
+      "api_payloads": {
+       "attempts": 1,
+       "outcome": "authored",
+       "cards": 4,
+       "summary_fallback": 0
+      }
+     }
+    }
+   ],
+   "runs_measured": 2,
+   "day_usd_mean": 0.065743,
+   "per_year_one_client_usd": 24.0,
+   "per_year_20_clients_usd": 479.92
+  }
+ }
+}
