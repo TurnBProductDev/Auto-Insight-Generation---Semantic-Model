@@ -1,0 +1,24 @@
+{
+  "meta_comparable_totals": {
+    "status": "success",
+    "purpose": "Metadata-selected comparable totals for the primary value and compatible volume families.",
+    "query": "EVALUATE\nROW(\n    \"Sales Actual\", [Sales Actual],\n    \"Last Updated\", [Last Updated],\n    \"Sales vs Bench % Color\", [Sales vs Bench % Color]\n)",
+    "result": {
+      "results": [
+        {
+          "tables": [
+            {
+              "rows": [
+                {
+                  "[Sales Actual]": 216865.4823,
+                  "[Last Updated]": "Last updated 03 Sep 2026",
+                  "[Sales vs Bench % Color]": "#2A3547"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

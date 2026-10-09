@@ -100,8 +100,18 @@ def summary_payload(model: dict, *, title: str = "Stock Age Analysis",
             "label": f"Change since {comparison.get('prior_as_at')}",
             "value": (f"{'+' if points >= 0 else '-'}{abs(points):.1f} points "
                       f"of aged share"),
+            # "positive", NOT "success". The payload contract's Tone literal is
+            # positive|critical|warning|info|teal (src/tools/api_payloads.py),
+            # so "success" fails schema validation at publish time and the whole
+            # run aborts having already done all its work — nothing reaches the
+            # blob and the report silently keeps yesterday's summary.
+            #
+            # This only fires when points < -0.2, i.e. when the aged share has
+            # IMPROVED, so the job failed on exactly the days there was good
+            # news and passed on the days there was not: failed 29 Aug, 31 Aug
+            # and 2 Sep, succeeded in between.
             "tone": "critical" if points > 0.2 else
-                    "success" if points < -0.2 else "info",
+                    "positive" if points < -0.2 else "info",
         })
 
     # What needs attention first - the ordered risk bands (BR-28: oldest
@@ -228,6 +238,13 @@ def history_entry(model: dict, payload: dict, report_id: str,
     header = model.get("header") or {}
     return {
         "reportId": report_id,
+        # `date` is the CONTRACT name for this version key: the web app
+        # echoes it back as `&date=` and the AI Bot drops any row without
+        # it. `asAt` is this report's own name for the same date and is
+        # what merge_index below is keyed on, so both are published —
+        # publishing only asAt is what made this report report "no
+        # history" from a fully populated index.
+        "date": model.get("as_at"),
         "asAt": model.get("as_at"),
         # The app reads `dataAsOf` off the index row to say how current a
         # summary is; `asAt` is this report's own key for the same date and

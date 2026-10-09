@@ -469,14 +469,23 @@ def test_inventory_cards() -> None:
     # performance increased by 17.8K, accounting for 12.7% of the total increase
     # in performance" - nothing increased, and the figure is a count of
     # Loc-SKUs, not a value.
+    # The sentence is the signal's own, put into the card's plain words: the
+    # code-owned lead used to skip that pass, so the feed opened "17,717
+    # Loc-SKUs are in STOCK OUT - PLACE ORDER ... in the position".
     for card, signal in zip(cards, signals):
+        own = api_payloads._plain_business_text(signal["description"])
         check(f"{signal['analysis_type']}: leads with its own grounded sentence",
-              card["description"].startswith(signal["description"][:40]),
+              card["description"].startswith(own[:40]),
               card["description"][:90])
     joined = " ".join(c["description"] for c in cards).lower()
     check("no card invents an increase in performance",
           "increase in performance" not in joined
           and "decline in performance" not in joined, joined[:120])
+    shown = joined + " " + " ".join(str(c.get("comparisonLabel")) for c in cards).lower()
+    for jargon in ("loc-sku", "stock out - place order", "in the position",
+                   "stock position", "agreed cover", "the rules call"):
+        check(f"no '{jargon}' reaches the card's words", jargon not in shown,
+              shown[:160])
 
     # And the year-on-year path is untouched: a signal with no declared
     # comparison still gets the synthesised change sentence.

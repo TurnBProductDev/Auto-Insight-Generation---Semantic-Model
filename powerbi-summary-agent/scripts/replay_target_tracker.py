@@ -332,11 +332,50 @@ def main() -> int:
     generated = datetime(2026, 8, 21, 5, 30, tzinfo=timezone.utc)
     payload = pub.summary_payload(m, title="SB Mart Target Tracker", currency="QAR",
                                   generated_at=generated)
+    # `dataAsOf` joined the contract for the app's Home scorecard: Target
+    # Tracker runs on its own model and lag, so the target card states its own
+    # day. Still an exact set - anything else is still a defect.
     check("payload uses the exact app summary contract",
-          set(payload) == {"title", "generatedAt", "headline", "metrics", "sections"},
+          set(payload) == {"title", "generatedAt", "headline", "metrics", "sections",
+                           "dataAsOf"},
           str(sorted(payload)))
+    check("payload is dated with its anchor", payload["dataAsOf"] == m["anchor"])
     check("payload passes the app's strict schema", bool(ReportSummaryPayload(**payload)))
     check("payload carries all four target periods", len(payload["metrics"]) == 4)
+
+    print("\nthe Home scorecard's target card")
+    day = payload["metrics"][0]
+    series = day.get("series") or []
+    check("only the day row carries the scorecard's reading",
+          day["label"] == "Today"
+          and not any("series" in metric or "takeaway" in metric
+                      for metric in payload["metrics"][1:]))
+    check("the day carries at most seven days, oldest first, none past the anchor",
+          2 <= len(series) <= 7 and [p["date"] for p in series] == sorted(p["date"] for p in series)
+          and series[-1]["date"] <= m["anchor"], str(series))
+    check("each day's benchmark is that day's own target",
+          all(p["benchmark"] == next(d["target"] for d in m["days"] if d["date"] == p["date"])
+              for p in series))
+    check("the last day is the day's own sales",
+          abs(series[-1]["value"] - m["periods"]["day"]["actual"]) < 1.0,
+          f"{series[-1]['value']} vs {m['periods']['day']['actual']}")
+    gap = m["periods"]["day"]["attainment"] - 100.0
+    check("the change is the day's distance from 100% of target, in points",
+          day["delta"] == f"{abs(gap):.1f} pts"
+          and day["deltaDirection"] == ("down" if gap < 0 else "up"), str(day.get("delta")))
+    check("the two figures are the day's actual sales and its target",
+          [s["label"] for s in day["stats"]] == ["Actual", "Target"]
+          and all(s["value"].startswith("QAR ") for s in day["stats"]), str(day["stats"]))
+    from src.domains.sales import scorecard_lines
+    fact = scorecard_lines.target_tracker_facts(m)[0]
+    check("the line is the code-written fact when nothing was authored",
+          day["takeaway"] == fact["statement"] and day["takeawayTone"] == fact["tone"],
+          str((day.get("takeaway"), fact["statement"])))
+    authored = {**m, "scorecard_lines": {"target": {"text": "Back on target after a weak run",
+                                                    "tone": "positive", "mode": "llm"}}}
+    check("an authored line is published as written",
+          pub.summary_payload(authored)["metrics"][0]["takeaway"]
+          == "Back on target after a weak run")
     check("payload uses the configured client title and currency",
           payload["title"] == "SB Mart Target Tracker"
           and all("QAR" in point for point in payload["sections"][0]["points"]))

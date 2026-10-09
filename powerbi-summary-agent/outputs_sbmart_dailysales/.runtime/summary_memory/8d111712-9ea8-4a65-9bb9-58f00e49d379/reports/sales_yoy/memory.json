@@ -1,0 +1,89 @@
+{
+  "schema_version": 5,
+  "watermark": "2026-09-03",
+  "period_anchor": "2026-09-03",
+  "records": {
+    "summary:v1:0c361f7fd00eb1af0c35fb959916c2513c17d02293333c933a285141948d4758": {
+      "first_reported": "2026-09-10T12:00:25+05:30",
+      "times_reported": 1,
+      "last_reported": "2026-09-10T12:00:25+05:30",
+      "angle": "period_movement",
+      "metric": "revenue",
+      "dimension": "Date",
+      "segment": "",
+      "period_anchor": "2026-09-03",
+      "direction": "increase",
+      "observation_value": 2720538.6354,
+      "score": 101.43465505750166,
+      "heading": "Sales reached 216.9K on 2026-09-03, with the recent period showing an earlier peak at 505.8K and softer trading through the following days."
+    }
+  },
+  "journal": {
+    "2026-09-10": [
+      {
+        "run_id": "20260910T120022941323+0530",
+        "summary_type": "new_data",
+        "heading": "Sales reached 216.9K on 2026-09-03, with the recent period showing an earlier peak at 505.8K and softer trading through the following days.",
+        "covered_summary_keys": [
+          "summary:v1:0c361f7fd00eb1af0c35fb959916c2513c17d02293333c933a285141948d4758"
+        ],
+        "period_anchor": "2026-09-03"
+      }
+    ]
+  },
+  "focus_records": {
+    "focus:v1:e7a38974523e9bc069b8417c1589ee2a5286baa70bde7e87e4c5ce6183872ce2": {
+      "first_reported": "2026-09-10T12:00:25+05:30",
+      "times_reported": 1,
+      "dimension_role": "period",
+      "lens": "trend",
+      "segment": "",
+      "metric_family": "revenue",
+      "last_reported": "2026-09-10T12:00:25+05:30",
+      "last_direction": "increase",
+      "last_observation": 2720538.6354,
+      "last_materiality": 2720538.6354,
+      "deep_dive_signature": "51e3163ff4cabbd2",
+      "heading": "Sales reached 216.9K on 2026-09-03, with the recent period showing an earlier peak at 505.8K and softer trading through the following days."
+    }
+  },
+  "daily_plan": {
+    "2026-09-10": {
+      "focus_key": "focus:v1:e7a38974523e9bc069b8417c1589ee2a5286baa70bde7e87e4c5ce6183872ce2",
+      "candidate_id": "summary_0c361f7fd00e",
+      "dimension_role": "period",
+      "segment": "",
+      "metric_family": "revenue",
+      "lens": "trend",
+      "reported_at": "2026-09-10T12:00:25+05:30"
+    }
+  },
+  "recent_focus": [
+    {
+      "focus_key": "focus:v1:e7a38974523e9bc069b8417c1589ee2a5286baa70bde7e87e4c5ce6183872ce2",
+      "reported_at": "2026-09-10T12:00:25+05:30",
+      "dimension_role": "period",
+      "segment": "",
+      "fact_keys": [
+        "F1",
+        "F2",
+        "F3",
+        "F4",
+        "F5",
+        "F6",
+        "F7",
+        "F8",
+        "F9",
+        "F10"
+      ],
+      "top_pos_contributor": null,
+      "top_neg_contributor": null,
+      "leading_location": null,
+      "driver_class": null
+    }
+  ],
+  "area_records": {},
+  "weekly_coverage": {},
+  "scope": {},
+  "state_records": {}
+}

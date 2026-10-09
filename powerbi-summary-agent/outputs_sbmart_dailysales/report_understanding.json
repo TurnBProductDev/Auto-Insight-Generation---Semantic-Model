@@ -1,0 +1,50 @@
+{
+  "domain": "Retail / Store Performance Benchmarking",
+  "fact_tables": [
+    "storebenchmark",
+    "departmentbenchmark",
+    "sectionbenchmark",
+    "categorybenchmark"
+  ],
+  "dimension_tables": [
+    "Dim_Date",
+    "Dim_Store",
+    "Dim_Department",
+    "Dim_Section",
+    "Dim_Category"
+  ],
+  "important_measures": [
+    "Sales Actual",
+    "Sales vs Bench %",
+    "Bills Actual",
+    "Bills vs Bench %",
+    "Margin Actual %",
+    "Margin vs Bench pp",
+    "Basket Value Actual",
+    "Basket Value vs Bench %",
+    "Selected Actual",
+    "Selected vs Bench",
+    "Selected As Of Date",
+    "Last Updated"
+  ],
+  "important_dimensions": [
+    "Dim_Store[store_no]",
+    "Dim_Department[DEPARTMENT]",
+    "Dim_Section[SECTION]",
+    "Dim_Category[CATEGORY_NAME]",
+    "Dim_Date[Year]",
+    "Dim_Date[MonthName]",
+    "Dim_Date[DayOfWeek]"
+  ],
+  "date_fields": [
+    "Dim_Date[Date]",
+    "storebenchmark[tran_date]",
+    "departmentbenchmark[tran_date]",
+    "sectionbenchmark[tran_date]",
+    "categorybenchmark[tran_date]",
+    "_Sparkline14[tran_date]",
+    "_AsOfDate[Date]"
+  ],
+  "time_summary_possible": true,
+  "notes": "The model is centered on benchmark comparisons across store, department, section, and category levels; OOS measures are explicitly marked as illustrative dummy data."
+}

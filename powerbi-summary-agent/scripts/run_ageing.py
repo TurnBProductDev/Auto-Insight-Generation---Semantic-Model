@@ -58,6 +58,17 @@ def main(argv=None) -> int:
     out = ROOT / os.environ.get("AGENT_OUTPUT_FOLDER", cfg.get("output_folder", "outputs_ageing"))
     out.mkdir(parents=True, exist_ok=True)
 
+    # The kept positions, pulled down before anything reads the archive. A
+    # scheduled job gets a fresh filesystem every run, so without this the
+    # archive is write-only: `compare_window` finds no prior and the page says
+    # today is the first position ever kept, every morning. The memory file
+    # beside it has had this since the Ageing work; the archive never did.
+    from src.tools import azure_blob
+
+    _report_id = str(cfg.get("report_id") or "inventory_ageing")
+    _dataset_id = str(cfg.get("dataset_id") or "")
+    azure_blob.hydrate_scan_archive(cfg, out, _report_id, _dataset_id)
+
     metadata = None
     token = None
     if args.from_scan:
@@ -81,6 +92,7 @@ def main(argv=None) -> int:
         # position. Keyed on the RUN date, never the model's as-at stamp (see
         # archive.py's own docstring for why that distinction is load-bearing).
         archive.write(scan_result, out, cfg, log=print)
+        azure_blob.publish_scan_archive(cfg, out, _report_id, _dataset_id)
         preview = ageing_flow.build(scan_result, cfg)
         mapping_cfg = cfg.get("ageing_mapping") or {}
         snapshot = (scan_result.get("snapshot") or [{}])[0]

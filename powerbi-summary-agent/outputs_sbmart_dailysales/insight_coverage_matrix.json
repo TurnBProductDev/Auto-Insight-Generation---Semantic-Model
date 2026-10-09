@@ -1,0 +1,22 @@
+{
+  "(grand total)": {
+    "queries": [
+      "meta_comparable_totals"
+    ],
+    "metrics": [
+      "_Measures::revenue:change:Sales vs Bench % Color",
+      "_Measures::revenue:current:Sales Actual",
+      "_Measures::revenue:prior:Last Updated"
+    ],
+    "completeness_seen": [
+      "complete"
+    ],
+    "population_seen": [
+      "unfiltered"
+    ],
+    "coverage_kinds": [
+      "grand_total"
+    ],
+    "trusted_coverage": false
+  }
+}

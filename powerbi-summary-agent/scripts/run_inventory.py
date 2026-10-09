@@ -18,6 +18,7 @@ from __future__ import annotations
 import argparse
 import datetime as _dt
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -70,16 +71,35 @@ def main(argv=None) -> int:
     if not config_path.is_absolute():
         config_path = PROJECT_ROOT / config_path
     cfg = json.loads(config_path.read_text(encoding="utf-8"))
-    out_dir = PROJECT_ROOT / cfg.get("output_folder", "outputs_inventory")
+    # AGENT_OUTPUT_FOLDER wins over the config, as it does in every other
+    # standalone runner: in a container only /app/outputs is writable, and
+    # this runner reading the config alone is why it failed there with
+    # PermissionError on /app/outputs_inventory.
+    out_dir = PROJECT_ROOT / (os.environ.get("AGENT_OUTPUT_FOLDER")
+                              or cfg.get("output_folder", "outputs_inventory"))
     out_dir.mkdir(parents=True, exist_ok=True)
     run_date = _dt.date.fromisoformat(args.run_date) if args.run_date else _dt.date.today()
+
+    # The kept positions, pulled down before anything reads the archive. A
+    # scheduled Container Apps Job gets a fresh filesystem every run, so
+    # without this the archive is write-only: `compare_window` finds no prior
+    # and the page states that today is the first position ever kept - every
+    # morning, however many runs have already happened. The memory file beside
+    # it has had this since the Ageing work; the archive never did.
+    from src.tools import azure_blob
+
+    _report_id = str(cfg.get("report_id") or "inventory_stock_health")
+    _dataset_id = str(cfg.get("dataset_id") or "")
+    azure_blob.hydrate_scan_archive(cfg, out_dir, _report_id, _dataset_id)
 
     if args.from_scan:
         scanned = json.loads(Path(args.from_scan).read_text(encoding="utf-8"))
         print(f"Rebuilt from {args.from_scan}")
     else:
-        import os
-
+        # `os` is imported at module level. A second `import os` here made it a
+        # local name for the whole function, so the `os.environ` read that
+        # resolves the output folder above raised UnboundLocalError on every
+        # single run, whichever branch was taken.
         os.environ.setdefault("POWERBI_TENANT_ID", str(cfg.get("tenant_id") or ""))
         from src.tools.powerbi_executor import get_powerbi_token
 
@@ -93,6 +113,7 @@ def main(argv=None) -> int:
             json.dumps(scanned, indent=2, default=str), encoding="utf-8")
         print(f"Scan written to {out_dir / 'stock_health_scan.json'}")
         archive.write(scanned, out_dir, cfg, run_date=run_date, log=print)
+        azure_blob.publish_scan_archive(cfg, out_dir, _report_id, _dataset_id)
 
     if args.scan_only:
         return 0

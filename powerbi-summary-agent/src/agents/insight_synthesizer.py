@@ -1288,7 +1288,7 @@ def run(state: dict) -> dict:
             log.error("Insight report (report_ai_tier=%s) has %d manager-facing clarity issue(s): %s"
                       % (ai_tier.tier(state), len(issues), "; ".join(issues[:3])))
         elif ai_tier.narrated(state):
-            log.info(f"Insight report written (report_ai_tier=narrated): structure and figures by "
+            log.info(f"Insight report written (report_ai_tier={ai_tier.tier(state)}): structure and figures by "
                      f"fixed rules, {authored} paragraph(s) worded by the model; clarity check clean.")
         else:
             log.info("Insight report written by fixed rules (report_ai_tier=deterministic) "

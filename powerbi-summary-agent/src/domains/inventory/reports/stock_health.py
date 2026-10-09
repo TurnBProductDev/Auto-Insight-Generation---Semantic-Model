@@ -167,6 +167,9 @@ def build(scan: dict, currency: str = "SAR") -> dict:
     exception_value = sum(row["stock_value"] for row in exceptions)
     total_rows = sum(row["loc_skus"] for row in queue)
 
+    trend_company, trend_locations = _trend(scan.get("trend") or [])
+    wind_down = _wind_down(trend_company, trend_locations)
+
     missing = absent_states(queue)
     missing_urgent = [s for s in missing
                       if s.upper() in {d.upper() for d in DOUBLE_WARNING}]
@@ -222,6 +225,12 @@ def build(scan: dict, currency: str = "SAR") -> dict:
         "segments": _segments(scan.get("segments") or []),
         "non_moving_bands": _bands(scan.get("non_moving_bands") or []),
         "damage": _damage(scan.get("damage") or []),
+        # The historical series the scan already pays for. It was fetched and
+        # then dropped on the floor here, so the page's trend slot rendered
+        # empty on every run.
+        "trend": trend_company,
+        "location_trend": trend_locations,
+        "wind_down": wind_down,
         "checks": checks,
         "observations": observations,
         "caveats": _caveats(opp_scoped, opp_all, missing_urgent),
@@ -265,6 +274,76 @@ def _rank(rows: Sequence[dict], label: str, top: int = 50) -> list[dict]:
         })
     ranked.sort(key=lambda item: item["excess_value"], reverse=True)
     return ranked[:top]
+
+
+#: A location whose latest reading has fallen this far below its own first
+#: reading is winding down rather than trading. Paired with a floor on what it
+#: used to hold, because a percentage on a rounding error is not a finding -
+#: the same reason the coverage ranking weights magnitude by business share.
+WIND_DOWN_DROP_PCT = 80.0
+WIND_DOWN_MIN_SHARE_PCT = 0.5
+
+
+def _trend(rows: Sequence[dict]) -> tuple[list[dict], list[dict]]:
+    """The model's own historical Stock Value series, by date and by location.
+
+    Tolerates a scan taken before the location column was added: without it the
+    company series is still exactly right and the per-location series is simply
+    empty, so an archived scan still rebuilds without a special case.
+    """
+    totals: dict[str, float] = {}
+    by_location: dict[str, dict[str, float]] = {}
+    for row in rows or []:
+        date = str(_cell(row, "dates") or "").split("T")[0]
+        if not date:
+            continue
+        value = _num(_cell(row, "stock")) or 0.0
+        totals[date] = totals.get(date, 0.0) + value
+        name = _cell(row, "loc_code")
+        if name is None:
+            continue
+        by_location.setdefault(str(name), {})[date] = value
+
+    dates = sorted(totals)
+    company = [{"date": date, "value": totals[date]} for date in dates]
+
+    locations = []
+    for name, series in by_location.items():
+        points = [{"date": date, "value": series.get(date, 0.0)} for date in dates]
+        first = points[0]["value"] if points else 0.0
+        last = points[-1]["value"] if points else 0.0
+        locations.append({
+            "name": name,
+            "points": points,
+            "first": first,
+            "last": last,
+            "change": last - first,
+            "change_pct": ((last - first) / first * 100.0) if first else None,
+        })
+    locations.sort(key=lambda item: item["last"], reverse=True)
+    return company, locations
+
+
+def _wind_down(company: Sequence[dict], locations: Sequence[dict]) -> list[dict]:
+    """Locations that have emptied out since the series began.
+
+    This is the one finding the position queries structurally cannot produce: a
+    location holding nothing returns no row, so it vanishes from every breakdown
+    on the page instead of being reported as wound down.
+    """
+    if not company or not locations:
+        return []
+    floor = (company[0]["value"] or 0.0) * WIND_DOWN_MIN_SHARE_PCT / 100.0
+    found = []
+    for location in locations:
+        first = location["first"]
+        if first <= 0 or first < floor:
+            continue
+        drop = (first - location["last"]) / first * 100.0
+        if drop >= WIND_DOWN_DROP_PCT:
+            found.append({**location, "drop_pct": drop})
+    found.sort(key=lambda item: item["first"] - item["last"], reverse=True)
+    return found
 
 
 def _segments(rows: Sequence[dict]) -> list[dict]:
@@ -671,8 +750,15 @@ def scan(execute, cfg: dict | None = None, *, log=None) -> dict:
     # The one genuinely historical series in the model. Stock Value only - there
     # is no history of the score itself, which is why the score's own trend is
     # drawn shape-only and says so.
+    #
+    # Grouped by LOCATION as well as date, which costs nothing on a query that
+    # was already being run and is the only place a wound-down location is
+    # visible at all: a store that has emptied returns no row from the position
+    # queries, so it disappears from the page entirely rather than being
+    # reported as gone. The company series is summed back from these rows.
     out["trend"] = run("stock value trend", """EVALUATE SUMMARIZECOLUMNS(
       'SSR TREND'[dates],
+      'SSR TREND'[loc_code],
       "stock", SUM('SSR TREND'[SKU_STOCK_VALUE]))
     ORDER BY 'SSR TREND'[dates]""")
 

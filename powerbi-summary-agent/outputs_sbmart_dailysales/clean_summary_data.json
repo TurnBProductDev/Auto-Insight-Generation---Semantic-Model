@@ -1,0 +1,780 @@
+{
+  "query_count": 8,
+  "successful": 8,
+  "failed": 0,
+  "queries": [
+    {
+      "query_name": "grand_totals_kpis",
+      "purpose": "Summarize the overall current performance and benchmark position across the model's main KPIs.",
+      "status": "success",
+      "rows": [
+        {
+          "Sales Actual": 216865.4823,
+          "Sales P20": 189938.1285,
+          "Sales P50": 216350.7003,
+          "Sales P80": 252982.4292,
+          "Bills Actual": 14551,
+          "Bills P20": 13596,
+          "Bills P50": 14875,
+          "Bills P80": 16706,
+          "Margin Actual %": 20.843174398690046,
+          "Margin P20 %": 20.31596778106614,
+          "Margin P50 %": 20.884608072401047,
+          "Margin P80 %": 21.470977081640733,
+          "Basket Value Actual": 14.903819826816026,
+          "Basket Value P20": 13.970147727272726,
+          "Basket Value P50": 14.544584894117646,
+          "Basket Value P80": 15.143207781635342,
+          "Sales vs Bench %": 0.23793867978527017,
+          "Bills vs Bench %": -2.1781512605042015,
+          "Margin vs Bench pp": -0.04143367371100126,
+          "Basket Value vs Bench %": 2.469887833262723,
+          "Selected As Of Date": "2026-09-03 00:00",
+          "Last Updated": "Last updated 03 Sep 2026"
+        }
+      ]
+    },
+    {
+      "query_name": "store_performance_breakdown",
+      "purpose": "Show which stores are largest and how each store is performing versus benchmark.",
+      "status": "success",
+      "rows": [
+        {
+          "store_no": "ST4",
+          "Sales Actual": 73813.1535,
+          "Bills Actual": 5129,
+          "Margin Actual %": 22.198333758267875,
+          "Basket Value Actual": 14.391334275687269,
+          "Sales vs Bench %": 7.755053921662528,
+          "Bills vs Bench %": 4.015412695193673,
+          "Margin vs Bench pp": -0.7516662417321243,
+          "Basket Value vs Bench %": 3.595276055316431
+        },
+        {
+          "store_no": "ST3",
+          "Sales Actual": 46532.2347,
+          "Bills Actual": 3568,
+          "Margin Actual %": 19.342023594723532,
+          "Basket Value Actual": 13.041545599775786,
+          "Sales vs Bench %": 21.402298267599605,
+          "Bills vs Bench %": 12.165985539138635,
+          "Margin vs Bench pp": 0.11202359472353152,
+          "Basket Value vs Bench %": 8.23450414496479
+        },
+        {
+          "store_no": "ST1",
+          "Sales Actual": 57705.2586,
+          "Bills Actual": 3660,
+          "Margin Actual %": 20.692359204699528,
+          "Basket Value Actual": 15.766464098360656,
+          "Sales vs Bench %": -18.28380965672026,
+          "Bills vs Bench %": -19.89494418910046,
+          "Margin vs Bench pp": 0.44235920469952816,
+          "Basket Value vs Bench %": 2.011276961323807
+        },
+        {
+          "store_no": "ST2",
+          "Sales Actual": 38814.8355,
+          "Bills Actual": 2194,
+          "Margin Actual %": 20.289936075029374,
+          "Basket Value Actual": 17.691356198723792,
+          "Sales vs Bench %": -0.22968347472684097,
+          "Bills vs Bench %": 0.0,
+          "Margin vs Bench pp": 0.25993607502937266,
+          "Basket Value vs Bench %": -0.22968347472684358
+        }
+      ]
+    },
+    {
+      "query_name": "department_performance_breakdown",
+      "purpose": "Compare departments on sales scale, benchmark gap, and bill penetration share.",
+      "status": "success",
+      "rows": [
+        {
+          "DEPARTMENT": "TECHNOLOGY",
+          "Sales Actual": 10203.6105,
+          "Bills Actual": 577,
+          "Bill Penetration %": 3.965363205277988,
+          "Bill Penetration P50 %": 3.9260504201680675,
+          "Margin Actual %": 25.343983292552586,
+          "Sales vs Bench %": 6.518004490024282,
+          "Bills vs Bench %": -1.1986301369863013,
+          "Margin vs Bench pp": 0.09158506432237701,
+          "Basket Value vs Bench %": 7.810250645015894
+        },
+        {
+          "DEPARTMENT": "FRESH FOOD",
+          "Sales Actual": 51006.153600000005,
+          "Bills Actual": 7772,
+          "Bill Penetration %": 53.41213662291251,
+          "Bill Penetration P50 %": 52.70588235294118,
+          "Margin Actual %": 19.92672392307717,
+          "Sales vs Bench %": 4.886137008692423,
+          "Bills vs Bench %": -0.8673469387755102,
+          "Margin vs Bench pp": 0.3055110009396387,
+          "Basket Value vs Bench %": 5.803823230590411
+        },
+        {
+          "DEPARTMENT": "CONSUMER GOODS",
+          "Sales Actual": 115026.72569999998,
+          "Bills Actual": 12189,
+          "Bill Penetration %": 83.76743866400935,
+          "Bill Penetration P50 %": 82.25882352941176,
+          "Margin Actual %": 16.569508940088586,
+          "Sales vs Bench %": 1.9765978349719093,
+          "Bills vs Bench %": -0.38411245505067015,
+          "Margin vs Bench pp": 0.010626974138780554,
+          "Basket Value vs Bench %": 2.369813037059339
+        },
+        {
+          "DEPARTMENT": "LIFESTYLE",
+          "Sales Actual": 29190.342600000007,
+          "Bills Actual": 3270,
+          "Bill Penetration %": 22.472682289876985,
+          "Bill Penetration P50 %": 22.87731092436975,
+          "Margin Actual %": 32.02217229675026,
+          "Sales vs Bench %": -7.515193872920216,
+          "Bills vs Bench %": -3.908316191595651,
+          "Margin vs Bench pp": 0.35622220716319575,
+          "Basket Value vs Bench %": -3.753579434112385
+        },
+        {
+          "DEPARTMENT": "HOME & LIVING",
+          "Sales Actual": 11438.6499,
+          "Bills Actual": 2344,
+          "Bill Penetration %": 16.108858497697753,
+          "Bill Penetration P50 %": 16.04705882352941,
+          "Margin Actual %": 35.36298925105681,
+          "Sales vs Bench %": -6.770967546721381,
+          "Bills vs Bench %": -1.8014243820695435,
+          "Margin vs Bench pp": 1.6639399280149334,
+          "Basket Value vs Bench %": -5.060707992331036
+        },
+        {
+          "DEPARTMENT": "OTHER",
+          "Sales Actual": null,
+          "Bills Actual": null,
+          "Bill Penetration %": null,
+          "Bill Penetration P50 %": 0.1546218487394958,
+          "Margin Actual %": null,
+          "Sales vs Bench %": null,
+          "Bills vs Bench %": null,
+          "Margin vs Bench pp": null,
+          "Basket Value vs Bench %": null
+        }
+      ]
+    },
+    {
+      "query_name": "section_by_department_matrix",
+      "purpose": "Identify the largest section and department combinations by sales and compare their benchmark gaps.",
+      "status": "success",
+      "rows": [
+        {
+          "DEPARTMENT": "LIFESTYLE",
+          "SECTION": "FOOTWEAR",
+          "Sales Actual": 2930.4909,
+          "Bills Actual": 371,
+          "Margin Actual %": 35.49145425678434,
+          "Sales vs Bench %": -5.300423342837901,
+          "Bills vs Bench %": 4.213483146067416,
+          "Margin vs Bench pp": -2.9816290524095024
+        },
+        {
+          "DEPARTMENT": "CONSUMER GOODS",
+          "SECTION": "CLEANING ESSENSTIALS",
+          "Sales Actual": 4817.1564,
+          "Bills Actual": 1270,
+          "Margin Actual %": 16.00829162308465,
+          "Sales vs Bench %": 11.522259983910473,
+          "Bills vs Bench %": 9.766637856525497,
+          "Margin vs Bench pp": -3.67961739548581
+        },
+        {
+          "DEPARTMENT": "HOME & LIVING",
+          "SECTION": "OFFICE SUPPLIES",
+          "Sales Actual": 3602.3832,
+          "Bills Actual": 1135,
+          "Margin Actual %": 40.46340593854026,
+          "Sales vs Bench %": 3.732441617186643,
+          "Bills vs Bench %": 3.1818181818181817,
+          "Margin vs Bench pp": 0.07576543843490668
+        },
+        {
+          "DEPARTMENT": "HOME & LIVING",
+          "SECTION": "CULINARY SUPPLIES",
+          "Sales Actual": 5491.376100000001,
+          "Bills Actual": 1238,
+          "Margin Actual %": 37.20217686301629,
+          "Sales vs Bench %": -8.99978389136042,
+          "Bills vs Bench %": -2.7494108405341713,
+          "Margin vs Bench pp": 1.9805589699368156
+        },
+        {
+          "DEPARTMENT": "LIFESTYLE",
+          "SECTION": "MENS APPAREL",
+          "Sales Actual": 7518.1581,
+          "Bills Actual": 1186,
+          "Margin Actual %": 35.44280939663752,
+          "Sales vs Bench %": -20.13215396565157,
+          "Bills vs Bench %": -7.41608118657299,
+          "Margin vs Bench pp": 1.8564341280214123
+        },
+        {
+          "DEPARTMENT": "LIFESTYLE",
+          "SECTION": "LADIES APPAREL",
+          "Sales Actual": 10990.755,
+          "Bills Actual": 1598,
+          "Margin Actual %": 30.985680949924763,
+          "Sales vs Bench %": -2.6310533422474363,
+          "Bills vs Bench %": 2.1739130434782608,
+          "Margin vs Bench pp": 0.20747637622859827
+        },
+        {
+          "DEPARTMENT": "LIFESTYLE",
+          "SECTION": "TRAVEL",
+          "Sales Actual": 3758.2245000000003,
+          "Bills Actual": 208,
+          "Margin Actual %": 25.133010281849856,
+          "Sales vs Bench %": 11.49349791140179,
+          "Bills vs Bench %": 1.9607843137254901,
+          "Margin vs Bench pp": 1.0110155363865019
+        },
+        {
+          "DEPARTMENT": "FRESH FOOD",
+          "SECTION": "GREEN GROCERIES",
+          "Sales Actual": 27271.260899999997,
+          "Bills Actual": 6906,
+          "Margin Actual %": 21.321364823492434,
+          "Sales vs Bench %": 7.456303478316744,
+          "Bills vs Bench %": 3.1978481769276748,
+          "Margin vs Bench pp": 0.3456474613567515
+        },
+        {
+          "DEPARTMENT": "TECHNOLOGY",
+          "SECTION": "ENTERTAINMENTS",
+          "Sales Actual": 10203.610499999999,
+          "Bills Actual": 578,
+          "Margin Actual %": 25.343983292552604,
+          "Sales vs Bench %": 6.250481472380478,
+          "Bills vs Bench %": -1.8675721561969438,
+          "Margin vs Bench pp": 0.026186141856946676
+        },
+        {
+          "DEPARTMENT": "CONSUMER GOODS",
+          "SECTION": "REFRIDGERATED GOODS",
+          "Sales Actual": 14725.924200000001,
+          "Bills Actual": 4194,
+          "Margin Actual %": 13.38118827701184,
+          "Sales vs Bench %": 0.34886298926328985,
+          "Bills vs Bench %": 3.529992594421131,
+          "Margin vs Bench pp": 0.4934687142083156
+        },
+        {
+          "DEPARTMENT": "CONSUMER GOODS",
+          "SECTION": "PROVISIONS",
+          "Sales Actual": 57895.7436,
+          "Bills Actual": 8456,
+          "Margin Actual %": 14.491327543090295,
+          "Sales vs Bench %": 1.0189155703646613,
+          "Bills vs Bench %": -3.536390600045631,
+          "Margin vs Bench pp": 0.6439246318262271
+        },
+        {
+          "DEPARTMENT": "FRESH FOOD",
+          "SECTION": "MEAT SHOP",
+          "Sales Actual": 16688.9241,
+          "Bills Actual": 2400,
+          "Margin Actual %": 14.5233814209846,
+          "Sales vs Bench %": 3.028507393500441,
+          "Bills vs Bench %": 0.5025125628140703,
+          "Margin vs Bench pp": 0.27772660868781784
+        },
+        {
+          "DEPARTMENT": "CONSUMER GOODS",
+          "SECTION": "PERSONAL CARE",
+          "Sales Actual": 26551.8486,
+          "Bills Actual": 3480,
+          "Margin Actual %": 22.009128377093045,
+          "Sales vs Bench %": 1.232243470820491,
+          "Bills vs Bench %": 4.0669856459330145,
+          "Margin vs Bench pp": -0.7228385111504316
+        },
+        {
+          "DEPARTMENT": "FRESH FOOD",
+          "SECTION": "FISH",
+          "Sales Actual": 5815.3086,
+          "Bills Actual": 722,
+          "Margin Actual %": 24.646444883878566,
+          "Sales vs Bench %": -3.3998154843356763,
+          "Bills vs Bench %": -11.7359413202934,
+          "Margin vs Bench pp": -1.0364631843536571
+        },
+        {
+          "DEPARTMENT": "CONSUMER GOODS",
+          "SECTION": "SPICE MARKET",
+          "Sales Actual": 11036.052899999999,
+          "Bills Actual": 1154,
+          "Margin Actual %": 18.883773452366896,
+          "Sales vs Bench %": 11.503705126288548,
+          "Bills vs Bench %": 4.1516245487364625,
+          "Margin vs Bench pp": -1.412255092545827
+        }
+      ]
+    },
+    {
+      "query_name": "category_performance_breakdown",
+      "purpose": "Highlight the highest-sales categories and their benchmark-relative performance.",
+      "status": "success",
+      "rows": [
+        {
+          "CATEGORY_NAME": "FRESH FISH",
+          "Sales Actual": 4674.24,
+          "Bills Actual": 583,
+          "Margin Actual %": 26.741549295777002,
+          "Basket Value Actual": 8.017564322469983,
+          "Sales vs Bench %": -8.271706918778184,
+          "Bills vs Bench %": -18.461538461538463,
+          "Margin vs Bench pp": -0.39459795165890554,
+          "Basket Value vs Bench %": 12.496963212819221
+        },
+        {
+          "CATEGORY_NAME": "SUNFLOWER OIL",
+          "Sales Actual": 4763.4966,
+          "Bills Actual": 882,
+          "Margin Actual %": 9.41925490372485,
+          "Basket Value Actual": 5.400789795918368,
+          "Sales vs Bench %": -5.857285788610075,
+          "Bills vs Bench %": 7.560975609756097,
+          "Margin vs Bench pp": -0.19565229868707057,
+          "Basket Value vs Bench %": -12.475027603923188
+        },
+        {
+          "CATEGORY_NAME": "GENARAL ELECTRONICS ITEMS",
+          "Sales Actual": 4741.764299999998,
+          "Bills Actual": 319,
+          "Margin Actual %": 23.45592140672197,
+          "Basket Value Actual": 14.864464890282125,
+          "Sales vs Bench %": -16.027552690504194,
+          "Bills vs Bench %": -18.414322250639387,
+          "Margin vs Bench pp": 1.6041548596056927,
+          "Basket Value vs Bench %": 2.9254761693193085
+        },
+        {
+          "CATEGORY_NAME": "SMART WATCHES",
+          "Sales Actual": 5126.976,
+          "Bills Actual": 728,
+          "Margin Actual %": 28.21471168695798,
+          "Basket Value Actual": 7.04254945054945,
+          "Sales vs Bench %": 3.4505865566756,
+          "Bills vs Bench %": 3.1161473087818696,
+          "Margin vs Bench pp": -1.7048244213291959,
+          "Basket Value vs Bench %": 0.324332567325515
+        },
+        {
+          "CATEGORY_NAME": "COOKING OILS",
+          "Sales Actual": 5470.956000000001,
+          "Bills Actual": 891,
+          "Margin Actual %": 10.230870867504176,
+          "Basket Value Actual": 6.140242424242426,
+          "Sales vs Bench %": 24.76033440508137,
+          "Bills vs Bench %": -9.543147208121827,
+          "Margin vs Bench pp": 0.22200886404738895,
+          "Basket Value vs Bench %": 37.92247967340645
+        },
+        {
+          "CATEGORY_NAME": "SOAP",
+          "Sales Actual": 6355.006200000001,
+          "Bills Actual": 1540,
+          "Margin Actual %": 20.516340634901365,
+          "Basket Value Actual": 4.1266274025974035,
+          "Sales vs Bench %": 14.433889886650613,
+          "Bills vs Bench %": 13.069016152716593,
+          "Margin vs Bench pp": -0.6633035410014827,
+          "Basket Value vs Bench %": 1.2071156010507542
+        },
+        {
+          "CATEGORY_NAME": "ROOT VEGETABLES",
+          "Sales Actual": 6609.745800000001,
+          "Bills Actual": 3293,
+          "Margin Actual %": 25.287247724856257,
+          "Basket Value Actual": 2.0072109930154878,
+          "Sales vs Bench %": -1.5144633360676372,
+          "Bills vs Bench %": 3.196490128486368,
+          "Margin vs Bench pp": -2.849009279712675,
+          "Basket Value vs Bench %": -4.565032646641902
+        },
+        {
+          "CATEGORY_NAME": "BASMATI RICE",
+          "Sales Actual": 7613.840700000001,
+          "Bills Actual": 692,
+          "Margin Actual %": 11.07738840326727,
+          "Basket Value Actual": 11.002659971098266,
+          "Sales vs Bench %": 15.270892264425532,
+          "Bills vs Bench %": 12.887438825448614,
+          "Margin vs Bench pp": -0.4383687461302035,
+          "Basket Value vs Bench %": 2.111353985683308
+        },
+        {
+          "CATEGORY_NAME": "SNACKS",
+          "Sales Actual": 9791.709299999999,
+          "Bills Actual": 2130,
+          "Margin Actual %": 15.935757099111305,
+          "Basket Value Actual": 4.597046619718309,
+          "Sales vs Bench %": 12.32706358323851,
+          "Bills vs Bench %": 11.169102296450939,
+          "Margin vs Bench pp": -1.9799136861572517,
+          "Basket Value vs Bench %": 1.0416215143122103
+        },
+        {
+          "CATEGORY_NAME": "FRESH CHICKEN PORTIONS",
+          "Sales Actual": 6665.549399999998,
+          "Bills Actual": 1883,
+          "Margin Actual %": 15.539423976737304,
+          "Basket Value Actual": 3.539856293149229,
+          "Sales vs Bench %": 10.445006151437164,
+          "Bills vs Bench %": 10.439882697947214,
+          "Margin vs Bench pp": 0.4404008119823484,
+          "Basket Value vs Bench %": 0.00463913340432609
+        },
+        {
+          "CATEGORY_NAME": "COSMETICS",
+          "Sales Actual": 5775.4457999999995,
+          "Bills Actual": 1362,
+          "Margin Actual %": 31.83191761448654,
+          "Basket Value Actual": 4.240415418502202,
+          "Sales vs Bench %": -1.9131272139491735,
+          "Bills vs Bench %": -0.43859649122807015,
+          "Margin vs Bench pp": 0.3494623086036768,
+          "Basket Value vs Bench %": -1.4810264527771524
+        },
+        {
+          "CATEGORY_NAME": "FRESH WHOLE  CHICKEN",
+          "Sales Actual": 7259.3739000000005,
+          "Bills Actual": 1030,
+          "Margin Actual %": 12.22900613519702,
+          "Basket Value Actual": 7.047935825242719,
+          "Sales vs Bench %": 10.649739637455498,
+          "Bills vs Bench %": 5.424769703172978,
+          "Margin vs Bench pp": 1.7484655284759505,
+          "Basket Value vs Bench %": 4.956112258052448
+        },
+        {
+          "CATEGORY_NAME": "FACE CREAM",
+          "Sales Actual": 6712.1541000000025,
+          "Bills Actual": 1077,
+          "Margin Actual %": 20.929825844992994,
+          "Basket Value Actual": 6.232269359331479,
+          "Sales vs Bench %": -4.826981850006109,
+          "Bills vs Bench %": -6.833910034602077,
+          "Margin vs Bench pp": -1.5146596371941037,
+          "Basket Value vs Bench %": 2.154140186994382
+        },
+        {
+          "CATEGORY_NAME": "GREEN VEGETABLES",
+          "Sales Actual": 6990.1731,
+          "Bills Actual": 3040,
+          "Margin Actual %": 19.281950920580602,
+          "Basket Value Actual": 2.2993990460526317,
+          "Sales vs Bench %": 23.276431822943458,
+          "Bills vs Bench %": 6.741573033707865,
+          "Margin vs Bench pp": 1.0942059726728637,
+          "Basket Value vs Bench %": 15.490551918336513
+        },
+        {
+          "CATEGORY_NAME": "APPLES",
+          "Sales Actual": 8679.017699999999,
+          "Bills Actual": 2951,
+          "Margin Actual %": 21.405600818042423,
+          "Basket Value Actual": 2.941042934598441,
+          "Sales vs Bench %": 5.563818562109868,
+          "Bills vs Bench %": 1.0616438356164384,
+          "Margin vs Bench pp": 1.3903058243297188,
+          "Basket Value vs Bench %": 4.454879770030776
+        }
+      ]
+    },
+    {
+      "query_name": "sales_trend_over_time",
+      "purpose": "Track how the main KPIs and benchmark bands move over time.",
+      "status": "success",
+      "rows": [
+        {
+          "Date": "2026-08-21T00:00:00",
+          "Sales Actual (Trend)": 505790.4276,
+          "Sales P20 (Trend)": 250575.9543,
+          "Sales P50 (Trend)": 279990.4617,
+          "Sales P80 (Trend)": 317007.5751,
+          "Bills Actual (Trend)": 19839,
+          "Bills P50 (Trend)": 20232,
+          "Margin Actual % (Trend)": 20.875802694221164,
+          "Margin P50 % (Trend)": 21.419606725624394,
+          "Basket Value Actual (Trend)": 25.494754150914865,
+          "Basket Value P50 (Trend)": 13.838990791814945
+        },
+        {
+          "Date": "2026-08-22T00:00:00",
+          "Sales Actual (Trend)": 103842.9666,
+          "Sales P20 (Trend)": 106240.1535,
+          "Sales P50 (Trend)": 117879.8913,
+          "Sales P80 (Trend)": 129747.6684,
+          "Bills Actual (Trend)": 9510,
+          "Bills P50 (Trend)": 9878,
+          "Margin Actual % (Trend)": 21.260550670813767,
+          "Margin P50 % (Trend)": 21.55742724944301,
+          "Basket Value Actual (Trend)": 10.919344542586751,
+          "Basket Value P50 (Trend)": 11.933578791253291
+        },
+        {
+          "Date": "2026-08-23T00:00:00",
+          "Sales Actual (Trend)": 98919.0495,
+          "Sales P20 (Trend)": 98038.3824,
+          "Sales P50 (Trend)": 113449.2291,
+          "Sales P80 (Trend)": 126336.5883,
+          "Bills Actual (Trend)": 8492,
+          "Bills P50 (Trend)": 9125,
+          "Margin Actual % (Trend)": 21.20413245525001,
+          "Margin P50 % (Trend)": 21.73834230035328,
+          "Basket Value Actual (Trend)": 11.648498528026376,
+          "Basket Value P50 (Trend)": 12.432792230136986
+        },
+        {
+          "Date": "2026-08-24T00:00:00",
+          "Sales Actual (Trend)": 191349.1242,
+          "Sales P20 (Trend)": 101664.1611,
+          "Sales P50 (Trend)": 114488.9856,
+          "Sales P80 (Trend)": 139390.6806,
+          "Bills Actual (Trend)": 8389,
+          "Bills P50 (Trend)": 9025,
+          "Margin Actual % (Trend)": 20.443958861242404,
+          "Margin P50 % (Trend)": 22.010260610440763,
+          "Basket Value Actual (Trend)": 22.80952726189057,
+          "Basket Value P50 (Trend)": 12.685760177285319
+        },
+        {
+          "Date": "2026-08-25T00:00:00",
+          "Sales Actual (Trend)": 213233.3964,
+          "Sales P20 (Trend)": 95682.141,
+          "Sales P50 (Trend)": 111139.1118,
+          "Sales P80 (Trend)": 151852.4091,
+          "Bills Actual (Trend)": 8960,
+          "Bills P50 (Trend)": 9061,
+          "Margin Actual % (Trend)": 21.383582556530374,
+          "Margin P50 % (Trend)": 22.113299388712587,
+          "Basket Value Actual (Trend)": 23.79837013392857,
+          "Basket Value P50 (Trend)": 12.265656307250856
+        },
+        {
+          "Date": "2026-08-26T00:00:00",
+          "Sales Actual (Trend)": 202716.27,
+          "Sales P20 (Trend)": 95492.4849,
+          "Sales P50 (Trend)": 109494.1854,
+          "Sales P80 (Trend)": 139280.4585,
+          "Bills Actual (Trend)": 8364,
+          "Bills P50 (Trend)": 8888,
+          "Margin Actual % (Trend)": 20.61945317748778,
+          "Margin P50 % (Trend)": 21.524952580550455,
+          "Basket Value Actual (Trend)": 24.236761119081777,
+          "Basket Value P50 (Trend)": 12.319327790279027
+        },
+        {
+          "Date": "2026-08-27T00:00:00",
+          "Sales Actual (Trend)": 173349.4365,
+          "Sales P20 (Trend)": 142509.6288,
+          "Sales P50 (Trend)": 158269.6341,
+          "Sales P80 (Trend)": 178280.8677,
+          "Bills Actual (Trend)": 12507,
+          "Bills P50 (Trend)": 12209,
+          "Margin Actual % (Trend)": 20.849779152360043,
+          "Margin P50 % (Trend)": 20.87625420288376,
+          "Basket Value Actual (Trend)": 13.860193211801391,
+          "Basket Value P50 (Trend)": 12.963357695142927
+        },
+        {
+          "Date": "2026-08-28T00:00:00",
+          "Sales Actual (Trend)": 295625.9511,
+          "Sales P20 (Trend)": 242182.548,
+          "Sales P50 (Trend)": 271021.4964,
+          "Sales P80 (Trend)": 303245.6346,
+          "Bills Actual (Trend)": 21015,
+          "Bills P50 (Trend)": 19553,
+          "Margin Actual % (Trend)": 20.807755200298164,
+          "Margin P50 % (Trend)": 21.469691544187043,
+          "Basket Value Actual (Trend)": 14.067378115631692,
+          "Basket Value P50 (Trend)": 13.860865156242008
+        },
+        {
+          "Date": "2026-08-29T00:00:00",
+          "Sales Actual (Trend)": 126975.843,
+          "Sales P20 (Trend)": 122345.856,
+          "Sales P50 (Trend)": 138856.1427,
+          "Sales P80 (Trend)": 165590.3034,
+          "Bills Actual (Trend)": 10338,
+          "Bills P50 (Trend)": 10835,
+          "Margin Actual % (Trend)": 21.039985527476617,
+          "Margin P50 % (Trend)": 21.509166503024286,
+          "Basket Value Actual (Trend)": 12.282437899013349,
+          "Basket Value P50 (Trend)": 12.81551847715736
+        },
+        {
+          "Date": "2026-08-30T00:00:00",
+          "Sales Actual (Trend)": 118373.3622,
+          "Sales P20 (Trend)": 107522.6778,
+          "Sales P50 (Trend)": 119239.236,
+          "Sales P80 (Trend)": 135425.412,
+          "Bills Actual (Trend)": 9611,
+          "Bills P50 (Trend)": 9308,
+          "Margin Actual % (Trend)": 21.126713121313752,
+          "Margin P50 % (Trend)": 21.66517576424257,
+          "Basket Value Actual (Trend)": 12.316445968161482,
+          "Basket Value P50 (Trend)": 12.810403523850452
+        },
+        {
+          "Date": "2026-08-31T00:00:00",
+          "Sales Actual (Trend)": 144747.1863,
+          "Sales P20 (Trend)": 113665.8096,
+          "Sales P50 (Trend)": 131291.2503,
+          "Sales P80 (Trend)": 146525.0283,
+          "Bills Actual (Trend)": 10197,
+          "Bills P50 (Trend)": 9649,
+          "Margin Actual % (Trend)": 19.79280251234045,
+          "Margin P50 % (Trend)": 21.966093866439472,
+          "Basket Value Actual (Trend)": 14.195075639894087,
+          "Basket Value P50 (Trend)": 13.606720934811898
+        },
+        {
+          "Date": "2026-09-01T00:00:00",
+          "Sales Actual (Trend)": 161483.1066,
+          "Sales P20 (Trend)": 122902.947,
+          "Sales P50 (Trend)": 139712.9553,
+          "Sales P80 (Trend)": 157964.7015,
+          "Bills Actual (Trend)": 11298,
+          "Bills P50 (Trend)": 10572,
+          "Margin Actual % (Trend)": 20.747426745688006,
+          "Margin P50 % (Trend)": 22.133195854815618,
+          "Basket Value Actual (Trend)": 14.293070154009559,
+          "Basket Value P50 (Trend)": 13.215376021566401
+        },
+        {
+          "Date": "2026-09-02T00:00:00",
+          "Sales Actual (Trend)": 167267.0331,
+          "Sales P20 (Trend)": 133720.7508,
+          "Sales P50 (Trend)": 151337.7891,
+          "Sales P80 (Trend)": 173577.0033,
+          "Bills Actual (Trend)": 11709,
+          "Bills P50 (Trend)": 10985,
+          "Margin Actual % (Trend)": 20.69612821140566,
+          "Margin P50 % (Trend)": 21.52560056368631,
+          "Basket Value Actual (Trend)": 14.285338893159109,
+          "Basket Value P50 (Trend)": 13.776767328174783
+        },
+        {
+          "Date": "2026-09-03T00:00:00",
+          "Sales Actual (Trend)": 216865.4823,
+          "Sales P20 (Trend)": 189938.1285,
+          "Sales P50 (Trend)": 216350.7003,
+          "Sales P80 (Trend)": 252982.4292,
+          "Bills Actual (Trend)": 14551,
+          "Bills P50 (Trend)": 14875,
+          "Margin Actual % (Trend)": 20.843174398690046,
+          "Margin P50 % (Trend)": 20.884608072401047,
+          "Basket Value Actual (Trend)": 14.903819826816026,
+          "Basket Value P50 (Trend)": 14.544584894117646
+        }
+      ]
+    },
+    {
+      "query_name": "day_of_week_pattern",
+      "purpose": "Show whether performance differs by trading day of week.",
+      "status": "success",
+      "rows": [
+        {
+          "DayOfWeek": "Friday",
+          "Sales Actual (Trend)": 801416.3787,
+          "Bills Actual (Trend)": 40854,
+          "Margin Actual % (Trend)": 20.85070137904267,
+          "Basket Value Actual (Trend)": 19.616595160816566,
+          "Sales P50 (Trend)": 551011.9581,
+          "Bills P50 (Trend)": 39785,
+          "Margin P50 % (Trend)": 21.44424151308087
+        },
+        {
+          "DayOfWeek": "Saturday",
+          "Sales Actual (Trend)": 230818.8096,
+          "Bills Actual (Trend)": 19848,
+          "Margin Actual % (Trend)": 21.139215476943797,
+          "Basket Value Actual (Trend)": 11.629323337363967,
+          "Sales P50 (Trend)": 256736.034,
+          "Bills P50 (Trend)": 20713,
+          "Margin P50 % (Trend)": 21.531325338514808
+        },
+        {
+          "DayOfWeek": "Sunday",
+          "Sales Actual (Trend)": 217292.4117,
+          "Bills Actual (Trend)": 18103,
+          "Margin Actual % (Trend)": 21.16195708987199,
+          "Basket Value Actual (Trend)": 12.003116152019002,
+          "Sales P50 (Trend)": 232688.4651,
+          "Bills P50 (Trend)": 18433,
+          "Margin P50 % (Trend)": 21.70084872772235
+        },
+        {
+          "DayOfWeek": "Monday",
+          "Sales Actual (Trend)": 336096.3105,
+          "Bills Actual (Trend)": 18586,
+          "Margin Actual % (Trend)": 20.163524216765886,
+          "Basket Value Actual (Trend)": 18.083305202840847,
+          "Sales P50 (Trend)": 245780.2359,
+          "Bills P50 (Trend)": 18674,
+          "Margin P50 % (Trend)": 21.986667553739622
+        },
+        {
+          "DayOfWeek": "Tuesday",
+          "Sales Actual (Trend)": 374716.503,
+          "Bills Actual (Trend)": 20258,
+          "Margin Actual % (Trend)": 21.109432857240325,
+          "Basket Value Actual (Trend)": 18.497211126468557,
+          "Sales P50 (Trend)": 250852.0671,
+          "Bills P50 (Trend)": 19633,
+          "Margin P50 % (Trend)": 22.124380796617324
+        },
+        {
+          "DayOfWeek": "Wednesday",
+          "Sales Actual (Trend)": 369983.3031,
+          "Bills Actual (Trend)": 20073,
+          "Margin Actual % (Trend)": 20.654117459169754,
+          "Basket Value Actual (Trend)": 18.431888761022268,
+          "Sales P50 (Trend)": 260831.9745,
+          "Bills P50 (Trend)": 19873,
+          "Margin P50 % (Trend)": 21.52532854801128
+        },
+        {
+          "DayOfWeek": "Thursday",
+          "Sales Actual (Trend)": 390214.9188,
+          "Bills Actual (Trend)": 27058,
+          "Margin Actual % (Trend)": 20.8461085005702,
+          "Basket Value Actual (Trend)": 14.421425042501292,
+          "Sales P50 (Trend)": 374620.3344,
+          "Bills P50 (Trend)": 27084,
+          "Margin P50 % (Trend)": 20.881078728821933
+        }
+      ]
+    },
+    {
+      "query_name": "performance_band_counts",
+      "purpose": "Summarize how many sections and categories fall into each performance bucket.",
+      "status": "success",
+      "rows": [
+        {
+          "Section Underperforming Count": 4,
+          "Section Before Benchmark Count": 8,
+          "Section After Benchmark Count": 11,
+          "Section Outperforming Count": null,
+          "Category Underperforming Count": 42,
+          "Category Before Benchmark Count": 67,
+          "Category After Benchmark Count": 56,
+          "Category Outperforming Count": 2
+        }
+      ]
+    }
+  ]
+}

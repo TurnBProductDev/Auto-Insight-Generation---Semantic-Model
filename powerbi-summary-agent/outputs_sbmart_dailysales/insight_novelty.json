@@ -1,0 +1,20 @@
+{
+  "detected": 0,
+  "suppressed": 0,
+  "eligible": 0,
+  "selected": 0,
+  "policy": "never_repeat",
+  "reason": "no_notable_findings",
+  "memory_status": "empty",
+  "level_breakdown": {},
+  "watermark": null,
+  "period_anchor": "",
+  "resurfaced": 0,
+  "rolling_unavailable": false,
+  "unseen": 0,
+  "cap_dropped": 0,
+  "rate_detected": 0,
+  "rate_reserved": false,
+  "rate_resurfaced": 0,
+  "reserved_relative_id": null
+}

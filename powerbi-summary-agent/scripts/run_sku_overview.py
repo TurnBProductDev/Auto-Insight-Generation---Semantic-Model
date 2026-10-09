@@ -57,6 +57,17 @@ def main(argv=None) -> int:
                                 cfg.get("output_folder", "outputs_sbmart_skuoverview"))
     out.mkdir(parents=True, exist_ok=True)
 
+    # The kept positions, pulled down before anything reads the archive. A
+    # scheduled job gets a fresh filesystem every run, so without this the
+    # archive is write-only: `compare_window` finds no prior and the page says
+    # today is the first position ever kept, every morning. The memory file
+    # beside it has had this since the Ageing work; the archive never did.
+    from src.tools import azure_blob
+
+    _report_id = str(cfg.get("report_id") or "inventory_sku_overview")
+    _dataset_id = str(cfg.get("dataset_id") or "")
+    azure_blob.hydrate_scan_archive(cfg, out, _report_id, _dataset_id)
+
     token = None
     if args.from_scan:
         scan_result = json.loads(Path(args.from_scan).read_text(encoding="utf-8"))
@@ -72,6 +83,7 @@ def main(argv=None) -> int:
             sku_overview_flow.dump_json(scan_result), encoding="utf-8")
         # Keep a dated copy - the semantic model retains only one snapshot.
         archive.write(scan_result, out, cfg, log=print)
+        azure_blob.publish_scan_archive(cfg, out, _report_id, _dataset_id)
     if args.scan_only:
         return 0
 

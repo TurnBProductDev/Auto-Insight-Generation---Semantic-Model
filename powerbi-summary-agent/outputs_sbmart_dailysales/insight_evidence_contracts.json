@@ -1,0 +1,78 @@
+{
+  "meta_comparable_totals": {
+    "query_name": "meta_comparable_totals",
+    "purpose": "Metadata-selected comparable totals for the primary value and compatible volume families.",
+    "metrics": [
+      "Sales Actual",
+      "Last Updated",
+      "Sales vs Bench % Color"
+    ],
+    "metric_roles": {
+      "Sales Actual": {
+        "alias": "Sales Actual",
+        "expression": "[Sales Actual]",
+        "source": "measure",
+        "phase": "current",
+        "family": "revenue",
+        "bundle_id": "_Measures::revenue",
+        "semantic_role": "value",
+        "additive_candidate": false
+      },
+      "Last Updated": {
+        "alias": "Last Updated",
+        "expression": "[Last Updated]",
+        "source": "measure",
+        "phase": "prior",
+        "family": "revenue",
+        "bundle_id": "_Measures::revenue",
+        "semantic_role": "value",
+        "additive_candidate": false
+      },
+      "Sales vs Bench % Color": {
+        "alias": "Sales vs Bench % Color",
+        "expression": "[Sales vs Bench % Color]",
+        "source": "measure",
+        "phase": "change",
+        "family": "revenue",
+        "bundle_id": "_Measures::revenue",
+        "semantic_role": "value",
+        "additive_candidate": false
+      }
+    },
+    "grouping_columns": [],
+    "grouping_references": [],
+    "grouping_dimensions": [],
+    "filters": {
+      "store": {
+        "detected": false,
+        "codes": [],
+        "column": null
+      },
+      "period": {
+        "detected": false
+      },
+      "parse_confidence": "construction"
+    },
+    "population_status": "unfiltered",
+    "population": {
+      "status": "unfiltered",
+      "codes": [],
+      "store_column": null,
+      "reason": "metadata template contract"
+    },
+    "time_window": "all_available",
+    "sort": {
+      "detected": false,
+      "raw": null
+    },
+    "topn": null,
+    "row_count": 1,
+    "truncated": false,
+    "coverage_kind": "grand_total",
+    "completeness": "complete",
+    "completeness_reason": "single scoped grand total by construction",
+    "segment_filter": null,
+    "contract_source": "metadata_template",
+    "dax_hash": "557a140e8c0260da"
+  }
+}

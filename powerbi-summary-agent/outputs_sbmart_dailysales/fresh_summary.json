@@ -1,0 +1,131 @@
+{
+  "summary_type": "new_data",
+  "heading": "Sales reached 216.9K on 2026-09-03, with the recent period showing an earlier peak at 505.8K and softer trading through the following days.",
+  "paragraphs": [
+    "This view focuses on how sales moved across the latest reported days. Sales were highest at 505.8K on 2026-08-21, then moved down to 213.2K on 2026-08-25, 202.7K on 2026-08-26 and 295.6K on 2026-08-28 before ending at 216.9K on 2026-09-03. The pattern points to a strong start to the period followed by lower day-level sales across most of the remaining dates shown.",
+    "On 2026-08-21, basket value was 25.5, transactions (bills) were 19.8K, and margin was 20.9%.",
+    "On 2026-08-28, basket value was 14.1 and transactions (bills) were 21.0K while sales were 295.6K.",
+    "Lower sales points in the period included 213.2K on 2026-08-25 and 202.7K on 2026-08-26.",
+    "The latest reported day is 2026-09-03 with sales at 216.9K.",
+    "The reporting period is day-based and the latest available data is as of 2026-09-03. The focus trend includes a caveat that there is no validated business time axis for the focus trend, so this summary describes the returned date pattern only."
+  ],
+  "content_blocks": [
+    {
+      "kind": "paragraph",
+      "heading": "Period Performance",
+      "text": "This view focuses on how sales moved across the latest reported days. Sales were highest at 505.8K on 2026-08-21, then moved down to 213.2K on 2026-08-25, 202.7K on 2026-08-26 and 295.6K on 2026-08-28 before ending at 216.9K on 2026-09-03. The pattern points to a strong start to the period followed by lower day-level sales across most of the remaining dates shown.",
+      "points": []
+    },
+    {
+      "kind": "bullets",
+      "heading": "Supporting KPI readings",
+      "text": "",
+      "points": [
+        "On 2026-08-21, basket value was 25.5, transactions (bills) were 19.8K, and margin was 20.9%.",
+        "On 2026-08-28, basket value was 14.1 and transactions (bills) were 21.0K while sales were 295.6K.",
+        "Lower sales points in the period included 213.2K on 2026-08-25 and 202.7K on 2026-08-26.",
+        "The latest reported day is 2026-09-03 with sales at 216.9K."
+      ]
+    },
+    {
+      "kind": "chart",
+      "heading": "Sales actual by date",
+      "text": "",
+      "points": [],
+      "chart": {
+        "source_id": "summary_0c361f7fd00e:overview",
+        "type": "line",
+        "title": "Sales actual by date",
+        "value_label": "Sales actual (trend)",
+        "labels": [
+          "2026-08-21T00:00:00",
+          "2026-08-22T00:00:00",
+          "2026-08-23T00:00:00",
+          "2026-08-24T00:00:00",
+          "2026-08-25T00:00:00",
+          "2026-08-26T00:00:00",
+          "2026-08-27T00:00:00",
+          "2026-08-28T00:00:00",
+          "2026-08-29T00:00:00",
+          "2026-08-30T00:00:00",
+          "2026-08-31T00:00:00",
+          "2026-09-01T00:00:00"
+        ],
+        "values": [
+          505790.4276,
+          103842.9666,
+          98919.0495,
+          191349.1242,
+          213233.3964,
+          202716.27,
+          173349.4365,
+          295625.9511,
+          126975.843,
+          118373.3622,
+          144747.1863,
+          161483.1066
+        ],
+        "x_label": "",
+        "y_label": "",
+        "size_label": "",
+        "x_values": [],
+        "y_values": [],
+        "size_values": [],
+        "series": [],
+        "highlight": null
+      }
+    },
+    {
+      "kind": "paragraph",
+      "heading": "Data coverage note",
+      "text": "The reporting period is day-based and the latest available data is as of 2026-09-03. The focus trend includes a caveat that there is no validated business time axis for the focus trend, so this summary describes the returned date pattern only.",
+      "points": []
+    }
+  ],
+  "sections": [
+    {
+      "heading": "Period Performance",
+      "tone": "teal",
+      "points": [
+        "This view focuses on how sales moved across the latest reported days. Sales were highest at 505.8K on 2026-08-21, then moved down to 213.2K on 2026-08-25, 202.7K on 2026-08-26 and 295.6K on 2026-08-28 before ending at 216.9K on 2026-09-03. The pattern points to a strong start to the period followed by lower day-level sales across most of the remaining dates shown."
+      ]
+    },
+    {
+      "heading": "Supporting KPI readings",
+      "tone": "teal",
+      "points": [
+        "On 2026-08-21, basket value was 25.5, transactions (bills) were 19.8K, and margin was 20.9%.",
+        "On 2026-08-28, basket value was 14.1 and transactions (bills) were 21.0K while sales were 295.6K.",
+        "Lower sales points in the period included 213.2K on 2026-08-25 and 202.7K on 2026-08-26.",
+        "The latest reported day is 2026-09-03 with sales at 216.9K."
+      ]
+    },
+    {
+      "heading": "Data coverage note",
+      "tone": "teal",
+      "points": [
+        "The reporting period is day-based and the latest available data is as of 2026-09-03. The focus trend includes a caveat that there is no validated business time axis for the focus trend, so this summary describes the returned date pattern only."
+      ]
+    }
+  ],
+  "covered_candidate_ids": [
+    "summary_0c361f7fd00e"
+  ],
+  "covered_summary_keys": [
+    "summary:v1:0c361f7fd00eb1af0c35fb959916c2513c17d02293333c933a285141948d4758"
+  ],
+  "metrics": [],
+  "visual": null,
+  "data_as_of": "2026-09-03",
+  "grain": "day",
+  "freshness_status": "stale",
+  "period_anchor": "2026-09-03",
+  "validation_status": "validated",
+  "authoring_mode": "llm",
+  "focus": {
+    "focus_key": "focus:v1:e7a38974523e9bc069b8417c1589ee2a5286baa70bde7e87e4c5ce6183872ce2",
+    "segment": "",
+    "dimension_role": "period",
+    "lens": "trend"
+  }
+}

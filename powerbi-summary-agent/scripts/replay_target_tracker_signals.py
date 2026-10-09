@@ -245,8 +245,15 @@ def test_mid_period() -> None:
     burn_signals = [s for s in ts.detect(burn) if s["analysis_type"] == "target_surplus_exhausting"]
     check("a surplus running out before month end is detected", len(burn_signals) == 1)
     if burn_signals:
-        check("it states the date the surplus runs out",
-              "2026-07-23" in burn_signals[0]["description"])
+        check("it states the date the surplus runs out, as a reader writes it",
+              "23 July" in burn_signals[0]["description"]
+              and "2026-07-23" not in burn_signals[0]["description"],
+              burn_signals[0]["description"])
+        # Published as -1.8K under a sentence saying the month was 1,800 ahead.
+        check("the lead is published as the positive figure it is",
+              burn_signals[0]["impact_value"] == 1800.0, str(burn_signals[0]["impact_value"]))
+        check("...and still graded as a finding to act on, not good news",
+              burn_signals[0]["severity"] != "positive", burn_signals[0]["severity"])
     check("a surplus that is not being given back is not a signal",
           not [s for s in ts.detect(_mid_month_model()) if s["analysis_type"] == "target_surplus_exhausting"])
 
@@ -313,7 +320,9 @@ def test_summary_contract() -> None:
         print("  [SKIP] no committed scan")
         return
     payload = tp.summary_payload(model)
-    contract = {"title", "generatedAt", "headline", "metrics", "sections"}
+    # `dataAsOf` joined the contract for the app's Home scorecard, which reads
+    # it to date the target card (Target Tracker runs on its own lag).
+    contract = {"title", "generatedAt", "headline", "metrics", "sections", "dataAsOf"}
 
     check("key set is exactly the contract", set(payload) == contract,
           str(set(payload) ^ contract))

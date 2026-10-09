@@ -140,7 +140,7 @@ class SummaryAgentState(TypedDict, total=False):
     adaptive_investigation_enabled: bool
     adaptive_investigation_min_score: float
     insight_escalation: Dict[str, Any]     # the tier and budgets the day's news bought
-    report_ai_tier: str                    # investigated | deterministic (src/tools/ai_tier.py)
+    report_ai_tier: str                    # investigated | reasoned | narrated | deterministic (src/tools/ai_tier.py)
     narrated_code_slots: List[str]         # narrated writers using code wording (ai_tier.code_slot)
 
     # Catalogued as in_state and read by fresh_summary_generator and
@@ -155,6 +155,8 @@ class SummaryAgentState(TypedDict, total=False):
     insight_max_investigation_rounds: int
     insight_max_scan_queries: int
     insight_probe_max_rows: int
+    insight_reasoned_probe_allowance: int           # reasoned tier: recipe queries per finding
+    insight_reasoned_custom_dax_per_finding: int    # reasoned tier: custom DAX within that
     insight_materiality_pct: float
     insight_max_dq_signals: int
     insight_stat_z_cutoff: float

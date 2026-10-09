@@ -1,0 +1,58 @@
+[
+  {
+    "name": "grand_totals_kpis",
+    "purpose": "Summarize the overall current performance and benchmark position across the model's main KPIs.",
+    "intent": "Grand totals for [Sales Actual], [Sales P20], [Sales P50], [Sales P80], [Bills Actual], [Bills P20], [Bills P50], [Bills P80], [Margin Actual %], [Margin P20 %], [Margin P50 %], [Margin P80 %], [Basket Value Actual], [Basket Value P20], [Basket Value P50], [Basket Value P80], [Sales vs Bench %], [Bills vs Bench %], [Margin vs Bench pp], [Basket Value vs Bench %], [Selected As Of Date], and [Last Updated], no filters, one row.",
+    "dax": "EVALUATE\nROW(\n    \"Sales Actual\", [Sales Actual],\n    \"Sales P20\", [Sales P20],\n    \"Sales P50\", [Sales P50],\n    \"Sales P80\", [Sales P80],\n    \"Bills Actual\", [Bills Actual],\n    \"Bills P20\", [Bills P20],\n    \"Bills P50\", [Bills P50],\n    \"Bills P80\", [Bills P80],\n    \"Margin Actual %\", [Margin Actual %],\n    \"Margin P20 %\", [Margin P20 %],\n    \"Margin P50 %\", [Margin P50 %],\n    \"Margin P80 %\", [Margin P80 %],\n    \"Basket Value Actual\", [Basket Value Actual],\n    \"Basket Value P20\", [Basket Value P20],\n    \"Basket Value P50\", [Basket Value P50],\n    \"Basket Value P80\", [Basket Value P80],\n    \"Sales vs Bench %\", [Sales vs Bench %],\n    \"Bills vs Bench %\", [Bills vs Bench %],\n    \"Margin vs Bench pp\", [Margin vs Bench pp],\n    \"Basket Value vs Bench %\", [Basket Value vs Bench %],\n    \"Selected As Of Date\", FORMAT([Selected As Of Date], \"yyyy-mm-dd hh:nn\"),\n    \"Last Updated\", FORMAT([Last Updated], \"yyyy-mm-dd hh:nn\")\n)",
+    "status": "valid"
+  },
+  {
+    "name": "store_performance_breakdown",
+    "purpose": "Show which stores are largest and how each store is performing versus benchmark.",
+    "intent": "Top 15 'Dim_Store'[store_no] rows summarized by [Sales Actual], [Bills Actual], [Margin Actual %], [Basket Value Actual], [Sales vs Bench %], [Bills vs Bench %], [Margin vs Bench pp], and [Basket Value vs Bench %], sorted by [Sales Actual] descending.",
+    "dax": "EVALUATE\nTOPN(\n    15,\n    SUMMARIZECOLUMNS(\n        'Dim_Store'[store_no],\n        \"Sales Actual\", [Sales Actual],\n        \"Bills Actual\", [Bills Actual],\n        \"Margin Actual %\", [Margin Actual %],\n        \"Basket Value Actual\", [Basket Value Actual],\n        \"Sales vs Bench %\", [Sales vs Bench %],\n        \"Bills vs Bench %\", [Bills vs Bench %],\n        \"Margin vs Bench pp\", [Margin vs Bench pp],\n        \"Basket Value vs Bench %\", [Basket Value vs Bench %]\n    ),\n    [Sales Actual], DESC\n)",
+    "status": "valid"
+  },
+  {
+    "name": "department_performance_breakdown",
+    "purpose": "Compare departments on sales scale, benchmark gap, and bill penetration share.",
+    "intent": "Top 15 'Dim_Department'[DEPARTMENT] rows summarized by [Sales Actual], [Bills Actual], [Bill Penetration %], [Bill Penetration P50 %], [Margin Actual %], [Sales vs Bench %], [Bills vs Bench %], [Margin vs Bench pp], and [Basket Value vs Bench %], sorted by [Sales Actual] descending.",
+    "dax": "EVALUATE\nTOPN(\n    15,\n    SUMMARIZECOLUMNS(\n        'Dim_Department'[DEPARTMENT],\n        \"Sales Actual\", [Sales Actual],\n        \"Bills Actual\", [Bills Actual],\n        \"Bill Penetration %\", [Bill Penetration %],\n        \"Bill Penetration P50 %\", [Bill Penetration P50 %],\n        \"Margin Actual %\", [Margin Actual %],\n        \"Sales vs Bench %\", [Sales vs Bench %],\n        \"Bills vs Bench %\", [Bills vs Bench %],\n        \"Margin vs Bench pp\", [Margin vs Bench pp],\n        \"Basket Value vs Bench %\", [Basket Value vs Bench %]\n    ),\n    [Sales Actual], DESC\n)",
+    "status": "valid"
+  },
+  {
+    "name": "section_by_department_matrix",
+    "purpose": "Identify the largest section and department combinations by sales and compare their benchmark gaps.",
+    "intent": "Top 15 combinations of 'Dim_Department'[DEPARTMENT] and 'Dim_Section'[SECTION], summarized by [Sales Actual], [Bills Actual], [Margin Actual %], [Sales vs Bench %], [Bills vs Bench %], and [Margin vs Bench pp], sorted by [Sales Actual] descending.",
+    "dax": "EVALUATE\nTOPN(\n    15,\n    SUMMARIZECOLUMNS(\n        'Dim_Department'[DEPARTMENT],\n        'Dim_Section'[SECTION],\n        \"Sales Actual\", [Sales Actual],\n        \"Bills Actual\", [Bills Actual],\n        \"Margin Actual %\", [Margin Actual %],\n        \"Sales vs Bench %\", [Sales vs Bench %],\n        \"Bills vs Bench %\", [Bills vs Bench %],\n        \"Margin vs Bench pp\", [Margin vs Bench pp]\n    ),\n    [Sales Actual],\n    DESC\n)",
+    "status": "valid"
+  },
+  {
+    "name": "category_performance_breakdown",
+    "purpose": "Highlight the highest-sales categories and their benchmark-relative performance.",
+    "intent": "Top 15 'Dim_Category'[CATEGORY_NAME] rows summarized by [Sales Actual], [Bills Actual], [Margin Actual %], [Basket Value Actual], [Sales vs Bench %], [Bills vs Bench %], [Margin vs Bench pp], and [Basket Value vs Bench %], sorted by [Sales Actual] descending.",
+    "dax": "EVALUATE\nTOPN(\n    15,\n    SUMMARIZECOLUMNS(\n        'Dim_Category'[CATEGORY_NAME],\n        \"Sales Actual\", [Sales Actual],\n        \"Bills Actual\", [Bills Actual],\n        \"Margin Actual %\", [Margin Actual %],\n        \"Basket Value Actual\", [Basket Value Actual],\n        \"Sales vs Bench %\", [Sales vs Bench %],\n        \"Bills vs Bench %\", [Bills vs Bench %],\n        \"Margin vs Bench pp\", [Margin vs Bench pp],\n        \"Basket Value vs Bench %\", [Basket Value vs Bench %]\n    ),\n    [Sales Actual], DESC\n)",
+    "status": "valid"
+  },
+  {
+    "name": "sales_trend_over_time",
+    "purpose": "Track how the main KPIs and benchmark bands move over time.",
+    "intent": "Top 15 'Dim_Date'[Date] rows summarized by [Sales Actual (Trend)], [Sales P20 (Trend)], [Sales P50 (Trend)], [Sales P80 (Trend)], [Bills Actual (Trend)], [Bills P50 (Trend)], [Margin Actual % (Trend)], [Margin P50 % (Trend)], [Basket Value Actual (Trend)], and [Basket Value P50 (Trend)], sorted by 'Dim_Date'[Date] descending.",
+    "dax": "EVALUATE\nTOPN(\n    15,\n    SUMMARIZECOLUMNS(\n        'Dim_Date'[Date],\n        \"Sales Actual (Trend)\", [Sales Actual (Trend)],\n        \"Sales P20 (Trend)\", [Sales P20 (Trend)],\n        \"Sales P50 (Trend)\", [Sales P50 (Trend)],\n        \"Sales P80 (Trend)\", [Sales P80 (Trend)],\n        \"Bills Actual (Trend)\", [Bills Actual (Trend)],\n        \"Bills P50 (Trend)\", [Bills P50 (Trend)],\n        \"Margin Actual % (Trend)\", [Margin Actual % (Trend)],\n        \"Margin P50 % (Trend)\", [Margin P50 % (Trend)],\n        \"Basket Value Actual (Trend)\", [Basket Value Actual (Trend)],\n        \"Basket Value P50 (Trend)\", [Basket Value P50 (Trend)]\n    ),\n    'Dim_Date'[Date], DESC\n)",
+    "status": "valid"
+  },
+  {
+    "name": "day_of_week_pattern",
+    "purpose": "Show whether performance differs by trading day of week.",
+    "intent": "All available 'Dim_Date'[DayOfWeek] rows summarized by [Sales Actual (Trend)], [Bills Actual (Trend)], [Margin Actual % (Trend)], [Basket Value Actual (Trend)], [Sales P50 (Trend)], [Bills P50 (Trend)], and [Margin P50 % (Trend)], sorted by [Sales Actual (Trend)] descending.",
+    "dax": "EVALUATE\nTOPN(\n    15,\n    SUMMARIZECOLUMNS(\n        'Dim_Date'[DayOfWeek],\n        \"Sales Actual (Trend)\", [Sales Actual (Trend)],\n        \"Bills Actual (Trend)\", [Bills Actual (Trend)],\n        \"Margin Actual % (Trend)\", [Margin Actual % (Trend)],\n        \"Basket Value Actual (Trend)\", [Basket Value Actual (Trend)],\n        \"Sales P50 (Trend)\", [Sales P50 (Trend)],\n        \"Bills P50 (Trend)\", [Bills P50 (Trend)],\n        \"Margin P50 % (Trend)\", [Margin P50 % (Trend)]\n    ),\n    [Sales Actual (Trend)], DESC\n)",
+    "status": "valid"
+  },
+  {
+    "name": "performance_band_counts",
+    "purpose": "Summarize how many sections and categories fall into each performance bucket.",
+    "intent": "One row with [Section Underperforming Count], [Section Before Benchmark Count], [Section After Benchmark Count], [Section Outperforming Count], [Category Underperforming Count], [Category Before Benchmark Count], [Category After Benchmark Count], and [Category Outperforming Count], no filters.",
+    "dax": "EVALUATE ROW(\n\"Section Underperforming Count\", [Section Underperforming Count],\n\"Section Before Benchmark Count\", [Section Before Benchmark Count],\n\"Section After Benchmark Count\", [Section After Benchmark Count],\n\"Section Outperforming Count\", [Section Outperforming Count],\n\"Category Underperforming Count\", [Category Underperforming Count],\n\"Category Before Benchmark Count\", [Category Before Benchmark Count],\n\"Category After Benchmark Count\", [Category After Benchmark Count],\n\"Category Outperforming Count\", [Category Outperforming Count]\n)",
+    "status": "valid"
+  }
+]

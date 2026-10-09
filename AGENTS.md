@@ -2,6 +2,14 @@
 
 This file provides guidance to coding agents working with this repository. `AGENTS.md` and `CLAUDE.md` must remain identical.
 
+This repo is one of three that ship as one product. The map of the whole system
+— what the other two are, the seams between them, and the rules for changing
+anything that crosses a seam — is here:
+
+@../ScanB-Platform/SYSTEM.md
+
+Everything below is about **this** repository.
+
 ## What this repo is
 
 Two related pieces for turning a Power BI semantic model into AI-generated analysis:
@@ -775,6 +783,67 @@ share-of-total), the target-tracker-attainment-gap-vs-shareOfTotalPct non-collis
 attainment matching the proposal's own 88.9% worked example plus a declared `attainment_pct`
 winning outright, `rank`, and the config catalogue/state-default wiring.
 
+#### Top Insights highlights (Web App Home Ver 4)
+
+The Web App's Home shows four "What stood out this week" tiles. `src/tools/highlights.py` turns
+numbers each report flow **already computed** into those facts (no query, no LLM), and
+`ai_content_publisher.publish_run_highlights` merges them into
+`ai-content/kpi/client/highlights.json` (AI Bot `GET /kpi/highlights`, Web App
+`/Home/TopInsights`; contract in the Web App repo's `docs/home-v4/PLAN.md` section 5.2).
+
+- **Behind `ai_content_highlights` (default false)**, plus `ai_content_publish_enabled` and a
+client container. Off, the list is never read or written. `ai_content_highlights_per_report` (2)
+and `ai_content_highlights_max_items` (8, fair-share: every report keeps a place) size it.
+- **Three hooks, one guard.** `daily_sales_publish.publish`, `target_tracker_publish.publish`
+and the LangGraph `ai_content_publisher.publish` (Sales YoY) call `publish_run_highlights` after
+their own blobs. The extractor runs inside its guard, so an extractor bug or a storage error is
+`highlightsStatus: "failed: ..."` in the receipt and never fails the report. In `publish()` the
+call comes after `insightStatus`/`summaryStatus` are computed, so it cannot move the delivery gate.
+- **What each report states.** Daily Sales: the store furthest above its own Net Sales benchmark
+as a share (raw figures are in the page's `store_bundles`; `stores` holds formatted strings), and
+a measure's run above its normal range. Target Tracker: what the month still needs
+(`month_close`, the report's own bands), the top branch only when on target, the lowest only in
+the Below-target band. Sales YoY: the highest-ranked riser and faller from
+`summary_coverage.top_movers`, above the headline relevance floor with no fallback. No tile is a
+least-bad: "top store" on a day every store missed is not a highlight.
+- **The one-day window is keyed on the run day, not the data's date.** The publisher stamps every
+`isoDate` with the run's date in `insight_history_timezone`: Daily Sales and Target Tracker data
+end on different days, and with data dates two reports published the same morning evicted each
+other. A run replaces only items under its own `reportSlug` (the config's `report_id`; an item
+tagged with another slug is refused), and a run with no facts still writes, so a rerun clears its
+stale items.
+- **Verification:** `scripts/replay_highlights.py` (offline). Each extractor runs on fixtures
+**and** on a page, model or coverage built by the real code: the first fixture read a page shape
+the real page does not have, and passed. Also the hooks with the flag off and on, storage and
+extractor failures, and two data dates sharing one run day.
+- **Not built yet:** Stock Age and Inventory Management extractors.
+
+#### Executive brief (Web App Home Ver 4)
+
+`src/brief/` writes Home's "AI Executive Summary": one sentence per report, plus suggested
+questions for the Ask ScanB panel, into `ai-content/kpi/client/brief.json` (AI Bot
+`GET /kpi/brief`, Web App `/Home/ExecutiveBrief`; contract in PLAN.md 5.1). It is a job of
+its own (`AGENT_RUNNER=executive_brief`, or `python -m src.brief.run --config ...`),
+scheduled after the client's report jobs, and it reads only what they published (each
+report's current summary, the KPI feed, Top Insights): no Power BI query.
+
+- **Behind `ai_content_executive_brief` (default false):** off, it reads and writes nothing.
+`brief_reports` maps each report's slug (how the feeds tag items) to its name and Power BI
+GUIDs (how summaries are keyed and how the Web App filters lines by entitlement); a malformed
+entry fails the job rather than dropping a report. `config/sbmart-brief/config.json` ships
+with the flag off.
+- **Code decides, the model words it.** `select` orders reports by their most severe card or
+figure, then how many findings share it; a report with no summary gets no line. The model
+writes one sentence per report from that report's fact sheet only. `validate` checks every
+figure against the same sheet (names with digits such as ST1 are names), refuses causes,
+forecasts, jargon and prior-year talk the facts do not support, one sentence of at most 35
+words. A rejected line is sent back once; failing twice, a failed call or the deterministic
+tier leaves the report's own headline. A failed question is dropped (the app keeps its
+defaults).
+- **Verification:** `scripts/replay_executive_brief.py` (offline, stub model; mutation-checked
+on the figure check, the ordering and the text normalisation). Deployment runbook:
+`powerbi-summary-agent/docs/home-v4-insights-deploy.md`.
+
 #### Inventory Management: the daily pipeline (P5.3)
 
 Inventory Management now runs end to end daily, like Target Tracker: live scan ->
@@ -1073,8 +1142,47 @@ Tracker and the inventory reports it sits **outside the LangGraph**, as
 - **Prose is deterministic**, like the inventory reports: every figure on the
   page is a comparison against a band and the rulebook wants a number beside
   every comparison, so there is no LLM in this path. The investigator's
-  narrative is the one exception and falls back to a grounded deterministic
-  draft.
+  narrative and the Home scorecard lines (below) are the exceptions, and both
+  fall back to a grounded deterministic draft.
+- **The app's Home scorecard reads this report's summary payload** (plus
+  Target Tracker's "Today" row). Each of the four metrics carries, beyond
+  label/value/band: `series` (the last 14 days from the reconciled `trend`,
+  oldest first, each with its own P50 as `benchmark` - never raw rows, or the
+  Net Sales benchmarks sit 3.7x too high), `delta`/`deltaDirection`/
+  `goodDirection` (unsigned, percent or points for Margin, the `KpiCard`
+  convention), `stats` (the 7-day figure and the SAME seven days' benchmark,
+  formatted - never the day's own benchmark, which is one weekday's: with a
+  Friday selling about three times a Sunday, the week to 13 Sep sat level with
+  its benchmarks yet read 40% up beside the Sunday's), and
+  `takeaway`/`takeawayTone`; the payload carries `dataAsOf`. Built by
+  `daily_sales_dashboard.scorecard` (Target Tracker: `_scorecard_day`), so the
+  app and the page quote the same numbers. **A ratio's week is the ratio of
+  the week's totals** - Basket Value is 7 days' sales over 7 days' bills, Margin
+  is sales-weighted - because averaging daily ratios disagrees with the
+  report's own arithmetic (12.13 against 12.15 on the live scan).
+- **The scorecard line: code decides, the model words it**
+  (`domains/sales/scorecard_lines.py`). Each line's fact is chosen by fixed
+  rules, and every fact is about where days sat against their OWN band or
+  benchmark, never the day before, because the rulebook compares a day only
+  with matching weekdays: a run outside the band ("Below its normal range for
+  3 days in a row"), a first in N days (only across a week or more - "the
+  first time in 2 days" was live and said nothing, so a closer repeat is
+  counted instead: "on 2 of the last 7 days"), back inside after a run, or a
+  count against the benchmark over the last 7 days. Inside the band is never
+  worded as bad news. The model rewrites only that fact in plain words;
+  `validate_line` rejects a changed count (digits, number words, ordinals), the
+  opposite direction, a cause, a forecast, last year, jargon (`band`, P20...),
+  people for Bills, "yesterday", a percentage or money, a second sentence and
+  anything over 70 characters. One repair per line, then that line keeps its
+  code-written sentence while the others keep the model's wording; the tone
+  always comes from the fact. Gated by `daily_sales_llm_authoring_enabled`
+  (code default false; Target Tracker's line follows
+  `target_tracker_llm_authoring_enabled`), above which the AI tier decides as
+  everywhere else; `scorecard` in `narrated_code_slots` hands the lines back to
+  code without a call. `scripts/replay_scorecard_lines.py` pins every fact
+  kind, every rejection, every authoring path with a stand-in model, and that
+  every code-written line passes its own checks; mutation-tested (four
+  breakages, four caught).
 - **Verification.** `scripts/replay_daily_sales.py` (138 offline checks - both
   scale routes and the refusal path, every level reconciling, silent-row
   exclusion, the category/group grain, the edge tolerance, money-vs-percentage

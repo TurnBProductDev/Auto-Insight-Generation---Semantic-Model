@@ -630,11 +630,15 @@ _FEATURES: tuple[ConfigKey, ...] = (
     _k("report_ai_tier", "enum", "investigated", "features",
        "How much AI this report uses",
        "'AI investigates and writes' lets the AI plan the questions, pick the findings, dig into "
-       "them and write the wording - each report as it has always run. 'AI writes the wording' "
+       "them and write the wording - each report as it has always run. 'AI reasons, code "
+       "queries and checks' lets the AI choose which findings to report and decide what to ask "
+       "the data about them, while fixed rules build and check every query and every figure; "
+       "the AI never writes a number, and writes its own query only when none of the tested "
+       "ones fits. The page and its wording work as in the next option. 'AI writes the wording' "
        "keeps every choice with fixed rules - which findings, which breakdowns, which figures - "
        "and lets the AI write only the sentences, each one checked against the figures and "
        "replaced by the plain version if it fails. 'No AI' uses fixed rules for every step: "
-       "the same checked figures, costing nothing in AI, but plainer wording. The last two "
+       "the same checked figures, costing nothing in AI, but plainer wording. The last three "
        "override every other 'let the AI write' setting.",
        "src/tools/ai_tier.py. Below investigated no model decides: Sales YoY plans no summary "
        "DAX (validate_dax takes the no-valid-DAX route to the baseline portfolio), ranks signals "
@@ -644,26 +648,37 @@ _FEATURES: tuple[ConfigKey, ...] = (
        "_clarity_issues, per paragraph), the summary and dashboard wording, Target Tracker and "
        "Inventory Management prose, investigation narratives and KPI card text - each behind "
        "its existing validator and grounded fallback. Deterministic uses the fallback for "
-       "every slot. Sales YoY needs fresh_summary_enabled.",
+       "every slot. Reasoned is narrated plus ai_tier.REASONING_STEPS: the signal detector's "
+       "LLM selection (exact-id binding, _rank_and_cap; falls back to the rule-based selection "
+       "if the call fails) and the recipe investigation (insight_recipe_investigator over "
+       "insight_recipes; budget insight_reasoned_probe_allowance, custom DAX "
+       "insight_reasoned_custom_dax_per_finding; the gap-scan trail is its fallback). The "
+       "standalone reports treat reasoned as narrated. Sales YoY needs fresh_summary_enabled.",
        tier="standard",
-       choices=("investigated", "narrated", "deterministic"),
+       choices=("investigated", "reasoned", "narrated", "deterministic"),
        choice_labels=(("investigated", "AI investigates and writes"),
+                      ("reasoned", "AI reasons, code queries and checks"),
                       ("narrated", "AI writes the wording only"),
                       ("deterministic", "No AI - fixed rules only"))),
     _k("narrated_code_slots", "list", [], "features",
        "Parts that use plain fixed wording even when the AI writes",
-       "Only matters when 'How much AI this report uses' is 'AI writes the wording only'. Each "
-       "part listed here - the summary, the dashboard stories, the key insights or the insight "
-       "cards - uses the plain checked wording instead of AI wording, and costs nothing in AI; "
-       "the parts not listed keep AI wording. Leave it empty to let the AI write every part. "
-       "Listing a part you wanted AI-written only makes that part plainer, never wrong.",
-       "src/tools/ai_tier.code_slot. Narrated tier only; no effect on investigated or "
-       "deterministic. summary -> fresh_summary_generator's grounded R4 page (or single-focus "
+       "Only matters when 'How much AI this report uses' is 'AI writes the wording only' or "
+       "'AI reasons, code queries and checks'. Each "
+       "part listed here - the summary, the dashboard stories, the key insights, the insight "
+       "cards or the Home scorecard lines - uses the plain checked wording instead of AI "
+       "wording, and costs nothing in AI; the parts not listed keep AI wording. Leave it empty "
+       "to let the AI write every part. Listing a part you wanted AI-written only makes that "
+       "part plainer, never wrong.",
+       "src/tools/ai_tier.code_slot. Narrated and reasoned tiers only; no effect on "
+       "investigated or deterministic. summary -> fresh_summary_generator's grounded R4 page (or single-focus "
        "_fallback); dashboard -> summary_dashboard_builder._narratives returns no narratives; "
        "key_insights -> insight_deterministic.narrate_key_insights keeps the grounded drafts; "
-       "kpi_cards -> api_payloads takes the deterministic card-text path. An unknown name is "
-       "refused (strict_items), because a misspelt slot would silently switch nothing off.",
-       tier="expert", item_choices=("summary", "dashboard", "key_insights", "kpi_cards"),
+       "kpi_cards -> api_payloads takes the deterministic card-text path; scorecard -> "
+       "scorecard_lines.author keeps the code-written line under each Home scorecard figure "
+       "(Daily Sales and Target Tracker). An unknown name is refused (strict_items), because a "
+       "misspelt slot would silently switch nothing off.",
+       tier="expert",
+       item_choices=("summary", "dashboard", "key_insights", "kpi_cards", "scorecard"),
        strict_items=True),
     _k("summary_dashboard_entity_levers", "bool", True, "features",
        "Break each location down into trips, basket size and price",
@@ -824,6 +839,24 @@ _PUBLISHING: tuple[ConfigKey, ...] = (
        "Where cross-run memory for single-snapshot reports (Ageing, SKU Overview, "
        "Daily Sales) is kept, scoped by dataset and report so they cannot clash.",
        tier="expert", in_state=False),
+    _k("inventory_archive_storage", "enum", "auto", "publishing",
+       "Where each day's stock position is kept",
+       "'Follow the report's own storage' keeps them wherever the report is "
+       "already published. A scheduled job gets a fresh machine every run, so "
+       "positions kept only on that machine are lost and the report says today "
+       "is the first one ever kept, every morning.",
+       tier="expert", in_state=False,
+       choices=("auto", "local", "azure_blob"),
+       choice_labels=(("auto", "Follow the report's own storage"),
+                      ("local", "On this computer"),
+                      ("azure_blob", "Cloud storage"))),
+    _k("azure_blob_scan_archive_prefix", "string", "scan-archive", "publishing",
+       "Folder for kept stock positions",
+       "Where each day's scanned stock position is kept so tomorrow's run can "
+       "compare against it. Without this a scheduled job starts from an empty "
+       "machine every morning and reports that today is the first position ever "
+       "kept.",
+       tier="expert", in_state=False),
     _k("insight_memory_storage", "enum", "local", "publishing",
        "Where insight memory is kept",
        "In the cloud this must be 'cloud storage'. A scheduled job gets a fresh, empty machine "
@@ -907,6 +940,67 @@ _PUBLISHING: tuple[ConfigKey, ...] = (
        "ai_content_multi_report_feed is on; otherwise each report publishes its own "
        "insight_max_new_per_run cards.",
        in_state=False, tier="expert"),
+    _k("ai_content_highlights", "bool", False, "publishing",
+       "Publish Top Insights for the app's Home page",
+       "Turn this on only after your app has been updated to show Top Insights from it. Each "
+       "report then adds a few small facts that stood out - the best store against its "
+       "benchmark, a streak, the biggest riser - to a shared list the Home page reads. With it "
+       "off, nothing new is published and Home shows its own fallback.",
+       "Writes ai-content/kpi/client/highlights.json via ai_content_publisher.publish_run_highlights, "
+       "called by the Daily Sales, Target Tracker and Sales YoY publishers after their own blobs "
+       "(a failure is highlightsStatus in the receipt, never a failed report): a JSON array of "
+       "tools.highlights.Highlight items (stable id, kind, title, value, comparisonLabel, tone, "
+       "rank, isoDate = the run day, reportIds, reportSlug, reportName), read-merge-write with etag "
+       "over a one-day window, report-aware on reportSlug, capped by the two keys below. "
+       "Deterministic: no new query and no LLM call. Contract: Web App docs/home-v4/PLAN.md 5.2.",
+       in_state=False, tier="expert"),
+    _k("ai_content_highlights_per_report", "int", 2, "publishing",
+       "Top Insights each report may add",
+       "The most facts one report puts into the Home page's Top Insights list on a run.",
+       "Applied per run before the shared cap; the report's own best by rank survive.",
+       in_state=False, tier="expert"),
+    _k("ai_content_highlights_max_items", "int", 8, "publishing",
+       "Top Insights kept in total",
+       "The most facts the shared Top Insights list holds, across every report. Every report "
+       "that found something keeps at least one place. The Home page shows the best four.",
+       "Total budget across reports, divided by kernel.chain.fair_share keyed on reportSlug, the "
+       "same way ai_content_feed_max_cards divides the KPI feed.",
+       in_state=False, tier="expert"),
+    _k("ai_content_executive_brief", "bool", False, "publishing",
+       "Write the executive summary for the app's Home page",
+       "Turn this on only for the executive summary job, and only after your app has been "
+       "updated to show it. The job reads what this client's reports have already published "
+       "and writes one sentence per report, plus a few suggested questions. With it off the "
+       "job does nothing and Home joins the reports' own headlines instead.",
+       "src/brief (AGENT_RUNNER=executive_brief): reads each brief_reports entry's current "
+       "summary, the KPI feed and Top Insights from the client container, ranks reports by "
+       "their most severe card or figure, has the model write one sentence per report from "
+       "that report's facts only (every figure checked against them, one retry, else the "
+       "report's own headline) and overwrites ai-content/kpi/client/brief.json. Uploading also "
+       "needs ai_content_publish_enabled. Contract: Web App docs/home-v4/PLAN.md 5.1.",
+       in_state=False, tier="expert"),
+    _k("brief_reports", "list", [], "publishing",
+       "Reports the executive summary covers",
+       "Each report the Home executive summary may speak for: its short name, its display name "
+       "and the report IDs it is published under, copied from that report's own settings.",
+       "List of objects {report_id, report_name, ai_content_report_ids}: report_id is the slug "
+       "the KPI feed and Top Insights tag items with; the GUIDs key the summaries and let the "
+       "app drop lines about reports a reader cannot open. A malformed entry fails the job "
+       "rather than silently leaving a report out.",
+       item_type="object", in_state=False, tier="expert"),
+    _k("brief_max_lines", "int", 5, "publishing",
+       "Sentences in the executive summary",
+       "The most reports the Home executive summary speaks for, one sentence each, most "
+       "pressing first.",
+       "Applied after ranking; the Web App also caps at 5.",
+       in_state=False, tier="expert"),
+    _k("brief_suggested_questions", "int", 4, "publishing",
+       "Suggested questions for Ask ScanB",
+       "How many follow-up questions the executive summary suggests in the Ask ScanB panel. "
+       "With none, the app keeps its own default questions.",
+       "Each is checked like a brief line (figures from its report's facts only, no forecast) "
+       "and dropped, not replaced, when it fails. The Web App caps at 4.",
+       in_state=False, tier="expert"),
     _k("ai_content_kpi_card_fields", "bool", False, "publishing",
        "Add the extended KPI tile fields",
        "Turn this on only after your app has been updated to read them. It adds a human-readable "
@@ -919,6 +1013,22 @@ _PUBLISHING: tuple[ConfigKey, ...] = (
        "guessed unit or direction. OFF reproduces today's payload byte-for-byte. See "
        "kpi-tile-schema-proposal.md and docs/phase5-app-contract-change.md for the rollout pattern "
        "this follows.",
+       tier="expert"),
+    _k("ai_content_kpi_card_evidence", "bool", False, "publishing",
+       "Publish the workings behind each KPI tile",
+       "Turn this on to let the assistant explain a card instead of re-deriving it. Each tile "
+       "gains the measure it was computed on, the window it covers, the figures it was compared "
+       "against, and the branches or products that account for the movement - workings this "
+       "pipeline already does and currently throws away at publish time. Nothing on the tile "
+       "itself changes. With it off, cards look exactly as they do today.",
+       "Adds an `evidence` object to every KpiCard: measure/segment, window (mode + start/end), "
+       "baseline figures (actual/previous/expected), share of change, ranked drivers from "
+       "segment_members, and the rate/volume decomposition where the signal carries one. Each "
+       "sub-field is present only when the signal actually supports it. Assembled by "
+       "api_payloads._card_evidence out of facts _signal_facts already computes for the authoring "
+       "prompt - no new query, no new LLM call. Read by the AI Bot straight from ai-content "
+       "(ScanB-AI-Bot/context_resolver.py); it never passes through the web app, so no app change "
+       "is needed to turn it on. OFF reproduces today's payload byte-for-byte.",
        tier="expert"),
     _k("ai_content_kpi_currency", "string", "", "publishing",
        "Currency for KPI tiles with no report-specific currency set",
@@ -1066,11 +1176,13 @@ _SUMMARY_TUNING: tuple[ConfigKey, ...] = (
        "Let the AI write the Target Tracker wording",
        "When off, the report uses fixed sentences built from the figures. When on, the AI "
        "rewrites those sentences to read better. It can never change a number, add a section "
-       "or leave a period out.",
+       "or leave a period out. This also covers the short line under the target figure on the "
+       "app's Home page.",
        "Every draft is checked against the rulebook before it is used: figures must exist in "
        "the report and be rounded, no cause may be asserted, no prior-year comparison, no "
        "forecasting, no banned vocabulary. A draft that fails twice is discarded and the "
-       "deterministic wording is kept, so the report ships either way.",
+       "deterministic wording is kept, so the report ships either way. The Home scorecard "
+       "line is scorecard_lines.author, checked against its own fact the same way.",
        tier="standard", in_state=False),
     _k("target_tracker_material_pct", "float", 5.0, "summary_tuning",
        "Difference from target that counts as significant (%)",
@@ -1274,6 +1386,19 @@ _SUMMARY_TUNING: tuple[ConfigKey, ...] = (
     _k("daily_sales_currency", "string", "USD", "summary_tuning",
        "Currency shown on the Daily Sales page",
        "The currency code printed beside every Daily Sales value.",
+       tier="standard", per_client=True, in_state=False),
+    _k("daily_sales_llm_authoring_enabled", "bool", False, "features",
+       "Let the AI write the Daily Sales scorecard lines",
+       "The app's Home page shows a short line under each Daily Sales figure, such as 'Below "
+       "its normal range for 3 days in a row'. When off, those lines use fixed wording. When "
+       "on, the AI rewrites each one in plainer words. It cannot change the fact, the direction "
+       "or the number of days.",
+       "scorecard_lines.author. Code picks each line's fact from the published history; the "
+       "model only rewords it, and every draft is checked against that fact (its numbers, its "
+       "direction, length, no cause, no forecast, no jargon). A line that fails twice keeps the "
+       "code-written sentence. The AI tier decides above this switch, as for every other "
+       "'let the AI write' setting. Target Tracker's line follows "
+       "target_tracker_llm_authoring_enabled.",
        tier="standard", per_client=True, in_state=False),
     _k("daily_sales_investigation_enabled", "bool", False, "summary_tuning",
        "Turn on Daily Sales hotspot investigation",
@@ -1665,6 +1790,29 @@ _INSIGHT_TUNING: tuple[ConfigKey, ...] = (
     _k("insight_probe_max_rows", "int", 20, "insight_tuning",
        "Rows returned by a follow-up query",
        "Keeps investigation results readable."),
+    _k("insight_reasoned_probe_allowance", "int", 2, "insight_tuning",
+       "Extra questions the AI may ask per finding",
+       "Only matters when 'How much AI this report uses' is 'AI reasons, code queries and "
+       "checks'. After the standard breakdowns, the AI may ask the data up to this many more "
+       "questions about each finding, each through a tested query. Zero leaves it only the "
+       "free questions - ones answered from figures already fetched. Each question is one more "
+       "query against your dashboard's data, and never more than the per-finding limit above "
+       "allows.",
+       "Reasoned tier only (insight_recipe_investigator). Per finding: min(allowance, configured "
+       "insight_max_investigation_rounds - gap_probes_used, the day's escalated rounds). The "
+       "escalated rounds apply once, not on top of the gap scan's share, so an ordinary "
+       "adaptive day still leaves room. Free recipes and cache hits cost nothing.",
+       tier="expert"),
+    _k("insight_reasoned_custom_dax_per_finding", "int", 1, "insight_tuning",
+       "Own queries the AI may write per finding",
+       "Only matters when 'How much AI this report uses' is 'AI reasons, code queries and "
+       "checks'. When none of the tested questions fits, the AI may write its own query, at "
+       "most this many times per finding; it counts towards the extra questions above and goes "
+       "through the same checks. Zero takes the option away entirely.",
+       "Reasoned tier only. The custom_dax recipe (validate_one + validate_comparable_scope "
+       "without the contract hint) and its list_model_objects helper are offered only while "
+       "this is above zero and the finding has budget left.",
+       tier="expert"),
     _k("adaptive_investigation_enabled", "bool", False, "insight_tuning",
        "Spend on investigation only when there is news",
        "Buys follow-up investigation in proportion to how many unreported findings the day "

@@ -23,11 +23,13 @@ Two rules this module exists to enforce:
 
 from __future__ import annotations
 
+import datetime as _dt
 import hashlib
 import json
 from typing import Any
 
 from . import spines
+from .target_tracker import fmt_date
 
 REPORT_ID = "target_tracker"
 REPORT_NAME = "Target Tracker"
@@ -257,22 +259,35 @@ def surplus_exhausting(model: dict) -> list[dict]:
     run_days = max(1, int(_num(surplus.get("run_days")) or 1))
     per_day = abs(_num(surplus.get("given_back")) or 0.0) / run_days
     month_target = _num((model.get("periods") or {}).get("mtd", {}).get("target"))
+    try:
+        runs_out = fmt_date(_dt.date.fromisoformat(str(exhausts_on)), "medium")
+    except ValueError:
+        runs_out = str(exhausts_on)
+    # The figure is the lead the month still holds, so it is published as the
+    # positive number it is. It used to go out as -abs(now), which put "-39.8K"
+    # on a card whose own sentence said the month was 39,824 AHEAD. The finding
+    # is still a warning - the lead is being given back - so the grade is taken
+    # from the shortfall reading and stated explicitly, rather than from the
+    # sign, which _severity would read as "positive".
     return [_signal(
         finding="target_surplus_exhausting",
         member="",
         segment="Whole business",
         dimension="period",
-        impact_value=-abs(now),
+        impact_value=abs(now),
         base_target=month_target,
         anchor=str(model.get("anchor") or ""),
         comparison_label="against the target for this month so far",
         description=(
             f"The month is {now:,.0f} ahead of target, but the last {run_days} days have been "
-            f"giving back {per_day:,.0f} a day. At that rate the surplus is used up around "
-            f"{exhausts_on}."
+            f"giving back {per_day:,.0f} a day. At that rate the lead is used up around "
+            f"{runs_out}."
         ),
         question="Which branches are giving back the most against target?",
         extra={
+            "severity": _severity(-abs(now), _pct(now, month_target) or 0.0),
+            "value_label": "Ahead of the month target so far",
+            "share_label": "Lead as a share of the month target",
             "exhausts_on": exhausts_on,
             "days_until_exhausted": days_until,
             "surplus_now": now,

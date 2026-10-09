@@ -139,14 +139,52 @@ def _tone_for_share(share: float | None, *, warn: float, critical: float) -> str
     return "positive"
 
 
+#: Colour never carries meaning on its own. A red stripe and a green one are
+#: exactly what a colourblind reader cannot tell apart, so every tone on this
+#: page travels with a word and this is the single vocabulary for them.
+SEVERITY_WORDS = {
+    "critical": "Critical",
+    "warn": "At Risk",
+    "positive": "Healthy",
+    "neutral": "",
+}
+
+
+def severity_word(tone: Any) -> str:
+    return SEVERITY_WORDS.get(str(tone), "")
+
+
+#: How much of the whole score loss a single risk has to carry before it is
+#: named a big problem. Bands, not a ranking: the second-largest risk on a
+#: healthy position should not be called critical just for being second.
+RISK_SHARE_CRITICAL_PCT = 25.0
+RISK_SHARE_WARN_PCT = 10.0
+
+
+def risk_severity(share_pct: Any) -> tuple[str, str]:
+    """A risk's share of the whole loss, as a tone and the word for it."""
+    share = _num(share_pct)
+    if share is None:
+        return "neutral", ""
+    if share >= RISK_SHARE_CRITICAL_PCT:
+        return "critical", "Big problem"
+    if share >= RISK_SHARE_WARN_PCT:
+        return "warn", "Real problem"
+    return "positive", "Small"
+
+
 def _kpi(label: str, value: Any, *, sub: str = "", tone: str = "neutral",
-         caution: str = "", change_display: str = "") -> dict:
+         caution: str = "", change_display: str = "", pill: str = "") -> dict:
     return {
         "label": label,
         "value_display": _sar(value) if isinstance(value, (int, float)) else str(value),
         "change_display": change_display,
         "note": sub,
-        "rag": {"tone": tone, "caution": caution},
+        # `label` is what the shared renderer turns into the dot-plus-word RAG
+        # strip. Without it the card emitted a coloured stripe and an EMPTY
+        # badge - severity by colour alone, which is reference gap 7.
+        "rag": {"tone": tone, "caution": caution,
+                "label": pill or severity_word(tone)},
     }
 
 
@@ -772,7 +810,8 @@ def _stock_health_view(report, header, stock, excess, queue, key, score=None) ->
     if scoped:
         kpis = [
             _kpi("Lines needing action", f"{rows:,}",
-                 sub="Product-location lines in an exception state.", tone="critical"),
+                 sub="Product-location lines in an exception state.",
+                 tone="critical", pill="Needs action"),
             _kpi("Value on those lines", value,
                  sub=f"{_pct(_share(value, stock))} of stock value."),
             _kpi("Most urgent lines", f"{double_rows:,}",
@@ -785,22 +824,26 @@ def _stock_health_view(report, header, stock, excess, queue, key, score=None) ->
             _kpi("Held above agreed cover", excess,
                  sub=f"{_pct(excess_share)} of stock value. The portion above cover only, not "
                      f"the whole value of overstocked products.",
-                 tone=_tone_for_share(excess_share, warn=25.0, critical=35.0)),
+                 tone=_tone_for_share(excess_share, warn=25.0, critical=35.0),
+                 pill="Largest risk"),
             _kpi("Lines needing action", f"{sum(r['loc_skus'] for r in queue if r.get('is_exception')):,}",
                  sub=f"of {int(_num(header.get('loc_skus')) or 0):,} product-location lines.",
-                 tone="warn"),
+                 tone="warn", pill="Needs action"),
             _kpi("Most urgent lines", f"{double_rows:,}",
                  sub="Not selling with stock on order, or out of stock with no "
                      "order placed.",
-                 tone="critical" if double_rows else "positive"),
+                 tone="critical" if double_rows else "positive",
+                 pill="Act now" if double_rows else "Healthy"),
             _kpi("Sales missed each day", opp,
                  sub="Top-selling locally bought products, at stores only.",
+                 tone="warn", pill="Estimate",
                  caution="An estimate from the recent rate of sale, not confirmed "
                          "lost revenue."),
             _kpi("Overstocked with more coming", f"{unwanted:,}",
                  sub=f"products, with {_sar(header.get('unwanted_pending_value'))} "
                      f"of orders still open.",
-                 tone="critical" if unwanted else "positive"),
+                 tone="critical" if unwanted else "positive",
+                 pill="Act now" if unwanted else "Healthy"),
         ]
 
     signals = []
@@ -832,7 +875,7 @@ def _stock_health_view(report, header, stock, excess, queue, key, score=None) ->
         "kind": "stock_health",
         "total_value": stock,
         "labels": dict(STOCK_HEALTH_LABELS),
-        "owns_breakdowns": True,
+        "owns_breakdowns": not scoped,
         "period": {"data_as_of": report.get("as_at"), "grain": "snapshot"},
         # The authored slots when they exist, the grounded wording otherwise.
         # Both have been through the same validator, so the page cannot tell
@@ -844,6 +887,10 @@ def _stock_health_view(report, header, stock, excess, queue, key, score=None) ->
                              f"{_sar(excess)} is held above the agreed cover")),
             "narrative": (prose.get("narrative")
                           or (report.get("narrative") or [""])[0]),
+            # The hero carries its own figures. Without them it emitted two
+            # children into a two-column grid inherited from the sales page and
+            # the headline floated into the wrong column - reference gap 1.
+            "stats": _hero_stats(report, header, stock, excess, queue, scoped),
         },
         "kpis": kpis,
         "signals": signals,
@@ -853,7 +900,17 @@ def _stock_health_view(report, header, stock, excess, queue, key, score=None) ->
                 # A summary shows the top of the queue, never all fifteen rows.
                 "queue": queue[:SUMMARY_QUEUE_ROWS],
                 "queue_total": len(queue),
-                "trend": report.get("trend") or [],
+                # The model's own kept Stock Value readings. Short by design -
+                # a handful of dates is a shape, never a series to project
+                # forward from, and the caption says so where the chart is.
+                # An all-stock series. In the scoped view it would sit above
+                # KPIs counting only the exception lines, describing a
+                # different population from everything around it.
+                "trend": [] if scoped else (report.get("trend") or []),
+                "trend_caption": (
+                    "Total Stock Value at each date the source model has kept. "
+                    "A few readings are a shape, not a trend to project "
+                    "forward from."),
             },
             "score": _score_layer(score, scoped),
             "focus": _focus_layer(score, report, scoped),
@@ -861,11 +918,27 @@ def _stock_health_view(report, header, stock, excess, queue, key, score=None) ->
                 "available": bool(locations) and not scoped,
                 "role": "location",
                 "cards": _stock_health_cards(locations),
+                # Warehouses and stores hold stock for different reasons, so a
+                # single ranked list puts a distribution centre above every shop
+                # and reads as a shop problem. They are split, and each states
+                # its own total.
+                "stores": _stock_health_cards(
+                    [r for r in locations
+                     if str(r.get("loc_type") or "").upper() != "WH"]),
+                "warehouses": _stock_health_cards(
+                    [r for r in locations
+                     if str(r.get("loc_type") or "").upper() == "WH"]),
                 "caption": "Each location's stock held above the agreed cover.",
                 "rate_unit": "above-cover",
                 "average_rate": excess_share,
                 "pointer": _POINTER if scoped else "",
                 "scores": (score or {}).get("by_location") or [],
+                # The historical series per location, and the locations that
+                # have emptied since it began. A location holding nothing
+                # returns no row from the position queries, so this is the only
+                # place a wind-down is visible at all.
+                "trend": [] if scoped else (report.get("location_trend") or []),
+                "wind_down": [] if scoped else (report.get("wind_down") or []),
             },
             "areas": {
                 "available": bool(divisions) and not scoped,
@@ -882,10 +955,17 @@ def _stock_health_view(report, header, stock, excess, queue, key, score=None) ->
                 "queue_note": (("All %d Recommended Action states." % len(queue))
                                if not scoped
                                else "Only the states that need action."),
-                "sections": report.get("sections") or [],
-                "segments": report.get("segments") or [],
-                "non_moving_bands": report.get("non_moving_bands") or [],
-                "damage": report.get("damage") or [],
+                # The queue genuinely filters to this view. The section, segment,
+                # non-moving and damage splits do NOT - they are calculated
+                # across all stock - so printing them here put rows under a
+                # heading whose totals they do not add to. They are withheld and
+                # the view names the one that owns them.
+                "sections": [] if scoped else (report.get("sections") or []),
+                "segments": [] if scoped else (report.get("segments") or []),
+                "non_moving_bands": ([] if scoped
+                                     else (report.get("non_moving_bands") or [])),
+                "damage": [] if scoped else (report.get("damage") or []),
+                "pointer": _POINTER if scoped else "",
             },
         },
         "limitations": (
@@ -920,7 +1000,9 @@ def _score_layer(score, scoped: bool) -> dict:
         # biggest cause first, and the six deductions add to the whole of the
         # loss so nothing is left unexplained.
         "waterfall": [{"name": r["name"], "model_name": r["model_name"],
-                       "points": r["points"], "share_pct": r["share_of_loss_pct"]}
+                       "points": r["points"], "share_pct": r["share_of_loss_pct"],
+                       "tone": risk_severity(r["share_of_loss_pct"])[0],
+                       "severity": risk_severity(r["share_of_loss_pct"])[1]}
                       for r in score.get("risks") or []],
         "risks": score.get("risks") or [],
         "status_bands": score.get("status_bands") or [],
@@ -954,12 +1036,22 @@ def _focus_layer(score, report: dict, scoped: bool) -> dict:
             "loc_skus": risk["loc_skus"],
             "value": risk["value"],
             "at_cap": risk["at_cap"],
+            "risk_cap": score.get("risk_cap"),
+            "tone": risk_severity(risk["share_of_loss_pct"])[0],
+            "severity": risk_severity(risk["share_of_loss_pct"])[1],
             # Four slots. The first is "What it is", not "What changed": the
             # model holds one position, so a slot headed "What changed" could
             # only be filled with something invented.
             "what_it_is": _what_it_is(risk),
+            # The mechanism, not a restatement of the number. Built from the
+            # score's own terms, whose VALUES are the model's published measures
+            # - only the weights stopped reconciling, so naming a term and its
+            # level stays grounded even when the method panel is dropped.
+            "why": _why(risk),
             "effect": _effect(risk, score.get("points_lost") or 0.0),
             "do_this": _do_this(risk, header),
+            "stat_value": _stat_value(risk),
+            "stat_caption": _stat_caption(risk),
         })
     return {
         "available": True,
@@ -981,6 +1073,84 @@ def _what_it_is(risk: dict) -> str:
         return "%s Loc-SKUs, carrying %s of sales at risk." % (
             format(lines, ","), _sar(value))
     return "%s Loc-SKUs, holding %s." % (format(lines, ","), _sar(value))
+
+
+#: What each of the score's own terms actually measures, in the page's words.
+#: The term NAMES come from the model; this only translates them, so a term the
+#: model renames is still reported - just without the gloss.
+_TERM_MEANING = {
+    "duration": "how long it has been sitting in this state",
+    "sku breadth": "how much of the range is affected",
+    "value impact": "how much money is tied up in it",
+    "sales impact": "how much selling it is costing",
+    "segment severity": "how fast the affected products normally sell",
+    "severity": "how far past the thresholds it sits",
+}
+
+
+def _why(risk: dict) -> str:
+    """Why this risk is costing what it costs, from the score's own terms.
+
+    Deliberately not a restatement of the points: the reader already has those
+    in the slot below. This names the term carrying the risk and how high it
+    reads, which is the difference between "there is a lot of it" and "it has
+    been there a long time" - two findings with opposite responses.
+    """
+    dims = [d for d in risk.get("dimensions") or []
+            if _num(d.get("value")) is not None]
+    if not dims:
+        return ("This model does not publish how the risk is built up, so what "
+                "is driving it cannot be stated from the data.")
+    ranked = sorted(dims, key=lambda d: _num(d.get("value")) or 0.0, reverse=True)
+    lead = ranked[0]
+    lead_pct = (_num(lead.get("value")) or 0.0) * 100.0
+    lead_name = str(lead.get("name") or "").strip()
+    meaning = _TERM_MEANING.get(lead_name.lower())
+
+    if lead_pct >= 99.5:
+        text = "%s is at its maximum (%.1f%%)" % (lead_name, lead_pct)
+    else:
+        text = "%s is the highest term at %.1f%%" % (lead_name, lead_pct)
+    text += (" - %s." % meaning) if meaning else "."
+
+    if len(ranked) > 1:
+        second = ranked[1]
+        second_pct = (_num(second.get("value")) or 0.0) * 100.0
+        second_name = str(second.get("name") or "").strip()
+        second_meaning = _TERM_MEANING.get(second_name.lower())
+        text += " Next is %s at %.1f%%" % (second_name, second_pct)
+        text += (" - %s." % second_meaning) if second_meaning else "."
+    if risk.get("at_cap"):
+        text += (" The risk has reached its cap, so the score cannot register "
+                 "it getting any worse than this.")
+    return text
+
+
+def _stat_value(risk: dict) -> str:
+    """The one figure this risk is best summarised by."""
+    value = _num(risk.get("value"))
+    if value:
+        return _sar(value)
+    return format(int(_num(risk.get("loc_skus")) or 0), ",")
+
+
+#: What the headline figure on each story card actually is. Excess is the
+#: surplus above cover, never the whole value of an overstocked line (BR-20),
+#: and the caption says so where the number is.
+_STAT_CAPTIONS = {
+    "excess": "held above the agreed cover - the portion above the threshold only",
+    "ageing": "held on the oldest Loc-SKUs",
+    "dead": "held on Loc-SKUs with no sales",
+    "oos": "of sales at risk while these lines are out of stock",
+    "verge": "of sales at risk on lines about to run out",
+    "damage": "written off",
+}
+
+
+def _stat_caption(risk: dict) -> str:
+    if not _num(risk.get("value")):
+        return "Loc-SKUs affected"
+    return _STAT_CAPTIONS.get(risk.get("key"), "affected")
 
 
 def _effect(risk: dict, lost: float) -> str:
@@ -1018,6 +1188,35 @@ def _do_this(risk: dict, header: dict) -> str:
     return step
 
 
+def _hero_stats(report, header, stock, excess, queue, scoped: bool) -> list[dict]:
+    """Three supporting figures beside the headline, never more.
+
+    A hero that states a conclusion without the numbers under it asks the reader
+    to take it on trust; a hero carrying six asks them to read a table.
+    """
+    rows = sum(r.get("loc_skus") or 0 for r in queue)
+    value = sum(r.get("stock_value") or 0.0 for r in queue)
+    doubles = sum(r.get("loc_skus") or 0 for r in queue if r.get("double_warning"))
+    if scoped:
+        return [
+            {"value": f"{rows:,}", "label": "Loc-SKUs in a state needing action",
+             "tone": "critical"},
+            {"value": _sar(value), "label": "stock value on those lines",
+             "tone": "neutral"},
+            {"value": f"{doubles:,}", "label": "on the two most urgent states",
+             "tone": "critical"},
+        ]
+    exception_rows = sum(r.get("loc_skus") or 0 for r in queue
+                         if r.get("is_exception"))
+    return [
+        {"value": _sar(stock), "label": "stock value held", "tone": "neutral"},
+        {"value": _sar(excess),
+         "label": "of it above the agreed cover", "tone": "critical"},
+        {"value": f"{exception_rows:,}",
+         "label": "Loc-SKUs needing action", "tone": "critical"},
+    ]
+
+
 def _stock_health_cards(rows: Sequence[dict]) -> list[dict]:
     total = sum(_num(r.get("excess_value")) or 0.0 for r in rows) or 1.0
     cards = []
@@ -1037,6 +1236,8 @@ def _stock_health_cards(rows: Sequence[dict]) -> list[dict]:
             "share_of_group_pct": _share(excess, total),
             "own_share_pct": own,
             "tone": _tone_for_share(own, warn=35.0, critical=50.0),
+            "severity": severity_word(
+                _tone_for_share(own, warn=35.0, critical=50.0)),
         })
     return cards
 
@@ -1053,6 +1254,8 @@ def _stock_health_area(row: dict) -> dict:
         "own_share": _share(excess, held),
         "group_share": None,
         "tone": _tone_for_share(_share(excess, held), warn=35.0, critical=50.0),
+        "severity": severity_word(
+            _tone_for_share(_share(excess, held), warn=35.0, critical=50.0)),
     }
 
 

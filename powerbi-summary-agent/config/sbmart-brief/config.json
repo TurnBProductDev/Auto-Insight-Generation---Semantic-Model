@@ -1,0 +1,43 @@
+{
+  "tenant_id":"315642c5-e14a-4c12-bf77-41ee070def79",
+  "workspace_id": "2829a4af-2e07-4b43-b913-0a829a06bef4",
+  "dataset_id": "a07384e3-639e-47ec-a0e0-846f20c39951",
+  "output_folder": "outputs_sbmart_brief",
+  "ai_provider": "azure_openai",
+  "model": "claude-sonnet-5",
+  "azure_openai_api_key_env": "AZURE_OPENAI_API_KEY",
+  "openai_api_key_env": "OPENAI_API_KEY",
+  "anthropic_api_key_env": "ANTHROPIC_API_KEY",
+  "max_tokens": 1500,
+  "report_ai_tier": "narrated",
+  "azure_blob_account": "turnbtestblobstorage",
+  "ai_content_publish_enabled": true,
+  "ai_content_client": "sb-mart",
+  "ai_content_ttl_hours": 24,
+  "ai_content_executive_brief": false,
+  "brief_max_lines": 5,
+  "brief_suggested_questions": 4,
+  "brief_reports": [
+    {
+      "report_id": "daily_sales",
+      "report_name": "SB Mart Daily Sales",
+      "ai_content_report_ids": [
+        "6ddd2afa-a1b4-443c-854d-e1ec4ad88e77"
+      ]
+    },
+    {
+      "report_id": "target_tracker",
+      "report_name": "SB Mart Target Tracker",
+      "ai_content_report_ids": [
+        "02e86e30-e985-4f37-97a8-40d4bd7e821d"
+      ]
+    },
+    {
+      "report_id": "sales_yoy",
+      "report_name": "SB Mart Sales vs Previous Year",
+      "ai_content_report_ids": [
+        "aafb8798-6ed6-4b8b-bc48-9ea7c97e13fc"
+      ]
+    }
+  ]
+}

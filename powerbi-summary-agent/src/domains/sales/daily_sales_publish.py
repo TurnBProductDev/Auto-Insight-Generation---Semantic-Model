@@ -31,12 +31,19 @@ def summary_payload(page: dict, *, title: str = "Daily Sales",
     """The app-facing summary, in the shared report-summary contract."""
     from ...tools.api_payloads import ReportSummaryPayload
 
+    from .scorecard_lines import daily_sales_facts, deterministic
+
     currency = str(page.get("currency") or "")
+
+    # The Home scorecard's lines. The runner authors them (the model may word
+    # them); a page built without that step gets the code-written lines, so
+    # the payload is complete either way.
+    lines = page.get("scorecard_lines") or deterministic(daily_sales_facts(page))
 
     # The KPI row the page already built: same four measures, same wording, so
     # the app card and the page can never quote different figures for the same
     # day. Reading the raw bundles here would mean a second formatter.
-    metrics = [_metric(entry, page) for entry in (page.get("kpis") or [])]
+    metrics = [_metric(entry, page, lines) for entry in (page.get("kpis") or [])]
     if not metrics:
         metrics = [{"label": "Net Sales", "value": "—", "tone": "info"}]
 
@@ -69,11 +76,14 @@ def summary_payload(page: dict, *, title: str = "Daily Sales",
             {"heading": "What these figures cover", "tone": "info",
              "points": coverage_points},
         ],
+        # The day every figure above describes. The app labels its scorecard
+        # with it, so a late run reads as that day rather than as "yesterday".
+        "dataAsOf": page.get("as_at") or None,
     }
     return ReportSummaryPayload(**payload).model_dump(exclude_none=True)
 
 
-def _metric(entry: dict, page: dict) -> dict:
+def _metric(entry: dict, page: dict, lines: dict | None = None) -> dict:
     """One published KPI: the figure, and what it should be read against.
 
     This used to keep only label/value/tone, which is enough to print "USD
@@ -106,6 +116,23 @@ def _metric(entry: dict, page: dict) -> dict:
         if measure.get("p50") is not None:
             band["benchmark"] = float(measure["p50"])
         metric["band"] = band
+
+    # The Home scorecard's reading: the recent days, the change against the
+    # benchmark, two small figures and the line. All built on the page
+    # (`daily_sales_dashboard.scorecard`), so the app and the report page
+    # quote the same numbers.
+    card = (page.get("scorecard") or {}).get(entry.get("key") or "") or {}
+    if card.get("series"):
+        metric["series"] = card["series"]
+    for field in ("delta", "deltaDirection", "goodDirection"):
+        if card.get(field):
+            metric[field] = card[field]
+    if card.get("stats"):
+        metric["stats"] = card["stats"]
+    line = (lines or {}).get(entry.get("key") or "")
+    if line and line.get("text"):
+        metric["takeaway"] = line["text"]
+        metric["takeawayTone"] = line.get("tone") or "info"
     return metric
 
 
@@ -117,6 +144,13 @@ def history_entry(page: dict, payload: dict, report_id: str, generated_at: datet
 
     return {
         "reportId": report_id,
+        # `date` is the CONTRACT name for this version key: the web app
+        # echoes it back as `&date=` and the AI Bot drops any row without
+        # it. `asAt` is this report's own name for the same date and is
+        # what merge_index below is keyed on, so both are published —
+        # publishing only asAt is what made this report report "no
+        # history" from a fully populated index.
+        "date": page.get("as_at"),
         "asAt": page.get("as_at"),
         # The app reads `dataAsOf` off the index row to say how current a
         # summary is; `asAt` is this report's own key for the same date and
@@ -198,6 +232,7 @@ def publish(cfg: dict, out_dir: Path, page: dict, *,
     client_container = str(cfg.get("ai_content_client") or "").strip().lower()
     app_status = "skipped"
     feed_status = "skipped"
+    highlights_status = "skipped"
     cards = list(cards or [])
     if cfg.get("ai_content_publish_enabled", False) and client_container:
         envelope = {
@@ -256,9 +291,25 @@ def publish(cfg: dict, out_dir: Path, page: dict, *,
             except Exception as exc:  # noqa: BLE001 - never cost the report
                 feed_status = f"failed: {type(exc).__name__}: {exc}"
 
+        # Top Insights for the Web App's Home (tools/highlights.py). Never
+        # raises: a failure is reported in the receipt, not by the report.
+        if cfg.get("ai_content_highlights", False):
+            from ...tools import ai_content_publisher as feed
+
+            slug = str(cfg.get("report_id") or "daily_sales")
+            highlights_status = feed.publish_run_highlights(
+                svc.get_container_client(client_container),
+                extract=lambda hl: hl.from_daily_sales(
+                    page, report_ids, report_slug=slug, report_name=cfg.get("report_name")),
+                report_slug=slug, client=client_container,
+                dataset_id=str(cfg.get("dataset_id") or ""), cfg=cfg, now=now,
+                expires=expires, json_settings=json_ct, receipts=receipts,
+            )
+
     return {
         "status": "ok", "auth": auth, "account": account,
         "store": f"{store}/{base}" if base else store,
         "appContainer": client_container, "appStatus": app_status, "feedStatus": feed_status,
+        "highlightsStatus": highlights_status,
         "reportIds": report_ids, "asAt": as_at, "receipts": receipts,
     }

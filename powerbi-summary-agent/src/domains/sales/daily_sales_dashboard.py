@@ -511,6 +511,162 @@ def _trend(rows: list[dict], key: str = "net_sales") -> dict | None:
     }
 
 
+# ---------------------------------------------------------------------------
+# the Home scorecard: each measure's recent days, for the Web App's tiles
+# ---------------------------------------------------------------------------
+
+_SCORECARD_KEYS = ("net_sales", "bills", "basket_value", "margin")
+
+#: The history the scorecard carries - the window `_Sparkline14` holds. The
+#: Web App draws the last seven of these days.
+SCORECARD_DAYS = 14
+
+#: The days behind the tile's average figure, and the days its reading
+#: counts over.
+SCORECARD_WINDOW = 7
+
+_SIDE = {"crit": "below", "good": "above", "neutral": "inside"}
+
+
+def _scorecard_history(rows: list[dict], key: str) -> list[dict]:
+    """The measure's recent days from the model's reconciled `trend`, oldest
+    first, with where each day sat against its own band.
+
+    Never from raw rows: Net Sales benchmarks arrive on a source scale 3.7x
+    the reporting scale, and `trend` is where they have already been put on
+    one scale. A day with no actual is left out rather than sent as a zero."""
+    out = []
+    for row in rows[-SCORECARD_DAYS:]:
+        measure = row.get(key) or {}
+        actual = _f(measure.get("actual"))
+        if actual is None:
+            continue
+        out.append({
+            "date": row["date"], "actual": actual,
+            "p20": _f(measure.get("p20")), "p50": _f(measure.get("p50")),
+            "p80": _f(measure.get("p80")),
+            "side": _SIDE.get((measure.get("verdict") or {}).get("key")),
+            # Carried so a ratio's window figure, and its benchmark, can be
+            # built from totals.
+            "sales": _f(((row.get("net_sales") or {}).get("actual"))),
+            "bills": _f(((row.get("bills") or {}).get("actual"))),
+            "sales_p50": _f(((row.get("net_sales") or {}).get("p50"))),
+            "bills_p50": _f(((row.get("bills") or {}).get("p50"))),
+        })
+    return out
+
+
+def _window_figure(key: str, history: list[dict]) -> float | None:
+    """The measure over the last `SCORECARD_WINDOW` days, as the measure is
+    defined - not as the average of its daily values.
+
+    Basket Value is sales over bills and Margin is profit over sales, so the
+    week's figure is the ratio of the week's totals. Averaging seven daily
+    ratios instead weights a quiet day like a busy one and gives a slightly
+    different number, which would then sit beside the report's own figures
+    and disagree with them. Margin is sales-weighted, which is the same
+    thing as total profit over total sales."""
+    days = history[-SCORECARD_WINDOW:]
+    if len(days) < 2:
+        return None
+    if key in ("net_sales", "bills"):
+        return sum(d["actual"] for d in days) / len(days)
+    if key == "basket_value":
+        if any(d["sales"] is None or not d["bills"] for d in days):
+            return None
+        return sum(d["sales"] for d in days) / sum(d["bills"] for d in days)
+    if any(d["sales"] is None for d in days):
+        return None
+    weight = sum(d["sales"] for d in days)
+    return (sum(d["actual"] * d["sales"] for d in days) / weight) if weight else None
+
+
+def _window_benchmark(key: str, history: list[dict]) -> float | None:
+    """The benchmark for the SAME days as `_window_figure`, built the same way.
+
+    This is what the week's figure has to be read against. The day's own
+    benchmark is for one weekday, and trade here has a strong weekly shape -
+    on the live model a Friday sells about three times a Sunday - so the
+    week to Sunday 13 Sep, level with its own benchmarks (+0.4%), read 40%
+    up beside that Sunday's benchmark. Each day's P50 already carries its
+    weekday, so their average over the same days is the like-for-like
+    figure."""
+    days = history[-SCORECARD_WINDOW:]
+    if len(days) < 2 or any(d["p50"] is None for d in days):
+        return None
+    if key in ("net_sales", "bills"):
+        return sum(d["p50"] for d in days) / len(days)
+    if key == "basket_value":
+        if any(d["sales_p50"] is None or not d["bills_p50"] for d in days):
+            return None
+        return sum(d["sales_p50"] for d in days) / sum(d["bills_p50"] for d in days)
+    if any(d["sales_p50"] is None for d in days):
+        return None
+    weight = sum(d["sales_p50"] for d in days)
+    return (sum(d["p50"] * d["sales_p50"] for d in days) / weight) if weight else None
+
+
+def _scorecard_delta(key: str, measure: dict) -> dict:
+    """The day against its benchmark, unsigned, with its direction - the
+    shape `KpiCard.delta` already uses. Margin moves in points, the rest in
+    percent. A change that rounds to nothing carries no direction: an arrow
+    on "0.0%" would claim a move the figure does not show."""
+    actual, p50 = _f(measure.get("actual")), _f(measure.get("p50"))
+    if actual is None or p50 is None:
+        return {}
+    if key == "margin":
+        change = actual - p50
+        text = f"{abs(change):.2f} pts"
+    else:
+        if not p50:
+            return {}
+        change = (actual / p50 - 1.0) * 100.0
+        text = f"{abs(change):.1f}%"
+    out = {"delta": text, "goodDirection": "up"}
+    if float(text.split()[0].rstrip("%")) > 0:
+        out["deltaDirection"] = "down" if change < 0 else "up"
+    return out
+
+
+def scorecard(model: dict) -> dict:
+    """Each measure's history, its change and its two small figures, keyed by
+    measure. `history` stays on the page (scorecard_lines reads it); the rest
+    is what `daily_sales_publish` copies into the app payload."""
+    whole = model.get("whole") or {}
+    currency = model["currency"]
+    rows = model.get("trend") or []
+    out: dict = {}
+    for key in _SCORECARD_KEYS:
+        measure = whole.get(key) or {}
+        history = _scorecard_history(rows, key)
+        fmt = _fmt(key, currency)
+        series = []
+        for day in history:
+            point = {"date": day["date"], "value": day["actual"]}
+            if day["p50"] is not None:
+                point["benchmark"] = day["p50"]
+            series.append(point)
+        # The week against the week's own benchmark - never against the day's,
+        # which is for one weekday (see _window_benchmark). With no window to
+        # read, the day's benchmark stands alone.
+        stats = []
+        average = _window_figure(key, history)
+        window_bench = _window_benchmark(key, history)
+        span = min(len(history), SCORECARD_WINDOW)
+        if average is not None and window_bench is not None:
+            stats.append({"label": f"{span}-day average", "value": fmt.value(average)})
+            stats.append({"label": f"{span}-day benchmark", "value": fmt.value(window_bench)})
+        elif _f(measure.get("p50")) is not None:
+            stats.append({"label": "Benchmark", "value": fmt.value(measure["p50"])})
+        out[key] = {
+            "history": history,
+            "series": series if len(series) >= 2 else [],
+            "stats": stats,
+            **_scorecard_delta(key, measure),
+        }
+    return out
+
+
 def _look_down(model: dict) -> dict:
     currency = model["currency"]
     fmt = _fmt("net_sales", currency)
@@ -893,6 +1049,7 @@ def build(model: dict) -> dict:
         "hero": _hero(model) if whole else {"tag": "", "headline": "", "narrative": "", "stats": []},
         "kpis": [kpi(key, whole[key], currency)
                  for key in ("net_sales", "bills", "basket_value", "margin")] if whole else [],
+        "scorecard": scorecard(model) if whole else {},
         "trend": trend,
         "bridge": _bridge(model),
         "look_across": _measure_rows(whole, currency) if whole else [],

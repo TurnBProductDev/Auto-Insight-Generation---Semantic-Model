@@ -1,0 +1,44 @@
+{
+  "queries": [
+    {
+      "name": "grand_totals_kpis",
+      "purpose": "Summarize the overall current performance and benchmark position across the model's main KPIs.",
+      "intent": "Grand totals for [Sales Actual], [Sales P20], [Sales P50], [Sales P80], [Bills Actual], [Bills P20], [Bills P50], [Bills P80], [Margin Actual %], [Margin P20 %], [Margin P50 %], [Margin P80 %], [Basket Value Actual], [Basket Value P20], [Basket Value P50], [Basket Value P80], [Sales vs Bench %], [Bills vs Bench %], [Margin vs Bench pp], [Basket Value vs Bench %], [Selected As Of Date], and [Last Updated], no filters, one row."
+    },
+    {
+      "name": "store_performance_breakdown",
+      "purpose": "Show which stores are largest and how each store is performing versus benchmark.",
+      "intent": "Top 15 'Dim_Store'[store_no] rows summarized by [Sales Actual], [Bills Actual], [Margin Actual %], [Basket Value Actual], [Sales vs Bench %], [Bills vs Bench %], [Margin vs Bench pp], and [Basket Value vs Bench %], sorted by [Sales Actual] descending."
+    },
+    {
+      "name": "department_performance_breakdown",
+      "purpose": "Compare departments on sales scale, benchmark gap, and bill penetration share.",
+      "intent": "Top 15 'Dim_Department'[DEPARTMENT] rows summarized by [Sales Actual], [Bills Actual], [Bill Penetration %], [Bill Penetration P50 %], [Margin Actual %], [Sales vs Bench %], [Bills vs Bench %], [Margin vs Bench pp], and [Basket Value vs Bench %], sorted by [Sales Actual] descending."
+    },
+    {
+      "name": "section_by_department_matrix",
+      "purpose": "Identify the largest section and department combinations by sales and compare their benchmark gaps.",
+      "intent": "Top 15 combinations of 'Dim_Department'[DEPARTMENT] and 'Dim_Section'[SECTION], summarized by [Sales Actual], [Bills Actual], [Margin Actual %], [Sales vs Bench %], [Bills vs Bench %], and [Margin vs Bench pp], sorted by [Sales Actual] descending."
+    },
+    {
+      "name": "category_performance_breakdown",
+      "purpose": "Highlight the highest-sales categories and their benchmark-relative performance.",
+      "intent": "Top 15 'Dim_Category'[CATEGORY_NAME] rows summarized by [Sales Actual], [Bills Actual], [Margin Actual %], [Basket Value Actual], [Sales vs Bench %], [Bills vs Bench %], [Margin vs Bench pp], and [Basket Value vs Bench %], sorted by [Sales Actual] descending."
+    },
+    {
+      "name": "sales_trend_over_time",
+      "purpose": "Track how the main KPIs and benchmark bands move over time.",
+      "intent": "Top 15 'Dim_Date'[Date] rows summarized by [Sales Actual (Trend)], [Sales P20 (Trend)], [Sales P50 (Trend)], [Sales P80 (Trend)], [Bills Actual (Trend)], [Bills P50 (Trend)], [Margin Actual % (Trend)], [Margin P50 % (Trend)], [Basket Value Actual (Trend)], and [Basket Value P50 (Trend)], sorted by 'Dim_Date'[Date] descending."
+    },
+    {
+      "name": "day_of_week_pattern",
+      "purpose": "Show whether performance differs by trading day of week.",
+      "intent": "All available 'Dim_Date'[DayOfWeek] rows summarized by [Sales Actual (Trend)], [Bills Actual (Trend)], [Margin Actual % (Trend)], [Basket Value Actual (Trend)], [Sales P50 (Trend)], [Bills P50 (Trend)], and [Margin P50 % (Trend)], sorted by [Sales Actual (Trend)] descending."
+    },
+    {
+      "name": "performance_band_counts",
+      "purpose": "Summarize how many sections and categories fall into each performance bucket.",
+      "intent": "One row with [Section Underperforming Count], [Section Before Benchmark Count], [Section After Benchmark Count], [Section Outperforming Count], [Category Underperforming Count], [Category Before Benchmark Count], [Category After Benchmark Count], and [Category Outperforming Count], no filters."
+    }
+  ]
+}

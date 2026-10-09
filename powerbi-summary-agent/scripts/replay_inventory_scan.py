@@ -79,8 +79,23 @@ class FakeExecutor:
         return []
 
 
+def _fixture_present() -> bool:
+    """`outputs_stock_health/` is gitignored, so it is a LOCAL fixture despite
+    the name. Read unconditionally these checks crash a clean checkout with
+    FileNotFoundError, which `replay_all.py` reports as a failure - a red gate
+    that means nothing. Skipped and said out loud instead, the same way
+    `replay_ageing.py` treats its own gitignored live scan."""
+    if COMMITTED_SCAN.exists() and COMMITTED_MODEL.exists():
+        return True
+    print("  [SKIP] outputs_stock_health/ is absent (gitignored); these checks "
+          "need a local run to have produced it.")
+    return False
+
+
 def test_scan_shape() -> None:
     print("\nThe scan returns exactly the blocks build() consumes")
+    if not _fixture_present():
+        return
     committed = json.loads(COMMITTED_SCAN.read_text(encoding="utf-8"))
     execute = FakeExecutor(committed)
     produced = sh.scan(execute, {"workspace_id": "ws", "dataset_id": "ds"})
@@ -127,9 +142,19 @@ def test_scan_shape() -> None:
           json.dumps(from_committed, sort_keys=True, default=str)
           == json.dumps(committed_model, sort_keys=True, default=str))
 
+    # This model publishes no `SSR TREND` at all, which is the degrade path for
+    # the history: empty rather than absent, so every consumer can read the key
+    # without checking whether it exists.
+    check("a model with no kept history still builds",
+          from_committed["trend"] == []
+          and from_committed["location_trend"] == []
+          and from_committed["wind_down"] == [])
+
 
 def test_scan_is_bounded() -> None:
     print("\nThe scan is bounded and refuses to exceed its budget")
+    if not _fixture_present():
+        return
     committed = json.loads(COMMITTED_SCAN.read_text(encoding="utf-8"))
     execute = FakeExecutor(committed)
     produced = sh.scan(execute, {})
@@ -153,6 +178,8 @@ def test_scan_is_bounded() -> None:
 
 def test_health_rollups_key_on_the_fact_table() -> None:
     print("\nHealth roll-ups key on the fact table, which propagates")
+    if not _fixture_present():
+        return
     committed = json.loads(COMMITTED_SCAN.read_text(encoding="utf-8"))
     execute = FakeExecutor(committed)
     sh.scan(execute, {})
@@ -169,6 +196,8 @@ def test_health_rollups_key_on_the_fact_table() -> None:
 
 def test_no_real_location_codes_leak() -> None:
     print("\nThe real location codes can never reach published output")
+    if not _fixture_present():
+        return
     committed = json.loads(COMMITTED_SCAN.read_text(encoding="utf-8"))
     execute = FakeExecutor(committed)
     sh.scan(execute, {})
@@ -190,6 +219,8 @@ def test_no_real_location_codes_leak() -> None:
 
 def test_br16_scope() -> None:
     print("\nOpportunity Loss carries all three of BR-16's hard limits")
+    if not _fixture_present():
+        return
     scope = sh._critical_store_scope()
     check("critical segments only", '"SEG_A"' in scope and '"SEG_B"' in scope)
     check("local procurement only", '"LOCAL"' in scope)
@@ -220,6 +251,8 @@ def test_br16_scope() -> None:
 
 def test_provenance() -> None:
     print("\nProvenance records the run date, which is not the as-at stamp")
+    if not _fixture_present():
+        return
     committed = json.loads(COMMITTED_SCAN.read_text(encoding="utf-8"))
     produced = sh.scan(FakeExecutor(committed), {"workspace_id": "ws", "dataset_id": "ds"})
     prov = produced["provenance"]

@@ -510,10 +510,11 @@ def build_recent_week_driver_scan(profile: dict, state: dict, day_dim: dict, pri
     }
 
 
-def build_gap_probe(shape: dict, seg_dim: dict, seg_value, drill_dim: dict,
-                    population: list[str], max_rows: int,
-                    scope_type: str = "comparable") -> dict:
-    """Build one scoped segment × drill query and its provenance contract."""
+def _scope_specs(shape: dict, scope_type: str) -> tuple[list[dict], str]:
+    """The metric specs a segment query may carry for its scope, and the phase it
+    sorts on: comparable sorts on change; a current- or prior-only segment
+    carries only that phase, so no comparison object reaches an entity that has
+    none."""
     specs = _metric_specs(shape)
     sort_phase = "current"
     if scope_type == "prior_only":
@@ -522,9 +523,14 @@ def build_gap_probe(shape: dict, seg_dim: dict, seg_value, drill_dim: dict,
         sort_phase = "change"
     if scope_type in ("current_only", "prior_only"):
         specs = [s for s in specs if s["phase"] == sort_phase]
-    sort_metric = next(s for s in specs
-                       if s["bundle_id"] == shape["primary"]["id"]
-                       and s["phase"] == sort_phase)
+    return specs, sort_phase
+
+
+def _segment_filters(shape: dict, seg_dim: dict, seg_value,
+                     population: list[str]) -> tuple[list[str], list[str], list[str]]:
+    """The filters confining a query to one segment: ``(filters, scope_codes,
+    segment_values)``. A segment on the entity dimension is its own population;
+    any other segment is intersected with the comparable population."""
     filters = []
     segment_values = ([str(v) for v in seg_value]
                       if isinstance(seg_value, (list, tuple, set))
@@ -540,6 +546,18 @@ def build_gap_probe(shape: dict, seg_dim: dict, seg_value, drill_dim: dict,
             filters.append(pop)
         filters.append(f"TREATAS({{{segment_literals}}}, {seg_dim['reference']})")
         scope_codes = list(population)
+    return filters, scope_codes, segment_values
+
+
+def build_gap_probe(shape: dict, seg_dim: dict, seg_value, drill_dim: dict,
+                    population: list[str], max_rows: int,
+                    scope_type: str = "comparable") -> dict:
+    """Build one scoped segment × drill query and its provenance contract."""
+    specs, sort_phase = _scope_specs(shape, scope_type)
+    sort_metric = next(s for s in specs
+                       if s["bundle_id"] == shape["primary"]["id"]
+                       and s["phase"] == sort_phase)
+    filters, scope_codes, segment_values = _segment_filters(shape, seg_dim, seg_value, population)
     args = [drill_dim["reference"], *filters, _selects(specs)]
     base = "SUMMARIZECOLUMNS(\n        " + ",\n        ".join(args) + "\n    )"
     dax = (
@@ -557,6 +575,41 @@ def build_gap_probe(shape: dict, seg_dim: dict, seg_value, drill_dim: dict,
         "values": segment_values,
     }
     return {"dax": dax, "contract_hint": contract}
+
+
+def build_segment_trend_probe(shape: dict, grain_dim: dict, seg_dim: dict, seg_value,
+                              population: list[str], cap: int,
+                              scope_type: str = "comparable") -> dict:
+    """One segment's series over a validated temporal grain.
+
+    ``build_temporal_scan``'s series - the grain the temporal gate accepted,
+    ordered ascending under a TOPN bound - confined to one segment by the same
+    filters as ``build_gap_probe``. The caller passes only a grain the gate
+    validated; a load or batch date would read as a trend that is not one.
+    """
+    specs, _sort_phase = _scope_specs(shape, scope_type)
+    filters, scope_codes, segment_values = _segment_filters(shape, seg_dim, seg_value, population)
+    args = [grain_dim["reference"], *filters, _selects(specs)]
+    base = "SUMMARIZECOLUMNS(\n        " + ",\n        ".join(args) + "\n    )"
+    dax = ("EVALUATE\n"
+           f"TOPN({cap},\n    {base},\n    {grain_dim['reference']}, ASC)\n"
+           f"ORDER BY {grain_dim['reference']} ASC")
+    contract = _contract(shape, [grain_dim], specs, scope_codes, "segment_period_series",
+                         None, None, "ASC", "period_series")
+    if scope_type in ("current_only", "prior_only"):
+        contract["population_status"] = "entity_specific"
+    contract["segment_filter"] = {
+        "dimension": seg_dim,
+        "value": str(seg_value),
+        "values": segment_values,
+    }
+    return {"dax": dax, "contract_hint": contract}
+
+
+def build_full_breakdown(shape: dict, dim: dict, population: list[str], max_rows: int) -> dict:
+    """Public name for the complete comparable distribution over one dimension
+    (the peer scan's query), for callers outside the scan portfolio."""
+    return _full_breakdown_query(shape, dim, population, max_rows)
 
 
 def build_thesis_interaction_scan(shape: dict, bundle: dict, facet_a: dict,

@@ -698,6 +698,104 @@ def test_memory_suppresses_an_unchanged_finding() -> None:
 # the committed live scan
 # ---------------------------------------------------------------------------
 
+def _check_scorecard_payload(page: dict, where: str) -> None:
+    """The app payload's Home scorecard reading, for one built page."""
+    from src.domains.sales import daily_sales_publish as pub
+    from src.tools.api_payloads import ReportSummaryPayload
+
+    payload = pub.summary_payload(page)
+    check(f"{where}: the payload passes the app's strict schema",
+          bool(ReportSummaryPayload(**payload)))
+    check(f"{where}: the payload is dated with the day it describes",
+          payload.get("dataAsOf") == page["as_at"], str(payload.get("dataAsOf")))
+    for metric in payload["metrics"]:
+        key = next(k for k, label in (("net_sales", "Net Sales"), ("bills", "Bills"),
+                                      ("basket_value", "Basket Value"), ("margin", "Margin"))
+                   if label == metric["label"])
+        series = metric.get("series") or []
+        check(f"{where}: {metric['label']} carries its recent days, oldest first",
+              len(series) >= 2 and [p["date"] for p in series] == sorted(p["date"] for p in series),
+              str(len(series)))
+        check(f"{where}: {metric['label']}'s last day is the figure on the card",
+              bool(series) and series[-1]["value"] == page["whole"][key]["actual"])
+        check(f"{where}: {metric['label']} carries its change, its two figures and a line",
+              all(metric.get(field) for field in ("delta", "stats", "takeaway", "takeawayTone")),
+              str(sorted(metric)))
+        check(f"{where}: {metric['label']} keeps every field it had",
+              all(field in metric for field in ("label", "value", "tone", "note", "verdict",
+                                                "band")))
+
+
+def test_home_scorecard() -> None:
+    print("\n=== the Home scorecard: recent days, change, two figures and a line ===")
+    from src.domains.sales import daily_sales_publish as pub
+    from src.domains.sales import scorecard_lines as sl
+
+    model = ds.build(synthetic_scan(), CFG)
+    page = dash.build(model)
+    card = page["scorecard"]
+    check("the scorecard carries the four measures in the page's order",
+          list(card) == ["net_sales", "bills", "basket_value", "margin"], str(list(card)))
+    check("each carries the fourteen days the model holds",
+          all(len(card[key]["series"]) == 14 for key in card),
+          str({key: len(card[key]["series"]) for key in card}))
+    check("Net Sales benchmarks are on the reporting scale, not the source scale",
+          abs(card["net_sales"]["series"][0]["benchmark"] - 76428.7) < 1e-6,
+          str(card["net_sales"]["series"][0]))
+
+    sales = page["whole"]["net_sales"]
+    check("Net Sales moves against its benchmark in percent, and it is down",
+          card["net_sales"]["delta"] == f"{abs((sales['actual'] / sales['p50'] - 1) * 100):.1f}%"
+          and card["net_sales"]["deltaDirection"] == "down", str(card["net_sales"]))
+    check("Margin moves in points",
+          card["margin"]["delta"].endswith(" pts") and card["margin"]["deltaDirection"] == "up",
+          str(card["margin"]))
+    check("each measure's two figures are the week and the week's own benchmark",
+          all([s["label"] for s in card[key]["stats"]] == ["7-day average", "7-day benchmark"]
+              for key in card), str({key: card[key]["stats"] for key in card}))
+    week = card["net_sales"]["history"][-7:]
+    check("the 7-day Net Sales is the average of the last seven days",
+          card["net_sales"]["stats"][0]["value"] == dash.money(
+              sum(d["actual"] for d in week) / 7, "SAR"),
+          str(card["net_sales"]["stats"]))
+    check("...and its benchmark is the same seven days' own benchmarks, not the day's",
+          card["net_sales"]["stats"][1]["value"] == dash.money(
+              sum(d["p50"] for d in week) / 7, "SAR"),
+          str(card["net_sales"]["stats"]))
+
+    facts = {f["key"]: f for f in sl.daily_sales_facts(page)}
+    check("Net Sales below its band all fortnight reads as a run of 14",
+          facts["net_sales"]["kind"] == "run_below" and facts["net_sales"]["numbers"] == ["14"],
+          str(facts["net_sales"]))
+    check("Bills inside its band is counted against the benchmark, not called bad",
+          facts["bills"]["kind"] == "count_below" and facts["bills"]["tone"] == "info",
+          str(facts["bills"]))
+    check("Margin above its band all fortnight is a good run",
+          facts["margin"]["kind"] == "run_above" and facts["margin"]["tone"] == "positive",
+          str(facts["margin"]))
+
+    _check_scorecard_payload(page, "synthetic")
+    payload = pub.summary_payload(page)
+    check("a page built without the authoring step publishes the code-written lines",
+          payload["metrics"][0]["takeaway"] == facts["net_sales"]["statement"])
+    authored = dict(page, scorecard_lines={
+        **sl.deterministic(list(facts.values())),
+        "net_sales": {"text": "Below the normal range for 14 days running", "tone": "critical",
+                      "mode": "llm"}})
+    check("an authored line is published as written",
+          pub.summary_payload(authored)["metrics"][0]["takeaway"]
+          == "Below the normal range for 14 days running")
+
+    path = PROJECT_ROOT / "outputs_sbmart_dailysales" / "daily_sales_scan.json"
+    if path.exists():
+        live = dash.build(ds.build(json.loads(path.read_text(encoding="utf-8")), CFG))
+        _check_scorecard_payload(live, "committed scan")
+        failing = {f["key"]: sl.validate_line(f["statement"], f)
+                   for f in sl.daily_sales_facts(live)}
+        check("committed scan: every code-written line passes its own checks",
+              not any(failing.values()), str(failing))
+
+
 def test_committed_scan() -> None:
     path = PROJECT_ROOT / "outputs_sbmart_dailysales" / "daily_sales_scan.json"
     if not path.exists():
@@ -744,6 +842,7 @@ def main() -> int:
     test_html_is_escaped()
     test_drill_dax_scopes_its_aggregation()
     test_memory_suppresses_an_unchanged_finding()
+    test_home_scorecard()
     test_committed_scan()
 
     print()

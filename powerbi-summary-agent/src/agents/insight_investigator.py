@@ -314,6 +314,11 @@ def run(state: dict) -> dict:
     rows_by_name = {q.get("query_name"): q.get("rows") for q in scan.get("queries", [])}
 
     from ..tools import ai_tier
+    if ai_tier.tier(state) == ai_tier.REASONED:
+        # The model chooses tested recipes; it never reaches the loop below,
+        # which lets it write free DAX against the full model description.
+        from . import insight_recipe_investigator
+        return insight_recipe_investigator.run(state)
     if not ai_tier.investigates(state):
         # The gap scan has already drilled every signal within its own members;
         # the trail is those rows plus a code-written explanation. No tool loop.

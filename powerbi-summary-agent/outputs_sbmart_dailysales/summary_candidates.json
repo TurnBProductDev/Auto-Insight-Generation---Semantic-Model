@@ -1,0 +1,5010 @@
+[
+  {
+    "candidate_id": "summary_0c361f7fd00e",
+    "summary_key": "summary:v1:0c361f7fd00eb1af0c35fb959916c2513c17d02293333c933a285141948d4758",
+    "focus_key": "focus:v1:e7a38974523e9bc069b8417c1589ee2a5286baa70bde7e87e4c5ce6183872ce2",
+    "angle": "period_movement",
+    "candidate_kind": "broad",
+    "dimension_role": "period",
+    "lens": "trend",
+    "coverage": "partial",
+    "title_hint": "How performance moved across the latest period",
+    "purpose": "Track how the main KPIs and benchmark bands move over time.",
+    "query_name": "sales_trend_over_time",
+    "dimension": "Date",
+    "dimension_ref": "'Dim_Date'[Date]",
+    "segment": "",
+    "metric": "Sales Actual (Trend)",
+    "metric_family": "revenue",
+    "direction": "increase",
+    "observation_value": 2720538.6354,
+    "change_pct": null,
+    "score": 101.43465505750166,
+    "period_anchor": "2026-09-03",
+    "evidence": {
+      "rows": [
+        {
+          "Date": "2026-08-21T00:00:00",
+          "Sales Actual (Trend)": 505790.4276,
+          "Basket Value Actual (Trend)": 25.494754150914865,
+          "Bills Actual (Trend)": 19839,
+          "Margin Actual % (Trend)": 20.875802694221164,
+          "Sales P20 (Trend)": 250575.9543,
+          "Sales P50 (Trend)": 279990.4617
+        },
+        {
+          "Date": "2026-08-22T00:00:00",
+          "Sales Actual (Trend)": 103842.9666,
+          "Basket Value Actual (Trend)": 10.919344542586751,
+          "Bills Actual (Trend)": 9510,
+          "Margin Actual % (Trend)": 21.260550670813767,
+          "Sales P20 (Trend)": 106240.1535,
+          "Sales P50 (Trend)": 117879.8913
+        },
+        {
+          "Date": "2026-08-23T00:00:00",
+          "Sales Actual (Trend)": 98919.0495,
+          "Basket Value Actual (Trend)": 11.648498528026376,
+          "Bills Actual (Trend)": 8492,
+          "Margin Actual % (Trend)": 21.20413245525001,
+          "Sales P20 (Trend)": 98038.3824,
+          "Sales P50 (Trend)": 113449.2291
+        },
+        {
+          "Date": "2026-08-24T00:00:00",
+          "Sales Actual (Trend)": 191349.1242,
+          "Basket Value Actual (Trend)": 22.80952726189057,
+          "Bills Actual (Trend)": 8389,
+          "Margin Actual % (Trend)": 20.443958861242404,
+          "Sales P20 (Trend)": 101664.1611,
+          "Sales P50 (Trend)": 114488.9856
+        },
+        {
+          "Date": "2026-08-25T00:00:00",
+          "Sales Actual (Trend)": 213233.3964,
+          "Basket Value Actual (Trend)": 23.79837013392857,
+          "Bills Actual (Trend)": 8960,
+          "Margin Actual % (Trend)": 21.383582556530374,
+          "Sales P20 (Trend)": 95682.141,
+          "Sales P50 (Trend)": 111139.1118
+        },
+        {
+          "Date": "2026-08-26T00:00:00",
+          "Sales Actual (Trend)": 202716.27,
+          "Basket Value Actual (Trend)": 24.236761119081777,
+          "Bills Actual (Trend)": 8364,
+          "Margin Actual % (Trend)": 20.61945317748778,
+          "Sales P20 (Trend)": 95492.4849,
+          "Sales P50 (Trend)": 109494.1854
+        },
+        {
+          "Date": "2026-08-27T00:00:00",
+          "Sales Actual (Trend)": 173349.4365,
+          "Basket Value Actual (Trend)": 13.860193211801391,
+          "Bills Actual (Trend)": 12507,
+          "Margin Actual % (Trend)": 20.849779152360043,
+          "Sales P20 (Trend)": 142509.6288,
+          "Sales P50 (Trend)": 158269.6341
+        },
+        {
+          "Date": "2026-08-28T00:00:00",
+          "Sales Actual (Trend)": 295625.9511,
+          "Basket Value Actual (Trend)": 14.067378115631692,
+          "Bills Actual (Trend)": 21015,
+          "Margin Actual % (Trend)": 20.807755200298164,
+          "Sales P20 (Trend)": 242182.548,
+          "Sales P50 (Trend)": 271021.4964
+        },
+        {
+          "Date": "2026-08-29T00:00:00",
+          "Sales Actual (Trend)": 126975.843,
+          "Basket Value Actual (Trend)": 12.282437899013349,
+          "Bills Actual (Trend)": 10338,
+          "Margin Actual % (Trend)": 21.039985527476617,
+          "Sales P20 (Trend)": 122345.856,
+          "Sales P50 (Trend)": 138856.1427
+        },
+        {
+          "Date": "2026-08-30T00:00:00",
+          "Sales Actual (Trend)": 118373.3622,
+          "Basket Value Actual (Trend)": 12.316445968161482,
+          "Bills Actual (Trend)": 9611,
+          "Margin Actual % (Trend)": 21.126713121313752,
+          "Sales P20 (Trend)": 107522.6778,
+          "Sales P50 (Trend)": 119239.236
+        }
+      ],
+      "coverage": "returned_rows",
+      "scope": {
+        "population_status": "returned_rows",
+        "comparable_entities": [],
+        "excluded_entities": [],
+        "note": ""
+      },
+      "facts": [
+        {
+          "fact_id": "F1",
+          "subject": "2026-08-21T00:00:00",
+          "metric": "Sales actual (trend)",
+          "display_value": "505.8K",
+          "raw_value": 505790.4276,
+          "statement": "2026-08-21T00:00:00 — Sales actual (trend): 505.8K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F2",
+          "subject": "2026-08-21T00:00:00",
+          "metric": "Basket value actual (trend)",
+          "display_value": "25.5",
+          "raw_value": 25.494754150914865,
+          "statement": "2026-08-21T00:00:00 — Basket value actual (trend): 25.5",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F3",
+          "subject": "2026-08-21T00:00:00",
+          "metric": "Transactions actual (trend)",
+          "display_value": "19.8K",
+          "raw_value": 19839.0,
+          "statement": "2026-08-21T00:00:00 — Transactions actual (trend): 19.8K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F4",
+          "subject": "2026-08-21T00:00:00",
+          "metric": "Margin actual % (trend)",
+          "display_value": "20.9%",
+          "raw_value": 20.875802694221164,
+          "statement": "2026-08-21T00:00:00 — Margin actual % (trend): 20.9%",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F5",
+          "subject": "2026-08-28T00:00:00",
+          "metric": "Sales actual (trend)",
+          "display_value": "295.6K",
+          "raw_value": 295625.9511,
+          "statement": "2026-08-28T00:00:00 — Sales actual (trend): 295.6K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F6",
+          "subject": "2026-08-28T00:00:00",
+          "metric": "Basket value actual (trend)",
+          "display_value": "14.1",
+          "raw_value": 14.067378115631692,
+          "statement": "2026-08-28T00:00:00 — Basket value actual (trend): 14.1",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F7",
+          "subject": "2026-08-28T00:00:00",
+          "metric": "Transactions actual (trend)",
+          "display_value": "21.0K",
+          "raw_value": 21015.0,
+          "statement": "2026-08-28T00:00:00 — Transactions actual (trend): 21.0K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F8",
+          "subject": "2026-09-03T00:00:00",
+          "metric": "Sales actual (trend)",
+          "display_value": "216.9K",
+          "raw_value": 216865.4823,
+          "statement": "2026-09-03T00:00:00 — Sales actual (trend): 216.9K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F9",
+          "subject": "2026-08-25T00:00:00",
+          "metric": "Sales actual (trend)",
+          "display_value": "213.2K",
+          "raw_value": 213233.3964,
+          "statement": "2026-08-25T00:00:00 — Sales actual (trend): 213.2K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F10",
+          "subject": "2026-08-26T00:00:00",
+          "metric": "Sales actual (trend)",
+          "display_value": "202.7K",
+          "raw_value": 202716.27,
+          "statement": "2026-08-26T00:00:00 — Sales actual (trend): 202.7K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        }
+      ]
+    },
+    "metadata_context": {
+      "dimension": "Date",
+      "metric": "Sales actual (trend)",
+      "metric_family": "revenue",
+      "metric_phase": null,
+      "metric_description": "",
+      "population_status": "returned_rows",
+      "scope_note": ""
+    },
+    "metrics": [],
+    "visual": {
+      "type": "line",
+      "title": "Sales actual (trend) by date",
+      "labels": [
+        "2026-08-21T00:00:00",
+        "2026-08-22T00:00:00",
+        "2026-08-23T00:00:00",
+        "2026-08-24T00:00:00",
+        "2026-08-25T00:00:00",
+        "2026-08-26T00:00:00",
+        "2026-08-27T00:00:00",
+        "2026-08-28T00:00:00",
+        "2026-08-29T00:00:00",
+        "2026-08-30T00:00:00",
+        "2026-08-31T00:00:00",
+        "2026-09-01T00:00:00"
+      ],
+      "values": [
+        505790.4276,
+        103842.9666,
+        98919.0495,
+        191349.1242,
+        213233.3964,
+        202716.27,
+        173349.4365,
+        295625.9511,
+        126975.843,
+        118373.3622,
+        144747.1863,
+        161483.1066
+      ],
+      "value_label": "Sales actual (trend)"
+    },
+    "area_key": "area:v1:9a3b70e682cac888f3091dd480b27ee14f3f674243aaabf073892cf5d8c32aa9"
+  },
+  {
+    "candidate_id": "summary_7a6909471ca2",
+    "summary_key": "summary:v1:7a6909471ca25c5552df7b42a898cfb07e07ff53b2de1176889331e6f8042705",
+    "focus_key": "focus:v1:e7a38974523e9bc069b8417c1589ee2a5286baa70bde7e87e4c5ce6183872ce2",
+    "angle": "period_movement",
+    "candidate_kind": "broad",
+    "dimension_role": "period",
+    "lens": "trend",
+    "coverage": "partial",
+    "title_hint": "How performance moved across the latest period",
+    "purpose": "Show whether performance differs by trading day of week.",
+    "query_name": "day_of_week_pattern",
+    "dimension": "DayOfWeek",
+    "dimension_ref": "'Dim_Date'[DayOfWeek]",
+    "segment": "",
+    "metric": "Sales Actual (Trend)",
+    "metric_family": "revenue",
+    "direction": "increase",
+    "observation_value": 2720538.6354,
+    "change_pct": null,
+    "score": 101.43465505750166,
+    "period_anchor": "2026-09-03",
+    "evidence": {
+      "rows": [
+        {
+          "DayOfWeek": "Friday",
+          "Sales Actual (Trend)": 801416.3787,
+          "Basket Value Actual (Trend)": 19.616595160816566,
+          "Bills Actual (Trend)": 40854,
+          "Margin Actual % (Trend)": 20.85070137904267,
+          "Sales P50 (Trend)": 551011.9581,
+          "Bills P50 (Trend)": 39785
+        },
+        {
+          "DayOfWeek": "Saturday",
+          "Sales Actual (Trend)": 230818.8096,
+          "Basket Value Actual (Trend)": 11.629323337363967,
+          "Bills Actual (Trend)": 19848,
+          "Margin Actual % (Trend)": 21.139215476943797,
+          "Sales P50 (Trend)": 256736.034,
+          "Bills P50 (Trend)": 20713
+        },
+        {
+          "DayOfWeek": "Sunday",
+          "Sales Actual (Trend)": 217292.4117,
+          "Basket Value Actual (Trend)": 12.003116152019002,
+          "Bills Actual (Trend)": 18103,
+          "Margin Actual % (Trend)": 21.16195708987199,
+          "Sales P50 (Trend)": 232688.4651,
+          "Bills P50 (Trend)": 18433
+        },
+        {
+          "DayOfWeek": "Monday",
+          "Sales Actual (Trend)": 336096.3105,
+          "Basket Value Actual (Trend)": 18.083305202840847,
+          "Bills Actual (Trend)": 18586,
+          "Margin Actual % (Trend)": 20.163524216765886,
+          "Sales P50 (Trend)": 245780.2359,
+          "Bills P50 (Trend)": 18674
+        },
+        {
+          "DayOfWeek": "Tuesday",
+          "Sales Actual (Trend)": 374716.503,
+          "Basket Value Actual (Trend)": 18.497211126468557,
+          "Bills Actual (Trend)": 20258,
+          "Margin Actual % (Trend)": 21.109432857240325,
+          "Sales P50 (Trend)": 250852.0671,
+          "Bills P50 (Trend)": 19633
+        },
+        {
+          "DayOfWeek": "Wednesday",
+          "Sales Actual (Trend)": 369983.3031,
+          "Basket Value Actual (Trend)": 18.431888761022268,
+          "Bills Actual (Trend)": 20073,
+          "Margin Actual % (Trend)": 20.654117459169754,
+          "Sales P50 (Trend)": 260831.9745,
+          "Bills P50 (Trend)": 19873
+        },
+        {
+          "DayOfWeek": "Thursday",
+          "Sales Actual (Trend)": 390214.9188,
+          "Basket Value Actual (Trend)": 14.421425042501292,
+          "Bills Actual (Trend)": 27058,
+          "Margin Actual % (Trend)": 20.8461085005702,
+          "Sales P50 (Trend)": 374620.3344,
+          "Bills P50 (Trend)": 27084
+        }
+      ],
+      "coverage": "returned_rows",
+      "scope": {
+        "population_status": "returned_rows",
+        "comparable_entities": [],
+        "excluded_entities": [],
+        "note": ""
+      },
+      "facts": [
+        {
+          "fact_id": "F1",
+          "subject": "Friday",
+          "metric": "Sales actual (trend)",
+          "display_value": "801.4K",
+          "raw_value": 801416.3787,
+          "statement": "Friday — Sales actual (trend): 801.4K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F2",
+          "subject": "Friday",
+          "metric": "Basket value actual (trend)",
+          "display_value": "19.6",
+          "raw_value": 19.616595160816566,
+          "statement": "Friday — Basket value actual (trend): 19.6",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F3",
+          "subject": "Friday",
+          "metric": "Transactions actual (trend)",
+          "display_value": "40.9K",
+          "raw_value": 40854.0,
+          "statement": "Friday — Transactions actual (trend): 40.9K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F4",
+          "subject": "Friday",
+          "metric": "Margin actual % (trend)",
+          "display_value": "20.9%",
+          "raw_value": 20.85070137904267,
+          "statement": "Friday — Margin actual % (trend): 20.9%",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F5",
+          "subject": "Thursday",
+          "metric": "Sales actual (trend)",
+          "display_value": "390.2K",
+          "raw_value": 390214.9188,
+          "statement": "Thursday — Sales actual (trend): 390.2K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F6",
+          "subject": "Thursday",
+          "metric": "Basket value actual (trend)",
+          "display_value": "14.4",
+          "raw_value": 14.421425042501292,
+          "statement": "Thursday — Basket value actual (trend): 14.4",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F7",
+          "subject": "Thursday",
+          "metric": "Transactions actual (trend)",
+          "display_value": "27.1K",
+          "raw_value": 27058.0,
+          "statement": "Thursday — Transactions actual (trend): 27.1K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F8",
+          "subject": "Tuesday",
+          "metric": "Sales actual (trend)",
+          "display_value": "374.7K",
+          "raw_value": 374716.503,
+          "statement": "Tuesday — Sales actual (trend): 374.7K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F9",
+          "subject": "Wednesday",
+          "metric": "Sales actual (trend)",
+          "display_value": "370.0K",
+          "raw_value": 369983.3031,
+          "statement": "Wednesday — Sales actual (trend): 370.0K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F10",
+          "subject": "Monday",
+          "metric": "Sales actual (trend)",
+          "display_value": "336.1K",
+          "raw_value": 336096.3105,
+          "statement": "Monday — Sales actual (trend): 336.1K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        }
+      ]
+    },
+    "metadata_context": {
+      "dimension": "Dayofweek",
+      "metric": "Sales actual (trend)",
+      "metric_family": "revenue",
+      "metric_phase": null,
+      "metric_description": "",
+      "population_status": "returned_rows",
+      "scope_note": ""
+    },
+    "metrics": [],
+    "visual": {
+      "type": "line",
+      "title": "Sales actual (trend) by dayofweek",
+      "labels": [
+        "Friday",
+        "Saturday",
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday"
+      ],
+      "values": [
+        801416.3787,
+        230818.8096,
+        217292.4117,
+        336096.3105,
+        374716.503,
+        369983.3031,
+        390214.9188
+      ],
+      "value_label": "Sales actual (trend)"
+    },
+    "area_key": "area:v1:9a3b70e682cac888f3091dd480b27ee14f3f674243aaabf073892cf5d8c32aa9"
+  },
+  {
+    "candidate_id": "summary_0a7609bcef39",
+    "summary_key": "summary:v1:0a7609bcef39176801ae998d16ca501b9a2a5dbb594729c8a9084bce9923318d",
+    "focus_key": "focus:v1:59864e631239d7fd5268492cce9c4e816596d8276a2884984daf9857e11988ae",
+    "angle": "store_overview",
+    "candidate_kind": "broad",
+    "dimension_role": "store",
+    "lens": "performance",
+    "coverage": "partial",
+    "title_hint": "How performance varied across stores",
+    "purpose": "Show which stores are largest and how each store is performing versus benchmark.",
+    "query_name": "store_performance_breakdown",
+    "dimension": "store_no",
+    "dimension_ref": "'categorybenchmark'[store_no]",
+    "segment": "",
+    "metric": "Sales Actual",
+    "metric_family": "revenue",
+    "direction": "increase",
+    "observation_value": 216865.4823,
+    "change_pct": null,
+    "score": 95.33619243501563,
+    "period_anchor": "2026-09-03",
+    "evidence": {
+      "rows": [
+        {
+          "store_no": "ST4",
+          "Sales Actual": 73813.1535,
+          "Basket Value Actual": 14.391334275687269,
+          "Bills Actual": 5129,
+          "Margin Actual %": 22.198333758267875,
+          "Sales vs Bench %": 7.755053921662528,
+          "Basket Value vs Bench %": 3.595276055316431
+        },
+        {
+          "store_no": "ST3",
+          "Sales Actual": 46532.2347,
+          "Basket Value Actual": 13.041545599775786,
+          "Bills Actual": 3568,
+          "Margin Actual %": 19.342023594723532,
+          "Sales vs Bench %": 21.402298267599605,
+          "Basket Value vs Bench %": 8.23450414496479
+        },
+        {
+          "store_no": "ST1",
+          "Sales Actual": 57705.2586,
+          "Basket Value Actual": 15.766464098360656,
+          "Bills Actual": 3660,
+          "Margin Actual %": 20.692359204699528,
+          "Sales vs Bench %": -18.28380965672026,
+          "Basket Value vs Bench %": 2.011276961323807
+        },
+        {
+          "store_no": "ST2",
+          "Sales Actual": 38814.8355,
+          "Basket Value Actual": 17.691356198723792,
+          "Bills Actual": 2194,
+          "Margin Actual %": 20.289936075029374,
+          "Sales vs Bench %": -0.22968347472684097,
+          "Basket Value vs Bench %": -0.22968347472684358
+        }
+      ],
+      "coverage": "returned_rows",
+      "scope": {
+        "population_status": "returned_rows",
+        "comparable_entities": [],
+        "excluded_entities": [],
+        "note": ""
+      },
+      "facts": [
+        {
+          "fact_id": "F1",
+          "subject": "ST4",
+          "metric": "Sales actual",
+          "display_value": "73.8K",
+          "raw_value": 73813.1535,
+          "statement": "ST4 — Sales actual: 73.8K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F2",
+          "subject": "ST4",
+          "metric": "Basket value actual",
+          "display_value": "14.4",
+          "raw_value": 14.391334275687269,
+          "statement": "ST4 — Basket value actual: 14.4",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F3",
+          "subject": "ST4",
+          "metric": "Transactions actual",
+          "display_value": "5.1K",
+          "raw_value": 5129.0,
+          "statement": "ST4 — Transactions actual: 5.1K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F4",
+          "subject": "ST4",
+          "metric": "Margin actual %",
+          "display_value": "22.2%",
+          "raw_value": 22.198333758267875,
+          "statement": "ST4 — Margin actual %: 22.2%",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F5",
+          "subject": "ST1",
+          "metric": "Sales actual",
+          "display_value": "57.7K",
+          "raw_value": 57705.2586,
+          "statement": "ST1 — Sales actual: 57.7K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F6",
+          "subject": "ST1",
+          "metric": "Basket value actual",
+          "display_value": "15.8",
+          "raw_value": 15.766464098360656,
+          "statement": "ST1 — Basket value actual: 15.8",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F7",
+          "subject": "ST1",
+          "metric": "Transactions actual",
+          "display_value": "3.7K",
+          "raw_value": 3660.0,
+          "statement": "ST1 — Transactions actual: 3.7K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F8",
+          "subject": "ST3",
+          "metric": "Sales actual",
+          "display_value": "46.5K",
+          "raw_value": 46532.2347,
+          "statement": "ST3 — Sales actual: 46.5K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F9",
+          "subject": "ST2",
+          "metric": "Sales actual",
+          "display_value": "38.8K",
+          "raw_value": 38814.8355,
+          "statement": "ST2 — Sales actual: 38.8K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        }
+      ]
+    },
+    "metadata_context": {
+      "dimension": "Store",
+      "metric": "Sales actual",
+      "metric_family": "revenue",
+      "metric_phase": null,
+      "metric_description": "",
+      "population_status": "returned_rows",
+      "scope_note": ""
+    },
+    "metrics": [],
+    "visual": {
+      "type": "bar",
+      "title": "Sales actual by store",
+      "labels": [
+        "ST4",
+        "ST1",
+        "ST3",
+        "ST2"
+      ],
+      "values": [
+        73813.1535,
+        57705.2586,
+        46532.2347,
+        38814.8355
+      ],
+      "value_label": "Sales actual"
+    },
+    "area_key": "area:v1:8fca1750214a894516ffc7dc5e57d7eb0171b4665ea5f621cde93a5ba29b731f"
+  },
+  {
+    "candidate_id": "summary_8e5591b9d443",
+    "summary_key": "summary:v1:8e5591b9d443a342c9202d8ab55a88908cd3c8be0f77deac0f67f1edaf104fc7",
+    "focus_key": "focus:v1:90c254dfe4d7088ddfa010ef9378395c591660c6ccf76b0cd4a55271f1096e1b",
+    "angle": "division_overview",
+    "candidate_kind": "broad",
+    "dimension_role": "division",
+    "lens": "performance",
+    "coverage": "partial",
+    "title_hint": "How divisions shaped the latest result",
+    "purpose": "Compare departments on sales scale, benchmark gap, and bill penetration share.",
+    "query_name": "department_performance_breakdown",
+    "dimension": "DEPARTMENT",
+    "dimension_ref": "'categorybenchmark'[DEPARTMENT]",
+    "segment": "",
+    "metric": "Sales Actual",
+    "metric_family": "revenue",
+    "direction": "increase",
+    "observation_value": 216865.4823,
+    "change_pct": null,
+    "score": 87.33619243501563,
+    "period_anchor": "2026-09-03",
+    "evidence": {
+      "rows": [
+        {
+          "DEPARTMENT": "TECHNOLOGY",
+          "Sales Actual": 10203.6105,
+          "Bills Actual": 577,
+          "Margin Actual %": 25.343983292552586,
+          "Sales vs Bench %": 6.518004490024282,
+          "Basket Value vs Bench %": 7.810250645015894,
+          "Bills vs Bench %": -1.1986301369863013
+        },
+        {
+          "DEPARTMENT": "FRESH FOOD",
+          "Sales Actual": 51006.153600000005,
+          "Bills Actual": 7772,
+          "Margin Actual %": 19.92672392307717,
+          "Sales vs Bench %": 4.886137008692423,
+          "Basket Value vs Bench %": 5.803823230590411,
+          "Bills vs Bench %": -0.8673469387755102
+        },
+        {
+          "DEPARTMENT": "CONSUMER GOODS",
+          "Sales Actual": 115026.72569999998,
+          "Bills Actual": 12189,
+          "Margin Actual %": 16.569508940088586,
+          "Sales vs Bench %": 1.9765978349719093,
+          "Basket Value vs Bench %": 2.369813037059339,
+          "Bills vs Bench %": -0.38411245505067015
+        },
+        {
+          "DEPARTMENT": "LIFESTYLE",
+          "Sales Actual": 29190.342600000007,
+          "Bills Actual": 3270,
+          "Margin Actual %": 32.02217229675026,
+          "Sales vs Bench %": -7.515193872920216,
+          "Basket Value vs Bench %": -3.753579434112385,
+          "Bills vs Bench %": -3.908316191595651
+        },
+        {
+          "DEPARTMENT": "HOME & LIVING",
+          "Sales Actual": 11438.6499,
+          "Bills Actual": 2344,
+          "Margin Actual %": 35.36298925105681,
+          "Sales vs Bench %": -6.770967546721381,
+          "Basket Value vs Bench %": -5.060707992331036,
+          "Bills vs Bench %": -1.8014243820695435
+        },
+        {
+          "DEPARTMENT": "OTHER",
+          "Sales Actual": null,
+          "Bills Actual": null,
+          "Margin Actual %": null,
+          "Sales vs Bench %": null,
+          "Basket Value vs Bench %": null,
+          "Bills vs Bench %": null
+        }
+      ],
+      "coverage": "returned_rows",
+      "scope": {
+        "population_status": "returned_rows",
+        "comparable_entities": [],
+        "excluded_entities": [],
+        "note": ""
+      },
+      "facts": [
+        {
+          "fact_id": "F1",
+          "subject": "CONSUMER GOODS",
+          "metric": "Sales actual",
+          "display_value": "115.0K",
+          "raw_value": 115026.72569999998,
+          "statement": "CONSUMER GOODS — Sales actual: 115.0K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F2",
+          "subject": "CONSUMER GOODS",
+          "metric": "Transactions actual",
+          "display_value": "12.2K",
+          "raw_value": 12189.0,
+          "statement": "CONSUMER GOODS — Transactions actual: 12.2K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F3",
+          "subject": "CONSUMER GOODS",
+          "metric": "Margin actual %",
+          "display_value": "16.6%",
+          "raw_value": 16.569508940088586,
+          "statement": "CONSUMER GOODS — Margin actual %: 16.6%",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F4",
+          "subject": "CONSUMER GOODS",
+          "metric": "Sales vs bench %",
+          "display_value": "2.0%",
+          "raw_value": 1.9765978349719093,
+          "statement": "CONSUMER GOODS — Sales vs bench %: 2.0%",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F5",
+          "subject": "FRESH FOOD",
+          "metric": "Sales actual",
+          "display_value": "51.0K",
+          "raw_value": 51006.153600000005,
+          "statement": "FRESH FOOD — Sales actual: 51.0K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F6",
+          "subject": "FRESH FOOD",
+          "metric": "Transactions actual",
+          "display_value": "7.8K",
+          "raw_value": 7772.0,
+          "statement": "FRESH FOOD — Transactions actual: 7.8K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F7",
+          "subject": "FRESH FOOD",
+          "metric": "Margin actual %",
+          "display_value": "19.9%",
+          "raw_value": 19.92672392307717,
+          "statement": "FRESH FOOD — Margin actual %: 19.9%",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F8",
+          "subject": "LIFESTYLE",
+          "metric": "Sales actual",
+          "display_value": "29.2K",
+          "raw_value": 29190.342600000007,
+          "statement": "LIFESTYLE — Sales actual: 29.2K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F9",
+          "subject": "HOME & LIVING",
+          "metric": "Sales actual",
+          "display_value": "11.4K",
+          "raw_value": 11438.6499,
+          "statement": "HOME & LIVING — Sales actual: 11.4K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F10",
+          "subject": "TECHNOLOGY",
+          "metric": "Sales actual",
+          "display_value": "10.2K",
+          "raw_value": 10203.6105,
+          "statement": "TECHNOLOGY — Sales actual: 10.2K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        }
+      ]
+    },
+    "metadata_context": {
+      "dimension": "Department",
+      "metric": "Sales actual",
+      "metric_family": "revenue",
+      "metric_phase": null,
+      "metric_description": "",
+      "population_status": "returned_rows",
+      "scope_note": ""
+    },
+    "metrics": [],
+    "visual": {
+      "type": "bar",
+      "title": "Sales actual by department",
+      "labels": [
+        "CONSUMER GOODS",
+        "FRESH FOOD",
+        "LIFESTYLE",
+        "HOME & LIVING",
+        "TECHNOLOGY"
+      ],
+      "values": [
+        115026.72569999998,
+        51006.153600000005,
+        29190.342600000007,
+        11438.6499,
+        10203.6105
+      ],
+      "value_label": "Sales actual"
+    },
+    "area_key": "area:v1:650e104d50c94f516be6d9e967a094b2295375168da0f757606c17a5110a2f96"
+  },
+  {
+    "candidate_id": "summary_cc504768efbb",
+    "summary_key": "summary:v1:cc504768efbb7e45cb4f56a9b2108cffddf508dcb8e9a8483fe6fba1242f05b3",
+    "focus_key": "focus:v1:f985937a748df21993a0c79e9b4d6cbe268cc428b00aa4fe85913b290de708eb",
+    "angle": "category_overview",
+    "candidate_kind": "broad",
+    "dimension_role": "category",
+    "lens": "performance",
+    "coverage": "partial",
+    "title_hint": "How categories shaped the latest result",
+    "purpose": "Highlight the highest-sales categories and their benchmark-relative performance.",
+    "query_name": "category_performance_breakdown",
+    "dimension": "CATEGORY_NAME",
+    "dimension_ref": "'categorybenchmark'[CATEGORY_NAME]",
+    "segment": "",
+    "metric": "Sales Actual",
+    "metric_family": "revenue",
+    "direction": "increase",
+    "observation_value": 97229.4489,
+    "change_pct": null,
+    "score": 82.98780229083613,
+    "period_anchor": "2026-09-03",
+    "evidence": {
+      "rows": [
+        {
+          "CATEGORY_NAME": "FRESH FISH",
+          "Sales Actual": 4674.24,
+          "Basket Value Actual": 8.017564322469983,
+          "Bills Actual": 583,
+          "Margin Actual %": 26.741549295777002,
+          "Sales vs Bench %": -8.271706918778184,
+          "Basket Value vs Bench %": 12.496963212819221
+        },
+        {
+          "CATEGORY_NAME": "SUNFLOWER OIL",
+          "Sales Actual": 4763.4966,
+          "Basket Value Actual": 5.400789795918368,
+          "Bills Actual": 882,
+          "Margin Actual %": 9.41925490372485,
+          "Sales vs Bench %": -5.857285788610075,
+          "Basket Value vs Bench %": -12.475027603923188
+        },
+        {
+          "CATEGORY_NAME": "GENARAL ELECTRONICS ITEMS",
+          "Sales Actual": 4741.764299999998,
+          "Basket Value Actual": 14.864464890282125,
+          "Bills Actual": 319,
+          "Margin Actual %": 23.45592140672197,
+          "Sales vs Bench %": -16.027552690504194,
+          "Basket Value vs Bench %": 2.9254761693193085
+        },
+        {
+          "CATEGORY_NAME": "SMART WATCHES",
+          "Sales Actual": 5126.976,
+          "Basket Value Actual": 7.04254945054945,
+          "Bills Actual": 728,
+          "Margin Actual %": 28.21471168695798,
+          "Sales vs Bench %": 3.4505865566756,
+          "Basket Value vs Bench %": 0.324332567325515
+        },
+        {
+          "CATEGORY_NAME": "COOKING OILS",
+          "Sales Actual": 5470.956000000001,
+          "Basket Value Actual": 6.140242424242426,
+          "Bills Actual": 891,
+          "Margin Actual %": 10.230870867504176,
+          "Sales vs Bench %": 24.76033440508137,
+          "Basket Value vs Bench %": 37.92247967340645
+        },
+        {
+          "CATEGORY_NAME": "SOAP",
+          "Sales Actual": 6355.006200000001,
+          "Basket Value Actual": 4.1266274025974035,
+          "Bills Actual": 1540,
+          "Margin Actual %": 20.516340634901365,
+          "Sales vs Bench %": 14.433889886650613,
+          "Basket Value vs Bench %": 1.2071156010507542
+        },
+        {
+          "CATEGORY_NAME": "ROOT VEGETABLES",
+          "Sales Actual": 6609.745800000001,
+          "Basket Value Actual": 2.0072109930154878,
+          "Bills Actual": 3293,
+          "Margin Actual %": 25.287247724856257,
+          "Sales vs Bench %": -1.5144633360676372,
+          "Basket Value vs Bench %": -4.565032646641902
+        },
+        {
+          "CATEGORY_NAME": "BASMATI RICE",
+          "Sales Actual": 7613.840700000001,
+          "Basket Value Actual": 11.002659971098266,
+          "Bills Actual": 692,
+          "Margin Actual %": 11.07738840326727,
+          "Sales vs Bench %": 15.270892264425532,
+          "Basket Value vs Bench %": 2.111353985683308
+        },
+        {
+          "CATEGORY_NAME": "SNACKS",
+          "Sales Actual": 9791.709299999999,
+          "Basket Value Actual": 4.597046619718309,
+          "Bills Actual": 2130,
+          "Margin Actual %": 15.935757099111305,
+          "Sales vs Bench %": 12.32706358323851,
+          "Basket Value vs Bench %": 1.0416215143122103
+        },
+        {
+          "CATEGORY_NAME": "FRESH CHICKEN PORTIONS",
+          "Sales Actual": 6665.549399999998,
+          "Basket Value Actual": 3.539856293149229,
+          "Bills Actual": 1883,
+          "Margin Actual %": 15.539423976737304,
+          "Sales vs Bench %": 10.445006151437164,
+          "Basket Value vs Bench %": 0.00463913340432609
+        }
+      ],
+      "coverage": "returned_rows",
+      "scope": {
+        "population_status": "returned_rows",
+        "comparable_entities": [],
+        "excluded_entities": [],
+        "note": ""
+      },
+      "facts": [
+        {
+          "fact_id": "F1",
+          "subject": "SNACKS",
+          "metric": "Sales actual",
+          "display_value": "9.8K",
+          "raw_value": 9791.709299999999,
+          "statement": "SNACKS — Sales actual: 9.8K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F2",
+          "subject": "SNACKS",
+          "metric": "Basket value actual",
+          "display_value": "4.6",
+          "raw_value": 4.597046619718309,
+          "statement": "SNACKS — Basket value actual: 4.6",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F3",
+          "subject": "SNACKS",
+          "metric": "Transactions actual",
+          "display_value": "2.1K",
+          "raw_value": 2130.0,
+          "statement": "SNACKS — Transactions actual: 2.1K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F4",
+          "subject": "SNACKS",
+          "metric": "Margin actual %",
+          "display_value": "15.9%",
+          "raw_value": 15.935757099111305,
+          "statement": "SNACKS — Margin actual %: 15.9%",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F5",
+          "subject": "APPLES",
+          "metric": "Sales actual",
+          "display_value": "8.7K",
+          "raw_value": 8679.017699999999,
+          "statement": "APPLES — Sales actual: 8.7K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F6",
+          "subject": "APPLES",
+          "metric": "Basket value actual",
+          "display_value": "2.9",
+          "raw_value": 2.941042934598441,
+          "statement": "APPLES — Basket value actual: 2.9",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F7",
+          "subject": "APPLES",
+          "metric": "Transactions actual",
+          "display_value": "3.0K",
+          "raw_value": 2951.0,
+          "statement": "APPLES — Transactions actual: 3.0K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F8",
+          "subject": "BASMATI RICE",
+          "metric": "Sales actual",
+          "display_value": "7.6K",
+          "raw_value": 7613.840700000001,
+          "statement": "BASMATI RICE — Sales actual: 7.6K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F9",
+          "subject": "FRESH WHOLE  CHICKEN",
+          "metric": "Sales actual",
+          "display_value": "7.3K",
+          "raw_value": 7259.3739000000005,
+          "statement": "FRESH WHOLE  CHICKEN — Sales actual: 7.3K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F10",
+          "subject": "GREEN VEGETABLES",
+          "metric": "Sales actual",
+          "display_value": "7.0K",
+          "raw_value": 6990.1731,
+          "statement": "GREEN VEGETABLES — Sales actual: 7.0K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        }
+      ]
+    },
+    "metadata_context": {
+      "dimension": "Category name",
+      "metric": "Sales actual",
+      "metric_family": "revenue",
+      "metric_phase": null,
+      "metric_description": "",
+      "population_status": "returned_rows",
+      "scope_note": ""
+    },
+    "metrics": [],
+    "visual": {
+      "type": "bar",
+      "title": "Sales actual by category name",
+      "labels": [
+        "SNACKS",
+        "APPLES",
+        "BASMATI RICE",
+        "FRESH WHOLE  CHICKEN",
+        "GREEN VEGETABLES",
+        "FACE CREAM",
+        "FRESH CHICKEN PORTIONS",
+        "ROOT VEGETABLES"
+      ],
+      "values": [
+        9791.709299999999,
+        8679.017699999999,
+        7613.840700000001,
+        7259.3739000000005,
+        6990.1731,
+        6712.1541000000025,
+        6665.549399999998,
+        6609.745800000001
+      ],
+      "value_label": "Sales actual"
+    },
+    "area_key": "area:v1:dea1b6d34381995c7ce722b0cc92e4bfda989980a22bb562675302a4fe0587c4"
+  },
+  {
+    "candidate_id": "summary_6beeb07e981c",
+    "summary_key": "summary:v1:6beeb07e981c139e3a1c371e68ba689fd0d19cbc058c8e29deb0529ba90a4c1a",
+    "focus_key": "focus:v1:365a96471a32a2e520871030c729f0437f2f7aa59e3b4acdfa5ef332934d0aef",
+    "angle": "overall_contribution",
+    "candidate_kind": "broad",
+    "dimension_role": "overall",
+    "lens": "performance",
+    "coverage": "partial",
+    "title_hint": "Current-period contribution shown separately",
+    "purpose": "Summarize the overall current performance and benchmark position across the model's main KPIs.",
+    "query_name": "grand_totals_kpis",
+    "dimension": "overall",
+    "dimension_ref": null,
+    "segment": "",
+    "metric": "Sales Actual",
+    "metric_family": "revenue",
+    "direction": "increase",
+    "observation_value": 216865.4823,
+    "change_pct": null,
+    "score": 65.33619243501563,
+    "period_anchor": "2026-09-03",
+    "evidence": {
+      "rows": [
+        {
+          "Selected As Of Date": "2026-09-03 00:00",
+          "Last Updated": "Last updated 03 Sep 2026",
+          "Sales Actual": 216865.4823,
+          "Basket Value Actual": 14.903819826816026,
+          "Bills Actual": 14551,
+          "Margin Actual %": 20.843174398690046,
+          "Sales P20": 189938.1285,
+          "Sales P50": 216350.7003
+        }
+      ],
+      "coverage": "returned_rows",
+      "scope": {
+        "population_status": "returned_rows",
+        "comparable_entities": [],
+        "excluded_entities": [],
+        "note": ""
+      },
+      "facts": [
+        {
+          "fact_id": "F1",
+          "subject": "2026-09-03 00:00",
+          "metric": "Sales actual",
+          "display_value": "216.9K",
+          "raw_value": 216865.4823,
+          "statement": "2026-09-03 00:00 — Sales actual: 216.9K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F2",
+          "subject": "2026-09-03 00:00",
+          "metric": "Basket value actual",
+          "display_value": "14.9",
+          "raw_value": 14.903819826816026,
+          "statement": "2026-09-03 00:00 — Basket value actual: 14.9",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F3",
+          "subject": "2026-09-03 00:00",
+          "metric": "Transactions actual",
+          "display_value": "14.6K",
+          "raw_value": 14551.0,
+          "statement": "2026-09-03 00:00 — Transactions actual: 14.6K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F4",
+          "subject": "2026-09-03 00:00",
+          "metric": "Margin actual %",
+          "display_value": "20.8%",
+          "raw_value": 20.843174398690046,
+          "statement": "2026-09-03 00:00 — Margin actual %: 20.8%",
+          "subject_role": "focus",
+          "coverage": "partial"
+        }
+      ]
+    },
+    "metadata_context": {
+      "dimension": "Overall",
+      "metric": "Sales actual",
+      "metric_family": "revenue",
+      "metric_phase": null,
+      "metric_description": "",
+      "population_status": "returned_rows",
+      "scope_note": ""
+    },
+    "metrics": [],
+    "visual": null,
+    "area_key": "area:v1:edfdaeff6c7228e914d887a0437710fca8306f200387ffda373267b26c8e1f57"
+  },
+  {
+    "candidate_id": "summary_7f5aa8869457",
+    "summary_key": "summary:v1:7f5aa886945700a6a9f9ca9fee8eaa21b3f995b9953b6073ab4be430ce95f73b",
+    "focus_key": "focus:v1:6fd87c878d94eaae48ccc40d853fc9d991e05545c50c6a3be56cbc70f8290ad0",
+    "angle": "overall_contribution",
+    "candidate_kind": "broad",
+    "dimension_role": "overall",
+    "lens": "performance",
+    "coverage": "partial",
+    "title_hint": "Current-period contribution shown separately",
+    "purpose": "Summarize how many sections and categories fall into each performance bucket.",
+    "query_name": "performance_band_counts",
+    "dimension": "overall",
+    "dimension_ref": null,
+    "segment": "",
+    "metric": "Category Outperforming Count",
+    "metric_family": "performance",
+    "direction": "increase",
+    "observation_value": 2.0,
+    "change_pct": null,
+    "score": 60.47712125471966,
+    "period_anchor": "2026-09-03",
+    "evidence": {
+      "rows": [
+        {
+          "Category Outperforming Count": 2,
+          "Section Underperforming Count": 4,
+          "Section After Benchmark Count": 11,
+          "Section Before Benchmark Count": 8,
+          "Category Underperforming Count": 42,
+          "Category After Benchmark Count": 56
+        }
+      ],
+      "coverage": "returned_rows",
+      "scope": {
+        "population_status": "returned_rows",
+        "comparable_entities": [],
+        "excluded_entities": [],
+        "note": ""
+      },
+      "facts": [
+        {
+          "fact_id": "F1",
+          "subject": "Overall",
+          "metric": "Category outperforming count",
+          "display_value": "2.0",
+          "raw_value": 2.0,
+          "statement": "Overall — Category outperforming count: 2.0",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F2",
+          "subject": "Overall",
+          "metric": "Section underperforming count",
+          "display_value": "4.0",
+          "raw_value": 4.0,
+          "statement": "Overall — Section underperforming count: 4.0",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F3",
+          "subject": "Overall",
+          "metric": "Section after benchmark count",
+          "display_value": "11.0",
+          "raw_value": 11.0,
+          "statement": "Overall — Section after benchmark count: 11.0",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F4",
+          "subject": "Overall",
+          "metric": "Section before benchmark count",
+          "display_value": "8.0",
+          "raw_value": 8.0,
+          "statement": "Overall — Section before benchmark count: 8.0",
+          "subject_role": "focus",
+          "coverage": "partial"
+        }
+      ]
+    },
+    "metadata_context": {
+      "dimension": "Overall",
+      "metric": "Category outperforming count",
+      "metric_family": "performance",
+      "metric_phase": null,
+      "metric_description": "",
+      "population_status": "returned_rows",
+      "scope_note": ""
+    },
+    "metrics": [],
+    "visual": null,
+    "area_key": "area:v1:edfdaeff6c7228e914d887a0437710fca8306f200387ffda373267b26c8e1f57"
+  },
+  {
+    "candidate_id": "summary_d2df45179c48",
+    "summary_key": "summary:v1:d2df45179c48f7f314205e49d65c4af4b63b1bb5b2d74bc09be0da131b0c5581",
+    "focus_key": "focus:v1:29c3fe74d80ce35ca8ae72d68acdca28a3b560ee5c1d59de3a720446723d6dff",
+    "angle": "division_overview",
+    "candidate_kind": "member",
+    "dimension_role": "division",
+    "lens": "performance",
+    "coverage": "partial",
+    "title_hint": "How CONSUMER GOODS performed",
+    "purpose": "Focus on CONSUMER GOODS within the department breakdown",
+    "query_name": "department_performance_breakdown",
+    "dimension": "DEPARTMENT",
+    "dimension_ref": "'categorybenchmark'[DEPARTMENT]",
+    "member_value": "CONSUMER GOODS",
+    "segment": "CONSUMER GOODS",
+    "hierarchy_path": [
+      "CONSUMER GOODS"
+    ],
+    "metric": "Sales Actual",
+    "metric_family": "revenue",
+    "direction": "increase",
+    "observation_value": 115026.72569999998,
+    "materiality": 115026.72569999998,
+    "change_pct": null,
+    "score": 45.06080253311218,
+    "period_anchor": "2026-09-03",
+    "evidence": {
+      "rows": [
+        {
+          "DEPARTMENT": "CONSUMER GOODS",
+          "Sales Actual": 115026.72569999998,
+          "Bills Actual": 12189,
+          "Margin Actual %": 16.569508940088586,
+          "Sales vs Bench %": 1.9765978349719093,
+          "Basket Value vs Bench %": 2.369813037059339,
+          "Bills vs Bench %": -0.38411245505067015
+        },
+        {
+          "DEPARTMENT": "FRESH FOOD",
+          "Sales Actual": 51006.153600000005,
+          "Bills Actual": 7772,
+          "Margin Actual %": 19.92672392307717,
+          "Sales vs Bench %": 4.886137008692423,
+          "Basket Value vs Bench %": 5.803823230590411,
+          "Bills vs Bench %": -0.8673469387755102
+        },
+        {
+          "DEPARTMENT": "LIFESTYLE",
+          "Sales Actual": 29190.342600000007,
+          "Bills Actual": 3270,
+          "Margin Actual %": 32.02217229675026,
+          "Sales vs Bench %": -7.515193872920216,
+          "Basket Value vs Bench %": -3.753579434112385,
+          "Bills vs Bench %": -3.908316191595651
+        }
+      ],
+      "coverage": "partial",
+      "scope": {
+        "population_status": "returned_rows",
+        "comparable_entities": [],
+        "excluded_entities": [],
+        "note": ""
+      },
+      "facts": [
+        {
+          "fact_id": "F1",
+          "subject": "CONSUMER GOODS",
+          "metric": "Sales actual",
+          "display_value": "115.0K",
+          "raw_value": 115026.72569999998,
+          "statement": "CONSUMER GOODS — Sales actual: 115.0K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F2",
+          "subject": "CONSUMER GOODS",
+          "metric": "Transactions actual",
+          "display_value": "12.2K",
+          "raw_value": 12189.0,
+          "statement": "CONSUMER GOODS — Transactions actual: 12.2K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F3",
+          "subject": "CONSUMER GOODS",
+          "metric": "Margin actual %",
+          "display_value": "16.6%",
+          "raw_value": 16.569508940088586,
+          "statement": "CONSUMER GOODS — Margin actual %: 16.6%",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F4",
+          "subject": "CONSUMER GOODS",
+          "metric": "Sales vs bench %",
+          "display_value": "2.0%",
+          "raw_value": 1.9765978349719093,
+          "statement": "CONSUMER GOODS — Sales vs bench %: 2.0%",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F5",
+          "subject": "FRESH FOOD",
+          "metric": "Sales actual",
+          "display_value": "51.0K",
+          "raw_value": 51006.153600000005,
+          "statement": "FRESH FOOD — Sales actual: 51.0K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F6",
+          "subject": "FRESH FOOD",
+          "metric": "Transactions actual",
+          "display_value": "7.8K",
+          "raw_value": 7772.0,
+          "statement": "FRESH FOOD — Transactions actual: 7.8K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F7",
+          "subject": "FRESH FOOD",
+          "metric": "Margin actual %",
+          "display_value": "19.9%",
+          "raw_value": 19.92672392307717,
+          "statement": "FRESH FOOD — Margin actual %: 19.9%",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F8",
+          "subject": "LIFESTYLE",
+          "metric": "Sales actual",
+          "display_value": "29.2K",
+          "raw_value": 29190.342600000007,
+          "statement": "LIFESTYLE — Sales actual: 29.2K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        }
+      ]
+    },
+    "metadata_context": {
+      "dimension": "Department",
+      "metric": "Sales actual",
+      "metric_family": "revenue",
+      "metric_phase": null,
+      "metric_description": "",
+      "population_status": "returned_rows",
+      "scope_note": "",
+      "segment": "CONSUMER GOODS"
+    },
+    "metrics": [],
+    "visual": {
+      "type": "bar",
+      "title": "Sales actual by department",
+      "labels": [
+        "CONSUMER GOODS",
+        "FRESH FOOD",
+        "LIFESTYLE",
+        "HOME & LIVING",
+        "TECHNOLOGY"
+      ],
+      "values": [
+        115026.72569999998,
+        51006.153600000005,
+        29190.342600000007,
+        11438.6499,
+        10203.6105
+      ],
+      "value_label": "Sales actual",
+      "highlight": 0
+    },
+    "area_key": "area:v1:9a51645309f085bec0d75b933ee23f1fa9a00bdd8956e9f53f5c3b178637909a"
+  },
+  {
+    "candidate_id": "summary_5cc14bb6e4f9",
+    "summary_key": "summary:v1:5cc14bb6e4f92ac7042eb1796c7e90259223aebd715b42233144e410860743e2",
+    "focus_key": "focus:v1:98a2f13dd6e063b24456c7f2564e07dd000c297794cd573c6d45e6604ff054be",
+    "angle": "store_overview",
+    "candidate_kind": "member",
+    "dimension_role": "store",
+    "lens": "performance",
+    "coverage": "partial",
+    "title_hint": "How ST4 performed",
+    "purpose": "Focus on ST4 within the store breakdown",
+    "query_name": "store_performance_breakdown",
+    "dimension": "store_no",
+    "dimension_ref": "'categorybenchmark'[store_no]",
+    "member_value": "ST4",
+    "segment": "ST4",
+    "hierarchy_path": [
+      "ST4"
+    ],
+    "metric": "Sales Actual",
+    "metric_family": "revenue",
+    "direction": "increase",
+    "observation_value": 73813.1535,
+    "materiality": 73813.1535,
+    "change_pct": null,
+    "score": 44.86813964363339,
+    "period_anchor": "2026-09-03",
+    "evidence": {
+      "rows": [
+        {
+          "store_no": "ST4",
+          "Sales Actual": 73813.1535,
+          "Basket Value Actual": 14.391334275687269,
+          "Bills Actual": 5129,
+          "Margin Actual %": 22.198333758267875,
+          "Sales vs Bench %": 7.755053921662528,
+          "Basket Value vs Bench %": 3.595276055316431
+        },
+        {
+          "store_no": "ST1",
+          "Sales Actual": 57705.2586,
+          "Basket Value Actual": 15.766464098360656,
+          "Bills Actual": 3660,
+          "Margin Actual %": 20.692359204699528,
+          "Sales vs Bench %": -18.28380965672026,
+          "Basket Value vs Bench %": 2.011276961323807
+        },
+        {
+          "store_no": "ST3",
+          "Sales Actual": 46532.2347,
+          "Basket Value Actual": 13.041545599775786,
+          "Bills Actual": 3568,
+          "Margin Actual %": 19.342023594723532,
+          "Sales vs Bench %": 21.402298267599605,
+          "Basket Value vs Bench %": 8.23450414496479
+        }
+      ],
+      "coverage": "partial",
+      "scope": {
+        "population_status": "returned_rows",
+        "comparable_entities": [],
+        "excluded_entities": [],
+        "note": ""
+      },
+      "facts": [
+        {
+          "fact_id": "F1",
+          "subject": "ST4",
+          "metric": "Sales actual",
+          "display_value": "73.8K",
+          "raw_value": 73813.1535,
+          "statement": "ST4 — Sales actual: 73.8K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F2",
+          "subject": "ST4",
+          "metric": "Basket value actual",
+          "display_value": "14.4",
+          "raw_value": 14.391334275687269,
+          "statement": "ST4 — Basket value actual: 14.4",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F3",
+          "subject": "ST4",
+          "metric": "Transactions actual",
+          "display_value": "5.1K",
+          "raw_value": 5129.0,
+          "statement": "ST4 — Transactions actual: 5.1K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F4",
+          "subject": "ST4",
+          "metric": "Margin actual %",
+          "display_value": "22.2%",
+          "raw_value": 22.198333758267875,
+          "statement": "ST4 — Margin actual %: 22.2%",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F5",
+          "subject": "ST1",
+          "metric": "Sales actual",
+          "display_value": "57.7K",
+          "raw_value": 57705.2586,
+          "statement": "ST1 — Sales actual: 57.7K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F6",
+          "subject": "ST1",
+          "metric": "Basket value actual",
+          "display_value": "15.8",
+          "raw_value": 15.766464098360656,
+          "statement": "ST1 — Basket value actual: 15.8",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F7",
+          "subject": "ST1",
+          "metric": "Transactions actual",
+          "display_value": "3.7K",
+          "raw_value": 3660.0,
+          "statement": "ST1 — Transactions actual: 3.7K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F8",
+          "subject": "ST3",
+          "metric": "Sales actual",
+          "display_value": "46.5K",
+          "raw_value": 46532.2347,
+          "statement": "ST3 — Sales actual: 46.5K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        }
+      ]
+    },
+    "metadata_context": {
+      "dimension": "Store",
+      "metric": "Sales actual",
+      "metric_family": "revenue",
+      "metric_phase": null,
+      "metric_description": "",
+      "population_status": "returned_rows",
+      "scope_note": "",
+      "segment": "ST4"
+    },
+    "metrics": [],
+    "visual": {
+      "type": "bar",
+      "title": "Sales actual by store",
+      "labels": [
+        "ST4",
+        "ST1",
+        "ST3",
+        "ST2"
+      ],
+      "values": [
+        73813.1535,
+        57705.2586,
+        46532.2347,
+        38814.8355
+      ],
+      "value_label": "Sales actual",
+      "highlight": 0
+    },
+    "area_key": "area:v1:bb7576d4711da0479cdac11c18cb6a8adf274257097c1b8392ef9a81b61bfc70"
+  },
+  {
+    "candidate_id": "summary_74ddb0f5b20e",
+    "summary_key": "summary:v1:74ddb0f5b20e42e1be763b377a2afe04e92cbb766e0b6c83fc0179d6b2960784",
+    "focus_key": "focus:v1:3f7eb62407bf04eb5dff3417c63d16bfdce1fe8e00759eef0339f1285572a57e",
+    "angle": "store_overview",
+    "candidate_kind": "member",
+    "dimension_role": "store",
+    "lens": "performance",
+    "coverage": "partial",
+    "title_hint": "How ST1 performed",
+    "purpose": "Focus on ST1 within the store breakdown",
+    "query_name": "store_performance_breakdown",
+    "dimension": "store_no",
+    "dimension_ref": "'categorybenchmark'[store_no]",
+    "member_value": "ST1",
+    "segment": "ST1",
+    "hierarchy_path": [
+      "ST1"
+    ],
+    "metric": "Sales Actual",
+    "metric_family": "revenue",
+    "direction": "increase",
+    "observation_value": 57705.2586,
+    "materiality": 57705.2586,
+    "change_pct": null,
+    "score": 44.76122291762788,
+    "period_anchor": "2026-09-03",
+    "evidence": {
+      "rows": [
+        {
+          "store_no": "ST1",
+          "Sales Actual": 57705.2586,
+          "Basket Value Actual": 15.766464098360656,
+          "Bills Actual": 3660,
+          "Margin Actual %": 20.692359204699528,
+          "Sales vs Bench %": -18.28380965672026,
+          "Basket Value vs Bench %": 2.011276961323807
+        },
+        {
+          "store_no": "ST4",
+          "Sales Actual": 73813.1535,
+          "Basket Value Actual": 14.391334275687269,
+          "Bills Actual": 5129,
+          "Margin Actual %": 22.198333758267875,
+          "Sales vs Bench %": 7.755053921662528,
+          "Basket Value vs Bench %": 3.595276055316431
+        },
+        {
+          "store_no": "ST3",
+          "Sales Actual": 46532.2347,
+          "Basket Value Actual": 13.041545599775786,
+          "Bills Actual": 3568,
+          "Margin Actual %": 19.342023594723532,
+          "Sales vs Bench %": 21.402298267599605,
+          "Basket Value vs Bench %": 8.23450414496479
+        }
+      ],
+      "coverage": "partial",
+      "scope": {
+        "population_status": "returned_rows",
+        "comparable_entities": [],
+        "excluded_entities": [],
+        "note": ""
+      },
+      "facts": [
+        {
+          "fact_id": "F1",
+          "subject": "ST4",
+          "metric": "Sales actual",
+          "display_value": "73.8K",
+          "raw_value": 73813.1535,
+          "statement": "ST4 — Sales actual: 73.8K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F2",
+          "subject": "ST4",
+          "metric": "Basket value actual",
+          "display_value": "14.4",
+          "raw_value": 14.391334275687269,
+          "statement": "ST4 — Basket value actual: 14.4",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F3",
+          "subject": "ST4",
+          "metric": "Transactions actual",
+          "display_value": "5.1K",
+          "raw_value": 5129.0,
+          "statement": "ST4 — Transactions actual: 5.1K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F4",
+          "subject": "ST4",
+          "metric": "Margin actual %",
+          "display_value": "22.2%",
+          "raw_value": 22.198333758267875,
+          "statement": "ST4 — Margin actual %: 22.2%",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F5",
+          "subject": "ST1",
+          "metric": "Sales actual",
+          "display_value": "57.7K",
+          "raw_value": 57705.2586,
+          "statement": "ST1 — Sales actual: 57.7K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F6",
+          "subject": "ST1",
+          "metric": "Basket value actual",
+          "display_value": "15.8",
+          "raw_value": 15.766464098360656,
+          "statement": "ST1 — Basket value actual: 15.8",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F7",
+          "subject": "ST1",
+          "metric": "Transactions actual",
+          "display_value": "3.7K",
+          "raw_value": 3660.0,
+          "statement": "ST1 — Transactions actual: 3.7K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F8",
+          "subject": "ST3",
+          "metric": "Sales actual",
+          "display_value": "46.5K",
+          "raw_value": 46532.2347,
+          "statement": "ST3 — Sales actual: 46.5K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        }
+      ]
+    },
+    "metadata_context": {
+      "dimension": "Store",
+      "metric": "Sales actual",
+      "metric_family": "revenue",
+      "metric_phase": null,
+      "metric_description": "",
+      "population_status": "returned_rows",
+      "scope_note": "",
+      "segment": "ST1"
+    },
+    "metrics": [],
+    "visual": {
+      "type": "bar",
+      "title": "Sales actual by store",
+      "labels": [
+        "ST4",
+        "ST1",
+        "ST3",
+        "ST2"
+      ],
+      "values": [
+        73813.1535,
+        57705.2586,
+        46532.2347,
+        38814.8355
+      ],
+      "value_label": "Sales actual",
+      "highlight": 1
+    },
+    "area_key": "area:v1:a0ae5ddf19bd950f1b5d4a53a4a2f7ce46970cd7349166be0b74e6385d3a022c"
+  },
+  {
+    "candidate_id": "summary_b7715b51f5a1",
+    "summary_key": "summary:v1:b7715b51f5a105f9638c31141890e3d61a8a87b196dad518fba95ba31f71fd30",
+    "focus_key": "focus:v1:f426b3f296d2d777f9a976cc21817f3e2e1da157933c4d3e3fa908765fc0ae11",
+    "angle": "division_overview",
+    "candidate_kind": "member",
+    "dimension_role": "division",
+    "lens": "performance",
+    "coverage": "partial",
+    "title_hint": "How FRESH FOOD performed",
+    "purpose": "Focus on FRESH FOOD within the department breakdown",
+    "query_name": "department_performance_breakdown",
+    "dimension": "DEPARTMENT",
+    "dimension_ref": "'categorybenchmark'[DEPARTMENT]",
+    "member_value": "FRESH FOOD",
+    "segment": "FRESH FOOD",
+    "hierarchy_path": [
+      "FRESH FOOD"
+    ],
+    "metric": "Sales Actual",
+    "metric_family": "revenue",
+    "direction": "increase",
+    "observation_value": 51006.153600000005,
+    "materiality": 51006.153600000005,
+    "change_pct": null,
+    "score": 44.70763108886535,
+    "period_anchor": "2026-09-03",
+    "evidence": {
+      "rows": [
+        {
+          "DEPARTMENT": "FRESH FOOD",
+          "Sales Actual": 51006.153600000005,
+          "Bills Actual": 7772,
+          "Margin Actual %": 19.92672392307717,
+          "Sales vs Bench %": 4.886137008692423,
+          "Basket Value vs Bench %": 5.803823230590411,
+          "Bills vs Bench %": -0.8673469387755102
+        },
+        {
+          "DEPARTMENT": "CONSUMER GOODS",
+          "Sales Actual": 115026.72569999998,
+          "Bills Actual": 12189,
+          "Margin Actual %": 16.569508940088586,
+          "Sales vs Bench %": 1.9765978349719093,
+          "Basket Value vs Bench %": 2.369813037059339,
+          "Bills vs Bench %": -0.38411245505067015
+        },
+        {
+          "DEPARTMENT": "LIFESTYLE",
+          "Sales Actual": 29190.342600000007,
+          "Bills Actual": 3270,
+          "Margin Actual %": 32.02217229675026,
+          "Sales vs Bench %": -7.515193872920216,
+          "Basket Value vs Bench %": -3.753579434112385,
+          "Bills vs Bench %": -3.908316191595651
+        }
+      ],
+      "coverage": "partial",
+      "scope": {
+        "population_status": "returned_rows",
+        "comparable_entities": [],
+        "excluded_entities": [],
+        "note": ""
+      },
+      "facts": [
+        {
+          "fact_id": "F1",
+          "subject": "CONSUMER GOODS",
+          "metric": "Sales actual",
+          "display_value": "115.0K",
+          "raw_value": 115026.72569999998,
+          "statement": "CONSUMER GOODS — Sales actual: 115.0K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F2",
+          "subject": "CONSUMER GOODS",
+          "metric": "Transactions actual",
+          "display_value": "12.2K",
+          "raw_value": 12189.0,
+          "statement": "CONSUMER GOODS — Transactions actual: 12.2K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F3",
+          "subject": "CONSUMER GOODS",
+          "metric": "Margin actual %",
+          "display_value": "16.6%",
+          "raw_value": 16.569508940088586,
+          "statement": "CONSUMER GOODS — Margin actual %: 16.6%",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F4",
+          "subject": "CONSUMER GOODS",
+          "metric": "Sales vs bench %",
+          "display_value": "2.0%",
+          "raw_value": 1.9765978349719093,
+          "statement": "CONSUMER GOODS — Sales vs bench %: 2.0%",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F5",
+          "subject": "FRESH FOOD",
+          "metric": "Sales actual",
+          "display_value": "51.0K",
+          "raw_value": 51006.153600000005,
+          "statement": "FRESH FOOD — Sales actual: 51.0K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F6",
+          "subject": "FRESH FOOD",
+          "metric": "Transactions actual",
+          "display_value": "7.8K",
+          "raw_value": 7772.0,
+          "statement": "FRESH FOOD — Transactions actual: 7.8K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F7",
+          "subject": "FRESH FOOD",
+          "metric": "Margin actual %",
+          "display_value": "19.9%",
+          "raw_value": 19.92672392307717,
+          "statement": "FRESH FOOD — Margin actual %: 19.9%",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F8",
+          "subject": "LIFESTYLE",
+          "metric": "Sales actual",
+          "display_value": "29.2K",
+          "raw_value": 29190.342600000007,
+          "statement": "LIFESTYLE — Sales actual: 29.2K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        }
+      ]
+    },
+    "metadata_context": {
+      "dimension": "Department",
+      "metric": "Sales actual",
+      "metric_family": "revenue",
+      "metric_phase": null,
+      "metric_description": "",
+      "population_status": "returned_rows",
+      "scope_note": "",
+      "segment": "FRESH FOOD"
+    },
+    "metrics": [],
+    "visual": {
+      "type": "bar",
+      "title": "Sales actual by department",
+      "labels": [
+        "CONSUMER GOODS",
+        "FRESH FOOD",
+        "LIFESTYLE",
+        "HOME & LIVING",
+        "TECHNOLOGY"
+      ],
+      "values": [
+        115026.72569999998,
+        51006.153600000005,
+        29190.342600000007,
+        11438.6499,
+        10203.6105
+      ],
+      "value_label": "Sales actual",
+      "highlight": 1
+    },
+    "area_key": "area:v1:4ad65ac140f3bdd25fda883e2e4e2899cbb4cada8baa0a8b078c63fe96000cb2"
+  },
+  {
+    "candidate_id": "summary_f0bc8a467716",
+    "summary_key": "summary:v1:f0bc8a467716170ada3a961c623721fa87a83a4483e59729f6380084dac25b66",
+    "focus_key": "focus:v1:9f4681cd1da00b3bfc07789e22b75d84df82020ea9887e5219160b4e4f0d7e2e",
+    "angle": "store_overview",
+    "candidate_kind": "member",
+    "dimension_role": "store",
+    "lens": "performance",
+    "coverage": "partial",
+    "title_hint": "How ST3 performed",
+    "purpose": "Focus on ST3 within the store breakdown",
+    "query_name": "store_performance_breakdown",
+    "dimension": "store_no",
+    "dimension_ref": "'categorybenchmark'[store_no]",
+    "member_value": "ST3",
+    "segment": "ST3",
+    "hierarchy_path": [
+      "ST3"
+    ],
+    "metric": "Sales Actual",
+    "metric_family": "revenue",
+    "direction": "increase",
+    "observation_value": 46532.2347,
+    "materiality": 46532.2347,
+    "change_pct": null,
+    "score": 44.66776324302398,
+    "period_anchor": "2026-09-03",
+    "evidence": {
+      "rows": [
+        {
+          "store_no": "ST3",
+          "Sales Actual": 46532.2347,
+          "Basket Value Actual": 13.041545599775786,
+          "Bills Actual": 3568,
+          "Margin Actual %": 19.342023594723532,
+          "Sales vs Bench %": 21.402298267599605,
+          "Basket Value vs Bench %": 8.23450414496479
+        },
+        {
+          "store_no": "ST4",
+          "Sales Actual": 73813.1535,
+          "Basket Value Actual": 14.391334275687269,
+          "Bills Actual": 5129,
+          "Margin Actual %": 22.198333758267875,
+          "Sales vs Bench %": 7.755053921662528,
+          "Basket Value vs Bench %": 3.595276055316431
+        },
+        {
+          "store_no": "ST1",
+          "Sales Actual": 57705.2586,
+          "Basket Value Actual": 15.766464098360656,
+          "Bills Actual": 3660,
+          "Margin Actual %": 20.692359204699528,
+          "Sales vs Bench %": -18.28380965672026,
+          "Basket Value vs Bench %": 2.011276961323807
+        }
+      ],
+      "coverage": "partial",
+      "scope": {
+        "population_status": "returned_rows",
+        "comparable_entities": [],
+        "excluded_entities": [],
+        "note": ""
+      },
+      "facts": [
+        {
+          "fact_id": "F1",
+          "subject": "ST4",
+          "metric": "Sales actual",
+          "display_value": "73.8K",
+          "raw_value": 73813.1535,
+          "statement": "ST4 — Sales actual: 73.8K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F2",
+          "subject": "ST4",
+          "metric": "Basket value actual",
+          "display_value": "14.4",
+          "raw_value": 14.391334275687269,
+          "statement": "ST4 — Basket value actual: 14.4",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F3",
+          "subject": "ST4",
+          "metric": "Transactions actual",
+          "display_value": "5.1K",
+          "raw_value": 5129.0,
+          "statement": "ST4 — Transactions actual: 5.1K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F4",
+          "subject": "ST4",
+          "metric": "Margin actual %",
+          "display_value": "22.2%",
+          "raw_value": 22.198333758267875,
+          "statement": "ST4 — Margin actual %: 22.2%",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F5",
+          "subject": "ST1",
+          "metric": "Sales actual",
+          "display_value": "57.7K",
+          "raw_value": 57705.2586,
+          "statement": "ST1 — Sales actual: 57.7K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F6",
+          "subject": "ST1",
+          "metric": "Basket value actual",
+          "display_value": "15.8",
+          "raw_value": 15.766464098360656,
+          "statement": "ST1 — Basket value actual: 15.8",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F7",
+          "subject": "ST1",
+          "metric": "Transactions actual",
+          "display_value": "3.7K",
+          "raw_value": 3660.0,
+          "statement": "ST1 — Transactions actual: 3.7K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F8",
+          "subject": "ST3",
+          "metric": "Sales actual",
+          "display_value": "46.5K",
+          "raw_value": 46532.2347,
+          "statement": "ST3 — Sales actual: 46.5K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        }
+      ]
+    },
+    "metadata_context": {
+      "dimension": "Store",
+      "metric": "Sales actual",
+      "metric_family": "revenue",
+      "metric_phase": null,
+      "metric_description": "",
+      "population_status": "returned_rows",
+      "scope_note": "",
+      "segment": "ST3"
+    },
+    "metrics": [],
+    "visual": {
+      "type": "bar",
+      "title": "Sales actual by store",
+      "labels": [
+        "ST4",
+        "ST1",
+        "ST3",
+        "ST2"
+      ],
+      "values": [
+        73813.1535,
+        57705.2586,
+        46532.2347,
+        38814.8355
+      ],
+      "value_label": "Sales actual",
+      "highlight": 2
+    },
+    "area_key": "area:v1:59edfb1c04c97754daa3029ec24ec155af94a6ef8a3286949c307acad2ef817e"
+  },
+  {
+    "candidate_id": "summary_1944d13db689",
+    "summary_key": "summary:v1:1944d13db6899aa344d54ac683a09c04cbb4dcbf13b7fa655325d54abdc01d2e",
+    "focus_key": "focus:v1:4bf1b908a7734f8c02b5e89c866da1e3353ceb5ec63a55b382bd3d2abc536f62",
+    "angle": "store_overview",
+    "candidate_kind": "member",
+    "dimension_role": "store",
+    "lens": "performance",
+    "coverage": "partial",
+    "title_hint": "How ST2 performed",
+    "purpose": "Focus on ST2 within the store breakdown",
+    "query_name": "store_performance_breakdown",
+    "dimension": "store_no",
+    "dimension_ref": "'categorybenchmark'[store_no]",
+    "member_value": "ST2",
+    "segment": "ST2",
+    "hierarchy_path": [
+      "ST2"
+    ],
+    "metric": "Sales Actual",
+    "metric_family": "revenue",
+    "direction": "increase",
+    "observation_value": 38814.8355,
+    "materiality": 38814.8355,
+    "change_pct": null,
+    "score": 44.58900893866727,
+    "period_anchor": "2026-09-03",
+    "evidence": {
+      "rows": [
+        {
+          "store_no": "ST2",
+          "Sales Actual": 38814.8355,
+          "Basket Value Actual": 17.691356198723792,
+          "Bills Actual": 2194,
+          "Margin Actual %": 20.289936075029374,
+          "Sales vs Bench %": -0.22968347472684097,
+          "Basket Value vs Bench %": -0.22968347472684358
+        },
+        {
+          "store_no": "ST4",
+          "Sales Actual": 73813.1535,
+          "Basket Value Actual": 14.391334275687269,
+          "Bills Actual": 5129,
+          "Margin Actual %": 22.198333758267875,
+          "Sales vs Bench %": 7.755053921662528,
+          "Basket Value vs Bench %": 3.595276055316431
+        },
+        {
+          "store_no": "ST1",
+          "Sales Actual": 57705.2586,
+          "Basket Value Actual": 15.766464098360656,
+          "Bills Actual": 3660,
+          "Margin Actual %": 20.692359204699528,
+          "Sales vs Bench %": -18.28380965672026,
+          "Basket Value vs Bench %": 2.011276961323807
+        }
+      ],
+      "coverage": "partial",
+      "scope": {
+        "population_status": "returned_rows",
+        "comparable_entities": [],
+        "excluded_entities": [],
+        "note": ""
+      },
+      "facts": [
+        {
+          "fact_id": "F1",
+          "subject": "ST4",
+          "metric": "Sales actual",
+          "display_value": "73.8K",
+          "raw_value": 73813.1535,
+          "statement": "ST4 — Sales actual: 73.8K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F2",
+          "subject": "ST4",
+          "metric": "Basket value actual",
+          "display_value": "14.4",
+          "raw_value": 14.391334275687269,
+          "statement": "ST4 — Basket value actual: 14.4",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F3",
+          "subject": "ST4",
+          "metric": "Transactions actual",
+          "display_value": "5.1K",
+          "raw_value": 5129.0,
+          "statement": "ST4 — Transactions actual: 5.1K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F4",
+          "subject": "ST4",
+          "metric": "Margin actual %",
+          "display_value": "22.2%",
+          "raw_value": 22.198333758267875,
+          "statement": "ST4 — Margin actual %: 22.2%",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F5",
+          "subject": "ST1",
+          "metric": "Sales actual",
+          "display_value": "57.7K",
+          "raw_value": 57705.2586,
+          "statement": "ST1 — Sales actual: 57.7K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F6",
+          "subject": "ST1",
+          "metric": "Basket value actual",
+          "display_value": "15.8",
+          "raw_value": 15.766464098360656,
+          "statement": "ST1 — Basket value actual: 15.8",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F7",
+          "subject": "ST1",
+          "metric": "Transactions actual",
+          "display_value": "3.7K",
+          "raw_value": 3660.0,
+          "statement": "ST1 — Transactions actual: 3.7K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F8",
+          "subject": "ST2",
+          "metric": "Sales actual",
+          "display_value": "38.8K",
+          "raw_value": 38814.8355,
+          "statement": "ST2 — Sales actual: 38.8K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        }
+      ]
+    },
+    "metadata_context": {
+      "dimension": "Store",
+      "metric": "Sales actual",
+      "metric_family": "revenue",
+      "metric_phase": null,
+      "metric_description": "",
+      "population_status": "returned_rows",
+      "scope_note": "",
+      "segment": "ST2"
+    },
+    "metrics": [],
+    "visual": {
+      "type": "bar",
+      "title": "Sales actual by store",
+      "labels": [
+        "ST4",
+        "ST1",
+        "ST3",
+        "ST2"
+      ],
+      "values": [
+        73813.1535,
+        57705.2586,
+        46532.2347,
+        38814.8355
+      ],
+      "value_label": "Sales actual",
+      "highlight": 3
+    },
+    "area_key": "area:v1:8fd659990f42e199567929ae0961e18e1ab16e1ba28e19db03c8c35539ef07ea"
+  },
+  {
+    "candidate_id": "summary_667510248c0e",
+    "summary_key": "summary:v1:667510248c0e39e68a4e112dd0219bd72348629ff1fe29b43e6750d7d7e44195",
+    "focus_key": "focus:v1:020ee44f9d87606d5e02cf3be62ec2139fb54d3b083c8bacf262817fd6db8c42",
+    "angle": "division_overview",
+    "candidate_kind": "member",
+    "dimension_role": "division",
+    "lens": "performance",
+    "coverage": "partial",
+    "title_hint": "How LIFESTYLE performed",
+    "purpose": "Focus on LIFESTYLE within the department breakdown",
+    "query_name": "department_performance_breakdown",
+    "dimension": "DEPARTMENT",
+    "dimension_ref": "'categorybenchmark'[DEPARTMENT]",
+    "member_value": "LIFESTYLE",
+    "segment": "LIFESTYLE",
+    "hierarchy_path": [
+      "LIFESTYLE"
+    ],
+    "metric": "Sales Actual",
+    "metric_family": "revenue",
+    "direction": "increase",
+    "observation_value": 29190.342600000007,
+    "materiality": 29190.342600000007,
+    "change_pct": null,
+    "score": 44.46525406999186,
+    "period_anchor": "2026-09-03",
+    "evidence": {
+      "rows": [
+        {
+          "DEPARTMENT": "LIFESTYLE",
+          "Sales Actual": 29190.342600000007,
+          "Bills Actual": 3270,
+          "Margin Actual %": 32.02217229675026,
+          "Sales vs Bench %": -7.515193872920216,
+          "Basket Value vs Bench %": -3.753579434112385,
+          "Bills vs Bench %": -3.908316191595651
+        },
+        {
+          "DEPARTMENT": "CONSUMER GOODS",
+          "Sales Actual": 115026.72569999998,
+          "Bills Actual": 12189,
+          "Margin Actual %": 16.569508940088586,
+          "Sales vs Bench %": 1.9765978349719093,
+          "Basket Value vs Bench %": 2.369813037059339,
+          "Bills vs Bench %": -0.38411245505067015
+        },
+        {
+          "DEPARTMENT": "FRESH FOOD",
+          "Sales Actual": 51006.153600000005,
+          "Bills Actual": 7772,
+          "Margin Actual %": 19.92672392307717,
+          "Sales vs Bench %": 4.886137008692423,
+          "Basket Value vs Bench %": 5.803823230590411,
+          "Bills vs Bench %": -0.8673469387755102
+        }
+      ],
+      "coverage": "partial",
+      "scope": {
+        "population_status": "returned_rows",
+        "comparable_entities": [],
+        "excluded_entities": [],
+        "note": ""
+      },
+      "facts": [
+        {
+          "fact_id": "F1",
+          "subject": "CONSUMER GOODS",
+          "metric": "Sales actual",
+          "display_value": "115.0K",
+          "raw_value": 115026.72569999998,
+          "statement": "CONSUMER GOODS — Sales actual: 115.0K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F2",
+          "subject": "CONSUMER GOODS",
+          "metric": "Transactions actual",
+          "display_value": "12.2K",
+          "raw_value": 12189.0,
+          "statement": "CONSUMER GOODS — Transactions actual: 12.2K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F3",
+          "subject": "CONSUMER GOODS",
+          "metric": "Margin actual %",
+          "display_value": "16.6%",
+          "raw_value": 16.569508940088586,
+          "statement": "CONSUMER GOODS — Margin actual %: 16.6%",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F4",
+          "subject": "CONSUMER GOODS",
+          "metric": "Sales vs bench %",
+          "display_value": "2.0%",
+          "raw_value": 1.9765978349719093,
+          "statement": "CONSUMER GOODS — Sales vs bench %: 2.0%",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F5",
+          "subject": "FRESH FOOD",
+          "metric": "Sales actual",
+          "display_value": "51.0K",
+          "raw_value": 51006.153600000005,
+          "statement": "FRESH FOOD — Sales actual: 51.0K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F6",
+          "subject": "FRESH FOOD",
+          "metric": "Transactions actual",
+          "display_value": "7.8K",
+          "raw_value": 7772.0,
+          "statement": "FRESH FOOD — Transactions actual: 7.8K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F7",
+          "subject": "FRESH FOOD",
+          "metric": "Margin actual %",
+          "display_value": "19.9%",
+          "raw_value": 19.92672392307717,
+          "statement": "FRESH FOOD — Margin actual %: 19.9%",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F8",
+          "subject": "LIFESTYLE",
+          "metric": "Sales actual",
+          "display_value": "29.2K",
+          "raw_value": 29190.342600000007,
+          "statement": "LIFESTYLE — Sales actual: 29.2K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        }
+      ]
+    },
+    "metadata_context": {
+      "dimension": "Department",
+      "metric": "Sales actual",
+      "metric_family": "revenue",
+      "metric_phase": null,
+      "metric_description": "",
+      "population_status": "returned_rows",
+      "scope_note": "",
+      "segment": "LIFESTYLE"
+    },
+    "metrics": [],
+    "visual": {
+      "type": "bar",
+      "title": "Sales actual by department",
+      "labels": [
+        "CONSUMER GOODS",
+        "FRESH FOOD",
+        "LIFESTYLE",
+        "HOME & LIVING",
+        "TECHNOLOGY"
+      ],
+      "values": [
+        115026.72569999998,
+        51006.153600000005,
+        29190.342600000007,
+        11438.6499,
+        10203.6105
+      ],
+      "value_label": "Sales actual",
+      "highlight": 2
+    },
+    "area_key": "area:v1:3dfb86c44adfcfc7b93d3741397498a350484022f8eadb1e92a60a57971f9962"
+  },
+  {
+    "candidate_id": "summary_c46cd6b8c80c",
+    "summary_key": "summary:v1:c46cd6b8c80cd660ed3fbd7d49c0485945bb13e094cfd7e9aa67619fd2b4808a",
+    "focus_key": "focus:v1:73872664527e01dcd38740f9b5cd734b9338764923e675bcefcba8f28437b90e",
+    "angle": "division_overview",
+    "candidate_kind": "member",
+    "dimension_role": "division",
+    "lens": "performance",
+    "coverage": "partial",
+    "title_hint": "How HOME & LIVING performed",
+    "purpose": "Focus on HOME & LIVING within the department breakdown",
+    "query_name": "department_performance_breakdown",
+    "dimension": "DEPARTMENT",
+    "dimension_ref": "'categorybenchmark'[DEPARTMENT]",
+    "member_value": "HOME & LIVING",
+    "segment": "HOME & LIVING",
+    "hierarchy_path": [
+      "HOME & LIVING"
+    ],
+    "metric": "Sales Actual",
+    "metric_family": "revenue",
+    "direction": "increase",
+    "observation_value": 11438.6499,
+    "materiality": 11438.6499,
+    "change_pct": null,
+    "score": 44.058412733475826,
+    "period_anchor": "2026-09-03",
+    "evidence": {
+      "rows": [
+        {
+          "DEPARTMENT": "HOME & LIVING",
+          "Sales Actual": 11438.6499,
+          "Bills Actual": 2344,
+          "Margin Actual %": 35.36298925105681,
+          "Sales vs Bench %": -6.770967546721381,
+          "Basket Value vs Bench %": -5.060707992331036,
+          "Bills vs Bench %": -1.8014243820695435
+        },
+        {
+          "DEPARTMENT": "CONSUMER GOODS",
+          "Sales Actual": 115026.72569999998,
+          "Bills Actual": 12189,
+          "Margin Actual %": 16.569508940088586,
+          "Sales vs Bench %": 1.9765978349719093,
+          "Basket Value vs Bench %": 2.369813037059339,
+          "Bills vs Bench %": -0.38411245505067015
+        },
+        {
+          "DEPARTMENT": "FRESH FOOD",
+          "Sales Actual": 51006.153600000005,
+          "Bills Actual": 7772,
+          "Margin Actual %": 19.92672392307717,
+          "Sales vs Bench %": 4.886137008692423,
+          "Basket Value vs Bench %": 5.803823230590411,
+          "Bills vs Bench %": -0.8673469387755102
+        }
+      ],
+      "coverage": "partial",
+      "scope": {
+        "population_status": "returned_rows",
+        "comparable_entities": [],
+        "excluded_entities": [],
+        "note": ""
+      },
+      "facts": [
+        {
+          "fact_id": "F1",
+          "subject": "CONSUMER GOODS",
+          "metric": "Sales actual",
+          "display_value": "115.0K",
+          "raw_value": 115026.72569999998,
+          "statement": "CONSUMER GOODS — Sales actual: 115.0K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F2",
+          "subject": "CONSUMER GOODS",
+          "metric": "Transactions actual",
+          "display_value": "12.2K",
+          "raw_value": 12189.0,
+          "statement": "CONSUMER GOODS — Transactions actual: 12.2K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F3",
+          "subject": "CONSUMER GOODS",
+          "metric": "Margin actual %",
+          "display_value": "16.6%",
+          "raw_value": 16.569508940088586,
+          "statement": "CONSUMER GOODS — Margin actual %: 16.6%",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F4",
+          "subject": "CONSUMER GOODS",
+          "metric": "Sales vs bench %",
+          "display_value": "2.0%",
+          "raw_value": 1.9765978349719093,
+          "statement": "CONSUMER GOODS — Sales vs bench %: 2.0%",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F5",
+          "subject": "FRESH FOOD",
+          "metric": "Sales actual",
+          "display_value": "51.0K",
+          "raw_value": 51006.153600000005,
+          "statement": "FRESH FOOD — Sales actual: 51.0K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F6",
+          "subject": "FRESH FOOD",
+          "metric": "Transactions actual",
+          "display_value": "7.8K",
+          "raw_value": 7772.0,
+          "statement": "FRESH FOOD — Transactions actual: 7.8K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F7",
+          "subject": "FRESH FOOD",
+          "metric": "Margin actual %",
+          "display_value": "19.9%",
+          "raw_value": 19.92672392307717,
+          "statement": "FRESH FOOD — Margin actual %: 19.9%",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F8",
+          "subject": "HOME & LIVING",
+          "metric": "Sales actual",
+          "display_value": "11.4K",
+          "raw_value": 11438.6499,
+          "statement": "HOME & LIVING — Sales actual: 11.4K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        }
+      ]
+    },
+    "metadata_context": {
+      "dimension": "Department",
+      "metric": "Sales actual",
+      "metric_family": "revenue",
+      "metric_phase": null,
+      "metric_description": "",
+      "population_status": "returned_rows",
+      "scope_note": "",
+      "segment": "HOME & LIVING"
+    },
+    "metrics": [],
+    "visual": {
+      "type": "bar",
+      "title": "Sales actual by department",
+      "labels": [
+        "CONSUMER GOODS",
+        "FRESH FOOD",
+        "LIFESTYLE",
+        "HOME & LIVING",
+        "TECHNOLOGY"
+      ],
+      "values": [
+        115026.72569999998,
+        51006.153600000005,
+        29190.342600000007,
+        11438.6499,
+        10203.6105
+      ],
+      "value_label": "Sales actual",
+      "highlight": 3
+    },
+    "area_key": "area:v1:e9a17b0d8de2cb16fd804d2231239d52f25d7b640032a7f84ef4dd27cefbf701"
+  },
+  {
+    "candidate_id": "summary_753cffd363e6",
+    "summary_key": "summary:v1:753cffd363e68a004e4dcca6066d2135ec2271a71e6fa41fee5e460d8c2e7d29",
+    "focus_key": "focus:v1:f5b7c77bf55d8477aac91bcfa80b72ca1b3ed2b739019c5c39328db81df43de3",
+    "angle": "division_overview",
+    "candidate_kind": "member",
+    "dimension_role": "division",
+    "lens": "performance",
+    "coverage": "partial",
+    "title_hint": "How TECHNOLOGY performed",
+    "purpose": "Focus on TECHNOLOGY within the department breakdown",
+    "query_name": "department_performance_breakdown",
+    "dimension": "DEPARTMENT",
+    "dimension_ref": "'categorybenchmark'[DEPARTMENT]",
+    "member_value": "TECHNOLOGY",
+    "segment": "TECHNOLOGY",
+    "hierarchy_path": [
+      "TECHNOLOGY"
+    ],
+    "metric": "Sales Actual",
+    "metric_family": "revenue",
+    "direction": "increase",
+    "observation_value": 10203.6105,
+    "materiality": 10203.6105,
+    "change_pct": null,
+    "score": 44.00879643277292,
+    "period_anchor": "2026-09-03",
+    "evidence": {
+      "rows": [
+        {
+          "DEPARTMENT": "TECHNOLOGY",
+          "Sales Actual": 10203.6105,
+          "Bills Actual": 577,
+          "Margin Actual %": 25.343983292552586,
+          "Sales vs Bench %": 6.518004490024282,
+          "Basket Value vs Bench %": 7.810250645015894,
+          "Bills vs Bench %": -1.1986301369863013
+        },
+        {
+          "DEPARTMENT": "CONSUMER GOODS",
+          "Sales Actual": 115026.72569999998,
+          "Bills Actual": 12189,
+          "Margin Actual %": 16.569508940088586,
+          "Sales vs Bench %": 1.9765978349719093,
+          "Basket Value vs Bench %": 2.369813037059339,
+          "Bills vs Bench %": -0.38411245505067015
+        },
+        {
+          "DEPARTMENT": "FRESH FOOD",
+          "Sales Actual": 51006.153600000005,
+          "Bills Actual": 7772,
+          "Margin Actual %": 19.92672392307717,
+          "Sales vs Bench %": 4.886137008692423,
+          "Basket Value vs Bench %": 5.803823230590411,
+          "Bills vs Bench %": -0.8673469387755102
+        }
+      ],
+      "coverage": "partial",
+      "scope": {
+        "population_status": "returned_rows",
+        "comparable_entities": [],
+        "excluded_entities": [],
+        "note": ""
+      },
+      "facts": [
+        {
+          "fact_id": "F1",
+          "subject": "CONSUMER GOODS",
+          "metric": "Sales actual",
+          "display_value": "115.0K",
+          "raw_value": 115026.72569999998,
+          "statement": "CONSUMER GOODS — Sales actual: 115.0K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F2",
+          "subject": "CONSUMER GOODS",
+          "metric": "Transactions actual",
+          "display_value": "12.2K",
+          "raw_value": 12189.0,
+          "statement": "CONSUMER GOODS — Transactions actual: 12.2K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F3",
+          "subject": "CONSUMER GOODS",
+          "metric": "Margin actual %",
+          "display_value": "16.6%",
+          "raw_value": 16.569508940088586,
+          "statement": "CONSUMER GOODS — Margin actual %: 16.6%",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F4",
+          "subject": "CONSUMER GOODS",
+          "metric": "Sales vs bench %",
+          "display_value": "2.0%",
+          "raw_value": 1.9765978349719093,
+          "statement": "CONSUMER GOODS — Sales vs bench %: 2.0%",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F5",
+          "subject": "FRESH FOOD",
+          "metric": "Sales actual",
+          "display_value": "51.0K",
+          "raw_value": 51006.153600000005,
+          "statement": "FRESH FOOD — Sales actual: 51.0K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F6",
+          "subject": "FRESH FOOD",
+          "metric": "Transactions actual",
+          "display_value": "7.8K",
+          "raw_value": 7772.0,
+          "statement": "FRESH FOOD — Transactions actual: 7.8K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F7",
+          "subject": "FRESH FOOD",
+          "metric": "Margin actual %",
+          "display_value": "19.9%",
+          "raw_value": 19.92672392307717,
+          "statement": "FRESH FOOD — Margin actual %: 19.9%",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F8",
+          "subject": "TECHNOLOGY",
+          "metric": "Sales actual",
+          "display_value": "10.2K",
+          "raw_value": 10203.6105,
+          "statement": "TECHNOLOGY — Sales actual: 10.2K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        }
+      ]
+    },
+    "metadata_context": {
+      "dimension": "Department",
+      "metric": "Sales actual",
+      "metric_family": "revenue",
+      "metric_phase": null,
+      "metric_description": "",
+      "population_status": "returned_rows",
+      "scope_note": "",
+      "segment": "TECHNOLOGY"
+    },
+    "metrics": [],
+    "visual": {
+      "type": "bar",
+      "title": "Sales actual by department",
+      "labels": [
+        "CONSUMER GOODS",
+        "FRESH FOOD",
+        "LIFESTYLE",
+        "HOME & LIVING",
+        "TECHNOLOGY"
+      ],
+      "values": [
+        115026.72569999998,
+        51006.153600000005,
+        29190.342600000007,
+        11438.6499,
+        10203.6105
+      ],
+      "value_label": "Sales actual",
+      "highlight": 4
+    },
+    "area_key": "area:v1:87c4bbf96f2771f73e05b31739d0035766aaee3a9416ba872f404e32c6e5c2c5"
+  },
+  {
+    "candidate_id": "summary_bb3ab25087d4",
+    "summary_key": "summary:v1:bb3ab25087d42b995ccfe171125606c154ac0c8bd1b8166a89c9daa03c268303",
+    "focus_key": "focus:v1:cfdd38f3bb1e295093da53f6cfa0507ae7af1b53fe43601abc1a99750ef51119",
+    "angle": "category_overview",
+    "candidate_kind": "member",
+    "dimension_role": "category",
+    "lens": "performance",
+    "coverage": "partial",
+    "title_hint": "How SNACKS performed",
+    "purpose": "Focus on SNACKS within the category name breakdown",
+    "query_name": "category_performance_breakdown",
+    "dimension": "CATEGORY_NAME",
+    "dimension_ref": "'categorybenchmark'[CATEGORY_NAME]",
+    "member_value": "SNACKS",
+    "segment": "SNACKS",
+    "hierarchy_path": [
+      "SNACKS"
+    ],
+    "metric": "Sales Actual",
+    "metric_family": "revenue",
+    "direction": "increase",
+    "observation_value": 9791.709299999999,
+    "materiality": 9791.709299999999,
+    "change_pct": null,
+    "score": 43.99090286251387,
+    "period_anchor": "2026-09-03",
+    "evidence": {
+      "rows": [
+        {
+          "CATEGORY_NAME": "SNACKS",
+          "Sales Actual": 9791.709299999999,
+          "Basket Value Actual": 4.597046619718309,
+          "Bills Actual": 2130,
+          "Margin Actual %": 15.935757099111305,
+          "Sales vs Bench %": 12.32706358323851,
+          "Basket Value vs Bench %": 1.0416215143122103
+        },
+        {
+          "CATEGORY_NAME": "APPLES",
+          "Sales Actual": 8679.017699999999,
+          "Basket Value Actual": 2.941042934598441,
+          "Bills Actual": 2951,
+          "Margin Actual %": 21.405600818042423,
+          "Sales vs Bench %": 5.563818562109868,
+          "Basket Value vs Bench %": 4.454879770030776
+        },
+        {
+          "CATEGORY_NAME": "BASMATI RICE",
+          "Sales Actual": 7613.840700000001,
+          "Basket Value Actual": 11.002659971098266,
+          "Bills Actual": 692,
+          "Margin Actual %": 11.07738840326727,
+          "Sales vs Bench %": 15.270892264425532,
+          "Basket Value vs Bench %": 2.111353985683308
+        }
+      ],
+      "coverage": "partial",
+      "scope": {
+        "population_status": "returned_rows",
+        "comparable_entities": [],
+        "excluded_entities": [],
+        "note": ""
+      },
+      "facts": [
+        {
+          "fact_id": "F1",
+          "subject": "SNACKS",
+          "metric": "Sales actual",
+          "display_value": "9.8K",
+          "raw_value": 9791.709299999999,
+          "statement": "SNACKS — Sales actual: 9.8K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F2",
+          "subject": "SNACKS",
+          "metric": "Basket value actual",
+          "display_value": "4.6",
+          "raw_value": 4.597046619718309,
+          "statement": "SNACKS — Basket value actual: 4.6",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F3",
+          "subject": "SNACKS",
+          "metric": "Transactions actual",
+          "display_value": "2.1K",
+          "raw_value": 2130.0,
+          "statement": "SNACKS — Transactions actual: 2.1K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F4",
+          "subject": "SNACKS",
+          "metric": "Margin actual %",
+          "display_value": "15.9%",
+          "raw_value": 15.935757099111305,
+          "statement": "SNACKS — Margin actual %: 15.9%",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F5",
+          "subject": "APPLES",
+          "metric": "Sales actual",
+          "display_value": "8.7K",
+          "raw_value": 8679.017699999999,
+          "statement": "APPLES — Sales actual: 8.7K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F6",
+          "subject": "APPLES",
+          "metric": "Basket value actual",
+          "display_value": "2.9",
+          "raw_value": 2.941042934598441,
+          "statement": "APPLES — Basket value actual: 2.9",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F7",
+          "subject": "APPLES",
+          "metric": "Transactions actual",
+          "display_value": "3.0K",
+          "raw_value": 2951.0,
+          "statement": "APPLES — Transactions actual: 3.0K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F8",
+          "subject": "BASMATI RICE",
+          "metric": "Sales actual",
+          "display_value": "7.6K",
+          "raw_value": 7613.840700000001,
+          "statement": "BASMATI RICE — Sales actual: 7.6K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        }
+      ]
+    },
+    "metadata_context": {
+      "dimension": "Category name",
+      "metric": "Sales actual",
+      "metric_family": "revenue",
+      "metric_phase": null,
+      "metric_description": "",
+      "population_status": "returned_rows",
+      "scope_note": "",
+      "segment": "SNACKS"
+    },
+    "metrics": [],
+    "visual": {
+      "type": "bar",
+      "title": "Sales actual by category name",
+      "labels": [
+        "SNACKS",
+        "APPLES",
+        "BASMATI RICE",
+        "FRESH WHOLE  CHICKEN",
+        "GREEN VEGETABLES",
+        "FACE CREAM",
+        "FRESH CHICKEN PORTIONS",
+        "ROOT VEGETABLES"
+      ],
+      "values": [
+        9791.709299999999,
+        8679.017699999999,
+        7613.840700000001,
+        7259.3739000000005,
+        6990.1731,
+        6712.1541000000025,
+        6665.549399999998,
+        6609.745800000001
+      ],
+      "value_label": "Sales actual",
+      "highlight": 0
+    },
+    "area_key": "area:v1:06f693a19c55296038e7175f9c5aae003adb264da1bfa2c6eaeedcc39f88a190"
+  },
+  {
+    "candidate_id": "summary_3da8df13e040",
+    "summary_key": "summary:v1:3da8df13e040226b3e1f05ee0fb9f63be345790f76b5d9676d9f7c211bd011b7",
+    "focus_key": "focus:v1:b3292be20e9d773b2c43242f14f4dbc5b4795ee7f49451dde7a3f6a9fc6dd1bc",
+    "angle": "category_overview",
+    "candidate_kind": "member",
+    "dimension_role": "category",
+    "lens": "performance",
+    "coverage": "partial",
+    "title_hint": "How APPLES performed",
+    "purpose": "Focus on APPLES within the category name breakdown",
+    "query_name": "category_performance_breakdown",
+    "dimension": "CATEGORY_NAME",
+    "dimension_ref": "'categorybenchmark'[CATEGORY_NAME]",
+    "member_value": "APPLES",
+    "segment": "APPLES",
+    "hierarchy_path": [
+      "APPLES"
+    ],
+    "metric": "Sales Actual",
+    "metric_family": "revenue",
+    "direction": "increase",
+    "observation_value": 8679.017699999999,
+    "materiality": 8679.017699999999,
+    "change_pct": null,
+    "score": 43.93852061077609,
+    "period_anchor": "2026-09-03",
+    "evidence": {
+      "rows": [
+        {
+          "CATEGORY_NAME": "APPLES",
+          "Sales Actual": 8679.017699999999,
+          "Basket Value Actual": 2.941042934598441,
+          "Bills Actual": 2951,
+          "Margin Actual %": 21.405600818042423,
+          "Sales vs Bench %": 5.563818562109868,
+          "Basket Value vs Bench %": 4.454879770030776
+        },
+        {
+          "CATEGORY_NAME": "SNACKS",
+          "Sales Actual": 9791.709299999999,
+          "Basket Value Actual": 4.597046619718309,
+          "Bills Actual": 2130,
+          "Margin Actual %": 15.935757099111305,
+          "Sales vs Bench %": 12.32706358323851,
+          "Basket Value vs Bench %": 1.0416215143122103
+        },
+        {
+          "CATEGORY_NAME": "BASMATI RICE",
+          "Sales Actual": 7613.840700000001,
+          "Basket Value Actual": 11.002659971098266,
+          "Bills Actual": 692,
+          "Margin Actual %": 11.07738840326727,
+          "Sales vs Bench %": 15.270892264425532,
+          "Basket Value vs Bench %": 2.111353985683308
+        }
+      ],
+      "coverage": "partial",
+      "scope": {
+        "population_status": "returned_rows",
+        "comparable_entities": [],
+        "excluded_entities": [],
+        "note": ""
+      },
+      "facts": [
+        {
+          "fact_id": "F1",
+          "subject": "SNACKS",
+          "metric": "Sales actual",
+          "display_value": "9.8K",
+          "raw_value": 9791.709299999999,
+          "statement": "SNACKS — Sales actual: 9.8K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F2",
+          "subject": "SNACKS",
+          "metric": "Basket value actual",
+          "display_value": "4.6",
+          "raw_value": 4.597046619718309,
+          "statement": "SNACKS — Basket value actual: 4.6",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F3",
+          "subject": "SNACKS",
+          "metric": "Transactions actual",
+          "display_value": "2.1K",
+          "raw_value": 2130.0,
+          "statement": "SNACKS — Transactions actual: 2.1K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F4",
+          "subject": "SNACKS",
+          "metric": "Margin actual %",
+          "display_value": "15.9%",
+          "raw_value": 15.935757099111305,
+          "statement": "SNACKS — Margin actual %: 15.9%",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F5",
+          "subject": "APPLES",
+          "metric": "Sales actual",
+          "display_value": "8.7K",
+          "raw_value": 8679.017699999999,
+          "statement": "APPLES — Sales actual: 8.7K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F6",
+          "subject": "APPLES",
+          "metric": "Basket value actual",
+          "display_value": "2.9",
+          "raw_value": 2.941042934598441,
+          "statement": "APPLES — Basket value actual: 2.9",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F7",
+          "subject": "APPLES",
+          "metric": "Transactions actual",
+          "display_value": "3.0K",
+          "raw_value": 2951.0,
+          "statement": "APPLES — Transactions actual: 3.0K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F8",
+          "subject": "BASMATI RICE",
+          "metric": "Sales actual",
+          "display_value": "7.6K",
+          "raw_value": 7613.840700000001,
+          "statement": "BASMATI RICE — Sales actual: 7.6K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        }
+      ]
+    },
+    "metadata_context": {
+      "dimension": "Category name",
+      "metric": "Sales actual",
+      "metric_family": "revenue",
+      "metric_phase": null,
+      "metric_description": "",
+      "population_status": "returned_rows",
+      "scope_note": "",
+      "segment": "APPLES"
+    },
+    "metrics": [],
+    "visual": {
+      "type": "bar",
+      "title": "Sales actual by category name",
+      "labels": [
+        "SNACKS",
+        "APPLES",
+        "BASMATI RICE",
+        "FRESH WHOLE  CHICKEN",
+        "GREEN VEGETABLES",
+        "FACE CREAM",
+        "FRESH CHICKEN PORTIONS",
+        "ROOT VEGETABLES"
+      ],
+      "values": [
+        9791.709299999999,
+        8679.017699999999,
+        7613.840700000001,
+        7259.3739000000005,
+        6990.1731,
+        6712.1541000000025,
+        6665.549399999998,
+        6609.745800000001
+      ],
+      "value_label": "Sales actual",
+      "highlight": 1
+    },
+    "area_key": "area:v1:03cf474c67c400c6f8b3be18f998378e573d9ca1a3077587eb8372056246c7c4"
+  },
+  {
+    "candidate_id": "summary_f3d2c76a193f",
+    "summary_key": "summary:v1:f3d2c76a193f2eb1f2ad3c3ffe5717923a8f90e7c3709824e50b72a7ad42bb33",
+    "focus_key": "focus:v1:23582610a9f95486960e86b4b61cdd9f3dcf64db5d7e5589e609331c487ca6e2",
+    "angle": "category_overview",
+    "candidate_kind": "member",
+    "dimension_role": "category",
+    "lens": "performance",
+    "coverage": "partial",
+    "title_hint": "How BASMATI RICE performed",
+    "purpose": "Focus on BASMATI RICE within the category name breakdown",
+    "query_name": "category_performance_breakdown",
+    "dimension": "CATEGORY_NAME",
+    "dimension_ref": "'categorybenchmark'[CATEGORY_NAME]",
+    "member_value": "BASMATI RICE",
+    "segment": "BASMATI RICE",
+    "hierarchy_path": [
+      "BASMATI RICE"
+    ],
+    "metric": "Sales Actual",
+    "metric_family": "revenue",
+    "direction": "increase",
+    "observation_value": 7613.840700000001,
+    "materiality": 7613.840700000001,
+    "change_pct": null,
+    "score": 43.88166082246725,
+    "period_anchor": "2026-09-03",
+    "evidence": {
+      "rows": [
+        {
+          "CATEGORY_NAME": "BASMATI RICE",
+          "Sales Actual": 7613.840700000001,
+          "Basket Value Actual": 11.002659971098266,
+          "Bills Actual": 692,
+          "Margin Actual %": 11.07738840326727,
+          "Sales vs Bench %": 15.270892264425532,
+          "Basket Value vs Bench %": 2.111353985683308
+        },
+        {
+          "CATEGORY_NAME": "SNACKS",
+          "Sales Actual": 9791.709299999999,
+          "Basket Value Actual": 4.597046619718309,
+          "Bills Actual": 2130,
+          "Margin Actual %": 15.935757099111305,
+          "Sales vs Bench %": 12.32706358323851,
+          "Basket Value vs Bench %": 1.0416215143122103
+        },
+        {
+          "CATEGORY_NAME": "APPLES",
+          "Sales Actual": 8679.017699999999,
+          "Basket Value Actual": 2.941042934598441,
+          "Bills Actual": 2951,
+          "Margin Actual %": 21.405600818042423,
+          "Sales vs Bench %": 5.563818562109868,
+          "Basket Value vs Bench %": 4.454879770030776
+        }
+      ],
+      "coverage": "partial",
+      "scope": {
+        "population_status": "returned_rows",
+        "comparable_entities": [],
+        "excluded_entities": [],
+        "note": ""
+      },
+      "facts": [
+        {
+          "fact_id": "F1",
+          "subject": "SNACKS",
+          "metric": "Sales actual",
+          "display_value": "9.8K",
+          "raw_value": 9791.709299999999,
+          "statement": "SNACKS — Sales actual: 9.8K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F2",
+          "subject": "SNACKS",
+          "metric": "Basket value actual",
+          "display_value": "4.6",
+          "raw_value": 4.597046619718309,
+          "statement": "SNACKS — Basket value actual: 4.6",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F3",
+          "subject": "SNACKS",
+          "metric": "Transactions actual",
+          "display_value": "2.1K",
+          "raw_value": 2130.0,
+          "statement": "SNACKS — Transactions actual: 2.1K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F4",
+          "subject": "SNACKS",
+          "metric": "Margin actual %",
+          "display_value": "15.9%",
+          "raw_value": 15.935757099111305,
+          "statement": "SNACKS — Margin actual %: 15.9%",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F5",
+          "subject": "APPLES",
+          "metric": "Sales actual",
+          "display_value": "8.7K",
+          "raw_value": 8679.017699999999,
+          "statement": "APPLES — Sales actual: 8.7K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F6",
+          "subject": "APPLES",
+          "metric": "Basket value actual",
+          "display_value": "2.9",
+          "raw_value": 2.941042934598441,
+          "statement": "APPLES — Basket value actual: 2.9",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F7",
+          "subject": "APPLES",
+          "metric": "Transactions actual",
+          "display_value": "3.0K",
+          "raw_value": 2951.0,
+          "statement": "APPLES — Transactions actual: 3.0K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F8",
+          "subject": "BASMATI RICE",
+          "metric": "Sales actual",
+          "display_value": "7.6K",
+          "raw_value": 7613.840700000001,
+          "statement": "BASMATI RICE — Sales actual: 7.6K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        }
+      ]
+    },
+    "metadata_context": {
+      "dimension": "Category name",
+      "metric": "Sales actual",
+      "metric_family": "revenue",
+      "metric_phase": null,
+      "metric_description": "",
+      "population_status": "returned_rows",
+      "scope_note": "",
+      "segment": "BASMATI RICE"
+    },
+    "metrics": [],
+    "visual": {
+      "type": "bar",
+      "title": "Sales actual by category name",
+      "labels": [
+        "SNACKS",
+        "APPLES",
+        "BASMATI RICE",
+        "FRESH WHOLE  CHICKEN",
+        "GREEN VEGETABLES",
+        "FACE CREAM",
+        "FRESH CHICKEN PORTIONS",
+        "ROOT VEGETABLES"
+      ],
+      "values": [
+        9791.709299999999,
+        8679.017699999999,
+        7613.840700000001,
+        7259.3739000000005,
+        6990.1731,
+        6712.1541000000025,
+        6665.549399999998,
+        6609.745800000001
+      ],
+      "value_label": "Sales actual",
+      "highlight": 2
+    },
+    "area_key": "area:v1:21acd56fcb7335d62e3621a6808e5669062a200813507bd3cbca2f38adaf3645"
+  },
+  {
+    "candidate_id": "summary_45d6e24a5498",
+    "summary_key": "summary:v1:45d6e24a5498fb91d3927d49e9cb1a15cd478726121d5d8cc086360a398e36f0",
+    "focus_key": "focus:v1:8e218d0d404e937735b354b050afdbc631ae78d7256869872a245dc41df04d96",
+    "angle": "category_overview",
+    "candidate_kind": "member",
+    "dimension_role": "category",
+    "lens": "performance",
+    "coverage": "partial",
+    "title_hint": "How FRESH WHOLE  CHICKEN performed",
+    "purpose": "Focus on FRESH WHOLE  CHICKEN within the category name breakdown",
+    "query_name": "category_performance_breakdown",
+    "dimension": "CATEGORY_NAME",
+    "dimension_ref": "'categorybenchmark'[CATEGORY_NAME]",
+    "member_value": "FRESH WHOLE  CHICKEN",
+    "segment": "FRESH WHOLE  CHICKEN",
+    "hierarchy_path": [
+      "FRESH WHOLE  CHICKEN"
+    ],
+    "metric": "Sales Actual",
+    "metric_family": "revenue",
+    "direction": "increase",
+    "observation_value": 7259.3739000000005,
+    "materiality": 7259.3739000000005,
+    "change_pct": null,
+    "score": 43.86095898688817,
+    "period_anchor": "2026-09-03",
+    "evidence": {
+      "rows": [
+        {
+          "CATEGORY_NAME": "FRESH WHOLE  CHICKEN",
+          "Sales Actual": 7259.3739000000005,
+          "Basket Value Actual": 7.047935825242719,
+          "Bills Actual": 1030,
+          "Margin Actual %": 12.22900613519702,
+          "Sales vs Bench %": 10.649739637455498,
+          "Basket Value vs Bench %": 4.956112258052448
+        },
+        {
+          "CATEGORY_NAME": "SNACKS",
+          "Sales Actual": 9791.709299999999,
+          "Basket Value Actual": 4.597046619718309,
+          "Bills Actual": 2130,
+          "Margin Actual %": 15.935757099111305,
+          "Sales vs Bench %": 12.32706358323851,
+          "Basket Value vs Bench %": 1.0416215143122103
+        },
+        {
+          "CATEGORY_NAME": "APPLES",
+          "Sales Actual": 8679.017699999999,
+          "Basket Value Actual": 2.941042934598441,
+          "Bills Actual": 2951,
+          "Margin Actual %": 21.405600818042423,
+          "Sales vs Bench %": 5.563818562109868,
+          "Basket Value vs Bench %": 4.454879770030776
+        }
+      ],
+      "coverage": "partial",
+      "scope": {
+        "population_status": "returned_rows",
+        "comparable_entities": [],
+        "excluded_entities": [],
+        "note": ""
+      },
+      "facts": [
+        {
+          "fact_id": "F1",
+          "subject": "SNACKS",
+          "metric": "Sales actual",
+          "display_value": "9.8K",
+          "raw_value": 9791.709299999999,
+          "statement": "SNACKS — Sales actual: 9.8K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F2",
+          "subject": "SNACKS",
+          "metric": "Basket value actual",
+          "display_value": "4.6",
+          "raw_value": 4.597046619718309,
+          "statement": "SNACKS — Basket value actual: 4.6",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F3",
+          "subject": "SNACKS",
+          "metric": "Transactions actual",
+          "display_value": "2.1K",
+          "raw_value": 2130.0,
+          "statement": "SNACKS — Transactions actual: 2.1K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F4",
+          "subject": "SNACKS",
+          "metric": "Margin actual %",
+          "display_value": "15.9%",
+          "raw_value": 15.935757099111305,
+          "statement": "SNACKS — Margin actual %: 15.9%",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F5",
+          "subject": "APPLES",
+          "metric": "Sales actual",
+          "display_value": "8.7K",
+          "raw_value": 8679.017699999999,
+          "statement": "APPLES — Sales actual: 8.7K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F6",
+          "subject": "APPLES",
+          "metric": "Basket value actual",
+          "display_value": "2.9",
+          "raw_value": 2.941042934598441,
+          "statement": "APPLES — Basket value actual: 2.9",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F7",
+          "subject": "APPLES",
+          "metric": "Transactions actual",
+          "display_value": "3.0K",
+          "raw_value": 2951.0,
+          "statement": "APPLES — Transactions actual: 3.0K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F8",
+          "subject": "FRESH WHOLE  CHICKEN",
+          "metric": "Sales actual",
+          "display_value": "7.3K",
+          "raw_value": 7259.3739000000005,
+          "statement": "FRESH WHOLE  CHICKEN — Sales actual: 7.3K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        }
+      ]
+    },
+    "metadata_context": {
+      "dimension": "Category name",
+      "metric": "Sales actual",
+      "metric_family": "revenue",
+      "metric_phase": null,
+      "metric_description": "",
+      "population_status": "returned_rows",
+      "scope_note": "",
+      "segment": "FRESH WHOLE  CHICKEN"
+    },
+    "metrics": [],
+    "visual": {
+      "type": "bar",
+      "title": "Sales actual by category name",
+      "labels": [
+        "SNACKS",
+        "APPLES",
+        "BASMATI RICE",
+        "FRESH WHOLE  CHICKEN",
+        "GREEN VEGETABLES",
+        "FACE CREAM",
+        "FRESH CHICKEN PORTIONS",
+        "ROOT VEGETABLES"
+      ],
+      "values": [
+        9791.709299999999,
+        8679.017699999999,
+        7613.840700000001,
+        7259.3739000000005,
+        6990.1731,
+        6712.1541000000025,
+        6665.549399999998,
+        6609.745800000001
+      ],
+      "value_label": "Sales actual",
+      "highlight": 3
+    },
+    "area_key": "area:v1:e867e4802b57b797b311bd139a101496be1f6f2019ef90fe10d80f7632bfcec5"
+  },
+  {
+    "candidate_id": "summary_48b6d38e73d0",
+    "summary_key": "summary:v1:48b6d38e73d0ac07d02f613f5bb5f36486b30c2e618290d7e7cf1abf336f7606",
+    "focus_key": "focus:v1:14ea1ee77e64c0530d25a81222e32d911443f2b3b3c960acbf79f6651efae33a",
+    "angle": "category_overview",
+    "candidate_kind": "member",
+    "dimension_role": "category",
+    "lens": "performance",
+    "coverage": "partial",
+    "title_hint": "How GREEN VEGETABLES performed",
+    "purpose": "Focus on GREEN VEGETABLES within the category name breakdown",
+    "query_name": "category_performance_breakdown",
+    "dimension": "CATEGORY_NAME",
+    "dimension_ref": "'categorybenchmark'[CATEGORY_NAME]",
+    "member_value": "GREEN VEGETABLES",
+    "segment": "GREEN VEGETABLES",
+    "hierarchy_path": [
+      "GREEN VEGETABLES"
+    ],
+    "metric": "Sales Actual",
+    "metric_family": "revenue",
+    "direction": "increase",
+    "observation_value": 6990.1731,
+    "materiality": 6990.1731,
+    "change_pct": null,
+    "score": 43.84455005530368,
+    "period_anchor": "2026-09-03",
+    "evidence": {
+      "rows": [
+        {
+          "CATEGORY_NAME": "GREEN VEGETABLES",
+          "Sales Actual": 6990.1731,
+          "Basket Value Actual": 2.2993990460526317,
+          "Bills Actual": 3040,
+          "Margin Actual %": 19.281950920580602,
+          "Sales vs Bench %": 23.276431822943458,
+          "Basket Value vs Bench %": 15.490551918336513
+        },
+        {
+          "CATEGORY_NAME": "SNACKS",
+          "Sales Actual": 9791.709299999999,
+          "Basket Value Actual": 4.597046619718309,
+          "Bills Actual": 2130,
+          "Margin Actual %": 15.935757099111305,
+          "Sales vs Bench %": 12.32706358323851,
+          "Basket Value vs Bench %": 1.0416215143122103
+        },
+        {
+          "CATEGORY_NAME": "APPLES",
+          "Sales Actual": 8679.017699999999,
+          "Basket Value Actual": 2.941042934598441,
+          "Bills Actual": 2951,
+          "Margin Actual %": 21.405600818042423,
+          "Sales vs Bench %": 5.563818562109868,
+          "Basket Value vs Bench %": 4.454879770030776
+        }
+      ],
+      "coverage": "partial",
+      "scope": {
+        "population_status": "returned_rows",
+        "comparable_entities": [],
+        "excluded_entities": [],
+        "note": ""
+      },
+      "facts": [
+        {
+          "fact_id": "F1",
+          "subject": "SNACKS",
+          "metric": "Sales actual",
+          "display_value": "9.8K",
+          "raw_value": 9791.709299999999,
+          "statement": "SNACKS — Sales actual: 9.8K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F2",
+          "subject": "SNACKS",
+          "metric": "Basket value actual",
+          "display_value": "4.6",
+          "raw_value": 4.597046619718309,
+          "statement": "SNACKS — Basket value actual: 4.6",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F3",
+          "subject": "SNACKS",
+          "metric": "Transactions actual",
+          "display_value": "2.1K",
+          "raw_value": 2130.0,
+          "statement": "SNACKS — Transactions actual: 2.1K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F4",
+          "subject": "SNACKS",
+          "metric": "Margin actual %",
+          "display_value": "15.9%",
+          "raw_value": 15.935757099111305,
+          "statement": "SNACKS — Margin actual %: 15.9%",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F5",
+          "subject": "APPLES",
+          "metric": "Sales actual",
+          "display_value": "8.7K",
+          "raw_value": 8679.017699999999,
+          "statement": "APPLES — Sales actual: 8.7K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F6",
+          "subject": "APPLES",
+          "metric": "Basket value actual",
+          "display_value": "2.9",
+          "raw_value": 2.941042934598441,
+          "statement": "APPLES — Basket value actual: 2.9",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F7",
+          "subject": "APPLES",
+          "metric": "Transactions actual",
+          "display_value": "3.0K",
+          "raw_value": 2951.0,
+          "statement": "APPLES — Transactions actual: 3.0K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F8",
+          "subject": "GREEN VEGETABLES",
+          "metric": "Sales actual",
+          "display_value": "7.0K",
+          "raw_value": 6990.1731,
+          "statement": "GREEN VEGETABLES — Sales actual: 7.0K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        }
+      ]
+    },
+    "metadata_context": {
+      "dimension": "Category name",
+      "metric": "Sales actual",
+      "metric_family": "revenue",
+      "metric_phase": null,
+      "metric_description": "",
+      "population_status": "returned_rows",
+      "scope_note": "",
+      "segment": "GREEN VEGETABLES"
+    },
+    "metrics": [],
+    "visual": {
+      "type": "bar",
+      "title": "Sales actual by category name",
+      "labels": [
+        "SNACKS",
+        "APPLES",
+        "BASMATI RICE",
+        "FRESH WHOLE  CHICKEN",
+        "GREEN VEGETABLES",
+        "FACE CREAM",
+        "FRESH CHICKEN PORTIONS",
+        "ROOT VEGETABLES"
+      ],
+      "values": [
+        9791.709299999999,
+        8679.017699999999,
+        7613.840700000001,
+        7259.3739000000005,
+        6990.1731,
+        6712.1541000000025,
+        6665.549399999998,
+        6609.745800000001
+      ],
+      "value_label": "Sales actual",
+      "highlight": 4
+    },
+    "area_key": "area:v1:01bf69f670e8f46d3926f6fcd21d64b02d11e1264c26a94e05795b3894b2bdee"
+  },
+  {
+    "candidate_id": "summary_e14e9d2136bd",
+    "summary_key": "summary:v1:e14e9d2136bd1dacbaabbaa34259d596b88a6f470f975a4907db20d9c384de6c",
+    "focus_key": "focus:v1:8c52606462386170475e630796bb0db4f530552d12599e59203f993ab33b7f22",
+    "angle": "category_overview",
+    "candidate_kind": "member",
+    "dimension_role": "category",
+    "lens": "performance",
+    "coverage": "partial",
+    "title_hint": "How FACE CREAM performed",
+    "purpose": "Focus on FACE CREAM within the category name breakdown",
+    "query_name": "category_performance_breakdown",
+    "dimension": "CATEGORY_NAME",
+    "dimension_ref": "'categorybenchmark'[CATEGORY_NAME]",
+    "member_value": "FACE CREAM",
+    "segment": "FACE CREAM",
+    "hierarchy_path": [
+      "FACE CREAM"
+    ],
+    "metric": "Sales Actual",
+    "metric_family": "revenue",
+    "direction": "increase",
+    "observation_value": 6712.1541000000025,
+    "materiality": 6712.1541000000025,
+    "change_pct": null,
+    "score": 43.82692661649991,
+    "period_anchor": "2026-09-03",
+    "evidence": {
+      "rows": [
+        {
+          "CATEGORY_NAME": "FACE CREAM",
+          "Sales Actual": 6712.1541000000025,
+          "Basket Value Actual": 6.232269359331479,
+          "Bills Actual": 1077,
+          "Margin Actual %": 20.929825844992994,
+          "Sales vs Bench %": -4.826981850006109,
+          "Basket Value vs Bench %": 2.154140186994382
+        },
+        {
+          "CATEGORY_NAME": "SNACKS",
+          "Sales Actual": 9791.709299999999,
+          "Basket Value Actual": 4.597046619718309,
+          "Bills Actual": 2130,
+          "Margin Actual %": 15.935757099111305,
+          "Sales vs Bench %": 12.32706358323851,
+          "Basket Value vs Bench %": 1.0416215143122103
+        },
+        {
+          "CATEGORY_NAME": "APPLES",
+          "Sales Actual": 8679.017699999999,
+          "Basket Value Actual": 2.941042934598441,
+          "Bills Actual": 2951,
+          "Margin Actual %": 21.405600818042423,
+          "Sales vs Bench %": 5.563818562109868,
+          "Basket Value vs Bench %": 4.454879770030776
+        }
+      ],
+      "coverage": "partial",
+      "scope": {
+        "population_status": "returned_rows",
+        "comparable_entities": [],
+        "excluded_entities": [],
+        "note": ""
+      },
+      "facts": [
+        {
+          "fact_id": "F1",
+          "subject": "SNACKS",
+          "metric": "Sales actual",
+          "display_value": "9.8K",
+          "raw_value": 9791.709299999999,
+          "statement": "SNACKS — Sales actual: 9.8K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F2",
+          "subject": "SNACKS",
+          "metric": "Basket value actual",
+          "display_value": "4.6",
+          "raw_value": 4.597046619718309,
+          "statement": "SNACKS — Basket value actual: 4.6",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F3",
+          "subject": "SNACKS",
+          "metric": "Transactions actual",
+          "display_value": "2.1K",
+          "raw_value": 2130.0,
+          "statement": "SNACKS — Transactions actual: 2.1K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F4",
+          "subject": "SNACKS",
+          "metric": "Margin actual %",
+          "display_value": "15.9%",
+          "raw_value": 15.935757099111305,
+          "statement": "SNACKS — Margin actual %: 15.9%",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F5",
+          "subject": "APPLES",
+          "metric": "Sales actual",
+          "display_value": "8.7K",
+          "raw_value": 8679.017699999999,
+          "statement": "APPLES — Sales actual: 8.7K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F6",
+          "subject": "APPLES",
+          "metric": "Basket value actual",
+          "display_value": "2.9",
+          "raw_value": 2.941042934598441,
+          "statement": "APPLES — Basket value actual: 2.9",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F7",
+          "subject": "APPLES",
+          "metric": "Transactions actual",
+          "display_value": "3.0K",
+          "raw_value": 2951.0,
+          "statement": "APPLES — Transactions actual: 3.0K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F8",
+          "subject": "FACE CREAM",
+          "metric": "Sales actual",
+          "display_value": "6.7K",
+          "raw_value": 6712.1541000000025,
+          "statement": "FACE CREAM — Sales actual: 6.7K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        }
+      ]
+    },
+    "metadata_context": {
+      "dimension": "Category name",
+      "metric": "Sales actual",
+      "metric_family": "revenue",
+      "metric_phase": null,
+      "metric_description": "",
+      "population_status": "returned_rows",
+      "scope_note": "",
+      "segment": "FACE CREAM"
+    },
+    "metrics": [],
+    "visual": {
+      "type": "bar",
+      "title": "Sales actual by category name",
+      "labels": [
+        "SNACKS",
+        "APPLES",
+        "BASMATI RICE",
+        "FRESH WHOLE  CHICKEN",
+        "GREEN VEGETABLES",
+        "FACE CREAM",
+        "FRESH CHICKEN PORTIONS",
+        "ROOT VEGETABLES"
+      ],
+      "values": [
+        9791.709299999999,
+        8679.017699999999,
+        7613.840700000001,
+        7259.3739000000005,
+        6990.1731,
+        6712.1541000000025,
+        6665.549399999998,
+        6609.745800000001
+      ],
+      "value_label": "Sales actual",
+      "highlight": 5
+    },
+    "area_key": "area:v1:e0f1caa416af470643c279a8c4dd720a227ae256ce5d93b6c4cbb20ca133583b"
+  },
+  {
+    "candidate_id": "summary_51884e06bb5a",
+    "summary_key": "summary:v1:51884e06bb5a12809ebc7e89eae84f6c27ec7219f921184e768ce7db0b71aaac",
+    "focus_key": "focus:v1:f8f7a169f8b7e640f076d8b3b31a7b93b69293faec03074096059956c852ca03",
+    "angle": "category_overview",
+    "candidate_kind": "member",
+    "dimension_role": "category",
+    "lens": "performance",
+    "coverage": "partial",
+    "title_hint": "How FRESH CHICKEN PORTIONS performed",
+    "purpose": "Focus on FRESH CHICKEN PORTIONS within the category name breakdown",
+    "query_name": "category_performance_breakdown",
+    "dimension": "CATEGORY_NAME",
+    "dimension_ref": "'categorybenchmark'[CATEGORY_NAME]",
+    "member_value": "FRESH CHICKEN PORTIONS",
+    "segment": "FRESH CHICKEN PORTIONS",
+    "hierarchy_path": [
+      "FRESH CHICKEN PORTIONS"
+    ],
+    "metric": "Sales Actual",
+    "metric_family": "revenue",
+    "direction": "increase",
+    "observation_value": 6665.549399999998,
+    "materiality": 6665.549399999998,
+    "change_pct": null,
+    "score": 43.82390110163719,
+    "period_anchor": "2026-09-03",
+    "evidence": {
+      "rows": [
+        {
+          "CATEGORY_NAME": "FRESH CHICKEN PORTIONS",
+          "Sales Actual": 6665.549399999998,
+          "Basket Value Actual": 3.539856293149229,
+          "Bills Actual": 1883,
+          "Margin Actual %": 15.539423976737304,
+          "Sales vs Bench %": 10.445006151437164,
+          "Basket Value vs Bench %": 0.00463913340432609
+        },
+        {
+          "CATEGORY_NAME": "SNACKS",
+          "Sales Actual": 9791.709299999999,
+          "Basket Value Actual": 4.597046619718309,
+          "Bills Actual": 2130,
+          "Margin Actual %": 15.935757099111305,
+          "Sales vs Bench %": 12.32706358323851,
+          "Basket Value vs Bench %": 1.0416215143122103
+        },
+        {
+          "CATEGORY_NAME": "APPLES",
+          "Sales Actual": 8679.017699999999,
+          "Basket Value Actual": 2.941042934598441,
+          "Bills Actual": 2951,
+          "Margin Actual %": 21.405600818042423,
+          "Sales vs Bench %": 5.563818562109868,
+          "Basket Value vs Bench %": 4.454879770030776
+        }
+      ],
+      "coverage": "partial",
+      "scope": {
+        "population_status": "returned_rows",
+        "comparable_entities": [],
+        "excluded_entities": [],
+        "note": ""
+      },
+      "facts": [
+        {
+          "fact_id": "F1",
+          "subject": "SNACKS",
+          "metric": "Sales actual",
+          "display_value": "9.8K",
+          "raw_value": 9791.709299999999,
+          "statement": "SNACKS — Sales actual: 9.8K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F2",
+          "subject": "SNACKS",
+          "metric": "Basket value actual",
+          "display_value": "4.6",
+          "raw_value": 4.597046619718309,
+          "statement": "SNACKS — Basket value actual: 4.6",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F3",
+          "subject": "SNACKS",
+          "metric": "Transactions actual",
+          "display_value": "2.1K",
+          "raw_value": 2130.0,
+          "statement": "SNACKS — Transactions actual: 2.1K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F4",
+          "subject": "SNACKS",
+          "metric": "Margin actual %",
+          "display_value": "15.9%",
+          "raw_value": 15.935757099111305,
+          "statement": "SNACKS — Margin actual %: 15.9%",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F5",
+          "subject": "APPLES",
+          "metric": "Sales actual",
+          "display_value": "8.7K",
+          "raw_value": 8679.017699999999,
+          "statement": "APPLES — Sales actual: 8.7K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F6",
+          "subject": "APPLES",
+          "metric": "Basket value actual",
+          "display_value": "2.9",
+          "raw_value": 2.941042934598441,
+          "statement": "APPLES — Basket value actual: 2.9",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F7",
+          "subject": "APPLES",
+          "metric": "Transactions actual",
+          "display_value": "3.0K",
+          "raw_value": 2951.0,
+          "statement": "APPLES — Transactions actual: 3.0K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F8",
+          "subject": "FRESH CHICKEN PORTIONS",
+          "metric": "Sales actual",
+          "display_value": "6.7K",
+          "raw_value": 6665.549399999998,
+          "statement": "FRESH CHICKEN PORTIONS — Sales actual: 6.7K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        }
+      ]
+    },
+    "metadata_context": {
+      "dimension": "Category name",
+      "metric": "Sales actual",
+      "metric_family": "revenue",
+      "metric_phase": null,
+      "metric_description": "",
+      "population_status": "returned_rows",
+      "scope_note": "",
+      "segment": "FRESH CHICKEN PORTIONS"
+    },
+    "metrics": [],
+    "visual": {
+      "type": "bar",
+      "title": "Sales actual by category name",
+      "labels": [
+        "SNACKS",
+        "APPLES",
+        "BASMATI RICE",
+        "FRESH WHOLE  CHICKEN",
+        "GREEN VEGETABLES",
+        "FACE CREAM",
+        "FRESH CHICKEN PORTIONS",
+        "ROOT VEGETABLES"
+      ],
+      "values": [
+        9791.709299999999,
+        8679.017699999999,
+        7613.840700000001,
+        7259.3739000000005,
+        6990.1731,
+        6712.1541000000025,
+        6665.549399999998,
+        6609.745800000001
+      ],
+      "value_label": "Sales actual",
+      "highlight": 6
+    },
+    "area_key": "area:v1:cfd571abbcecc68fee9551bd3e2a89fde3bb745f030b482c677a250591b6f4d5"
+  },
+  {
+    "candidate_id": "summary_ea32052a171b",
+    "summary_key": "summary:v1:ea32052a171b63e46d900e676f5c73340a9e60aee52671b52b3f92fea8942a10",
+    "focus_key": "focus:v1:345101be438a6cc4ee61d02b5c5ce9f333d42dd56a82ed7902cd80aa10b8d8ed",
+    "angle": "category_overview",
+    "candidate_kind": "member",
+    "dimension_role": "category",
+    "lens": "performance",
+    "coverage": "partial",
+    "title_hint": "How ROOT VEGETABLES performed",
+    "purpose": "Focus on ROOT VEGETABLES within the category name breakdown",
+    "query_name": "category_performance_breakdown",
+    "dimension": "CATEGORY_NAME",
+    "dimension_ref": "'categorybenchmark'[CATEGORY_NAME]",
+    "member_value": "ROOT VEGETABLES",
+    "segment": "ROOT VEGETABLES",
+    "hierarchy_path": [
+      "ROOT VEGETABLES"
+    ],
+    "metric": "Sales Actual",
+    "metric_family": "revenue",
+    "direction": "increase",
+    "observation_value": 6609.745800000001,
+    "materiality": 6609.745800000001,
+    "change_pct": null,
+    "score": 43.82025045775394,
+    "period_anchor": "2026-09-03",
+    "evidence": {
+      "rows": [
+        {
+          "CATEGORY_NAME": "ROOT VEGETABLES",
+          "Sales Actual": 6609.745800000001,
+          "Basket Value Actual": 2.0072109930154878,
+          "Bills Actual": 3293,
+          "Margin Actual %": 25.287247724856257,
+          "Sales vs Bench %": -1.5144633360676372,
+          "Basket Value vs Bench %": -4.565032646641902
+        },
+        {
+          "CATEGORY_NAME": "SNACKS",
+          "Sales Actual": 9791.709299999999,
+          "Basket Value Actual": 4.597046619718309,
+          "Bills Actual": 2130,
+          "Margin Actual %": 15.935757099111305,
+          "Sales vs Bench %": 12.32706358323851,
+          "Basket Value vs Bench %": 1.0416215143122103
+        },
+        {
+          "CATEGORY_NAME": "APPLES",
+          "Sales Actual": 8679.017699999999,
+          "Basket Value Actual": 2.941042934598441,
+          "Bills Actual": 2951,
+          "Margin Actual %": 21.405600818042423,
+          "Sales vs Bench %": 5.563818562109868,
+          "Basket Value vs Bench %": 4.454879770030776
+        }
+      ],
+      "coverage": "partial",
+      "scope": {
+        "population_status": "returned_rows",
+        "comparable_entities": [],
+        "excluded_entities": [],
+        "note": ""
+      },
+      "facts": [
+        {
+          "fact_id": "F1",
+          "subject": "SNACKS",
+          "metric": "Sales actual",
+          "display_value": "9.8K",
+          "raw_value": 9791.709299999999,
+          "statement": "SNACKS — Sales actual: 9.8K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F2",
+          "subject": "SNACKS",
+          "metric": "Basket value actual",
+          "display_value": "4.6",
+          "raw_value": 4.597046619718309,
+          "statement": "SNACKS — Basket value actual: 4.6",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F3",
+          "subject": "SNACKS",
+          "metric": "Transactions actual",
+          "display_value": "2.1K",
+          "raw_value": 2130.0,
+          "statement": "SNACKS — Transactions actual: 2.1K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F4",
+          "subject": "SNACKS",
+          "metric": "Margin actual %",
+          "display_value": "15.9%",
+          "raw_value": 15.935757099111305,
+          "statement": "SNACKS — Margin actual %: 15.9%",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F5",
+          "subject": "APPLES",
+          "metric": "Sales actual",
+          "display_value": "8.7K",
+          "raw_value": 8679.017699999999,
+          "statement": "APPLES — Sales actual: 8.7K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F6",
+          "subject": "APPLES",
+          "metric": "Basket value actual",
+          "display_value": "2.9",
+          "raw_value": 2.941042934598441,
+          "statement": "APPLES — Basket value actual: 2.9",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F7",
+          "subject": "APPLES",
+          "metric": "Transactions actual",
+          "display_value": "3.0K",
+          "raw_value": 2951.0,
+          "statement": "APPLES — Transactions actual: 3.0K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F8",
+          "subject": "ROOT VEGETABLES",
+          "metric": "Sales actual",
+          "display_value": "6.6K",
+          "raw_value": 6609.745800000001,
+          "statement": "ROOT VEGETABLES — Sales actual: 6.6K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        }
+      ]
+    },
+    "metadata_context": {
+      "dimension": "Category name",
+      "metric": "Sales actual",
+      "metric_family": "revenue",
+      "metric_phase": null,
+      "metric_description": "",
+      "population_status": "returned_rows",
+      "scope_note": "",
+      "segment": "ROOT VEGETABLES"
+    },
+    "metrics": [],
+    "visual": {
+      "type": "bar",
+      "title": "Sales actual by category name",
+      "labels": [
+        "SNACKS",
+        "APPLES",
+        "BASMATI RICE",
+        "FRESH WHOLE  CHICKEN",
+        "GREEN VEGETABLES",
+        "FACE CREAM",
+        "FRESH CHICKEN PORTIONS",
+        "ROOT VEGETABLES"
+      ],
+      "values": [
+        9791.709299999999,
+        8679.017699999999,
+        7613.840700000001,
+        7259.3739000000005,
+        6990.1731,
+        6712.1541000000025,
+        6665.549399999998,
+        6609.745800000001
+      ],
+      "value_label": "Sales actual",
+      "highlight": 7
+    },
+    "area_key": "area:v1:ea2938380b9fab125983f044072c306a8fc4eacfc4ac0b19decfa5222962bbf1"
+  },
+  {
+    "candidate_id": "summary_a0fe30225f70",
+    "summary_key": "summary:v1:a0fe30225f70d0104cf7b9bc7803f1f84078eb775108ddfc6d8cd0bfef449bd4",
+    "focus_key": "focus:v1:cdcd7eef49d69140db9cbf025f4c43cb3ca169fdec3fb8e0ef4e928ade85a9c1",
+    "angle": "category_overview",
+    "candidate_kind": "member",
+    "dimension_role": "category",
+    "lens": "performance",
+    "coverage": "partial",
+    "title_hint": "How SOAP performed",
+    "purpose": "Focus on SOAP within the category name breakdown",
+    "query_name": "category_performance_breakdown",
+    "dimension": "CATEGORY_NAME",
+    "dimension_ref": "'categorybenchmark'[CATEGORY_NAME]",
+    "member_value": "SOAP",
+    "segment": "SOAP",
+    "hierarchy_path": [
+      "SOAP"
+    ],
+    "metric": "Sales Actual",
+    "metric_family": "revenue",
+    "direction": "increase",
+    "observation_value": 6355.006200000001,
+    "materiality": 6355.006200000001,
+    "change_pct": null,
+    "score": 43.80318431217041,
+    "period_anchor": "2026-09-03",
+    "evidence": {
+      "rows": [
+        {
+          "CATEGORY_NAME": "SOAP",
+          "Sales Actual": 6355.006200000001,
+          "Basket Value Actual": 4.1266274025974035,
+          "Bills Actual": 1540,
+          "Margin Actual %": 20.516340634901365,
+          "Sales vs Bench %": 14.433889886650613,
+          "Basket Value vs Bench %": 1.2071156010507542
+        },
+        {
+          "CATEGORY_NAME": "SNACKS",
+          "Sales Actual": 9791.709299999999,
+          "Basket Value Actual": 4.597046619718309,
+          "Bills Actual": 2130,
+          "Margin Actual %": 15.935757099111305,
+          "Sales vs Bench %": 12.32706358323851,
+          "Basket Value vs Bench %": 1.0416215143122103
+        },
+        {
+          "CATEGORY_NAME": "APPLES",
+          "Sales Actual": 8679.017699999999,
+          "Basket Value Actual": 2.941042934598441,
+          "Bills Actual": 2951,
+          "Margin Actual %": 21.405600818042423,
+          "Sales vs Bench %": 5.563818562109868,
+          "Basket Value vs Bench %": 4.454879770030776
+        }
+      ],
+      "coverage": "partial",
+      "scope": {
+        "population_status": "returned_rows",
+        "comparable_entities": [],
+        "excluded_entities": [],
+        "note": ""
+      },
+      "facts": [
+        {
+          "fact_id": "F1",
+          "subject": "SNACKS",
+          "metric": "Sales actual",
+          "display_value": "9.8K",
+          "raw_value": 9791.709299999999,
+          "statement": "SNACKS — Sales actual: 9.8K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F2",
+          "subject": "SNACKS",
+          "metric": "Basket value actual",
+          "display_value": "4.6",
+          "raw_value": 4.597046619718309,
+          "statement": "SNACKS — Basket value actual: 4.6",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F3",
+          "subject": "SNACKS",
+          "metric": "Transactions actual",
+          "display_value": "2.1K",
+          "raw_value": 2130.0,
+          "statement": "SNACKS — Transactions actual: 2.1K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F4",
+          "subject": "SNACKS",
+          "metric": "Margin actual %",
+          "display_value": "15.9%",
+          "raw_value": 15.935757099111305,
+          "statement": "SNACKS — Margin actual %: 15.9%",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F5",
+          "subject": "APPLES",
+          "metric": "Sales actual",
+          "display_value": "8.7K",
+          "raw_value": 8679.017699999999,
+          "statement": "APPLES — Sales actual: 8.7K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F6",
+          "subject": "APPLES",
+          "metric": "Basket value actual",
+          "display_value": "2.9",
+          "raw_value": 2.941042934598441,
+          "statement": "APPLES — Basket value actual: 2.9",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F7",
+          "subject": "APPLES",
+          "metric": "Transactions actual",
+          "display_value": "3.0K",
+          "raw_value": 2951.0,
+          "statement": "APPLES — Transactions actual: 3.0K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F8",
+          "subject": "SOAP",
+          "metric": "Sales actual",
+          "display_value": "6.4K",
+          "raw_value": 6355.006200000001,
+          "statement": "SOAP — Sales actual: 6.4K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        }
+      ]
+    },
+    "metadata_context": {
+      "dimension": "Category name",
+      "metric": "Sales actual",
+      "metric_family": "revenue",
+      "metric_phase": null,
+      "metric_description": "",
+      "population_status": "returned_rows",
+      "scope_note": "",
+      "segment": "SOAP"
+    },
+    "metrics": [],
+    "visual": {
+      "type": "bar",
+      "title": "Sales actual by category name",
+      "labels": [
+        "SNACKS",
+        "APPLES",
+        "BASMATI RICE",
+        "FRESH WHOLE  CHICKEN",
+        "GREEN VEGETABLES",
+        "FACE CREAM",
+        "FRESH CHICKEN PORTIONS",
+        "ROOT VEGETABLES"
+      ],
+      "values": [
+        9791.709299999999,
+        8679.017699999999,
+        7613.840700000001,
+        7259.3739000000005,
+        6990.1731,
+        6712.1541000000025,
+        6665.549399999998,
+        6609.745800000001
+      ],
+      "value_label": "Sales actual"
+    },
+    "area_key": "area:v1:6f6d5d6bb858c643b1aec0c2ba9c8e7c787aedb0e4ed3e2dfa263505dfd4cbc7"
+  },
+  {
+    "candidate_id": "summary_ac9e4620f060",
+    "summary_key": "summary:v1:ac9e4620f060b1d8ee656635ac82323223e85e82d1baa7449ce7c838fc068bf8",
+    "focus_key": "focus:v1:0e92134b7cb99d7a06bba0c3a7b2aaf0b329199f55b623349714e1b08e32885c",
+    "angle": "category_overview",
+    "candidate_kind": "member",
+    "dimension_role": "category",
+    "lens": "performance",
+    "coverage": "partial",
+    "title_hint": "How COSMETICS performed",
+    "purpose": "Focus on COSMETICS within the category name breakdown",
+    "query_name": "category_performance_breakdown",
+    "dimension": "CATEGORY_NAME",
+    "dimension_ref": "'categorybenchmark'[CATEGORY_NAME]",
+    "member_value": "COSMETICS",
+    "segment": "COSMETICS",
+    "hierarchy_path": [
+      "COSMETICS"
+    ],
+    "metric": "Sales Actual",
+    "metric_family": "revenue",
+    "direction": "increase",
+    "observation_value": 5775.4457999999995,
+    "materiality": 5775.4457999999995,
+    "change_pct": null,
+    "score": 43.7616607027418,
+    "period_anchor": "2026-09-03",
+    "evidence": {
+      "rows": [
+        {
+          "CATEGORY_NAME": "COSMETICS",
+          "Sales Actual": 5775.4457999999995,
+          "Basket Value Actual": 4.240415418502202,
+          "Bills Actual": 1362,
+          "Margin Actual %": 31.83191761448654,
+          "Sales vs Bench %": -1.9131272139491735,
+          "Basket Value vs Bench %": -1.4810264527771524
+        },
+        {
+          "CATEGORY_NAME": "SNACKS",
+          "Sales Actual": 9791.709299999999,
+          "Basket Value Actual": 4.597046619718309,
+          "Bills Actual": 2130,
+          "Margin Actual %": 15.935757099111305,
+          "Sales vs Bench %": 12.32706358323851,
+          "Basket Value vs Bench %": 1.0416215143122103
+        },
+        {
+          "CATEGORY_NAME": "APPLES",
+          "Sales Actual": 8679.017699999999,
+          "Basket Value Actual": 2.941042934598441,
+          "Bills Actual": 2951,
+          "Margin Actual %": 21.405600818042423,
+          "Sales vs Bench %": 5.563818562109868,
+          "Basket Value vs Bench %": 4.454879770030776
+        }
+      ],
+      "coverage": "partial",
+      "scope": {
+        "population_status": "returned_rows",
+        "comparable_entities": [],
+        "excluded_entities": [],
+        "note": ""
+      },
+      "facts": [
+        {
+          "fact_id": "F1",
+          "subject": "SNACKS",
+          "metric": "Sales actual",
+          "display_value": "9.8K",
+          "raw_value": 9791.709299999999,
+          "statement": "SNACKS — Sales actual: 9.8K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F2",
+          "subject": "SNACKS",
+          "metric": "Basket value actual",
+          "display_value": "4.6",
+          "raw_value": 4.597046619718309,
+          "statement": "SNACKS — Basket value actual: 4.6",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F3",
+          "subject": "SNACKS",
+          "metric": "Transactions actual",
+          "display_value": "2.1K",
+          "raw_value": 2130.0,
+          "statement": "SNACKS — Transactions actual: 2.1K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F4",
+          "subject": "SNACKS",
+          "metric": "Margin actual %",
+          "display_value": "15.9%",
+          "raw_value": 15.935757099111305,
+          "statement": "SNACKS — Margin actual %: 15.9%",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F5",
+          "subject": "APPLES",
+          "metric": "Sales actual",
+          "display_value": "8.7K",
+          "raw_value": 8679.017699999999,
+          "statement": "APPLES — Sales actual: 8.7K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F6",
+          "subject": "APPLES",
+          "metric": "Basket value actual",
+          "display_value": "2.9",
+          "raw_value": 2.941042934598441,
+          "statement": "APPLES — Basket value actual: 2.9",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F7",
+          "subject": "APPLES",
+          "metric": "Transactions actual",
+          "display_value": "3.0K",
+          "raw_value": 2951.0,
+          "statement": "APPLES — Transactions actual: 3.0K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F8",
+          "subject": "COSMETICS",
+          "metric": "Sales actual",
+          "display_value": "5.8K",
+          "raw_value": 5775.4457999999995,
+          "statement": "COSMETICS — Sales actual: 5.8K",
+          "subject_role": "focus",
+          "coverage": "partial"
+        }
+      ]
+    },
+    "metadata_context": {
+      "dimension": "Category name",
+      "metric": "Sales actual",
+      "metric_family": "revenue",
+      "metric_phase": null,
+      "metric_description": "",
+      "population_status": "returned_rows",
+      "scope_note": "",
+      "segment": "COSMETICS"
+    },
+    "metrics": [],
+    "visual": {
+      "type": "bar",
+      "title": "Sales actual by category name",
+      "labels": [
+        "SNACKS",
+        "APPLES",
+        "BASMATI RICE",
+        "FRESH WHOLE  CHICKEN",
+        "GREEN VEGETABLES",
+        "FACE CREAM",
+        "FRESH CHICKEN PORTIONS",
+        "ROOT VEGETABLES"
+      ],
+      "values": [
+        9791.709299999999,
+        8679.017699999999,
+        7613.840700000001,
+        7259.3739000000005,
+        6990.1731,
+        6712.1541000000025,
+        6665.549399999998,
+        6609.745800000001
+      ],
+      "value_label": "Sales actual"
+    },
+    "area_key": "area:v1:93192a1647a8c50f8244d668633cd6e725e2980d0e76ffa46b70621d45d19924"
+  },
+  {
+    "candidate_id": "summary_486aba69870e",
+    "summary_key": "summary:v1:486aba69870e585e5ebc799a1ca3936b12929f9f9b1436c319b3e8d5b0b92524",
+    "focus_key": "focus:v1:47ce891253d467048b835c39ecf47e05ffe562dc01b4ec32b01530520f0156af",
+    "angle": "division_overview",
+    "candidate_kind": "member",
+    "dimension_role": "division",
+    "lens": "performance",
+    "coverage": "partial",
+    "title_hint": "How OTHER performed",
+    "purpose": "Focus on OTHER within the department breakdown",
+    "query_name": "department_performance_breakdown",
+    "dimension": "DEPARTMENT",
+    "dimension_ref": "'categorybenchmark'[DEPARTMENT]",
+    "member_value": "OTHER",
+    "segment": "OTHER",
+    "hierarchy_path": [
+      "OTHER"
+    ],
+    "metric": "Sales Actual",
+    "metric_family": "revenue",
+    "direction": "flat",
+    "observation_value": 0.0,
+    "materiality": 0.0,
+    "change_pct": null,
+    "score": 40.0,
+    "period_anchor": "2026-09-03",
+    "evidence": {
+      "rows": [
+        {
+          "DEPARTMENT": "OTHER",
+          "Sales Actual": null,
+          "Bills Actual": null,
+          "Margin Actual %": null,
+          "Sales vs Bench %": null,
+          "Basket Value vs Bench %": null,
+          "Bills vs Bench %": null
+        },
+        {
+          "DEPARTMENT": "CONSUMER GOODS",
+          "Sales Actual": 115026.72569999998,
+          "Bills Actual": 12189,
+          "Margin Actual %": 16.569508940088586,
+          "Sales vs Bench %": 1.9765978349719093,
+          "Basket Value vs Bench %": 2.369813037059339,
+          "Bills vs Bench %": -0.38411245505067015
+        },
+        {
+          "DEPARTMENT": "FRESH FOOD",
+          "Sales Actual": 51006.153600000005,
+          "Bills Actual": 7772,
+          "Margin Actual %": 19.92672392307717,
+          "Sales vs Bench %": 4.886137008692423,
+          "Basket Value vs Bench %": 5.803823230590411,
+          "Bills vs Bench %": -0.8673469387755102
+        }
+      ],
+      "coverage": "partial",
+      "scope": {
+        "population_status": "returned_rows",
+        "comparable_entities": [],
+        "excluded_entities": [],
+        "note": ""
+      },
+      "facts": [
+        {
+          "fact_id": "F1",
+          "subject": "CONSUMER GOODS",
+          "metric": "Sales actual",
+          "display_value": "115.0K",
+          "raw_value": 115026.72569999998,
+          "statement": "CONSUMER GOODS — Sales actual: 115.0K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F2",
+          "subject": "CONSUMER GOODS",
+          "metric": "Transactions actual",
+          "display_value": "12.2K",
+          "raw_value": 12189.0,
+          "statement": "CONSUMER GOODS — Transactions actual: 12.2K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F3",
+          "subject": "CONSUMER GOODS",
+          "metric": "Margin actual %",
+          "display_value": "16.6%",
+          "raw_value": 16.569508940088586,
+          "statement": "CONSUMER GOODS — Margin actual %: 16.6%",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F4",
+          "subject": "CONSUMER GOODS",
+          "metric": "Sales vs bench %",
+          "display_value": "2.0%",
+          "raw_value": 1.9765978349719093,
+          "statement": "CONSUMER GOODS — Sales vs bench %: 2.0%",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F5",
+          "subject": "FRESH FOOD",
+          "metric": "Sales actual",
+          "display_value": "51.0K",
+          "raw_value": 51006.153600000005,
+          "statement": "FRESH FOOD — Sales actual: 51.0K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F6",
+          "subject": "FRESH FOOD",
+          "metric": "Transactions actual",
+          "display_value": "7.8K",
+          "raw_value": 7772.0,
+          "statement": "FRESH FOOD — Transactions actual: 7.8K",
+          "subject_role": "peer",
+          "coverage": "partial"
+        },
+        {
+          "fact_id": "F7",
+          "subject": "FRESH FOOD",
+          "metric": "Margin actual %",
+          "display_value": "19.9%",
+          "raw_value": 19.92672392307717,
+          "statement": "FRESH FOOD — Margin actual %: 19.9%",
+          "subject_role": "peer",
+          "coverage": "partial"
+        }
+      ]
+    },
+    "metadata_context": {
+      "dimension": "Department",
+      "metric": "Sales actual",
+      "metric_family": "revenue",
+      "metric_phase": null,
+      "metric_description": "",
+      "population_status": "returned_rows",
+      "scope_note": "",
+      "segment": "OTHER"
+    },
+    "metrics": [],
+    "visual": {
+      "type": "bar",
+      "title": "Sales actual by department",
+      "labels": [
+        "CONSUMER GOODS",
+        "FRESH FOOD",
+        "LIFESTYLE",
+        "HOME & LIVING",
+        "TECHNOLOGY"
+      ],
+      "values": [
+        115026.72569999998,
+        51006.153600000005,
+        29190.342600000007,
+        11438.6499,
+        10203.6105
+      ],
+      "value_label": "Sales actual"
+    },
+    "area_key": "area:v1:9596a73f822e7f1a8536e485c941d4235589f061b78249d50dd2e6c3809ecf04"
+  }
+]

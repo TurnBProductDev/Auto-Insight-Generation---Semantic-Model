@@ -116,6 +116,15 @@ def main(argv=None) -> int:
     except Exception:  # noqa: BLE001 - the rulebook is guidance, not a dependency
         rules = ""
     model["prose"] = author.author(model, cfg, rules=rules, log=print)
+
+    # The one-line reading under the target figure on the app's Home scorecard,
+    # on the same switch as the rest of this report's wording.
+    from src.domains.sales import scorecard_lines
+
+    model["scorecard_lines"] = scorecard_lines.author(
+        scorecard_lines.target_tracker_facts(model), cfg,
+        flag=bool(cfg.get("target_tracker_llm_authoring_enabled", False)),
+        out_dir=str(out_dir), log=print)
     (out_dir / "report_target_tracker.json").write_text(
         json.dumps(model, indent=2, default=str), encoding="utf-8")
 

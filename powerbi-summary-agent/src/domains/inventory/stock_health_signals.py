@@ -198,13 +198,18 @@ def double_warning_states(model: dict, score: dict | None = None) -> list[dict]:
             # the count, so the tile asserted that 17.2K was the share - a
             # false sentence assembled from two true halves.
             comparison_label=f"{share:.1f}% of all Loc-SKUs in the stock position",
+            # BR-31's guidance ("Place an emergency purchase order.") stays on
+            # the page's queue, where it sits beside the row it is about. On a
+            # card it read as an order barked at whoever opened the feed, ahead
+            # of the card's own next step.
             description=(
                 f"{_fmt(lines)} Loc-SKUs are in {action}, "
-                f"{share:.1f}% of the {_fmt(total_rows)} in the position. "
-                f"{row.get('guidance') or ''}".strip()),
+                f"{share:.1f}% of the {_fmt(total_rows)} in the position."),
             question=(f"Which Divisions and Locations hold the {action} "
                       f"Loc-SKUs, and how long have they been there?"),
-            extra={"loc_skus": lines, "recommended_action": action},
+            # A count of lines, not money. Undeclared, the feed fell back to the
+            # family's currency and tagged 14,499 Loc-SKUs as USD.
+            extra={"loc_skus": lines, "recommended_action": action, "value_type": "count"},
         ))
     return out
 
@@ -236,7 +241,7 @@ def urgent_state_never_reported(model: dict, score: dict | None = None) -> list[
                 f"producing it."),
             question=(f"Does the source system produce the {state} state at "
                       f"all, and if so when was it last populated?"),
-            extra={"data_quality": True},
+            extra={"data_quality": True, "value_type": "count"},
         ))
     # This is a question about the data, not about the stock.
     for signal in out:
@@ -299,16 +304,18 @@ def unwanted_skus(model: dict, score: dict | None = None) -> list[dict]:
         current=int(skus),
         score_override=share if share is not None else MIN_SCORE_PCT,
         comparison_label="of Pending Orders Value",
+        # The rulebook's opinion of this signal ("one of the most actionable")
+        # was published as a sentence of its own. A reader wants the finding,
+        # not the report describing how it ranks it.
         description=(
             f"{_fmt(skus)} SKUs already carrying Excess Stock have more stock "
             f"on order, worth {_fmt(value)}"
             + (f", {share:.1f}% of the {_fmt(pending)} Pending Orders Value."
-               if share is not None else ".")
-            + " The rules call this one of the most actionable signals in the "
-              "report."),
+               if share is not None else ".")),
         question=("Can the open orders on these SKUs be cancelled or deferred, "
                   "and why were they raised against lines already above cover?"),
-        extra={"unwanted_skus": int(skus)},
+        extra={"unwanted_skus": int(skus),
+               **({} if value is not None else {"value_type": "count"})},
     )]
 
 
@@ -344,7 +351,7 @@ def critical_stockouts(model: dict, score: dict | None = None) -> list[dict]:
               "confirmed lost revenue."),
         question=("Which Critical SKUs are out of stock at more than one Store, "
                   "and is warehouse stock available to transfer?"),
-        extra={"opportunity_loss_day": opp},
+        extra={"opportunity_loss_day": opp, "value_type": "count"},
     )]
 
 

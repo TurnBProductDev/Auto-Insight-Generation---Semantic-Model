@@ -1,0 +1,64 @@
+{
+  "query_count": 1,
+  "successful": 1,
+  "failed": 0,
+  "queries": [
+    {
+      "query_name": "meta_comparable_totals",
+      "purpose": "Metadata-selected comparable totals for the primary value and compatible volume families.",
+      "status": "success",
+      "rows": [
+        {
+          "Sales Actual": 216865.4823,
+          "Last Updated": "Last updated 03 Sep 2026",
+          "Sales vs Bench % Color": "#2A3547"
+        }
+      ],
+      "dax": "EVALUATE\nROW(\n    \"Sales Actual\", [Sales Actual],\n    \"Last Updated\", [Last Updated],\n    \"Sales vs Bench % Color\", [Sales vs Bench % Color]\n)",
+      "contract_hint": {
+        "source": "metadata_template",
+        "coverage_kind": "grand_total",
+        "grouping": [],
+        "metrics": [
+          {
+            "alias": "Sales Actual",
+            "expression": "[Sales Actual]",
+            "source": "measure",
+            "phase": "current",
+            "family": "revenue",
+            "bundle_id": "_Measures::revenue",
+            "semantic_role": "value",
+            "additive_candidate": false
+          },
+          {
+            "alias": "Last Updated",
+            "expression": "[Last Updated]",
+            "source": "measure",
+            "phase": "prior",
+            "family": "revenue",
+            "bundle_id": "_Measures::revenue",
+            "semantic_role": "value",
+            "additive_candidate": false
+          },
+          {
+            "alias": "Sales vs Bench % Color",
+            "expression": "[Sales vs Bench % Color]",
+            "source": "measure",
+            "phase": "change",
+            "family": "revenue",
+            "bundle_id": "_Measures::revenue",
+            "semantic_role": "value",
+            "additive_candidate": false
+          }
+        ],
+        "population_status": "unfiltered",
+        "population_codes": [],
+        "entity_dimension": null,
+        "topn": null,
+        "sort": null,
+        "time_window": "all_available"
+      },
+      "shared_pre_fork": true
+    }
+  ]
+}

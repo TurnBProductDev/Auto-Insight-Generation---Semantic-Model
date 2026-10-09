@@ -1,0 +1,5 @@
+{
+  "enabled": false,
+  "level": "recent_week",
+  "reason": "disabled - same reason as business-day source: model exposes no date dimension for business-day monitoring"
+}

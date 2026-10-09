@@ -106,6 +106,13 @@ def history_entry(model: dict, payload: dict, report_id: str, generated_at: date
     header = model.get("header") or {}
     return {
         "reportId": report_id,
+        # `date` is the CONTRACT name for this version key: the web app
+        # echoes it back as `&date=` and the AI Bot drops any row without
+        # it. `asAt` is this report's own name for the same date and is
+        # what merge_index below is keyed on, so both are published —
+        # publishing only asAt is what made this report report "no
+        # history" from a fully populated index.
+        "date": model.get("as_at"),
         "asAt": model.get("as_at"),
         # The app reads `dataAsOf` off the index row to say how current a
         # summary is; `asAt` is this report's own key for the same date and

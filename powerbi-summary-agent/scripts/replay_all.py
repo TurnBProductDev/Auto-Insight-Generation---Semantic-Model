@@ -43,7 +43,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 # Lowering this is a deliberate act: it means the gate now covers less than it
 # did. Raise it when you add a replay; only lower it when one is genuinely and
 # intentionally retired.
-MIN_EXPECTED = 55
+MIN_EXPECTED = 58
 
 PER_SCRIPT_TIMEOUT = 600
 TAIL_LINES = 25

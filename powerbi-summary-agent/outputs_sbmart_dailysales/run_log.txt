@@ -1,0 +1,71 @@
+[11:58:26] Node 1: config loaded.
+[11:58:26]   workspace=2829a4af-2e07-4b43-b913-0a829a06bef4 dataset=8d111712-9ea8-4a65-9bb9-58f00e49d379 provider=azure_openai model=claude-sonnet-5 exec_mode=python
+[11:58:26]   no business rules file found (config/business_rules.md); snapshot notes none in force.
+[11:58:26] Node 2: reading semantic model metadata via INFO.VIEW DAX...
+[11:58:27]   tables: 21 rows
+[11:58:28]   columns: 178 rows
+[11:58:29]   measures: 96 rows
+[11:58:29]   relationships: 15 rows
+[11:58:29] Note: all measure expressions are blank - executeQueries redacts them and the Fabric getDefinition enrichment did not fill them either. get_measure_definition will use its raw-column probe fallback.
+[11:58:29] Metadata assembled: 21 tables, 96 measures, 7 date fields.
+[11:58:29] Metadata profile: deriving measures, dimensions and relationships...
+[11:58:29] Metadata profile: primary=revenue; fact=_Measures; entity=unresolved; 0 drill dimensions; 0 time dimensions.
+[11:58:29]   metadata profile caveat: No high-confidence entity/location dimension was identified from metadata.
+[11:58:29]   metadata profile caveat: Some measure definitions are unavailable; those measures have lower semantic confidence.
+[11:58:29] Baseline: discovering entity comparison scope from metadata-selected objects...
+[11:58:29] Baseline scope: 0 comparable, 0 current-only, 0 prior-only; source=unresolved.
+[11:58:29]   scope caveat: Metadata could not identify an entity/current/prior scope query.
+[11:58:29] Shared baseline: executing metadata-driven diagnostic coverage pre-fork...
+[11:58:30] Shared metadata coverage: 1/1 queries succeeded pre-fork.
+[11:58:30] Node 3: understanding the report/model...
+[11:58:47] Domain: 'Retail / Store Performance Benchmarking'; 12 key measures; time summary possible: True.
+[11:58:47] Insight branch: normalizing raw scan results...
+[11:58:47] Insight scan normalized 1 results (1 successful).
+[11:58:47] Node 4: planning DAX queries automatically...
+[11:59:03] Planned 8 queries: grand_totals_kpis, store_performance_breakdown, department_performance_breakdown, section_by_department_matrix, category_performance_breakdown, sales_trend_over_time, day_of_week_pattern, performance_band_counts
+[11:59:03] Node 5: generating DAX for each planned query (LLM)...
+[11:59:10]   grand_totals_kpis: generated.
+[11:59:15]   store_performance_breakdown: generated.
+[11:59:20]   department_performance_breakdown: generated.
+[11:59:25]   section_by_department_matrix: generated.
+[11:59:30]   category_performance_breakdown: generated.
+[11:59:35]   sales_trend_over_time: generated.
+[11:59:41]   day_of_week_pattern: generated.
+[11:59:46]   performance_band_counts: generated.
+[11:59:46] Generated 8 DAX statements.
+[11:59:03] Temporal gate: no valid business time grain; period level disabled (gated 0 load-date table(s)). Report will carry the caveat.
+[11:59:46] Business-day source: disabled - model exposes no date dimension for business-day monitoring.
+[11:59:46] Node 6: validating generated DAX against metadata...
+[11:59:46] 8 of 8 queries passed validation (0 eligible for repair).
+[11:59:46] Node 7: executing 8 DAX queries (mode=python)...
+[11:59:52] Executed queries: 8/8 succeeded.
+[11:59:46] Recent-week gate: disabled - disabled - same reason as business-day source: model exposes no date dimension for business-day monitoring.
+[11:59:52] Daily anomaly gate: disabled - disabled - same reason as business-day source: model exposes no date dimension for business-day monitoring.
+[11:59:52] Node 8: normalizing raw Power BI results...
+[11:59:52] Normalized 8 results (8 successful).
+[11:59:52] Evidence catalog: 1 contracts (1 construction-time).
+[11:59:52] Summary period: grain=day data_as_of=2026-09-03 anchor=2026-09-03 freshness=stale.
+[11:59:52] Insight branch: computing deterministic stat candidates...
+[11:59:52] Stat candidates: 0 business, 0 data-quality.
+[11:59:53] Novelty filter: detected=0 suppressed=0 unseen=0 eligible=0 cap_dropped=0 (status=empty, policy=never_repeat, levels={}).
+[11:59:53] Summary candidates: 27 perspective(s) from summary-owned evidence.
+[11:59:53] Insight branch: detecting notable signals in scan results...
+[11:59:53] Insight branch: no eligible (unseen) candidates - no_notable_findings.
+[11:59:53] No signals reported (no_notable_findings).
+[11:59:53] Insight branch: assembling evidence briefs (deterministic reuse pass)...
+[11:59:53] Evidence briefs: 0 signals; 0 drill-dimensions answered by reuse, 0 gaps flagged for probing.
+[11:59:53] Coverage matrix: 1 dimensions, 0 with trusted (complete+comparable) coverage.
+[11:59:53] Summary focus: detected=27 role=period segment= type=new_data reason=two_stage_selection.
+[11:59:53] Insight branch: targeted gap scan from metadata-compatible dimensions...
+[11:59:53] Gap scan complete: 0 REST calls; global budget remaining=20.
+[11:59:53] Focus deep dive:  enriched with 0 fact(s) over 1 fresh quer(y/ies); caveats: no validated business time axis for the focus trend.
+[12:00:05] Fresh summary: authored new_data perspective summary_0c361f7fd00e (mode=llm).
+[11:59:53] Insight branch: investigating 0 signals (tool-calling agent)...
+[11:59:53] Investigations complete for 0 signals.
+[12:00:05] Thesis linker: disabled (insight_thesis_linking_enabled=false).
+[12:00:05] Fresh flexible summary validated and rendered (3 narrative block(s), 1 interactive chart(s)).
+[12:00:05] Insight branch: synthesizing the insight report...
+[12:00:22] Insight report written (706 words).
+[12:00:22] === insight branch finished ===
+[12:00:22] === summary branch finished ===
+[save] wrote outputs to /outputs_sbmart_dailysales

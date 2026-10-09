@@ -1,10 +1,12 @@
 {
   "report_id": "target_tracker",
   "report_name": "Target Tracker",
-  "anchor": "2026-08-31",
-  "sold_through": "2026-08-26",
+  "anchor": "2026-08-27",
+  "sold_through": "2026-08-27",
+  "targeted_through": "2026-08-31",
   "anchor_forced": false,
   "target_lag_days": 0,
+  "sales_lag_days": 4,
   "population": [
     "ST1",
     "ST2",
@@ -14,47 +16,47 @@
   "periods": {
     "day": {
       "name": "Today",
-      "when": "Monday 31 August 2026",
+      "when": "Thursday 27 August 2026",
       "elapsed": "Full day",
-      "actual": 0.0,
-      "target": 476565.8899341704,
-      "variance": -476565.8899341704,
-      "attainment": 0.0,
-      "band": "crit",
-      "status": "Below target"
+      "actual": 577380.1100000002,
+      "target": 562493.9999408288,
+      "variance": 14886.11005917145,
+      "attainment": 102.64644779512979,
+      "band": "good",
+      "status": "On target"
     },
     "wtd": {
       "name": "This week so far",
-      "when": "Mon 31 Aug \u2013 Mon 31 Aug",
-      "elapsed": "1 days of 7",
-      "actual": 0.0,
-      "target": 476565.8899341704,
-      "variance": -476565.8899341704,
-      "attainment": 0.0,
-      "band": "crit",
-      "status": "Below target"
+      "when": "Mon 24 Aug \u2013 Thu 27 Aug",
+      "elapsed": "4 days of 7",
+      "actual": 1672259.6300000004,
+      "target": 1746886.9998371627,
+      "variance": -74627.36983716232,
+      "attainment": 95.72797955196192,
+      "band": "warn",
+      "status": "Watch"
     },
     "mtd": {
       "name": "This month so far",
-      "when": "1 \u2013 31 August",
-      "elapsed": "31 days of 31",
-      "actual": 13163192.010000005,
-      "target": 17665821.329320014,
-      "variance": -4502629.319320008,
-      "attainment": 74.51219937424035,
+      "when": "1 \u2013 27 August",
+      "elapsed": "27 days of 31",
+      "actual": 14010080.290000003,
+      "target": 15222785.999446295,
+      "variance": -1212705.7094462924,
+      "attainment": 92.03361520361383,
       "band": "crit",
       "status": "Below target"
     },
     "ytd": {
       "name": "This year so far",
-      "when": "1 January \u2013 31 August 2026",
-      "elapsed": "243 days elapsed",
-      "actual": 141541999.45999998,
-      "target": 142455589.10911596,
-      "variance": -913589.6491159797,
-      "attainment": 99.35868458736554,
-      "band": "warn",
-      "status": "Watch"
+      "when": "1 January \u2013 27 August 2026",
+      "elapsed": "239 days elapsed",
+      "actual": 142388887.74000004,
+      "target": 140012553.77924225,
+      "variance": 2376333.960757792,
+      "attainment": 101.69722921024965,
+      "band": "good",
+      "status": "On target"
     }
   },
   "days": [
@@ -92,10 +94,10 @@
       "date": "2026-08-04",
       "dow": "Tue",
       "day": 4,
-      "actual": 503808.46,
+      "actual": 503808.4600000001,
       "target": 520030.99997000804,
-      "variance": -16222.539970008016,
-      "attainment": 96.88046674699324,
+      "variance": -16222.539970007958,
+      "attainment": 96.88046674699325,
       "band": "warn"
     },
     {
@@ -112,10 +114,10 @@
       "date": "2026-08-06",
       "dow": "Thu",
       "day": 6,
-      "actual": 742642.9200000003,
-      "target": 730371.9999719926,
-      "variance": 12270.920028007706,
-      "attainment": 101.680091792741,
+      "actual": 742642.9200000002,
+      "target": 730371.9999719927,
+      "variance": 12270.920028007473,
+      "attainment": 101.68009179274095,
       "band": "good"
     },
     {
@@ -132,20 +134,20 @@
       "date": "2026-08-08",
       "dow": "Sat",
       "day": 8,
-      "actual": 451681.07999999996,
-      "target": 555118.9999776026,
-      "variance": -103437.91997760267,
-      "attainment": 81.36653222430216,
+      "actual": 451681.08,
+      "target": 555118.9999776024,
+      "variance": -103437.91997760237,
+      "attainment": 81.36653222430222,
       "band": "crit"
     },
     {
       "date": "2026-08-09",
       "dow": "Sun",
       "day": 9,
-      "actual": 395013.6000000001,
-      "target": 461530.99996585597,
-      "variance": -66517.39996585588,
-      "attainment": 85.58766367356108,
+      "actual": 395013.6,
+      "target": 461530.9999658559,
+      "variance": -66517.39996585593,
+      "attainment": 85.58766367356107,
       "band": "crit"
     },
     {
@@ -153,8 +155,8 @@
       "dow": "Mon",
       "day": 10,
       "actual": 376043.98999999993,
-      "target": 464530.9999654273,
-      "variance": -88487.0099654274,
+      "target": 464530.9999654274,
+      "variance": -88487.00996542745,
       "attainment": 80.95132295325543,
       "band": "crit"
     },
@@ -162,40 +164,40 @@
       "date": "2026-08-11",
       "dow": "Tue",
       "day": 11,
-      "actual": 397535.44000000006,
-      "target": 464530.9999654274,
-      "variance": -66995.55996542732,
-      "attainment": 85.57780643909373,
+      "actual": 397535.44,
+      "target": 464530.99996542744,
+      "variance": -66995.55996542744,
+      "attainment": 85.57780643909372,
       "band": "crit"
     },
     {
       "date": "2026-08-12",
       "dow": "Wed",
       "day": 12,
-      "actual": 384901.33999999997,
-      "target": 466530.99996514205,
-      "variance": -81629.65996514208,
-      "attainment": 82.50284333276005,
+      "actual": 384901.3399999999,
+      "target": 466530.9999651421,
+      "variance": -81629.6599651422,
+      "attainment": 82.50284333276002,
       "band": "crit"
     },
     {
       "date": "2026-08-13",
       "dow": "Thu",
       "day": 13,
-      "actual": 541967.6799999998,
-      "target": 630388.9999563633,
-      "variance": -88421.31995636353,
-      "attainment": 85.97353063545141,
+      "actual": 541967.6799999999,
+      "target": 630388.9999563632,
+      "variance": -88421.3199563633,
+      "attainment": 85.97353063545144,
       "band": "crit"
     },
     {
       "date": "2026-08-14",
       "dow": "Fri",
       "day": 14,
-      "actual": 1060450.6199999999,
+      "actual": 1060450.6200000003,
       "target": 1175000.000094466,
-      "variance": -114549.38009446603,
-      "attainment": 90.2511165884888,
+      "variance": -114549.38009446557,
+      "attainment": 90.25111658848883,
       "band": "crit"
     },
     {
@@ -213,9 +215,9 @@
       "dow": "Sun",
       "day": 16,
       "actual": 369254.19000000006,
-      "target": 411530.99996551167,
-      "variance": -42276.80996551161,
-      "attainment": 89.72694402874762,
+      "target": 411530.9999655116,
+      "variance": -42276.80996551155,
+      "attainment": 89.72694402874764,
       "band": "crit"
     },
     {
@@ -232,8 +234,8 @@
       "date": "2026-08-18",
       "dow": "Tue",
       "day": 18,
-      "actual": 349809.52000000037,
-      "target": 413530.9999652262,
+      "actual": 349809.5200000003,
+      "target": 413530.99996522616,
       "variance": -63721.47996522585,
       "attainment": 84.59088194824955,
       "band": "crit"
@@ -242,10 +244,10 @@
       "date": "2026-08-19",
       "dow": "Wed",
       "day": 19,
-      "actual": 374427.86,
-      "target": 414530.9999650833,
-      "variance": -40103.139965083334,
-      "attainment": 90.32565960845841,
+      "actual": 374427.8600000001,
+      "target": 414530.9999650832,
+      "variance": -40103.1399650831,
+      "attainment": 90.32565960845845,
       "band": "crit"
     },
     {
@@ -253,8 +255,8 @@
       "dow": "Thu",
       "day": 20,
       "actual": 509766.0399999999,
-      "target": 572493.9999445392,
-      "variance": -62727.95994453924,
+      "target": 572493.9999445393,
+      "variance": -62727.959944539354,
       "attainment": 89.04303626752139,
       "band": "crit"
     },
@@ -262,20 +264,20 @@
       "date": "2026-08-21",
       "dow": "Fri",
       "day": 21,
-      "actual": 915518.3900000002,
-      "target": 1009500.0000377359,
-      "variance": -93981.61003773566,
-      "attainment": 90.69028132399974,
+      "actual": 915518.3900000005,
+      "target": 1009500.000037736,
+      "variance": -93981.61003773555,
+      "attainment": 90.69028132399976,
       "band": "crit"
     },
     {
       "date": "2026-08-22",
       "dow": "Sat",
       "day": 22,
-      "actual": 373636.90000000014,
-      "target": 445118.99997835123,
+      "actual": 373636.9000000002,
+      "target": 445118.9999783513,
       "variance": -71482.09997835109,
-      "attainment": 83.9409012012905,
+      "attainment": 83.94090120129052,
       "band": "crit"
     },
     {
@@ -283,277 +285,253 @@
       "dow": "Sun",
       "day": 23,
       "actual": 356479.7799999997,
-      "target": 392130.9999658252,
-      "variance": -35651.2199658255,
-      "attainment": 90.90833931289988,
+      "target": 392130.9999658251,
+      "variance": -35651.21996582544,
+      "attainment": 90.9083393128999,
       "band": "crit"
     },
     {
       "date": "2026-08-24",
       "dow": "Mon",
       "day": 24,
-      "actual": 346548.66,
-      "target": 394130.99996553984,
-      "variance": -47582.33996553987,
-      "attainment": 87.92727799394106,
+      "actual": 346548.6600000001,
+      "target": 394130.9999655397,
+      "variance": -47582.339965539635,
+      "attainment": 87.92727799394112,
       "band": "crit"
     },
     {
       "date": "2026-08-25",
       "dow": "Tue",
       "day": 25,
-      "actual": 382111.05000000005,
-      "target": 394130.9999655397,
-      "variance": -12019.94996553968,
-      "attainment": 96.95026527560871,
+      "actual": 382111.0500000001,
+      "target": 394130.99996553984,
+      "variance": -12019.949965539738,
+      "attainment": 96.9502652756087,
       "band": "warn"
     },
     {
       "date": "2026-08-26",
       "dow": "Wed",
       "day": 26,
-      "actual": 96711.64000000003,
-      "target": 396130.9999652541,
-      "variance": -299419.3599652541,
-      "attainment": 24.41405494861117,
+      "actual": 366219.81000000006,
+      "target": 396130.9999652544,
+      "variance": -29911.189965254336,
+      "attainment": 92.44916707657873,
       "band": "crit"
     },
     {
       "date": "2026-08-27",
       "dow": "Thu",
       "day": 27,
-      "actual": 0.0,
-      "target": 562493.9999408294,
-      "variance": -562493.9999408294,
-      "attainment": 0.0,
-      "band": "crit"
-    },
-    {
-      "date": "2026-08-28",
-      "dow": "Fri",
-      "day": 28,
-      "actual": 0.0,
-      "target": 1025000.000040434,
-      "variance": -1025000.000040434,
-      "attainment": 0.0,
-      "band": "crit"
-    },
-    {
-      "date": "2026-08-29",
-      "dow": "Sat",
-      "day": 29,
-      "actual": 0.0,
-      "target": 483338.43995554885,
-      "variance": -483338.43995554885,
-      "attainment": 0.0,
-      "band": "crit"
-    },
-    {
-      "date": "2026-08-30",
-      "dow": "Sun",
-      "day": 30,
-      "actual": 0.0,
-      "target": 458130.9999435669,
-      "variance": -458130.9999435669,
-      "attainment": 0.0,
-      "band": "crit"
-    },
-    {
-      "date": "2026-08-31",
-      "dow": "Mon",
-      "day": 31,
-      "actual": 0.0,
-      "target": 476565.8899341704,
-      "variance": -476565.8899341704,
-      "attainment": 0.0,
-      "band": "crit"
+      "actual": 577380.1100000002,
+      "target": 562493.9999408289,
+      "variance": 14886.110059171333,
+      "attainment": 102.64644779512977,
+      "band": "good"
     }
   ],
   "run": {
-    "length": 25,
-    "average_shortfall": 181319.96717983298,
-    "first": "2026-08-07",
-    "last": "2026-08-31"
+    "length": 0,
+    "average_shortfall": 0.0,
+    "first": null,
+    "last": null
   },
   "surplus": {
-    "built": 30369.860175821,
-    "given_back": 4532999.1794958245,
-    "now": -4502629.319320008,
-    "share_given_back": 14925.979748516516,
+    "built": -1212705.709446282,
+    "given_back": 0.0,
+    "now": -1212705.7094462924,
+    "share_given_back": null,
     "days_until_exhausted": null,
     "exhausts_on": null,
-    "earlier_days": 6,
-    "run_days": 25
+    "earlier_days": 27,
+    "run_days": 0
   },
   "week_close": {
-    "needed": 476565.8899341704,
-    "remaining_target": 0,
-    "needed_vs_target": null
+    "needed": 2041096.8097767117,
+    "remaining_target": 1966469.4399395492,
+    "needed_vs_target": 103.7949926056037
   },
   "month_close": {
-    "needed": 4502629.319320008,
-    "remaining_target": 0.0,
-    "needed_vs_target": null
+    "needed": 3655741.0393200107,
+    "remaining_target": 2443035.3298737183,
+    "needed_vs_target": 149.63930298580567
   },
-  "week_full_target": 476565.8899341704,
+  "week_full_target": 3713356.439776712,
   "month_full_target": 17665821.329320014,
-  "remaining_week_days": [],
-  "days_hit": 3,
-  "days_elapsed": 31,
+  "remaining_week_days": [
+    {
+      "dow": "Fri",
+      "date": "2026-08-28",
+      "target": 1025000.0000404335
+    },
+    {
+      "dow": "Sat",
+      "date": "2026-08-29",
+      "target": 483338.4399555489
+    },
+    {
+      "dow": "Sun",
+      "date": "2026-08-30",
+      "target": 458130.99994356686
+    }
+  ],
+  "days_hit": 4,
+  "days_elapsed": 27,
   "days_in_month": 31,
   "prev_week": {
-    "actual": 825371.35,
-    "target": 3713356.439776709,
-    "attainment": 22.227097327872762,
-    "variance": -2887985.0897767087
+    "actual": 3251099.7300000056,
+    "target": 3660836.9998219945,
+    "attainment": 88.80755221164144,
+    "variance": -409737.2698219889
   },
   "branches": [
     {
-      "name": "ST2",
-      "day": {
-        "actual": 0.0,
-        "target": 111999.99992646622,
-        "variance": -111999.99992646622,
-        "attainment": 0.0,
-        "band": "crit"
-      },
-      "wtd": {
-        "actual": 0.0,
-        "target": 111999.99992646622,
-        "variance": -111999.99992646622,
-        "attainment": 0.0,
-        "band": "crit"
-      },
-      "mtd": {
-        "actual": 2219272.469999997,
-        "target": 3046219.438000001,
-        "variance": -826946.9680000041,
-        "attainment": 72.85333559085497,
-        "band": "crit"
-      },
-      "ytd": {
-        "actual": 23466539.029999994,
-        "target": 25941978.08162057,
-        "variance": -2475439.0516205765,
-        "attainment": 90.4577860491896,
-        "band": "crit"
-      },
-      "month_full_target": 3046219.438000001,
-      "close": {
-        "needed": 826946.9680000041,
-        "remaining_target": 0.0,
-        "needed_vs_target": null
-      }
-    },
-    {
       "name": "ST1",
       "day": {
-        "actual": 0.0,
-        "target": 161162.16997708892,
-        "variance": -161162.16997708892,
-        "attainment": 0.0,
+        "actual": 150206.97,
+        "target": 187493.9999733456,
+        "variance": -37287.029973345605,
+        "attainment": 80.11294762571262,
         "band": "crit"
       },
       "wtd": {
-        "actual": 0.0,
-        "target": 161162.16997708892,
-        "variance": -161162.16997708892,
-        "attainment": 0.0,
+        "actual": 531181.6499999999,
+        "target": 622886.9999114497,
+        "variance": -91705.34991144983,
+        "attainment": 85.27736974371166,
         "band": "crit"
       },
       "mtd": {
-        "actual": 4204991.960000003,
-        "target": 5627423.169200006,
-        "variance": -1422431.2092000032,
-        "attainment": 74.72322293114104,
+        "actual": 4453842.040000003,
+        "target": 4876010.999306827,
+        "variance": -422168.959306824,
+        "attainment": 91.3419194631259,
         "band": "crit"
       },
       "ytd": {
-        "actual": 44004364.32,
-        "target": 44755902.063008346,
-        "variance": -751537.7430083454,
-        "attainment": 98.32080751729613,
-        "band": "warn"
+        "actual": 44253214.400000036,
+        "target": 44004489.893115096,
+        "variance": 248724.50688493997,
+        "attainment": 100.56522529289416,
+        "band": "good"
       },
-      "month_full_target": 5627423.169200006,
+      "month_full_target": 5627423.169200007,
       "close": {
-        "needed": 1422431.2092000032,
-        "remaining_target": 0.0,
-        "needed_vs_target": null
+        "needed": 1173581.129200004,
+        "remaining_target": 751412.16989318,
+        "needed_vs_target": 156.18340721934797
       }
     },
     {
       "name": "ST3",
       "day": {
-        "actual": 0.0,
-        "target": 59403.45005117659,
-        "variance": -59403.45005117659,
-        "attainment": 0.0,
-        "band": "crit"
+        "actual": 110853.31999999999,
+        "target": 90000.00007753583,
+        "variance": 20853.319922464158,
+        "attainment": 123.17035544944315,
+        "band": "good"
       },
       "wtd": {
-        "actual": 0.0,
-        "target": 59403.45005117659,
-        "variance": -59403.45005117659,
-        "attainment": 0.0,
-        "band": "crit"
+        "actual": 290001.5500000001,
+        "target": 270000.0002326074,
+        "variance": 20001.549767392687,
+        "attainment": 107.40798138894858,
+        "band": "good"
       },
       "mtd": {
-        "actual": 2533373.340000002,
-        "target": 3389403.4529200075,
-        "variance": -856030.1129200053,
-        "attainment": 74.74392987407485,
+        "actual": 2687264.9700000007,
+        "target": 2940000.002532842,
+        "variance": -252735.03253284143,
+        "attainment": 91.40357032941812,
         "band": "crit"
       },
       "ytd": {
-        "actual": 28057262.940000005,
-        "target": 27564889.19284395,
-        "variance": 492373.7471560538,
-        "attainment": 101.78623517660965,
+        "actual": 28211154.570000004,
+        "target": 27115485.742456738,
+        "variance": 1095668.8275432661,
+        "attainment": 104.0407494003609,
         "band": "good"
       },
       "month_full_target": 3389403.4529200075,
       "close": {
-        "needed": 856030.1129200053,
-        "remaining_target": 0.0,
-        "needed_vs_target": null
+        "needed": 702138.4829200068,
+        "remaining_target": 449403.4503871654,
+        "needed_vs_target": 156.23789321490696
+      }
+    },
+    {
+      "name": "ST2",
+      "day": {
+        "actual": 124942.16,
+        "target": 134999.99991136568,
+        "variance": -10057.839911365678,
+        "attainment": 92.54974820891174,
+        "band": "crit"
+      },
+      "wtd": {
+        "actual": 338115.31,
+        "target": 359999.9997636417,
+        "variance": -21884.689763641683,
+        "attainment": 93.9209195061083,
+        "band": "crit"
+      },
+      "mtd": {
+        "actual": 2399175.6299999976,
+        "target": 2599999.9982929686,
+        "variance": -200824.36829297105,
+        "attainment": 92.27598582981452,
+        "band": "crit"
+      },
+      "ytd": {
+        "actual": 23646442.18999999,
+        "target": 25495758.641913492,
+        "variance": -1849316.451913502,
+        "attainment": 92.7465721734856,
+        "band": "crit"
+      },
+      "month_full_target": 3046219.4380000005,
+      "close": {
+        "needed": 647043.808000003,
+        "remaining_target": 446219.43970703194,
+        "needed_vs_target": 145.00574166486865
       }
     },
     {
       "name": "ST4",
       "day": {
-        "actual": 0.0,
-        "target": 144000.26997943886,
-        "variance": -144000.26997943886,
-        "attainment": 0.0,
-        "band": "crit"
+        "actual": 191377.65999999997,
+        "target": 149999.99997858223,
+        "variance": 41377.660021417745,
+        "attainment": 127.5851066848839,
+        "band": "good"
       },
       "wtd": {
-        "actual": 0.0,
-        "target": 144000.26997943886,
-        "variance": -144000.26997943886,
-        "attainment": 0.0,
-        "band": "crit"
+        "actual": 512961.12,
+        "target": 493999.999929464,
+        "variance": 18961.12007053598,
+        "attainment": 103.8382834156363,
+        "band": "good"
       },
       "mtd": {
-        "actual": 4205554.240000005,
-        "target": 5602775.269200008,
-        "variance": -1397221.0292000035,
-        "attainment": 75.0619833552684,
+        "actual": 4469797.650000006,
+        "target": 4806774.99931367,
+        "variance": -336977.34931366425,
+        "attainment": 92.98953353627371,
         "band": "crit"
       },
       "ytd": {
-        "actual": 46013833.16999993,
-        "target": 44192819.77164319,
-        "variance": 1821013.3983567357,
-        "attainment": 104.1206092025049,
+        "actual": 46278076.579999946,
+        "target": 43396819.50175683,
+        "variance": 2881257.078243114,
+        "attainment": 106.63932774641809,
         "band": "good"
       },
-      "month_full_target": 5602775.269200008,
+      "month_full_target": 5602775.26920001,
       "close": {
-        "needed": 1397221.0292000035,
-        "remaining_target": 0.0,
-        "needed_vs_target": null
+        "needed": 1132977.6192000043,
+        "remaining_target": 796000.26988634,
+        "needed_vs_target": 142.33382350005746
       }
     }
   ],
@@ -561,120 +539,120 @@
     {
       "name": "LIFESTYLE",
       "day": {
-        "actual": 0.0,
-        "target": 79034.18721950054,
-        "variance": -79034.18721950054,
-        "attainment": 0.0,
+        "actual": 79234.34999999999,
+        "target": 91733.11446987826,
+        "variance": -12498.764469878268,
+        "attainment": 86.37486087536863,
         "band": "crit"
       },
       "wtd": {
-        "actual": 0.0,
-        "target": 79034.18721950054,
-        "variance": -79034.18721950054,
-        "attainment": 0.0,
+        "actual": 244241.86000000007,
+        "target": 286734.9910730783,
+        "variance": -42493.13107307823,
+        "attainment": 85.18034687219313,
         "band": "crit"
       },
       "mtd": {
-        "actual": 2093446.319999999,
-        "target": 2903118.4790783767,
-        "variance": -809672.1590783778,
-        "attainment": 72.11026126169621,
+        "actual": 2216095.67,
+        "target": 2500245.229814669,
+        "variance": -284149.5598146692,
+        "attainment": 88.63513240916245,
         "band": "crit"
       }
     },
     {
       "name": "CONSUMER GOODS",
       "day": {
-        "actual": 0.0,
-        "target": 251318.9569454285,
-        "variance": -251318.9569454285,
-        "attainment": 0.0,
-        "band": "crit"
+        "actual": 305714.35,
+        "target": 297720.15798449254,
+        "variance": 7994.192015507433,
+        "attainment": 102.68513629363444,
+        "band": "good"
       },
       "wtd": {
-        "actual": 0.0,
-        "target": 251318.9569454285,
-        "variance": -251318.9569454285,
-        "attainment": 0.0,
-        "band": "crit"
+        "actual": 877572.76,
+        "target": 921998.0194335062,
+        "variance": -44425.25943350617,
+        "attainment": 95.18163179343901,
+        "band": "warn"
       },
       "mtd": {
-        "actual": 6918413.56,
-        "target": 9330785.238731997,
-        "variance": -2412371.6787319975,
-        "attainment": 74.1461022088659,
+        "actual": 7366786.25,
+        "target": 8038129.531768169,
+        "variance": -671343.2817681693,
+        "attainment": 91.64801613217482,
         "band": "crit"
       }
     },
     {
       "name": "HOME & LIVING",
       "day": {
-        "actual": 0.0,
-        "target": 31024.43515738223,
-        "variance": -31024.43515738223,
-        "attainment": 0.0,
+        "actual": 30225.709999999995,
+        "target": 36185.85205593967,
+        "variance": -5960.142055939676,
+        "attainment": 83.52908189994837,
         "band": "crit"
       },
       "wtd": {
-        "actual": 0.0,
-        "target": 31024.43515738223,
-        "variance": -31024.43515738223,
-        "attainment": 0.0,
+        "actual": 100642.87999999998,
+        "target": 113267.18932499047,
+        "variance": -12624.309324990492,
+        "attainment": 88.85439870078497,
         "band": "crit"
       },
       "mtd": {
-        "actual": 858671.6599999998,
-        "target": 1161705.0216197914,
-        "variance": -303033.3616197916,
-        "attainment": 73.91477561168968,
+        "actual": 907055.7499999999,
+        "target": 1000718.7866773187,
+        "variance": -93663.03667731886,
+        "attainment": 90.64042387089508,
         "band": "crit"
       }
     },
     {
       "name": "FRESH FOOD",
       "day": {
-        "actual": 0.0,
-        "target": 91128.87121632339,
-        "variance": -91128.87121632339,
-        "attainment": 0.0,
-        "band": "crit"
+        "actual": 139020.75,
+        "target": 109032.35829610057,
+        "variance": 29988.391703899426,
+        "attainment": 127.50412095321242,
+        "band": "good"
       },
       "wtd": {
-        "actual": 0.0,
-        "target": 91128.87121632339,
-        "variance": -91128.87121632339,
-        "attainment": 0.0,
-        "band": "crit"
+        "actual": 376657.06000000006,
+        "target": 337707.4910813794,
+        "variance": 38949.568918620644,
+        "attainment": 111.53352233730425,
+        "band": "good"
       },
       "mtd": {
-        "actual": 2626682.4000000004,
-        "target": 3378414.9298964506,
-        "variance": -751732.5298964502,
-        "attainment": 77.74895785463832,
-        "band": "crit"
+        "actual": 2819687.230000001,
+        "target": 2915781.05257563,
+        "variance": -96093.82257562922,
+        "attainment": 96.70435396749885,
+        "band": "warn"
       }
     },
     {
       "name": "TECHNOLOGY",
       "day": {
-        "actual": 0.0,
-        "target": 24059.439395535897,
-        "variance": -24059.439395535897,
-        "attainment": 0.0,
+        "actual": 22754.39,
+        "target": 27822.51713441821,
+        "variance": -5068.12713441821,
+        "attainment": 81.7840811816821,
         "band": "crit"
       },
       "wtd": {
-        "actual": 0.0,
-        "target": 24059.439395535897,
-        "variance": -24059.439395535897,
-        "attainment": 0.0,
+        "actual": 71918.63,
+        "target": 87179.30892420828,
+        "variance": -15260.678924208274,
+        "attainment": 82.49506779472688,
         "band": "crit"
       },
       "mtd": {
-        "actual": 661020.3199999993,
-        "target": 891797.659993406,
-        "variance": -230777.3399934068,
-        "attainment": 74.12223082138239,
+        "actual": 694832.2299999994,
+        "target": 767911.3986105077,
+        "variance": -73079.16861050832,
+        "attainment": 90.48338535633917,
         "band": "crit"
       }
     }
@@ -683,10 +661,10 @@
     {
       "name": "LADIES APPAREL",
       "mtd": {
-        "actual": 771524.6699999998,
-        "target": 1047636.6895103167,
-        "variance": -276112.0195103169,
-        "attainment": 73.64429651281338,
+        "actual": 816865.47,
+        "target": 902186.2963436197,
+        "variance": -85320.82634361973,
+        "attainment": 90.54288158782637,
         "band": "crit"
       },
       "department": "LIFESTYLE"
@@ -694,21 +672,10 @@
     {
       "name": "FOOTWEAR",
       "mtd": {
-        "actual": 203382.9800000001,
-        "target": 285119.58108071086,
-        "variance": -81736.60108071077,
-        "attainment": 71.33251922898519,
-        "band": "crit"
-      },
-      "department": "LIFESTYLE"
-    },
-    {
-      "name": "MENS APPAREL",
-      "mtd": {
-        "actual": 578542.99,
-        "target": 822126.3062904426,
-        "variance": -243583.3162904426,
-        "attainment": 70.37154577992679,
+        "actual": 216031.38000000003,
+        "target": 245748.55435087573,
+        "variance": -29717.17435087569,
+        "attainment": 87.9074876231231,
         "band": "crit"
       },
       "department": "LIFESTYLE"
@@ -716,10 +683,21 @@
     {
       "name": "KIDS FASHION",
       "mtd": {
-        "actual": 68318.46,
-        "target": 89498.33478840896,
-        "variance": -21179.874788408953,
-        "attainment": 76.33489512572251,
+        "actual": 71533.36,
+        "target": 77192.49224294377,
+        "variance": -5659.132242943771,
+        "attainment": 92.66880485587498,
+        "band": "crit"
+      },
+      "department": "LIFESTYLE"
+    },
+    {
+      "name": "MENS APPAREL",
+      "mtd": {
+        "actual": 609884.7799999999,
+        "target": 708252.6098359616,
+        "variance": -98367.82983596169,
+        "attainment": 86.11119416012535,
         "band": "crit"
       },
       "department": "LIFESTYLE"
@@ -727,21 +705,10 @@
     {
       "name": "SPORTING GOODS",
       "mtd": {
-        "actual": 26701.650000000012,
-        "target": 38720.57156020306,
-        "variance": -12018.921560203049,
-        "attainment": 68.95985499202683,
-        "band": "crit"
-      },
-      "department": "LIFESTYLE"
-    },
-    {
-      "name": "TOYS",
-      "mtd": {
-        "actual": 216188.91000000012,
-        "target": 321165.3268576264,
-        "variance": -104976.41685762626,
-        "attainment": 67.31390094791813,
+        "actual": 27908.470000000016,
+        "target": 33337.03517631022,
+        "variance": -5428.565176310207,
+        "attainment": 83.71611288286421,
         "band": "crit"
       },
       "department": "LIFESTYLE"
@@ -749,10 +716,21 @@
     {
       "name": "TRAVEL",
       "mtd": {
-        "actual": 228447.52999999994,
-        "target": 298785.2262892328,
-        "variance": -70337.69628923284,
-        "attainment": 76.4587770410228,
+        "actual": 243982.43999999997,
+        "target": 256940.787087111,
+        "variance": -12958.347087111033,
+        "attainment": 94.95667961711437,
+        "band": "crit"
+      },
+      "department": "LIFESTYLE"
+    },
+    {
+      "name": "TOYS",
+      "mtd": {
+        "actual": 229550.6400000001,
+        "target": 276521.0120764167,
+        "variance": -46970.37207641659,
+        "attainment": 83.01381449325945,
         "band": "crit"
       },
       "department": "LIFESTYLE"
@@ -760,10 +738,10 @@
     {
       "name": "PROVISIONS",
       "mtd": {
-        "actual": 3337843.759999999,
-        "target": 4501321.678116509,
-        "variance": -1163477.91811651,
-        "attainment": 74.1525267173675,
+        "actual": 3560102.1199999982,
+        "target": 3880817.8442975236,
+        "variance": -320715.72429752536,
+        "attainment": 91.73587276793253,
         "band": "crit"
       },
       "department": "CONSUMER GOODS"
@@ -771,10 +749,21 @@
     {
       "name": "REFRIDGERATED GOODS",
       "mtd": {
-        "actual": 942469.0099999998,
-        "target": 1173414.9926601374,
-        "variance": -230945.98266013758,
-        "attainment": 80.31847350641209,
+        "actual": 1012547.0000000002,
+        "target": 1011155.5506277804,
+        "variance": 1391.449372219853,
+        "attainment": 100.13760982386498,
+        "band": "good"
+      },
+      "department": "CONSUMER GOODS"
+    },
+    {
+      "name": "SPICE MARKET",
+      "mtd": {
+        "actual": 683779.3800000001,
+        "target": 767240.361742862,
+        "variance": -83460.98174286191,
+        "attainment": 89.12192503099394,
         "band": "crit"
       },
       "department": "CONSUMER GOODS"
@@ -782,32 +771,21 @@
     {
       "name": "DELI",
       "mtd": {
-        "actual": 73025.94,
-        "target": 81336.75054555456,
-        "variance": -8310.81054555456,
-        "attainment": 89.78221961190852,
-        "band": "crit"
+        "actual": 89248.82999999997,
+        "target": 73870.16592440258,
+        "variance": 15378.664075597393,
+        "attainment": 120.81850484989522,
+        "band": "good"
       },
       "department": "FRESH FOOD"
     },
     {
-      "name": "SPICE MARKET",
-      "mtd": {
-        "actual": 644736.0400000002,
-        "target": 891044.0904189777,
-        "variance": -246308.0504189775,
-        "attainment": 72.35736670413682,
-        "band": "crit"
-      },
-      "department": "CONSUMER GOODS"
-    },
-    {
       "name": "CLEANING ESSENSTIALS",
       "mtd": {
-        "actual": 245686.0799999999,
-        "target": 339592.3368771746,
-        "variance": -93906.25687717472,
-        "attainment": 72.3473569101357,
+        "actual": 260682.70999999993,
+        "target": 292657.35293774283,
+        "variance": -31974.6429377429,
+        "attainment": 89.07437567627255,
         "band": "crit"
       },
       "department": "CONSUMER GOODS"
@@ -815,10 +793,10 @@
     {
       "name": "PERSONAL CARE",
       "mtd": {
-        "actual": 1747678.6699999997,
-        "target": 2420577.4878499308,
-        "variance": -672898.8178499311,
-        "attainment": 72.20089746238072,
+        "actual": 1849675.0399999998,
+        "target": 2086258.4221622585,
+        "variance": -236583.38216225873,
+        "attainment": 88.65991961259253,
         "band": "crit"
       },
       "department": "CONSUMER GOODS"
@@ -826,10 +804,10 @@
     {
       "name": "CULINARY SUPPLIES",
       "mtd": {
-        "actual": 426116.36,
-        "target": 578282.7525123348,
-        "variance": -152166.39251233486,
-        "attainment": 73.68650684267311,
+        "actual": 449585.83000000025,
+        "target": 498347.08071959415,
+        "variance": -48761.250719593896,
+        "attainment": 90.21540355986744,
         "band": "crit"
       },
       "department": "HOME & LIVING"
@@ -837,21 +815,10 @@
     {
       "name": "OFFICE SUPPLIES",
       "mtd": {
-        "actual": 254116.65999999997,
-        "target": 348459.1297567655,
-        "variance": -94342.46975676552,
-        "attainment": 72.9258149090198,
-        "band": "crit"
-      },
-      "department": "HOME & LIVING"
-    },
-    {
-      "name": "GLASS ITEMS",
-      "mtd": {
-        "actual": 18205.139999999996,
-        "target": 20505.92934750454,
-        "variance": -2300.7893475045457,
-        "attainment": 88.77988259632555,
+        "actual": 269173.39999999997,
+        "target": 300159.97322810435,
+        "variance": -30986.57322810439,
+        "attainment": 89.67664712424653,
         "band": "crit"
       },
       "department": "HOME & LIVING"
@@ -859,11 +826,22 @@
     {
       "name": "HOME TEXTILES",
       "mtd": {
-        "actual": 160233.50000000006,
-        "target": 213972.01296181584,
-        "variance": -53738.51296181578,
-        "attainment": 74.88526082548674,
+        "actual": 169253.59999999998,
+        "target": 184117.6782123919,
+        "variance": -14864.078212391934,
+        "attainment": 91.92685984490569,
         "band": "crit"
+      },
+      "department": "HOME & LIVING"
+    },
+    {
+      "name": "GLASS ITEMS",
+      "mtd": {
+        "actual": 19042.919999999995,
+        "target": 17685.58780280174,
+        "variance": 1357.332197198255,
+        "attainment": 107.67479267487636,
+        "band": "good"
       },
       "department": "HOME & LIVING"
     },
@@ -879,55 +857,44 @@
       "department": "LIFESTYLE"
     },
     {
-      "name": "GREEN GROCERIES",
+      "name": "MEAT SHOP",
       "mtd": {
-        "actual": 1700744.8499999992,
-        "target": 2083388.1815988785,
-        "variance": -382643.3315988793,
-        "attainment": 81.633603618447,
+        "actual": 921585.2,
+        "target": 1046435.8623794047,
+        "variance": -124850.66237940476,
+        "attainment": 88.06896180951624,
         "band": "crit"
       },
       "department": "FRESH FOOD"
     },
     {
-      "name": "MEAT SHOP",
+      "name": "GREEN GROCERIES",
       "mtd": {
-        "actual": 852911.61,
-        "target": 1213689.9977520183,
-        "variance": -360778.3877520183,
-        "attainment": 70.27425550014851,
-        "band": "crit"
+        "actual": 1808853.1999999993,
+        "target": 1795475.024271825,
+        "variance": 13378.17572817416,
+        "attainment": 100.74510508624867,
+        "band": "good"
       },
       "department": "FRESH FOOD"
     },
     {
       "name": "ENTERTAINMENTS",
       "mtd": {
-        "actual": 661020.3199999993,
-        "target": 891797.659993406,
-        "variance": -230777.3399934068,
-        "attainment": 74.12223082138239,
+        "actual": 694832.2299999994,
+        "target": 767911.3986105077,
+        "variance": -73079.16861050832,
+        "attainment": 90.48338535633917,
         "band": "crit"
       },
       "department": "TECHNOLOGY"
     },
     {
-      "name": "DELI",
-      "mtd": {
-        "actual": 0.0,
-        "target": 4834.652809265642,
-        "variance": -4834.652809265642,
-        "attainment": 0.0,
-        "band": "crit"
-      },
-      "department": "CONSUMER GOODS"
-    },
-    {
       "name": "BABY CLOTHING",
       "mtd": {
         "actual": 0.0,
-        "target": 485.19704137015134,
-        "variance": -485.19704137015134,
+        "target": 408.4667144270441,
+        "variance": -408.4667144270441,
         "attainment": 0.0,
         "band": "crit"
       },
@@ -938,52 +905,52 @@
     {
       "number": 1,
       "actual": 5072538.420000001,
-      "target": 3560901.6428287877,
+      "target": 3560901.642828789,
       "days": 4,
-      "attainment": 142.45095565095042,
+      "attainment": 142.45095565095036,
       "band": "good",
       "label": "1 Jan\u20134 Jan"
     },
     {
       "number": 2,
-      "actual": 4235881.010000002,
-      "target": 4440957.998862236,
+      "actual": 4235881.0100000035,
+      "target": 4440957.998862237,
       "days": 7,
-      "attainment": 95.3821452732772,
+      "attainment": 95.38214527327722,
       "band": "warn",
       "label": "5 Jan\u201311 Jan"
     },
     {
       "number": 3,
-      "actual": 3682577.979999998,
-      "target": 3907273.998981159,
+      "actual": 3682577.979999999,
+      "target": 3907273.998981158,
       "days": 7,
-      "attainment": 94.24928942685484,
+      "attainment": 94.2492894268549,
       "band": "crit",
       "label": "12 Jan\u201318 Jan"
     },
     {
       "number": 4,
       "actual": 3441116.989999996,
-      "target": 3664318.999036199,
+      "target": 3664318.9990361985,
       "days": 7,
-      "attainment": 93.90877243234253,
+      "attainment": 93.90877243234254,
       "band": "crit",
       "label": "19 Jan\u201325 Jan"
     },
     {
       "number": 5,
-      "actual": 4591933.4799999995,
+      "actual": 4591933.479999997,
       "target": 4134736.5691148215,
       "days": 7,
-      "attainment": 111.05746166032185,
+      "attainment": 111.05746166032178,
       "band": "good",
       "label": "26 Jan\u20131 Feb"
     },
     {
       "number": 6,
-      "actual": 5160609.689999999,
-      "target": 4955938.320162015,
+      "actual": 5160609.689999998,
+      "target": 4955938.320162014,
       "days": 7,
       "attainment": 104.12982076482527,
       "band": "good",
@@ -991,62 +958,62 @@
     },
     {
       "number": 7,
-      "actual": 4535956.399999996,
-      "target": 4490457.241985445,
+      "actual": 4535956.3999999985,
+      "target": 4490457.241985444,
       "days": 7,
-      "attainment": 101.01324109244683,
+      "attainment": 101.01324109244692,
       "band": "good",
       "label": "9 Feb\u201315 Feb"
     },
     {
       "number": 8,
-      "actual": 4842018.700000001,
+      "actual": 4842018.7,
       "target": 4114570.741084799,
       "days": 7,
-      "attainment": 117.679801969413,
+      "attainment": 117.67980196941299,
       "band": "good",
       "label": "16 Feb\u201322 Feb"
     },
     {
       "number": 9,
       "actual": 4399286.710000006,
-      "target": 4241934.394732365,
+      "target": 4241934.394732364,
       "days": 7,
-      "attainment": 103.70944716785438,
+      "attainment": 103.70944716785439,
       "band": "good",
       "label": "23 Feb\u20131 Mar"
     },
     {
       "number": 10,
-      "actual": 4711403.560000004,
-      "target": 5090489.9996020105,
+      "actual": 4711403.560000002,
+      "target": 5090489.999602008,
       "days": 7,
-      "attainment": 92.5530461776441,
+      "attainment": 92.55304617764412,
       "band": "crit",
       "label": "2 Mar\u20138 Mar"
     },
     {
       "number": 11,
-      "actual": 4228395.2200000025,
-      "target": 4561343.999644499,
+      "actual": 4228395.220000004,
+      "target": 4561343.999644503,
       "days": 7,
-      "attainment": 92.70064306330666,
+      "attainment": 92.70064306330661,
       "band": "crit",
       "label": "9 Mar\u201315 Mar"
     },
     {
       "number": 12,
-      "actual": 5038834.209999999,
-      "target": 4513698.869809818,
+      "actual": 5038834.21,
+      "target": 4513698.86980982,
       "days": 7,
-      "attainment": 111.63425729843397,
+      "attainment": 111.63425729843395,
       "band": "good",
       "label": "16 Mar\u201322 Mar"
     },
     {
       "number": 13,
-      "actual": 3211254.7400000035,
-      "target": 3681629.9999220017,
+      "actual": 3211254.7400000026,
+      "target": 3681629.9999220013,
       "days": 7,
       "attainment": 87.22372264643748,
       "band": "crit",
@@ -1054,26 +1021,26 @@
     },
     {
       "number": 14,
-      "actual": 4606236.590000003,
-      "target": 4141876.7816537917,
+      "actual": 4606236.590000005,
+      "target": 4141876.7816537903,
       "days": 7,
-      "attainment": 111.21133806787944,
+      "attainment": 111.21133806787952,
       "band": "good",
       "label": "30 Mar\u20135 Apr"
     },
     {
       "number": 15,
-      "actual": 4049489.5200000005,
-      "target": 3906650.062034061,
+      "actual": 4049489.52,
+      "target": 3906650.0620340626,
       "days": 7,
-      "attainment": 103.65631565913962,
+      "attainment": 103.65631565913958,
       "band": "good",
       "label": "6 Apr\u201312 Apr"
     },
     {
       "number": 16,
-      "actual": 3787113.6599999974,
-      "target": 3549920.0018612538,
+      "actual": 3787113.6599999983,
+      "target": 3549920.0018612547,
       "days": 7,
       "attainment": 106.68166206602912,
       "band": "good",
@@ -1081,71 +1048,71 @@
     },
     {
       "number": 17,
-      "actual": 3512130.9499999983,
+      "actual": 3512130.9499999993,
       "target": 3367533.001788692,
       "days": 7,
-      "attainment": 104.29388362740623,
+      "attainment": 104.29388362740626,
       "band": "good",
       "label": "20 Apr\u201326 Apr"
     },
     {
       "number": 18,
-      "actual": 4847582.810000003,
-      "target": 4262918.5698629385,
+      "actual": 4847582.810000001,
+      "target": 4262918.569862939,
       "days": 7,
-      "attainment": 113.71511631187134,
+      "attainment": 113.71511631187128,
       "band": "good",
       "label": "27 Apr\u20133 May"
     },
     {
       "number": 19,
-      "actual": 4551866.420000007,
-      "target": 4599033.986147752,
+      "actual": 4551866.4200000055,
+      "target": 4599033.986147755,
       "days": 7,
-      "attainment": 98.97440274871173,
+      "attainment": 98.97440274871163,
       "band": "warn",
       "label": "4 May\u201310 May"
     },
     {
       "number": 20,
-      "actual": 3922909.1199999987,
+      "actual": 3922909.119999998,
       "target": 4063756.986940817,
       "days": 7,
-      "attainment": 96.53404799072771,
+      "attainment": 96.53404799072769,
       "band": "warn",
       "label": "11 May\u201317 May"
     },
     {
       "number": 21,
-      "actual": 3868081.4900000053,
-      "target": 3884812.987925385,
+      "actual": 3868081.4900000063,
+      "target": 3884812.9879253837,
       "days": 7,
-      "attainment": 99.56931008062978,
+      "attainment": 99.56931008062983,
       "band": "warn",
       "label": "18 May\u201324 May"
     },
     {
       "number": 22,
-      "actual": 4867610.899999997,
-      "target": 4079751.8976103803,
+      "actual": 4867610.899999999,
+      "target": 4079751.8976103794,
       "days": 7,
-      "attainment": 119.31144398391203,
+      "attainment": 119.31144398391211,
       "band": "good",
       "label": "25 May\u201331 May"
     },
     {
       "number": 23,
-      "actual": 3905807.2800000007,
-      "target": 4303855.680557684,
+      "actual": 3905807.280000001,
+      "target": 4303855.680557685,
       "days": 7,
-      "attainment": 90.75135343511089,
+      "attainment": 90.75135343511087,
       "band": "crit",
       "label": "1 Jun\u20137 Jun"
     },
     {
       "number": 24,
-      "actual": 3597989.9999999986,
-      "target": 4033227.000507815,
+      "actual": 3597989.9999999977,
+      "target": 4033227.000507814,
       "days": 7,
       "attainment": 89.2087154912675,
       "band": "crit",
@@ -1153,62 +1120,62 @@
     },
     {
       "number": 25,
-      "actual": 3806551.4499999974,
-      "target": 3823033.0004729326,
+      "actual": 3806551.449999997,
+      "target": 3823033.000472934,
       "days": 7,
-      "attainment": 99.56888809301681,
+      "attainment": 99.56888809301677,
       "band": "warn",
       "label": "15 Jun\u201321 Jun"
     },
     {
       "number": 26,
-      "actual": 3331368.5300000026,
-      "target": 3695220.0004728385,
+      "actual": 3331368.530000003,
+      "target": 3695220.00047284,
       "days": 7,
-      "attainment": 90.15345580435596,
+      "attainment": 90.15345580435594,
       "band": "crit",
       "label": "22 Jun\u201328 Jun"
     },
     {
       "number": 27,
-      "actual": 4783508.530000003,
+      "actual": 4783508.530000002,
       "target": 4133279.3674809076,
       "days": 7,
-      "attainment": 115.73155610130917,
+      "attainment": 115.73155610130914,
       "band": "good",
       "label": "29 Jun\u20135 Jul"
     },
     {
       "number": 28,
-      "actual": 3956004.1400000025,
-      "target": 3835766.736785964,
+      "actual": 3956004.140000003,
+      "target": 3835766.7367859636,
       "days": 7,
-      "attainment": 103.13463803888104,
+      "attainment": 103.13463803888105,
       "band": "good",
       "label": "6 Jul\u201312 Jul"
     },
     {
       "number": 29,
-      "actual": 3309259.400000004,
+      "actual": 3309259.400000005,
       "target": 3598826.996991951,
       "days": 7,
-      "attainment": 91.95383392327614,
+      "attainment": 91.95383392327615,
       "band": "crit",
       "label": "13 Jul\u201319 Jul"
     },
     {
       "number": 30,
-      "actual": 3204428.0600000015,
-      "target": 3320825.997252457,
+      "actual": 3204428.0600000005,
+      "target": 3320825.997252455,
       "days": 7,
-      "attainment": 96.49491008114369,
+      "attainment": 96.49491008114371,
       "band": "warn",
       "label": "20 Jul\u201326 Jul"
     },
     {
       "number": 31,
-      "actual": 4439034.639999999,
-      "target": 3933540.947623395,
+      "actual": 4439034.639999998,
+      "target": 3933540.947623394,
       "days": 7,
       "attainment": 112.85085624142334,
       "band": "good",
@@ -1216,17 +1183,17 @@
     },
     {
       "number": 32,
-      "actual": 4440372.360000004,
-      "target": 4605114.99995495,
+      "actual": 4440372.360000001,
+      "target": 4605114.999954949,
       "days": 7,
-      "attainment": 96.42261615710883,
+      "attainment": 96.42261615710879,
       "band": "warn",
       "label": "3 Aug\u20139 Aug"
     },
     {
       "number": 33,
-      "actual": 3526375.4200000013,
-      "target": 4107631.9998910315,
+      "actual": 3526375.420000001,
+      "target": 4107631.9998910306,
       "days": 7,
       "attainment": 85.84935116129074,
       "band": "crit",
@@ -1234,8 +1201,8 @@
     },
     {
       "number": 34,
-      "actual": 3251099.730000005,
-      "target": 3660836.999821994,
+      "actual": 3251099.7300000056,
+      "target": 3660836.9998219945,
       "days": 7,
       "attainment": 88.80755221164144,
       "band": "crit",
@@ -1243,75 +1210,66 @@
     },
     {
       "number": 35,
-      "actual": 825371.35,
-      "target": 3713356.439776709,
-      "days": 7,
-      "attainment": 22.227097327872762,
-      "band": "crit",
-      "label": "24 Aug\u201330 Aug"
-    },
-    {
-      "number": 36,
-      "actual": 0.0,
-      "target": 476565.8899341704,
-      "days": 1,
-      "attainment": 0.0,
-      "band": "crit",
-      "label": "31 Aug\u201331 Aug"
+      "actual": 1672259.6300000004,
+      "target": 1746886.9998371627,
+      "days": 4,
+      "attainment": 95.72797955196192,
+      "band": "warn",
+      "label": "24 Aug\u201327 Aug"
     }
   ],
   "months": [
     {
       "number": 1,
       "name": "Jan",
-      "actual": 20454233.35000004,
-      "target": 19138881.20884317,
-      "attainment": 106.87266996855126,
+      "actual": 20454233.350000024,
+      "target": 19138881.208843246,
+      "attainment": 106.87266996855078,
       "band": "good",
       "complete": true
     },
     {
       "number": 2,
       "name": "Feb",
-      "actual": 18942694.139999975,
-      "target": 17769310.69795982,
-      "attainment": 106.60342689699762,
+      "actual": 18942694.13999997,
+      "target": 17769310.69795981,
+      "attainment": 106.60342689699766,
       "band": "good",
       "complete": true
     },
     {
       "number": 3,
       "name": "Mar",
-      "actual": 18618361.01999994,
-      "target": 19393702.329033803,
-      "attainment": 96.00209750629656,
+      "actual": 18618361.01999996,
+      "target": 19393702.329033796,
+      "attainment": 96.0020975062967,
       "band": "warn",
       "complete": true
     },
     {
       "number": 4,
       "name": "Apr",
-      "actual": 17197835.640000023,
-      "target": 15691369.653319744,
-      "attainment": 109.60060224163772,
+      "actual": 17197835.64000003,
+      "target": 15691369.65331974,
+      "attainment": 109.60060224163782,
       "band": "good",
       "complete": true
     },
     {
       "number": 5,
       "name": "May",
-      "actual": 19951704.42,
-      "target": 19221243.162434675,
-      "attainment": 103.8002810296522,
+      "actual": 19951704.41999998,
+      "target": 19221243.162434615,
+      "attainment": 103.80028102965242,
       "band": "good",
       "complete": true
     },
     {
       "number": 6,
       "name": "Jun",
-      "actual": 15550398.15000001,
-      "target": 16769910.242147084,
-      "attainment": 92.72797483982873,
+      "actual": 15550398.15000002,
+      "target": 16769910.242147086,
+      "attainment": 92.72797483982879,
       "band": "crit",
       "complete": true
     },
@@ -1319,27 +1277,27 @@
       "number": 7,
       "name": "Jul",
       "actual": 17663580.730000008,
-      "target": 16805350.486057762,
-      "attainment": 105.10688690875124,
+      "target": 16805350.486057747,
+      "attainment": 105.10688690875132,
       "band": "good",
       "complete": true
     },
     {
       "number": 8,
       "name": "Aug",
-      "actual": 13163192.010000005,
-      "target": 17665821.329320014,
-      "attainment": 74.51219937424035,
+      "actual": 14010080.290000003,
+      "target": 15222785.999446295,
+      "attainment": 92.03361520361383,
       "band": "crit",
       "complete": false
     }
   ],
   "projections": {
-    "at_month_rate": 13163192.010000005,
-    "at_month_rate_pct": 74.51219937424035,
-    "recent_rate": 68.25640013987363,
-    "at_recent_rate": 13163192.010000005,
-    "at_recent_rate_pct": 74.51219937424035
+    "at_month_rate": 16258494.02478432,
+    "at_month_rate_pct": 92.03361520361383,
+    "recent_rate": null,
+    "at_recent_rate": null,
+    "at_recent_rate_pct": null
   },
   "checks": {
     "surplus_splits_reconcile": true,
@@ -1348,11 +1306,14 @@
     "day_series_sums_to_month": true,
     "every_period_has_a_target": true
   },
+  "excluded_entities": [
+    "ST5"
+  ],
   "prose": {
-    "headline": "The month is complete at 74.5% of target, with 13.16M sold against 17.67M and a 4.50M shortfall.",
-    "narrative": "Today closed at 0.0% of target, with 0 sold against 476.6K, so this week so far also stands at 0.0% of target and 476.6K below target. That sits at the end of 25 days below target in a row, with an average shortfall 181.3K a day. Across the full month, only 3 of 31 days reached their target, and this month so far ended at 74.5% of target, with 13.16M sold against 17.67M and 4.50M below target. This year so far is still close to target at 99.4%, with 141.54M sold against 142.46M and 913.6K below target.",
-    "today_note": "All four branches missed today: ST1, ST2, ST3 and ST4 each finished at 0.0% today, matching the company's 476.6K shortfall for the day and for this week so far.",
-    "month_note": "The month's surplus built 30.4K and used 4.53M, leaving -4.50M left by month end. The biggest branch gaps for the month were ST1 at 1.42M below target and ST4 at 1.40M below target, followed by ST3 at 856.0K and ST2 at 826.9K below target.",
+    "headline": "Today was 102.6% of target, but this month so far is still 1.21M below target at 92.0%.",
+    "narrative": "Today finished 14.9K above target, with 577.4K sold against 562.5K, but this week so far is still 74.6K below target at 95.7%. That leaves this month so far at 14.01M sold against 15.22M, or 92.0% of target. Only 4 of 27 days reached their target, and the rest of the month needs 3.66M, which is 149.6% of what those days are targeted to sell. This year so far remains 101.7% of target, with 142.39M sold against 140.01M, so the shortfall sits in the nearer time periods rather than the year overall.",
+    "today_note": "Two branches missed today. ST1 was at 80.1% and ST2 was at 92.5%, while ST3 reached 123.2% and ST4 reached 127.6%.",
+    "month_note": "All four branches are below target for this month so far. The largest month shortfalls are ST1 at 422.2K below target, ST4 at 337.0K below target, ST3 at 252.7K below target, and ST2 at 200.8K below target.",
     "authoring_mode": "llm"
   }
 }

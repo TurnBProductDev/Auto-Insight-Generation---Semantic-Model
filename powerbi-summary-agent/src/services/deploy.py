@@ -99,12 +99,24 @@ def encode(text: str) -> str:
 
 
 def secret_payload(config_json: str, business_rules: str, summary_rules: str) -> dict:
-    """The three agent secrets, base64-encoded."""
-    return {
-        CONFIG_SECRET: encode(config_json),
-        RULES_SECRET: encode(business_rules),
-        SUMMARY_RULES_SECRET: encode(summary_rules),
-    }
+    """The agent secrets, base64-encoded; an absent rulebook is omitted.
+
+    ARM rejects a secret carrying neither a value nor a Key Vault reference
+    ("value or keyVaultUrl and identity should be provided"), and ``encode("")``
+    is the empty string - so emitting all three unconditionally makes a client
+    that ships only one rulebook undeployable. Inventory Management is exactly
+    that: ``config/inventory/`` holds ``summary_business_rules.md`` alone.
+
+    Omitting is also what the container wants. ``container_entrypoint`` treats a
+    missing ``AGENT_RULES_B64`` as "no rulebook" and *removes* the runtime
+    ``business_rules.md``, whereas an empty one would leave an empty file behind.
+    """
+    payload = {CONFIG_SECRET: encode(config_json)}
+    if business_rules:
+        payload[RULES_SECRET] = encode(business_rules)
+    if summary_rules:
+        payload[SUMMARY_RULES_SECRET] = encode(summary_rules)
+    return payload
 
 
 def merge_secrets(existing: Iterable[dict], updates: dict) -> tuple[list[dict], list[str]]:
@@ -148,17 +160,31 @@ def build_job_body(spec: JobSpec, secrets: list[dict], *, existing: dict | None 
     # These three mappings are part of the deployment contract, not optional
     # caller configuration. Without them the secrets exist on the job but the
     # container cannot see or materialise its config and rulebooks.
-    secret_env = {
+    existing_props = (existing or {}).get("properties") or {}
+
+    # A secretRef pointing at a secret the job does not have is rejected by ARM
+    # on create, and on update would silently hand the container an empty value.
+    # So an owned mapping is emitted only when its secret is actually present -
+    # either in this write, or already on the job. `spec.secret_env` is the
+    # caller's own contract and passes through untouched.
+    available = {str(s.get("name") or "") for s in secrets}
+    available |= {
+        str(s.get("name") or "")
+        for s in ((existing_props.get("configuration") or {}).get("secrets") or [])
+    }
+    owned = {
         "AGENT_CONFIG_B64": CONFIG_SECRET,
         "AGENT_RULES_B64": RULES_SECRET,
         "AGENT_SUMMARY_RULES_B64": SUMMARY_RULES_SECRET,
-        **spec.secret_env,
     }
+    secret_env = {
+        name: secret for name, secret in owned.items() if secret in available
+    }
+    secret_env.update(spec.secret_env)
     template_env += [
         {"name": name, "secretRef": secret} for name, secret in sorted(secret_env.items())
     ]
 
-    existing_props = (existing or {}).get("properties") or {}
     environment_id = spec.environment_id or existing_props.get("environmentId") or ""
     if not environment_id:
         raise DeployError(

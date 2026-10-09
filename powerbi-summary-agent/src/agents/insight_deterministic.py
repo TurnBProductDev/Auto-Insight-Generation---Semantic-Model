@@ -4,7 +4,8 @@ The investigated tier spends most of a run's money in two places: a
 tool-calling investigator that decides which follow-up queries to run, and a
 free-form writer that turns the trails into the report. This module is what
 both become when no model may make a decision - the ``narrated`` and
-``deterministic`` tiers of `src/tools/ai_tier.py`.
+``deterministic`` tiers of `src/tools/ai_tier.py`. The ``reasoned`` tier uses
+them too: a model chose the findings, and the caveat says so.
 
 **Investigation.** `insight_gap_scan` has already drilled every selected finding
 deterministically, scoped to exactly its members, before the investigator is
@@ -343,6 +344,45 @@ def narrate_key_insights(state: dict, signals: list[dict], fact_briefs: list[dic
     return {sid: accepted.get(sid, draft) for sid, draft in drafts.items()}, stats
 
 
+def _breakdowns(inv: dict) -> list[dict]:
+    """The probes that returned rows: the gap scan's and, on the reasoned tier, the recipes'."""
+    return [p for p in inv.get("probes") or []
+            if p.get("tool") == "run_dax" and p.get("status") in ("success", "cache_hit") and "rows" in p]
+
+
+_RECIPE_LABELS = {
+    "breakdown": lambda a: f"breakdown of {a.get('segment')} by {a.get('by')}",
+    "compare_to_peers": lambda a: f"comparison with every {a.get('level')}",
+    "trend": lambda a: f"trend of {a.get('segment')}",
+    "split_units_vs_price": lambda a: f"units versus revenue per unit for {a.get('segment')}",
+    "measure_formula": lambda a: "formula of " + ", ".join(str(n) for n in (a.get("names") or [])),
+    "custom_dax": lambda a: "custom query",
+}
+
+
+def _probe_line(probe: dict) -> str | None:
+    """One Evidence Trail line: a gap-scan breakdown, or a reasoned-tier recipe call."""
+    origin = str(probe.get("origin") or "")
+    if origin == "gap_scan":
+        return (f"  - Gap-scan breakdown by `{probe.get('dimension')}`: "
+                f"{probe.get('row_count', 0)} row(s), {probe.get('completeness') or 'completeness unknown'}.")
+    recipe = probe.get("recipe")
+    if recipe not in _RECIPE_LABELS:
+        return None  # conclude, closures and object listings are not evidence
+    label = _RECIPE_LABELS[recipe](probe.get("args") or {})
+    status = probe.get("status")
+    if status in ("success", "cache_hit") and "rows" in probe:
+        line = (f"  - Follow-up {label}: {probe.get('row_count', 0)} row(s), "
+                f"{probe.get('completeness') or 'completeness unknown'}.")
+        position = probe.get("position") or {}
+        if position.get("rank"):
+            line += f" {position.get('segment')} ranks {position['rank']} of {position.get('of')}."
+        return line
+    if status == "success":
+        return f"  - Follow-up {label}: answered from rows already returned."
+    return f"  - Follow-up {label}: not run ({probe.get('reason') or probe.get('error') or status})."
+
+
 def write_report(state: dict, signals: list[dict], investigations: list[dict],
                  fact_briefs: list[dict], novelty: dict,
                  paragraphs: dict | None = None, authored: int = 0) -> str:
@@ -384,8 +424,9 @@ def write_report(state: dict, signals: list[dict], investigations: list[dict],
         inv = by_signal.get(signal.get("id")) or {}
         lines.append(f"- **{_segment(signal)}** (`{signal.get('id')}`): {signal.get('description') or ''}".rstrip())
         for probe in inv.get("probes") or []:
-            lines.append(f"  - Gap-scan breakdown by `{probe.get('dimension')}`: "
-                         f"{probe.get('row_count', 0)} row(s), {probe.get('completeness') or 'completeness unknown'}.")
+            line = _probe_line(probe)
+            if line:
+                lines.append(line)
         if inv.get("explanation"):
             lines.append(f"  - {inv['explanation']}")
 
@@ -393,14 +434,40 @@ def write_report(state: dict, signals: list[dict], investigations: list[dict],
     lines.append("# Confidence & Caveats")
     for signal, _brief in business:
         inv = by_signal.get(signal.get("id")) or {}
-        checked = len(inv.get("probes") or [])
+        checked = len(_breakdowns(inv))
         complete = int(inv.get("complete_breakdowns") or 0)
         if complete:
             lines.append(f"- {_segment(signal)}: {complete} of {checked} breakdown(s) came back complete.")
         else:
             lines.append(f"- {_segment(signal)}: no complete breakdown came back, so the finding "
                          f"is stated without a measured explanation.")
-    if authored:
+        # Reasoned tier only: why the published explanation is code's, not the model's.
+        if inv.get("conclusion_issues"):
+            lines.append(f"- {_segment(signal)}: the AI's written explanation did not pass the checks "
+                         f"({inv['conclusion_issues'][0]}), so the code-written explanation is shown.")
+        elif inv.get("error"):
+            lines.append(f"- {_segment(signal)}: the AI investigation could not run, so the "
+                         f"code-written explanation is shown.")
+    asked = sum(int((by_signal.get(s.get("id")) or {}).get("follow_ups_answered") or 0)
+                for s, _b in business)
+    selected_by_model = (novelty or {}).get("selection") == "model"
+    if business and (selected_by_model or asked):
+        # The reasoned tier. Each part is said only when it happened: the signal
+        # detector records whether a model selected, and the investigation
+        # counts the follow-up questions the data answered.
+        chooser = ("An AI model chose these findings from those that fixed rules detected and "
+                   "ranked, and may have combined related findings into one"
+                   if selected_by_model else
+                   "Findings were chosen and ranked by fixed rules, and related findings are not combined")
+        wording = (f"An AI model wrote the wording of {authored} of the {len(business)} key "
+                   f"insight(s), and every figure in that wording was checked against the data."
+                   if authored else "The wording was written by fixed rules.")
+        follow = (f"An AI model asked {asked} follow-up question(s) of the data beyond the standard "
+                  f"breakdowns, each through a checked query."
+                  if asked else "No follow-up question was asked beyond the standard breakdowns.")
+        lines.append(f"- {chooser}; every figure comes from the data and was checked by fixed rules. "
+                     f"{wording} {follow}")
+    elif authored:
         lines.append(f"- Findings were chosen, ranked and checked by fixed rules. An AI model wrote "
                      f"the wording of {authored} of the {len(business)} key insight(s), and every "
                      f"figure in that wording was checked against the data. Related findings are not "
@@ -422,8 +489,9 @@ def write_report(state: dict, signals: list[dict], investigations: list[dict],
         lines.append("- None for this run.")
     for signal, _brief in business:
         inv = by_signal.get(signal.get("id")) or {}
-        incomplete = [p.get("dimension") for p in inv.get("probes") or []
-                      if p.get("completeness") != "complete"]
+        incomplete = [p.get("dimension") for p in _breakdowns(inv)
+                      if p.get("origin") in ("gap_scan", "recipe:breakdown")
+                      and p.get("completeness") != "complete"]
         if incomplete:
             lines.append(f"- Which parts of {_segment(signal)} explain the change once the full breakdown "
                          f"is available? (by `{'`, `'.join(str(d) for d in incomplete)}`)")

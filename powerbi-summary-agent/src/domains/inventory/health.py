@@ -199,7 +199,8 @@ def build(scan: dict) -> dict | None:
         "dimensions_reconcile": dimensions_reconcile,
         "dimension_note": (
             "" if dimensions_reconcile else
-            "The score below is the model's own published figure. How each risk "
+            "The score on this page is the model's own published figure. How "
+            "each risk "
             "is built up from its parts is not shown, because the model's own "
             "build-up no longer matches the weights this report was set up with "
             "- the weights have been changed at source and need confirming."),

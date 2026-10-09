@@ -41,10 +41,15 @@ If a sentence would make a store manager ask "so what?", it has failed.
                  sees, so it must carry the finding, not point at it.
                  Sentence 1: what is happening, in plain words, WITH the key
                  figure from `quote_these_display_values`.
-                 Sentence 2: why it matters to the business - the money, the
-                 stock, or the customers at stake.
-                 Sentence 3 (only if you have something real): where it is
-                 concentrated, or what would explain it.
+                 Sentence 2: what it means for the business - the money, the
+                 stock, or the customers at stake. Say it straight. Do not
+                 announce it: never open with "That matters because", "This
+                 matters because" or "That means".
+                 Sentence 3 is optional. Write it only when the facts you were
+                 given show where the change sits - a named contributor or a
+                 `decomposition`. Never guess at it: "most of this is likely to
+                 be in...", "this is likely to sit in..." are banned. With no
+                 breakdown in the facts, stop at two sentences.
                  You MUST include at least one figure, copied EXACTLY from
                  `quote_these_display_values`. Never write a figure that is not
                  in that list.
@@ -99,10 +104,20 @@ Never write these. Use the plain word instead:
 | bills | transactions |
 | broad-based | happening across the business |
 | time view, reporting window | period, or name it: today, this week, this month |
+| on rate, rate-led | on higher average prices, or a richer mix of products |
+| out of reach, eroded, collapse, bleeding, plunge | say how big the gap is |
 
 ## Rules that must not be broken
 
 - Cover every `signal_id` exactly once. Do not add, drop, merge, or split signals.
+- Name the segment's level as `segment_level` gives it: "this product group",
+  "this category", "this store". Never call it a department unless
+  `segment_level` is department. When `segment_level` is empty, use the name alone.
+- Do not overstate. A week that needs 102% of its remaining plan is behind, not
+  "out of reach". A normal range (a benchmark band) is not a plan or a target:
+  a day above it is "above its normal range", never "ahead of plan".
+- Never write a share above 100%. When the code-owned sentence says a part moved
+  more than the whole, say so in words, without a percentage.
 - No emojis. No markdown in the text fields.
 - Every figure you write must appear EXACTLY in `quote_these_display_values` for
   that signal. Never invent, recompute, round, or re-format a number. A figure

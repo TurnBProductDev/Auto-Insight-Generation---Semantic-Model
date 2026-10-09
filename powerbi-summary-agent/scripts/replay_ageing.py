@@ -475,6 +475,49 @@ def test_published_summary_contract() -> None:
           quiet_payload["sections"][0]["points"]
           and "no age band" in quiet_payload["sections"][0]["points"][0].lower())
 
+    # EVERY tone the payload can emit must be one the contract accepts.
+    #
+    # The improving branch shipped emitting "success", which is not in the Tone
+    # literal, so ReportSummaryPayload rejected it at publish time and the job
+    # aborted after doing all its work — no blob written, yesterday's summary
+    # left standing, and the only trace a stack trace in the container log. It
+    # ran for days before anyone noticed because it fires ONLY when the aged
+    # share improves by more than 0.2 points: the report crashed on good news
+    # and published fine on bad, which is close to the worst failure schedule a
+    # daily job can have.
+    #
+    # The comparison is stubbed rather than built from the COMPARE_* pair, for
+    # two reasons: summary_payload reads exactly three fields off it (available,
+    # prior_as_at, and the aged_value_share headline's points), and the live
+    # pair cannot produce an improvement in either order — reversing the dates
+    # makes the comparison unavailable, so the branch is never reached and a
+    # test built that way passes whatever the tone says. The arithmetic behind
+    # those fields is ageing_history's, and it is tested in test_comparison().
+    from src.tools.api_payloads import Tone
+    import typing
+
+    allowed_tones = set(typing.get_args(Tone))
+    for label, points in (("improving", -0.9), ("worsening", 1.4), ("flat", 0.05)):
+        moved = ageing.build(_synthetic_scan())
+        moved["comparison"] = {
+            "available": True,
+            "prior_as_at": "2026-08-19",
+            "headlines": [{"key": "aged_value_share", "points": points}],
+        }
+        moved_payload = pub.summary_payload(moved)
+        tones = {m["tone"] for m in moved_payload["metrics"]}
+        check(f"the movement metric is emitted when the share is {label}",
+              any(m["label"].startswith("Change since") for m in moved_payload["metrics"]),
+              str([m["label"] for m in moved_payload["metrics"]]))
+        check(f"every tone is in the contract when the aged share is {label}",
+              tones <= allowed_tones,
+              f"{sorted(tones - allowed_tones)} not in {sorted(allowed_tones)}")
+        try:
+            ReportSummaryPayload(**moved_payload)
+            check(f"the {label} payload validates against the contract", True)
+        except Exception as exc:  # noqa: BLE001 - the message is the whole point
+            check(f"the {label} payload validates against the contract", False, str(exc))
+
     # Nothing the contract has no room for may be silently dropped: the as-at
     # date and the single-snapshot limitation both have to survive as prose.
     text = " ".join(pt for s in payload["sections"] for pt in s["points"])

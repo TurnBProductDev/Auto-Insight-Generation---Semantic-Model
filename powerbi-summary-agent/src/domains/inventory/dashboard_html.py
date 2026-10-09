@@ -46,6 +46,24 @@ TONE_BAR = {
     "neutral": "#8a97a6",
 }
 
+#: Reference gap 7: severity was carried by a coloured stripe and nothing else,
+#: which is precisely what a colourblind reader cannot separate from a green
+#: one. Every tone that reaches the page now also reaches it as a word.
+TONE_PILL = {
+    "critical": "crit",
+    "warn": "warn",
+    "positive": "ok",
+    "neutral": "neutral",
+}
+
+
+def _pill(severity: Any, tone: Any) -> str:
+    """A severity word beside the colour, never the colour alone."""
+    if not severity:
+        return ""
+    return (f'<span class="pill pill-{TONE_PILL.get(str(tone), "neutral")}">'
+            f'{_safe(severity)}</span>')
+
 
 def _pct_text(value: Any) -> str:
     try:
@@ -61,11 +79,23 @@ def _hero(hero: dict, period: dict) -> str:
     # still applies to it there - a position is stated as at a date, never as a
     # span - but repeating it here put it twice in the first 120px.
     del period
+    # Gap 1: `.hero` from the sales stylesheet is a two-column grid expecting
+    # four children. Emitting two put the headline in the second column with the
+    # narrative floating beside it, and `.hero-line`/`.hero-note` were never
+    # styled at all. This carries its own class and its own figures instead.
+    stats = "".join(
+        f'<div class="hs{" " + str(stat.get("tone")) if stat.get("tone") == "critical" else ""}">'
+        f'<b>{_safe(stat.get("value"))}</b>'
+        f'<span>{_safe(stat.get("label"))}</span></div>'
+        for stat in hero.get("stats") or []
+    )
     return (
-        '<section class="hero">'
-        f'<h2 class="hero-line">{_safe(hero.get("headline"))}</h2>'
-        f'<p class="hero-note">{_safe(hero.get("narrative"))}</p>'
-        '</section>'
+        '<section class="hero-inv">'
+        '<div class="hero-copy">'
+        f'<h2>{_safe(hero.get("headline"))}</h2>'
+        f'<p>{_safe(hero.get("narrative"))}</p></div>'
+        + (f'<div class="hero-stats">{stats}</div>' if stats else "")
+        + '</section>'
     )
 
 
@@ -120,7 +150,8 @@ def _location_cards(cards: list[dict]) -> str:
         return ""
     items = "".join(
         '<article class="card ent">'
-        f'<div class="ent-h"><span class="ent-n">{_safe(c.get("member"))}</span>'
+        f'<div class="ent-h"><span class="ent-n">{_safe(c.get("member"))}'
+        f'{_pill(c.get("severity"), c.get("tone"))}</span>'
         f'{_badge(str(c.get("change_display")), str(c.get("tone")))}</div>'
         f'<div class="val">{_safe(c.get("value_display"))}</div>'
         f'<p class="note">{_safe(c.get("note"))}</p>'
@@ -128,6 +159,96 @@ def _location_cards(cards: list[dict]) -> str:
         for c in cards
     )
     return f'<div class="grid ents">{items}</div>'
+
+
+def _population_bars(entities: dict) -> str:
+    """Warehouses and stores ranked separately.
+
+    A distribution centre holds stock for a different reason than a shop does,
+    so one combined ranking puts every warehouse above every store and reads as
+    a shop problem. Each population states its own total.
+    """
+    stores = entities.get("stores") or []
+    warehouses = entities.get("warehouses") or []
+    if not stores or not warehouses:
+        return charts.ranked_bars(
+            entities.get("cards") or [], value_key="value", held_key="held",
+            label_key="member", unit=str(entities.get("rate_unit") or ""),
+            average=entities.get("average_rate"))
+    out = []
+    for index, (title, group) in enumerate(
+            (("Warehouses", warehouses), ("Stores", stores))):
+        held = sum(float(c.get("held") or 0.0) for c in group)
+        above = sum(float(c.get("value") or 0.0) for c in group)
+        one = len(group) == 1
+        noun = title.lower()[:-1] if one else title.lower()
+        out.append(f'<h3 class="block-title">{title}</h3>')
+        out.append(charts.ranked_bars(
+            group, value_key="value", held_key="held", label_key="member",
+            unit=str(entities.get("rate_unit") or ""),
+            average=entities.get("average_rate"),
+            # The estate rate is one fact about the whole business, so it is
+            # explained once under the first ranking rather than repeated
+            # verbatim under the second.
+            show_average_note=index == 0))
+        out.append(f'<p class="chart-note">The {len(group)} {noun} '
+                   f'{"holds" if one else "hold"} {_safe(_money(held))} of '
+                   f'stock, {_safe(_money(above))} of it above the agreed '
+                   f'cover.</p>')
+    return "".join(out)
+
+
+def _location_history(entities: dict) -> str:
+    """Each location's Stock Value at every reading the model has kept.
+
+    This is the only part of the page that can see a location that has emptied.
+    The position queries return no row for one, so it does not appear in a
+    single breakdown - it simply stops being mentioned, which reads as though it
+    were never there.
+    """
+    series = [row for row in entities.get("trend") or [] if row.get("points")]
+    if not series:
+        return ""
+    dates = [str(point.get("date") or "") for point in series[0]["points"]]
+    if len(dates) < 2:
+        return ""
+
+    wind_down = entities.get("wind_down") or []
+    lead = ""
+    if wind_down:
+        names = ", ".join(_safe(item.get("name")) for item in wind_down)
+        worst = wind_down[0]
+        lead = (
+            f'<p class="basis-note"><strong>'
+            f'{"A location is" if len(wind_down) == 1 else "Locations are"} '
+            f'winding down</strong>{names} held '
+            f'{_safe(_money(worst.get("first")))} at the first reading on '
+            f'{_safe(dates[0])} and {_safe(_money(worst.get("last")))} at the '
+            f'latest on {_safe(dates[-1])}, down '
+            f'{float(worst.get("drop_pct") or 0.0):.1f}%. A location holding '
+            f'nothing returns no rows, so it does not appear in the splits '
+            f'above at all.</p>')
+
+    head = "".join(f'<th class="n">{_safe(date)}</th>' for date in dates)
+    body = ""
+    for row in series:
+        cells = "".join(
+            f'<td class="n">{_safe(_money(point.get("value")))}</td>'
+            for point in row["points"])
+        change = row.get("change_pct")
+        change_text = "-" if change is None else f"{float(change):+.1f}%"
+        tone = "critical" if (change is not None and float(change) <= -50.0) else "neutral"
+        body += (f'<tr><td>{_safe(row.get("name"))}</td>{cells}'
+                 f'<td class="n" style="color:'
+                 f'{TONE_BAR.get(tone, TONE_BAR["neutral"])}">{_safe(change_text)}</td></tr>')
+    return (
+        lead
+        + '<h3 class="block-title">Each location at every kept reading</h3>'
+        + '<div class="scroll"><table class="tbl"><thead><tr><th>Location</th>'
+        + head + '<th class="n">Change</th></tr></thead>'
+        + f'<tbody>{body}</tbody></table></div>'
+        + '<p class="chart-note">Stock Value only. These are the readings the '
+          'source model keeps, not one per day.</p>')
 
 
 def _area_table(areas: dict, labels: dict) -> str:
@@ -146,7 +267,8 @@ def _area_table(areas: dict, labels: dict) -> str:
         f'<td class="n">{_safe(r.get("value_display"))}</td>'
         f'<td class="n">{_safe(r.get("held_display"))}</td>'
         f'<td class="n">{_safe(_pct_text(r.get("own_share")))}</td>'
-        f'<td><span class="dot" style="background:{TONE_BAR.get(str(r.get("tone")), TONE_BAR["neutral"])}"></span></td>'
+        f'<td><span class="dot" style="background:{TONE_BAR.get(str(r.get("tone")), TONE_BAR["neutral"])}"></span>'
+        f'{_pill(r.get("severity"), r.get("tone"))}</td>'
         '</tr>'
         for r in rows
     )
@@ -259,6 +381,12 @@ def _detail_block(detail: dict) -> str:
             damage, "The same months as a table",
             [("Month", "month", False, _text),
              ("Written off", "value", True, _money)]))
+        # The queue genuinely filters to this view; the section, segment,
+        # non-moving and damage splits do not, so they are withheld rather than
+        # printed under totals they do not add to - and the view names the one
+        # that owns them instead of just going quiet.
+        if detail.get("pointer"):
+            parts.append(f'<p class="note-band">{_safe(detail["pointer"])}</p>')
         return "".join(p for p in parts if p)
 
     bands = detail.get("bands") or []
@@ -397,14 +525,16 @@ def _score_layer_html(score: dict) -> str:
         alias = (f'<span class="d-model">model: {_safe(item["model_name"])}</span>'
                  if item.get("model_name") else "")
         rows.append(
-            f'<tr><th>{_safe(item["name"])}{alias}</th>'
+            f'<tr><th>{_safe(item["name"])}'
+            f'{_pill(item.get("severity"), item.get("tone"))}{alias}</th>'
             f'<td class="num">{item["points"]:.1f}</td>'
             f'<td class="bar-cell"><span class="bar" style="width:{max(1.0, share):.1f}%"></span></td>'
             f'<td class="num">{share:.1f}%</td></tr>')
     table = (
         '<table class="tbl score-tbl"><caption>What the score is losing, '
         'biggest cause first. This is what the position is made of, not how it '
-        'has moved - only one position is kept.</caption>'
+        'has moved: the model publishes no history of the score itself.'
+        '</caption>'
         '<thead><tr><th>Risk</th><th class="num">Points</th>'
         '<th>Share of the loss</th><th class="num">%</th></tr></thead>'
         f'<tbody>{"".join(rows)}</tbody></table>')
@@ -485,13 +615,45 @@ def _focus_layer_html(focus: dict) -> str:
         alias = (f'<p class="d-model">Called '
                  f'&ldquo;{_safe(story["model_name"])}&rdquo; in the model</p>'
                  if story.get("model_name") else "")
+        cap = float(story.get("risk_cap") or 0.0)
+        points = float(story.get("points") or 0.0)
+        # How much of this risk's own ceiling it has already used. A risk at its
+        # cap cannot register getting worse, which is a different situation from
+        # one with room left, and the bar is where that shows.
+        cap_bar = ""
+        if cap > 0:
+            filled = min(112.0, max(0.0, points / cap * 112.0))
+            cap_bar = (
+                f'<svg viewBox="0 0 120 34" width="120" height="34" role="img" '
+                f'aria-label="{points:.1f} points of a possible {cap:.0f}">'
+                '<rect x="4" y="12" width="112" height="10" rx="5" fill="#eef2f6"/>'
+                f'<rect x="4" y="12" width="{filled:.1f}" height="10" rx="5" '
+                f'fill="{TONE_BAR.get(str(story.get("tone")), TONE_BAR["neutral"])}"/>'
+                f'<text x="4" y="9" class="dz">out of {cap:.0f} possible</text></svg>')
+        share = story.get("share_pct")
+        share_text = (f'<em>{float(share):.1f}% of the whole loss</em>'
+                      if share is not None else "")
+        lost = float(focus.get("points_lost") or 0.0)
+        stat = ""
+        if story.get("stat_value"):
+            stat = (f'<div class="s-stat"><b>{_safe(story["stat_value"])}</b>'
+                    f'<span>{_safe(story.get("stat_caption"))}</span></div>')
         cards.append(
-            f'<article class="card story"><h4>{_safe(story["name"])}</h4>{alias}'
-            f'<dl>'
+            f'<article class="story {TONE_PILL.get(str(story.get("tone")), "neutral")}">'
+            '<header class="s-head"><div>'
+            f'<h3>{_safe(story["name"])}'
+            f'{_pill(story.get("severity"), story.get("tone"))}</h3>{alias}'
+            f'<p class="s-score"><b>&minus;{points:.1f}</b>'
+            f'<span>points off the score, of {lost:.1f}</span>{share_text}</p>'
+            f'</div>{cap_bar}</header>'
+            '<dl class="s-body">'
             f'<dt>What it is</dt><dd>{_safe(story["what_it_is"])}</dd>'
+            f'<dt>Why</dt><dd>{_safe(story.get("why"))}</dd>'
             f'<dt>What it does to the score</dt><dd>{_safe(story["effect"])}</dd>'
-            f'<dt>Do this</dt><dd>{_safe(story["do_this"])}</dd>'
-            f'</dl></article>')
+            '</dl>'
+            f'<div class="s-foot">{stat}'
+            f'<p class="s-do"><span>Do this</span>{_safe(story["do_this"])}</p>'
+            '</div></article>')
 
     queue = focus.get("queue") or []
     total = focus.get("queue_total") or len(queue)
@@ -770,37 +932,71 @@ def _view_html(view: dict, active: bool) -> str:
                         if r.get("is_exception"))
             rest = sum(int(r.get("loc_skus") or 0) for r in queue
                        if not r.get("is_exception"))
+            donut = charts.composition_donut(
+                [{"label": "Needs action", "value": needs, "color": charts.AMBER},
+                 {"label": "No action needed", "value": rest,
+                  "color": charts.SERIES_CALM}],
+                f"{needs:,}", "product lines need action")
             shape_block = (
                 '<h3 class="block-title">How much of the estate needs '
-                'attention</h3>'
-                + charts.composition_donut(
-                    [{"label": "Needs action", "value": needs, "color": charts.AMBER},
-                     {"label": "No action needed", "value": rest,
-                      "color": charts.SERIES_CALM}],
-                    f"{needs:,}", "product lines need action"))
+                'attention</h3>' + donut) if donut else ""
+
+    # The model's own historical Stock Value series. The scan has always paid
+    # for it; `stock_health.build` simply never carried it into the model, so
+    # this slot rendered empty on every run since the page was written.
+    # The Stock Age views set `layers["overview"]` to a plain True flag, so this
+    # must not assume a dict just because the key is present.
+    summary_layer = layers.get("overview")
+    summary_layer = summary_layer if isinstance(summary_layer, dict) else {}
+    trend_points = summary_layer.get("trend") or []
+    trend_block = charts.trend_area(
+        trend_points, "date", "value",
+        str(summary_layer.get("trend_caption") or ""))
+    trend_block = ('<h3 class="block-title">Stock value at each kept '
+                   'reading</h3>' + trend_block) if trend_block else ""
+
+    # Gap 3: the summary ran as one narrow column down a 1500px page, so the
+    # queue and the estate split - which answer "what do I do" and "how much of
+    # it is there" - were a screen apart instead of side by side.
+    if headline_block and shape_block:
+        where_and_what = (f'<div class="two-up">'
+                          f'<section>{headline_block}</section>'
+                          f'<section>{shape_block}</section></div>')
+    else:
+        where_and_what = headline_block + shape_block
 
     overview = (
         _hero(view.get("hero") or {}, period)
-        + headline_block
+        + trend_block
         + '<h3 class="block-title">The position at a glance</h3>'
         + _kpi_cards(view.get("kpis") or [])
         + (('<h3 class="block-title">What the headline does not show</h3>'
             + _signal_cards(view.get("signals") or []))
            if view.get("signals") else "")
-        + shape_block
+        + where_and_what
     )
 
     entities_body = (
-        charts.ranked_bars(
-            entities.get("cards") or [], value_key="value", held_key="held",
-            label_key="member", unit=str(entities.get("rate_unit") or ""),
-            average=entities.get("average_rate"))
+        _population_bars(entities)
         + _contribution_rows(entities.get("cards") or [], entities.get("caption") or "")
         + _location_cards(entities.get("cards") or [])
+        + _location_history(entities)
     ) if entities.get("available") else (
         f'<p class="note-band">{_safe(entities.get("pointer"))}</p>'
         if entities.get("pointer") else
         '<p class="note-band">No location breakdown was returned for this view.</p>')
+
+    areas_body = (
+        charts.ranked_bars(
+            areas.get("rows") or [], value_key="value", held_key="held",
+            unit=str(areas.get("rate_unit") or ""),
+            average=areas.get("average_rate"))
+        + _area_table(areas, labels)
+    ) if areas.get("available") else (
+        f'<p class="note-band">{_safe(areas.get("pointer"))}</p>'
+        if areas.get("pointer") else
+        '<p class="note-band">No division breakdown was returned for this '
+        'view.</p>')
 
     limitations = "".join(
         f'<p class="note-band">{_safe(text)}</p>'
@@ -853,11 +1049,7 @@ def _view_html(view: dict, active: bool) -> str:
         + _layer(key, "areas",
                  labels.get("areas_title", "Divisions"),
                  labels.get("areas_sub", ""),
-                 charts.ranked_bars(
-                     areas.get("rows") or [], value_key="value", held_key="held",
-                     unit=str(areas.get("rate_unit") or ""),
-                     average=areas.get("average_rate"))
-                 + _area_table(areas, labels), False)
+                 areas_body, False)
         + outlook_html
         + _layer(key, "detail",
                  labels.get("detail_title", "Full detail"),
@@ -907,9 +1099,54 @@ _EXTRA_CSS = """
 .pill{display:inline-block;font-size:10px;letter-spacing:.08em;padding:2px 7px;border-radius:99px;
   vertical-align:middle;margin-left:6px;font-weight:700}
 .pill-critical{background:#fbe7e4;color:#a5301f}
+.pill-crit{background:#fbe7e4;color:#a5301f}
+.pill-warn{background:#faf1e1;color:#8a5f10}
+.pill-ok{background:#e9f6ee;color:#256b3c}
+.pill-neutral{background:#eef2f6;color:#5b7182}
+/* --- The hero owns its layout ----------------------------------------- */
+/* It used to borrow `.hero` from the sales page - a two-column grid built for
+   four children - and emit two, which floated the headline into the second
+   column under an unstyled `.hero-line`. */
+.hero-inv{background:linear-gradient(180deg,#12201e,#0e1b19);color:#eaf1ef;
+  border-radius:14px;padding:20px 24px;margin-bottom:6px;display:grid;
+  grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:26px;align-items:center}
+.hero-inv .hero-copy h2{font-size:19px;font-weight:750;line-height:1.35;
+  letter-spacing:-.2px;margin:0 0 8px;color:#fff}
+.hero-inv .hero-copy p{margin:0;font-size:13px;line-height:1.6;color:#c7d3d0}
+.hero-stats{display:flex;flex-direction:column;gap:10px}
+.hero-stats .hs{border-left:3px solid rgba(255,255,255,.22);padding-left:11px}
+.hero-stats .hs.critical{border-left-color:#cf4636}
+.hero-stats .hs b{display:block;font-size:19px;font-weight:750;
+  font-variant-numeric:tabular-nums;color:#fff;line-height:1.2}
+.hero-stats .hs span{display:block;font-size:11px;color:#9fb0ad;margin-top:1px}
+@media(max-width:900px){.hero-inv{grid-template-columns:1fr}}
+/* --- Focus stories ----------------------------------------------------- */
+/* Four slots, not three. The missing one was "Why", which is the difference
+   between "there is a lot of it" and "it has been there a long time". */
+.story{background:#fff;border:1px solid #dfe7ec;border-radius:13px;
+  padding:15px 17px;box-shadow:0 1px 2px rgba(16,24,40,.05);
+  border-top:3px solid #8fa1a9}
+.story.crit{border-top-color:#cf4636}
+.story.warn{border-top-color:#c08429}
+.story.ok{border-top-color:#2f8f4e}
+.s-head{display:flex;justify-content:space-between;align-items:flex-start;
+  gap:14px;flex-wrap:wrap;margin-bottom:4px}
+.s-head h3{font-size:15px;font-weight:750;margin:0}
+.s-score{margin:4px 0 0;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.s-score b{font-size:24px;font-weight:750;font-variant-numeric:tabular-nums;
+  color:#cf4636;line-height:1}
+.s-score span,.s-score em{font-size:11.5px;color:#5b7182;font-style:normal}
+.s-foot{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;margin-top:12px;
+  padding-top:12px;border-top:1px solid #eef2f6}
+.s-stat b{display:block;font-size:18px;font-weight:750;
+  font-variant-numeric:tabular-nums;color:#0f2233}
+.s-stat span{display:block;font-size:11px;color:#5b7182;margin-top:1px}
+.s-do{margin:0;font-size:12.5px;line-height:1.55;color:#233a4d}
+.s-do span{display:block;font-size:11px;letter-spacing:.07em;
+  text-transform:uppercase;color:#5a6b7f;margin-bottom:2px}
 .method{margin-top:22px}
 .method h3{margin-bottom:4px}
-.story dl{margin:6px 0 0}
+.story dl,.s-body{margin:6px 0 0}
 .story dt{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:#5a6b7f;margin-top:9px}
 .story dd{margin:2px 0 0;font-size:13.5px;line-height:1.5;color:#233a4d}
 /* ONE caveats block, bulleted. Never one grey box per caution. */
@@ -1020,6 +1257,10 @@ table.queue tr.urgent td{background:#fdf1ec}
    of them picked up the shared `.tbl` styling either. Both fixed together. */
 .scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
 .scroll table{min-width:100%}
+/* A `width="100%"` SVG over a fixed viewBox scales its TEXT too, so on a wide
+   column a 10px axis label renders at 22px and the chart swallows the page.
+   Capped at roughly its natural width and left-aligned with the prose. */
+.chart-stage svg{max-width:860px}
 
 /* --- Comparing two positions ------------------------------------------ */
 /* Each lane states its own window in its own head, because two comparisons

@@ -346,6 +346,160 @@ def _upload_alerts(blob, envelope: dict, previous_etag: str | None, content_sett
         blob.upload_blob(overwrite=False, **kwargs)
 
 
+# ---------------------------------------------------------------------------
+# Top Insights (Web App Home Ver 4): ai-content/kpi/client/highlights.json
+# ---------------------------------------------------------------------------
+
+HIGHLIGHTS_BLOB = "ai-content/kpi/client/highlights.json"
+_HIGHLIGHT_ORDER_KEY = "__highlight_order"
+
+
+def _highlight_rank(item: dict) -> int:
+    rank = item.get("rank")
+    return rank if isinstance(rank, int) else 10**6
+
+
+def merge_highlights(previous: list[dict], today: list[dict], run_date: date,
+                     report_slug: str) -> list[dict]:
+    """One day of Top Insights shared by every report, merged on reportSlug.
+
+    Kept: other reports' items for ``run_date``. Replaced: this report's own
+    items for that date (a rerun). Dropped: anything from another date, so the
+    list never shows yesterday's fact beside today's. Ordered by rank, which
+    interleaves the reports (each ranks its own from 1), then deduplicated on
+    ``(reportSlug, id)`` so the app never receives two items with one key.
+    """
+    own = str(report_slug or "")
+    kept = [
+        item for item in previous
+        if isinstance(item, dict)
+        and _card_date(item) == run_date
+        and str(item.get("reportSlug") or "") != own
+    ]
+    merged = kept + [item for item in today if isinstance(item, dict)]
+    merged.sort(key=_highlight_rank)
+    seen: set[tuple[str, str]] = set()
+    out = []
+    for item in merged:
+        key = (str(item.get("reportSlug") or ""), str(item.get("id")))
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(item)
+    return out
+
+
+def _cap_highlights(items: list[dict], cfg: dict) -> list[dict]:
+    """The shared cap, with a place reserved for every report (as _cap_feed)."""
+    limit = max(1, int(cfg.get("ai_content_highlights_max_items", 8)))
+    if len(items) <= limit:
+        return items
+    from ..kernel import chain
+
+    total = len(items)
+    ranked = [{**item, _HIGHLIGHT_ORDER_KEY: float(total - index)} for index, item in enumerate(items)]
+    chosen = chain.fair_share(
+        ranked, ranked[:limit], limit=limit,
+        score_key=_HIGHLIGHT_ORDER_KEY, report_key="reportSlug",
+    )
+    chosen.sort(key=lambda item: item[_HIGHLIGHT_ORDER_KEY], reverse=True)
+    return [{k: v for k, v in item.items() if k != _HIGHLIGHT_ORDER_KEY} for item in chosen]
+
+
+def publish_highlights(
+    container,
+    *,
+    client: str,
+    dataset_id: str,
+    items: list[dict],
+    report_slug: str,
+    cfg: dict,
+    now,
+    expires,
+    json_settings,
+    receipts: dict,
+) -> None:
+    """Write this run's Top Insights into the shared client list.
+
+    ``items`` are ``highlights.dump(...)`` output: already validated against
+    ``Highlight`` and capped to ``ai_content_highlights_per_report``. Same
+    read-merge-write with etag concurrency and three retries as the KPI feed.
+
+    Every item is stamped with the day of THIS run (the configured timezone's
+    date of ``now``), which is the one-day window's key. The data's own date
+    would not do: Daily Sales and Target Tracker data can end on different
+    days, and two reports published the same morning would each drop the
+    other's items as "another date".
+    """
+    own = str(report_slug or "")
+    strays = sorted({str(item.get("reportSlug")) for item in items if str(item.get("reportSlug")) != own})
+    if strays:
+        # The merge replaces a report's items by slug; an item under another
+        # slug would survive every rerun of this report.
+        raise ValueError(f"highlights tagged {strays} published as report {own!r}")
+    run_date = _run_date([], now, {"config": cfg})
+    items = [{**item, "isoDate": run_date.isoformat()} for item in items]
+    blob_client = container.get_blob_client(HIGHLIGHTS_BLOB)
+    for attempt in range(3):
+        try:
+            previous, etag = _download_alerts(blob_client)
+            merged = _cap_highlights(merge_highlights(previous, items, run_date, report_slug), cfg)
+            envelope = build_envelope(
+                client=client, dataset_id=dataset_id, payload=merged,
+                generated_at=now, expires_at=expires,
+            )
+            _upload_alerts(blob_client, envelope, etag, json_settings)
+            receipts[HIGHLIGHTS_BLOB] = {"status": "ok", "items": len(merged)}
+            return
+        except Exception as exc:  # noqa: BLE001 - retry only Azure write conflicts
+            from azure.core.exceptions import ResourceExistsError, ResourceModifiedError
+
+            if isinstance(exc, (ResourceExistsError, ResourceModifiedError)) and attempt < 2:
+                continue
+            raise
+
+
+def publish_run_highlights(
+    container,
+    *,
+    extract: Callable[[Any], list],
+    report_slug: str,
+    client: str,
+    dataset_id: str,
+    cfg: dict,
+    now,
+    expires,
+    json_settings,
+    receipts: dict,
+) -> str:
+    """One report run's Top Insights, start to finish, never raising.
+
+    The hook every report publisher calls after its own blobs are written.
+    ``extract`` receives the ``highlights`` module and returns the run's
+    ``Highlight`` items; it runs inside the guard, so neither a fault in an
+    extractor nor in storage can cost the report that called it. Returns the
+    receipt's ``highlightsStatus``: ``skipped`` when ``ai_content_highlights``
+    is off (nothing read, nothing written), ``ok``, or ``failed: <reason>``.
+    A run with no facts still writes: it clears its own earlier items for the
+    day, so a rerun never leaves a fact the latest run no longer supports.
+    """
+    if not cfg.get("ai_content_highlights", False):
+        return "skipped"
+    try:
+        from . import highlights
+
+        items = highlights.cap_per_report(
+            extract(highlights), int(cfg.get("ai_content_highlights_per_report", 2)))
+        publish_highlights(
+            container, client=client, dataset_id=dataset_id, items=highlights.dump(items),
+            report_slug=report_slug, cfg=cfg, now=now, expires=expires,
+            json_settings=json_settings, receipts=receipts,
+        )
+        return "ok"
+    except Exception as exc:  # noqa: BLE001 - highlights must never cost the report
+        return f"failed: {type(exc).__name__}: {exc}"
+
+
 def _run_date(cards: list[dict], generated_at: datetime, state: dict) -> date:
     dated = [value for value in (_card_date(card) for card in cards) if value]
     if dated:
@@ -514,6 +668,19 @@ def publish(
         summary_names = set(receipts) - insight_names
         insight_ok = all((receipts.get(name) or {}).get("status") == "ok" for name in insight_names)
         summary_ok = bool(summary_names) and all(receipts[name]["status"] == "ok" for name in summary_names)
+
+        # Top Insights from the summary's ranked coverage. After the statuses
+        # above on purpose: its receipt must not count as a summary blob, and
+        # it can never fail this publish.
+        highlights_slug = api_payloads.feed_report_id(state)
+        highlights_status = publish_run_highlights(
+            container,
+            extract=lambda hl: hl.from_sales_yoy(
+                state.get("summary_coverage") or {}, resolved_reports,
+                report_slug=highlights_slug, report_name=cfg.get("report_name")),
+            report_slug=highlights_slug, client=client, dataset_id=dataset_id, cfg=cfg,
+            now=now, expires=expires, json_settings=json_settings, receipts=receipts,
+        )
         print(
             f"AI content: published {len(receipts)} blob(s) to {account}/{client}/ai-content "
             f"for {len(resolved_reports)} report(s) (auth={auth}, report_ids={report_source})."
@@ -525,6 +692,7 @@ def publish(
             "reportIdSource": report_source,
             "insightStatus": "ok" if insight_ok else "failed",
             "summaryStatus": "ok" if summary_ok else "failed",
+            "highlightsStatus": highlights_status,
             "receipts": receipts,
             "generatedAt": _iso_utc(now),
             "expiresAt": _iso_utc(expires),

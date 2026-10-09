@@ -91,6 +91,10 @@ def summary_payload(
                                     "attainmentPct": round(float(q["attainment"]), 1)}
         if q.get("status"):
             metric["verdict"] = q["status"]
+        if key == "day":
+            # The Home scorecard shows only this row, so only this row carries
+            # the scorecard's reading (see _scorecard_day).
+            metric.update(_scorecard_day(model, q, currency))
         metrics.append(metric)
         performance.append(
             f"{q['name']} ({q['elapsed']}): {currency} {money(q['actual'])} against a "
@@ -175,8 +179,61 @@ def summary_payload(
                 ],
             },
         ],
+        # The day "Today" describes. Target Tracker runs on its own model and
+        # its own lag, so it is often not the day the Daily Sales figures
+        # describe - the app shows this date on the target card when they differ.
+        "dataAsOf": model.get("anchor") or None,
     }
     return ReportSummaryPayload(**payload).model_dump(exclude_none=True)
+
+
+#: Days of history the Home scorecard's target card draws.
+SCORECARD_DAYS = 7
+
+
+def _scorecard_day(model: dict, day: dict, currency: str) -> dict:
+    """What the Home scorecard needs beyond the "Today" row's figure.
+
+    * ``series`` - the month's latest days, oldest first: each day's sales, with
+      that day's target as its benchmark. The app draws each day as a share of
+      its own target. Only days that carry a target, and never past the anchor.
+      The month's days are all the model holds, so early in a month the card
+      simply has fewer bars.
+    * ``delta`` - the day's distance from 100% of target, in points.
+    * ``stats`` - the day's actual sales and its target, as the note states them.
+    * ``takeaway`` - the one line (`scorecard_lines`), authored by the runner or
+      code-written here.
+    """
+    from .scorecard_lines import deterministic, target_tracker_facts
+    from .target_tracker_html import money
+
+    out: dict = {"goodDirection": "up"}
+    anchor = str(model.get("anchor") or "")
+    days = [d for d in (model.get("days") or [])
+            if d.get("target") and d.get("actual") is not None
+            and (not anchor or str(d.get("date")) <= anchor)]
+    series = [{"date": d["date"], "value": float(d["actual"]), "benchmark": float(d["target"])}
+              for d in days[-SCORECARD_DAYS:]]
+    if len(series) >= 2:
+        out["series"] = series
+
+    attainment = day.get("attainment")
+    if attainment is not None:
+        gap = float(attainment) - 100.0
+        out["delta"] = f"{abs(gap):.1f} pts"
+        if round(abs(gap), 1) > 0:
+            out["deltaDirection"] = "down" if gap < 0 else "up"
+
+    if day.get("actual") is not None and day.get("target") is not None:
+        out["stats"] = [{"label": "Actual", "value": f"{currency} {money(day['actual'])}"},
+                        {"label": "Target", "value": f"{currency} {money(day['target'])}"}]
+
+    lines = model.get("scorecard_lines") or deterministic(target_tracker_facts(model))
+    line = lines.get("target") or {}
+    if line.get("text"):
+        out["takeaway"] = line["text"]
+        out["takeawayTone"] = line.get("tone") or "info"
+    return out
 
 
 def history_entry(model: dict, payload: dict, report_id: str, generated_at: datetime) -> dict:
@@ -289,6 +346,7 @@ def publish(cfg: dict, out_dir: Path, model: dict, *, cards: list | None = None,
     client_container = str(cfg.get("ai_content_client") or "").strip().lower()
     app_status = "skipped"
     feed_status = "skipped"
+    highlights_status = "skipped"
     cards = list(cards or [])
     if cfg.get("ai_content_publish_enabled", False) and client_container:
         envelope = {
@@ -365,6 +423,26 @@ def publish(cfg: dict, out_dir: Path, model: dict, *, cards: list | None = None,
             except Exception as exc:  # noqa: BLE001 - the feed must never cost the report
                 feed_status = f"failed: {type(exc).__name__}: {exc}"
 
+        # 4. Top Insights for the Web App's Home (tools/highlights.py). Never
+        # raises: a failure is reported in the receipt, not by the report.
+        if cfg.get("ai_content_highlights", False):
+            from ...tools import ai_content_publisher as feed
+
+            slug = str(cfg.get("report_id") or "target_tracker")
+            highlights_status = feed.publish_run_highlights(
+                svc.get_container_client(client_container),
+                extract=lambda hl: hl.from_target_tracker(
+                    model, report_ids, report_slug=slug, report_name=cfg.get("report_name")),
+                report_slug=slug,
+                client=client_container,
+                dataset_id=str(cfg.get("dataset_id") or ""),
+                cfg=cfg,
+                now=now,
+                expires=expires,
+                json_settings=json_ct,
+                receipts=receipts,
+            )
+
     return {
         "status": "ok",
         "auth": auth,
@@ -374,6 +452,7 @@ def publish(cfg: dict, out_dir: Path, model: dict, *, cards: list | None = None,
         "appStatus": app_status,
         "kpiFeedStatus": feed_status,
         "kpiCards": len(cards),
+        "highlightsStatus": highlights_status,
         "reportIds": report_ids,
         "generatedAt": _iso(now),
         "expiresAt": _iso(expires),

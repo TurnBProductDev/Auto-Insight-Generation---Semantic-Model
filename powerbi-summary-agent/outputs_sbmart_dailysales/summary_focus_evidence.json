@@ -1,0 +1,46 @@
+{
+  "focus_key": "focus:v1:e7a38974523e9bc069b8417c1589ee2a5286baa70bde7e87e4c5ce6183872ce2",
+  "candidate_id": "summary_0c361f7fd00e",
+  "segment": "",
+  "dimension_role": "period",
+  "sections": {
+    "scorecard": {
+      "source": "targeted_dax",
+      "metrics": {
+        "revenue": {
+          "current": 216865.4823,
+          "prior": null,
+          "change": null,
+          "change_pct": null
+        }
+      }
+    },
+    "internal_contributors": [],
+    "location": null,
+    "driver_bridge": null,
+    "period_trend": null,
+    "daily_trend": {
+      "status": "disabled",
+      "reason": "summary_focus_daily_trend_enabled is false"
+    },
+    "caveats": [
+      "no validated business time axis for the focus trend"
+    ]
+  },
+  "caveats": [
+    "no validated business time axis for the focus trend"
+  ],
+  "queries_attempted": 1,
+  "query_budget": 4,
+  "signature_fields": {
+    "top_pos_contributor": null,
+    "top_neg_contributor": null,
+    "leading_location": null,
+    "driver_class": null
+  },
+  "deep_dive_signature": "51e3163ff4cabbd2",
+  "signature_duplicate": false,
+  "signature_duplicate_of": null,
+  "signature_overlap": 0.0,
+  "facts": []
+}

@@ -1,0 +1,11 @@
+{
+  "note": "Deterministic pre-pass over the scan tables. impact_value / impact_share are computed facts; share_basis says what the share is measured against. Shares are only computed for metrics proven additive (breakdown sums reconcile to the grand total); ratio-like metrics are ranked by statistical significance instead.",
+  "grand_totals_seen": {},
+  "additive_metrics": [],
+  "ratio_metrics": [],
+  "overall_price_volume": [],
+  "business_candidates": [],
+  "data_quality_candidates": [],
+  "peer_ordinal_orphans": [],
+  "rate_rejections": []
+}

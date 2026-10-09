@@ -1,0 +1,4 @@
+{
+  "enabled": false,
+  "reason": "model exposes no date dimension for business-day monitoring"
+}

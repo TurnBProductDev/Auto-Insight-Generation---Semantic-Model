@@ -1,0 +1,161 @@
+{
+  "total": {
+    "calls": 12,
+    "prompt_tokens": 262219,
+    "cached_tokens": 154112,
+    "completion_tokens": 3906,
+    "usd": 0.367385
+  },
+  "by_node": {
+    "dax_generator": {
+      "calls": 8,
+      "prompt_tokens": 178657,
+      "cached_tokens": 154112,
+      "completion_tokens": 1285,
+      "usd": 0.119165,
+      "deployment": "gpt-5.4"
+    },
+    "dax_planner": {
+      "calls": 1,
+      "prompt_tokens": 37946,
+      "cached_tokens": 0,
+      "completion_tokens": 847,
+      "usd": 0.10757,
+      "deployment": "gpt-5.4"
+    },
+    "report_understanding": {
+      "calls": 1,
+      "prompt_tokens": 36715,
+      "cached_tokens": 0,
+      "completion_tokens": 259,
+      "usd": 0.095672,
+      "deployment": "gpt-5.4"
+    },
+    "insight_synthesizer": {
+      "calls": 1,
+      "prompt_tokens": 3919,
+      "cached_tokens": 0,
+      "completion_tokens": 1029,
+      "usd": 0.025233,
+      "deployment": "gpt-5.4"
+    },
+    "fresh_summary_generator": {
+      "calls": 1,
+      "prompt_tokens": 4982,
+      "cached_tokens": 0,
+      "completion_tokens": 486,
+      "usd": 0.019745,
+      "deployment": "gpt-5.4"
+    }
+  },
+  "calls": [
+    {
+      "node": "report_understanding",
+      "deployment": "gpt-5.4",
+      "prompt_tokens": 36715,
+      "cached_tokens": 0,
+      "completion_tokens": 259,
+      "usd": 0.095672,
+      "at": "11:58:47"
+    },
+    {
+      "node": "dax_planner",
+      "deployment": "gpt-5.4",
+      "prompt_tokens": 37946,
+      "cached_tokens": 0,
+      "completion_tokens": 847,
+      "usd": 0.10757,
+      "at": "11:59:03"
+    },
+    {
+      "node": "dax_generator",
+      "deployment": "gpt-5.4",
+      "prompt_tokens": 22388,
+      "cached_tokens": 0,
+      "completion_tokens": 289,
+      "usd": 0.060305,
+      "at": "11:59:10"
+    },
+    {
+      "node": "dax_generator",
+      "deployment": "gpt-5.4",
+      "prompt_tokens": 22321,
+      "cached_tokens": 22016,
+      "completion_tokens": 135,
+      "usd": 0.008292,
+      "at": "11:59:15"
+    },
+    {
+      "node": "dax_generator",
+      "deployment": "gpt-5.4",
+      "prompt_tokens": 22332,
+      "cached_tokens": 22016,
+      "completion_tokens": 158,
+      "usd": 0.008664,
+      "at": "11:59:20"
+    },
+    {
+      "node": "dax_generator",
+      "deployment": "gpt-5.4",
+      "prompt_tokens": 22318,
+      "cached_tokens": 22016,
+      "completion_tokens": 118,
+      "usd": 0.008029,
+      "at": "11:59:25"
+    },
+    {
+      "node": "dax_generator",
+      "deployment": "gpt-5.4",
+      "prompt_tokens": 22317,
+      "cached_tokens": 22016,
+      "completion_tokens": 134,
+      "usd": 0.008266,
+      "at": "11:59:30"
+    },
+    {
+      "node": "dax_generator",
+      "deployment": "gpt-5.4",
+      "prompt_tokens": 22347,
+      "cached_tokens": 22016,
+      "completion_tokens": 191,
+      "usd": 0.009196,
+      "at": "11:59:35"
+    },
+    {
+      "node": "dax_generator",
+      "deployment": "gpt-5.4",
+      "prompt_tokens": 22322,
+      "cached_tokens": 22016,
+      "completion_tokens": 146,
+      "usd": 0.008459,
+      "at": "11:59:41"
+    },
+    {
+      "node": "dax_generator",
+      "deployment": "gpt-5.4",
+      "prompt_tokens": 22312,
+      "cached_tokens": 22016,
+      "completion_tokens": 114,
+      "usd": 0.007954,
+      "at": "11:59:46"
+    },
+    {
+      "node": "fresh_summary_generator",
+      "deployment": "gpt-5.4",
+      "prompt_tokens": 4982,
+      "cached_tokens": 0,
+      "completion_tokens": 486,
+      "usd": 0.019745,
+      "at": "12:00:05"
+    },
+    {
+      "node": "insight_synthesizer",
+      "deployment": "gpt-5.4",
+      "prompt_tokens": 3919,
+      "cached_tokens": 0,
+      "completion_tokens": 1029,
+      "usd": 0.025233,
+      "at": "12:00:22"
+    }
+  ]
+}

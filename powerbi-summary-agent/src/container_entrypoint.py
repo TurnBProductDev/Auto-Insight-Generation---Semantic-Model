@@ -35,6 +35,9 @@ RUNNERS: dict[str, str] = {
     "ageing": "scripts.run_ageing",
     "sku_overview": "scripts.run_sku_overview",
     "daily_sales": "scripts.run_daily_sales",
+    # Not a report: the Web App Home's executive brief, written from what the
+    # client's reports published (src/brief). Schedule it after the last of them.
+    "executive_brief": "src.brief.run",
 }
 
 

@@ -1,0 +1,10 @@
+{
+  "enabled": true,
+  "grain": "disabled",
+  "level": "period",
+  "column": null,
+  "gated_date_tables": [],
+  "checks": [],
+  "probes_used": 0,
+  "reason": "no valid business time axis found - sub-annual monitoring disabled (only a load/posting-date column exists)"
+}

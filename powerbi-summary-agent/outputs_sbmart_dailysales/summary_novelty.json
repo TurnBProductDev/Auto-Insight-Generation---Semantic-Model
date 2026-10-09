@@ -1,0 +1,70 @@
+{
+  "status": "ok",
+  "mode": "focus",
+  "memory_status": "empty",
+  "detected": 27,
+  "eligible": 1,
+  "summary_type": "new_data",
+  "selected_focus_key": "focus:v1:e7a38974523e9bc069b8417c1589ee2a5286baa70bde7e87e4c5ce6183872ce2",
+  "selected_segment": "",
+  "selected_role": "period",
+  "selected_sentiment": "opportunity",
+  "reason": "two_stage_selection",
+  "audit": {
+    "today": "2026-09-10",
+    "valid_candidates": 24,
+    "detected": 27,
+    "cooldown_suppressed": 0,
+    "scheduled_roles": [],
+    "schedule_applied": false,
+    "role_scores": {
+      "period": {
+        "score": 2.0,
+        "role_staleness": 1.0,
+        "role_materiality": 1.0,
+        "schedule_affinity": 0.0,
+        "members": 2
+      },
+      "overall": {
+        "score": 1.0398574531304376,
+        "role_staleness": 1.0,
+        "role_materiality": 0.039857453130437544,
+        "schedule_affinity": 0.0,
+        "members": 2
+      },
+      "division": {
+        "score": 1.0239196776892794,
+        "role_staleness": 1.0,
+        "role_materiality": 0.023919677689279398,
+        "schedule_affinity": 0.0,
+        "members": 6
+      },
+      "store": {
+        "score": 1.0218156121099429,
+        "role_staleness": 1.0,
+        "role_materiality": 0.021815612109942983,
+        "schedule_affinity": 0.0,
+        "members": 4
+      },
+      "category": {
+        "score": 1.0031960053008846,
+        "role_staleness": 1.0,
+        "role_materiality": 0.003196005300884689,
+        "schedule_affinity": 0.0,
+        "members": 10
+      }
+    },
+    "chosen_role": "period",
+    "member_score": 0.95,
+    "reason": "two_stage_selection",
+    "summary_type": "new_data",
+    "recovered_same_day": false,
+    "selected_focus_key": "focus:v1:e7a38974523e9bc069b8417c1589ee2a5286baa70bde7e87e4c5ce6183872ce2",
+    "selected_candidate_id": "summary_0c361f7fd00e",
+    "selected_role": "period",
+    "selected_segment": "",
+    "sentiment": "opportunity",
+    "data_advanced": true,
+    "anchor_changed": true
+  }
+}

@@ -21,7 +21,6 @@ from uuid import uuid4
 # .../powerbi-summary-agent/src/tools/azure_blob.py -> parents[2] == project root
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
-
 #: A plan-cache file is named for its own cache key - 32 hex characters from
 #: `plan_cache.cache_key`. Matching that shape on both legs of the sync keeps
 #: anything else that lands in the folder or the prefix out of the cache, and
@@ -438,6 +437,130 @@ def publish_snapshot_memory(cfg: dict, out_dir, report_id: str, dataset_id: str,
     except Exception as exc:  # noqa: BLE001 - best-effort, must never fail the report
         print(f"Cloud snapshot memory publish failed ({type(exc).__name__}: {exc}).")
         return {"status": "failed", "blob": name, "error": str(exc)}
+
+
+def cloud_scan_archive_enabled(cfg: dict) -> bool:
+    """Whether the kept stock positions live in blob rather than on the disk.
+
+    Deliberately NOT keyed on `snapshot_memory_storage` alone. Inventory
+    Management uses no snapshot memory at all, so that key is absent from its
+    config - and gating the archive on it meant the fix for "the archive never
+    survives a container run" was inert on the very report that has the
+    problem. The archive matters exactly where the output already goes to blob,
+    which is what `azure_blob_upload` marks, so "auto" follows that.
+
+    `local` and `azure_blob` remain explicit overrides in both directions.
+    """
+    mode = str(cfg.get("inventory_archive_storage", "auto") or "auto").lower()
+    if mode == "azure_blob":
+        return True
+    if mode == "local":
+        return False
+    return bool(cfg.get("azure_blob_upload")
+                or cloud_snapshot_memory_enabled(cfg))
+
+
+def _scan_archive_location(cfg: dict, report_id: str, dataset_id: str) -> tuple[str, str, str]:
+    from ..kernel import scoping
+
+    account = str(cfg.get("azure_blob_account") or "").strip()
+    container = str(cfg.get("azure_blob_memory_container") or "insightstate").strip()
+    prefix = str(cfg.get("azure_blob_scan_archive_prefix")
+                 or "scan-archive").strip("/")
+    dataset_segment = scoping.safe_segment(dataset_id, "unknown_dataset")
+    report_segment = scoping.safe_segment(report_id, "unknown_report")
+    folder = "/".join(part for part in
+                      (prefix, dataset_segment, "reports", report_segment) if part)
+    return account, container, folder
+
+
+def hydrate_scan_archive(cfg: dict, out_dir, report_id: str, dataset_id: str,
+                         *, keep: int = 5) -> dict:
+    """Download the kept scan positions into the local archive before the run
+    reads it.
+
+    Without this the archive is write-only in production. A scheduled Container
+    Apps Job gets a fresh filesystem every run, so `archive.archived_runs` finds
+    nothing, `compare_window` reports "no prior", and the page states that this
+    is the first position ever kept - every single morning, however many runs
+    have been. The memory file has had this treatment since the Ageing work;
+    the archive beside it never got it.
+
+    Best-effort by construction: a failure leaves the run comparing against
+    whatever is local, which is the behaviour it has today.
+    """
+    if not cloud_scan_archive_enabled(cfg):
+        return {"status": "skipped", "reason": "local_archive_storage"}
+    account, container, folder = _scan_archive_location(cfg, report_id, dataset_id)
+    if not account:
+        return {"status": "failed", "reason": "azure_blob_account_missing"}
+
+    from ..domains.inventory.archive import FILENAME, archive_dir
+
+    directory = archive_dir(out_dir, cfg)
+    try:
+        svc, auth = _service_client(account)
+        client = svc.get_container_client(container)
+        names = []
+        for blob in client.list_blobs(name_starts_with=f"{folder}/"):
+            leaf = str(blob.name).rsplit("/", 1)[-1]
+            if FILENAME.match(leaf):
+                names.append((leaf, blob.name))
+        # Newest first, then take `keep`. The comparison only needs the most
+        # recent prior position; the rest are kept so a gap in the schedule
+        # still leaves something to compare against.
+        names.sort(reverse=True)
+        pulled = []
+        for leaf, name in names[:max(1, keep)]:
+            raw = client.get_blob_client(name).download_blob().readall()
+            _atomic_bytes(directory / leaf, raw)
+            pulled.append(leaf)
+        print(f"Cloud scan archive: hydrated {len(pulled)} position(s) from "
+              f"{account}/{container}/{folder} (auth={auth}).")
+        return {"status": "ok", "folder": folder, "pulled": pulled, "auth": auth}
+    except Exception as exc:  # noqa: BLE001 - never fail the report over history
+        print(f"Cloud scan archive hydration failed ({type(exc).__name__}: {exc}).")
+        return {"status": "failed", "folder": folder, "error": str(exc)}
+
+
+def publish_scan_archive(cfg: dict, out_dir, report_id: str, dataset_id: str,
+                         *, keep: int = 5) -> dict:
+    """Upload the local archive back, so tomorrow's run has something to
+    compare against.
+
+    Overwrites by name on purpose: the archive holds one position per RUN date
+    and a second run on the same day replaces that day's file, which is what
+    `archive.write` already does locally.
+    """
+    if not cloud_scan_archive_enabled(cfg):
+        return {"status": "skipped", "reason": "local_archive_storage"}
+    account, container, folder = _scan_archive_location(cfg, report_id, dataset_id)
+    if not account:
+        return {"status": "failed", "reason": "azure_blob_account_missing"}
+
+    from azure.storage.blob import ContentSettings
+
+    from ..domains.inventory.archive import archived_runs
+
+    runs = archived_runs(out_dir, cfg)
+    if not runs:
+        return {"status": "skipped", "reason": "nothing_archived"}
+    try:
+        svc, auth = _service_client(account)
+        pushed = []
+        for _day, path in runs[-max(1, keep):]:
+            blob = svc.get_blob_client(container=container,
+                                       blob=f"{folder}/{path.name}")
+            blob.upload_blob(
+                path.read_bytes(), overwrite=True,
+                content_settings=ContentSettings(content_type="application/json"))
+            pushed.append(path.name)
+        print(f"Cloud scan archive: published {len(pushed)} position(s) to "
+              f"{account}/{container}/{folder} (auth={auth}).")
+        return {"status": "ok", "folder": folder, "pushed": pushed, "auth": auth}
+    except Exception as exc:  # noqa: BLE001 - best-effort, same as the memory
+        print(f"Cloud scan archive publish failed ({type(exc).__name__}: {exc}).")
+        return {"status": "failed", "folder": folder, "error": str(exc)}
 
 
 def cloud_plan_cache_enabled(state: dict) -> bool:

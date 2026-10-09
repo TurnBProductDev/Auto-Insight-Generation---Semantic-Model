@@ -86,6 +86,45 @@ def _scan() -> dict:
         "damage": [
             {"[month_date]": "2026-07-01T00:00:00", "[damage_value]": -120000.0},
             {"[month_date]": "2026-05-01T00:00:00", "[damage_value]": -90000.0}],
+        # The model's own kept Stock Value readings, by date AND location. The
+        # live shape: four dates, and one location that has emptied out. CFH021
+        # here plays the part ST5 plays on the live model - it holds nothing at
+        # the latest reading, so the position queries return no row for it and
+        # it appears in no other part of the page.
+        "trend": [
+            {"[dates]": "2026-06-01T00:00:00", "[loc_code]": "CDC",
+             "[stock]": 24000000.0},
+            {"[dates]": "2026-06-01T00:00:00", "[loc_code]": "CFW001",
+             "[stock]": 5500000.0},
+            {"[dates]": "2026-06-01T00:00:00", "[loc_code]": "CFH021",
+             "[stock]": 6100000.0},
+            {"[dates]": "2026-07-01T00:00:00", "[loc_code]": "CDC",
+             "[stock]": 25000000.0},
+            {"[dates]": "2026-07-01T00:00:00", "[loc_code]": "CFW001",
+             "[stock]": 5800000.0},
+            {"[dates]": "2026-07-01T00:00:00", "[loc_code]": "CFH021",
+             "[stock]": 2000000.0},
+            {"[dates]": "2026-08-01T00:00:00", "[loc_code]": "CDC",
+             "[stock]": 25500000.0},
+            {"[dates]": "2026-08-01T00:00:00", "[loc_code]": "CFW001",
+             "[stock]": 5900000.0},
+            {"[dates]": "2026-08-01T00:00:00", "[loc_code]": "CFH021",
+             "[stock]": 400000.0},
+            {"[dates]": "2026-08-12T00:00:00", "[loc_code]": "CDC",
+             "[stock]": 25847125.07},
+            {"[dates]": "2026-08-12T00:00:00", "[loc_code]": "CFW001",
+             "[stock]": 5989762.22},
+            {"[dates]": "2026-08-12T00:00:00", "[loc_code]": "CFH021",
+             "[stock]": 120000.0},
+            {"[dates]": "2026-06-01T00:00:00", "[loc_code]": "CFH005",
+             "[stock]": 6000000.0},
+            {"[dates]": "2026-07-01T00:00:00", "[loc_code]": "CFH005",
+             "[stock]": 6150000.0},
+            {"[dates]": "2026-08-01T00:00:00", "[loc_code]": "CFH005",
+             "[stock]": 6200000.0},
+            {"[dates]": "2026-08-12T00:00:00", "[loc_code]": "CFH005",
+             "[stock]": 6258285.75},
+        ],
     }
 
 
@@ -296,7 +335,14 @@ def test_dashboard() -> None:
     import xml.etree.ElementTree as ET
 
     svgs = re.findall(r"<svg.*?</svg>", html, re.S)
-    check("the page draws charts, not only tables", len(svgs) >= 3, f"{len(svgs)} svg")
+    # Counted in the ALL-STOCK view, not across the page. The scoped view used
+    # to carry the estate-wide section, segment, non-moving and damage blocks -
+    # rows that do not add to its own totals - so a whole-page count rewarded
+    # exactly the leak the pointer contract exists to stop.
+    _all = html.split('<section class="view" data-view="exceptions"', 1)[0]
+    all_svgs = re.findall(r"<svg.*?</svg>", _all, re.S)
+    check("the all-stock view draws charts, not only tables",
+          len(all_svgs) >= 3, f"{len(all_svgs)} svg in the all-stock view")
     parsed = True
     for svg in svgs:
         try:
@@ -340,6 +386,188 @@ def test_dashboard() -> None:
     check("days-without-a-sale is drawn as columns", "dz-axis" in html)
     check("content is escaped",
           "&lt;img" in dashboard_html.render({**page, "title": "<img src=x>"}))
+
+
+def _scan_with_score() -> dict:
+    """The same scan, plus the `_HEALTH SCORE MEASURES` the SB Mart model has.
+
+    The points are COMPUTED from the dimension values rather than typed, so the
+    fixture reconciles by construction and a change to `DIMENSION_WEIGHTS` shows
+    up here as a failure rather than as a silently re-typed constant.
+    """
+    from src.domains.inventory import health
+
+    dims = {
+        "excess": (0.42131549, 0.42636002, 1.0),
+        "ageing": (0.35899612, 0.44942302, 0.52244342),
+        "dead": (0.12384015, 0.25636283, 0.88006715),
+        "oos": (0.56044459, 0.19975876, 0.60837437),
+        "verge": (0.03538148, 0.02562020, 0.85164813),
+        "damage": (0.02644063, 0.15839331),
+    }
+    counts = {"excess": 53020, "ageing": 55888, "dead": 31880,
+              "oos": 24841, "verge": 3186, "damage": 19697}
+    values = {"excess": 5814679.56, "ageing": 4954594.52, "dead": 1709148.55,
+              "oos": 5909957.11, "verge": 373102.0, "damage": 517677.0}
+
+    row: dict = {}
+    lost = 0.0
+    for key, weights in health.DIMENSION_WEIGHTS.items():
+        points = min(health.RISK_CAP, health.RISK_CAP * sum(
+            dims[key][i] * weight for i, (_f, _l, weight) in enumerate(weights)))
+        lost += points
+        row["[%s_points]" % key] = points
+        row["[%s_loc_skus]" % key] = float(counts[key])
+        row["[%s_value]" % key] = values[key]
+        for index, (field, _label, _weight) in enumerate(weights):
+            row["[%s]" % field] = dims[key][index]
+    row["[lost]"] = lost
+    row["[score]"] = 100.0 - lost
+    row["[scored_loc_skus]"] = 139436.0
+    row["[stock]"] = 13801247.91
+
+    scan = _scan()
+    # CFH021 has emptied out, so the position queries return no row for it -
+    # which is exactly why the history is the only thing that can see it.
+    scan["locations"] = [
+        {"[LOC_CODE]": "CDC", "[loc_type]": "WH", "[stock_value]": 25847125.07,
+         "[excess_value]": 10848590.47, "[loc_skus]": 20000},
+        {"[LOC_CODE]": "CFW001", "[loc_type]": "WH", "[stock_value]": 5989762.22,
+         "[excess_value]": 3168532.49, "[loc_skus]": 18000},
+        {"[LOC_CODE]": "CFH005", "[loc_type]": "SH", "[stock_value]": 6258285.75,
+         "[excess_value]": 2258049.66, "[loc_skus]": 21000},
+    ]
+    scan["health_overall"] = [row]
+    scan["health_status"] = [
+        {"[Health Status]": "Critical", "[loc_skus]": 42672.0,
+         "[stock]": 5070000.0, "[avg_scored_line]": 52.2},
+        {"[Health Status]": "Excellent", "[loc_skus]": 30268.0,
+         "[stock]": 3880000.0, "[avg_scored_line]": 52.2},
+    ]
+    return scan
+
+
+def test_reference_gaps() -> None:
+    """The gaps against `reference_inventory_management_standardised.html`.
+
+    Each check is a numbered gap from `docs/dashboard-reference/README.md`, or a
+    defect the delivered page showed that no existing check could see.
+    """
+    print("\n=== against the standardised reference ===")
+    import re as _re
+
+    from src.domains.inventory import health
+
+    scan = _scan_with_score()
+    report = stock_health.build(scan)
+    score = health.build(scan)
+    page = dashboard.build_stock_health(report, score)
+    html = dashboard_html.render(page)
+    all_view, scoped = page["views"]
+
+    print("\n--- the historical series the scan already pays for ---")
+    # Fetched by the scan on every run and never carried into the model, so the
+    # page's own trend slot rendered empty from the day it was written.
+    check("the kept Stock Value readings reach the model",
+          len(report["trend"]) == 4, "%d readings" % len(report["trend"]))
+    check("the company series is the locations summed back up",
+          abs(report["trend"][-1]["value"]
+              - sum(loc["points"][-1]["value"]
+                    for loc in report["location_trend"])) < 0.01)
+    check("and it is drawn on the page",
+          "Stock value at each kept reading" in html)
+    check("a scan taken before the location column existed still rebuilds",
+          stock_health.build(
+              dict(scan, trend=[{"[dates]": "2026-06-01T00:00:00",
+                                 "[stock]": 100.0},
+                                {"[dates]": "2026-07-01T00:00:00",
+                                 "[stock]": 120.0}]))["trend"]
+          == [{"date": "2026-06-01", "value": 100.0},
+              {"date": "2026-07-01", "value": 120.0}])
+
+    print("\n--- the location that no breakdown can see ---")
+    # A location holding nothing returns no row from the position queries, so it
+    # is absent from every split. Without the history it is not reported as
+    # wound down - it simply stops being mentioned, which reads as never there.
+    wound = [w["name"] for w in report["wind_down"]]
+    check("a wound-down location is detected", wound == ["CFH021"], wound)
+    check("it is absent from the position breakdown that should hold it",
+          "CFH021" not in set(r["name"] for r in report["locations"]))
+    check("yet the page names it anyway",
+          "winding down" in html and "CFH021" in html)
+    check("a trivial location cannot manufacture a wind-down finding",
+          all(w["first"] >= report["trend"][0]["value"]
+              * stock_health.WIND_DOWN_MIN_SHARE_PCT / 100.0
+              for w in report["wind_down"]))
+
+    print("\n--- gap 12: four slots, not three ---")
+    stories = all_view["layers"]["focus"]["stories"]
+    check("every story carries all four slots",
+          bool(stories) and all(
+              st.get("what_it_is") and st.get("why") and st.get("effect")
+              and st.get("do_this") for st in stories))
+    check("the why slot names a mechanism, not the points again",
+          all("points" not in st["why"].lower() for st in stories),
+          [st["why"] for st in stories if "points" in st["why"].lower()])
+    check("it names the score's own term and how high it reads",
+          all(any(term in st["why"] for term in
+                  ("Duration", "SKU breadth", "Value impact", "Sales impact",
+                   "Segment severity", "Severity"))
+              and "%" in st["why"] for st in stories),
+          [st["why"] for st in stories])
+    check("a term at its ceiling is reported as such, not as merely highest",
+          any("at its maximum" in st["why"] for st in stories))
+    check("all four slot headings reach the page",
+          all(head in html for head in
+              ("What it is", "<dt>Why</dt>", "What it does to the score",
+               "Do this")))
+
+    print("\n--- gap 7: severity is a word, never colour alone ---")
+    pills = _re.findall(r'<span class="pill pill-([a-z]+)">([^<]+)</span>', html)
+    check("the page carries severity pills at all", len(pills) >= 10,
+          "%d pills" % len(pills))
+    check("every pill carries a word",
+          bool(pills) and all(text.strip() for _cls, text in pills))
+    for marker in ("Big problem", "Critical", "At Risk"):
+        check("the word '%s' reaches the page" % marker, marker in html)
+    check("every KPI card states its severity in words",
+          all(k["rag"].get("label") is not None for k in all_view["kpis"]))
+    check("a neutral card is not given a meaningless word",
+          any(k["rag"].get("label") == "" for k in all_view["kpis"]))
+
+    print("\n--- gap 1: the hero owns its own layout ---")
+    check("the hero no longer borrows the sales two-column grid",
+          'class="hero-inv"' in html and 'class="hero-line"' not in html)
+    check("and it carries its own figures",
+          len(all_view["hero"]["stats"]) == 3
+          and html.count('class="hs') >= 3)
+
+    print("\n--- gap 9: the scoped view owns no breakdowns ---")
+    check("the scoped view declares it", scoped["owns_breakdowns"] is False)
+    scoped_html = html.split('<section class="view" data-view="exceptions"', 1)[-1]
+    check("the scoped breakdown layers name the view that owns the splits",
+          scoped_html.count("Switch to All stock") >= 3,
+          "%d pointers" % scoped_html.count("Switch to All stock"))
+    check("the scoped view prints no estate-wide split rows",
+          not scoped["layers"]["detail"]["sections"]
+          and not scoped["layers"]["detail"]["segments"]
+          and not scoped["layers"]["detail"]["damage"])
+    check("but it keeps its own filtered queue",
+          bool(scoped["layers"]["detail"]["queue"]))
+
+    print("\n--- a heading with nothing under it ---")
+    # `composition_donut` returns "" when a view has no second population, which
+    # the scoped view never has - and the heading was emitted regardless.
+    check("no heading is printed above a chart that did not render",
+          "How much of the estate needs attention" not in scoped_html)
+
+    print("\n--- the two populations are ranked apart ---")
+    check("warehouses and stores each get their own ranking",
+          ">Warehouses</h3>" in html and ">Stores</h3>" in html)
+
+    check("the whole page is still one script tag", html.count("<script") == 1)
+    check("and still self-contained",
+          "http://" not in html and "https://" not in html)
 
 
 def test_published_summary_contract() -> None:
@@ -416,6 +644,7 @@ def main() -> int:
     test_excess_meaning()
     test_completeness_and_prose()
     test_dashboard()
+    test_reference_gaps()
     test_published_summary_contract()
 
     print("\n" + "=" * 72)

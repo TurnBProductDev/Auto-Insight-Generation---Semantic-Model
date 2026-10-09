@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "8d111712-9ea8-4a65-9bb9-58f00e49d379",
+  "runId": "20260910T120022928490+0530",
+  "date": {
+    "iso": "2026-09-10",
+    "display": "10 September 2026",
+    "timezone": "Asia/Kolkata"
+  },
+  "runAt": "2026-09-10T12:00:22+05:30",
+  "status": "no_new_insights",
+  "insightCount": 0,
+  "insights": []
+}

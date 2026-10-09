@@ -94,6 +94,63 @@ class KpiTarget(BaseModel):
     attainmentPct: float
 
 
+class KpiEvidenceWindow(BaseModel):
+    """The period the card's figure actually covers."""
+    model_config = ConfigDict(extra="forbid")
+    mode: Optional[str] = None          # e.g. the signal's window_mode
+    start: Optional[str] = None         # ISO date
+    end: Optional[str] = None           # ISO date
+
+
+class KpiEvidenceDriver(BaseModel):
+    """One contributor to the movement, in the order the signal ranked them."""
+    model_config = ConfigDict(extra="forbid")
+    name: str
+    rank: int
+
+
+class KpiEvidenceDecomposition(BaseModel):
+    """How much of the movement was volume, and how much was rate.
+
+    The first question a merchandiser asks about a revenue or margin move, and
+    the pipeline already separates it -- ``_main_decomposition_stat`` picks the
+    larger of the two effects to put a single stat on the card and drops the
+    rest. Both halves are published here, with the dimension `driver` names
+    (units, transactions, customers) so a consumer knows what "volume" meant.
+    """
+    model_config = ConfigDict(extra="forbid")
+    driver: Optional[str] = None
+    volumeEffect: Optional[float] = None
+    rateEffect: Optional[float] = None
+
+
+class KpiEvidence(BaseModel):
+    """The workings behind a card: what was measured, over what, against what.
+
+    Everything here is already computed to produce the card -- ``_signal_facts``
+    hands the same values to the authoring prompt. Until now they were used to
+    write a sentence and then dropped, so a consumer asked to explain a card had
+    to re-derive it from a different data source and could not reconcile the two.
+
+    Strictly the workings, never a conclusion: no prose, no recommended action.
+    Those are already on the card, and an explanation grounded on someone else's
+    conclusion is not an explanation.
+    """
+    model_config = ConfigDict(extra="forbid")
+    measureFamily: Optional[str] = None
+    segment: Optional[str] = None
+    window: Optional[KpiEvidenceWindow] = None
+    # What the figure was measured against, as numbers.
+    actual: Optional[float] = None
+    previous: Optional[float] = None
+    expected: Optional[float] = None
+    shareOfChangePct: Optional[float] = None
+    # Who accounts for the movement, most material first.
+    drivers: Optional[List[KpiEvidenceDriver]] = None
+    # Rate against volume, where the signal separated them.
+    decomposition: Optional[KpiEvidenceDecomposition] = None
+
+
 class KpiCard(BaseModel):
     model_config = ConfigDict(extra="forbid")
     id: int
@@ -124,6 +181,10 @@ class KpiCard(BaseModel):
     target: Optional[KpiTarget] = None
     shareOfTotalPct: Optional[float] = None
     rank: Optional[int] = None
+    # The workings behind the card. Absent (never an explicit null) unless
+    # ai_content_kpi_card_evidence is on -- same guard as reportId and the
+    # extended tile fields above.
+    evidence: Optional[KpiEvidence] = None
 
 
 class MetricBand(BaseModel):
@@ -139,6 +200,20 @@ class MetricBand(BaseModel):
     floor: float
     benchmark: Optional[float] = None
     ceiling: float
+
+
+class SeriesPoint(BaseModel):
+    """One day of a measure's recent history, in the measure's own units.
+
+    The value is on the REPORTING scale - taken from the report's reconciled
+    model, never from raw rows - so the last point equals the figure printed
+    beside it. ``benchmark`` is that day's own benchmark (a Daily Sales day's
+    P50, a Target Tracker day's target), absent when the day has none.
+    """
+    model_config = ConfigDict(extra="forbid")
+    date: str
+    value: float
+    benchmark: Optional[float] = None
 
 
 class ReportMetric(BaseModel):
@@ -160,6 +235,24 @@ class ReportMetric(BaseModel):
     # fill the shape.
     band: Optional[MetricBand] = None
     target: Optional[KpiTarget] = None
+    # The Home scorecard's reading of the same figure (the Web App's
+    # docs/today-data-request.md, D1 and D5-D8). Optional and additive like
+    # everything above: a consumer that does not know them renders as before,
+    # and a report that does not set them publishes exactly what it did.
+    #   series   the last days of the measure, oldest first, the day itself last
+    #   delta    the change against the benchmark (or target), unsigned, in the
+    #            measure's own terms ("1.9%", "0.79 pts"); deltaDirection says
+    #            which way. Same convention as KpiCard.delta.
+    #   stats    two labelled figures, already formatted with their currency
+    #   takeaway one short plain sentence on what the recent days show, with
+    #            the tone of that sentence (scorecard_lines.py)
+    series: Optional[List[SeriesPoint]] = None
+    delta: Optional[str] = None
+    deltaDirection: Optional[Direction] = None
+    goodDirection: Optional[GoodDirection] = None
+    stats: Optional[List[InsightStat]] = None
+    takeaway: Optional[str] = None
+    takeawayTone: Optional[Tone] = None
 
 
 class ReportSection(BaseModel):
@@ -176,6 +269,10 @@ class ReportSummaryPayload(BaseModel):
     headline: str
     metrics: List[ReportMetric]
     sections: List[ReportSection]
+    # The day the figures describe (ISO), for a report that measures one day.
+    # Optional: a report whose figures span periods leaves it out rather than
+    # letting one date speak for all of them.
+    dataAsOf: Optional[str] = None
 
 
 # --------------------------------------------------------------------------
@@ -272,10 +369,60 @@ def _sentence(text: Any) -> str:
     return value
 
 
+# The inventory report's Recommended Action states, in the source system's own
+# capitals. The report page keeps them - they are the client's vocabulary and the
+# column a reader filters on - but a card is read cold, and "14,499 products are
+# in STOCK OUT - PLACE ORDER" makes the reader decode a status code to find the
+# finding. Each state has the clause it becomes after "is"/"are" and the short
+# label it becomes anywhere else. Longest first: "STOCK OUT - PLACE ORDER" is
+# inside "ON THE VERGE OF STOCK OUT - PLACE ORDER".
+_STOCK_STATES = (
+    ("ON THE VERGE OF STOCK OUT - AVAILABLE IN WAREHOUSE",
+     "about to run out in store, with stock in the warehouse", "nearly out of stock, in the warehouse"),
+    ("ON THE VERGE OF STOCK OUT - ORDER PLACED",
+     "about to run out, with an order already placed", "nearly out of stock, already ordered"),
+    ("ON THE VERGE OF STOCK OUT - PLACE ORDER",
+     "about to run out, with no order placed", "nearly out of stock, not yet ordered"),
+    ("STOCK OUT - AVAILABLE IN WAREHOUSE",
+     "out of stock in store, with stock in the warehouse", "out of stock, in the warehouse"),
+    ("STOCK OUT - ORDER PLACED",
+     "out of stock, with an order already placed", "out of stock, already ordered"),
+    ("STOCK OUT - PLACE ORDER",
+     "out of stock, with no order placed", "out of stock, not yet ordered"),
+    ("NON MOVING - ORDER PLACED",
+     "not selling, yet still on order", "not selling, still on order"),
+)
+
+
+def _plain_stock_states(value: str) -> str:
+    for state, clause, label in _STOCK_STATES:
+        name = re.escape(state).replace(r"\ ", r"\s+")
+        value = re.sub(rf"\b(is|are)\s+in\s+(?:the\s+)?{name}\b", rf"\1 {clause}",
+                       value, flags=re.IGNORECASE)
+        value = re.sub(rf"\b{name}\b", f'"{label}"', value, flags=re.IGNORECASE)
+    return value
+
+
 def _plain_business_text(text: Any) -> str:
     """Remove recurring analyst shorthand from manager-facing card prose."""
-    value = str(text or "")
+    value = _plain_stock_states(str(text or ""))
     replacements = (
+        # The inventory report's own capitalised measure names and its
+        # "position" idiom. Before the SKU rows below, which would otherwise
+        # turn "Critical SKUs" into "Critical products".
+        (r"\s+in the stock position\b", ""),
+        (r"\bin the position\b", "in stock"),
+        (r"\bthe stock position\b", "the stock we hold"),
+        (r"\bCritical SKUs\b", "top-selling products"),
+        (r"\bExcess Stock\b", "excess stock"),
+        (r"\bStock Value\b", "stock value"),
+        (r"\bPending Orders Value\b", "value of pending orders"),
+        (r"\bPending Orders\b", "pending orders"),
+        (r"\bOpportunity Loss\b", "estimated lost sales"),
+        # A rulebook describing its own ranking ("The rules list this as one of
+        # the two most urgent situations") is the report talking about itself.
+        (r"\bThe rules (?:call|list) this as\b", "This is"),
+        (r"\bThe rules (?:call|list) this\b", "This is"),
         (r"\bmovement decomposition\b", "breakdown of the change"),
         (r"\bvolume effect\b", "change from units sold"),
         (r"\brate effect\b", "change from average revenue per item"),
@@ -310,6 +457,37 @@ def _plain_business_text(text: Any) -> str:
     for pattern, replacement in replacements:
         value = re.sub(pattern, replacement, value, flags=re.IGNORECASE)
     return re.sub(r"\s+", " ", value).strip()
+
+
+# A guess at where something sits, written as if it were a finding. The model
+# has no breakdown to stand on when it writes "Most of this is likely to be in
+# the product groups with repeat ordering" - it is the sentence-3 slot being
+# filled because the plan had one. A hedge on a stated cause ("may reflect") is
+# legitimate and is not matched here; a guess at the location is not.
+_GUESS_RE = re.compile(r"\b(?:is|are)\s+likely\s+to\s+(?:be|sit|come|lie)\b|\blikely\s+to\s+sit\b",
+                       re.IGNORECASE)
+_MATTERS_RE = re.compile(r"^That\s+matters\s+because\s+(\S.*)$", re.IGNORECASE | re.DOTALL)
+
+
+def _without_formula(text: Any) -> str:
+    """Model-written card prose, minus the two habits its sentence plan bred.
+
+    Every summary's second sentence opened "That matters because...", and the
+    inventory cards closed on a guess at where the problem "is likely to be".
+    The prompt now asks for neither; this is the enforcement, because a prompt
+    is guidance. A guessing sentence is dropped whole; the stock opener is cut
+    and the rest of its sentence kept.
+    """
+    kept = []
+    for sentence in re.split(r"(?<=[.!?])\s+", str(text or "").strip()):
+        if not sentence or _GUESS_RE.search(sentence):
+            continue
+        match = _MATTERS_RE.match(sentence)
+        if match:
+            rest = match.group(1)
+            sentence = rest[:1].upper() + rest[1:]
+        kept.append(sentence)
+    return " ".join(kept)
 
 
 def _share_details(sig: Dict[str, Any], family: str) -> "tuple[str, str, str]":
@@ -386,6 +564,34 @@ def _rate_message(sig: Dict[str, Any], family: str) -> str:
     return main + "."
 
 
+_PROVEN_BASELINES = ("the same period last year", "the previous month", "the previous week")
+
+
+def _baseline_phrase(sig: Dict[str, Any]) -> str:
+    """What a current-versus-prior card was compared with, named when it is known.
+
+    "Versus the prior period" was printed on every year-on-year card, beside a
+    chip already reading "vs last year", and left the reader to work out which
+    period. The label is set only when the model's own metadata proves the
+    baseline (see _with_baseline_labels); anything unproven keeps the neutral
+    wording rather than a guess that prior means a year.
+    """
+    label = str(sig.get("baseline_label") or "").strip()
+    return label if label in _PROVEN_BASELINES else "the prior period"
+
+
+def _beyond_whole(total_direction: str, measure: str) -> str:
+    """The share clause for a part that moved MORE than the whole did.
+
+    Arithmetically fine - the rest of the business moved the other way - but
+    "151.3% of the total decline" on three cards at once reads as a broken
+    calculation, not a finding. Said in words, without the figure.
+    """
+    others = "grew" if total_direction == "decline" else "fell"
+    return (f"more than the whole business's net {total_direction} in {measure}, "
+            f"as other areas {others}")
+
+
 def _main_change_sentence(sig: Dict[str, Any], family: str) -> str:
     """Code-owned first sentence: movement, magnitude, and comparison context."""
     segment = str(sig.get("affected_segment") or "This segment").strip()
@@ -447,12 +653,14 @@ def _main_change_sentence(sig: Dict[str, Any], family: str) -> str:
         pct_text = f" ({abs(period_pct):.1f}%)" if period_pct is not None else ""
         base += (
             f"{pct_text}, from {_manager_number(prior, family)} to "
-            f"{_manager_number(current, family)} versus the prior period"
+            f"{_manager_number(current, family)} versus {_baseline_phrase(sig)}"
         )
         if share is None:
             return base + "."
         share_value = float(share)
         total_direction = "increase" if ((value >= 0) == (share_value >= 0)) else "decline"
+        if share_value > 100:
+            return f"{base}, {_beyond_whole(total_direction, measure)}."
         if share_value >= 0:
             context = (
                 f"about {abs(share_value):.1f}% of the total {total_direction} in {measure}"
@@ -477,10 +685,7 @@ def _main_change_sentence(sig: Dict[str, Any], family: str) -> str:
     total_direction = "increase" if ((value >= 0) == (share_value >= 0)) else "decline"
     if share_value >= 0:
         if abs(share_value) > 100:
-            context = (
-                f"equivalent to about {abs(share_value):.1f}% of the net {total_direction} "
-                f"in {measure} because movements elsewhere offset part of it"
-            )
+            return f"{base}, {_beyond_whole(total_direction, measure)}."
         else:
             context = (
                 f"accounting for about {abs(share_value):.1f}% of the total "
@@ -635,6 +840,17 @@ def kpi_extended_fields(state: Optional[dict]) -> bool:
     """Off by default: adding a card key is an app contract change (see
     docs/phase5-app-contract-change.md for the reportId precedent)."""
     return bool(_cfg_value(state, "ai_content_kpi_card_fields"))
+
+
+def kpi_card_evidence(state: Optional[dict]) -> bool:
+    """Off by default, same reason as kpi_extended_fields.
+
+    Unlike those, this one adds no app contract change at all: the evidence is
+    read by the AI Bot straight out of ai-content and never passes through the
+    web app. The flag exists so the payload can be turned on per tenant and
+    stays byte-identical until it is.
+    """
+    return bool(_cfg_value(state, "ai_content_kpi_card_evidence"))
 
 
 def _kpi_currency(state: Optional[dict], report_id: Optional[str]) -> Optional[str]:
@@ -827,7 +1043,7 @@ def _grounded_summary(sig: Dict[str, Any], family: str, authored: Any) -> str:
     code-owned sentence, which is grounded by construction and is the sentence
     the reader needed in the first place.
     """
-    summary = _sentence(_plain_business_text(authored))
+    summary = _sentence(_plain_business_text(_without_formula(authored)))
     allowed = {f.replace(",", "").replace(" ", "") for f in _quotable_figures(sig, family)}
     if not allowed:
         # Nothing measured to quote (a rate outlier carries its facts as stats),
@@ -836,7 +1052,7 @@ def _grounded_summary(sig: Dict[str, Any], family: str, authored: Any) -> str:
     written = _figures(summary)
     if written and written <= allowed:
         return summary
-    grounded = _sentence(_lead_sentence(sig, family))
+    grounded = _sentence(_plain_business_text(_lead_sentence(sig, family)))
     return grounded or summary
 
 
@@ -1046,8 +1262,36 @@ def _quotable_figures(sig: Dict[str, Any], family: str) -> List[str]:
         add(_compact_number(val, signed=False))
     share = sig.get("impact_share")
     if isinstance(share, (int, float)):
-        add(f"{abs(float(share)):.1f}%")
+        shown = f"{abs(float(share)):.1f}%"
+        # A year-on-year share of the change above 100% is true and unreadable
+        # ("151.3% of the total decline"), so the lead says it in words and the
+        # model may not put the figure back. A report that declares what its
+        # percentage means (Damage's "317.0% above the 3-month average") is not
+        # a share of a change and keeps it.
+        share_of_change = not (sig.get("share_label") or sig.get("comparison_label"))
+        if share_of_change and abs(float(share)) > 100:
+            out = [figure for figure in out if figure != shown]
+        else:
+            add(shown)
     return out
+
+
+def _segment_level(sig: Dict[str, Any]) -> Optional[str]:
+    """The hierarchy level a card's segment sits at, in a manager's words.
+
+    The model was told the segment's name and nothing about its level, so it
+    guessed: PROVISIONS (a category) and CONFECTIONERY (a product group) were
+    both written up as "this department". The level comes from the dimension the
+    finding was measured on, through the same vocabulary the summary uses.
+    """
+    from . import card_lineage
+    role = card_lineage.dimension_role(sig)
+    return {
+        "division": "division", "department": "department", "section": "section",
+        "category": "category", "subcategory": "sub-category",
+        "product_group": "product group", "special_product_group": "product sub-group",
+        "brand": "brand", "item": "product", "store": "store",
+    }.get(role or "")
 
 
 def _signal_facts(sig: Dict[str, Any]) -> Dict[str, Any]:
@@ -1057,6 +1301,7 @@ def _signal_facts(sig: Dict[str, Any]) -> Dict[str, Any]:
     return {
         "signal_id": sig.get("id"),
         "segment": sig.get("affected_segment"),
+        "segment_level": _segment_level(sig),
         "segment_members": sig.get("segment_members"),
         "measure_family": family,
         "direction": "increase" if (val or 0) >= 0 else "decrease",
@@ -1217,6 +1462,109 @@ def _lead_sentence(sig: Dict[str, Any], family: str) -> str:
     return _main_change_sentence(sig, family)
 
 
+# A card's drivers are named branches, products or suppliers. Capped because
+# this rides into an LLM prompt on the consuming side: the top few account for
+# the movement, and a tail of forty names is cost without information.
+_MAX_EVIDENCE_DRIVERS = 8
+
+
+def _prune_nulls(value: Any) -> Any:
+    """Drop None-valued keys, recursively, leaving an empty object as None.
+
+    ``model_dump`` materialises every unset Optional as an explicit null. On a
+    tile field that is merely noise; inside evidence it is a false statement,
+    because a consumer cannot tell "this signal has no baseline" from "the
+    baseline was lost on the way here".
+    """
+    if isinstance(value, dict):
+        cleaned = {k: _prune_nulls(v) for k, v in value.items() if v is not None}
+        cleaned = {k: v for k, v in cleaned.items() if v is not None}
+        return cleaned or None
+    if isinstance(value, list):
+        items = [_prune_nulls(v) for v in value]
+        return [i for i in items if i is not None] or None
+    return value
+
+
+def _card_evidence(sig: Dict[str, Any], family: str) -> Optional[Dict[str, Any]]:
+    """The workings behind one card, or None when the signal carries none.
+
+    Every value here is lifted from the signal as the detector left it -- the
+    same facts ``_signal_facts`` already formats for the authoring prompt. No
+    new query, no new LLM call, no rounding beyond what is already published:
+    a figure that gets re-derived downstream must be comparable to this one, so
+    changing it in transit would defeat the point of publishing it.
+
+    None rather than an empty object when there is nothing to say. An evidence
+    block with no evidence in it invites a consumer to conclude something from
+    its presence.
+    """
+    evidence: Dict[str, Any] = {}
+
+    if family:
+        evidence["measureFamily"] = family
+    if sig.get("affected_segment"):
+        evidence["segment"] = sig["affected_segment"]
+
+    # The window the figure covers. Recent-week signals carry it explicitly;
+    # daily-incident signals carry an episode instead, which is the same idea
+    # under different names.
+    rw = sig.get("recent_week") or {}
+    window = {
+        "mode": rw.get("window_mode"),
+        "start": rw.get("week_start") or sig.get("episode_start"),
+        "end": rw.get("week_end") or sig.get("episode_end"),
+    }
+    window = {k: v for k, v in window.items() if v is not None}
+    if window:
+        evidence["window"] = window
+
+    # What the figure was measured against. `actual`/`previous`/`expected` are
+    # exactly the three numbers a reconciling consumer needs: without them it
+    # can only compare a headline figure and cannot tell a period difference
+    # from a definition difference.
+    for src, dst in (("actual", "actual"), ("previous", "previous"), ("expected", "expected")):
+        value = rw.get(src)
+        if value is None:
+            value = sig.get(f"{src}_total")
+        if isinstance(value, (int, float)) and not isinstance(value, bool):
+            evidence[dst] = float(value)
+
+    share = sig.get("impact_share")
+    if isinstance(share, (int, float)) and not isinstance(share, bool):
+        evidence["shareOfChangePct"] = round(float(share), 1)
+
+    members = sig.get("segment_members")
+    if isinstance(members, list):
+        drivers = [
+            {"name": str(name), "rank": i + 1}
+            for i, name in enumerate(members[:_MAX_EVIDENCE_DRIVERS])
+            if name
+        ]
+        if drivers:
+            evidence["drivers"] = drivers
+
+    # The volume/rate split, from the same entry the card's own stat is built
+    # on (`_main_decomposition_stat` uses decomposition[0]). Taking a different
+    # entry here would publish workings that do not add up to the card.
+    decomp = sig.get("decomposition") or []
+    item = decomp[0] if decomp and isinstance(decomp[0], dict) else None
+    if item:
+        split = {
+            "driver": str(item["driver"]) if item.get("driver") else None,
+            "volumeEffect": (float(item["volume_effect"])
+                             if isinstance(item.get("volume_effect"), (int, float))
+                             and not isinstance(item.get("volume_effect"), bool) else None),
+            "rateEffect": (float(item["rate_effect"])
+                           if isinstance(item.get("rate_effect"), (int, float))
+                           and not isinstance(item.get("rate_effect"), bool) else None),
+        }
+        if any(v is not None for v in split.values()):
+            evidence["decomposition"] = split
+
+    return evidence or None
+
+
 def _assemble_kpi_card(
     idx: int,
     sig: Dict[str, Any],
@@ -1225,6 +1573,7 @@ def _assemble_kpi_card(
     report_id: Optional[str] = None,
     *,
     extended_fields: bool = False,
+    evidence_fields: bool = False,
     state: Optional[dict] = None,
 ) -> Dict[str, Any]:
     family = _signal_family(sig)
@@ -1320,7 +1669,7 @@ def _assemble_kpi_card(
     elif isinstance(sig.get("current"), (int, float)) and isinstance(sig.get("prior"), (int, float)):
         period_pct = _period_change_pct(sig.get("current"), sig.get("prior"))
         delta = f"{abs(period_pct):.1f}%" if period_pct is not None else ""
-        comparison = "vs the prior period"
+        comparison = f"vs {_baseline_phrase(sig)}"
         comparison_type, comparison_chip = "same_period_last_year", "vs last year"
         baseline_value = float(sig["prior"])
     elif share is not None:
@@ -1352,15 +1701,20 @@ def _assemble_kpi_card(
         "value": _compact_number(val, signed=not is_level),
         "delta": delta,
         "deltaDirection": "up" if (val or 0) >= 0 else "down",
+        # The lead and the caption are code-owned, which is why they escaped the
+        # plain-language pass the model's words go through: an inventory card
+        # opened "14,499 Loc-SKUs are in STOCK OUT - PLACE ORDER ... in the
+        # position" under a caption "of all Loc-SKUs in the stock position".
+        # The pass changes words, never figures, so the grounding still holds.
         "description": " ".join(
             part for part in (
-                _lead_sentence(sig, family),
-                _sentence(_plain_business_text(text.description)),
+                _plain_business_text(_lead_sentence(sig, family)),
+                _sentence(_plain_business_text(_without_formula(text.description))),
             ) if part
         ),
         "displayTime": when.strftime("%I:%M %p").lstrip("0"),
         "isoDate": when.date().isoformat(),
-        "comparisonLabel": comparison,
+        "comparisonLabel": _plain_business_text(comparison),
         "insight": {
             "title": _plain_business_text(text.insight_title),
             "summary": _grounded_summary(sig, family, text.insight_summary),
@@ -1382,6 +1736,11 @@ def _assemble_kpi_card(
             {"type": comparison_type, "label": comparison_chip, "baselineValue": baseline_value}
             if comparison_type else None
         )
+    if evidence_fields:
+        # Independent of extended_fields on purpose. The extended fields change
+        # what the TILE renders and so wait on the app; evidence changes only
+        # what the assistant can read out of blob, and waits on nothing.
+        card["evidence"] = _card_evidence(sig, family)
     dumped = KpiCard(**card).model_dump()  # strict validation
     if dumped.get("reportId") is None:
         # Single-report mode must emit the exact key set the app renders today,
@@ -1394,7 +1753,69 @@ def _assemble_kpi_card(
         # rule: absent means "draw nothing", never "draw a wrong thing".
         if not extended_fields or dumped.get(key) is None:
             dumped.pop(key, None)
+    # Same rule for evidence, on its own flag: off, or nothing to say, means the
+    # key is absent rather than null. It also has to be pruned INSIDE, because
+    # model_dump fills every unset sub-field with None and a consumer reading
+    # `"previous": null` cannot tell "not applicable" from "we lost it".
+    if not evidence_fields or dumped.get("evidence") is None:
+        dumped.pop("evidence", None)
+    else:
+        dumped["evidence"] = _prune_nulls(dumped["evidence"])
     return dumped
+
+
+def _merge_nested_signals(signals: List[Dict[str, Any]], state: dict) -> List[Dict[str, Any]]:
+    """One card per story across a hierarchy (see card_lineage). Best-effort."""
+    from . import card_lineage
+
+    token = state.get("pbi_token")
+    workspace, dataset = state.get("workspace_id"), state.get("dataset_id")
+    run_query = None
+    if token and workspace and dataset:
+        from . import powerbi_executor as pbi
+
+        def run_query(dax: str) -> Any:
+            result = pbi.execute_python(workspace, dataset, [{
+                "name": "card_lineage", "dax": dax,
+                "purpose": "which card segments sit inside which",
+            }], token=token).get("card_lineage") or {}
+            if result.get("status") != "success":
+                raise RuntimeError(str(result.get("error") or result.get("status") or "no result"))
+            return result.get("result")
+
+    kept, receipt = card_lineage.merge_nested(signals, run_query)
+    if receipt.get("status") != "no_candidates":
+        print(f"KPI card lineage: {receipt}")
+    state.setdefault("kpi_card_lineage", receipt)
+    return kept
+
+
+def _with_baseline_labels(signals: List[Dict[str, Any]], state: dict) -> List[Dict[str, Any]]:
+    """Name what each current-versus-prior card is compared with, when proven.
+
+    Uses the insight branch's own reading of the model metadata, so the card and
+    the insight report can never disagree about the baseline. Unproven stays
+    unlabelled, and _baseline_phrase keeps the neutral "the prior period".
+    """
+    profile = state.get("semantic_model_profile")
+    if not isinstance(profile, dict) or not profile:
+        return signals
+    try:
+        from ..agents.insight_synthesizer import _comparison_from_metadata
+    except Exception:  # noqa: BLE001 - wording only; never cost the feed
+        return signals
+    out = []
+    for sig in signals:
+        if (isinstance(sig.get("current"), (int, float)) and isinstance(sig.get("prior"), (int, float))
+                and not sig.get("comparison_label") and not sig.get("baseline_label")):
+            try:
+                label = _comparison_from_metadata(sig, profile)
+            except Exception:  # noqa: BLE001
+                label = ""
+            if label in _PROVEN_BASELINES:
+                sig = {**sig, "baseline_label": label}
+        out.append(sig)
+    return out
 
 
 def generate_kpi_insights_payload(
@@ -1407,6 +1828,7 @@ def generate_kpi_insights_payload(
     signals = list(signals or [])
     if not signals:
         return []
+    signals = _with_baseline_labels(_merge_nested_signals(signals, state), state)
     when = _now(generated_at)
     from . import ai_tier
     if ai_tier.deterministic(state) or ai_tier.code_slot(state, "kpi_cards"):
@@ -1443,6 +1865,7 @@ def generate_kpi_insights_payload(
         _record_kpi_attempts(state, signals, texts, rounds)
     report_id = feed_report_id(state) if multi_report_feed(state) else None
     extended_fields = kpi_extended_fields(state)
+    evidence_fields = kpi_card_evidence(state)
     cards: List[Dict[str, Any]] = []
     for idx, sig in enumerate(signals, start=1):
         text = texts.get(sig.get("id"))
@@ -1450,7 +1873,8 @@ def generate_kpi_insights_payload(
             raise RuntimeError(f"LLM returned no card text for signal id {sig.get('id')!r}")
         cards.append(_assemble_kpi_card(
             idx, sig, text, when, report_id=report_id,
-            extended_fields=extended_fields, state=state,
+            extended_fields=extended_fields, evidence_fields=evidence_fields,
+            state=state,
         ))
     return cards
 

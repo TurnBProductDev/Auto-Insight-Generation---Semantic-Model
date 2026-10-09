@@ -129,6 +129,17 @@ def main(argv=None) -> int:
         print(f"Investigation budget: {result['budget']['used']}/{result['budget']['total']} "
              f"quer{'y' if result['budget']['used'] == 1 else 'ies'} used")
 
+    # The one-line reading under each figure on the app's Home scorecard.
+    # Code picks each line's fact; the model words it when the AI tier allows,
+    # and any line it cannot word correctly keeps the code-written sentence.
+    from src.domains.sales import scorecard_lines
+
+    print("Writing the Home scorecard lines...")
+    page["scorecard_lines"] = scorecard_lines.author(
+        scorecard_lines.daily_sales_facts(page), cfg,
+        flag=bool(cfg.get("daily_sales_llm_authoring_enabled", False)),
+        out_dir=str(out), log=print)
+
     (out / "report_daily_sales.json").write_text(daily_sales.dump_json(page), encoding="utf-8")
     (out / "findings.json").write_text(daily_sales.dump_json({
         "report_id": model["report_id"], "as_at": model["as_at"], "findings": signals,

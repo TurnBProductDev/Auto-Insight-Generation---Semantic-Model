@@ -182,7 +182,9 @@ def main() -> int:
         cc.get_blob_client(f"{FOLDER}/{args.report}/{args.as_at}.json").upload_blob(
             json.dumps(dated, indent=2, ensure_ascii=False).encode("utf-8"),
             overwrite=True, content_settings=json_ct)
-        entry = {"reportId": args.report, "asAt": args.as_at,
+        # `date` is the contract name the app and the AI Bot read; asAt
+        # is this script's own key and what the merge below dedupes on.
+        entry = {"reportId": args.report, "date": args.as_at, "asAt": args.as_at,
                  "dataAsOf": args.as_at, "grain": "day",
                  "generatedAt": _iso(now), "headline": payload.get("headline", "")}
         index_client = cc.get_blob_client(f"{FOLDER}/{args.report}/index.json")

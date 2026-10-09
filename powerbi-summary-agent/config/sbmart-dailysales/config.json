@@ -23,6 +23,7 @@
     "category_group_col": "CATEGORY_NAME"
   },
   "daily_sales_investigation_enabled": true,
+  "daily_sales_llm_authoring_enabled": true,
 
   "powerbi_auth_mode": "auto",
   "powerbi_query_api": "auto",
@@ -49,6 +50,7 @@
 
   "ai_content_multi_report_feed": true,
   "ai_content_kpi_card_fields": true,
+  "ai_content_kpi_card_evidence": true,
   "ai_content_feed_max_cards": 10,
   "insight_max_new_per_run": 3,
   "ai_content_alert_days": 7,

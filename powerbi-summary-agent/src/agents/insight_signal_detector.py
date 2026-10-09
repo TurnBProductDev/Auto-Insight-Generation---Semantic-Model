@@ -364,6 +364,64 @@ def _rank_and_cap(signals: List[dict], cap: int, max_dq: int) -> List[dict]:
     return kept
 
 
+def _rule_based_selection(eligible: dict, cap: int, max_dq: int,
+                          memory_enabled: bool) -> tuple[List[dict], int]:
+    """Rank every eligible candidate by the materiality score it already carries,
+    through the same _rank_and_cap the LLM's picks go through. Returns the
+    selected signals and the size of the pool they were taken from.
+
+    The one thing the LLM adds is merging related candidates into a single
+    story; here each stands alone, and the cap keeps the page as short as it was.
+    """
+    pool: List[dict] = []
+    for key, kind in (("business_candidates", None),
+                      ("data_quality_candidates", "data_quality")):
+        for cand in eligible.get(key) or []:
+            sig = _signal_from_candidate(cand)
+            sig.pop("injected", None)
+            sig["candidate_id"] = cand.get("id")
+            sig["related_candidate_ids"] = []
+            if kind:
+                # The candidate list says which kind it is; the candidate
+                # itself may not carry the field, and a data-quality finding
+                # read as business would take a business finding's slot.
+                sig["kind"] = kind
+            pool.append(sig)
+    if memory_enabled:
+        pool = _ensure_reserved_relative(pool, eligible)
+    return _rank_and_cap(pool, cap, max_dq), len(pool)
+
+
+def _adopt_candidate_identity(signals: List[dict], eligible: dict) -> int:
+    """Reasoned tier: name each bound signal after the candidate whose figures it carries.
+
+    Binding copies one candidate's computed figures onto the model's signal but
+    keeps the model's own segment label and member list. When the model merged
+    several candidates into one story - live on 2026-10-08, eleven product groups
+    labelled "overall" carrying CONFECTIONERY's figures - every code-written
+    sentence and KPI card then states one group's numbers for all of them. Here
+    the published identity is the candidate's, exactly as the narrated tier
+    publishes it; ``related_candidate_ids`` and ``covered_story_keys`` still mark
+    the merged stories as told. The investigated tier keeps its behaviour.
+    Returns how many signals were renamed.
+    """
+    all_c = (eligible.get("business_candidates", []) or []) + \
+            (eligible.get("data_quality_candidates", []) or [])
+    by_id = {c.get("id"): c for c in all_c if c.get("id")}
+    renamed = 0
+    for sig in signals:
+        cand = by_id.get(sig.get("candidate_id"))
+        if cand is None:
+            continue
+        segment = cand.get("segment") or "overall"
+        members = cand.get("segment_members")
+        if sig.get("affected_segment") != segment or sig.get("segment_members") != members:
+            renamed += 1
+        sig["affected_segment"] = segment
+        sig["segment_members"] = members
+    return renamed
+
+
 def _finish(state: dict, log: RunLogger, signals: List[dict],
             novelty: dict, reason: str) -> dict:
     file_io.write_json(state, "insight_signals.json", signals)
@@ -422,33 +480,13 @@ def run(state: dict) -> dict:
         return _finish(state, log, [], novelty, reason=reason)
 
     from ..tools import ai_tier
-    if not ai_tier.investigates(state):
-        # Rank every eligible candidate by the materiality score it already
-        # carries, through the same _rank_and_cap the LLM's picks go through.
-        # The one thing the LLM adds on the investigated tier is merging related
-        # candidates into a single story; here each stands alone, and the cap
-        # keeps the page as short as it was.
-        pool: List[dict] = []
-        for key, kind in (("business_candidates", None),
-                          ("data_quality_candidates", "data_quality")):
-            for cand in eligible.get(key) or []:
-                sig = _signal_from_candidate(cand)
-                sig.pop("injected", None)
-                sig["candidate_id"] = cand.get("id")
-                sig["related_candidate_ids"] = []
-                if kind:
-                    # The candidate list says which kind it is; the candidate
-                    # itself may not carry the field, and a data-quality finding
-                    # read as business would take a business finding's slot.
-                    sig["kind"] = kind
-                pool.append(sig)
-        if memory_enabled:
-            pool = _ensure_reserved_relative(pool, eligible)
-        signals = _rank_and_cap(pool, cap, max_dq)
+    if not ai_tier.reasons(state, "select_findings"):
+        signals, pool = _rule_based_selection(eligible, cap, max_dq, memory_enabled)
         log.info(f"Rule-based selection (report_ai_tier={ai_tier.tier(state)}): {len(signals)} "
-                 f"of {len(pool)} eligible candidate(s) by materiality score - no LLM call.")
+                 f"of {pool} eligible candidate(s) by materiality score - no LLM call.")
         reason = "ok" if signals else (novelty.get("reason") or "no_new_selected")
         return _finish(state, log, signals, novelty, reason=reason)
+    reasoned = ai_tier.tier(state) == ai_tier.REASONED
 
     rules = file_io.read_prompt("_global_rules.md")
     task = file_io.read_prompt("insight_signal_detector_prompt.md")
@@ -472,14 +510,30 @@ def run(state: dict) -> dict:
                   "across ALL levels (high, period/weekly, recent_week, daily) - "
                   "none is prioritized over another; rank purely by materiality.")
 
-    llm = get_llm(state, structured_schema=SignalList)
     messages = [
         {"role": "system", "content": rules + file_io.business_rules_block(state)
          + "\n\n" + task + extra},
         {"role": "user", "content": "REPORT UNDERSTANDING + STAT CANDIDATES + SCAN RESULTS:\n" + dumps(context)},
     ]
 
-    result: SignalList = llm.invoke(messages)
+    try:
+        result: SignalList = get_llm(state, structured_schema=SignalList).invoke(messages)
+    except Exception as exc:  # noqa: BLE001 - re-raised below everywhere but reasoned
+        if not reasoned:
+            raise
+        # The reasoned tier adds the model's judgement to the rules; it must
+        # never publish fewer findings than the rules would have. A failed call
+        # selects exactly as the narrated tier does.
+        signals, pool = _rule_based_selection(eligible, cap, max_dq, memory_enabled)
+        novelty["selection"] = "rules"
+        novelty["selection_error"] = f"{type(exc).__name__}: {exc}"
+        log.error(f"Signal selection model call failed ({novelty['selection_error']}); "
+                  f"rule-based selection used instead: {len(signals)} of {pool} eligible "
+                  f"candidate(s) by materiality score.")
+        reason = "ok" if signals else (novelty.get("reason") or "no_new_selected")
+        return _finish(state, log, signals, novelty, reason=reason)
+    if reasoned:
+        novelty["selection"] = "model"
     raw = [s.model_dump() for s in result.signals]
 
     if memory_enabled:
@@ -501,6 +555,12 @@ def run(state: dict) -> dict:
                      "takes the one relative slot by policy.")
     else:
         bound = _bind_candidates(raw, eligible)
+
+    if reasoned:
+        renamed = _adopt_candidate_identity(bound, eligible)
+        if renamed:
+            log.info(f"Reasoned tier: {renamed} signal(s) renamed to the candidate whose figures "
+                     f"they carry (a merge still marks its related stories as told).")
 
     signals = _rank_and_cap(bound, cap, max_dq)
     dropped_caps = len(bound) - len(signals)

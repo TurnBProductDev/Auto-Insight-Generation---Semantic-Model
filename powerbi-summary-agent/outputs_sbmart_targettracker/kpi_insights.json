@@ -1,78 +1,34 @@
 [
   {
-    "id": 1965626293,
-    "reportId": "target_tracker",
-    "severity": "critical",
-    "category": "Target",
-    "metric": "ST2",
-    "value": "-826.9K",
-    "delta": "27.1%",
-    "deltaDirection": "down",
-    "description": "ST2 is below target in every period reported - today 0.0%, this week 0.0%, this month 72.9%, this year 90.5%. This month so far it is 826,947 short. ST2 is behind plan across every reported period, with the biggest gap in the month so far.",
-    "displayTime": "1:52 PM",
-    "isoDate": "2026-08-27",
-    "comparisonLabel": "against its target for this month so far",
-    "insight": {
-      "title": "ST2 below target throughout",
-      "summary": "ST2 is short by 826,947 this month so far and is running at 72.9% of target for the month. This keeps revenue behind plan and accounts for 27.1% of the total decline. The shortfall is present in every reported period, including 90.5% for the year.",
-      "stats": [
-        {
-          "label": "Performance change",
-          "value": "-826.9K"
-        },
-        {
-          "label": "Share of performance decline",
-          "value": "27.1%"
-        }
-      ],
-      "action": "Review which departments in ST2 are furthest below target this month."
-    },
-    "label": "Branch ST2 \u2014 Sales against target",
-    "rawValue": -826946.9680000041,
-    "unit": "USD",
-    "valueType": "currency",
-    "goodDirection": "up",
-    "comparison": {
-      "type": "target",
-      "label": "vs target",
-      "baselineValue": 3046219.438000001
-    },
-    "target": {
-      "value": 3046219.438000001,
-      "attainmentPct": 72.9
-    },
-    "rank": 1
-  },
-  {
-    "id": 1449879103,
+    "id": 963787187,
     "reportId": "target_tracker",
     "severity": "critical",
     "category": "Target",
     "metric": "Whole business",
-    "value": "-4.53M",
+    "value": "-1.21M",
     "delta": "",
     "deltaDirection": "down",
-    "description": "Sales finished below target on 25 days in a row, from 2026-08-07 to 2026-08-31, giving back 4,532,999 in total. Sales have missed plan every day in this period, leaving a large gap to recover.",
-    "displayTime": "1:52 PM",
-    "isoDate": "2026-08-27",
-    "comparisonLabel": "against the daily target",
+    "description": "To finish the month on target, 3,655,741 is still needed against a remaining target of 2,443,035 - 150% of what the rest of the month was set to deliver. The month is behind plan, and the rest of the period now needs to deliver more than was originally set.",
+    "displayTime": "6:17 PM",
+    "isoDate": "2026-08-28",
+    "comparisonLabel": "against the remaining month target",
     "insight": {
-      "title": "25 straight days below target",
-      "summary": "The business finished below target for 25 days in a row, giving back 4,532,999 in total. This leaves a significant revenue gap and makes up 25.7% of the total decline. The issue is happening across the business rather than in one store alone.",
+      "title": "Month target now out of reach pace",
+      "summary": "The business still needs 3,655,741 to finish the month on target against a remaining target of 2,443,035. That means the month needs 150% of what the rest of the period was set to deliver, leaving less room for any further shortfall.",
       "stats": [
         {
           "label": "Performance change",
-          "value": "-4.53M"
+          "value": "-1.21M"
         },
         {
           "label": "Share of performance decline",
-          "value": "25.7%"
+          "value": "49.6%"
         }
       ],
-      "action": "Check which branches contributed most to the shortfall over these 25 days."
+      "action": "Review which stores and departments carry the largest share of the remaining month target."
     },
     "label": "Whole business \u2014 Sales against target",
-    "rawValue": -4532999.1794958245,
+    "rawValue": -1212705.7094462924,
     "unit": "USD",
     "valueType": "currency",
     "goodDirection": "up",
@@ -81,49 +37,89 @@
       "label": "vs baseline",
       "baselineValue": null
     },
-    "rank": 2
+    "rank": 1
   },
   {
-    "id": 337431685,
+    "id": 306482689,
     "reportId": "target_tracker",
     "severity": "critical",
     "category": "Target",
-    "metric": "ST1",
-    "value": "-1.42M",
-    "delta": "25.3%",
+    "metric": "ST2",
+    "value": "-200.8K",
+    "delta": "7.7%",
     "deltaDirection": "down",
-    "description": "ST1 is below target in every period reported - today 0.0%, this week 0.0%, this month 74.7%, this year 98.3%. This month so far it is 1,422,431 short. ST1 is behind plan across every reported period, with the largest gap in the month so far.",
-    "displayTime": "1:52 PM",
-    "isoDate": "2026-08-27",
+    "description": "ST2 is below target in every period reported - today 92.5%, this week 93.9%, this month 92.3%, this year 92.7%. This month so far it is 200,824 short. ST2 is behind plan across every reported period, not just in the month so far.",
+    "displayTime": "6:17 PM",
+    "isoDate": "2026-08-28",
     "comparisonLabel": "against its target for this month so far",
     "insight": {
-      "title": "ST1 below target throughout",
-      "summary": "ST1 is short by 1,422,431 this month so far and is running at 74.7% of target for the month. This keeps revenue behind plan and accounts for 25.3% of the total decline. The shortfall is present in every reported period, including 98.3% for the year.",
+      "title": "ST2 behind target throughout",
+      "summary": "ST2 is below target in every period reported, including 92.3% this month and 92.7% this year. The store is 200,824 short this month so far, which keeps pressure on closing the gap later in the period.",
       "stats": [
         {
           "label": "Performance change",
-          "value": "-1.42M"
+          "value": "-200.8K"
         },
         {
           "label": "Share of performance decline",
-          "value": "25.3%"
+          "value": "7.7%"
         }
       ],
-      "action": "Review which departments in ST1 are furthest below target this month."
+      "action": "Check which departments in ST2 are furthest below target this month."
     },
-    "label": "Branch ST1 \u2014 Sales against target",
-    "rawValue": -1422431.2092000032,
+    "label": "Branch ST2 \u2014 Sales against target",
+    "rawValue": -200824.36829297105,
     "unit": "USD",
     "valueType": "currency",
     "goodDirection": "up",
     "comparison": {
       "type": "target",
       "label": "vs target",
-      "baselineValue": 5627423.169200006
+      "baselineValue": 2599999.9982929686
     },
     "target": {
-      "value": 5627423.169200006,
-      "attainmentPct": 74.7
+      "value": 2599999.9982929686,
+      "attainmentPct": 92.3
+    },
+    "rank": 2
+  },
+  {
+    "id": 242774511,
+    "reportId": "target_tracker",
+    "severity": "warning",
+    "category": "Target",
+    "metric": "Whole business",
+    "value": "-74.6K",
+    "delta": "",
+    "deltaDirection": "down",
+    "description": "To finish the week on target, 2,041,097 is still needed against a remaining target of 1,966,469 - 104% of what the rest of the week was set to deliver. The week is behind plan, so the remaining days need to deliver more than originally expected.",
+    "displayTime": "6:17 PM",
+    "isoDate": "2026-08-28",
+    "comparisonLabel": "against the remaining week target",
+    "insight": {
+      "title": "Week target needs catch-up",
+      "summary": "The business still needs 2,041,097 to finish the week on target against a remaining target of 1,966,469. That means the rest of the week needs 104% of what it was set to deliver, leaving little room for any missed sales.",
+      "stats": [
+        {
+          "label": "Performance change",
+          "value": "-74.6K"
+        },
+        {
+          "label": "Share of performance decline",
+          "value": "3.8%"
+        }
+      ],
+      "action": "Compare which stores and departments carry the largest share of the remaining week target."
+    },
+    "label": "Whole business \u2014 Sales against target",
+    "rawValue": -74627.36983716255,
+    "unit": "USD",
+    "valueType": "currency",
+    "goodDirection": "up",
+    "comparison": {
+      "type": "other",
+      "label": "vs baseline",
+      "baselineValue": null
     },
     "rank": 3
   }

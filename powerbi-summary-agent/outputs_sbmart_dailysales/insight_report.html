@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Retail / Store Performance Benchmarking Insight Report</title>
+<style>
+  :root {
+    --ink: #1f2937;
+    --ink-soft: #5b6472;
+    --ink-faint: #8a93a1;
+    --rule: #e3e7ec;
+    --rule-strong: #cfd6de;
+    --navy: #16324f;
+    --navy-deep: #102538;
+    --accent: #1f4e79;
+    --accent-soft: #eef3f8;
+    --bg: #eef0f3;
+    --panel: #ffffff;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Segoe UI", -apple-system, "Helvetica Neue", Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+  .sheet {
+    max-width: 900px;
+    margin: 40px auto 56px;
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(16, 37, 56, 0.06), 0 12px 32px rgba(16, 37, 56, 0.08);
+  }
+  header.report-header {
+    background: linear-gradient(135deg, var(--navy-deep) 0%, var(--navy) 62%, #1d3e5e 100%);
+    color: #f4f7fa;
+    padding: 40px 64px 34px;
+  }
+  header.report-header .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 11px;
+    font-weight: 600;
+    color: #9db8d1;
+    margin-bottom: 10px;
+  }
+  header.report-header h1 {
+    font-size: 27px;
+    line-height: 1.25;
+    margin: 0 0 14px;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+  }
+  header.report-header .meta {
+    display: flex;
+    gap: 28px;
+    flex-wrap: wrap;
+    font-size: 12.5px;
+    color: #b9c9da;
+    border-top: 1px solid rgba(255, 255, 255, 0.16);
+    padding-top: 14px;
+  }
+  header.report-header .meta span strong {
+    color: #e8eef4;
+    font-weight: 600;
+  }
+  main.report-body { padding: 44px 64px 28px; }
+  h2 {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+    margin: 44px 0 16px;
+    padding-top: 22px;
+    border-top: 1px solid var(--rule);
+  }
+  h2:first-child { margin-top: 0; padding-top: 0; border-top: none; }
+  h3 {
+    font-size: 15px;
+    font-weight: 650;
+    color: var(--ink);
+    margin: 26px 0 8px;
+  }
+  p { margin: 0 0 14px; max-width: 72ch; }
+  ul { margin: 0 0 16px; padding-left: 20px; list-style: none; }
+  li { margin-bottom: 9px; position: relative; padding-left: 4px; }
+  li::before {
+    content: "";
+    position: absolute;
+    left: -14px;
+    top: 0.62em;
+    width: 6px;
+    height: 6px;
+    border-radius: 1px;
+    background: var(--accent);
+    opacity: 0.55;
+  }
+  ul.nested { margin: 8px 0 4px; padding-left: 18px; }
+  ul.nested li::before {
+    width: 5px;
+    height: 2px;
+    top: 0.75em;
+    border-radius: 0;
+    opacity: 0.4;
+  }
+  table.kv {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 4px 0 20px;
+    font-size: 14.5px;
+    border: 1px solid var(--rule);
+  }
+  table.kv td {
+    padding: 9px 16px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  table.kv tr:last-child td { border-bottom: none; }
+  table.kv tr:nth-child(odd) td { background: var(--accent-soft); }
+  td.kv-name {
+    width: 42%;
+    font-weight: 600;
+    color: var(--ink);
+    border-right: 1px solid var(--rule);
+  }
+  td.kv-value {
+    color: var(--ink-soft);
+    font-variant-numeric: tabular-nums;
+  }
+  code {
+    background: var(--accent-soft);
+    border: 1px solid var(--rule);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 12.5px;
+    font-family: Consolas, "Cascadia Mono", "Courier New", monospace;
+    color: var(--accent);
+  }
+  strong { font-weight: 650; color: var(--ink); }
+  footer.report-footer {
+    margin: 20px 64px 0;
+    padding: 18px 0 36px;
+    border-top: 1px solid var(--rule-strong);
+    font-size: 11.5px;
+    line-height: 1.6;
+    color: var(--ink-faint);
+  }
+  @media (max-width: 720px) {
+    .sheet { margin: 0; border-radius: 0; border-left: none; border-right: none; }
+    header.report-header, main.report-body { padding-left: 24px; padding-right: 24px; }
+    footer.report-footer { margin-left: 24px; margin-right: 24px; }
+  }
+  @media print {
+    body { background: #ffffff; }
+    .sheet { margin: 0; max-width: none; border: none; border-radius: 0; box-shadow: none; }
+    header.report-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    h2 { break-after: avoid; }
+    table.kv, li { break-inside: avoid; }
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ink: #dde2e9;
+      --ink-soft: #a6afbc;
+      --ink-faint: #7d8794;
+      --rule: #313843;
+      --rule-strong: #3d4552;
+      --accent: #8fb4d9;
+      --accent-soft: #232a33;
+      --bg: #14171c;
+      --panel: #1b1f26;
+    }
+    .sheet { box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+  <div class="sheet">
+    <header class="report-header">
+      <div class="eyebrow">Power BI Insight Report</div>
+      <h1>Retail / Store Performance Benchmarking Insight Report</h1>
+      <div class="meta">
+        <span><strong>Generated</strong>&ensp;10 September 2026, 06:30 UTC</span>
+        <span><strong>Source</strong>&ensp;Connected Power BI semantic model</span>
+        <span><strong>Method</strong>&ensp;Automated DAX analysis</span>
+      </div>
+    </header>
+    <main class="report-body">
+<h2>Key Insights</h2>
+<p>The scan covered overall benchmark measures in this model, and nothing notable crossed the materiality floor in this run.</p>
+<p>Our checks did not find any business changes large enough to report from the available benchmark data. The scan reviewed the overall totals that were accessible, but no signal met the selection threshold. Some planned time-based checks were not possible because no valid business time axis was confirmed. Review whether a broader entity scope or additional benchmark slices should be included in the next run.</p>
+<h2>Data Quality Watch-outs</h2>
+<ul>
+<li>Branch scope could not be confirmed from the available metadata. Check whether the model exposes a clear branch or store comparison field for reporting.</li>
+<li>Some measures have incomplete semantic detail in the model metadata. Check the missing measure definitions before relying on fine-grained interpretation.</li>
+<li>Time-based monitoring could not run because no valid business date axis was confirmed. Check whether the model includes a usable trading date rather than only load or posting dates.</li>
+</ul>
+<h2>Evidence Trail</h2>
+<ul>
+<li>No business signals were selected: <code>signals = []</code>, <code>investigations = []</code>, <code>manager_fact_briefs = []</code>.</li>
+<li>Novelty summary reported no findings: <code>detected = 0</code>, <code>eligible = 0</code>, <code>selected = 0</code>, <code>reason = &quot;no_notable_findings&quot;</code>.</li>
+<li>Coverage available only at grand total level:</li>
+<ul class="nested">
+<li><code>coverage_matrix[&quot;(grand total)&quot;].queries = [&quot;meta_comparable_totals&quot;]</code></li>
+<li>Metrics seen: <code>_Measures::revenue:change:Sales vs Bench % Color</code>, <code>_Measures::revenue:current:Sales Actual</code>, <code>_Measures::revenue:prior:Last Updated</code></li>
+<li><code>trusted_coverage = false</code></li>
+<li><code>population_seen = [&quot;unfiltered&quot;]</code></li>
+</ul>
+<li>Entity scope resolution was inconclusive:</li>
+<ul class="nested">
+<li><code>resolved_entity_scope.entity_dimension = null</code></li>
+<li><code>active_comparable_population = []</code></li>
+<li><code>source = &quot;unresolved&quot;</code></li>
+<li>Warning: <code>Metadata could not identify an entity/current/prior scope query.</code></li>
+</ul>
+<li>Metadata profile warnings:</li>
+<ul class="nested">
+<li><code>No high-confidence entity/location dimension was identified from metadata.</code></li>
+<li><code>Some measure definitions are unavailable; those measures have lower semantic confidence.</code></li>
+</ul>
+<li>Temporal analysis was enabled in principle but not usable:</li>
+<ul class="nested">
+<li><code>temporal.enabled = true</code></li>
+<li><code>temporal.grain = &quot;disabled&quot;</code></li>
+<li><code>temporal.column = null</code></li>
+<li>Reason: <code>no valid business time axis found - sub-annual monitoring disabled (only a load/posting-date column exists)</code></li>
+</ul>
+<li>Recent-week monitoring was not run:</li>
+<ul class="nested">
+<li><code>recent_week.enabled = false</code></li>
+<li>Reason: <code>disabled - same reason as business-day source: model exposes no date dimension for business-day monitoring</code></li>
+</ul>
+<li>Daily monitoring was not run:</li>
+<ul class="nested">
+<li><code>daily.enabled = false</code></li>
+<li>Reason: <code>disabled - same reason as business-day source: model exposes no date dimension for business-day monitoring</code></li>
+</ul>
+<li>Model context reviewed:</li>
+<ul class="nested">
+<li>Fact tables: <code>storebenchmark</code>, <code>departmentbenchmark</code>, <code>sectionbenchmark</code>, <code>categorybenchmark</code></li>
+<li>Dimensions: <code>Dim_Date</code>, <code>Dim_Store</code>, <code>Dim_Department</code>, <code>Dim_Section</code>, <code>Dim_Category</code></li>
+<li>Important measures listed in metadata include <code>Sales Actual</code>, <code>Sales vs Bench %</code>, <code>Bills Actual</code>, <code>Bills vs Bench %</code>, <code>Margin Actual %</code>, <code>Margin vs Bench pp</code>, <code>Basket Value Actual</code>, <code>Basket Value vs Bench %</code>, <code>Selected Actual</code>, <code>Selected vs Bench</code>, <code>Selected As Of Date</code>, <code>Last Updated</code></li>
+</ul>
+<li>Report note confirmed the outcome: <code>Nothing crossed the materiality floor this run. Write the report emphasizing what was scanned and why nothing stood out.</code></li>
+</ul>
+<h2>Confidence &amp; Caveats</h2>
+<ul>
+<li>Confidence is moderate that nothing notable was found in the scanned output, because the run explicitly returned no selected signals and no completed investigations.</li>
+<li>Confidence is limited for branch-level conclusions because no high-confidence entity or location dimension was resolved.</li>
+<li>Confidence is also limited by narrow coverage: only grand total checks were seen, and that coverage was marked <code>trusted_coverage = false</code>.</li>
+<li>Time-based findings could not be assessed because sub-annual, recent-week, and daily checks were disabled.</li>
+<li>Some measure definitions were unavailable, which reduces confidence in interpreting metric behavior beyond the metadata labels.</li>
+</ul>
+<h2>Suggested Follow-ups</h2>
+<ul>
+<li>Are there any branch-level benchmark movements worth reviewing? Expose and test a confirmed entity dimension, such as a store or branch field, and rerun the scan by entity.</li>
+<li>Are department, section, or category results hiding changes that the grand total did not show? Run the same benchmark checks below total level using the available dimension tables.</li>
+<li>Can this model support time-based monitoring? Confirm and map a valid business trading date so monthly, weekly, and daily scans can run.</li>
+<li>Are any important measures defined in a way that affects interpretation? Retrieve the missing measure definitions and validate how benchmark comparisons are calculated.</li>
+<li>Is the current report missing meaningful slices outside this model? If needed, combine this model with operational data that identifies branch ownership, trading calendar, or additional performance context.</li>
+</ul>
+    </main>
+    <footer class="report-footer">
+      This document was generated automatically from the connected semantic model.
+      Figures reflect only the queries executed in this run; see the limitations
+      or caveats section above for coverage gaps.
+    </footer>
+  </div>
+</body>
+</html>

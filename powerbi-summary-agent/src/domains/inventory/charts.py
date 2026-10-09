@@ -506,21 +506,26 @@ def trend_area(points: Sequence[dict], label_key: str, value_key: str,
     parts = [f'<polygon points="{area}" fill="{AMBER}" opacity="0.14"/>',
              f'<polyline points="{line}" fill="none" stroke="{AMBER}" '
              'stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>']
+    last = len(coords) - 1
     for index, (x, y) in enumerate(coords):
         label = str(usable[index].get(label_key) or "")
+        anchor = "start" if index == 0 else ("end" if index == last else "middle")
         parts.append(
             f'<circle class="data-point" tabindex="0" cx="{x:.1f}" cy="{y:.1f}" '
             f'r="4.5" fill="{AMBER}" stroke="#fff" stroke-width="2" '
             f'data-label="{_safe(label)}" data-value="{_safe(_sar(values[index]))}">'
             f'<title>{_safe(label)}: {_safe(_sar(values[index]))}</title></circle>')
         parts.append(
-            f'<text x="{x:.1f}" y="{base_y + 16:.1f}" text-anchor="middle" '
+            f'<text x="{x:.1f}" y="{base_y + 16:.1f}" text-anchor="{anchor}" '
             f'class="dz-axis">{_safe(label)}</text>')
-    # Label the peak only - a number on every point is noise.
+    # Label the peak only - a number on every point is noise. Anchored the same
+    # way, since the peak is as likely to be an end point as any other.
     peak_index = values.index(max(values))
+    peak_anchor = ("start" if peak_index == 0
+                   else ("end" if peak_index == last else "middle"))
     parts.append(
         f'<text x="{coords[peak_index][0]:.1f}" y="{coords[peak_index][1] - 10:.1f}" '
-        f'text-anchor="middle" class="dz-val">{_safe(_sar(max(values)))}</text>')
+        f'text-anchor="{peak_anchor}" class="dz-val">{_safe(_sar(max(values)))}</text>')
     parts.append(f'<line x1="{pad_l}" y1="{base_y:.1f}" x2="{width - pad_r}" '
                  f'y2="{base_y:.1f}" stroke="{MUTED}" stroke-width="1"/>')
     svg = (f'<svg viewBox="0 0 {width} {height}" width="100%" '
@@ -534,7 +539,8 @@ def trend_area(points: Sequence[dict], label_key: str, value_key: str,
 def ranked_bars(rows: Sequence[dict], *, value_key: str, held_key: str,
                 label_key: str = "name", unit: str = "aged",
                 average: float | None = None,
-                average_label: str = "") -> str:
+                average_label: str = "",
+                show_average_note: bool = True) -> str:
     """Members ranked by one measure, each with its own severity beside it.
 
     Two things at once, because either alone misleads: the **bar** is how much a
@@ -552,7 +558,7 @@ def ranked_bars(rows: Sequence[dict], *, value_key: str, held_key: str,
     peak = max(_num(r.get(value_key)) or 0.0 for r in usable) or 1.0
 
     ref = ""
-    if average is not None:
+    if average is not None and show_average_note:
         ref = (f'<p class="chart-note">The company-wide {_safe(unit)} rate is '
                f'{_safe(_pct(average))}'
                f'{(" - " + _safe(average_label)) if average_label else ""}. '

@@ -1,0 +1,6 @@
+{
+  "enabled": false,
+  "level": "daily",
+  "reason": "disabled - same reason as business-day source: model exposes no date dimension for business-day monitoring",
+  "analysis_complete": false
+}
